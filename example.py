@@ -16,17 +16,17 @@ kinova = scene.add_entity(
     # gs.morphs.MJCF(file="xml/franka_emika_panda/panda.xml"),
     gs.morphs.URDF(
         # file='/home/j/catkin_ws/src/ros_kortex/kortex_description/robots/gen3.urdf',
-        file='/home/j/workspace/genesis/gen3_lite_2f_robotiq_85.urdf',
+        file='/home/j/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf',
         fixed=True,
         pos=(0.0, 0.0, 0.05), # raise to account for table mount
     ),
 
-    # gs.morphs.MJCF(file="/home/j/workspace/genesis/005_tomato_soup_can/google_512k/kinbody.xml"),
+    # gs.morphs.MJCF(file="/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml"),
 )
 
 shelf = scene.add_entity(
     gs.morphs.URDF(
-        file='/home/j/workspace/genesis/shelf.urdf',
+        file='/home/j/workspace/genesis_pickaplace/shelf.urdf',
         fixed=True,
         pos=(0.7, 0.2125, -0.05),
         euler=(90, 0, 0),
@@ -44,20 +44,26 @@ shelf = scene.add_entity(
 
 # soup_can = scene.add_entity(
 #     gs.morphs.MJCF(
-#         file='/home/j/workspace/genesis/005_tomato_soup_can/google_512k/kinbody.xml',
+#         file='/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml',
 #     ),
 # )
 
 POSITION_0 = (0.4381, 0.0, 0.1)
 
 bottle = scene.add_entity(
-    material=gs.materials.Rigid(rho=300),
+    material=gs.materials.Rigid(rho=1000),
     morph=gs.morphs.URDF(
-        file="urdf/3763/mobility_vhacd.urdf",
+        file="./cylinder.urdf",
         scale=0.09,
         pos=POSITION_0,
         euler=(0, 0, 0),
     ),
+    # morph=gs.morphs.URDF(
+    #     file="urdf/3763/mobility_vhacd.urdf",
+    #     scale=0.09,
+    #     pos=POSITION_0,
+    #     euler=(0, 0, 0),
+    # ),
     # visualize_contact=True,
 )
 
@@ -102,64 +108,65 @@ ep_dict = np.load(path, allow_pickle=True).item()
 vel_cmd = ep_dict['vel_cmd']
 gripper_pos = ep_dict['gripper_pos']
 cmd_idx = 0
-print(f"Loaded {len(vel_cmd)} episodes")
+print(f"Loaded episode {path} with {len(vel_cmd)} steps")
 
 from pynput import keyboard
 import time
 
-def on_press(key):
-    if key == keyboard.Key.esc:
-        print("Escape key pressed. Exiting...")
-        return False  # Stop the listener
-    # Handle other keys if needed
+# def on_press(key):
+#     if key == keyboard.Key.esc:
+#         print("Escape key pressed. Exiting...")
+#         return False  # Stop the listener
+#     # Handle other keys if needed
 
-# Start the listener in a non-blocking way
-listener = keyboard.Listener(on_press=on_press)
-listener.start()
+# # Start the listener in a non-blocking way
+# listener = keyboard.Listener(on_press=on_press)
+# listener.start()
 
-gripper_cmds = np.linspace(-1.0, 1.0, len(vel_cmd) +1)
+gripper_cmds = np.linspace(-1.0, 1.0, len(vel_cmd) + 1)
 
 gripper_open = np.array([-1.0, 1.0])
 gripper_closed = np.array([0.0, 0.0])
 
 
 QUIT = False
-try:
-    while not QUIT:
-        QUIT = not listener.running
-        if cmd_idx >= len(vel_cmd):
-            cmd = np.zeros(6)
-            cmd_idx = 0
-        else:
-            cmd = vel_cmd[cmd_idx]
-            cmd_idx += 1
-        # cmd[0] = +1.0
+for _ in range(int(2*len(vel_cmd))):
+    # QUIT = not listener.running
+    if cmd_idx >= len(vel_cmd):
+        cmd = np.zeros(6)
+        cmd_idx = 0
+    else:
+        cmd = vel_cmd[cmd_idx]
+        cmd_idx += 1
+    # cmd[0] = +1.0
 
-        # kinova.control_dofs_velocity(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
+    # kinova.control_dofs_velocity(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
 
-        # gripper_cmd = np.repeat([gripper_cmds[cmd_idx]], 2)
-        # print(f"Gripper command: {gripper_cmd}, {gripper_idx}")
+    # gripper_cmd = np.repeat([gripper_cmds[cmd_idx]], 2)
+    # print(f"Gripper command: {gripper_cmd}, {gripper_idx}")
 
 
+    kinova.control_dofs_position(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
+    if cmd_idx < len(gripper_pos):
         # map from 0, 100 to -1, 0 for the left finger and 0, 100 to 0, 1 for the right finger
         motor_cmd = (100 - gripper_pos[cmd_idx][0]) / 100
         gripper_cmd = [-motor_cmd, motor_cmd, -0.5, -0.5]
-        kinova.control_dofs_position(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
-        # print('motor ', ', '.join([f'{c:+1.2f}' for c in cmd]), end=' ')
-        # print('gripper ', ', '.join([f'{c:+1.2f}' for c in gripper_cmd]))
         kinova.control_dofs_position(gripper_cmd, dofs_idx_local=np.array(kdofs_idx[-4:]))
+    # print('motor ', ', '.join([f'{c:+1.2f}' for c in cmd]), end=' ')
+    # print('gripper ', ', '.join([f'{c:+1.2f}' for c in gripper_cmd]))
 
 
-        # print the position of the kinova end-effector
-        pos = kinova.get_link(kinova_eef_name).get_pos()
-        # print(f"End effector position: {pos}")
-        # bottle.set_pos(pos)
+    # print the position of the kinova end-effector
+    pos = kinova.get_link(kinova_eef_name).get_pos()
+    # print(f"End effector position: {pos}")
+    # bottle.set_pos(pos)
 
-        scene.step()
+    scene.step()
 
-        # time.sleep(1.)
-        # from IPython import embed; embed(); exit()
-
+    # time.sleep(1.)
+    # from IPython import embed; embed(); exit()
+try:
+    pass
 except KeyboardInterrupt:
      print('interrupted!')
 except Exception as e:
