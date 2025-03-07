@@ -7,6 +7,31 @@ scene = gs.Scene()
 plane = scene.add_entity(
     gs.morphs.Plane(),
 )
+
+box = scene.add_entity(
+    material=gs.materials.Rigid(rho=1000),
+    morph=gs.morphs.Box(
+        pos=(0.825, 0.0, 0.05),
+        size=(0.5, 0.5, 0.05),
+    ),
+)
+
+# horizontal_scale = 0.25
+# vertical_scale = 0.005
+# height_field = np.zeros([40, 40])
+# heights_range = np.arange(-10, 20, 10)
+# height_field[5:35, 5:35] = 200 + np.random.choice(heights_range, (30, 30))
+# ########################## entities ##########################
+# terrain = scene.add_entity(
+#     morph=gs.morphs.Terrain(
+#         horizontal_scale=horizontal_scale,
+#         vertical_scale=vertical_scale,
+#         height_field=height_field,
+#         # name="example",
+#         # from_stored=True,
+#     ),
+# )
+
 import pathlib as pl
 kinova = scene.add_entity(
     # gs.morphs.URDF(
@@ -24,48 +49,44 @@ kinova = scene.add_entity(
     # gs.morphs.MJCF(file="/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml"),
 )
 
-shelf = scene.add_entity(
-    gs.morphs.URDF(
-        file='/home/j/workspace/genesis_pickaplace/shelf.urdf',
-        fixed=True,
-        pos=(0.7, 0.2125, -0.05),
-        euler=(90, 0, 0),
-        scale=0.85,
-    ),
-)
-
-# franka = scene.add_entity(
+# shelf = scene.add_entity(
 #     gs.morphs.URDF(
-#         file='urdf/panda_bullet/panda.urdf',
+#         file='/home/j/workspace/genesis_pickaplace/shelf.urdf',
 #         fixed=True,
-#         pos = (1.0, 0, 0)
-#     ),
-# )
-
-# soup_can = scene.add_entity(
-#     gs.morphs.MJCF(
-#         file='/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml',
+#         pos=(0.7, 0.2125, -0.05),
+#         euler=(90, 0, 0),
+#         scale=0.85,
 #     ),
 # )
 
 POSITION_0 = (0.4381, 0.0, 0.1)
 
 bottle = scene.add_entity(
-    material=gs.materials.Rigid(rho=1000),
-    morph=gs.morphs.URDF(
-        file="./cylinder.urdf",
-        scale=0.09,
+    material=gs.materials.Rigid(rho=300),
+    morph=gs.morphs.Cylinder(
         pos=POSITION_0,
-        euler=(0, 0, 0),
+        radius=0.05,
+        height=0.1,
     ),
-    # morph=gs.morphs.URDF(
-    #     file="urdf/3763/mobility_vhacd.urdf",
-    #     scale=0.09,
-    #     pos=POSITION_0,
-    #     euler=(0, 0, 0),
-    # ),
-    # visualize_contact=True,
+    visualize_contact=True,
 )
+
+# bottle = scene.add_entity(
+#     material=gs.materials.Rigid(rho=300),
+#     morph=gs.morphs.URDF(
+#         file="./cylinder.urdf",
+#         scale=0.5,
+#         pos=POSITION_0,
+#         euler=(0, 0, 0),
+#     ),
+#     # morph=gs.morphs.URDF(
+#     #     file="urdf/3763/mobility_vhacd.urdf",
+#     #     scale=0.09,
+#     #     pos=POSITION_0,
+#     #     euler=(0, 0, 0),
+#     # ),
+#     # visualize_contact=True,
+# )
 
 
 from kinova import JOINT_NAMES as kinova_joint_names, EEF_NAME as kinova_eef_name
@@ -135,6 +156,8 @@ for _ in range(int(2*len(vel_cmd))):
     if cmd_idx >= len(vel_cmd):
         cmd = np.zeros(6)
         cmd_idx = 0
+        bottle.set_pos(POSITION_0)
+        bottle.set_quat([1, 0, 0, 0])
     else:
         cmd = vel_cmd[cmd_idx]
         cmd_idx += 1

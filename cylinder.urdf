@@ -7,46 +7,40 @@
       <origin xyz="0 0 0"/>
       <!-- For a solid cylinder with mass m, radius r, and length L:
            Ixx = Iyy = (1/12)*m*(3*r^2 + L^2) and Izz = (1/2)*m*r^2.
-           With m=1.0, r=0.1, L=0.2:
+           Using m=1.0, r=0.1, L=0.2:
            Ixx = Iyy ≈ 0.00583, Izz ≈ 0.0050 -->
       <inertia ixx="0.00583" ixy="0" ixz="0" iyy="0.00583" iyz="0" izz="0.0050"/>
     </inertial>
-
+    
     <!-- Visual representation of the cylinder -->
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.1"/>
+        <cylinder length="0.2" radius="0.05"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
       </material>
     </visual>
-
+    
     <!-- Collision geometry matching the visual -->
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.2" radius="0.1"/>
+        <cylinder length="0.2" radius="0.05"/>
       </geometry>
-      <!-- 
-      If your simulator supports contact parameters in URDF, you might add surface parameters here.
-      For example, if using a simulation engine that accepts such tags:
+      <!--
+      Uncomment and adjust the following block if your simulator supports contact parameters:
       
       <surface>
-        <friction>
-          <ode>
-            <mu>1.0</mu>
-            <mu2>1.0</mu2>
-          </ode>
-        </friction>
         <bounce>
           <restitution_coefficient>0.0</restitution_coefficient>
           <threshold>1e-6</threshold>
         </bounce>
+        <contact>
+          <damping>1000</damping>
+        </contact>
       </surface>
-      
-      This would set the restitution (bounciness) to 0.0, helping to prevent bouncing.
       -->
     </collision>
   </link>
