@@ -1,36 +1,38 @@
+import argparse
 import genesis as gs
+import time
 
-gs.init(backend=gs.gpu)
+parser = argparse.ArgumentParser()
+parser.add_argument("-v", "--vis", action="store_true", default=False)
+parser.add_argument("-d", "--debug", action="store_true", default=False)
+parser.add_argument("-p", "--position", type=int, default=-1)
+args = parser.parse_args()
 
-scene = gs.Scene()
+assert args.position in [-1, 0, 1, 2], "Position must be -1, 0, 1, or 2"
+
+gs.init(backend=gs.gpu, seed=0, precision="32", logging_level="warning")
+
+
+scene = gs.Scene(
+    show_viewer=args.vis,
+)
 
 plane = scene.add_entity(
     gs.morphs.Plane(),
 )
 
+BOTTLE_RADIUS = 0.035
+BOTTLE_HEIGHT = 0.075
+BOX_WIDTH, BOX_HEIGHT = 0.75, 0.12
+
 box = scene.add_entity(
-    material=gs.materials.Rigid(rho=1000),
+    material=gs.materials.Rigid(rho=1000,
+                                friction=0.5),
     morph=gs.morphs.Box(
-        pos=(0.825, 0.0, 0.05),
-        size=(0.5, 0.5, 0.05),
+        size=(0.4, BOX_WIDTH, BOX_HEIGHT),
+        pos=(0.75, -BOX_WIDTH / 4, 0.05),
     ),
 )
-
-# horizontal_scale = 0.25
-# vertical_scale = 0.005
-# height_field = np.zeros([40, 40])
-# heights_range = np.arange(-10, 20, 10)
-# height_field[5:35, 5:35] = 200 + np.random.choice(heights_range, (30, 30))
-# ########################## entities ##########################
-# terrain = scene.add_entity(
-#     morph=gs.morphs.Terrain(
-#         horizontal_scale=horizontal_scale,
-#         vertical_scale=vertical_scale,
-#         height_field=height_field,
-#         # name="example",
-#         # from_stored=True,
-#     ),
-# )
 
 import pathlib as pl
 kinova = scene.add_entity(
@@ -49,47 +51,37 @@ kinova = scene.add_entity(
     # gs.morphs.MJCF(file="/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml"),
 )
 
-# shelf = scene.add_entity(
-#     gs.morphs.URDF(
-#         file='/home/j/workspace/genesis_pickaplace/shelf.urdf',
-#         fixed=True,
-#         pos=(0.7, 0.2125, -0.05),
-#         euler=(90, 0, 0),
-#         scale=0.85,
-#     ),
-# )
+STATIC_BOTTLE_POSITION = (0.6, -0.2, 0.19)
+POSITION_0 = (0.4381, 0.1, 0.05)
+POSITION_1 = (0.4381, -0.05, 0.05)
+POSITION_2 = (0.4381, -0.2, 0.05)
 
-POSITION_0 = (0.4381, 0.0, 0.1)
+
 
 bottle = scene.add_entity(
-    material=gs.materials.Rigid(rho=300),
+    material=gs.materials.Rigid(rho=2000,
+                                friction=0.2),
     morph=gs.morphs.Cylinder(
         pos=POSITION_0,
-        radius=0.05,
-        height=0.1,
+        radius=BOTTLE_RADIUS,
+        height=BOTTLE_HEIGHT,
     ),
     visualize_contact=True,
 )
 
-# bottle = scene.add_entity(
-#     material=gs.materials.Rigid(rho=300),
-#     morph=gs.morphs.URDF(
-#         file="./cylinder.urdf",
-#         scale=0.5,
-#         pos=POSITION_0,
-#         euler=(0, 0, 0),
-#     ),
-#     # morph=gs.morphs.URDF(
-#     #     file="urdf/3763/mobility_vhacd.urdf",
-#     #     scale=0.09,
-#     #     pos=POSITION_0,
-#     #     euler=(0, 0, 0),
-#     # ),
-#     # visualize_contact=True,
-# )
+goal_bottle = scene.add_entity(
+    material=gs.materials.Rigid(rho=1000,
+                            friction=2.0),
+    morph=gs.morphs.Cylinder(
+        pos=STATIC_BOTTLE_POSITION,
+        radius=BOTTLE_RADIUS,
+        height=BOTTLE_HEIGHT,
+    ),
+    visualize_contact=True,
+)
 
 
-from kinova import JOINT_NAMES as kinova_joint_names, EEF_NAME as kinova_eef_name
+from kinova import JOINT_NAMES as kinova_joint_names, EEF_NAME as kinova_eef_name, TRIALS_POSITION_0, TRIALS_POSITION_1, TRIALS_POSITION_2
 kdofs_idx = [kinova.get_joint(name).dof_idx_local for name in kinova_joint_names]
 eef = kinova.get_link(kinova_eef_name)
 print(f"Kinova end effector: {eef}")
@@ -123,74 +115,132 @@ harcoded_start = [0.3268500269015339, -1.4471734542578538, 2.3453266624159497, -
 kinova.set_dofs_position(np.array(harcoded_start), kdofs_idx)
 
 
-# read the trial data
-path = './inthewild_trials/305_episodes.npy'
-ep_dict = np.load(path, allow_pickle=True).item()
-vel_cmd = ep_dict['vel_cmd']
-gripper_pos = ep_dict['gripper_pos']
-cmd_idx = 0
-print(f"Loaded episode {path} with {len(vel_cmd)} steps")
-
-from pynput import keyboard
-import time
-
-# def on_press(key):
-#     if key == keyboard.Key.esc:
-#         print("Escape key pressed. Exiting...")
-#         return False  # Stop the listener
-#     # Handle other keys if needed
-
-# # Start the listener in a non-blocking way
-# listener = keyboard.Listener(on_press=on_press)
-# listener.start()
-
-gripper_cmds = np.linspace(-1.0, 1.0, len(vel_cmd) + 1)
-
 gripper_open = np.array([-1.0, 1.0])
 gripper_closed = np.array([0.0, 0.0])
 
+reward_check_period = 30
 
-QUIT = False
-for _ in range(int(2*len(vel_cmd))):
-    # QUIT = not listener.running
-    if cmd_idx >= len(vel_cmd):
-        cmd = np.zeros(6)
-        cmd_idx = 0
-        bottle.set_pos(POSITION_0)
+positions = [POSITION_0, POSITION_1, POSITION_2]
+debug_spheres = scene.draw_debug_spheres(poss=positions, radius=0.05, color=(1, 1, 0, 0.5))  # Yellow
+# debug_spheres = scene.draw_debug_spheres(poss=[STATIC_BOTTLE_POSITION], radius=0.05, color=(0.5, 1, 0, 1.0))  # Yellow
+# if args.debug:
+#     n = 10
+#     # teleport the bottle between the 3 positions
+#     import itertools
+#     for position in itertools.cycle(positions):
+#         bottle.set_pos(position)
+#         scene.step()
+#         time.sleep(0.25)
+#         n -= 1
+#         if n == 0: break
+
+
+total_reward = 0
+
+# read the trial data
+dir = pl.Path('./inthewild_trials/')
+for path in dir.iterdir():
+    path = str(path)
+    if not path.endswith('episodes.npy'): continue
+
+    ep_dict = np.load(path, allow_pickle=True).item()
+    vel_cmd = ep_dict['vel_cmd']
+    gripper_cmds = np.linspace(-1.0, 1.0, len(vel_cmd) + 1)
+    gripper_pos = ep_dict['gripper_pos']
+    cmd_idx = 0
+
+
+    def setup():
+        kinova.set_dofs_position(np.array(harcoded_start), kdofs_idx)
+        goal_bottle.set_pos(STATIC_BOTTLE_POSITION)
+        goal_bottle.set_quat([1, 0, 0, 0])
+
+        uid = int(path.split('/')[-1].split('_')[0])
+        if uid in TRIALS_POSITION_0: 
+            if args.position >= 0 and args.position != 0: return False
+            bottle.set_pos(POSITION_0)
+        elif uid in TRIALS_POSITION_1:
+            if args.position >= 0 and args.position != 1: return False
+            bottle.set_pos(POSITION_1)
+        elif uid in TRIALS_POSITION_2:
+            if args.position >= 0 and args.position != 2: return False
+            bottle.set_pos(POSITION_2)
+        else: return False
+
+        if args.debug and uid != 235: return False
+
+        print(f"Loaded episode {path} with {len(vel_cmd)} steps", end = ' ')
+
         bottle.set_quat([1, 0, 0, 0])
-    else:
-        cmd = vel_cmd[cmd_idx]
-        cmd_idx += 1
-    # cmd[0] = +1.0
 
-    # kinova.control_dofs_velocity(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
+        scene.step()
 
-    # gripper_cmd = np.repeat([gripper_cmds[cmd_idx]], 2)
-    # print(f"Gripper command: {gripper_cmd}, {gripper_idx}")
+        return True
+
+    if not setup(): continue
+
+    import cv2
+
+    QUIT = False
+    step = cmd_idx = reward = 0
+    while cmd_idx < len(vel_cmd) and not QUIT:
+        # QUIT = not listener.running
+        if cmd_idx >= len(vel_cmd):
+            cmd = np.zeros(6)
+            cmd_idx = 0
+            setup()
+        else:
+            cmd = vel_cmd[cmd_idx]
+            cmd_idx += 1 if not args.debug else 2
+        # cmd[0] = +1.0
+
+        # kinova.control_dofs_velocity(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
+
+        # gripper_cmd = np.repeat([gripper_cmds[cmd_idx]], 2)
+        # print(f"Gripper command: {gripper_cmd}, {gripper_idx}")
+
+        # print the distance from the current position to the commanded position
+
+        kinova.control_dofs_position(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
+        if cmd_idx < len(gripper_pos):
+            # map from 0, 100 to -1, 0 for the left finger and 0, 100 to 0, 1 for the right finger
+            motor_cmd = (100 - gripper_pos[cmd_idx][0]) / 100
+            gripper_cmd = [-motor_cmd, motor_cmd, -0.5, -0.5]
+            kinova.control_dofs_position(gripper_cmd, dofs_idx_local=np.array(kdofs_idx[-4:]))
+        # print('motor ', ', '.join([f'{c:+1.2f}' for c in cmd]), end=' ')
+        # print('gripper ', ', '.join([f'{c:+1.2f}' for c in gripper_cmd]))
 
 
-    kinova.control_dofs_position(cmd, dofs_idx_local=kdofs_idx[:len(cmd)])
-    if cmd_idx < len(gripper_pos):
-        # map from 0, 100 to -1, 0 for the left finger and 0, 100 to 0, 1 for the right finger
-        motor_cmd = (100 - gripper_pos[cmd_idx][0]) / 100
-        gripper_cmd = [-motor_cmd, motor_cmd, -0.5, -0.5]
-        kinova.control_dofs_position(gripper_cmd, dofs_idx_local=np.array(kdofs_idx[-4:]))
-    # print('motor ', ', '.join([f'{c:+1.2f}' for c in cmd]), end=' ')
-    # print('gripper ', ', '.join([f'{c:+1.2f}' for c in gripper_cmd]))
 
+        # print the position of the kinova end-effector
+        # print(f"End effector position: {pos}")
 
-    # print the position of the kinova end-effector
-    pos = kinova.get_link(kinova_eef_name).get_pos()
-    # print(f"End effector position: {pos}")
-    # bottle.set_pos(pos)
+        # print(goal_bottle.get_contacts())
+        scene.step()
 
-    scene.step()
+        # cv2.waitKey(0)
 
-    # time.sleep(1.)
-    # from IPython import embed; embed(); exit()
-try:
-    pass
-except KeyboardInterrupt:
-     print('interrupted!')
-except Exception as e:
-    print(e)
+        pos = kinova.get_dofs_position(dofs_idx_local=kdofs_idx)
+        total_diff = sum([abs(jp - cjp) for jp, cjp in zip(pos, cmd)])
+
+        # if total_diff > 0.05: 
+        #     print(f"Failed to reach commanded position at step {step} with diff {total_diff}. repeating command")
+        #     cmd_idx -= 1
+
+        if step % reward_check_period == 0:
+            # bottles need to be in contact
+            if bottle.get_contacts(goal_bottle)['position'].shape[0]:
+                # this is the simplest but we may want to check that the bottle isn't in the grip of the gripper
+                # make sure the gripper is to the side of the bottle
+                eef_pos = kinova.get_link(kinova_eef_name).get_pos()
+                if eef_pos[0] < bottle.get_pos()[0]:
+                    reward = 1.
+                    total_reward += reward
+                    print(f"~~~~~Success at step {step}~~~~~~")
+                    break
+        step += 1
+    if reward == 0:
+        print(f"~~~~~Failed~~~~~~")
+print(f"Total reward: {total_reward} out of possible {len(dir.iterdir())}")
+        # time.sleep(0.2)
+        # from IPython import embed; embed(); exit()
