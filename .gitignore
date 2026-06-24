@@ -169,3 +169,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Large local datasets — kept out of the repo (symlinked locally so example.py can find it)
+/inthewild_trials
