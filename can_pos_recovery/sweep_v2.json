@@ -1,0 +1,2302 @@
+{
+ "232": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4776,
+   0.1056,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 11,
+  "batch": {
+   "picked": 276,
+   "placed": 482,
+   "success": 870,
+   "max_z": 0.2712,
+   "final": [
+    0.649399995803833,
+    -0.1589999943971634,
+    0.1703999936580658
+   ],
+   "on_shelf": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 83.3
+ },
+ "235": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4575,
+   0.0783,
+   0.113
+  ],
+  "goal_pos": [
+   0.6672,
+   -0.0343,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 9,
+  "batch": {
+   "picked": 186,
+   "placed": 536,
+   "success": 600,
+   "max_z": 0.2455,
+   "final": [
+    0.7692000269889832,
+    -0.03009999915957451,
+    0.1703999936580658
+   ],
+   "on_shelf": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 291.8
+ },
+ "236": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4989,
+   -0.0255,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 480,
+   "max_z": 0.1421,
+   "final": [
+    0.43529999256134033,
+    -0.1257999986410141,
+    0.0828000009059906
+   ],
+   "on_shelf": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 55.3
+ },
+ "237": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4528,
+   -0.1823,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 29,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 630,
+   "max_z": 0.1047,
+   "final": [
+    0.49129998683929443,
+    -0.25380000472068787,
+    0.10050000250339508
+   ],
+   "on_shelf": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 62.2
+ },
+ "238": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.5363,
+   0.1485,
+   0.113
+  ],
+  "goal_pos": [
+   0.742,
+   -0.1289,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 28,
+  "batch": {
+   "picked": 942,
+   "placed": 2084,
+   "success": 1740,
+   "max_z": 0.192,
+   "final": [
+    0.6754000186920166,
+    -0.21860000491142273,
+    0.1703999936580658
+   ],
+   "on_shelf": true
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 760.0
+ },
+ "239": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4703,
+   -0.014,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 5,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 1770,
+   "max_z": 0.1047,
+   "final": [
+    0.5425000190734863,
+    -0.038600001484155655,
+    0.10029999911785126
+   ],
+   "on_shelf": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 231.9
+ },
+ "242": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4926,
+   0.0842,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 299,
+   "placed": 573,
+   "success": 900,
+   "max_z": 0.2448,
+   "final": [
+    0.6521999835968018,
+    -0.156700000166893,
+    0.1703999936580658
+   ],
+   "on_shelf": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 94.8
+ },
+ "243": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4524,
+   -0.037,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 21,
+  "batch": {
+   "picked": 168,
+   "placed": -1,
+   "success": 240,
+   "max_z": 0.2321,
+   "final": [
+    0.7110000252723694,
+    -0.1647000014781952,
+    0.1527000069618225
+   ],
+   "on_shelf": true
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 1,
+  "elapsed_s": 53.0
+ },
+ "244": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4381,
+   -0.2,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 900,
+   "max_z": 0.1047,
+   "final": [
+    0.4853000044822693,
+    -0.2021999955177307,
+    0.10050000250339508
+   ],
+   "on_shelf": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 95.1
+ },
+ "245": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4976,
+   0.1103,
+   0.113
+  ],
+  "goal_pos": [
+   0.6826,
+   -0.1309,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 29,
+  "batch": {
+   "picked": 1987,
+   "placed": 2339,
+   "success": 2970,
+   "max_z": 0.2311,
+   "final": [
+    0.6615999937057495,
+    -0.0544000007212162,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 906.8
+ },
+ "248": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4381,
+   0.1,
+   0.113
+  ],
+  "goal_pos": [
+   0.6358,
+   -0.0506,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 3,
+  "batch": {
+   "picked": 963,
+   "placed": -1,
+   "success": 1800,
+   "max_z": 0.2457,
+   "final": [
+    0.6245999932289124,
+    -0.13269999623298645,
+    0.17800000309944153
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 910.9
+ },
+ "249": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4678,
+   -0.0437,
+   0.113
+  ],
+  "goal_pos": [
+   0.7238,
+   -0.0287,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 3,
+  "batch": {
+   "picked": 970,
+   "placed": -1,
+   "success": 1980,
+   "max_z": 0.2507,
+   "final": [
+    0.6251999735832214,
+    -0.15549999475479126,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 745.1
+ },
+ "251": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4728,
+   0.1039,
+   0.113
+  ],
+  "goal_pos": [
+   0.6587,
+   -0.0818,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 8,
+  "batch": {
+   "picked": 765,
+   "placed": -1,
+   "success": 1440,
+   "max_z": 0.2173,
+   "final": [
+    0.6539000272750854,
+    -0.08179999887943268,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 455.1
+ },
+ "252": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4865,
+   -0.0368,
+   0.113
+  ],
+  "goal_pos": [
+   0.8083,
+   -0.0912,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 4,
+  "batch": {
+   "picked": 820,
+   "placed": 1135,
+   "success": 1470,
+   "max_z": 0.2658,
+   "final": [
+    0.7501999735832214,
+    -0.07450000196695328,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 509.2
+ },
+ "254": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.5134,
+   0.1181,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 13,
+  "batch": {
+   "picked": 665,
+   "placed": -1,
+   "success": 840,
+   "max_z": 0.2389,
+   "final": [
+    0.6198999881744385,
+    -0.13089999556541443,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 134.4
+ },
+ "257": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4796,
+   0.0963,
+   0.113
+  ],
+  "goal_pos": [
+   0.6138,
+   -0.1535,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 16,
+  "batch": {
+   "picked": 380,
+   "placed": -1,
+   "success": 900,
+   "max_z": 0.2333,
+   "final": [
+    0.6158000230789185,
+    -0.07670000195503235,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 0,
+  "elapsed_s": 331.0
+ },
+ "258": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4332,
+   -0.019,
+   0.113
+  ],
+  "goal_pos": [
+   0.6774,
+   -0.1616,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 11,
+  "batch": {
+   "picked": 332,
+   "placed": 590,
+   "success": 990,
+   "max_z": 0.2304,
+   "final": [
+    0.6561999917030334,
+    -0.1177000030875206,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 364.9
+ },
+ "260": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.3612,
+   0.0451,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 16,
+  "batch": {
+   "picked": 861,
+   "placed": 1600,
+   "success": 1110,
+   "max_z": 0.2807,
+   "final": [
+    0.6337000131607056,
+    -0.1062999963760376,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 216.6
+ },
+ "261": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.3395,
+   -0.0146,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 4,
+  "batch": {
+   "picked": 381,
+   "placed": 1136,
+   "success": 870,
+   "max_z": 0.2776,
+   "final": [
+    0.6876000165939331,
+    -0.15360000729560852,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 168.7
+ },
+ "263": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4381,
+   -0.2,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 12,
+  "batch": {
+   "picked": 470,
+   "placed": -1,
+   "success": 630,
+   "max_z": 0.2802,
+   "final": [
+    0.638700008392334,
+    -0.04699999839067459,
+    0.18160000443458557
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 119.3
+ },
+ "265": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4676,
+   0.1173,
+   0.113
+  ],
+  "goal_pos": [
+   0.7134,
+   -0.1003,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 3,
+  "batch": {
+   "picked": 873,
+   "placed": 1285,
+   "success": 2820,
+   "max_z": 0.2514,
+   "final": [
+    0.6769000291824341,
+    -0.14090000092983246,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 746.1
+ },
+ "269": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4381,
+   0.1,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 523,
+   "placed": 1730,
+   "success": 4740,
+   "max_z": 0.3004,
+   "final": [
+    0.6664000153541565,
+    -0.17190000414848328,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 463.1
+ },
+ "270": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4381,
+   -0.05,
+   0.113
+  ],
+  "goal_pos": [
+   0.5481,
+   -0.0832,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 1126,
+   "placed": 2579,
+   "success": 1920,
+   "max_z": 0.2994,
+   "final": [
+    0.4652000069618225,
+    -0.4490000009536743,
+    0.0828000009059906
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 1141.5
+ },
+ "273": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4782,
+   0.0982,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 31,
+  "batch": {
+   "picked": 505,
+   "placed": 872,
+   "success": 1170,
+   "max_z": 0.2724,
+   "final": [
+    0.6482999920845032,
+    -0.17430000007152557,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 149.7
+ },
+ "274": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4696,
+   -0.0426,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 28,
+  "batch": {
+   "picked": 849,
+   "placed": 1399,
+   "success": 960,
+   "max_z": 0.2402,
+   "final": [
+    0.7081000208854675,
+    -0.1412999927997589,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 166.7
+ },
+ "276": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4684,
+   0.1412,
+   0.113
+  ],
+  "goal_pos": [
+   0.6933,
+   -0.1246,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 732,
+   "placed": -1,
+   "success": 1020,
+   "max_z": 0.2343,
+   "final": [
+    0.7042999863624573,
+    -0.10620000213384628,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 359.8
+ },
+ "277": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.476,
+   0.0038,
+   0.113
+  ],
+  "goal_pos": [
+   0.7154,
+   -0.1145,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 25,
+  "batch": {
+   "picked": 282,
+   "placed": 502,
+   "success": 780,
+   "max_z": 0.2791,
+   "final": [
+    0.7089999914169312,
+    -0.1062999963760376,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 261.1
+ },
+ "279": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4753,
+   0.1273,
+   0.113
+  ],
+  "goal_pos": [
+   0.6802,
+   -0.1334,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 23,
+  "batch": {
+   "picked": 853,
+   "placed": 1391,
+   "success": 1770,
+   "max_z": 0.248,
+   "final": [
+    0.6579999923706055,
+    -0.10540000349283218,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 645.9
+ },
+ "280": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4467,
+   -0.0241,
+   0.113
+  ],
+  "goal_pos": [
+   0.7193,
+   -0.0821,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 24,
+  "batch": {
+   "picked": 225,
+   "placed": -1,
+   "success": 540,
+   "max_z": 0.2408,
+   "final": [
+    0.671999990940094,
+    -0.0706000030040741,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 1,
+  "elapsed_s": 268.2
+ },
+ "281": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4526,
+   -0.163,
+   0.113
+  ],
+  "goal_pos": [
+   0.7392,
+   -0.1097,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 461,
+   "placed": -1,
+   "success": 900,
+   "max_z": 0.267,
+   "final": [
+    0.7027000188827515,
+    -0.1160999983549118,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 2,
+  "elapsed_s": 313.0
+ },
+ "283": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4564,
+   0.1237,
+   0.113
+  ],
+  "goal_pos": [
+   0.6184,
+   -0.011,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 14,
+  "batch": {
+   "picked": 487,
+   "placed": -1,
+   "success": 750,
+   "max_z": 0.2353,
+   "final": [
+    0.6215999722480774,
+    -0.04820000007748604,
+    0.17069999873638153
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 373.4
+ },
+ "284": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4475,
+   -0.0086,
+   0.113
+  ],
+  "goal_pos": [
+   0.5466,
+   -0.0496,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 27,
+  "batch": {
+   "picked": 387,
+   "placed": 841,
+   "success": 960,
+   "max_z": 0.2106,
+   "final": [
+    0.5008000135421753,
+    -0.25589999556541443,
+    0.0828000009059906
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 372.8
+ },
+ "287": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.494,
+   -0.0193,
+   0.113
+  ],
+  "goal_pos": [
+   0.7347,
+   -0.1084,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 8,
+  "batch": {
+   "picked": 1962,
+   "placed": 4218,
+   "success": 3960,
+   "max_z": 0.3152,
+   "final": [
+    0.6757000088691711,
+    -9.999999747378752e-05,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 1242.9
+ },
+ "294": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4756,
+   -0.0542,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 27,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 4230,
+   "max_z": 0.1054,
+   "final": [
+    0.5060999989509583,
+    -0.20419999957084656,
+    0.1005999967455864
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 389.7
+ },
+ "296": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4932,
+   -0.227,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 26,
+  "batch": {
+   "picked": 1974,
+   "placed": -1,
+   "success": 2100,
+   "max_z": 0.2262,
+   "final": [
+    0.6013000011444092,
+    -0.1501999944448471,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "MED",
+  "pos": 2,
+  "elapsed_s": 235.3
+ },
+ "297": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4381,
+   0.1,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 352,
+   "placed": -1,
+   "success": 480,
+   "max_z": 0.2552,
+   "final": [
+    0.6675000190734863,
+    -0.15889999270439148,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 0,
+  "elapsed_s": 111.4
+ },
+ "298": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4761,
+   -0.0412,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 25,
+  "batch": {
+   "picked": 339,
+   "placed": -1,
+   "success": 960,
+   "max_z": 0.2113,
+   "final": [
+    0.6180999875068665,
+    -0.18690000474452972,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 91.9
+ },
+ "299": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4252,
+   -0.1985,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 17,
+  "batch": {
+   "picked": 1726,
+   "placed": -1,
+   "success": 2190,
+   "max_z": 0.2424,
+   "final": [
+    0.5906000137329102,
+    -0.1817999929189682,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 235.7
+ },
+ "300": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4332,
+   -0.1738,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 3096,
+   "placed": -1,
+   "success": 3330,
+   "max_z": 0.2812,
+   "final": [
+    1.055799961090088,
+    -0.4399000108242035,
+    0.03269999846816063
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 349.0
+ },
+ "302": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4827,
+   -0.051,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 670,
+   "placed": -1,
+   "success": 750,
+   "max_z": 0.2447,
+   "final": [
+    0.7526999711990356,
+    -0.1737000048160553,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 103.8
+ },
+ "304": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4658,
+   0.1336,
+   0.113
+  ],
+  "goal_pos": [
+   0.6721,
+   -0.1856,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 519,
+   "placed": 1018,
+   "success": 1950,
+   "max_z": 0.2562,
+   "final": [
+    0.6674000024795532,
+    -0.15119999647140503,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 573.6
+ },
+ "305": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.452,
+   -0.0309,
+   0.113
+  ],
+  "goal_pos": [
+   0.6816,
+   -0.1509,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 12,
+  "batch": {
+   "picked": 401,
+   "placed": 697,
+   "success": 570,
+   "max_z": 0.2815,
+   "final": [
+    0.6305999755859375,
+    -0.16920000314712524,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 360.4
+ },
+ "306": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4327,
+   -0.1859,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 996,
+   "placed": 1677,
+   "success": 1260,
+   "max_z": 0.1946,
+   "final": [
+    0.5612999796867371,
+    -0.19290000200271606,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 202.2
+ },
+ "307": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4861,
+   0.0747,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 13,
+  "batch": {
+   "picked": 1551,
+   "placed": -1,
+   "success": 1740,
+   "max_z": 0.283,
+   "final": [
+    0.675000011920929,
+    -0.19110000133514404,
+    0.2702000141143799
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 244.9
+ },
+ "308": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4841,
+   0.0833,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 31,
+  "batch": {
+   "picked": 380,
+   "placed": -1,
+   "success": 540,
+   "max_z": 0.241,
+   "final": [
+    0.6215000152587891,
+    -0.08389999717473984,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 143.6
+ },
+ "309": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4846,
+   -0.0305,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 387,
+   "placed": -1,
+   "success": 540,
+   "max_z": 0.281,
+   "final": [
+    0.7416999936103821,
+    -0.04529999941587448,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "MED",
+  "pos": 1,
+  "elapsed_s": 184.5
+ },
+ "310": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4512,
+   -0.1841,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 23,
+  "batch": {
+   "picked": 1080,
+   "placed": -1,
+   "success": 1170,
+   "max_z": 0.2767,
+   "final": [
+    0.4503999948501587,
+    -0.16449999809265137,
+    0.10180000215768814
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "MED",
+  "pos": 2,
+  "elapsed_s": 171.4
+ },
+ "311": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.445,
+   -0.1877,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 31,
+  "batch": {
+   "picked": 511,
+   "placed": -1,
+   "success": 990,
+   "max_z": 0.2614,
+   "final": [
+    0.5961999893188477,
+    -0.11659999936819077,
+    0.17180000245571136
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 124.3
+ },
+ "312": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4935,
+   0.1042,
+   0.113
+  ],
+  "goal_pos": [
+   0.6036,
+   -0.1216,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 24,
+  "batch": {
+   "picked": 1606,
+   "placed": 2388,
+   "success": 1800,
+   "max_z": 0.3426,
+   "final": [
+    0.6674000024795532,
+    -0.1542000025510788,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 732.0
+ },
+ "313": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4373,
+   -0.0167,
+   0.113
+  ],
+  "goal_pos": [
+   0.761,
+   -0.2766,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 31,
+  "batch": {
+   "picked": 384,
+   "placed": 812,
+   "success": 1110,
+   "max_z": 0.323,
+   "final": [
+    0.7214999794960022,
+    -0.2506999969482422,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 423.9
+ },
+ "314": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.5652,
+   -0.1285,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 16,
+  "batch": {
+   "picked": 727,
+   "placed": -1,
+   "success": 1290,
+   "max_z": 0.1896,
+   "final": [
+    0.5939000248908997,
+    -0.13179999589920044,
+    0.17030000686645508
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 130.7
+ },
+ "315": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4997,
+   0.1272,
+   0.113
+  ],
+  "goal_pos": [
+   0.8275,
+   0.0155,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 14,
+  "batch": {
+   "picked": 1549,
+   "placed": -1,
+   "success": 2430,
+   "max_z": 0.2355,
+   "final": [
+    0.7638000249862671,
+    -0.013199999928474426,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 1074.7
+ },
+ "316": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4588,
+   0.0622,
+   0.113
+  ],
+  "goal_pos": [
+   0.6354,
+   -0.1226,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 845,
+   "placed": -1,
+   "success": 930,
+   "max_z": 0.2201,
+   "final": [
+    0.6115000247955322,
+    -0.20800000429153442,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 539.7
+ },
+ "317": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.4478,
+   -0.0308,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 435,
+   "placed": -1,
+   "success": 780,
+   "max_z": 0.2495,
+   "final": [
+    0.6141999959945679,
+    -0.13289999961853027,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 103.7
+ },
+ "325": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4905,
+   0.1318,
+   0.113
+  ],
+  "goal_pos": [
+   0.6825,
+   -0.1851,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 30,
+  "batch": {
+   "picked": 583,
+   "placed": 949,
+   "success": 1410,
+   "max_z": 0.2685,
+   "final": [
+    0.6708999872207642,
+    -0.13619999587535858,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 458.6
+ },
+ "326": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4818,
+   -0.0309,
+   0.113
+  ],
+  "goal_pos": [
+   0.7275,
+   -0.1237,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 12,
+  "batch": {
+   "picked": 333,
+   "placed": 557,
+   "success": 870,
+   "max_z": 0.2373,
+   "final": [
+    0.6227999925613403,
+    -0.2296999990940094,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 295.4
+ },
+ "327": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4349,
+   -0.1467,
+   0.113
+  ],
+  "goal_pos": [
+   0.6536,
+   -0.1017,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 8,
+  "batch": {
+   "picked": 659,
+   "placed": 985,
+   "success": 840,
+   "max_z": 0.2665,
+   "final": [
+    0.6410999894142151,
+    -0.14650000631809235,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 352.0
+ },
+ "328": {
+  "status": "ok_batch",
+  "stage": "A",
+  "can_pos": [
+   0.454,
+   0.1227,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 30,
+  "batch": {
+   "picked": 1607,
+   "placed": -1,
+   "success": 2100,
+   "max_z": 0.2641,
+   "final": [
+    0.6326000094413757,
+    -0.15800000727176666,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 239.8
+ },
+ "331": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.582,
+   0.1222,
+   0.113
+  ],
+  "goal_pos": [
+   0.5832,
+   0.1233,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 4,
+  "batch": {
+   "picked": -1,
+   "placed": -1,
+   "success": 0,
+   "max_z": 0.1118,
+   "final": [
+    0.38029998540878296,
+    0.19169999659061432,
+    0.0828000009059906
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 696.8
+ },
+ "334": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.5178,
+   0.1787,
+   0.113
+  ],
+  "goal_pos": [
+   0.697,
+   -0.1284,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 32,
+  "batch": {
+   "picked": 398,
+   "placed": 894,
+   "success": 630,
+   "max_z": 0.2909,
+   "final": [
+    0.6909000277519226,
+    -0.12409999966621399,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 310.5
+ },
+ "335": {
+  "status": "ok_batch",
+  "stage": "C",
+  "can_pos": [
+   0.4524,
+   0.1313,
+   0.113
+  ],
+  "goal_pos": [
+   0.6839,
+   -0.1454,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 30,
+  "batch": {
+   "picked": 368,
+   "placed": 626,
+   "success": 900,
+   "max_z": 0.2294,
+   "final": [
+    0.6592000126838684,
+    -0.12269999831914902,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": true
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 397.0
+ },
+ "233": {
+  "status": "no_shelf_batch",
+  "picked_envs": 3,
+  "best_max_z": 0.2161,
+  "label": "success",
+  "conf": "MED",
+  "pos": 1,
+  "elapsed_s": 168.6
+ },
+ "234": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1047,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 152.7
+ },
+ "240": {
+  "status": "no_shelf_batch",
+  "picked_envs": 31,
+  "best_max_z": 0.2176,
+  "label": "fail",
+  "conf": "MED",
+  "pos": 2,
+  "elapsed_s": 244.3
+ },
+ "246": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1117,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 447.1
+ },
+ "247": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1283,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 275.9
+ },
+ "250": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1103,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 552.6
+ },
+ "255": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1103,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 240.1
+ },
+ "256": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1081,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 333.1
+ },
+ "259": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1181,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 180.4
+ },
+ "262": {
+  "status": "no_shelf_batch",
+  "picked_envs": 2,
+  "best_max_z": 0.1632,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 176.1
+ },
+ "266": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1354,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 265.7
+ },
+ "267": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1269,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 307.7
+ },
+ "268": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1075,
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 687.9
+ },
+ "275": {
+  "status": "no_shelf_batch",
+  "picked_envs": 2,
+  "best_max_z": 0.1715,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 282.1
+ },
+ "278": {
+  "status": "no_shelf_batch",
+  "picked_envs": 5,
+  "best_max_z": 0.2741,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 125.2
+ },
+ "282": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1069,
+  "label": "fail",
+  "conf": "MED",
+  "pos": 0,
+  "elapsed_s": 102.4
+ },
+ "286": {
+  "status": "no_shelf_batch",
+  "picked_envs": 1,
+  "best_max_z": 0.1615,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 604.1
+ },
+ "288": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1165,
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 565.6
+ },
+ "290": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1047,
+  "label": "success",
+  "conf": "LOW",
+  "pos": 2,
+  "elapsed_s": 48.9
+ },
+ "293": {
+  "status": "no_shelf_batch",
+  "picked_envs": 30,
+  "best_max_z": 0.2447,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 1137.0
+ },
+ "295": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1268,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 1028.8
+ },
+ "301": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1157,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 327.3
+ },
+ "303": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1047,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 395.2
+ },
+ "318": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1102,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 266.0
+ },
+ "319": {
+  "status": "no_shelf_batch",
+  "picked_envs": 6,
+  "best_max_z": 0.1971,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 521.7
+ },
+ "320": {
+  "status": "no_shelf_batch",
+  "picked_envs": 32,
+  "best_max_z": 0.2982,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 487.8
+ },
+ "321": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1494,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 317.7
+ },
+ "322": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1102,
+  "label": "success",
+  "conf": "LOW",
+  "pos": 1,
+  "elapsed_s": 72.4
+ },
+ "324": {
+  "status": "no_shelf_batch",
+  "picked_envs": 0,
+  "best_max_z": 0.1047,
+  "label": "fail",
+  "conf": "LOW",
+  "pos": 0,
+  "elapsed_s": 100.1
+ },
+ "329": {
+  "status": "shelf_but_no_slide",
+  "rest_points": [
+   [
+    0.9123,
+    0.0463
+   ],
+   [
+    0.6059,
+    -0.4214
+   ]
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 416.1
+ },
+ "330": {
+  "status": "no_shelf_batch",
+  "picked_envs": 1,
+  "best_max_z": 0.2317,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 511.0
+ },
+ "333": {
+  "status": "no_shelf_batch",
+  "picked_envs": 3,
+  "best_max_z": 0.2904,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 764.0
+ }
+}

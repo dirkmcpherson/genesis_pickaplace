@@ -1,0 +1,1721 @@
+{
+ "world": {
+  "can_height": 0.101,
+  "can_radius": 0.033,
+  "can_rho": 1000,
+  "finger_kp": 100.0,
+  "finger_force": 50.0,
+  "substeps": 4,
+  "table": true
+ },
+ "trials": {
+  "232": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4776,
+    0.1056,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "235": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4575,
+    0.0783,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6672,
+    -0.0343,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "236": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4989,
+    -0.0255,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "237": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4528,
+    -0.1823,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "238": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.5363,
+    0.1485,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.742,
+    -0.1289,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "239": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4703,
+    -0.014,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "242": {
+   "status": "ok",
+   "can_pos": [
+    0.4926,
+    0.1142,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6589,
+    -0.1445,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "243": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4524,
+    -0.037,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 1
+  },
+  "244": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4381,
+    -0.2,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "245": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4976,
+    0.1103,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6826,
+    -0.1309,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "248": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4381,
+    0.1,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6358,
+    -0.0506,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "249": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4678,
+    -0.0437,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7238,
+    -0.0287,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "251": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4728,
+    0.1039,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6587,
+    -0.0818,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "252": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4865,
+    -0.0368,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.8083,
+    -0.0912,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "254": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.5134,
+    0.1181,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "257": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4796,
+    0.0963,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6138,
+    -0.1535,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 0
+  },
+  "258": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4332,
+    -0.019,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6774,
+    -0.1616,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "260": {
+   "status": "ok",
+   "can_pos": [
+    0.5004,
+    0.0902,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6346,
+    -0.1092,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "261": {
+   "status": "ok",
+   "can_pos": [
+    0.3495,
+    -0.0146,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6864,
+    -0.1673,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "263": {
+   "status": "ok",
+   "can_pos": [
+    0.4396,
+    -0.1976,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6388,
+    -0.0467,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "265": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4676,
+    0.1173,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7134,
+    -0.1003,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "269": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4381,
+    0.1,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "270": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4381,
+    -0.05,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.5481,
+    -0.0832,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "273": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4782,
+    0.0982,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "274": {
+   "status": "ok",
+   "can_pos": [
+    0.4696,
+    -0.0426,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7082,
+    -0.1413,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "276": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4684,
+    0.1412,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6933,
+    -0.1246,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "277": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.476,
+    0.0038,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7154,
+    -0.1145,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "279": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4753,
+    0.1273,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6802,
+    -0.1334,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "280": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4467,
+    -0.0241,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7193,
+    -0.0821,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 1
+  },
+  "281": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4526,
+    -0.163,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7392,
+    -0.1097,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 2
+  },
+  "283": {
+   "status": "ok",
+   "can_pos": [
+    0.4564,
+    0.1237,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "284": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4475,
+    -0.0086,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.5466,
+    -0.0496,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "287": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.494,
+    -0.0193,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7347,
+    -0.1084,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "294": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4756,
+    -0.0542,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "296": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4932,
+    -0.227,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "MED",
+   "pos": 2
+  },
+  "297": {
+   "status": "ok",
+   "can_pos": [
+    0.487,
+    0.0999,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6781,
+    -0.1862,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "MED",
+   "pos": 0
+  },
+  "298": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4761,
+    -0.0412,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "299": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4252,
+    -0.1985,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "300": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4332,
+    -0.1738,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "302": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4827,
+    -0.051,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "304": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4658,
+    0.1336,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6721,
+    -0.1856,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "305": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.452,
+    -0.0309,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6816,
+    -0.1509,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "306": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4327,
+    -0.1859,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "307": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4861,
+    0.0747,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "308": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4841,
+    0.0833,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "309": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4846,
+    -0.0305,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 1
+  },
+  "310": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4512,
+    -0.1841,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "MED",
+   "pos": 2
+  },
+  "311": {
+   "status": "ok",
+   "can_pos": [
+    0.445,
+    -0.1877,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.5617,
+    -0.0938,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "312": {
+   "status": "ok",
+   "can_pos": [
+    0.4835,
+    0.1042,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7241,
+    -0.1498,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": 1.0,
+   "picked_rate": 1.0,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "313": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4373,
+    -0.0167,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.761,
+    -0.2766,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "314": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.5652,
+    -0.1285,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "315": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4997,
+    0.1272,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.8275,
+    0.0155,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "316": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4588,
+    0.0622,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6354,
+    -0.1226,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "317": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4478,
+    -0.0308,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "325": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4905,
+    0.1318,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6825,
+    -0.1851,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "326": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4818,
+    -0.0309,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.7275,
+    -0.1237,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "327": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4349,
+    -0.1467,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6536,
+    -0.1017,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "328": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.454,
+    0.1227,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "331": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.582,
+    0.1222,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.5832,
+    0.1233,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "334": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.5178,
+    0.1787,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.697,
+    -0.1284,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "335": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4524,
+    0.1313,
+    0.113
+   ],
+   "can_quat": null,
+   "goal_pos": [
+    0.6839,
+    -0.1454,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "233": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "MED",
+   "pos": 1
+  },
+  "234": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4244,
+    -0.137,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    0.0,
+    0.7071,
+    0.0
+   ],
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "240": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "MED",
+   "pos": 2
+  },
+  "246": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "247": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4622,
+    -0.1827,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    -0.2706,
+    0.6533,
+    0.0
+   ],
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "250": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "255": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "256": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "259": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4814,
+    -0.1595,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    -0.2706,
+    0.6533,
+    0.0
+   ],
+   "goal_pos": [
+    0.7059,
+    -0.1461,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "262": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4687,
+    -0.0224,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    0.0,
+    0.7071,
+    0.0
+   ],
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "266": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4806,
+    -0.0156,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    -0.2706,
+    0.6533,
+    0.0
+   ],
+   "goal_pos": [
+    0.7189,
+    -0.1321,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "267": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "268": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "275": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "278": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "282": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "MED",
+   "pos": 0
+  },
+  "286": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "288": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "290": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "LOW",
+   "pos": 2
+  },
+  "293": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "295": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "301": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4685,
+    0.0796,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    0.0,
+    0.7071,
+    0.0
+   ],
+   "goal_pos": [
+    0.7078,
+    -0.1797,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "303": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "318": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "319": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "320": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 0
+  },
+  "321": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4632,
+    -0.0239,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    0.0,
+    0.7071,
+    0.0
+   ],
+   "goal_pos": [
+    0.6,
+    -0.2,
+    0.203
+   ],
+   "goal_moved": false,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "322": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "LOW",
+   "pos": 1
+  },
+  "324": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "fail",
+   "conf": "LOW",
+   "pos": 0
+  },
+  "329": {
+   "status": "ok_batch",
+   "can_pos": [
+    0.4595,
+    -0.0216,
+    0.0955
+   ],
+   "can_quat": [
+    0.7071,
+    0.0,
+    0.7071,
+    0.0
+   ],
+   "goal_pos": [
+    0.6105,
+    -0.0809,
+    0.203
+   ],
+   "goal_moved": true,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 1
+  },
+  "330": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  },
+  "333": {
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
+   "success_rate": null,
+   "picked_rate": null,
+   "label": "success",
+   "conf": "HIGH",
+   "pos": 2
+  }
+ }
+}

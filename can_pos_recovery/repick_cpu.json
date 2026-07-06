@@ -1,0 +1,4538 @@
+{
+ "236": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4689,
+    -0.0555
+   ],
+   [
+    0.4789,
+    -0.0555
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4689,
+     -0.0555
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 313,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4589,
+     -0.0555
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 313,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4789,
+     -0.0555
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 313,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4689,
+     -0.0555
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4689,
+     -0.0555
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4789,
+     -0.0555
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4789,
+     -0.0555
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 40.4
+ },
+ "239": {
+  "status": "no_pick",
+  "tried": [
+   {
+    "can": [
+     0.4603,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4503,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4703,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.044
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.024
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4403,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4803,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.054
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.014
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4403,
+     -0.054
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4403,
+     -0.014
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4803,
+     -0.054
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4803,
+     -0.014
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4303,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4903,
+     -0.034
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.064
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4603,
+     -0.004
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 667,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 133.4
+ },
+ "242": {
+  "status": "ok",
+  "can_pos": [
+   0.4926,
+   0.1142,
+   0.113
+  ],
+  "goal_pos": [
+   0.6589,
+   -0.1445,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4926,
+     0.1142
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 410,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4826,
+     0.1142
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 410,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4926,
+     0.1142
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4926,
+     0.1142
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4926,
+     0.1142
+    ],
+    "goal": [
+     0.6589,
+     -0.1445,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4926,
+     0.1142
+    ],
+    "goal": [
+     0.6589,
+     -0.1445,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 42.9
+ },
+ "251": {
+  "status": "no_pick",
+  "tried": [
+   {
+    "can": [
+     0.4828,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4728,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4928,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.1039
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.1239
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4628,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5028,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.0939
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.1339
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4628,
+     0.0939
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4628,
+     0.1339
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5028,
+     0.0939
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5028,
+     0.1339
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4528,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5128,
+     0.1139
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.0839
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4828,
+     0.1439
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 677,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 129.4
+ },
+ "252": {
+  "status": "no_pick",
+  "tried": [
+   {
+    "can": [
+     0.4965,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4865,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5065,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     -0.0368
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     -0.0168
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4765,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5165,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     -0.0468
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     -0.0068
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4765,
+     -0.0468
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4765,
+     -0.0068
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5165,
+     -0.0468
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5165,
+     -0.0068
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4665,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5265,
+     -0.0268
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     -0.0568
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4965,
+     0.0032
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 570,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 116.9
+ },
+ "260": {
+  "status": "ok",
+  "can_pos": [
+   0.5004,
+   0.0902,
+   0.113
+  ],
+  "goal_pos": [
+   0.6346,
+   -0.1092,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.5204,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5104,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5304,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.1002
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.1202
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5404,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.0902
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.1302
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.0902
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.1302
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5404,
+     0.0902
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5404,
+     0.1302
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4904,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5504,
+     0.1102
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.0802
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5204,
+     0.1402
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3612,
+     0.0451
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3512,
+     0.0451
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3712,
+     0.0451
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3612,
+     0.0351
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3612,
+     0.0551
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3412,
+     0.0451
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3812,
+     0.0451
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3612,
+     0.0251
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1061,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.0902
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.0902
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.5004,
+     0.0902
+    ],
+    "goal": [
+     0.6346,
+     -0.1092,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.5004,
+     0.0902
+    ],
+    "goal": [
+     0.6346,
+     -0.1092,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 383.7
+ },
+ "261": {
+  "status": "ok",
+  "can_pos": [
+   0.3495,
+   -0.0146,
+   0.113
+  ],
+  "goal_pos": [
+   0.6864,
+   -0.1673,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4994,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4894,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5094,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.0979
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.1179
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4794,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5194,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.0879
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.1279
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4794,
+     0.0879
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4794,
+     0.1279
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5194,
+     0.0879
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5194,
+     0.1279
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4694,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5294,
+     0.1079
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.0779
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4994,
+     0.1379
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3495,
+     -0.0146
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3395,
+     -0.0146
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 610,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3495,
+     -0.0146
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.3495,
+     -0.0146
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.3495,
+     -0.0146
+    ],
+    "goal": [
+     0.6864,
+     -0.1673,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": true,
+    "success": true
+   },
+   {
+    "can": [
+     0.3495,
+     -0.0146
+    ],
+    "goal": [
+     0.6864,
+     -0.1673,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": true,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 197.8
+ },
+ "263": {
+  "status": "ok",
+  "can_pos": [
+   0.4396,
+   -0.1976,
+   0.113
+  ],
+  "goal_pos": [
+   0.6388,
+   -0.0467,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4496,
+     -0.1976
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 577,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4396,
+     -0.1976
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 577,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4596,
+     -0.1976
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 577,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4396,
+     -0.1976
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4396,
+     -0.1976
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4396,
+     -0.1976
+    ],
+    "goal": [
+     0.6388,
+     -0.0467,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4396,
+     -0.1976
+    ],
+    "goal": [
+     0.6388,
+     -0.0467,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 62.2
+ },
+ "265": {
+  "status": "no_pick",
+  "tried": [
+   {
+    "can": [
+     0.4876,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4776,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4976,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.1073
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.1273
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4676,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5076,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.0973
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.1373
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4676,
+     0.0973
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4676,
+     0.1373
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5076,
+     0.0973
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5076,
+     0.1373
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4576,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5176,
+     0.1173
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.0873
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4876,
+     0.1473
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 783,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 152.1
+ },
+ "273": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4782,
+    0.0982
+   ],
+   [
+    0.4682,
+    0.0982
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4782,
+     0.0982
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 530,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4682,
+     0.0982
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 530,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4782,
+     0.0982
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4782,
+     0.0982
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4682,
+     0.0982
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4682,
+     0.0982
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 82.1
+ },
+ "274": {
+  "status": "ok",
+  "can_pos": [
+   0.4696,
+   -0.0426,
+   0.113
+  ],
+  "goal_pos": [
+   0.7082,
+   -0.1413,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4696,
+     -0.0426
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 900,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4596,
+     -0.0426
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 900,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4696,
+     -0.0426
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4696,
+     -0.0426
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4696,
+     -0.0426
+    ],
+    "goal": [
+     0.7082,
+     -0.1413,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4696,
+     -0.0426
+    ],
+    "goal": [
+     0.7082,
+     -0.1413,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 92.6
+ },
+ "280": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4467,
+    -0.0041
+   ],
+   [
+    0.4367,
+    -0.0041
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4467,
+     -0.0041
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 312,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4367,
+     -0.0041
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 312,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4467,
+     -0.0041
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4467,
+     -0.0041
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4367,
+     -0.0041
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4367,
+     -0.0041
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "MED",
+  "pos": 1,
+  "elapsed_s": 44.9
+ },
+ "283": {
+  "status": "ok",
+  "can_pos": [
+   0.4564,
+   0.1237,
+   0.113
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4564,
+     0.1237
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 529,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4464,
+     0.1237
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 529,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4564,
+     0.1237
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4564,
+     0.1237
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 38.2
+ },
+ "297": {
+  "status": "ok",
+  "can_pos": [
+   0.487,
+   0.0999,
+   0.113
+  ],
+  "goal_pos": [
+   0.6781,
+   -0.1862,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.507,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.497,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.517,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.507,
+     0.0899
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.507,
+     0.1099
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.527,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.507,
+     0.0799
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.507,
+     0.1199
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0799
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.1199
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.527,
+     0.0799
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.527,
+     0.1199
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.477,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 393,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": [
+     0.6595,
+     -0.1627,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": [
+     0.6781,
+     -0.1862,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.487,
+     0.0999
+    ],
+    "goal": [
+     0.6781,
+     -0.1862,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "MED",
+  "pos": 0,
+  "elapsed_s": 125.0
+ },
+ "300": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4258,
+    -0.1987
+   ],
+   [
+    0.4358,
+    -0.1987
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4258,
+     -0.1987
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 3167,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4158,
+     -0.1987
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 3167,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4358,
+     -0.1987
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 3167,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4258,
+     -0.1987
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4358,
+     -0.1987
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4358,
+     -0.1987
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 247.0
+ },
+ "307": {
+  "status": "no_pick",
+  "tried": [
+   {
+    "can": [
+     0.4861,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4761,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4961,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.0747
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.0947
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4661,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5061,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.0647
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.1047
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4661,
+     0.0647
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4661,
+     0.1047
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5061,
+     0.0647
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5061,
+     0.1047
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4561,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.5161,
+     0.0847
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.0547
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4861,
+     0.1147
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3064,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3264,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0598
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0798
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.2964,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3364,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0498
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0898
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.2964,
+     0.0498
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.2964,
+     0.0898
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3364,
+     0.0498
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3364,
+     0.0898
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.2864,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3464,
+     0.0698
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0398
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.3164,
+     0.0998
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1224,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 462.7
+ },
+ "308": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4841,
+    0.0833
+   ],
+   [
+    0.47409999999999997,
+    0.0833
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4841,
+     0.0833
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 432,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4741,
+     0.0833
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 432,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4841,
+     0.0833
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4841,
+     0.0833
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4741,
+     0.0833
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4741,
+     0.0833
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 68.8
+ },
+ "310": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4512,
+    -0.1841
+   ],
+   [
+    0.4412,
+    -0.1841
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4512,
+     -0.1841
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1131,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4412,
+     -0.1841
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1131,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4512,
+     -0.1841
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4512,
+     -0.1841
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4412,
+     -0.1841
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4412,
+     -0.1841
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "fail",
+  "conf": "MED",
+  "pos": 2,
+  "elapsed_s": 101.4
+ },
+ "311": {
+  "status": "ok",
+  "can_pos": [
+   0.445,
+   -0.1877,
+   0.113
+  ],
+  "goal_pos": [
+   0.5617,
+   -0.0938,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 571,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.435,
+     -0.1877
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 571,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.5954,
+     -0.1153,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.6207,
+     -0.1315,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.5617,
+     -0.0938,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.445,
+     -0.1877
+    ],
+    "goal": [
+     0.5617,
+     -0.0938,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 94.7
+ },
+ "312": {
+  "status": "ok",
+  "can_pos": [
+   0.4835,
+   0.1042,
+   0.113
+  ],
+  "goal_pos": [
+   0.7241,
+   -0.1498,
+   0.203
+  ],
+  "goal_moved": true,
+  "success_rate": 1.0,
+  "picked_rate": 1.0,
+  "verify_n": 2,
+  "tried": [
+   {
+    "can": [
+     0.4835,
+     0.1042
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1613,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4735,
+     0.1042
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1613,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4835,
+     0.1042
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4835,
+     0.1042
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": true,
+    "success": false
+   },
+   {
+    "can": [
+     0.4835,
+     0.1042
+    ],
+    "goal": [
+     0.7241,
+     -0.1498,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-movedgoal",
+    "picked": true,
+    "placed": false,
+    "success": true
+   },
+   {
+    "can": [
+     0.4835,
+     0.1042
+    ],
+    "goal": [
+     0.7241,
+     -0.1498,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "verify",
+    "picked": true,
+    "placed": false,
+    "success": true
+   }
+  ],
+  "label": "fail",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 130.7
+ },
+ "315": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4897,
+    0.1172
+   ],
+   [
+    0.49970000000000003,
+    0.1172
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4897,
+     0.1172
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1631,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4797,
+     0.1172
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1631,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4997,
+     0.1172
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 1631,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4897,
+     0.1172
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4897,
+     0.1172
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4997,
+     0.1172
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4997,
+     0.1172
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 221.0
+ },
+ "317": {
+  "status": "pick_but_no_slide",
+  "pick_winners": [
+   [
+    0.4678,
+    -0.0408
+   ],
+   [
+    0.4478,
+    -0.0308
+   ]
+  ],
+  "tried": [
+   {
+    "can": [
+     0.4678,
+     -0.0308
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4578,
+     -0.0308
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4778,
+     -0.0308
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4678,
+     -0.0408
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4678,
+     -0.0208
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4478,
+     -0.0308
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": 538,
+    "tag": "pick-gate",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4678,
+     -0.0408
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4678,
+     -0.0408
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": false,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4478,
+     -0.0308
+    ],
+    "goal": [
+     0.6,
+     -0.2,
+     0.203
+    ],
+    "max_cmds": null,
+    "tag": "full-static",
+    "picked": true,
+    "placed": false,
+    "success": false
+   },
+   {
+    "can": [
+     0.4478,
+     -0.0308
+    ],
+    "goal": null,
+    "max_cmds": null,
+    "tag": "goal-probe",
+    "picked": true,
+    "placed": false,
+    "success": false
+   }
+  ],
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 96.3
+ }
+}

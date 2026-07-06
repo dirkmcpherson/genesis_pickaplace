@@ -172,3 +172,10 @@ cython_debug/
 
 # Large local datasets — kept out of the repo (symlinked locally so example.py can find it)
 /inthewild_trials
+
+# generated artifacts (reproducible from the pipeline)
+can_pos_recovery/videos/
+can_pos_recovery/*.log
+baselines/episodes_raw/
+baselines/lerobot_dataset/
+baselines/outputs/

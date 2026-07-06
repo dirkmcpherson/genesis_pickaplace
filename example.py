@@ -8,24 +8,51 @@ parser.add_argument("-d", "--debug", action="store_true", default=False)
 parser.add_argument("-p", "--position", type=int, default=-1)
 parser.add_argument("-t", "--trial", type=int, nargs="+", default=None,
                     help="run only these trial id(s), in order, e.g. -t 232  or  -t 232 245 300")
+parser.add_argument("--legacy", action="store_true", default=False,
+                    help="old behavior: 3-bucket placement, 0.075 can, weak fingers")
+parser.add_argument("--cpu", action="store_true", default=False,
+                    help="CPU backend (much faster for this single-env scene)")
 args = parser.parse_args()
 
 assert args.position in [-1, 0, 1, 2], "Position must be -1, 0, 1, or 2"
 
-gs.init(backend=gs.gpu, seed=0, precision="32", logging_level="warning")
+# Per-trial placements recovered by can_pos_recovery/ (see CAN_STARTING_POSITION.md).
+# The table also fixes world mismatches found during recovery: the real can was taller
+# (0.10 vs 0.075) and lighter (rho 1000 vs 2000) than the original cylinder, the finger
+# gain/force cut couldn't grip at all, and substeps=1 dropped the can mid-carry.
+import json
+import pathlib as pl
+_placements_file = pl.Path(__file__).parent / 'can_pos_recovery/trial_placements.json'
+PLACEMENTS = None
+if not args.legacy and _placements_file.exists():
+    _tbl = json.loads(_placements_file.read_text())
+    WORLD = _tbl['world']
+    # success-labeled only: fail-labeled demos must not be replayed with a goal can
+    # relocated to "where the can went" -- that would manufacture success from a demo
+    # that failed in the real world
+    PLACEMENTS = {int(u): r for u, r in _tbl['trials'].items()
+                  if r['status'] in ('ok', 'ok_batch') and r.get('label') == 'success'}
+    print(f"Loaded {len(PLACEMENTS)} per-trial placements (world: {WORLD}); --legacy to disable")
+
+gs.init(backend=gs.cpu if args.cpu else gs.gpu, seed=0, precision="32", logging_level="warning")
 
 
 scene = gs.Scene(
     show_viewer=args.vis,
-    sim_options=gs.options.SimOptions(dt=0.01),   # 100 Hz physics, stated explicitly
+    sim_options=gs.options.SimOptions(
+        dt=0.01,   # 100 Hz physics, stated explicitly
+        substeps=WORLD['substeps'] if PLACEMENTS else 1,
+    ),
 )
 
 plane = scene.add_entity(
     gs.morphs.Plane(),
 )
 
-BOTTLE_RADIUS = 0.035
-BOTTLE_HEIGHT = 0.075
+BOTTLE_RADIUS = WORLD.get('can_radius', 0.035) if PLACEMENTS else 0.035
+BOTTLE_HEIGHT = WORLD['can_height'] if PLACEMENTS else 0.075
+BOTTLE_RHO = WORLD['can_rho'] if PLACEMENTS else 2000
+TABLE_TOP_Z = 0.05 if (PLACEMENTS and WORLD.get('table')) else 0.0
 BOX_WIDTH, BOX_HEIGHT = 0.75, 0.12
 
 box = scene.add_entity(
@@ -36,6 +63,16 @@ box = scene.add_entity(
         pos=(0.75, -BOX_WIDTH / 4, 0.05),
     ),
 )
+
+if TABLE_TOP_Z > 0:
+    # The missing table: bag tool_pose shows the cans sat on the robot's mounting surface
+    # (z=0.05), not the ground plane. Ends 1mm short of the shelf box front face (x=0.55);
+    # overlapping the dynamic box ejects it at build time.
+    table = scene.add_entity(
+        material=gs.materials.Rigid(rho=1000, friction=0.5),
+        morph=gs.morphs.Box(size=(0.419, 1.2, 0.05), pos=(0.3395, -BOX_WIDTH / 4, 0.025),
+                            fixed=True),
+    )
 
 import pathlib as pl
 kinova = scene.add_entity(
@@ -54,15 +91,17 @@ kinova = scene.add_entity(
     # gs.morphs.MJCF(file="/home/j/workspace/genesis_pickaplace/005_tomato_soup_can/google_512k/kinbody.xml"),
 )
 
-STATIC_BOTTLE_POSITION = (0.6, -0.2, 0.19)
-POSITION_0 = (0.4381, 0.1, 0.05)
-POSITION_1 = (0.4381, -0.05, 0.05)
-POSITION_2 = (0.4381, -0.2, 0.05)
+CAN_START_Z = TABLE_TOP_Z + BOTTLE_HEIGHT / 2 + 0.0125   # small settle drop onto the table
+GOAL_START_Z = 0.11 + BOTTLE_HEIGHT / 2 + 0.0425         # same settle drop onto the shelf top
+STATIC_BOTTLE_POSITION = (0.6, -0.2, GOAL_START_Z)
+POSITION_0 = (0.4381, 0.1, CAN_START_Z)
+POSITION_1 = (0.4381, -0.05, CAN_START_Z)
+POSITION_2 = (0.4381, -0.2, CAN_START_Z)
 
 
 
 bottle = scene.add_entity(
-    material=gs.materials.Rigid(rho=2000,
+    material=gs.materials.Rigid(rho=BOTTLE_RHO,
                                 friction=0.2),
     morph=gs.morphs.Cylinder(
         pos=POSITION_0,
@@ -99,17 +138,24 @@ print(" fr ", kinova.get_dofs_force_range(dofs_idx_local=kdofs_idx))
 # Gen3 Lite gains. Order matches kinova.JOINT_NAMES: joint_1..6, then
 # left_finger_bottom, right_finger_bottom, left_finger_tip, right_finger_tip.
 # These are starting points for a small arm -- tune kp up until it tracks without oscillating.
+# Finger gains: the old cut (kp 20/5, force +-10/+-5) cannot hold the can at all (it slips
+# out during the carry -- see CAN_STARTING_POSITION.md). With placements active we restore
+# Genesis-default finger kp/kv and a +-50 force range, which grips reliably.
+if PLACEMENTS:
+    _fkp = [WORLD['finger_kp']] * 4; _fkv = [10] * 4; _ff = [WORLD['finger_force']] * 4
+else:
+    _fkp = [20, 20, 5, 5]; _fkv = [2, 2, 1, 1]; _ff = [10, 10, 5, 5]
 kinova.set_dofs_kp(
-    kp             = np.array([200, 200, 150, 100, 60, 60,  20, 20, 5, 5]),
+    kp             = np.array([200, 200, 150, 100, 60, 60] + _fkp),
     dofs_idx_local = kdofs_idx,
 )
 kinova.set_dofs_kv(
-    kv             = np.array([ 20,  20,  15,  10,  6,  6,   2,  2, 1, 1]),
+    kv             = np.array([ 20,  20,  15,  10,  6,  6] + _fkv),
     dofs_idx_local = kdofs_idx,
 )
 kinova.set_dofs_force_range(
-    lower          = np.array([-50,-50,-50,-20,-20,-20, -10,-10,-5,-5]),
-    upper          = np.array([ 50, 50, 50, 20, 20, 20,  10, 10, 5, 5]),
+    lower          = np.array([-50,-50,-50,-20,-20,-20] + [-f for f in _ff]),
+    upper          = np.array([ 50, 50, 50, 20, 20, 20] + _ff),
     dofs_idx_local = kdofs_idx,
 )
 print(f"Control gains for kinova (AFTER override -- what the sim actually uses):")
@@ -187,7 +233,15 @@ for path in paths:
         goal_bottle.set_quat([1, 0, 0, 0])
 
         uid = int(path.split('/')[-1].split('_')[0])
-        if uid in TRIALS_POSITION_0: 
+        can_quat = [1, 0, 0, 0]
+        if PLACEMENTS and uid in PLACEMENTS:
+            r = PLACEMENTS[uid]
+            if args.position >= 0 and r.get('pos') != args.position: return False
+            bottle.set_pos(r['can_pos'])
+            # some demos start with the can knocked over (fallen-can variant)
+            can_quat = r.get('can_quat') or [1, 0, 0, 0]
+            goal_bottle.set_pos(r['goal_pos'])
+        elif uid in TRIALS_POSITION_0:
             if args.position >= 0 and args.position != 0: return False
             bottle.set_pos(POSITION_0)
         elif uid in TRIALS_POSITION_1:
@@ -202,7 +256,7 @@ for path in paths:
 
         print(f"Loaded episode {path} with {len(vel_cmd)} steps", end = ' ')
 
-        bottle.set_quat([1, 0, 0, 0])
+        bottle.set_quat(can_quat)
 
         scene.step()
 

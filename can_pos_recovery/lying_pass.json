@@ -1,0 +1,387 @@
+{
+ "234": {
+  "status": "ok_batch",
+  "stage": "A-lying",
+  "can_pos": [
+   0.4244,
+   -0.137,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   0.0,
+   0.7071,
+   0.0
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 2,
+  "batch": {
+   "picked": 373,
+   "placed": -1,
+   "success": 660,
+   "max_z": 0.2039,
+   "final": [
+    0.6061000227928162,
+    -0.14890000224113464,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 92.7
+ },
+ "246": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.09,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 241.6
+ },
+ "247": {
+  "status": "ok_batch",
+  "stage": "A-lying",
+  "can_pos": [
+   0.4622,
+   -0.1827,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   -0.2706,
+   0.6533,
+   0.0
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 3,
+  "batch": {
+   "picked": 782,
+   "placed": 1391,
+   "success": 1650,
+   "max_z": 0.1743,
+   "final": [
+    0.6607000231742859,
+    -0.08810000121593475,
+    0.15279999375343323
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 183.1
+ },
+ "250": {
+  "status": "lying_picked_no_shelf",
+  "picked_envs": 3,
+  "best_max_z": 0.187,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 315.7
+ },
+ "255": {
+  "status": "lying_shelf_no_slide",
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 362.1
+ },
+ "256": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.0872,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 191.1
+ },
+ "259": {
+  "status": "ok_batch",
+  "stage": "C-lying",
+  "can_pos": [
+   0.4814,
+   -0.1595,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   -0.2706,
+   0.6533,
+   0.0
+  ],
+  "goal_pos": [
+   0.7059,
+   -0.1461,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 2,
+  "batch": {
+   "picked": 447,
+   "placed": 700,
+   "success": 570,
+   "max_z": 0.226,
+   "final": [
+    0.7125999927520752,
+    -0.13210000097751617,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 270.5
+ },
+ "262": {
+  "status": "ok_batch",
+  "stage": "A-lying",
+  "can_pos": [
+   0.4687,
+   -0.0224,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   0.0,
+   0.7071,
+   0.0
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 1,
+  "batch": {
+   "picked": 400,
+   "placed": 565,
+   "success": 840,
+   "max_z": 0.2206,
+   "final": [
+    0.652400016784668,
+    -0.15289999544620514,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 104.4
+ },
+ "266": {
+  "status": "ok_batch",
+  "stage": "C-lying",
+  "can_pos": [
+   0.4806,
+   -0.0156,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   -0.2706,
+   0.6533,
+   0.0
+  ],
+  "goal_pos": [
+   0.7189,
+   -0.1321,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 10,
+  "batch": {
+   "picked": 733,
+   "placed": 1102,
+   "success": 1560,
+   "max_z": 0.2141,
+   "final": [
+    0.670199990272522,
+    -0.14980000257492065,
+    0.1703999936580658
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 397.8
+ },
+ "267": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.0923,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 170.1
+ },
+ "286": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.0915,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 315.9
+ },
+ "295": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.0934,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 564.7
+ },
+ "301": {
+  "status": "ok_batch",
+  "stage": "C-lying",
+  "can_pos": [
+   0.4685,
+   0.0796,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   0.0,
+   0.7071,
+   0.0
+  ],
+  "goal_pos": [
+   0.7078,
+   -0.1797,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 6,
+  "batch": {
+   "picked": 662,
+   "placed": 1159,
+   "success": 1500,
+   "max_z": 0.3174,
+   "final": [
+    0.6816999912261963,
+    -0.15940000116825104,
+    0.15279999375343323
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "elapsed_s": 434.4
+ },
+ "303": {
+  "status": "lying_no_pick",
+  "best_max_z": 0.0872,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 203.4
+ },
+ "318": {
+  "status": "lying_picked_no_shelf",
+  "picked_envs": 10,
+  "best_max_z": 0.1757,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "elapsed_s": 142.1
+ },
+ "321": {
+  "status": "ok_batch",
+  "stage": "A-lying",
+  "can_pos": [
+   0.4632,
+   -0.0239,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   0.0,
+   0.7071,
+   0.0
+  ],
+  "goal_pos": [
+   0.6,
+   -0.2,
+   0.203
+  ],
+  "goal_moved": false,
+  "n_batch_wins": 2,
+  "batch": {
+   "picked": 433,
+   "placed": 721,
+   "success": 510,
+   "max_z": 0.2141,
+   "final": [
+    0.6402000188827515,
+    -0.11959999799728394,
+    0.1527000069618225
+   ],
+   "on_shelf": true,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 242.3
+ },
+ "329": {
+  "status": "ok_batch",
+  "stage": "C-lying",
+  "can_pos": [
+   0.4595,
+   -0.0216,
+   0.0955
+  ],
+  "can_quat": [
+   0.7071,
+   0.0,
+   0.7071,
+   0.0
+  ],
+  "goal_pos": [
+   0.6105,
+   -0.0809,
+   0.203
+  ],
+  "goal_moved": true,
+  "n_batch_wins": 6,
+  "batch": {
+   "picked": 417,
+   "placed": -1,
+   "success": 1080,
+   "max_z": 0.2104,
+   "final": [
+    0.040800001472234726,
+    -0.1891999989748001,
+    0.03269999846816063
+   ],
+   "on_shelf": false,
+   "nested": false
+  },
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "elapsed_s": 306.2
+ }
+}

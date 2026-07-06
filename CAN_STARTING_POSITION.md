@@ -152,3 +152,78 @@ These are standalone; none of them import or modify `example.py`.
   the can). The current `example.py` finger-force cut (±10/±5) regressed pickup.
 - Gyration/"wild" motion is separately reducible via solver `substeps` (orthogonal to position).
 - `kinova.py` label bugs: UID **322** is in both `p1_succ` and `p2_fail`; **331** is duplicated.
+
+---
+
+# FOLLOW-UP SESSION (2026-07-04): root causes found, placements solved
+
+## TL;DR of what changed
+The FK recovery was **right all along** — validated against the robot's own `tool_pose`
+from the raw bags (agreement to the millimeter at the grasp instant). What was wrong was
+the **world model**, in four ways:
+
+1. **The table is missing.** The bags prove it: `tool_pose_z` at grasp is 0.016-0.039 m
+   above the ROBOT BASE. The cans sat on the robot's own mounting table (z=0.05 in sim
+   coords, the "raise to account for table mount"), but the sim dropped them onto the
+   ground plane at z=0 — 5 cm too low. Every grasp therefore closed near/above the sim
+   can's rim instead of low on the can body like the humans actually grasped.
+2. **The can was the wrong size and weight.** The trial videos show a Campbell's soup can
+   (66 x 101 mm, ~0.35 kg). The sim cylinder was 70 x 75 mm at rho=2000 (~0.58 kg).
+3. **The finger gain/force cut couldn't grip** (kp 20/5, +-10/+-5 N). Restored to Genesis
+   defaults (kp 100) with +-50 N range. Note kp=200+ makes things WORSE (squeezes the can
+   out of the pinch) — 100 is the sweet spot.
+4. **substeps=1 drops the can mid-carry** (slow slip out of the pinch during transport).
+   substeps=4 fixes carry stability (same knob validate_grasp.py's force mode used).
+
+With the corrected world, the FK-recovered positions + a small per-trial search produce
+working placements for most trials (see `can_pos_recovery/trial_placements.json`).
+
+## Evidence trail
+- `can_pos_recovery/fk_recovered.json` — FK grasp/release for all 96 trials.
+  Grasp heights: mean z=0.070, p75=0.077, max=0.140 (sim frame) => impossible for a
+  0.075-tall can on the ground, exactly right for a 101 mm can on a 0.05 table.
+- Bags (`inthewild_trials/raw/user_23x/trial_data.bag`): `base_feedback.tool_pose` at the
+  gripper-close instant matches FK fingertip-midpoint within ~1 cm in xy and ~1 mm in z
+  (232: bag z 0.039 vs FK 0.089-0.05; 235: bag 0.016 vs FK 0.066-0.05).
+  `joint_states` is a clean 40 Hz (dt p95 25.4 ms) — timing was never the problem.
+- Videos (`cam_dev_video4/output.mp4`): Campbell's can, marked start circles on the
+  robot's table, acrylic shelf rack, can inserted against the goal can.
+
+## The pipeline that produced the placements (can_pos_recovery/)
+- `fk_all_trials.py` — FK-at-grasp + release for every episode -> fk_recovered.json
+- `replay_harness.py` — example.py-mirror rollout with checkpoints (pick/place/slide),
+  configurable world; CPU backend is 15-20x faster than GPU for this single-env scene.
+- `search_placements.py` — sequential per-trial search (pick spiral -> goal move -> verify).
+- `batch_harness.py` / `batch_rescue.py` — batched-GPU search: B=32 candidate placements
+  of one demo evaluated in a single rollout (open-loop replay => same commands per env).
+  In-batch success uses a distance proxy for contact; winners re-confirmed single-env.
+- `merge_and_validate.py` — merges search outputs into `trial_placements.json` and
+  re-validates every solved trial with example.py's exact contact test.
+- `example.py` auto-loads `trial_placements.json` (world corrections + per-trial can and
+  goal positions). `--legacy` restores the old behavior, `--cpu` runs the fast backend.
+
+## Open items
+- A minority of trials still fail (never pick / drop in transit) even under the corrected
+  world — candidates for demo-quality filtering (the two LOW-confidence "misses" 290, 322
+  among them) or for closed-loop control rather than open-loop replay.
+- The shelf is still a solid box; the real thing is an open acrylic rack whose deck the
+  cans sit BETWEEN rails on. If residual failures matter, model the rack.
+- Label bugs remain in kinova.py (322 in both p1_succ and p2_fail; 331 duplicated).
+
+## FINAL NUMBERS (0.2.1 baseline, world v2, 2026-07-06)
+Denominator: 75 legitimately-successful demos (77 labeled minus stub recordings 290/322).
+
+- **Coverage: 58/75 (77%)** have a placement that completed the full task at least once
+  (pick -> place -> slide to contact). 8 of those are fallen-can (lying) starts.
+- **Per-run rates (CPU backend, x3 reps, exact contact test):**
+  contact-success 0.53, nested-success 0.28 (nested = upright + touching + at rest at
+  the moment of first contact, the human judge's criterion).
+  29 trials succeed >=2/3 runs on contact; 15 on nested.
+- **Backend transfer caveat:** 14 winners exist only under the GPU backend; 6/14
+  reproduce on GPU single-env (4 nested), 8 were batch flukes. CPU-verified winners
+  (status 'ok') transfer deterministically.
+- **Negative control:** 17/19 fail-labeled demos correctly fail on contact; 19/19 on
+  nested (zero false positives under the strict metric).
+- Residual unsolved (17): ~6 fallen-can demos the lying grid couldn't grasp, drag-heavy
+  demos needing substeps=8 (6 rescued in a probe -- deferred to post-upgrade world),
+  and long-fumble demos that likely need closed-loop control.

@@ -1,0 +1,63 @@
+"""Stage 2: pack baselines/episodes_raw/*.npz into a LeRobotDataset (v3, lerobot 0.4.x).
+
+Run with the LEROBOT venv:
+    ~/workspace/lerobot/.venv/bin/python baselines/convert_to_lerobot.py
+
+Writes to baselines/lerobot_dataset/genesis_pickaplace (local root, no hub push).
+Train Diffusion Policy on it with lerobot's CLI, e.g.:
+
+    ~/workspace/lerobot/.venv/bin/lerobot-train \
+      --dataset.repo_id=local/genesis_pickaplace \
+      --dataset.root=baselines/lerobot_dataset/genesis_pickaplace \
+      --policy.type=diffusion \
+      --output_dir=baselines/outputs/dp_state \
+      --policy.push_to_hub=false
+"""
+import pathlib as pl
+import numpy as np
+
+REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+RAW = REPO / 'baselines/episodes_raw'
+ROOT = REPO / 'baselines/lerobot_dataset/genesis_pickaplace'
+FPS = 30
+TASK = 'pick the can and slide it against the can on the shelf'
+
+from lerobot.datasets.lerobot_dataset import LeRobotDataset
+
+files = sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
+assert files, f'no episodes in {RAW} - run collect_lerobot_dataset.py first'
+probe = np.load(files[0])
+has_images = 'images' in probe
+sdim = probe['states'].shape[1]; adim = probe['actions'].shape[1]
+
+# split the 16-dim recorded state: proprio -> observation.state, world (can pose +
+# goal xy) -> observation.environment_state. Diffusion Policy requires an image or an
+# environment_state input; this split makes state-only training work out of the box.
+PROPRIO = 7
+features = {
+    'observation.state': {'dtype': 'float32', 'shape': (PROPRIO,), 'names': None},
+    'observation.environment_state': {'dtype': 'float32', 'shape': (sdim - PROPRIO,),
+                                      'names': None},
+    'action': {'dtype': 'float32', 'shape': (adim,), 'names': None},
+}
+if has_images:
+    features['observation.images.cam'] = {'dtype': 'video',
+                                          'shape': tuple(probe['images'].shape[1:]),
+                                          'names': ['height', 'width', 'channels']}
+
+ds = LeRobotDataset.create(repo_id='local/genesis_pickaplace', fps=FPS, root=ROOT,
+                           features=features, use_videos=has_images)
+for f in files:
+    d = np.load(f)
+    n = int(d['n'])
+    for i in range(n):
+        frame = {'observation.state': d['states'][i][:PROPRIO],
+                 'observation.environment_state': d['states'][i][PROPRIO:],
+                 'action': d['actions'][i],
+                 'task': TASK}
+        if has_images:
+            frame['observation.images.cam'] = d['images'][i]
+        ds.add_frame(frame)
+    ds.save_episode()
+    print(f'{f.stem}: {n} frames', flush=True)
+print(f'\ndataset at {ROOT}: {len(files)} episodes')
