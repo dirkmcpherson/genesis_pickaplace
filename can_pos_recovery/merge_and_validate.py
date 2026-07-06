@@ -33,6 +33,11 @@ def merge(paths):
             keep = {k: r.get(k) for k in ('status', 'can_pos', 'can_quat', 'goal_pos',
                                           'goal_moved', 'success_rate', 'picked_rate',
                                           'label', 'conf', 'pos')}
+            # data-collection protocol: cans ALWAYS start upright. Lying-spawn solutions
+            # are degenerate (the rotated camera feed misled an earlier analysis) --
+            # reject them regardless of sim success.
+            if keep.get('can_quat') and abs(keep['can_quat'][0] - 1.0) > 1e-3:
+                keep['status'] = 'rejected_lying_start'
             prev = merged['trials'].get(uid)
             if prev is None or RANK.get(keep['status'], 0) > RANK.get(prev['status'], 0):
                 merged['trials'][uid] = keep

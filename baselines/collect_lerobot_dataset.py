@@ -40,19 +40,22 @@ for uid in uids:
     if f.exists():
         kept += 1; continue
     vel, gp = load_episode(uid)
-    obs = env.reset(uid=uid)
-    states, images, actions = [], [], []
     contact = False
-    for i in range(len(vel) - 1):
-        a = np.concatenate([vel[i + 1], [np.clip(gp[i + 1] / 100.0, 0, 1)]])  # next waypoint
-        states.append(obs['state'])
-        if args.render: images.append(obs['image'])
-        actions.append(a.astype(np.float32))
-        obs, done, info = env.step(np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]))
-        if info['contact']:
-            contact = True
+    for attempt in range(3):    # borderline placements are stochastic; try a few times
+        obs = env.reset(uid=uid)
+        states, images, actions = [], [], []
+        for i in range(len(vel) - 1):
+            a = np.concatenate([vel[i + 1], [np.clip(gp[i + 1] / 100.0, 0, 1)]])  # next waypoint
+            states.append(obs['state'])
+            if args.render: images.append(obs['image'])
+            actions.append(a.astype(np.float32))
+            obs, done, info = env.step(np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]))
+            if info['contact']:
+                contact = True
+        if contact:
+            break
     if not contact:
-        print(f'{uid}: replay did not reach contact-success, SKIPPED', flush=True)
+        print(f'{uid}: no contact-success in 3 attempts, SKIPPED', flush=True)
         skipped += 1
         continue
     data = dict(states=np.array(states), actions=np.array(actions),

@@ -213,8 +213,13 @@ working placements for most trials (see `can_pos_recovery/trial_placements.json`
 ## FINAL NUMBERS (0.2.1 baseline, world v2, 2026-07-06)
 Denominator: 75 legitimately-successful demos (77 labeled minus stub recordings 290/322).
 
-- **Coverage: 58/75 (77%)** have a placement that completed the full task at least once
-  (pick -> place -> slide to contact). 8 of those are fallen-can (lying) starts.
+- **Coverage: 50/75 (67%)** have a placement that completed the full task at least once
+  (pick -> place -> slide to contact). CORRECTION: 8 additional "fallen-can" solutions
+  were rejected -- the raw camera feeds are stored rotated ~90 deg and an upright can
+  reads as lying; the collection protocol always starts cans upright. Those 8 demos
+  (234 247 259 262 266 301 321 329) grasp very low on the can (fingers ~2cm above the
+  table), which the sim gripper cannot do without clipping the table -- a finger
+  collision-geometry fidelity issue, revisit post-upgrade.
 - **Per-run rates (CPU backend, x3 reps, exact contact test):**
   contact-success 0.53, nested-success 0.28 (nested = upright + touching + at rest at
   the moment of first contact, the human judge's criterion).

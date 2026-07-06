@@ -1242,24 +1242,11 @@
    "pos": 1
   },
   "234": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4244,
-    -0.137,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    0.0,
-    0.7071,
-    0.0
-   ],
-   "goal_pos": [
-    0.6,
-    -0.2,
-    0.203
-   ],
-   "goal_moved": false,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1291,24 +1278,11 @@
    "pos": 1
   },
   "247": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4622,
-    -0.1827,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    -0.2706,
-    0.6533,
-    0.0
-   ],
-   "goal_pos": [
-    0.6,
-    -0.2,
-    0.203
-   ],
-   "goal_moved": false,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1352,24 +1326,11 @@
    "pos": 2
   },
   "259": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4814,
-    -0.1595,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    -0.2706,
-    0.6533,
-    0.0
-   ],
-   "goal_pos": [
-    0.7059,
-    -0.1461,
-    0.203
-   ],
-   "goal_moved": true,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1377,24 +1338,11 @@
    "pos": 2
   },
   "262": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4687,
-    -0.0224,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    0.0,
-    0.7071,
-    0.0
-   ],
-   "goal_pos": [
-    0.6,
-    -0.2,
-    0.203
-   ],
-   "goal_moved": false,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1402,24 +1350,11 @@
    "pos": 1
   },
   "266": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4806,
-    -0.0156,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    -0.2706,
-    0.6533,
-    0.0
-   ],
-   "goal_pos": [
-    0.7189,
-    -0.1321,
-    0.203
-   ],
-   "goal_moved": true,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1547,24 +1482,11 @@
    "pos": 2
   },
   "301": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4685,
-    0.0796,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    0.0,
-    0.7071,
-    0.0
-   ],
-   "goal_pos": [
-    0.7078,
-    -0.1797,
-    0.203
-   ],
-   "goal_moved": true,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1620,24 +1542,11 @@
    "pos": 0
   },
   "321": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4632,
-    -0.0239,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    0.0,
-    0.7071,
-    0.0
-   ],
-   "goal_pos": [
-    0.6,
-    -0.2,
-    0.203
-   ],
-   "goal_moved": false,
+   "status": "no_shelf_batch",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
@@ -1669,24 +1578,11 @@
    "pos": 0
   },
   "329": {
-   "status": "ok_batch",
-   "can_pos": [
-    0.4595,
-    -0.0216,
-    0.0955
-   ],
-   "can_quat": [
-    0.7071,
-    0.0,
-    0.7071,
-    0.0
-   ],
-   "goal_pos": [
-    0.6105,
-    -0.0809,
-    0.203
-   ],
-   "goal_moved": true,
+   "status": "shelf_but_no_slide",
+   "can_pos": null,
+   "can_quat": null,
+   "goal_pos": null,
+   "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
