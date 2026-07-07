@@ -33,10 +33,35 @@ ap.add_argument('--seed', type=int, default=0)
 args = ap.parse_args()
 
 from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy
+from lerobot.policies.factory import make_pre_post_processors
 policy = DiffusionPolicy.from_pretrained(args.checkpoint)
 policy.eval()
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 policy.to(device)
+# lerobot 0.4.x moved (un)normalization OUT of the policy into processor pipelines.
+# select_action consumes NORMALIZED obs and returns NORMALIZED actions, so we must
+# wrap it with the saved pre/post processors or the arm gets [-1,1]-scale joint targets.
+preprocessor, postprocessor = make_pre_post_processors(
+    policy_cfg=policy.config, pretrained_path=args.checkpoint)
+
+
+def policy_action(obs):
+    batch = {'observation.state':
+             torch.from_numpy(obs['state'][:7]).float().unsqueeze(0).to(device),
+             'observation.environment_state':
+             torch.from_numpy(obs['state'][7:]).float().unsqueeze(0).to(device),
+             'task': [TASK]}
+    if args.image:
+        img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
+        batch['observation.images.cam'] = img.unsqueeze(0).to(device)
+    batch = preprocessor(batch)
+    with torch.no_grad():
+        action = policy.select_action(batch)
+    action = postprocessor(action)
+    return action.squeeze(0).cpu().numpy()
+
+
+TASK = 'pick the can and slide it against the can on the shelf'
 
 env = GenesisCanEnv(backend='cpu', render_size=(96, 96) if args.image else None)
 uids = args.uids or [u for u in env.solved_uids
@@ -65,15 +90,7 @@ for ep in episodes:
         policy.reset()
         done = False
         while not done:
-            batch = {'observation.state':
-                     torch.from_numpy(obs['state'][:7]).unsqueeze(0).to(device),
-                     'observation.environment_state':
-                     torch.from_numpy(obs['state'][7:]).unsqueeze(0).to(device)}
-            if args.image:
-                img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
-                batch['observation.images.cam'] = img.unsqueeze(0).to(device)
-            with torch.no_grad():
-                action = policy.select_action(batch).squeeze(0).cpu().numpy()
+            action = policy_action(obs)
             obs, done, info = env.step(action)
         for k in ('picked', 'placed', 'contact', 'nested'):
             agg[k] += bool(info.get(k))
@@ -84,3 +101,7 @@ n = max(agg['n'], 1)
 print(f"\npolicy eval over {n} rollouts: picked {agg['picked']/n:.2f} "
       f"placed {agg['placed']/n:.2f} contact {agg['contact']/n:.2f} "
       f"nested {agg['nested']/n:.2f}")
+# stage-conditional funnel: WHERE does it fail?
+p, pl, c = max(agg['picked'], 1), max(agg['placed'], 1), max(agg['contact'], 1)
+print(f"funnel: P(pick)={agg['picked']/n:.2f} -> P(place|pick)={agg['placed']/p:.2f} "
+      f"-> P(slide|place)={agg['contact']/pl:.2f} -> P(nested|slide)={agg['nested']/c:.2f}")
