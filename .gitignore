@@ -179,3 +179,4 @@ can_pos_recovery/*.log
 baselines/episodes_raw/
 baselines/lerobot_dataset/
 baselines/outputs/
+.venv-eval/
