@@ -180,3 +180,4 @@ baselines/episodes_raw/
 baselines/lerobot_dataset/
 baselines/outputs/
 .venv-eval/
+baselines/episodes_raw_v2/
