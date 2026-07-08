@@ -249,3 +249,38 @@ contact 0.57/run, nested 0.35/run; 27 trials reliable(>=2/3) on contact, 18 on n
 placed 0.32, contact 0.22, nested 0.06. Funnel P(pick)=0.50 -> P(place|pick)=0.64 ->
 P(slide|place)=0.68 -> P(nested|slide)=0.26. Bottleneck is the initial grasp (0.50) and
 the final upright nest; the middle (place->slide) is comparatively strong.
+
+
+## INDEPENDENT PANEL REVIEW (2026-07-08) — findings & status corrections
+A 4-agent adversarial panel (sim-fidelity, BC/DP, rigor, search) reviewed the work.
+Strong convergence. What they affirmed and what they overturned:
+
+AFFIRMED: FK-at-grasp position recovery is sound and independently validated vs bag
+tool_pose (~1cm). Infrastructure careful. Directional "DP < replay on pick/contact" holds.
+
+OVERTURNED / OVERSTATED (verified against the tree):
+- **Negative control was rigged** — it disabled goal relocation. Run through the FULL
+  pipeline, 11/16 fail-labeled demos get "solved" and 7 pass strict nested (all
+  goal_moved=True). The "19/19 zero false positives" claim is FALSE; true nested
+  false-positive rate on known failures ~40%.
+- **Coverage (50/75) is a fit, not recovery.** Search winner drifts from FK position up to
+  17cm (307), 14.6cm (260); 60% of solved trials depend on goal relocation (median 12.8cm,
+  max 32cm). "Position that works" != "recovered true position" for the high-drift trials.
+- **52/61 solved are ok_batch, never CPU-revalidated** (success_rate: None). Batch proxy
+  was missing the picked precondition (FIXED). Selection bias (best-of-32) + verify loop
+  pre-counting the finding run inflate rates.
+- **nested metric lacked the picked precondition** (only contact had it) — inflated both
+  DP nested (0.06) and replay nested (0.35) with shove-ins. FIXED; both need re-measurement.
+- **DP eval is in-distribution refit on privileged ground-truth state, uncaveated.**
+  Randomized-IC (generalization): picked 0.34 placed 0.14 contact 0.14 nested 0.04.
+- Action off-by-one (stores vel[i+1] as label for a transition produced by vel[i]).
+
+REMEDIATION (gated on all-bags rsync, in progress):
+1. Re-run negative control THROUGH the full pipeline; report the false-positive rate.
+2. Re-report coverage at FROZEN FK placements (no per-trial search) to separate recovery
+   from fit; report goal_moved=False subset as the defensible number.
+3. Vision ground truth: Hough circle detection (prototyped, works) on top cam (can start)
+   + bottom-up cam through translucent shelf (goal/slide landing). No factory calibration
+   in config.yaml (handoff doc was wrong); calibrate via FK-homography. Bounds goal
+   relocation to reality — the panel's #1 fix.
+4. Re-measure all metrics under corrected nested; add held-out split; fix action off-by-one.

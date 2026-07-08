@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/home/james/workspace/genesis_sim2real/venv/bin/python -c ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'Record panel review, randomized-IC numbers, remediation plan *)"
+    ]
+  }
+}

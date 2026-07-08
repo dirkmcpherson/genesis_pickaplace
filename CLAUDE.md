@@ -9,8 +9,10 @@ Replays in-the-wild Kinova gen3-lite pick-and-place demos in the Genesis simulat
 
 ## Agent Status
 
-- **Status:** 🟢 active
-- **Last session:** 2026-07-06
+- **Status:** 🟡 remediation (independent panel found real overstatements; fixes queued, gated on all-bags rsync)
+- **Last session:** 2026-07-08
+- **Panel review (2026-07-08):** 4 adversarial agents. AFFIRMED: FK position recovery is sound (validated vs bag tool_pose ~1cm). OVERTURNED: (1) negative control was rigged — disabled goal relocation, hiding ~40% nested false-positive rate on fail-labeled demos (11/16 "solved"); (2) coverage 50/75 is a fit not recovery (winner drifts up to 17cm from FK, 60% depend on goal relocation median 12.8cm); (3) 52/61 solved are un-revalidated batch-proxy winners (success_rate:None); (4) nested metric lacked the picked precondition (both DP 0.06 and replay 0.35 inflated). FIXED: nested + batch proxy now require picked. Randomized-IC DP: picked 0.34/contact 0.14/nested 0.04. See CAN_STARTING_POSITION.md "INDEPENDENT PANEL REVIEW" + tasks #3,#11,#12,#13. User is rsyncing all raw bags to enable vision ground truth (Hough circles prototyped, works; no factory calibration — use FK-homography).
+- **Prior session:** 2026-07-06
 - **Current branch:** main
 - **What happened:** Finished the placement pipeline end-to-end: 58/75 legit successful demos solved (77% coverage), validated contact 0.53 / nested 0.28 per run (see CAN_STARTING_POSITION.md FINAL NUMBERS). Key late finds: drag demos (seed at closure-start, from bags), fallen-can demos (8 solved with lying spawns — real videos show cans starting on their side), GPU->CPU winner transfer cliff (CPU re-pick pass recovers), nested metric scored at first-contact + settle (19/19 negative-control specificity). Success gallery in can_pos_recovery/videos (31/39 renders complete the task). lerobot DP baseline scaffolding in baselines/ (collector -> LeRobotDataset v3 w/ proprio+environment_state split -> eval incl --random ICs), smoke-tested.
 - **What's next:** (1) full dataset collection + overnight state-only DP train (task list #9), eval on demo ICs + randomized ICs; (2) genesis upgrade in fresh venv (+ lerobot in same venv), match 0.2.1 baseline via probes -> sweep -> validation; (3) deferred: substeps=8 world (rescues 6 more drop-class trials — probe results in scratchpad probe_s8.json ... rerun post-upgrade), failure-video renders.
