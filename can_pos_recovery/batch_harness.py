@@ -118,7 +118,8 @@ def rollout_batch(w, vel, gp, can_xy, goal_xy, max_cmds=None, can_quat=None, can
             horiz = np.hypot(bp[:, 0] - gpp[:, 0], bp[:, 1] - gpp[:, 1])
             vert = np.abs(bp[:, 2] - gpp[:, 2]) < w['can_h']
             touch = (horiz < 2 * w.get('can_r', BOTTLE_RADIUS) + 0.002) & vert & ~far
-            newly_succ = (success_at < 0) & touch & (ep[:, 0] < bp[:, 0])
+            # require picked first (match replay_harness CPU test) -- exclude table-shoves
+            newly_succ = (success_at < 0) & touch & (ep[:, 0] < bp[:, 0]) & (picked_at >= 0)
             success_at[newly_succ] = i
     for _ in range(100):   # settle, then score NESTED (upright + touching + at rest)
         scene.step()

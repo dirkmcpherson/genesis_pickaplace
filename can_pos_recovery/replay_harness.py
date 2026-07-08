@@ -189,7 +189,8 @@ def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=T
         speed = float(np.linalg.norm(np_(bottle.get_dofs_velocity())[:3]))
     except Exception:
         speed = 0.0
-    nested = dict(nested=bool(n_con > 0 and b_tilt < 20 and g_tilt < 20 and speed < 0.05),
+    nested = dict(nested=bool(picked_at >= 0 and n_con > 0 and b_tilt < 20
+                              and g_tilt < 20 and speed < 0.05),
                   n_con=int(n_con), bottle_tilt=round(b_tilt, 1),
                   goal_tilt=round(g_tilt, 1), speed=round(speed, 3))
     final_bp = np_(bottle.get_pos())

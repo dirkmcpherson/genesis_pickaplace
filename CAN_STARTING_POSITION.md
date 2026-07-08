@@ -232,3 +232,20 @@ Denominator: 75 legitimately-successful demos (77 labeled minus stub recordings 
 - Residual unsolved (17): ~6 fallen-can demos the lying grid couldn't grasp, drag-heavy
   demos needing substeps=8 (6 rescued in a probe -- deferred to post-upgrade world),
   and long-fumble demos that likely need closed-loop control.
+
+
+## CORRECTED METRICS + DP BASELINE (2026-07-08)
+Two metric bugs found by rendering a policy rollout and checking it (not trusting aggregates):
+1. **Contact had no ordering precondition** — a can shoved along the table into the goal's
+   base counted as success (trial 284: contact with picked=False, can at z=0.10). Fixed:
+   contact now requires the can was PICKED first. Inflated DP contact by ~21% (6/29 spurious).
+2. (False alarm, ruled out) a rendered rollout *looked* like the arm stayed low, but the
+   can genuinely reached shelf z=0.226 — camera-angle misread, `placed` is honest.
+
+**Corrected replay baseline** (50 success-labeled solved, x3, CPU): picked 0.84,
+contact 0.57/run, nested 0.35/run; 27 trials reliable(>=2/3) on contact, 18 on nested.
+
+**DP state-only baseline, in-distribution** (35 trained trials x3): picked 0.50,
+placed 0.32, contact 0.22, nested 0.06. Funnel P(pick)=0.50 -> P(place|pick)=0.64 ->
+P(slide|place)=0.68 -> P(nested|slide)=0.26. Bottleneck is the initial grasp (0.50) and
+the final upright nest; the middle (place->slide) is comparatively strong.

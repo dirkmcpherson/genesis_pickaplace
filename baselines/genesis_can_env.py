@@ -104,7 +104,9 @@ class GenesisCanEnv:
             w['scene'].step()
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
         ncon = 0 if c.size == 0 else c.shape[0]
-        return bool(ncon and tilt_deg(np_(w['bottle'].get_quat())) < 20
+        # nested requires the can was actually picked (same precondition as contact) --
+        # a shoved-in can that touches the goal upright is not a completed task
+        return bool(self._picked and ncon and tilt_deg(np_(w['bottle'].get_quat())) < 20
                     and tilt_deg(np_(w['goal'].get_quat())) < 20)
 
     def _obs(self):
