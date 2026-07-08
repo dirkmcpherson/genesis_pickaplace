@@ -303,3 +303,25 @@ OPEN QUESTION the vision work resolves: is the goal can physically FIXED across 
 (=> 15/75 is the true number, relocation was fitting sim error) or did it VARY per trial
 (=> relocation captured something real)? Bottom-up camera through the translucent shelf
 settles it. Until then, report 15-20/75 as coverage, not 50/75.
+
+## PICK+PLACE CEILING: it's control-limited, not placement-limited (branch: grasp-from-gripper-current)
+Tested the hypothesis "spawn the can right -> high pick+place." Isolated pick+place
+(goal parked far), corrected metric, 75 success-labeled demos, 3 reps:
+
+| spawn source | pick/run | place/run | pick cov | place cov |
+|---|---|---|---|---|
+| FK-recovered            | 0.59 | 0.24 | 49/75 | 18/75 |
+| current first-contact   | 0.55 | 0.20 | 44/75 | 15/75 |
+
+Findings:
+- Current-based first-contact (gripper-current rest position, video-validated to the frame)
+  is MARGINALLY WORSE, not better. For drag demos, spawning at the true rest forces the sim
+  to reproduce the human's drag (contact-heavy, unreliable); FK/lift-based pre-stages the can
+  where it lifts, skipping the flaky drag. More faithful != easier for open-loop sim.
+- Even at the tool_pose-validated position, pick+place caps ~60% pick / ~20-24% place.
+  Placement is NOT the limiter (FK agrees with robot tool_pose to ~1cm). The limiter is
+  OPEN-LOOP REPLAY FIDELITY: the human closed the loop (felt/adjusted the grasp+carry),
+  blind playback cannot. The pick->place drop (65%->24% cov) is the un-corrected carry.
+- Implication: high success rates come from the CLOSED-LOOP POLICY, not from better spawns.
+  Recovered positions + demos are training data; ~20% open-loop place is the FLOOR the
+  learned agent must beat, not a number to push by tuning initial conditions.
