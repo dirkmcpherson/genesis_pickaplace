@@ -284,3 +284,22 @@ REMEDIATION (gated on all-bags rsync, in progress):
    in config.yaml (handoff doc was wrong); calibrate via FK-homography. Bounds goal
    relocation to reality — the panel's #1 fix.
 4. Re-measure all metrics under corrected nested; add held-out split; fix action off-by-one.
+
+## HONEST COVERAGE RE-MEASUREMENT (2026-07-08, post-panel)
+Corrected metric (contact & nested both require picked). Success-labeled demos, n=75.
+
+| definition | contact cov | nested cov |
+|---|---|---|
+| searched can + goal RELOCATED (original headline) | 50/75 | — |
+| searched can, STATIC goal (no relocation) | 20/75 | — |
+| FROZEN FK position, STATIC goal (zero fit) | 15/75 | 13/75 |
+
+Frozen-FK per-run: picked 0.59, contact 0.16, nested 0.14. So the recovery-based coverage
+is ~15-20/75 (20-27%), NOT 50/75; the lift to 50 is goal relocation, which also
+false-positives 69% (contact) / 38% (nested) of KNOWN-FAILED demos (negative control run
+through the full pipeline — the honest version).
+
+OPEN QUESTION the vision work resolves: is the goal can physically FIXED across trials
+(=> 15/75 is the true number, relocation was fitting sim error) or did it VARY per trial
+(=> relocation captured something real)? Bottom-up camera through the translucent shelf
+settles it. Until then, report 15-20/75 as coverage, not 50/75.
