@@ -52,7 +52,7 @@ TABLE_TOP_Z = 0.05   # the robot's mounting surface; bag tool_pose proves the ca
 
 def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=None,
                 can_height=BOTTLE_HEIGHT, can_rho=2000, substeps=1,
-                table=False, can_radius=BOTTLE_RADIUS, camera=False):
+                table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -81,7 +81,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
                                              pos=(0.3395, -0.1875, 0.025), fixed=True))
     kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / 'gen3_lite_2f_robotiq_85.urdf'),
                                              fixed=True, pos=(0.0, 0.0, 0.05)))
-    bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=0.2),
+    bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=can_friction),
                               morph=gs.morphs.Cylinder(pos=(0.4381, 0.1, 0.05),
                                                        radius=can_radius, height=can_height))
     goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=2.0),

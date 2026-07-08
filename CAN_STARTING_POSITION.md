@@ -325,3 +325,15 @@ Findings:
 - Implication: high success rates come from the CLOSED-LOOP POLICY, not from better spawns.
   Recovered positions + demos are training data; ~20% open-loop place is the FLOOR the
   learned agent must beat, not a number to push by tuning initial conditions.
+
+## CORRECTION: the pick+place ceiling was a substeps artifact, not an open-loop limit (2026-07-08)
+Earlier claim "open-loop caps ~20% place, fundamental" was WRONG. Diagnosed the pick-but-
+no-place trials: they LIFT the can then drop it mid-carry (278,305: lift to z=0.25-0.29
+then fall). Swept the physical knobs on 8 drop-prone trials:
+- can friction 0.2/0.5/1.0: NO effect (grip fails for lack of normal force, not friction)
+- finger force 50/100/200: NO effect
+- substeps 4->8: place 1/8 -> 3/8 (278,305 flip p->P) <-- THE LEVER
+Contact-solver resolution: at substeps=4 the finger-can contact isn't resolved accurately
+during the dynamic carry (arm accelerating) so the can slips out; substeps=8 holds it.
+Principled fidelity (finer integration), not fitting. Cost ~2x compute; substeps=16 ~4x
+(too slow to sweep here). NEXT: re-run full pick+place + coverage at substeps=8.
