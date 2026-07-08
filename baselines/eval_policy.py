@@ -55,6 +55,8 @@ def policy_action(obs):
         img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
         batch['observation.images.cam'] = img.unsqueeze(0).to(device)
     batch = preprocessor(batch)
+    # processors may relocate tensors to CPU; force back onto the policy's device
+    batch = {k: (v.to(device) if torch.is_tensor(v) else v) for k, v in batch.items()}
     with torch.no_grad():
         action = policy.select_action(batch)
     action = postprocessor(action)

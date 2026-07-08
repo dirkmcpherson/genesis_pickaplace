@@ -167,7 +167,10 @@ def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=T
         if placed_at < 0 and picked_at >= 0 and gp[i] < GP_CLOSE and \
            in_shelf_footprint(bp) and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07:
             placed_at = i
-        if i % 30 == 0 and success_at < 0:   # example.py's reward check
+        # contact-success requires the can to have been PICKED first (stricter than
+        # example.py's original reward, which counts a can shoved along the table into
+        # the goal's base -- see trial 284). picked_at>=0 excludes those false positives.
+        if i % 30 == 0 and success_at < 0 and picked_at >= 0:
             c = np_(bottle.get_contacts(goal)['position'])
             if (0 if c.size == 0 else c.shape[0]) and float(np_(eef.get_pos())[0]) < float(bp[0]):
                 success_at = i

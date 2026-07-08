@@ -84,8 +84,12 @@ class GenesisCanEnv:
         if bp[2] > w['pick_z'] and grip * 100.0 > GP_CLOSE: self._picked = True
         if self._picked and in_shelf_footprint(bp) and \
            BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07: self._placed = True
+        # contact counts only if the can was actually PICKED first -- otherwise a can
+        # shoved along the table into the goal's base registers as task success without
+        # any pick/place/slide (confirmed on trial 284: contact at table level, z=0.10)
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
-        if (c.size and c.shape[0]) and float(np_(w['eef'].get_pos())[0]) < float(bp[0]):
+        if self._picked and (c.size and c.shape[0]) and \
+           float(np_(w['eef'].get_pos())[0]) < float(bp[0]):
             self._contact = True
         done = self._t >= self.max_steps
         info = dict(picked=self._picked, placed=self._placed, contact=self._contact,
