@@ -16,7 +16,7 @@ OUT = REPO / 'can_pos_recovery/trial_placements.json'
 # v2 = table under the pick area (bag tool_pose proves cans sat at z=0.05, not the ground
 # plane) + true Campbell's-can dimensions confirmed from the trial videos.
 WORLD = dict(can_height=0.101, can_radius=0.033, can_rho=1000,
-             finger_kp=100.0, finger_force=50.0, substeps=4, table=True)
+             finger_kp=100.0, finger_force=50.0, substeps=8, table=True)
 
 
 def merge(paths):
