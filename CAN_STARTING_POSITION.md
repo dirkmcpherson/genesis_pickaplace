@@ -337,3 +337,14 @@ Contact-solver resolution: at substeps=4 the finger-can contact isn't resolved a
 during the dynamic carry (arm accelerating) so the can slips out; substeps=8 holds it.
 Principled fidelity (finer integration), not fitting. Cost ~2x compute; substeps=16 ~4x
 (too slow to sweep here). NEXT: re-run full pick+place + coverage at substeps=8.
+
+## substeps=8 full result (FK spawn, 75 demos x3, goal parked far)
+             pick/run  place/run  pick cov   place cov
+substeps=4:    0.59      0.24      49/75      18/75
+substeps=8:    0.74      0.34      57/75      28/75    <-- converged (16 == 8)
+substeps=8 improves EVERY metric incl pick (finer contact resolves the grasp too).
+Adopt substeps=8 as world default; re-derive coverage numbers (all prior were at ss=4,
+so understated). Residual: place still 37% -- the pick->place gap (76% pick cov but 37%
+place cov) is NOT more substeps (16==8); it's carry/place trajectory + strict place band,
+partly genuinely open-loop-hard. Tradeoff: ss=8 is 2x compute (matters for RL rollout
+throughput at scale -- pick ss deliberately: high for faithful eval, lower for bulk train).
