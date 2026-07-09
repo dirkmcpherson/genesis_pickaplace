@@ -348,3 +348,20 @@ so understated). Residual: place still 37% -- the pick->place gap (76% pick cov 
 place cov) is NOT more substeps (16==8); it's carry/place trajectory + strict place band,
 partly genuinely open-loop-hard. Tradeoff: ss=8 is 2x compute (matters for RL rollout
 throughput at scale -- pick ss deliberately: high for faithful eval, lower for bulk train).
+
+## FULL COVERAGE @ substeps=8 (2026-07-09)
+Recovery-honest (frozen FK, static goal, corrected metric, x3):
+              pick/run  contact cov  nested cov
+substeps=4:     0.59      15/75        13/75
+substeps=8:     0.73      22/75        15/75     <- real lift from physics alone, no fit
+
+Searched placements per-run: contact 0.57, nested 0.35->0.41; reliable-nested 18->21.
+
+NEGATIVE CONTROL still fails at ss=8: fail-labeled demos false-positive 9/11 contact,
+8/11 nested. Substeps does NOT fix this -- it's the goal-relocation artifact, not physics.
+So the searched "50/75" stays inflated; the honest recovery-based coverage is
+22/75 contact (29%) / 15/75 nested (20%).
+
+Path to higher HONEST coverage: (a) vision goal ground-truth to bound relocation to
+reality (then relocated successes become trustworthy), or (b) closed-loop policy.
+Substeps=8 adopted as world default.
