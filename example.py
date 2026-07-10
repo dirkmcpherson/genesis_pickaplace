@@ -29,9 +29,13 @@ if not args.legacy and _placements_file.exists():
     WORLD = _tbl['world']
     # success-labeled only: fail-labeled demos must not be replayed with a goal can
     # relocated to "where the can went" -- that would manufacture success from a demo
-    # that failed in the real world
+    # that failed in the real world.
+    # AUDIT QUARANTINE: per-trial relocated goals (goal_moved) are excluded by default;
+    # panel-measured ~40-69% false-positive rate on known failures. The can position is
+    # still per-trial (trustworthy, tool_pose-validated); only the goal stays static.
     PLACEMENTS = {int(u): r for u, r in _tbl['trials'].items()
-                  if r['status'] in ('ok', 'ok_batch') and r.get('label') == 'success'}
+                  if r['status'] in ('ok', 'ok_batch') and r.get('label') == 'success'
+                  and not r.get('goal_moved')}
     print(f"Loaded {len(PLACEMENTS)} per-trial placements (world: {WORLD}); --legacy to disable")
 
 gs.init(backend=gs.cpu if args.cpu else gs.gpu, seed=0, precision="32", logging_level="warning")

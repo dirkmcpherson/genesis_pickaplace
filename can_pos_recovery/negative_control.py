@@ -19,8 +19,11 @@ fk_all = {int(k): v for k, v in
           json.loads((REPO / 'can_pos_recovery/fk_recovered.json').read_text()).items()}
 fails = {u: v for u, v in sorted(fk_all.items()) if v['label'] == 'fail'}
 
-w = build_world(backend='cpu', finger_force=50.0, finger_kp=100.0, can_height=0.101,
-                can_rho=1000, substeps=4, table=True, can_radius=0.033)
+# config parity with the positive eval (audit fix): world from the placements table
+_wc = json.loads((REPO / 'can_pos_recovery/trial_placements.json').read_text())['world']
+w = build_world(backend='cpu', finger_force=_wc['finger_force'], finger_kp=_wc['finger_kp'],
+                can_height=_wc['can_height'], can_rho=_wc['can_rho'],
+                substeps=_wc['substeps'], table=_wc['table'], can_radius=_wc['can_radius'])
 goal = (STATIC_BOTTLE_POSITION[0], STATIC_BOTTLE_POSITION[1], w['goal_start_z'])
 
 print(f"NEGATIVE CONTROL - {len(fails)} fail-labeled demos, world v2, {REPS} reps")
@@ -32,8 +35,9 @@ for uid, fk in fails.items():
     marks = []
     nested_fp = False
     for _ in range(REPS):
-        r = rollout(w, vel, gp, (seed[0], seed[1], w['can_start_z']), goal,
-                    stop_on_success=False)
+        # stop_on_success=True: SAME scoring path as the positive eval (audit fix --
+        # fail demos were previously scored full-episode, stricter than success demos)
+        r = rollout(w, vel, gp, (seed[0], seed[1], w['can_start_z']), goal)
         m = 'S' if r['success'] else 'P' if r['placed'] else 'p' if r['picked'] else '.'
         if r['nested']:
             m += 'N'; nested_fp = True
