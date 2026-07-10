@@ -48,7 +48,8 @@ def build_batched_world(n_envs, finger_force=50.0, finger_kp=100.0,
     goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=2.0),
                             morph=gs.morphs.Cylinder(pos=STATIC_BOTTLE_POSITION,
                                                      radius=can_radius, height=can_height))
-    kdofs = [kinova.get_joint(n).dof_idx_local for n in JOINT_NAMES]
+    from replay_harness import joint_dofs
+    kdofs = [joint_dofs(kinova.get_joint(n)) for n in JOINT_NAMES]
     eef = kinova.get_link(EEF_NAME)
     scene.build(n_envs=n_envs)
 

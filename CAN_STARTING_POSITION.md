@@ -365,3 +365,25 @@ So the searched "50/75" stays inflated; the honest recovery-based coverage is
 Path to higher HONEST coverage: (a) vision goal ground-truth to bound relocation to
 reality (then relocated successes become trustworthy), or (b) closed-loop policy.
 Substeps=8 adopted as world default.
+
+## GENESIS UPGRADE INVESTIGATION (2026-07-10): the grip was geometry all along
+Port to genesis 1.2.1 (.venv-g12): API stable, mimic joints now equality constraints,
+BUT replay grip collapsed. Root-cause chain, each step verified:
+1. 1.2.1 processes finger collision differently (thinner effective pads) -> fingers reach
+   the recorded aperture GRAZING the can; position-PD at target = zero grip force. The
+   real gripper pressed with ~max motor current at that same position (current-limited
+   servo). Force-mode grip implemented (drive ONLY the driver joint on 1.2.x -- following
+   mimic-equality; pure torque blows past joint limits; correct model = position target
+   fully-closed with force_range clamped to +-tau).
+2. Authored CAD-true box collision for the 4 finger links (gen3_lite_2f_boxfingers.urdf,
+   dims from STL bounds). Engines now behave IDENTICALLY (engine-independence achieved).
+3. BUT with honest rigid geometry, replay grip collapses on BOTH engines: the entire
+   0.2.1 baseline (contact 22/75, pick 0.73) depended on the phantom-fat convex hulls.
+   Reframe: real pads are RUBBER -- the hull fat was accidentally a compliance surrogate.
+   Rigid-true boxes are geometrically honest but functionally less faithful.
+4. Fix in progress: pad compliance allowance delta (inflate pad boxes), calibrated to the
+   RECORDED stall aperture (bags: motor ~68 stalled on the 66mm can) -- one global
+   parameter, external anchor, engine-independent. Variants d3/d5/d7mm under sweep.
+Status: 0.2.1 numbers stand as "hull-geometry world" measurements (disclosed); the
+compliance-calibrated world becomes the go-forward baseline on both engines once delta
+validates against recorded apertures.

@@ -21,6 +21,17 @@ from kinova import JOINT_NAMES, EEF_NAME
 
 def np_(x): return x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else np.asarray(x)
 
+
+def joint_dofs(joint):
+    """Version-agnostic local dof index: 1.2.x prefers dofs_idx_local, 0.2.1 dof_idx_local."""
+    try:
+        idx = joint.dofs_idx_local
+    except AttributeError:
+        idx = joint.dof_idx_local
+    if isinstance(idx, (list, tuple, np.ndarray)):
+        return int(np.asarray(idx).reshape(-1)[0])
+    return int(idx)
+
 BOTTLE_RADIUS = 0.035
 BOTTLE_HEIGHT = 0.075
 BOX_WIDTH, BOX_HEIGHT = 0.75, 0.12
@@ -52,7 +63,8 @@ TABLE_TOP_Z = 0.05   # the robot's mounting surface; bag tool_pose proves the ca
 
 def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=None,
                 can_height=BOTTLE_HEIGHT, can_rho=2000, substeps=1,
-                table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2):
+                table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2,
+                urdf_file='gen3_lite_2f_robotiq_85.urdf'):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -79,7 +91,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
         scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=0.5),
                          morph=gs.morphs.Box(size=(0.419, 1.2, 0.05),
                                              pos=(0.3395, -0.1875, 0.025), fixed=True))
-    kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / 'gen3_lite_2f_robotiq_85.urdf'),
+    kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / urdf_file),
                                              fixed=True, pos=(0.0, 0.0, 0.05)))
     bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=can_friction),
                               morph=gs.morphs.Cylinder(pos=(0.4381, 0.1, 0.05),
@@ -87,7 +99,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=2.0),
                             morph=gs.morphs.Cylinder(pos=STATIC_BOTTLE_POSITION,
                                                      radius=can_radius, height=can_height))
-    kdofs = [kinova.get_joint(n).dof_idx_local for n in JOINT_NAMES]
+    kdofs = [joint_dofs(kinova.get_joint(n)) for n in JOINT_NAMES]
     eef = kinova.get_link(EEF_NAME)
     cam = None
     if camera:
@@ -131,7 +143,14 @@ def tilt_deg(quat):
 
 
 def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=True,
-            settle_steps=100, can_quat=(1, 0, 0, 0)):
+            settle_steps=100, can_quat=(1, 0, 0, 0), grip_mode='pd', grip_tau=6.0):
+    """grip_mode='force': while the recorded gripper is closed (gp>GP_CLOSE), drive the
+    two bottom finger joints with constant inward TORQUE (like the real current-limited
+    gripper) instead of position targets. On true-size finger geometry (genesis 1.2.x)
+    position-PD produces ~zero grip force once the target aperture is reached -- the
+    real gripper pressed with ~max current at that same position. Tips stay on their
+    mimic position targets. grip_tau: one GLOBAL constant, calibrated to reproduce the
+    recorded stall aperture -- never tuned per trial."""
     """One open-loop replay. goal_pos=None parks the goal can far away.
     stop_on_success=True mirrors example.py (break at first contact success).
     stop_on_success=False runs the whole episode + settle_steps, then also scores
@@ -153,10 +172,29 @@ def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=T
 
     n = len(vel) if max_cmds is None else min(max_cmds, len(vel))
     picked_at = placed_at = success_at = -1
+    grip_state = [False]   # force-mode: is the driver currently force-clamped?
     max_z = 0.0
     for i in range(n):
         kinova.control_dofs_position(vel[i], dofs_idx_local=kdofs[:6])
-        kinova.control_dofs_position(np.array(gripper_targets(gp[i])), dofs_idx_local=np.array(kdofs[-4:]))
+        tgt = np.array(gripper_targets(gp[i]))
+        if grip_mode == 'force':
+            # Current-limited-servo model (matches the real gripper): drive ONLY the
+            # driver joint (1.2.x mimic joints are equality constraints; commanding the
+            # followers fights them). While the recorded gripper is closed, command
+            # FULLY CLOSED with the driver's force clamped to +-grip_tau: the finger
+            # stalls on the can pressing with <=tau, like the real current limit.
+            # Pure torque mode is wrong (blows past joint limits, sweeps through the can).
+            drv = np.array([kdofs[-3]])
+            closed = gp[i] > GP_CLOSE
+            if closed != grip_state[0]:
+                lim = grip_tau if closed else 50.0
+                kinova.set_dofs_force_range(lower=np.array([-lim]), upper=np.array([lim]),
+                                            dofs_idx_local=drv)
+                grip_state[0] = closed
+            kinova.control_dofs_position(np.array([-0.09 if closed else tgt[1]]),
+                                         dofs_idx_local=drv)
+        else:
+            kinova.control_dofs_position(tgt, dofs_idx_local=np.array(kdofs[-4:]))
         for _ in range(3):          # steps_per_cmd in example.py
             scene.step()
 
