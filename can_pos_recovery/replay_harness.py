@@ -64,7 +64,8 @@ TABLE_TOP_Z = 0.05   # the robot's mounting surface; bag tool_pose proves the ca
 def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=None,
                 can_height=BOTTLE_HEIGHT, can_rho=2000, substeps=1,
                 table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2,
-                urdf_file='gen3_lite_2f_robotiq_85.urdf'):
+                urdf_file='gen3_lite_2f_robotiq_85.urdf', urdf_extra=None,
+                constraint_timeconst=None, rigid_extra=None):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -79,8 +80,17 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     real object (FK grasp heights cluster at/above its top); 0.10 matches a soup can."""
     gs.init(backend=gs.gpu if backend == 'gpu' else gs.cpu,
             seed=0, precision="32", logging_level="warning")
+    # 1.2.x decouples contact stiffness from substeps (fixed constraint_timeconst=0.01);
+    # 0.2.1 hard-wired it to 2*substep_dt (=0.0025 at ss=8). rigid_extra: arbitrary
+    # RigidOptions overrides for engine-behavior matching (solver, pruning, mjc-compat).
+    _kw = {}
+    _rig = dict(rigid_extra or {})
+    if constraint_timeconst is not None:
+        _rig['constraint_timeconst'] = constraint_timeconst
+    if _rig:
+        _kw['rigid_options'] = gs.options.RigidOptions(**_rig)
     scene = gs.Scene(show_viewer=show_viewer,
-                     sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps))
+                     sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps), **_kw)
     scene.add_entity(gs.morphs.Plane())
     scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=0.5),
                      morph=gs.morphs.Box(size=BOX_SIZE, pos=BOX_POS))
@@ -92,7 +102,8 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
                          morph=gs.morphs.Box(size=(0.419, 1.2, 0.05),
                                              pos=(0.3395, -0.1875, 0.025), fixed=True))
     kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / urdf_file),
-                                             fixed=True, pos=(0.0, 0.0, 0.05)))
+                                             fixed=True, pos=(0.0, 0.0, 0.05),
+                                             **(urdf_extra or {})))
     bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=can_friction),
                               morph=gs.morphs.Cylinder(pos=(0.4381, 0.1, 0.05),
                                                        radius=can_radius, height=can_height))

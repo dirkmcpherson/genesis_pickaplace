@@ -387,3 +387,32 @@ BUT replay grip collapsed. Root-cause chain, each step verified:
 Status: 0.2.1 numbers stand as "hull-geometry world" measurements (disclosed); the
 compliance-calibrated world becomes the go-forward baseline on both engines once delta
 validates against recorded apertures.
+
+## GENESIS UPGRADE GATE VERDICT (2026-07-10): 1.2.1 FAILS the grasp gate — staying on 0.2.1
+After a full-day systematic investigation, genesis 1.2.1 cannot reproduce the pinch grasp
+under ANY of 12 tested configurations. The measured mechanism (synchronized trace-diff,
+trial 243): at identical kinematic state and penetration, 1.2.1's contact produces ~3.4x
+LOWER force than 0.2.1 (F=96 vs 327 at cmd 130); the finger never stalls against the can
+and extrudes it out of the pinch (force collapses 106->10->0), while 0.2.1 stalls at
+drv=0.33 with F ramping to 450 and lifts.
+
+Eliminated (verified, one variable at a time):
+- collision geometry: world-space verts IDENTICAL across engines (earlier "thinner
+  fingers" was a frame-of-reporting artifact; box-replacement detour also disproved --
+  though it yielded a real finding: flat boxes grip worse than the tapered hulls (form
+  closure), and 0.2.1's hull collision AABB == true STL AABB for the distal pads)
+- mesh decimation (off: 781 verts, same behavior); mimic-equality constraints (stripped:
+  same); actuation model (PD / pure torque / current-limited servo, driver-only and
+  all-4-clamped, tau 2..50); constraint_timeconst matched to 0.2.1's effective 0.0025;
+  per-geom friction (identical 1.0/0.2/2.0); constraint_solver CG+100it+1e-5 (0.2.1
+  match); enable_mujoco_compatibility=True; contact_pruning_tolerance -> 1e-4.
+
+DECISION: remain on genesis 0.2.1 (licensed baseline: contact 22/75, nested 15/75,
+pick 0.73, negative control 2/19 FP at parity config). 1.2.1 port artifacts retained
+(.venv-g12, version-agnostic harness, nomimic/meshbox URDFs) for a future retry with
+upstream input. The panel improvement levers (friction surgery, command interpolation,
+wait-for-grasp gating) proceed on 0.2.1.
+Key engine facts documented for the cluster: 1.2.1 requires torch>=2.8; mimic joints
+become equality constraints; contact stiffness decoupled from substeps
+(constraint_timeconst=0.01 fixed); primitive-collision <origin> offsets ignored by the
+URDF loader on both engines (bake offsets into mesh vertices).
