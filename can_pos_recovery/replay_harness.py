@@ -65,7 +65,8 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
                 can_height=BOTTLE_HEIGHT, can_rho=2000, substeps=1,
                 table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2,
                 urdf_file='gen3_lite_2f_robotiq_85.urdf', urdf_extra=None,
-                constraint_timeconst=None, rigid_extra=None):
+                constraint_timeconst=None, rigid_extra=None,
+                table_friction=0.5, goal_friction=2.0):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -92,13 +93,13 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     scene = gs.Scene(show_viewer=show_viewer,
                      sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps), **_kw)
     scene.add_entity(gs.morphs.Plane())
-    scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=0.5),
+    scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=table_friction),
                      morph=gs.morphs.Box(size=BOX_SIZE, pos=BOX_POS))
     if table:
         # pick-area table: top flush with the robot mount (0.05), stops short of the base
         # ends 1mm short of the shelf box front face (x=0.55) -- overlapping the dynamic
         # shelf box ejects it from the scene at build time
-        scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=0.5),
+        scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=table_friction),
                          morph=gs.morphs.Box(size=(0.419, 1.2, 0.05),
                                              pos=(0.3395, -0.1875, 0.025), fixed=True))
     kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / urdf_file),
@@ -107,7 +108,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=can_friction),
                               morph=gs.morphs.Cylinder(pos=(0.4381, 0.1, 0.05),
                                                        radius=can_radius, height=can_height))
-    goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=2.0),
+    goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=goal_friction),
                             morph=gs.morphs.Cylinder(pos=STATIC_BOTTLE_POSITION,
                                                      radius=can_radius, height=can_height))
     kdofs = [joint_dofs(kinova.get_joint(n)) for n in JOINT_NAMES]
@@ -154,7 +155,8 @@ def tilt_deg(quat):
 
 
 def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=True,
-            settle_steps=100, can_quat=(1, 0, 0, 0), grip_mode='pd', grip_tau=6.0):
+            settle_steps=100, can_quat=(1, 0, 0, 0), grip_mode='pd', grip_tau=6.0,
+            interp=False, grasp_gate=None, gate_dwell=60, gate_force=3.0):
     """grip_mode='force': while the recorded gripper is closed (gp>GP_CLOSE), drive the
     two bottom finger joints with constant inward TORQUE (like the real current-limited
     gripper) instead of position targets. On true-size finger geometry (genesis 1.2.x)
@@ -185,7 +187,25 @@ def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=T
     picked_at = placed_at = success_at = -1
     grip_state = [False]   # force-mode: is the driver currently force-clamped?
     max_z = 0.0
+    gated = False
+    bots = sorted(int(x) for x in kdofs[-4:-2])   # getters need sorted plain ints (0.2.1)
     for i in range(n):
+        # wait-for-grasp gating (panel controls #1): at the recorded grasp instant,
+        # freeze the arm target and keep the gripper closing until the sim's OWN
+        # finger effort signals acquisition (proprioceptive only -- no can state),
+        # then resume the tape. Timeout keeps genuine misses failing.
+        if grasp_gate is not None and i == grasp_gate and not gated:
+            gated = True
+            for _ in range(gate_dwell):
+                kinova.control_dofs_position(vel[i], dofs_idx_local=kdofs[:6])
+                kinova.control_dofs_position(np.array(gripper_targets(max(gp[i], 60.0))),
+                                             dofs_idx_local=np.array(kdofs[-4:]))
+                for _ in range(3):
+                    scene.step()
+                f = np_(kinova.get_dofs_control_force(dofs_idx_local=bots))
+                v = np_(kinova.get_dofs_velocity(dofs_idx_local=bots))
+                if np.abs(f).min() > gate_force and np.abs(v).max() < 0.05:
+                    break
         kinova.control_dofs_position(vel[i], dofs_idx_local=kdofs[:6])
         tgt = np.array(gripper_targets(gp[i]))
         if grip_mode == 'force':
@@ -206,8 +226,21 @@ def rollout(w, vel, gp, can_pos, goal_pos=None, max_cmds=None, stop_on_success=T
                                          dofs_idx_local=drv)
         else:
             kinova.control_dofs_position(tgt, dofs_idx_local=np.array(kdofs[-4:]))
-        for _ in range(3):          # steps_per_cmd in example.py
-            scene.step()
+        if interp and i > 0:
+            # per-step linear interpolation between waypoints (the real Kinova loop
+            # interpolates at 1kHz; ZOH target jumps at kp=200 hammer the contacts)
+            prev = vel[i - 1]; ptgt = np.array(gripper_targets(gp[i - 1]))
+            for s in range(3):
+                a = (s + 1) / 3.0
+                kinova.control_dofs_position(prev + (vel[i] - prev) * a,
+                                             dofs_idx_local=kdofs[:6])
+                if grip_mode != 'force':
+                    kinova.control_dofs_position(ptgt + (tgt - ptgt) * a,
+                                                 dofs_idx_local=np.array(kdofs[-4:]))
+                scene.step()
+        else:
+            for _ in range(3):          # steps_per_cmd in example.py
+                scene.step()
 
         bp = np_(bottle.get_pos())
         max_z = max(max_z, float(bp[2]))

@@ -416,3 +416,21 @@ Key engine facts documented for the cluster: 1.2.1 requires torch>=2.8; mimic jo
 become equality constraints; contact stiffness decoupled from substeps
 (constraint_timeconst=0.01 fixed); primitive-collision <origin> offsets ignored by the
 URDF loader on both engines (bake offsets into mesh vertices).
+
+## IMPROVEMENT-LEVER CAMPAIGN RESULT (2026-07-10): all three cheap levers REJECTED — replay is plateaued
+Panel-ranked levers tested one at a time, pre-registered predictions, frozen-FK/static-
+goal/corrected-metric protocol:
+- command interpolation: FAILED pre-reg (lost a success on probe set; predicted no-harm)
+- friction surgery (table/shelf/goal 0.3, no 2.0 hack): FAILED pre-reg (lost 243's grasp;
+  predicted no pick effect)
+- wait-for-grasp gating: passed 8-trial probe (321 S->SN, no regressions) but FAILED at
+  scale: picked 0.73->0.70, contact cov 22/75 unchanged, nested cov 15->12/75.
+  Specificity unchanged (contact-FP 2/19, nested-FP 0/19 gated).
+All three flags remain in replay_harness (flag-gated, default off) for future variants.
+
+CONCLUSION: open-loop replay on genesis 0.2.1 / world v2 is CHARACTERIZED and PLATEAUED:
+pick 0.73/run, contact coverage 22/75 (29%), nested 15/75 (20%), specificity 2/19 & 1/19.
+Remaining headroom belongs to (a) the goal-position question (vision ground truth,
+bottom-up camera) and (b) the LEARNED closed-loop routes (IL/RL panel ranking: dataset
+fixes -> real-demo BC -> RL fine-tune past the replay teacher). Further replay/physics
+tweaking is negative-expected-value on current evidence.
