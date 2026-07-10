@@ -42,27 +42,30 @@ for uid in uids:
         kept += 1; continue
     vel, gp = load_episode(uid)
     contact = False
-    SETTLE_FRAMES = 15   # ~0.5s after first contact, then stop -- keeps the demo ending
-                         # at the task completion instead of the arm's trailing retreat
-                         # (which replayed open-loop tends to knock the can over)
+    # Truncation (panel fix): keep the RELEASE -- run past first contact until the
+    # recorded gripper opens, +30 frames of retreat, cap at contact+150. The old
+    # contact+15 cut deleted the release/settle the nested skill needs.
     for attempt in range(8):    # borderline placements are stochastic; try several times
         obs = env.reset(uid=uid)
         states, images, actions = [], [], []
         post_contact = 0
+        released = -1
         for i in range(len(vel) - 1):
-            a = np.concatenate([vel[i + 1], [np.clip(gp[i + 1] / 100.0, 0, 1)]])  # next waypoint
+            # action label = the command EXECUTED from this state (panel fix: was
+            # vel[i+1], a one-step phase lead that skewed gripper-close timing)
+            a = np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]])
             states.append(obs['state'])
             if args.render: images.append(obs['image'])
             actions.append(a.astype(np.float32))
             obs, done, info = env.step(np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]))
-            # env's contact now requires the can to have been picked first, so a
-            # table-shove into the goal no longer counts as success (trial 284)
             if info['contact']:
                 contact = True
             if contact:
                 post_contact += 1
-                if post_contact >= SETTLE_FRAMES:
-                    break   # truncate: demo ends at completion, not the retreat
+                if released < 0 and gp[i] < 30.0:
+                    released = post_contact
+                if (released > 0 and post_contact >= released + 30) or post_contact >= 150:
+                    break   # demo ends after release+retreat, not mid-hold
         if contact:
             break
     if not contact:
