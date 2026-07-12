@@ -17,7 +17,7 @@ import pathlib as pl
 import numpy as np
 
 REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
-RAW = REPO / 'baselines/episodes_raw'
+RAW = REPO / 'baselines/episodes_raw_v3'
 ROOT = REPO / 'baselines/lerobot_dataset/genesis_pickaplace'
 FPS = 30
 TASK = 'pick the can and slide it against the can on the shelf'
