@@ -13,12 +13,16 @@ Train Diffusion Policy on it with lerobot's CLI, e.g.:
       --output_dir=baselines/outputs/dp_state \
       --policy.push_to_hub=false
 """
+import sys
 import pathlib as pl
 import numpy as np
 
 REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
-RAW = REPO / 'baselines/episodes_raw_v3'
-ROOT = REPO / 'baselines/lerobot_dataset/genesis_pickaplace'
+# argv: <raw_episode_dir> <dataset_root> [proprio_dim] -- parametrized so version
+# switches are explicit at the call site, not silent file edits (lesson: the v3 chain
+# once trained on stale v1 data because a path edit lived in a dead chain)
+RAW = REPO / (sys.argv[1] if len(sys.argv) > 1 else 'baselines/episodes_raw_v3')
+ROOT = REPO / (sys.argv[2] if len(sys.argv) > 2 else 'baselines/lerobot_dataset/genesis_pickaplace')
 FPS = 30
 TASK = 'pick the can and slide it against the can on the shelf'
 
@@ -32,10 +36,11 @@ probe = np.load(files[0])
 has_images = 'images' in probe
 sdim = probe['states'].shape[1]; adim = probe['actions'].shape[1]
 
-# split the 16-dim recorded state: proprio -> observation.state, world (can pose +
-# goal xy) -> observation.environment_state. Diffusion Policy requires an image or an
+# split the recorded state: proprio -> observation.state, world (can pose + goal xy)
+# -> observation.environment_state. Diffusion Policy requires an image or an
 # environment_state input; this split makes state-only training work out of the box.
-PROPRIO = 7
+# v4+: proprio is 8 (6 joints, gripper pos, grip effort); v1-v3 were 7.
+PROPRIO = int(sys.argv[3]) if len(sys.argv) > 3 else (probe['states'].shape[1] - 9)
 features = {
     'observation.state': {'dtype': 'float32', 'shape': (PROPRIO,), 'names': None},
     'observation.environment_state': {'dtype': 'float32', 'shape': (sdim - PROPRIO,),

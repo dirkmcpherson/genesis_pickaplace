@@ -115,9 +115,18 @@ class GenesisCanEnv:
         # gripper motor 0..1 from driver joint angle (invert of gripper_targets)
         theta = float(q[7])
         motor = 1.0 - (theta - (-0.09)) / (0.96 - (-0.09))
+        # grip effort: |applied control force| on the bottom finger drivers -- the sim
+        # analog of the real gripper's motor current (the grasp-contact 'feel' signal)
+        bots = sorted(int(x) for x in w['kdofs'][-4:-2])
+        try:
+            grip_effort = float(np.abs(np_(w['kinova'].get_dofs_control_force(
+                dofs_idx_local=bots))).sum())
+        except Exception:
+            grip_effort = 0.0
         bp = np_(w['bottle'].get_pos()); bq = np_(w['bottle'].get_quat())
         gp_ = np_(w['goal'].get_pos())
-        state = np.concatenate([q[:6], [np.clip(motor, 0, 1)], bp, bq, gp_[:2]]).astype(np.float32)
+        state = np.concatenate([q[:6], [np.clip(motor, 0, 1)], [grip_effort],
+                                bp, bq, gp_[:2]]).astype(np.float32)
         obs = dict(state=state)
         if self.render_size is not None and w.get('cam') is not None:
             rgb = np.asarray(w['cam'].render()[0]).astype(np.uint8)

@@ -45,11 +45,15 @@ preprocessor, postprocessor = make_pre_post_processors(
     policy_cfg=policy.config, pretrained_path=args.checkpoint)
 
 
+# proprio split from the checkpoint's own config (v1-v3: 7, v4+: 8 incl grip effort)
+PROPRIO = policy.config.input_features['observation.state'].shape[0]
+
+
 def policy_action(obs):
     batch = {'observation.state':
-             torch.from_numpy(obs['state'][:7]).float().unsqueeze(0).to(device),
+             torch.from_numpy(obs['state'][:PROPRIO]).float().unsqueeze(0).to(device),
              'observation.environment_state':
-             torch.from_numpy(obs['state'][7:]).float().unsqueeze(0).to(device),
+             torch.from_numpy(obs['state'][PROPRIO:]).float().unsqueeze(0).to(device),
              'task': [TASK]}
     if args.image:
         img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
