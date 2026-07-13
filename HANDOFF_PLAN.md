@@ -99,6 +99,20 @@ d. **SACfD build agent** — `baselines/rl/{pick_env,demo_buffer,train_sacfd}.py
    pinned 0.2.1; vendor the editable checkout (`~/workspace/Genesis`) or pin a wheel.
    Batched GPU envs proven at B=32 (`batch_harness.py`) — the RL rollout engine.
 
+## 2b. KEY FINDING (2026-07-13): DP-v3 OVERFITS — randomized-IC generalization regressed
+DP-v3 in-dist contact 0.33 (up from v1's 0.22) BUT randomized-IC contact 0.08 (DOWN from
+v1's 0.14); picked 0.49 in-dist / 0.20 random; nested 0.05 / 0.00. Cleaner+tighter data
++ 248.7M params = sharp on demo ICs, brittle off them. CONSEQUENCES for the queue:
+- DP size ablation is now URGENT (was item 5): quarter-size U-Net via lerobot policy
+  config (down_dims), expect better randomized generalization. Run right after v4 evals.
+- v4's REAL test is the RANDOMIZED number, not in-dist. If grip-effort only helps in-dist,
+  the binding lever is net-size/data-quantity, not obs richness -> go to real-demo BC (v5).
+- COMPAT GOTCHA: grip-effort added to genesis_can_env._obs makes state 17-dim. The v3/v1
+  checkpoints are 16-dim -> INCOMPATIBLE with the current env (eval would misalign the
+  proprio/env split). v1 & v3 numbers are FROZEN/FINAL; do not re-eval them against the
+  current env. v4 onward is 17-dim and matches. To re-eval v3, git-revert the _obs change
+  in a separate checkout.
+
 ## 3. Key numbers (for regression checking; full context in CAN_STARTING_POSITION.md)
 - Replay (open-loop, frozen-FK, static goal, corrected metric, ss=8):
   pick 0.73/run; contact cov 22/75 (per-run 0.24); nested cov 15/75; neg-control FP 2/19

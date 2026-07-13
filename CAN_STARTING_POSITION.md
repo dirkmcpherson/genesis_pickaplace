@@ -434,3 +434,15 @@ Remaining headroom belongs to (a) the goal-position question (vision ground trut
 bottom-up camera) and (b) the LEARNED closed-loop routes (IL/RL panel ranking: dataset
 fixes -> real-demo BC -> RL fine-tune past the replay teacher). Further replay/physics
 tweaking is negative-expected-value on current evidence.
+
+## DP-v3 FINAL + OVERFIT FINDING (2026-07-13)
+DP-v3 (clean-label dataset, 35 eps, 16-dim state-only):
+  in-distribution (105 rollouts): picked 0.49 placed 0.37 contact 0.33 nested 0.05
+  randomized-IC (50):             picked 0.20 placed 0.12 contact 0.08 nested 0.00
+vs DP-v1: in-dist 0.50/0.32/0.22/0.06 ; random 0.34/0.14/0.14/0.04.
+=> v3 BEATS v1 in-distribution (contact 0.33 vs 0.22) but is WORSE on randomized
+generalization (contact 0.08 vs 0.14): overfitting. Downstream funnel near-solved
+(P(place|pick)=0.76, P(slide|place)=0.90); PICK is the bottleneck (0.49 in-dist, and
+collapses to 0.20 off-distribution). Levers: smaller net (248.7M params is ~7k/frame),
+more/broader data (real-demo BC v5). v4 (17-dim +grip-effort) training now; its
+randomized number is the real test.
