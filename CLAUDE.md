@@ -9,8 +9,11 @@ Replays in-the-wild Kinova gen3-lite pick-and-place demos in the Genesis simulat
 
 ## Agent Status
 
-- **Status:** 🟡 remediation (independent panel found real overstatements; fixes queued, gated on all-bags rsync)
-- **Last session:** 2026-07-08
+- **Status:** 🟢 active — READ `HANDOFF_PLAN.md` FIRST (full actionable queue, resume commands, footguns; written for session handoff)
+- **Last session:** 2026-07-12
+- **Standing user directives:** full autonomy granted (no permission-asking except destructive actions); EVERY trained policy gets eval videos sent to the user; honesty protocol (corrected metrics, x3 reps, negative controls, pre-registered predictions) is mandatory for all reported numbers.
+- **Current summary:** Replay characterized & plateaued (pick 0.73, contact 22/75, engine gate: stay on genesis 0.2.1 — 1.2.1 fails pinch grasp). DP-v3 trained (in-dist picked 0.49/placed 0.37/contact 0.33/nested 0.05; downstream near-solved, PICK is the bottleneck). In flight at handoff: v3 randomized eval, v4 dataset chain (adds grip-effort obs), SACfD (built+smoke-verified, full 200k run queued). Next after those: real-demo BC (v5, all 75 bag trajectories), vision goal ground-truth, DP size ablation, unlabeled 200-231 ingestion. All numbers/decision rules in HANDOFF_PLAN.md §2-3.
+- **Prior status (2026-07-08):** 🟡 remediation (independent panel found real overstatements; fixes landed)
 - **Panel review (2026-07-08):** 4 adversarial agents. AFFIRMED: FK position recovery is sound (validated vs bag tool_pose ~1cm). OVERTURNED: (1) negative control was rigged — disabled goal relocation, hiding ~40% nested false-positive rate on fail-labeled demos (11/16 "solved"); (2) coverage 50/75 is a fit not recovery (winner drifts up to 17cm from FK, 60% depend on goal relocation median 12.8cm); (3) 52/61 solved are un-revalidated batch-proxy winners (success_rate:None); (4) nested metric lacked the picked precondition (both DP 0.06 and replay 0.35 inflated). FIXED: nested + batch proxy now require picked. Randomized-IC DP: picked 0.34/contact 0.14/nested 0.04. See CAN_STARTING_POSITION.md "INDEPENDENT PANEL REVIEW" + tasks #3,#11,#12,#13. User is rsyncing all raw bags to enable vision ground truth (Hough circles prototyped, works; no factory calibration — use FK-homography).
 - **Prior session:** 2026-07-06
 - **Current branch:** main
