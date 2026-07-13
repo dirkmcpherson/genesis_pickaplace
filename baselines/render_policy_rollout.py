@@ -13,12 +13,13 @@ TASK = 'pick the can and slide it against the can on the shelf'
 pol = DiffusionPolicy.from_pretrained(CK); pol.eval()
 dev = 'cuda' if torch.cuda.is_available() else 'cpu'; pol.to(dev)
 pre, post = make_pre_post_processors(policy_cfg=pol.config, pretrained_path=CK)
+PROPRIO = pol.config.input_features['observation.state'].shape[0]  # v1-v3: 7, v4+: 8
 env = GenesisCanEnv(backend='cpu', render_size=(480, 640))
 for uid in [int(u) for u in sys.argv[2:]]:
     obs = env.reset(uid=uid); pol.reset(); frames=[]; done=False; info={}
     while not done:
-        b={'observation.state': torch.from_numpy(obs['state'][:7]).float().unsqueeze(0),
-           'observation.environment_state': torch.from_numpy(obs['state'][7:]).float().unsqueeze(0),
+        b={'observation.state': torch.from_numpy(obs['state'][:PROPRIO]).float().unsqueeze(0),
+           'observation.environment_state': torch.from_numpy(obs['state'][PROPRIO:]).float().unsqueeze(0),
            'task':[TASK]}
         b=pre(b); b={k:(v.to(dev) if torch.is_tensor(v) else v) for k,v in b.items()}
         with torch.no_grad(): a=post(pol.select_action(b)).squeeze(0).cpu().numpy()
