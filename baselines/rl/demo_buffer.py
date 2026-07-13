@@ -26,6 +26,7 @@ import pathlib as pl
 import numpy as np
 
 REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+RL_DIR = REPO / 'baselines/episodes_raw_rl'   # ALL demos incl failures (broad coverage)
 V4_DIR = REPO / 'baselines/episodes_raw_v4'
 V3_DIR = REPO / 'baselines/episodes_raw_v3'
 
@@ -35,7 +36,13 @@ STATE_DIM = 17
 
 
 def find_demo_paths(min_v4=10):
-    """Glob demo dirs at runtime: v4 if it has >= min_v4 episodes, else v3."""
+    """Glob demo dirs at runtime. Prefer episodes_raw_rl (ALL demos incl failures ->
+    broad state coverage for off-policy RL; sparse-reward SAC learns from r=0
+    transitions too). Fall back to v4 (sim-verified successes), then v3."""
+    rl = sorted(glob.glob(str(RL_DIR / '*.npz')))
+    if len(rl) >= min_v4:
+        print(f'[demo_buffer] using {len(rl)} RL episodes (all demos incl failures)')
+        return rl
     v4 = sorted(glob.glob(str(V4_DIR / '*.npz')))
     if len(v4) >= min_v4:
         return v4
