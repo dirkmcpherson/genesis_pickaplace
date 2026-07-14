@@ -1,120 +1,110 @@
 """Extended bag reader: extract the NATIVE 4-DOF Cartesian action signal + the ee pose,
 in addition to the joint positions the original trial_reader.py already emits.
 
-Runs in the ROS1 env (needs `rosbag`), against ~/user_<id>/trial_data.bag OR the local
-copies under inthewild_trials/raw/user_<id>/trial_data.bag. Writes a SUPERSET dict to
-inthewild_trials/<id>_cartesian.npy -- it does NOT touch the original <id>_episodes.npy.
+Uses the pure-Python `rosbags` library (reads ROS1 bags via the message definitions embedded
+in the bag -- NO ROS install needed, handles the custom kortex_driver types). Runs in the
+project's .venv-eval. Reads the repo-local bags under inthewild_trials/raw/user_<id>/, writes
+a SUPERSET dict to inthewild_trials/<id>_cartesian.npy (does NOT touch <id>_episodes.npy).
 
-Per frame (same ~60Hz windowing + mean as the original), it records:
-  joint_pos          (6)  mean joint_states.position[:6]        -- == original 'vel_cmd'
+Per ~60Hz frame (same windowing + mean as the original reader):
+  joint_pos          (6)  mean joint_states.position[:6]   (== original 'vel_cmd'/'joint_pos')
   gripper_pos        (1)  gripper motor position (base_feedback)
-  tool_pose          (6)  ee pose: x,y,z, theta_x,theta_y,theta_z  (kortex; theta in DEG)
+  tool_pose          (6)  ee pose x,y,z, theta_x,y,z  (kortex; theta in DEGREES, raw)
   tool_twist         (6)  ACHIEVED ee velocity (base_feedback tool_twist_*)
-  cartesian_velocity (6)  COMMANDED ee velocity (/my_gen3_lite/in/cartesian_velocity),
+  cartesian_velocity (6)  COMMANDED ee velocity (/cartesian_velocity TwistCommand.twist),
                           zeros on frames with no command (joystick centered)
 
-Per the study lead: /reward and /success are intentionally NOT extracted (auto-detector,
-untrusted). tool_pose at the moment the gripper opens = the real PLACE location per demo.
-
-Notes on robustness (message types can't be introspected outside ROS1):
-  * cartesian_velocity may be geometry_msgs/Twist (.linear.x) OR kortex TwistCommand
-    (.twist.linear_x) -- `_twist6` handles both.
-  * theta_* are degrees in kortex tool_pose; left raw here, convert downstream if needed.
+Per study lead: /reward and /success are intentionally NOT extracted (untrusted auto-detector).
+tool_pose at gripper-open = the real per-demo PLACE location.
 
 Usage:
-  python trial_reader_cartesian.py                # all trials in the lists below
-  python trial_reader_cartesian.py 232 233 245    # a subset
+  .venv-eval/bin/python trial_reader_cartesian.py            # all trials
+  .venv-eval/bin/python trial_reader_cartesian.py 232 233    # a subset
 """
 import sys
 from pathlib import Path
 from collections import defaultdict
 
 import numpy as np
-import rosbag
+from rosbags.highlevel import AnyReader
 
 CARTVEL_TOPIC = '/my_gen3_lite/in/cartesian_velocity'
 JOINT_TOPIC = '/my_gen3_lite/joint_states'
 FEEDBACK_TOPIC = '/my_gen3_lite/base_feedback'
+NEED = (JOINT_TOPIC, FEEDBACK_TOPIC, CARTVEL_TOPIC)
 HZ = 60
 
 
 def _bag_path(trial_id):
-    """Prefer the repo-local copy, fall back to the home dir (original layout)."""
     local = Path(__file__).parent / 'inthewild_trials' / 'raw' / f'user_{trial_id}' / 'trial_data.bag'
     if local.exists():
         return local
     return Path('~').expanduser() / f'user_{trial_id}' / 'trial_data.bag'
 
 
-def joints6(msg):
-    return list(msg.position[:6])
+def feedback13(m):
+    b = m.base
+    return [b.tool_pose_x, b.tool_pose_y, b.tool_pose_z,
+            b.tool_pose_theta_x, b.tool_pose_theta_y, b.tool_pose_theta_z,
+            b.tool_twist_linear_x, b.tool_twist_linear_y, b.tool_twist_linear_z,
+            b.tool_twist_angular_x, b.tool_twist_angular_y, b.tool_twist_angular_z,
+            m.interconnect.oneof_tool_feedback.gripper_feedback[0].motor[0].position]
 
 
-def feedback13(msg):
-    """[tool_pose(6), tool_twist(6), gripper(1)] from BaseCyclic_Feedback."""
-    b = msg.base
-    tool_pose = [b.tool_pose_x, b.tool_pose_y, b.tool_pose_z,
-                 b.tool_pose_theta_x, b.tool_pose_theta_y, b.tool_pose_theta_z]
-    tool_twist = [b.tool_twist_linear_x, b.tool_twist_linear_y, b.tool_twist_linear_z,
-                  b.tool_twist_angular_x, b.tool_twist_angular_y, b.tool_twist_angular_z]
-    gripper = msg.interconnect.oneof_tool_feedback.gripper_feedback[0].motor[0].position
-    return tool_pose + tool_twist + [gripper]
-
-
-def _twist6(msg):
-    """Commanded cartesian velocity -> [lx,ly,lz,ax,ay,az]. Handles geometry_msgs/Twist
-    and kortex TwistCommand (which wraps a flat-named Twist under .twist)."""
-    t = getattr(msg, 'twist', msg)
-    if hasattr(t, 'linear_x'):   # kortex flat Twist
-        return [t.linear_x, t.linear_y, t.linear_z, t.angular_x, t.angular_y, t.angular_z]
-    return [t.linear.x, t.linear.y, t.linear.z, t.angular.x, t.angular.y, t.angular.z]
+def twist6(m):
+    t = getattr(m, 'twist', m)   # kortex TwistCommand wraps a flat-named Twist
+    return [t.linear_x, t.linear_y, t.linear_z, t.angular_x, t.angular_y, t.angular_z]
 
 
 def read_bag(trial_id, outdir):
     path = _bag_path(trial_id)
-    if not Path(path).exists():
-        print('  MISSING bag: %s' % path)
+    if not path.exists():
+        print(f'  {trial_id}: MISSING bag {path}')
         return None
-    bag = rosbag.Bag(str(path))
-    must_have = [JOINT_TOPIC, FEEDBACK_TOPIC]   # cartesian_velocity is optional (zeros when idle)
     ep = defaultdict(list)
-    seen = defaultdict(int)
-    t0 = None
     frame = defaultdict(list)
-    for topic, msg, t in bag.read_messages():
-        if t0 is None:
-            t0 = t.to_sec()
-        seen[topic] += 1
-        if topic == JOINT_TOPIC:
-            frame[topic].append(joints6(msg))
-        elif topic == FEEDBACK_TOPIC:
-            frame[topic].append(feedback13(msg))
-        elif topic == CARTVEL_TOPIC:
-            frame[topic].append(_twist6(msg))
-
-        if t.to_sec() - t0 >= 1.0 / HZ:
-            if all(len(frame[k]) > 0 for k in must_have):
-                jp = np.mean(frame[JOINT_TOPIC], axis=0)
-                fb = np.mean(frame[FEEDBACK_TOPIC], axis=0)
-                cv = (np.mean(frame[CARTVEL_TOPIC], axis=0)
-                      if frame[CARTVEL_TOPIC] else np.zeros(6))
-                ep['joint_pos'].append(jp)
-                ep['vel_cmd'].append(jp)                 # backward-compat alias
-                ep['tool_pose'].append(fb[:6])
-                ep['tool_twist'].append(fb[6:12])
-                ep['gripper_pos'].append([fb[12]])
-                ep['cartesian_velocity'].append(cv)
-            t0 = t.to_sec()
-            frame = defaultdict(list)
-    bag.close()
+    t0 = None
+    counts = defaultdict(int)
+    ref_frame = None
+    with AnyReader([path]) as reader:
+        conns = [c for c in reader.connections if c.topic in NEED]
+        for conn, t, raw in reader.messages(connections=conns):
+            tsec = t / 1e9
+            if t0 is None:
+                t0 = tsec
+            if tsec - t0 >= 1.0 / HZ:
+                if frame[JOINT_TOPIC] and frame[FEEDBACK_TOPIC]:
+                    jp = np.mean(frame[JOINT_TOPIC], axis=0)
+                    fb = np.mean(frame[FEEDBACK_TOPIC], axis=0)
+                    cv = (np.mean(frame[CARTVEL_TOPIC], axis=0)
+                          if frame[CARTVEL_TOPIC] else np.zeros(6))
+                    ep['joint_pos'].append(jp)
+                    ep['vel_cmd'].append(jp)
+                    ep['tool_pose'].append(fb[:6])
+                    ep['tool_twist'].append(fb[6:12])
+                    ep['gripper_pos'].append([fb[12]])
+                    ep['cartesian_velocity'].append(cv)
+                t0 = tsec
+                frame = defaultdict(list)
+            counts[conn.topic] += 1
+            m = reader.deserialize(raw, conn.msgtype)
+            if conn.topic == JOINT_TOPIC:
+                frame[conn.topic].append(list(m.position[:6]))
+            elif conn.topic == FEEDBACK_TOPIC:
+                frame[conn.topic].append(feedback13(m))
+            elif conn.topic == CARTVEL_TOPIC:
+                frame[conn.topic].append(twist6(m))
+                if ref_frame is None:
+                    ref_frame = int(getattr(m, 'reference_frame', -1))
 
     out = {k: np.asarray(v, dtype=np.float32) for k, v in ep.items()}
+    out['cartvel_reference_frame'] = np.asarray(ref_frame if ref_frame is not None else -1)
     n = len(out.get('joint_pos', []))
-    n_cmd = int(np.any(np.abs(out.get('cartesian_velocity', np.zeros((1, 6)))) > 1e-6, axis=1).sum()) if n else 0
+    nz = int(np.any(np.abs(out['cartesian_velocity']) > 1e-6, axis=1).sum()) if n else 0
     Path(outdir).mkdir(parents=True, exist_ok=True)
-    np.save(Path(outdir) / ('%d_cartesian.npy' % trial_id), out)
-    print('  %d: %d frames | cartvel topic msgs=%d (nonzero frames=%d) | tool_pose seen=%d'
-          % (trial_id, n, seen[CARTVEL_TOPIC], n_cmd, seen[FEEDBACK_TOPIC]))
+    np.save(Path(outdir) / f'{trial_id}_cartesian.npy', out)
+    print(f'  {trial_id}: {n} frames | cartvel msgs={counts[CARTVEL_TOPIC]} '
+          f'(nonzero frames={nz}) | ref_frame={ref_frame}')
     return out
 
 
@@ -131,12 +121,12 @@ if __name__ == '__main__':
         p2 = [327, 330, 333, 300, 303, 306, 311, 318, 278, 281, 286, 290, 295, 299, 256,
               259, 263, 267, 275, 234, 237, 244, 247, 250, 240, 253, 285, 289, 296, 310, 314]
         trials = sorted(set(p0 + p1 + p2))
-    print('extracting %d trials -> %s/<id>_cartesian.npy' % (len(trials), outdir))
+    print(f'extracting {len(trials)} trials via rosbags -> {outdir}/<id>_cartesian.npy')
     ok = 0
     for tid in trials:
         try:
             if read_bag(tid, outdir) is not None:
                 ok += 1
         except Exception as e:
-            print('  %d: FAILED %s' % (tid, e))
-    print('done: %d/%d extracted' % (ok, len(trials)))
+            print(f'  {tid}: FAILED {type(e).__name__}: {e}')
+    print(f'done: {ok}/{len(trials)} extracted')
