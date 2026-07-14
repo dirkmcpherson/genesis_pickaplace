@@ -66,7 +66,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
                 table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2,
                 urdf_file='gen3_lite_2f_robotiq_85.urdf', urdf_extra=None,
                 constraint_timeconst=None, rigid_extra=None,
-                table_friction=0.5, goal_friction=2.0):
+                table_friction=0.5, goal_friction=2.0, table_top=TABLE_TOP_Z):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -100,8 +100,8 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
         # ends 1mm short of the shelf box front face (x=0.55) -- overlapping the dynamic
         # shelf box ejects it from the scene at build time
         scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=table_friction),
-                         morph=gs.morphs.Box(size=(0.419, 1.2, 0.05),
-                                             pos=(0.3395, -0.1875, 0.025), fixed=True))
+                         morph=gs.morphs.Box(size=(0.419, 1.2, table_top),
+                                             pos=(0.3395, -0.1875, table_top / 2), fixed=True))
     kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / urdf_file),
                                              fixed=True, pos=(0.0, 0.0, 0.05),
                                              **(urdf_extra or {})))
@@ -129,7 +129,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
         lower=np.array([-50, -50, -50, -20, -20, -20, -ff[0], -ff[1], -ff[2], -ff[3]]),
         upper=np.array([50, 50, 50, 20, 20, 20, ff[0], ff[1], ff[2], ff[3]]),
         dofs_idx_local=kdofs)
-    floor_z = TABLE_TOP_Z if table else 0.0
+    floor_z = table_top if table else 0.0
     return dict(scene=scene, kinova=kinova, bottle=bottle, goal=goal, kdofs=kdofs, eef=eef,
                 can_h=can_height, can_start_z=floor_z + can_height / 2 + 0.0125,
                 goal_start_z=BOX_TOP_Z + can_height / 2 + 0.0425,

@@ -3,7 +3,7 @@
   "can_height": 0.101,
   "can_radius": 0.033,
   "can_rho": 1000,
-  "finger_kp": 100.0,
+  "finger_kp": 40.0,
   "finger_force": 50.0,
   "substeps": 8,
   "table": true

@@ -98,7 +98,17 @@ def main():
                          'usually busy with the dataset/training chain')
     ap.add_argument('--eval-uid', type=int, default=None,
                     help='fixed trial uid for eval episodes (default: random success uids)')
+    ap.add_argument('--demo-dir', default=None,
+                    help='directory of demo *.npz to seed the replay buffer from. When '
+                         'set, overrides demo_buffer.find_demo_paths() -- used to inject '
+                         'HUMAN vs harvested-AI demos for the demonstration-source study.')
+    ap.add_argument('--steps', type=int, default=200_000,
+                    help='total timesteps for --full (default 200k)')
+    ap.add_argument('--out-dir', default=None,
+                    help='checkpoint output dir (default baselines/rl/checkpoints). Set a '
+                         'per-run dir when sweeping seeds/conditions so runs do not clobber.')
     args = ap.parse_args()
+    ckpt_dir = pl.Path(args.out_dir) if args.out_dir else CKPT_DIR
 
     t0 = time.time()
     # Build env ONCE per process (gs.init constraint), CPU backend.
@@ -109,7 +119,13 @@ def main():
     model = build_model(env, args.seed, args.device)
 
     # ---- demo injection BEFORE learning starts (the SACfD step) ----
-    paths = demo_buffer.find_demo_paths()
+    if args.demo_dir:
+        import glob
+        paths = sorted(glob.glob(str(pl.Path(args.demo_dir) / '*.npz')))
+        assert paths, f'no *.npz in --demo-dir {args.demo_dir}'
+        print(f'[demos] --demo-dir override: {len(paths)} episodes from {args.demo_dir}')
+    else:
+        paths = demo_buffer.find_demo_paths()
     transitions = demo_buffer.load_demo_transitions(paths, pick_z=env.pick_z)
     n_r1 = sum(1 for t in transitions if t[2] > 0)
     n_added = demo_buffer.inject_into_replay_buffer(
@@ -133,11 +149,11 @@ def main():
         print(f'[smoke] total wall time {time.time() - t0:.1f}s')
     else:
         from stable_baselines3.common.callbacks import CheckpointCallback
-        CKPT_DIR.mkdir(parents=True, exist_ok=True)
-        cb = CheckpointCallback(save_freq=25_000, save_path=str(CKPT_DIR),
+        ckpt_dir.mkdir(parents=True, exist_ok=True)
+        cb = CheckpointCallback(save_freq=25_000, save_path=str(ckpt_dir),
                                 name_prefix='sacfd')
-        model.learn(total_timesteps=200_000, log_interval=10, callback=cb)
-        model.save(str(CKPT_DIR / 'sacfd_final'))
+        model.learn(total_timesteps=args.steps, log_interval=10, callback=cb)
+        model.save(str(ckpt_dir / 'sacfd_final'))
         evaluate(model, env, n_episodes=10, fixed_uid=args.eval_uid)
 
 

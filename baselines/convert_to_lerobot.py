@@ -28,7 +28,10 @@ TASK = 'pick the can and slide it against the can on the shelf'
 
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
 
-MIN_FRAMES = 100   # drop degenerate episodes (a real pick->place->slide is 300+ frames)
+# drop degenerate episodes. Default 100 (a real full-task pick->place->slide is 300+
+# frames), but pick-SCOPE AI-harvest rollouts truncate shortly after the lift and can be
+# <100 frames -- pass a smaller 4th argv there so they aren't silently dropped.
+MIN_FRAMES = int(sys.argv[4]) if len(sys.argv) > 4 else 100
 files = [f for f in sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
          if int(np.load(f)['n']) >= MIN_FRAMES]
 assert files, f'no episodes >= {MIN_FRAMES} frames in {RAW} - run collect_lerobot_dataset.py first'
