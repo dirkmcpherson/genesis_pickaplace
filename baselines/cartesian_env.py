@@ -56,6 +56,14 @@ class CartesianCanEnv:
         self.kin = self.env.w['kinova']
         self.render_size = render_size
 
+    # delegate the attrs ic_sampling / eval_core reach for
+    @property
+    def placements(self): return self.env.placements
+    @property
+    def solved_uids(self): return self.env.solved_uids
+    @property
+    def world_cfg(self): return self.env.world_cfg
+
     # --- absolute ee-pose control (IK core) ---
     def _pose_step(self, pos, quat):
         qpos = self.kin.inverse_kinematics(
@@ -87,11 +95,12 @@ class CartesianCanEnv:
         return self._obs(obs), done, info
 
     def _obs(self, obs):
-        # ee-centric observation for a Cartesian policy: ee pos(3), pitch(1), gripper(1),
-        # grip_effort(1), can xyz(3), can quat(4), goal xy(2) = 15-dim.
+        # ee-centric obs, IDENTICAL layout to collect_cartesian_dataset.py so a policy
+        # trained on that dataset sees the same thing at eval:
+        #   ee_pos(3), ee_quat(4), gripper(1), grip_effort(1), can xyz(3), can quat(4), goal xy(2) = 18
         s = obs['state']
-        ee = np_(self.eef.get_pos())
-        state = np.concatenate([ee, [self._pitch], s[6:8], s[8:15], s[15:17]]).astype(np.float32)
+        ee = np_(self.eef.get_pos()); eq = np_(self.eef.get_quat())
+        state = np.concatenate([ee, eq, s[6:8], s[8:17]]).astype(np.float32)
         out = dict(state=state, joint_state=s)
         if self.render_size is not None and self.w.get('cam') is not None:
             out['image'] = obs.get('image')
