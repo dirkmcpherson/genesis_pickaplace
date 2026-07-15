@@ -46,7 +46,10 @@ def _xyzw_to_gs(q):  # scipy [x,y,z,w] -> genesis [w,x,y,z]
 class CartesianCanEnv:
     VCAP = 0.11                                    # plugin VELOCITY_CAP (m/s)
     WS = (np.array([0.3, -0.25, 0.015]), np.array([0.8, 0.25, 0.6]))  # base-frame ee box
-    DT = 0.03                                      # env step physics time (3 substeps x 0.01)
+    DT = 0.025                                     # demo frame period (cmd_vel integrates to tool_pose at this dt)
+    # real tool_pose at HARDCODED_START (~const across demos) -- used to calibrate the fixed
+    # wrist(eef link) -> tool(gripper tip) offset, since Genesis merges the URDF tool_frame link.
+    REF_TOOL_AT_START = np.array([0.367, 0.011, 0.09])
 
     def __init__(self, backend='cpu', render_size=None, max_steps=1200):
         self.env = GenesisCanEnv(backend=backend, render_size=render_size, max_steps=max_steps)
@@ -55,6 +58,7 @@ class CartesianCanEnv:
         self.eef = self.env.w['eef']
         self.kin = self.env.w['kinova']
         self.render_size = render_size
+        self._offset_local = None   # fixed wrist->tool offset in the wrist frame (cached at first reset)
 
     # delegate the attrs ic_sampling / eval_core reach for
     @property
@@ -72,11 +76,21 @@ class CartesianCanEnv:
         joints = np_(qpos)[:6]
         return joints
 
+    def _tool_pos(self):
+        """Current tool (gripper-tip) position = wrist + R_wrist @ offset_local."""
+        wp = np_(self.eef.get_pos()); wq = np_(self.eef.get_quat())
+        return wp + R.from_quat(_gs_to_xyzw(wq)).apply(self._offset_local)
+
     def reset(self, **kw):
         obs = self.env.reset(**kw)
-        self._sp = np_(self.eef.get_pos()).astype(float)          # ee position setpoint
-        self._q0 = np_(self.eef.get_quat()).astype(float)         # fixed roll/yaw+base orientation
-        self._pitch = 0.0                                         # accumulated pitch (rad)
+        wp = np_(self.eef.get_pos()).astype(float)
+        wq = np_(self.eef.get_quat()).astype(float)
+        if self._offset_local is None:
+            # calibrate the fixed wrist->tool offset from the reset alignment (constant geometry)
+            self._offset_local = R.from_quat(_gs_to_xyzw(wq)).inv().apply(self.REF_TOOL_AT_START - wp)
+        self._sp = self._tool_pos()                # TOOL setpoint (not wrist)
+        self._q0 = wq                              # fixed roll/yaw base orientation (wrist==tool orientation)
+        self._pitch = 0.0
         self._grip = 0.0
         return self._obs(obs)
 
@@ -87,10 +101,14 @@ class CartesianCanEnv:
     def step(self, action):
         a = np.asarray(action, float)
         v = np.clip(a[:3], -self.VCAP, self.VCAP)
-        self._sp = np.clip(self._sp + v * self.DT, self.WS[0], self.WS[1])
+        self._sp = np.clip(self._sp + v * self.DT, self.WS[0], self.WS[1])  # integrate the TOOL setpoint
         self._pitch += float(a[3]) * self.DT
         self._grip = float(np.clip(a[4], 0.0, 1.0))
-        joints = self._pose_step(self._sp, self._target_quat())
+        tgt_quat = self._target_quat()
+        # IK the WRIST so the TOOL lands on its setpoint: wrist_target = tool_sp - R @ offset_local
+        Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
+        wrist_target = self._sp - Rw.apply(self._offset_local)
+        joints = self._pose_step(wrist_target, tgt_quat)
         obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
         return self._obs(obs), done, info
 
