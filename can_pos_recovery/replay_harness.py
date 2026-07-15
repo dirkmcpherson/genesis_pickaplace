@@ -39,7 +39,10 @@ BOX_POS = (0.75, -BOX_WIDTH / 4, 0.05)
 BOX_SIZE = (0.4, BOX_WIDTH, BOX_HEIGHT)
 BOX_TOP_Z = BOX_POS[2] + BOX_SIZE[2] / 2                     # 0.11
 SHELF_REST_Z = BOX_TOP_Z + BOTTLE_HEIGHT / 2                 # 0.1475
-STATIC_BOTTLE_POSITION = (0.6, -0.2, 0.19)
+# goal was static during data collection but our value was ~11cm off; corrected to the real
+# place-cluster median from bag tool_pose (median (0.656,-0.103)). Re-measure #24: this raised
+# replay contact 21->53/75. Old (wrong) value was (0.6,-0.2,0.19).
+STATIC_BOTTLE_POSITION = (0.656, -0.103, 0.19)
 FAR_AWAY = (2.0, 2.0, BOTTLE_HEIGHT / 2)                     # goal can parked out of play
 
 PICK_Z = 0.09           # bottle center height that counts as lifted (validate_grasp.py's value)
