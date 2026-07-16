@@ -94,32 +94,38 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     if _rig:
         _kw['rigid_options'] = gs.options.RigidOptions(**_rig)
     scene = gs.Scene(show_viewer=show_viewer,
-                     sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps), **_kw)
-    scene.add_entity(gs.morphs.Plane())
+                     sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps),
+                     vis_options=gs.options.VisOptions(show_world_frame=False), **_kw)
+    scene.add_entity(gs.morphs.Plane(), surface=gs.surfaces.Default(color=(0.30, 0.30, 0.33)))
     scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=table_friction),
-                     morph=gs.morphs.Box(size=BOX_SIZE, pos=BOX_POS))
+                     morph=gs.morphs.Box(size=BOX_SIZE, pos=BOX_POS),
+                     surface=gs.surfaces.Default(color=(0.55, 0.55, 0.57)))
     if table:
         # pick-area table: top flush with the robot mount (0.05), stops short of the base
         # ends 1mm short of the shelf box front face (x=0.55) -- overlapping the dynamic
         # shelf box ejects it from the scene at build time
         scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=table_friction),
                          morph=gs.morphs.Box(size=(0.419, 1.2, table_top),
-                                             pos=(0.3395, -0.1875, table_top / 2), fixed=True))
+                                             pos=(0.3395, -0.1875, table_top / 2), fixed=True),
+                         surface=gs.surfaces.Default(color=(0.55, 0.55, 0.57)))
     kinova = scene.add_entity(gs.morphs.URDF(file=str(REPO / urdf_file),
                                              fixed=True, pos=(0.0, 0.0, 0.05),
                                              **(urdf_extra or {})))
     bottle = scene.add_entity(material=gs.materials.Rigid(rho=can_rho, friction=can_friction),
                               morph=gs.morphs.Cylinder(pos=(0.4381, 0.1, 0.05),
-                                                       radius=can_radius, height=can_height))
+                                                       radius=can_radius, height=can_height),
+                              surface=gs.surfaces.Default(color=(0.95, 0.45, 0.10)))   # picked can: orange
     goal = scene.add_entity(material=gs.materials.Rigid(rho=1000, friction=goal_friction),
                             morph=gs.morphs.Cylinder(pos=STATIC_BOTTLE_POSITION,
-                                                     radius=can_radius, height=can_height))
+                                                     radius=can_radius, height=can_height),
+                            surface=gs.surfaces.Default(color=(0.10, 0.55, 0.75)))      # goal can: teal
     kdofs = [joint_dofs(kinova.get_joint(n)) for n in JOINT_NAMES]
     eef = kinova.get_link(EEF_NAME)
     cam = None
     if camera:
-        cam = scene.add_camera(res=(640, 480), pos=(1.6, 0.9, 0.7),
-                               lookat=(0.5, -0.1, 0.15), fov=35, GUI=False)
+        # behind the arm base (-x), elevated, looking down/forward at the shelf + arm
+        cam = scene.add_camera(res=(640, 560), pos=(-0.35, 0.0, 1.0),
+                               lookat=(0.55, -0.08, 0.10), fov=48, GUI=False)
     scene.build()
 
     # example.py's gain overrides (arm always; fingers overridable)
