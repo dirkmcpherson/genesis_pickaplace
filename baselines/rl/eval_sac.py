@@ -27,6 +27,9 @@ ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--random', type=int, default=0, metavar='N')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--record-dir', default=None)
+ap.add_argument('--max-steps', type=int, default=1200,
+                help='rollout horizon (#21 lever). Use short (e.g. 400) for pick-only '
+                     'checkpoint curves; keep 1200 for numbers compared across students.')
 args = ap.parse_args()
 
 from stable_baselines3 import SAC  # noqa: E402
@@ -39,7 +42,7 @@ def policy_action(obs):
 
 
 render_size = (480, 640) if args.record_dir else None
-env = GenesisCanEnv(backend='cpu', render_size=render_size)
+env = GenesisCanEnv(backend='cpu', render_size=render_size, max_steps=args.max_steps)
 if args.random:
     episodes = ic_sampling.sample_support_ics(env, args.random, seed=args.seed)
 else:

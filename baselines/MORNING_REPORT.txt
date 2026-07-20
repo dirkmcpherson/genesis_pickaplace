@@ -1,0 +1,44 @@
+===== MORNING REPORT Sun Jul 19 07:06:58 AM EDT 2026 =====
+
+--- resumed pick-SACfD (200k->350k) curve (10 ICs, 400-step) ---
+225000 0.00
+250000 0.50
+275000 0.30
+300000 0.30
+325000 0.80
+350000 0.40
+375000 0.00
+400000 0.00
+425000 0.00
+450000 0.00
+475000 0.00
+500000 0.10
+525000 0.00
+550000 0.20
+
+--- resumed pick-SACfD final (3 seeds x 15 ICs @1200) ---
+[sac] 15 rollouts: picked 0.13 placed 0.07 contact 0.00 nested 0.00
+[sac] funnel: P(pick)=0.13 -> P(place|pick)=0.50 -> P(slide|place)=0.00 -> P(nested|slide)=0.00
+[sac] 15 rollouts: picked 0.33 placed 0.00 contact 0.00 nested 0.00
+[sac] funnel: P(pick)=0.33 -> P(place|pick)=0.00 -> P(slide|place)=0.00 -> P(nested|slide)=0.00
+[sac] 15 rollouts: picked 0.47 placed 0.27 contact 0.07 nested 0.00
+[sac] funnel: P(pick)=0.47 -> P(place|pick)=0.57 -> P(slide|place)=0.25 -> P(nested|slide)=0.00
+(prior 200k: picked 0.40/0.53/0.47 mean 0.47 | DP-pick: 0.18)
+
+--- FULL-TASK SACfD final (3 seeds x 15 ICs @1200) ---
+[sac] 15 rollouts: picked 0.00 placed 0.00 contact 0.00 nested 0.00
+[sac] funnel: P(pick)=0.00 -> P(place|pick)=0.00 -> P(slide|place)=0.00 -> P(nested|slide)=0.00
+[sac] 15 rollouts: picked 0.13 placed 0.07 contact 0.00 nested 0.00
+[sac] funnel: P(pick)=0.13 -> P(place|pick)=0.50 -> P(slide|place)=0.00 -> P(nested|slide)=0.00
+[sac] 15 rollouts: picked 0.13 placed 0.00 contact 0.00 nested 0.00
+[sac] funnel: P(pick)=0.13 -> P(place|pick)=0.00 -> P(slide|place)=0.00 -> P(nested|slide)=0.00
+(DP-pick full funnel for reference: picked 0.18 placed 0.11 contact 0.09 nested 0.02)
+
+--- full-task training reward tail ---
+|    ep_rew_mean     | 0.07     |
+|    ep_rew_mean     | 0.08     |
+|    ep_rew_mean     | 0.08     |
+|    ep_rew_mean     | 0.09     |
+|    ep_rew_mean     | 0.08     |
+
+videos: baselines/policy_videos/sacfd_full/

@@ -1,0 +1,746 @@
+[
+  {
+    "uid": 232,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 233,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 234,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 235,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 236,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 237,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 238,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "nested",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 239,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 240,
+    "label": "fail",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "picked",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 242,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 243,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 244,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 245,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 246,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 247,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 248,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 249,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 250,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 251,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 252,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 254,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 255,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 256,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 257,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 258,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 259,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 260,
+    "label": "fail",
+    "status": "ok",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 261,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 262,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 263,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 265,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 266,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 267,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 268,
+    "label": "fail",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 269,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 270,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 273,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 274,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 275,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 276,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 277,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 278,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 279,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 280,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 281,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 282,
+    "label": "fail",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 283,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 284,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 286,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 287,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 288,
+    "label": "fail",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 290,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "stub",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 293,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "picked",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 294,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 295,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 296,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 297,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 298,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 299,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "picked",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 300,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 301,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "nested",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 302,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 303,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 304,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 305,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 306,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 307,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 308,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 309,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "picked",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 310,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "picked",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 311,
+    "label": "success",
+    "status": "ok",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 312,
+    "label": "fail",
+    "status": "ok",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 313,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 314,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 315,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "picked",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 316,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "nested",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 317,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 318,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 319,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 320,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 321,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 322,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "stub",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 324,
+    "label": "fail",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 325,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 326,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "unmeasured",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 327,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": true
+  },
+  {
+    "uid": 328,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "placed",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 329,
+    "label": "success",
+    "status": "shelf_but_no_slide",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 330,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "unmeasured",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 331,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "no-pick",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 333,
+    "label": "success",
+    "status": "no_shelf_batch",
+    "source": "fk-seed",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 334,
+    "label": "fail",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": false
+  },
+  {
+    "uid": 335,
+    "label": "success",
+    "status": "ok_batch",
+    "source": "solved",
+    "stage": "contact",
+    "in_v6_dp": true
+  }
+]

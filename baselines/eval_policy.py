@@ -35,10 +35,13 @@ ap.add_argument('--random', type=int, default=0, metavar='N',
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--record-dir', default=None,
                 help='if set, save a per-episode mp4 (uses the env camera)')
+ap.add_argument('--max-steps', type=int, default=1200,
+                help='rollout horizon (#21 throughput lever; keep equal across policies '
+                     'for a fair comparison)')
 args = ap.parse_args()
 
 render_size = (96, 96) if args.image else ((480, 640) if args.record_dir else None)
-env = GenesisCanEnv(backend='cpu', render_size=render_size)
+env = GenesisCanEnv(backend='cpu', render_size=render_size, max_steps=args.max_steps)
 policy_action, policy_reset, proprio = load_dp_runner(args.checkpoint, image=args.image)
 print(f'[eval_policy] checkpoint PROPRIO={proprio}', flush=True)
 

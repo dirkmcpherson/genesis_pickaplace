@@ -12,12 +12,16 @@ Usage: python can_pos_recovery/remeasure_contact.py [--goal X Y]
 import argparse, json, sys, pathlib as pl
 import numpy as np, torch
 from replay_harness import (build_world, load_episode, gripper_targets, tilt_deg,
-                            HARDCODED_START, in_shelf_footprint, BOX_TOP_Z, REPO)
+                            HARDCODED_START, in_shelf_footprint, BOX_TOP_Z, REPO,
+                            NESTED_TOUCH_DIST)
 
 def np_(x): return x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else np.asarray(x)
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--goal', type=float, nargs=2, default=[0.656, -0.103])
+ap.add_argument('--goal', type=float, nargs=2, default=[0.672, -0.221])  # human-validated SOUTH
+ap.add_argument('--label', default='success', help="'success' (default) or 'fail' (negative control)")
+ap.add_argument('--finger-kp', type=float, default=None, help='override world finger_kp (compliance)')
+ap.add_argument('--every', type=int, default=1, help='stride over sorted demos (fast subset, e.g. 3)')
 args = ap.parse_args()
 GX, GY = args.goal
 BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381, -0.05)}
@@ -25,13 +29,15 @@ BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381
 tbl = json.loads((REPO / 'can_pos_recovery/trial_placements.json').read_text())
 wcfg = tbl['world']; trials = tbl['trials']
 fk = {int(k): v for k, v in json.loads((REPO / 'can_pos_recovery/fk_recovered.json').read_text()).items()}
-w = build_world(backend='cpu', finger_force=wcfg['finger_force'], finger_kp=wcfg['finger_kp'],
+_fkp = args.finger_kp if args.finger_kp is not None else wcfg['finger_kp']
+w = build_world(backend='cpu', finger_force=wcfg['finger_force'], finger_kp=_fkp,
                 can_height=wcfg['can_height'], can_rho=wcfg['can_rho'],
                 substeps=wcfg.get('substeps', 1), table=True, can_radius=wcfg.get('can_radius', 0.035))
 scene, kin, bottle, goal, kdofs, eef = (w['scene'], w['kinova'], w['bottle'], w['goal'], w['kdofs'], w['eef'])
 CANZ, GOALZ, PICKZ = w['can_start_z'], w['goal_start_z'], w['pick_z']
 
-uids = sorted(int(u) for u, r in trials.items() if r.get('label') == 'success' and u not in ('290', '322'))
+uids = sorted(int(u) for u, r in trials.items() if r.get('label') == args.label and u not in ('290', '322'))
+uids = uids[::args.every]
 print(f"re-measuring {len(uids)} success demos | corrected goal ({GX},{GY}) vs old static (0.6,-0.2)", flush=True)
 
 agg = dict(picked=0, placed=0, contact=0, nested=0, n=0)
@@ -63,9 +69,9 @@ for uid in uids:
             c = np_(bottle.get_contacts(goal)['position'])
             if picked and (c.size and c.shape[0]) and float(np_(eef.get_pos())[0]) < float(bp[0]): contact = True
     for _ in range(100): scene.step()
-    bp = np_(bottle.get_pos()); c = np_(bottle.get_contacts(goal)['position'])
-    ncon = 0 if c.size == 0 else c.shape[0]
-    nested = bool(picked and ncon and tilt_deg(np_(bottle.get_quat())) < 20 and tilt_deg(np_(goal.get_quat())) < 20)
+    bp = np_(bottle.get_pos()); gpos = np_(goal.get_pos())
+    touch = float(np.hypot(bp[0] - gpos[0], bp[1] - gpos[1])) <= NESTED_TOUCH_DIST
+    nested = bool(picked and touch and tilt_deg(np_(bottle.get_quat())) < 20 and tilt_deg(np_(goal.get_quat())) < 20)
     placed = maxz > PICKZ and float(bp[2]) > 0.11
     for k, v in (('picked', picked), ('placed', placed), ('contact', contact), ('nested', nested)):
         agg[k] += bool(v)

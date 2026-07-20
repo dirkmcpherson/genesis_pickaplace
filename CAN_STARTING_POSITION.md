@@ -446,3 +446,49 @@ generalization (contact 0.08 vs 0.14): overfitting. Downstream funnel near-solve
 collapses to 0.20 off-distribution). Levers: smaller net (248.7M params is ~7k/frame),
 more/broader data (real-demo BC v5). v4 (17-dim +grip-effort) training now; its
 randomized number is the real test.
+
+## GOAL-CENTER RECOVERY FROM PLACEMENT SLIDES (2026-07-16, #27)
+Motivation: the static goal-can center was only ~known. Prior value (0.656,-0.103) was the
+MEDIAN of real tool_pose at placement; cam0 (bottom cam) can't measure it (goal can is
+clipped in the corner, oblique side view, frosted-acrylic confusers — verified from frames).
+
+Method (`can_pos_recovery/goal_from_slides.py`): the goal was static across all demos, so in
+every demo the human slides the picked can against the goal from some approach direction ->
+the picked-can CONTACT points form a RING of radius = one can-diameter (0.066 m) around the
+goal center. Detector finds the placement slide = last sustained horizontal motion of the
+HELD can (gripper-closed block), ending in the placement region. Two estimators:
+  (C) fixed-radius(0.066) circle-fit to contact points  -> DIRECTION-FREE, least-biased center
+  (P) per-trial goal = contact + diam*approach_dir, then median
+Real tool_pose, 61/75 clean slides: circle-fit (0.662,-0.057) rms 25mm; x rock-solid across
+all quality cuts + bootstrap CI x[0.637,0.685]. y has a ring-vs-centroid tension (-0.057 vs
+-0.085): the centroid is pulled ~4.5cm low by ASYMMETRIC approach coverage (humans nestled
+cans preferentially on the -y side); the circle-fit recovers the true center regardless -> trust it.
+
+REJECTED sim-consistent re-fit (`goal_from_sim_slides.py`): replay with goal parked far away,
+fit the exact sim can-rest positions (no tool->can offset). Turned out biased OUTWARD — with
+no goal to stop it, the held can is dragged past its real stop by the still-pressing recorded
+joints (overshoot); only 43/75 clean, estimators disagreed 7cm. Negative finding: goal-free
+replay overshoots; the real-tool ring-fit stays the trustworthy number.
+
+BAKED: STATIC_BOTTLE_POSITION = (0.662,-0.057,0.19) in replay_harness.py; also ic_sampling.py,
+genesis_can_env.py (uid-reset now uses the static goal, not stale per-trial r['goal_pos']),
+example.py (was still (0.6,-0.2)!), remeasure_contact default. NB: existing DP/BC datasets
+(episodes_raw_v4 etc.) encode the OLD goal_xy in obs -> must re-collect before training.
+
+No-regression check (goal present, no overshoot), 25-demo subset @ (0.662,-0.057):
+  picked 20/25 (0.80)  placed 18/25 (0.72)  contact 18/25 (0.72)  nested 1/25 (0.04)
+vs old (0.656,-0.103) full 75: picked 0.81 placed 0.60 contact 0.71 nested 0.04 -> contact
+HOLDS (0.72 vs 0.71), no replay regression.
+FAIL-demo negative control (full n=16) @ (0.662,-0.057): picked 10/16 placed 5/16 contact
+5/16 (0.31) nested 0/16 (0.00). vs old goal fail: contact 6/16 (0.38) nested 0/16. So the
+false-positive floor is comparable/slightly lower and NESTED stays perfectly specific (0 FP).
+Success-vs-fail separation nested 0.04 vs 0.00 (nested stays specific).
+HONEST FULL-75 @ (0.662,-0.057): picked 62/75 (0.83) placed 52/75 (0.69) contact 48/75 (0.64)
+nested 3/75 (0.04). vs old (0.656,-0.103) full-75: picked 0.81 placed 0.60 contact 0.71 nested
+0.04. Delta: placed +7, contact -5, nested 0 -- within demo-noise (~1.2sigma on n=75), placed
+and contact ~cancel. NB the stride-3 subset (0.72 contact) was OPTIMISTIC; 0.64 is the honest
+number. The contact -5 is DE-INFLATION not regression: old goal (-0.103) sat on the -y edge of
+the can cluster (cans piled on it -> inflated contact); new goal is the true ring CENTER cans
+nestle around at 1 diameter, so contact honestly requires reaching the real goal. User chose to
+KEEP the true data-derived goal (honesty over the flattering metric). GOAL DETOUR CLOSED.
+-> training gate (re-collect demo datasets with corrected goal first; GPU currently busy w/ dreamer4).

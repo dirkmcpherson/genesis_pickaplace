@@ -183,3 +183,24 @@ baselines/outputs/
 baselines/episodes_raw_v2/
 baselines/episodes_raw_v3/
 baselines/episodes_raw_v4/
+
+# generated artifacts (2026-07-20 sweep): datasets, videos, checkpoints, run logs
+baselines/episodes_all*/
+baselines/episodes_pick*/
+baselines/episodes_raw_v5/
+baselines/episodes_raw_v6/
+baselines/episodes_raw_rl/
+baselines/episodes_cartesian*/
+baselines/episodes_ai/
+baselines/lerobot_dataset_*/
+baselines/policy_videos/
+baselines/demo_videos/
+baselines/bag_trajectories/
+baselines/rl/checkpoints/
+baselines/bc/*.pt
+baselines/*.log
+baselines/curve_*.log
+can_pos_recovery/videos_gallery/
+can_pos_recovery/videos_realsim/
+can_pos_recovery/videos_ss8/
+can_pos_recovery/rebuild_videos.log

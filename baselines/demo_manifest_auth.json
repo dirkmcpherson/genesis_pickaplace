@@ -1,0 +1,639 @@
+{
+  "232": {
+    "uid": 232,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 918
+  },
+  "233": {
+    "uid": 233,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 925
+  },
+  "234": {
+    "uid": 234,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 899
+  },
+  "235": {
+    "uid": 235,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 883
+  },
+  "236": {
+    "uid": 236,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 678
+  },
+  "237": {
+    "uid": 237,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 802
+  },
+  "238": {
+    "uid": 238,
+    "label": "fail",
+    "source": "solved",
+    "stage": "placed",
+    "n": 2550
+  },
+  "239": {
+    "uid": 239,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2756
+  },
+  "240": {
+    "uid": 240,
+    "label": "fail",
+    "source": "fk-seed",
+    "stage": "picked",
+    "n": 1543
+  },
+  "242": {
+    "uid": 242,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1030
+  },
+  "243": {
+    "uid": 243,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 571
+  },
+  "244": {
+    "uid": 244,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 1047
+  },
+  "245": {
+    "uid": 245,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 3323
+  },
+  "246": {
+    "uid": 246,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 2622
+  },
+  "247": {
+    "uid": 247,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 1736
+  },
+  "248": {
+    "uid": 248,
+    "label": "success",
+    "source": "solved",
+    "stage": "picked",
+    "n": 3062
+  },
+  "249": {
+    "uid": 249,
+    "label": "fail",
+    "source": "solved",
+    "stage": "placed",
+    "n": 2851
+  },
+  "250": {
+    "uid": 250,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 3350
+  },
+  "251": {
+    "uid": 251,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1583
+  },
+  "252": {
+    "uid": 252,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1542
+  },
+  "254": {
+    "uid": 254,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1613
+  },
+  "255": {
+    "uid": 255,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 1373
+  },
+  "256": {
+    "uid": 256,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 2193
+  },
+  "257": {
+    "uid": 257,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1007
+  },
+  "258": {
+    "uid": 258,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1251
+  },
+  "259": {
+    "uid": 259,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "placed",
+    "n": 1208
+  },
+  "260": {
+    "uid": 260,
+    "label": "fail",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1759
+  },
+  "261": {
+    "uid": 261,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1411
+  },
+  "262": {
+    "uid": 262,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 936
+  },
+  "263": {
+    "uid": 263,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1050
+  },
+  "265": {
+    "uid": 265,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 2927
+  },
+  "266": {
+    "uid": 266,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "placed",
+    "n": 1790
+  },
+  "267": {
+    "uid": 267,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 1771
+  },
+  "268": {
+    "uid": 268,
+    "label": "fail",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 5076
+  },
+  "269": {
+    "uid": 269,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 4856
+  },
+  "270": {
+    "uid": 270,
+    "label": "fail",
+    "source": "solved",
+    "stage": "picked",
+    "n": 3699
+  },
+  "273": {
+    "uid": 273,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1468
+  },
+  "274": {
+    "uid": 274,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1887
+  },
+  "275": {
+    "uid": 275,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 1444
+  },
+  "276": {
+    "uid": 276,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1459
+  },
+  "277": {
+    "uid": 277,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 853
+  },
+  "278": {
+    "uid": 278,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "placed",
+    "n": 668
+  },
+  "279": {
+    "uid": 279,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1999
+  },
+  "280": {
+    "uid": 280,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 724
+  },
+  "281": {
+    "uid": 281,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1040
+  },
+  "282": {
+    "uid": 282,
+    "label": "fail",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 509
+  },
+  "283": {
+    "uid": 283,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1320
+  },
+  "284": {
+    "uid": 284,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1313
+  },
+  "286": {
+    "uid": 286,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 3751
+  },
+  "287": {
+    "uid": 287,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 4618
+  },
+  "288": {
+    "uid": 288,
+    "label": "fail",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 3327
+  },
+  "293": {
+    "uid": 293,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 6141
+  },
+  "294": {
+    "uid": 294,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 5363
+  },
+  "295": {
+    "uid": 295,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 6232
+  },
+  "296": {
+    "uid": 296,
+    "label": "fail",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2790
+  },
+  "297": {
+    "uid": 297,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1137
+  },
+  "298": {
+    "uid": 298,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1041
+  },
+  "299": {
+    "uid": 299,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2612
+  },
+  "300": {
+    "uid": 300,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 4770
+  },
+  "301": {
+    "uid": 301,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 1651
+  },
+  "302": {
+    "uid": 302,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1163
+  },
+  "303": {
+    "uid": 303,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 2304
+  },
+  "304": {
+    "uid": 304,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 2079
+  },
+  "305": {
+    "uid": 305,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1261
+  },
+  "306": {
+    "uid": 306,
+    "label": "success",
+    "source": "solved",
+    "stage": "picked",
+    "n": 2528
+  },
+  "307": {
+    "uid": 307,
+    "label": "fail",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 1885
+  },
+  "308": {
+    "uid": 308,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 1354
+  },
+  "309": {
+    "uid": 309,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 1753
+  },
+  "310": {
+    "uid": 310,
+    "label": "fail",
+    "source": "solved",
+    "stage": "picked",
+    "n": 1834
+  },
+  "311": {
+    "uid": 311,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1300
+  },
+  "312": {
+    "uid": 312,
+    "label": "fail",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2866
+  },
+  "313": {
+    "uid": 313,
+    "label": "fail",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1493
+  },
+  "314": {
+    "uid": 314,
+    "label": "fail",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 1300
+  },
+  "315": {
+    "uid": 315,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 3890
+  },
+  "316": {
+    "uid": 316,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1879
+  },
+  "317": {
+    "uid": 317,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 1446
+  },
+  "318": {
+    "uid": 318,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 1517
+  },
+  "319": {
+    "uid": 319,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "picked",
+    "n": 2681
+  },
+  "320": {
+    "uid": 320,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 2658
+  },
+  "321": {
+    "uid": 321,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "nested",
+    "n": 1714
+  },
+  "324": {
+    "uid": 324,
+    "label": "fail",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 648
+  },
+  "325": {
+    "uid": 325,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1459
+  },
+  "326": {
+    "uid": 326,
+    "label": "success",
+    "source": "solved",
+    "stage": "contact",
+    "n": 965
+  },
+  "327": {
+    "uid": 327,
+    "label": "success",
+    "source": "solved",
+    "stage": "nested",
+    "n": 1373
+  },
+  "328": {
+    "uid": 328,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2766
+  },
+  "329": {
+    "uid": 329,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "placed",
+    "n": 1418
+  },
+  "330": {
+    "uid": 330,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "no-pick",
+    "n": 2670
+  },
+  "331": {
+    "uid": 331,
+    "label": "success",
+    "source": "solved",
+    "stage": "no-pick",
+    "n": 2867
+  },
+  "333": {
+    "uid": 333,
+    "label": "success",
+    "source": "fk-seed",
+    "stage": "placed",
+    "n": 4069
+  },
+  "334": {
+    "uid": 334,
+    "label": "fail",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1143
+  },
+  "335": {
+    "uid": 335,
+    "label": "success",
+    "source": "solved",
+    "stage": "placed",
+    "n": 1248
+  }
+}

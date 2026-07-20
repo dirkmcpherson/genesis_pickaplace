@@ -20,7 +20,8 @@ REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 import torch
 from replay_harness import (build_world, gripper_targets, tilt_deg, in_shelf_footprint,
-                            HARDCODED_START, BOX_TOP_Z, GP_CLOSE)
+                            HARDCODED_START, BOX_TOP_Z, GP_CLOSE, STATIC_BOTTLE_POSITION,
+                            NESTED_TOUCH_DIST)
 
 def np_(x): return x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else np.asarray(x)
 
@@ -54,7 +55,10 @@ class GenesisCanEnv:
         w = self.w
         if uid is not None:
             r = self.placements[uid]
-            can_pos = r['can_pos']; goal_pos = r['goal_pos']
+            can_pos = r['can_pos']
+            # #27: use the single corrected static goal, NOT the stale per-trial r['goal_pos']
+            # (computed under the old goal) -- so demo-replay training obs carry the right target.
+            goal_pos = (STATIC_BOTTLE_POSITION[0], STATIC_BOTTLE_POSITION[1], w['goal_start_z'])
             can_quat = r.get('can_quat') or [1, 0, 0, 0]
         self._uid = uid
         kin = w['kinova']
@@ -102,11 +106,13 @@ class GenesisCanEnv:
         w = self.w
         for _ in range(100):
             w['scene'].step()
-        c = np_(w['bottle'].get_contacts(w['goal'])['position'])
-        ncon = 0 if c.size == 0 else c.shape[0]
+        bp = np_(w['bottle'].get_pos()); gp_ = np_(w['goal'].get_pos())
+        touch = float(np.hypot(bp[0] - gp_[0], bp[1] - gp_[1])) <= NESTED_TOUCH_DIST
         # nested requires the can was actually picked (same precondition as contact) --
-        # a shoved-in can that touches the goal upright is not a completed task
-        return bool(self._picked and ncon and tilt_deg(np_(w['bottle'].get_quat())) < 20
+        # a shoved-in can that touches the goal upright is not a completed task.
+        # touch is proximity-based (see replay_harness.NESTED_TOUCH_DIST): hard contact
+        # tests fail human-validated placements by mm-level physics noise.
+        return bool(self._picked and touch and tilt_deg(np_(w['bottle'].get_quat())) < 20
                     and tilt_deg(np_(w['goal'].get_quat())) < 20)
 
     def _obs(self):

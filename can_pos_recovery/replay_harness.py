@@ -39,10 +39,20 @@ BOX_POS = (0.75, -BOX_WIDTH / 4, 0.05)
 BOX_SIZE = (0.4, BOX_WIDTH, BOX_HEIGHT)
 BOX_TOP_Z = BOX_POS[2] + BOX_SIZE[2] / 2                     # 0.11
 SHELF_REST_Z = BOX_TOP_Z + BOTTLE_HEIGHT / 2                 # 0.1475
-# goal was static during data collection but our value was ~11cm off; corrected to the real
-# place-cluster median from bag tool_pose (median (0.656,-0.103)). Re-measure #24: this raised
-# replay contact 21->53/75. Old (wrong) value was (0.6,-0.2,0.19).
-STATIC_BOTTLE_POSITION = (0.656, -0.103, 0.19)
+# goal was static during data collection. FINAL (2026-07-19, human-validated): user eyeballed
+# perfect-replay demos 233+242 against the real footage -- their final can rests (2.5cm apart,
+# upright) must TOUCH the goal; two-circle intersection gives two candidates and the user picked
+# SOUTH, which also matches the slide directions: (0.672,-0.221). Supersedes the ring-fit
+# (0.662,-0.057) -- WRONG because contact coverage was one-sided (cans only approach from the
+# north; a fixed-radius circle fit needs surround coverage and got pulled into the cloud) --
+# and the place-cluster median (0.656,-0.103) (wrist-at-release, north of where cans end).
+# Ancient (0.6,-0.2) was closest in y all along; error was mostly x.
+STATIC_BOTTLE_POSITION = (0.672, -0.221, 0.19)
+# nested = settled + picked + both upright + centers within touch distance. Touch is
+# proximity-based (can diameter 0.066 + 15mm tolerance): replay physics noise moves a can's
+# rest by ~1.5cm run-to-run, so a hard contacts>0 test fails demos the human validated as
+# nested (233 ended 0.5mm short of contact). Fail-demo negative control polices the tolerance.
+NESTED_TOUCH_DIST = 0.066 + 0.015
 FAR_AWAY = (2.0, 2.0, BOTTLE_HEIGHT / 2)                     # goal can parked out of play
 
 PICK_Z = 0.09           # bottle center height that counts as lifted (validate_grasp.py's value)

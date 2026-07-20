@@ -27,6 +27,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--render', action='store_true', help='record 96x96 camera frames too')
 ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--outdir', default='baselines/episodes_raw')
+ap.add_argument('--max-attempts', type=int, default=3,
+                help='retries for stochastic borderline placements (was hardcoded 8 -- too slow)')
 args = ap.parse_args()
 
 OUT = REPO / args.outdir
@@ -45,11 +47,12 @@ for uid in uids:
     # Truncation (panel fix): keep the RELEASE -- run past first contact until the
     # recorded gripper opens, +30 frames of retreat, cap at contact+150. The old
     # contact+15 cut deleted the release/settle the nested skill needs.
-    for attempt in range(8):    # borderline placements are stochastic; try several times
+    for attempt in range(args.max_attempts):   # borderline placements are stochastic; retry a few
         obs = env.reset(uid=uid)
         states, images, actions = [], [], []
         post_contact = 0
         released = -1
+        picked_ever = False
         for i in range(len(vel) - 1):
             # action label = the command EXECUTED from this state (panel fix: was
             # vel[i+1], a one-step phase lead that skewed gripper-close timing)
@@ -58,6 +61,8 @@ for uid in uids:
             if args.render: images.append(obs['image'])
             actions.append(a.astype(np.float32))
             obs, done, info = env.step(np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]))
+            if info['picked']:
+                picked_ever = True
             if info['contact']:
                 contact = True
             if contact:
@@ -68,8 +73,11 @@ for uid in uids:
                     break   # demo ends after release+retreat, not mid-hold
         if contact:
             break
+        if not picked_ever:
+            break   # no-pick demo -> retrying the same replay can't produce a grasp (was 8x wasted)
     if not contact:
-        print(f'{uid}: no contact-success in 8 attempts, SKIPPED', flush=True)
+        why = 'no-pick (aborted retries)' if not picked_ever else f'no contact in {args.max_attempts} attempts'
+        print(f'{uid}: {why}, SKIPPED', flush=True)
         skipped += 1
         continue
     data = dict(states=np.array(states), actions=np.array(actions),

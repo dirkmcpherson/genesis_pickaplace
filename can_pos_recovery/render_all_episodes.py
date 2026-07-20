@@ -20,7 +20,7 @@ import sys, json, pathlib as pl
 import numpy as np
 import cv2
 from replay_harness import (build_world, load_episode, gripper_targets, tilt_deg,
-                            HARDCODED_START, STATIC_BOTTLE_POSITION, REPO)
+                            HARDCODED_START, STATIC_BOTTLE_POSITION, REPO, NESTED_TOUCH_DIST)
 import torch
 
 def np_(x): return x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else np.asarray(x)
@@ -52,8 +52,10 @@ for uid in uids:
     label = r.get('label', '?')
     solved = r['status'] in ('ok', 'ok_batch')
     can_quat = tuple(r.get('can_quat') or (1, 0, 0, 0)) if solved else (1, 0, 0, 0)
-    # honest goal: relocate ONLY for solved, success-labeled, not-goal_moved trials
-    use_recovered_goal = solved and label == 'success' and not r.get('goal_moved')
+    # #24: use the ONE corrected static goal (0.656,-0.103, from real tool_pose place-cluster)
+    # for all demos -- honest single goal, matches the remeasure. (Old per-trial recovered-goal
+    # relocation is disabled.)
+    use_recovered_goal = False
     if solved:
         can_pos = tuple(r['can_pos'])
         goal_pos = tuple(r['goal_pos']) if use_recovered_goal else \
@@ -98,10 +100,10 @@ for uid in uids:
     frames.append(np.asarray(cam.render()[0])[:, :, ::-1])
 
     bp = np_(bottle.get_pos()); bq = np_(bottle.get_quat()); gpos = np_(goal.get_pos())
-    c = np_(bottle.get_contacts(goal)['position'])
-    ncon = 0 if c.size == 0 else c.shape[0]
+    touch = float(np.hypot(bp[0] - gpos[0], bp[1] - gpos[1])) <= NESTED_TOUCH_DIST
     tilt = float(tilt_deg(bq))
-    nested = bool(ncon and tilt < 20 and tilt_deg(np_(goal.get_quat())) < 20)
+    # picked precondition (panel fix) + proximity touch (see NESTED_TOUCH_DIST)
+    nested = bool(picked and touch and tilt < 20 and tilt_deg(np_(goal.get_quat())) < 20)
     placed = max_z > w['pick_z'] and float(bp[2]) > 0.11
     outcome = ('S-nested' if success and nested else 'S' if success else
                'placed-only' if placed else 'picked-drop' if picked else 'no-pick')

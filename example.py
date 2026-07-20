@@ -97,7 +97,7 @@ kinova = scene.add_entity(
 
 CAN_START_Z = TABLE_TOP_Z + BOTTLE_HEIGHT / 2 + 0.0125   # small settle drop onto the table
 GOAL_START_Z = 0.11 + BOTTLE_HEIGHT / 2 + 0.0425         # same settle drop onto the shelf top
-STATIC_BOTTLE_POSITION = (0.6, -0.2, GOAL_START_Z)
+STATIC_BOTTLE_POSITION = (0.672, -0.221, GOAL_START_Z)   # human-validated 2026-07-19 (233+242 nest; user picked SOUTH)
 POSITION_0 = (0.4381, 0.1, CAN_START_Z)
 POSITION_1 = (0.4381, -0.05, CAN_START_Z)
 POSITION_2 = (0.4381, -0.2, CAN_START_Z)
@@ -244,7 +244,8 @@ for path in paths:
             bottle.set_pos(r['can_pos'])
             # some demos start with the can knocked over (fallen-can variant)
             can_quat = r.get('can_quat') or [1, 0, 0, 0]
-            goal_bottle.set_pos(r['goal_pos'])
+            # goal stays at the single corrected static pos (#24/#27); do NOT use the stale
+            # per-trial r['goal_pos'] (computed under the old goal) -- matches render_all_episodes.
         elif uid in TRIALS_POSITION_0:
             if args.position >= 0 and args.position != 0: return False
             bottle.set_pos(POSITION_0)
