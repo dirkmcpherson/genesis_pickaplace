@@ -1,0 +1,68 @@
+From f41427d2c3b334a6b0bdb92471867dc7b079bd2d Mon Sep 17 00:00:00 2001
+From: james <dirkmcpherson@gmail.com>
+Date: Mon, 20 Jul 2026 12:07:21 -0400
+Subject: [PATCH] headless render: gate cv2.imshow/waitKey behind use_imshow
+ flag
+
+Offscreen camera.render() popped X11 windows on every call, breaking headless
+video rendering. Local patch carried since the genesis_pickaplace render work.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_011FZEb8uJiwi92FaSTTa2RJ
+---
+ genesis/vis/camera.py | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/genesis/vis/camera.py b/genesis/vis/camera.py
+index 8c462e5..a447a8b 100644
+--- a/genesis/vis/camera.py
++++ b/genesis/vis/camera.py
+@@ -146,7 +146,7 @@ class Camera(RBC):
+         self.set_pose(transform=transform)
+ 
+     @gs.assert_built
+-    def render(self, rgb=True, depth=False, segmentation=False, colorize_seg=False, normal=False):
++    def render(self, rgb=True, depth=False, segmentation=False, colorize_seg=False, normal=False, use_imshow=False):
+         """
+         Render the camera view. Note that the segmentation mask can be colorized, and if not colorized, it will store an object index in each pixel based on the segmentation level specified in `VisOptions.segmentation_level`. For example, if `segmentation_level='link'`, the segmentation mask will store `link_idx`, which can then be used to retrieve the actual link objects using `scene.rigid_solver.links[link_idx]`.
+         If `env_separate_rigid` in `VisOptions` is set to True, each component will return a stack of images, with the number of images equal to `len(rendered_envs_idx)`.
+@@ -226,7 +226,7 @@ class Camera(RBC):
+                 if self._rgb_stacked:
+                     rgb_img = rgb_img[0]
+                     rgb_env = " Environment 0"
+-                cv2.imshow(f"{title + rgb_env} [RGB]", rgb_img)
++                if use_imshow: cv2.imshow(f"{title + rgb_env} [RGB]", rgb_img)
+ 
+             other_env = " Environment 0" if self._other_stacked else ""
+             if depth:
+@@ -238,23 +238,23 @@ class Camera(RBC):
+                 if self._other_stacked:
+                     depth_img = depth_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Depth]", depth_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Depth]", depth_img)
+ 
+             if segmentation:
+                 seg_img = seg_color_arr[..., [2, 1, 0]]
+                 if self._other_stacked:
+                     seg_img = seg_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Segmentation]", seg_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Segmentation]", seg_img)
+ 
+             if normal:
+                 normal_img = normal_arr[..., [2, 1, 0]]
+                 if self._other_stacked:
+                     normal_img = normal_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Normal]", normal_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Normal]", normal_img)
+ 
+-            cv2.waitKey(1)
++            if use_imshow: cv2.waitKey(1)
+ 
+         if self._in_recording and rgb_arr is not None:
+             self._recorded_imgs.append(rgb_arr)
+-- 
+2.34.1
+

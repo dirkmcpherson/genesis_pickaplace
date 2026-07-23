@@ -11,7 +11,12 @@ PY=${1:-python}
 echo "== target interpreter: $($PY -c 'import sys;print(sys.executable)')"
 
 echo "== 1. genesis must already import here (this env's whole reason to exist)"
-$PY -c "import genesis; print('  genesis OK:', genesis.__file__)"
+if ! $PY -c "import genesis" 2>/dev/null; then
+  echo "  genesis MISSING -> run: ./third_party/install_genesis.sh  (upstream@31951c3f + patch)"
+  echo "  then pin torch==2.7.0+cu126 taichi==1.7.4 numpy==2.2.6 for physics parity"
+else
+  $PY -c "import genesis; print('  genesis OK:', genesis.__file__)"
+fi
 $PY -c "import torch; print('  torch', torch.__version__, 'cuda', torch.cuda.is_available())"
 
 echo "== 2. dreamer's hard deps -- report present/MISSING (only tensorboard was missing locally)"
