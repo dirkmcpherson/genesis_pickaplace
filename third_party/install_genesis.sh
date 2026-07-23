@@ -35,6 +35,14 @@ if ! python -c "import numpy" 2>/dev/null; then
   echo "  then re-run this script."
   exit 1
 fi
+# Genesis compiles Cython ext modules (fast_simplification) whose .cpp files are
+# GENERATED from .pyx at build time and are NOT committed -- a fresh clone has only
+# the .pyx, so Cython (+ a C++ compiler) must be present to build. Not in the runtime
+# freeze because it's build-time only.
+echo "== ensure build tools: Cython + a working g++"
+python -c "import Cython" 2>/dev/null || pip install "Cython<3.1"
+command -v g++ >/dev/null || { echo "  ERROR: no g++ on PATH (module load gcc?)"; exit 1; }
+
 echo "== editable install (--no-build-isolation uses the numpy/torch already pinned)"
 pip install -e . --no-build-isolation
 echo "== CRITICAL pins for physics parity: torch==2.7.0+cu126  taichi==1.7.4  numpy==2.2.6"
