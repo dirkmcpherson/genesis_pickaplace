@@ -5,7 +5,7 @@
 #   B. final numbers: 3 seeds x 15 random ICs at the FULL 1200-step horizon on the last
 #      checkpoint -- directly comparable to DP-pick (same eval_core/ICs/horizon).
 # Detached; waits for training to finish first.
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 LOG=baselines/sacfd_eval.log
 echo "[$(date)] SACfD EVAL: waiting for training to finish..." > $LOG
 while [ "$(ps aux | grep train_sacfd | grep -v grep | wc -l)" -gt 0 ]; do sleep 300; done

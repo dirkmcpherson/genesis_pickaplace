@@ -8,7 +8,7 @@ Usage: resume_sacfd.py --ckpt <sacfd_final.zip> --steps 150000 --demo-dir <dir> 
 """
 import argparse, glob, pathlib as pl, sys, time
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import pick_env  # noqa: E402

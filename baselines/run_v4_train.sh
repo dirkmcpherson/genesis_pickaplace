@@ -1,7 +1,7 @@
 #!/bin/bash
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 rm -rf baselines/outputs/dp_v4
-/home/james/workspace/lerobot/.venv/bin/lerobot-train \
+/home/j/workspace/genesis_pickaplace/.venv-eval/bin/lerobot-train \
     --dataset.repo_id=local/genesis_pickaplace_v4 \
     --dataset.root=baselines/lerobot_dataset_v4/genesis_pickaplace \
     --policy.type=diffusion --policy.push_to_hub=false \

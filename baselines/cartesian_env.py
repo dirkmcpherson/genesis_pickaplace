@@ -23,7 +23,7 @@ import numpy as np
 import torch
 from scipy.spatial.transform import Rotation as R
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402

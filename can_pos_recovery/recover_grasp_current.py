@@ -16,7 +16,7 @@ Stage 2 (any):          python recover_grasp_current.py recover    -> grasp_curr
 import sys, json, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 SIG = pl.Path('/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/'
               '5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad/grasp_signals')
 GOAL = (0.6, -0.2)

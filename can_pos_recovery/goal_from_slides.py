@@ -27,7 +27,7 @@ DIAM = 0.066  # can diameter = 2*radius(0.033); two equal cans touching -> cente
 ap = argparse.ArgumentParser()
 ap.add_argument('--drop', type=int, nargs='*', default=[])
 ap.add_argument('--only', type=int, nargs='*', default=None, help='restrict to these uids')
-ap.add_argument('--plot', default='/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad/goal_ring.png')
+ap.add_argument('--plot', default='/home/j/workspace/genesis_pickaplace/can_pos_recovery/_scratch/goal_ring.png')
 ap.add_argument('--win', type=int, default=30, help='frames before contact for approach dir')
 # when imported (e.g. by goal_from_sim_slides for slide_contact), don't consume the
 # importer's argv -> parse defaults; only read real CLI args when run as the main script.

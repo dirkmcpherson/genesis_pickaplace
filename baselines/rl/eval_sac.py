@@ -12,7 +12,7 @@ import argparse
 import pathlib as pl
 import sys
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402

@@ -9,7 +9,7 @@
 #   4. CPU (parallel with GPU): honest remeasure (success + fail neg-control) + re-render
 #      gallery & real|sim side-by-sides
 #   5. NIGHT2_REPORT.txt
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 PY=.venv-eval/bin/python
 LOG=baselines/night2.log
 SP=/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad
@@ -68,7 +68,7 @@ $PY -u baselines/rl/eval_sac.py "$CK" --random 6 --seed 1 --max-steps 600 \
 echo "[$(date)] 3a. SACfD eval + videos done" >> $LOG
 
 # ---- 3b. DP 100k on successful picks ----
-LV=/home/james/workspace/lerobot/.venv/bin
+LV=/home/j/workspace/genesis_pickaplace/.venv-eval/bin
 $LV/python baselines/convert_to_lerobot.py baselines/episodes_pick \
     baselines/lerobot_dataset_pick_v2/genesis_pickaplace 8 4 > baselines/convert_pick_v2.log 2>&1
 rm -rf baselines/outputs/dp_pick_v2

@@ -13,7 +13,7 @@ import os
 os.environ.setdefault('PYOPENGL_PLATFORM', 'egl')
 import sys, pathlib as pl
 import numpy as np
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO))
 import genesis as gs
 import torch
@@ -79,7 +79,7 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
                 table=False, can_radius=BOTTLE_RADIUS, camera=False, can_friction=0.2,
                 urdf_file='gen3_lite_2f_robotiq_85.urdf', urdf_extra=None,
                 constraint_timeconst=None, rigid_extra=None,
-                table_friction=0.5, goal_friction=2.0, table_top=TABLE_TOP_Z):
+                table_friction=0.5, goal_friction=2.0, table_top=TABLE_TOP_Z, rig_res=64):
     """table=True adds the missing table surface (top at z=0.05) under the pick area.
     Trial 232/235 bags: robot-reported tool_pose z at grasp is 0.016-0.039 above the BASE,
     i.e. the humans grasped low on a can standing on the robot's own table -- not on the
@@ -132,11 +132,37 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     kdofs = [joint_dofs(kinova.get_joint(n)) for n in JOINT_NAMES]
     eef = kinova.get_link(EEF_NAME)
     cam = None
+    cam_top = cam_wrist = None
     if camera:
         # behind the arm base (-x), elevated, looking down/forward at the shelf + arm
         cam = scene.add_camera(res=(640, 560), pos=(-0.35, 0.0, 1.0),
                                lookat=(0.55, -0.08, 0.10), fov=48, GUI=False)
+    if camera == 'rig':
+        # dv3 two-camera rig (user-selected 2026-07-21): topB_overhead_lo + through-
+        # gripper wrist (eef +z 6cm, pitched 15 deg into the closing plane).
+        cam_top = scene.add_camera(res=(rig_res, rig_res), pos=(0.40, -0.08, 1.15),
+                                   lookat=(0.40, -0.08, 0.10), up=(1, 0, 0),
+                                   fov=68, GUI=False)
+        cam_wrist = scene.add_camera(res=(rig_res, rig_res), pos=(0, 0, 0),
+                                     fov=80, GUI=False)
     scene.build()
+    if cam_wrist is not None:
+        # Wrist cam (user-specified 2026-07-21): mounted ON TOP of the wrist as a real
+        # arm cam must be. VERIFIED: the eef frame's +x axis is world-up (world-z
+        # component 1.00 across poses) -- mount 10cm along +x, 3cm back from the
+        # flange, pitched 30 deg down toward the tool axis, rolled -90 so the view
+        # reads level. Looks down over the gripper: fingers from above, target and
+        # goal can both in frame, held can centered during carry.
+        _z = np.array([0.0, 0.0, 1.0]); _up = np.array([0.0, 1.0, 0.0])
+        _x = np.cross(_up, -_z); _x /= np.linalg.norm(_x)
+        _y = np.cross(-_z, _x)
+        _R = np.stack([_x, _y, -_z], axis=1)
+        _a = np.deg2rad(30.0); _c, _s = np.cos(_a), np.sin(_a)
+        _pitch = np.array([[_c, 0, -_s], [0, 1, 0], [_s, 0, _c]])
+        _r = np.deg2rad(90.0); _rc, _rs = np.cos(_r), np.sin(_r)   # 270+180 (user)
+        _roll = np.array([[_rc, -_rs, 0], [_rs, _rc, 0], [0, 0, 1]])
+        _T = np.eye(4); _T[:3, :3] = _R @ _pitch @ _roll; _T[:3, 3] = (0.10, 0.0, -0.03)
+        cam_wrist.attach(eef, _T)
 
     # example.py's gain overrides (arm always; fingers overridable)
     fkp = [20, 20, 5, 5] if finger_kp is None else [finger_kp] * 4
@@ -152,7 +178,8 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     return dict(scene=scene, kinova=kinova, bottle=bottle, goal=goal, kdofs=kdofs, eef=eef,
                 can_h=can_height, can_start_z=floor_z + can_height / 2 + 0.0125,
                 goal_start_z=BOX_TOP_Z + can_height / 2 + 0.0425,
-                pick_z=floor_z + can_height / 2 + 0.05, cam=cam)
+                pick_z=floor_z + can_height / 2 + 0.05, cam=cam,
+                cam_top=cam_top, cam_wrist=cam_wrist)
 
 
 def load_episode(uid):

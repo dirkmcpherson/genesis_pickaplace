@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 # 1. collect ALL demos (success + fail + dropped) for the RL buffer -- keep everything
 .venv-eval/bin/python -u baselines/rl/collect_all_rl.py > baselines/rl/collect_all_rl.log 2>&1
 echo "[$(date)] collect_all_rl done" >> baselines/rl/run_sacfd_broad.log

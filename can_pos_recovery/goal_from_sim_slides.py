@@ -102,7 +102,7 @@ ax.scatter([np.median(C, 0)[0]], [np.median(C, 0)[1]], c='black', marker='*', s=
 ax.scatter([0.656], [-0.103], c='cyan', marker='P', s=150, label='old A (0.656,-0.103)', zorder=5)
 ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.set_aspect('equal'); ax.grid(alpha=0.3)
 ax.legend(fontsize=8, loc='upper left'); ax.set_title(f'SIM-consistent goal from {len(rows)} slides')
-S = '/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad'
+S = '/home/j/workspace/genesis_pickaplace/can_pos_recovery/_scratch'
 plt.tight_layout(); plt.savefig(f'{S}/goal_ring_sim.png', dpi=90); print(f"plot -> {S}/goal_ring_sim.png")
 
 (REPO / 'can_pos_recovery/goal_from_sim_slides.json').write_text(json.dumps(dict(

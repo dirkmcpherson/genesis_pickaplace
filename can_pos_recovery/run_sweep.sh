@@ -3,8 +3,8 @@
 # one trial (e.g. 245's 22h wedge, 2026-07-05) can no longer take down the whole run.
 # Each trial gets its own python process and a hard timeout; hangs are recorded and
 # skipped. Resumable: trials already in $OUT are skipped without paying gs.init.
-PY=/home/james/workspace/genesis_sim2real/venv/bin/python
-DIR=/home/james/workspace/genesis_pickaplace/can_pos_recovery
+PY=/home/j/workspace/genesis_pickaplace/.venv-eval/bin/python
+DIR=/home/j/workspace/genesis_pickaplace/can_pos_recovery
 OUT=${SWEEP_OUT:-$DIR/sweep_v2.json}
 LOG=${SWEEP_LOG:-$DIR/sweep_v2.log}
 HANGS=${SWEEP_HANGS:-$DIR/sweep_v2_hangs.txt}

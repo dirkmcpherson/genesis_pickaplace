@@ -12,7 +12,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv, np_  # noqa: E402
@@ -26,9 +26,12 @@ STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 class FullTaskEnv(gym.Env):
     metadata = {'render_modes': []}
 
-    def __init__(self, backend='cpu', max_steps=900, fixed_uid=None):
+    def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,
+                 camera_rig=False, workspace_limit=False):
         super().__init__()
-        self.genv = GenesisCanEnv(backend=backend)
+        self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
+                                  camera_rig=camera_rig,
+                                  workspace_limit=workspace_limit)
         self.max_steps = int(max_steps)
         self.fixed_uid = fixed_uid
         self.success_uids = sorted(

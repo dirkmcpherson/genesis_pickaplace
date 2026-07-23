@@ -9,7 +9,7 @@ Usage:
 import sys, json, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 OUT = REPO / 'can_pos_recovery/trial_placements.json'
 
 # world corrections the search ran under (see CAN_STARTING_POSITION.md follow-up notes):

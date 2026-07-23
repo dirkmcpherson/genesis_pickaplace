@@ -1,8 +1,8 @@
 #!/bin/bash
 # Detached v4 convert+train (collection is complete: 34 eps; the 4 remaining are chronic
 # skips that also failed in v3). setsid+nohup so it survives agent-session teardown.
-cd /home/james/workspace/genesis_pickaplace
-LEROBOT=/home/james/workspace/lerobot/.venv
+cd /home/j/workspace/genesis_pickaplace
+LEROBOT=/home/j/workspace/genesis_pickaplace/.venv-eval
 echo "[$(date)] v4 convert start" >> baselines/run_v4_chain.log
 rm -rf baselines/lerobot_dataset_v4
 $LEROBOT/bin/python baselines/convert_to_lerobot.py baselines/episodes_raw_v4 \

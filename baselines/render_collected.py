@@ -8,7 +8,7 @@ Usage: render_collected.py <episode_dir> <video_dir> [--once]
 """
 import sys, time, glob, pathlib as pl
 import numpy as np, cv2, torch
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv
 from replay_harness import tilt_deg, BOX_TOP_Z, in_shelf_footprint

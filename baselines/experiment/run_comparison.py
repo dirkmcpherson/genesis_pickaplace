@@ -32,9 +32,9 @@ import sys
 
 import numpy as np
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 VENV_EVAL = REPO / '.venv-eval/bin/python'
-LEROBOT_BIN = pl.Path('/home/james/workspace/lerobot/.venv/bin')
+LEROBOT_BIN = pl.Path('/home/j/workspace/genesis_pickaplace/.venv-eval/bin')
 LEROBOT_PY = LEROBOT_BIN / 'python'
 LEROBOT_TRAIN = LEROBOT_BIN / 'lerobot-train'
 
@@ -210,7 +210,7 @@ def eval_random_floor(work, n_eval, eval_seed, dry):
     reuse eval_sac path is SAC-specific; instead run a tiny inline random policy via
     harvest_ai_demos is overkill. We shell a one-liner random eval through eval_core."""
     script = ("import sys,pathlib as pl,numpy as np;"
-              "R=pl.Path('/home/james/workspace/genesis_pickaplace');"
+              "R=pl.Path('/home/j/workspace/genesis_pickaplace');"
               "sys.path.insert(0,str(R/'baselines'));"
               "sys.path.insert(0,str(R/'baselines/rl'));"
               "from genesis_can_env import GenesisCanEnv;"

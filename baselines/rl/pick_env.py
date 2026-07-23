@@ -27,13 +27,25 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 
 STATE_DIM = 17   # [6 joints, gripper 0..1, grip_effort, can xyz, can quat, goal xy]
 ACT_DIM = 7      # [6 arm joint position targets (rad), gripper 0..1]
-ARM_LIMIT = np.pi
+ARM_LIMIT = np.pi   # legacy scalar; kept for checkpoints trained before per-joint limits
+
+# Per-joint action bounds = the demo command envelope, span DOUBLED and clamped to the
+# +-pi actuator range. Rationale: demos occupy only 1/188th of [-pi,pi]^6, so ~99.5% of
+# every action a uniform policy samples is motion no human ever commanded -- the actor
+# spends its capacity proposing useless flailing. Doubling (rather than hugging the
+# demo envelope) deliberately leaves room to discover alternate paths to the goal.
+# Result: 1/188 -> 1/5.6 of the full volume, i.e. ~34x less irrelevant action space
+# while still allowing well beyond demonstrated motion.
+ARM_LO = np.array([-2.0887, -3.1416, -2.8338, -3.1416, -2.0145, -3.1416])
+ARM_HI = np.array([ 2.5855,  1.4454,  3.1416,  1.6596,  3.1416,  0.3380])
+ARM_MID = (ARM_HI + ARM_LO) / 2.0
+ARM_HALF = (ARM_HI - ARM_LO) / 2.0
 GRIP_CLOSED_FRAC = 0.3   # GP_CLOSE (30) on the 0..1 gripper scale
 
 
@@ -41,7 +53,7 @@ def normalize_action(a_phys):
     """Physical action [6 joint rad, grip 0..1] -> normalized [-1, 1]^7."""
     a = np.asarray(a_phys, dtype=np.float32)
     out = np.empty_like(a)
-    out[..., :6] = np.clip(a[..., :6] / ARM_LIMIT, -1.0, 1.0)
+    out[..., :6] = np.clip((a[..., :6] - ARM_MID) / ARM_HALF, -1.0, 1.0)
     out[..., 6] = np.clip(a[..., 6] * 2.0 - 1.0, -1.0, 1.0)
     return out
 
@@ -50,7 +62,7 @@ def denormalize_action(a_norm):
     """Normalized [-1, 1]^7 -> physical action [6 joint rad, grip 0..1]."""
     a = np.asarray(a_norm, dtype=np.float64)
     out = np.empty_like(a)
-    out[..., :6] = np.clip(a[..., :6], -1.0, 1.0) * ARM_LIMIT
+    out[..., :6] = np.clip(a[..., :6], -1.0, 1.0) * ARM_HALF + ARM_MID
     out[..., 6] = (np.clip(a[..., 6], -1.0, 1.0) + 1.0) / 2.0
     return out
 

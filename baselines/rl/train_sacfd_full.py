@@ -19,7 +19,7 @@ import argparse, glob, pathlib as pl, sys, time
 
 import numpy as np
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import demo_buffer  # noqa: E402
@@ -98,6 +98,12 @@ def main():
     ap.add_argument('--warm-start', default=None, metavar='CKPT',
                     help='initialize actor/critic from a trained pick-SACfD .zip (same '
                          '17/7 spaces) -- staged training: explore from "can already pick"')
+    ap.add_argument('--no-wandb', action='store_true')
+    ap.add_argument('--run-name', default=None, help='wandb run name (default: out-dir stem)')
+    ap.add_argument('--eval-freq', type=int, default=25_000,
+                    help='video-eval subprocess cadence (0 disables)')
+    ap.add_argument('--eval-max-steps', type=int, default=1200,
+                    help='eval rollout horizon (#21 lever: 400 for pick-only curves)')
     args = ap.parse_args()
 
     t0 = time.time()
@@ -126,11 +132,19 @@ def main():
     print(f'[demos] x{args.duplicate} -> {n_added} added; buffer pos={model.replay_buffer.pos} '
           f'full={model.replay_buffer.full}', flush=True)
 
-    from stable_baselines3.common.callbacks import CheckpointCallback
+    from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
+    from wandb_utils import init_wandb, WandbScalarCallback, VideoEvalCallback
     out = pl.Path(args.out_dir); out.mkdir(parents=True, exist_ok=True)
-    cb = CheckpointCallback(save_freq=50_000, save_path=str(out), name_prefix='sacfd')
-    model.learn(total_timesteps=args.steps, log_interval=10, callback=cb)
+    run = init_wandb(args, name=args.run_name or out.name, tags=('sacfd',))
+    cbs = [CheckpointCallback(save_freq=50_000, save_path=str(out), name_prefix='sacfd'),
+           WandbScalarCallback(run)]
+    if args.eval_freq:
+        cbs.append(VideoEvalCallback(run, out, eval_freq=args.eval_freq,
+                                     max_steps=args.eval_max_steps, seed=args.seed))
+    model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
+    if run is not None:
+        run.finish()
     print(f'[full] done in {(time.time() - t0)/3600:.1f}h -> {out}/sacfd_final.zip', flush=True)
 
 

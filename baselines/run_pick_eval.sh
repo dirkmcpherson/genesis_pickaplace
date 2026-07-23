@@ -3,7 +3,7 @@
 # then evals 3 seeds IN PARALLEL (random ICs, corrected goal, standard 1200-step horizon so
 # it's comparable to prior/other-policy numbers) and renders rollout videos. #21 throughput:
 # parallel seeds give ~3x wall-clock without changing the metric.
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 LOG=baselines/pick_eval.log
 echo "[$(date)] PICK EVAL: waiting for training to finish..." > $LOG
 while [ "$(ps aux | grep lerobot-train | grep -v grep | wc -l)" -gt 0 ]; do sleep 300; done

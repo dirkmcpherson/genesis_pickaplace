@@ -1,0 +1,255 @@
+{
+ "234": {
+  "status": "ok",
+  "can_pos": [
+   0.4351,
+   -0.1741,
+   0.085
+  ],
+  "can_quat": [
+   0.7071067811865476,
+   0.5,
+   0.4999999999999999,
+   0.0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "picked"
+ },
+ "246": {
+  "status": "ok",
+  "can_pos": [
+   0.4381,
+   -0.05,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 1,
+  "search": "cpu_research_bb",
+  "stage": "placed"
+ },
+ "247": {
+  "status": "ok",
+  "can_pos": [
+   0.4822,
+   -0.1827,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "nested"
+ },
+ "250": {
+  "status": "ok",
+  "can_pos": [
+   0.4584,
+   -0.1691,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "placed"
+ },
+ "256": {
+  "status": "ok",
+  "can_pos": [
+   0.4381,
+   -0.2,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "nested"
+ },
+ "286": {
+  "status": "ok",
+  "can_pos": [
+   0.4769,
+   -0.1013,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "placed"
+ },
+ "293": {
+  "status": "ok",
+  "can_pos": [
+   0.4576,
+   0.08610000000000001,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "search": "cpu_research_bb",
+  "stage": "picked"
+ },
+ "295": {
+  "status": "ok",
+  "can_pos": [
+   0.4381,
+   -0.2,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "contact"
+ },
+ "318": {
+  "status": "ok",
+  "can_pos": [
+   0.4434,
+   -0.1801,
+   0.085
+  ],
+  "can_quat": [
+   0.7071067811865476,
+   0.2705980500730985,
+   0.6532814824381882,
+   0.0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "picked"
+ },
+ "320": {
+  "status": "ok",
+  "can_pos": [
+   0.4592,
+   0.1005,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 0,
+  "search": "cpu_research_bb",
+  "stage": "nested"
+ },
+ "330": {
+  "status": "ok",
+  "can_pos": [
+   0.4336,
+   -0.1867,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "goal_pos": null,
+  "goal_moved": null,
+  "success_rate": null,
+  "picked_rate": null,
+  "label": "success",
+  "conf": "HIGH",
+  "pos": 2,
+  "search": "cpu_research_bb",
+  "stage": "nested"
+ }
+}

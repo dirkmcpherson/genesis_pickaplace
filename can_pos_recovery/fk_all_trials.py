@@ -13,7 +13,7 @@ import os
 os.environ.setdefault('PYOPENGL_PLATFORM', 'egl')
 import sys, json, pathlib as pl
 import numpy as np
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO))
 import genesis as gs
 import torch

@@ -16,8 +16,8 @@
   "234": {
     "uid": 234,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "placed",
     "n": 899
   },
   "235": {
@@ -73,7 +73,7 @@
     "uid": 243,
     "label": "success",
     "source": "solved",
-    "stage": "contact",
+    "stage": "placed",
     "n": 571
   },
   "244": {
@@ -87,28 +87,28 @@
     "uid": 245,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "placed",
     "n": 3323
   },
   "246": {
     "uid": 246,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "placed",
     "n": 2622
   },
   "247": {
     "uid": 247,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "nested",
     "n": 1736
   },
   "248": {
     "uid": 248,
     "label": "success",
     "source": "solved",
-    "stage": "picked",
+    "stage": "nested",
     "n": 3062
   },
   "249": {
@@ -121,22 +121,22 @@
   "250": {
     "uid": 250,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "placed",
     "n": 3350
   },
   "251": {
     "uid": 251,
     "label": "success",
     "source": "solved",
-    "stage": "placed",
+    "stage": "nested",
     "n": 1583
   },
   "252": {
     "uid": 252,
     "label": "success",
     "source": "solved",
-    "stage": "nested",
+    "stage": "placed",
     "n": 1542
   },
   "254": {
@@ -156,8 +156,8 @@
   "256": {
     "uid": 256,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "nested",
     "n": 2193
   },
   "257": {
@@ -192,7 +192,7 @@
     "uid": 261,
     "label": "success",
     "source": "solved",
-    "stage": "nested",
+    "stage": "no-pick",
     "n": 1411
   },
   "262": {
@@ -241,14 +241,14 @@
     "uid": 269,
     "label": "success",
     "source": "solved",
-    "stage": "contact",
+    "stage": "placed",
     "n": 4856
   },
   "270": {
     "uid": 270,
     "label": "fail",
     "source": "solved",
-    "stage": "picked",
+    "stage": "placed",
     "n": 3699
   },
   "273": {
@@ -338,15 +338,15 @@
   "286": {
     "uid": 286,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "placed",
     "n": 3751
   },
   "287": {
     "uid": 287,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "placed",
     "n": 4618
   },
   "288": {
@@ -359,8 +359,8 @@
   "293": {
     "uid": 293,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "picked",
     "n": 6141
   },
   "294": {
@@ -373,22 +373,22 @@
   "295": {
     "uid": 295,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "contact",
     "n": 6232
   },
   "296": {
     "uid": 296,
     "label": "fail",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "contact",
     "n": 2790
   },
   "297": {
     "uid": 297,
     "label": "success",
     "source": "solved",
-    "stage": "placed",
+    "stage": "contact",
     "n": 1137
   },
   "298": {
@@ -402,14 +402,14 @@
     "uid": 299,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "picked",
     "n": 2612
   },
   "300": {
     "uid": 300,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "nested",
     "n": 4770
   },
   "301": {
@@ -451,14 +451,14 @@
     "uid": 306,
     "label": "success",
     "source": "solved",
-    "stage": "picked",
+    "stage": "contact",
     "n": 2528
   },
   "307": {
     "uid": 307,
     "label": "fail",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "contact",
     "n": 1885
   },
   "308": {
@@ -493,7 +493,7 @@
     "uid": 312,
     "label": "fail",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "nested",
     "n": 2866
   },
   "313": {
@@ -507,49 +507,49 @@
     "uid": 314,
     "label": "fail",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "contact",
     "n": 1300
   },
   "315": {
     "uid": 315,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "placed",
     "n": 3890
   },
   "316": {
     "uid": 316,
     "label": "success",
     "source": "solved",
-    "stage": "nested",
+    "stage": "contact",
     "n": 1879
   },
   "317": {
     "uid": 317,
     "label": "success",
     "source": "solved",
-    "stage": "contact",
+    "stage": "placed",
     "n": 1446
   },
   "318": {
     "uid": 318,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "placed",
     "n": 1517
   },
   "319": {
     "uid": 319,
     "label": "success",
     "source": "fk-seed",
-    "stage": "picked",
+    "stage": "placed",
     "n": 2681
   },
   "320": {
     "uid": 320,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "nested",
     "n": 2658
   },
   "321": {
@@ -577,21 +577,21 @@
     "uid": 326,
     "label": "success",
     "source": "solved",
-    "stage": "contact",
+    "stage": "placed",
     "n": 965
   },
   "327": {
     "uid": 327,
     "label": "success",
     "source": "solved",
-    "stage": "nested",
+    "stage": "placed",
     "n": 1373
   },
   "328": {
     "uid": 328,
     "label": "success",
     "source": "solved",
-    "stage": "no-pick",
+    "stage": "nested",
     "n": 2766
   },
   "329": {
@@ -604,8 +604,8 @@
   "330": {
     "uid": 330,
     "label": "success",
-    "source": "fk-seed",
-    "stage": "no-pick",
+    "source": "solved",
+    "stage": "nested",
     "n": 2670
   },
   "331": {

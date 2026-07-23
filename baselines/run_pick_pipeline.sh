@@ -2,7 +2,7 @@
 # END-TO-END DP-on-successful-picks pipeline ("Go for it"). Fully detached; each stage waits
 # for its prerequisite so it survives long gaps. Respects dreamer4: the GPU train stage only
 # fires once the GPU has been free of compute procs for a sustained window.
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 LOG=baselines/pick_pipeline.log
 echo "[$(date)] PICK PIPELINE START" > $LOG
 

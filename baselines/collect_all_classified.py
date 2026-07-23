@@ -16,7 +16,7 @@ Usage: collect_all_classified.py --outdir baselines/episodes_all [--uids ...]
 import argparse, json, sys, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/james/workspace/genesis_pickaplace')
+REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv
@@ -25,6 +25,8 @@ from replay_harness import load_episode, STATIC_BOTTLE_POSITION
 ap = argparse.ArgumentParser()
 ap.add_argument('--outdir', default='baselines/episodes_all')
 ap.add_argument('--uids', type=int, nargs='*', default=None)
+ap.add_argument('--images', action='store_true',
+                help='record the dv3 two-camera rig obs: images (n,64,64,6) uint8 per npz')
 args = ap.parse_args()
 
 OUT = REPO / args.outdir
@@ -35,7 +37,12 @@ STUB = {'290', '322'}
 tbl = json.loads((REPO / 'can_pos_recovery/trial_placements.json').read_text())['trials']
 fk = {int(k): v for k, v in json.loads((REPO / 'can_pos_recovery/fk_recovered.json').read_text()).items()}
 
-env = GenesisCanEnv(backend='cpu')
+env = GenesisCanEnv(backend='cpu', camera_rig=args.images)
+# CRITICAL: default max_steps=1200 is an EVAL horizon. The collector feeds the whole
+# tape ignoring `done`, and env.step runs _nested() -- 100 extra sim steps -- on EVERY
+# step once done goes true: each demo >1200 frames silently desynced from cmd 1200 on
+# (uid 300: ~357k phantom steps; the 42mm env-vs-replay divergence, #26 successor).
+env.max_steps = 10 ** 9
 CANZ = env.w['can_start_z']
 GOAL = (STATIC_BOTTLE_POSITION[0], STATIC_BOTTLE_POSITION[1], env.w['goal_start_z'])
 
@@ -56,18 +63,24 @@ for uid in uids:
             obs = env.reset(can_pos=(seed[0], seed[1], CANZ), can_quat=[1, 0, 0, 0], goal_pos=GOAL)
             source = 'fk-seed'
         vel, gp = load_episode(uid)
-        states, actions = [], []
+        states, actions, images = [], [], []
         picked = placed = contact = False
         for i in range(len(vel) - 1):
             a = np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]).astype(np.float32)
             states.append(obs['state'])
             actions.append(a)
-            obs, done, info = env.step(a)
+            if args.images:
+                images.append(env.rig_obs())
+            # EXECUTE the raw recorded gripper motor value (may overshoot <0): the [0,1]
+            # clip cost 12 solved demos their pick (42mm arm divergence -- see
+            # diagnostics/trace_env_ablate.py). STORED action keeps the clipped,
+            # policy-representable [0,1] channel.
+            obs, done, info = env.step(a, grip_motor=gp[i], arm_cmd=vel[i])
             picked |= bool(info['picked']); placed |= bool(info['placed']); contact |= bool(info['contact'])
         # settle in place (hold last action) to score nested at rest
         hold = np.concatenate([vel[-1], [np.clip(gp[-1] / 100.0, 0, 1)]]).astype(np.float32)
         for _ in range(100):
-            obs, done, info = env.step(hold)
+            obs, done, info = env.step(hold, grip_motor=gp[-1], arm_cmd=vel[-1])
         # score nested directly (env only computes it at its own 1200-step horizon):
         # picked + proximity-touch + both upright (see replay_harness.NESTED_TOUCH_DIST)
         import torch
@@ -80,8 +93,9 @@ for uid in uids:
                       and tilt_deg(_np(w['goal'].get_quat())) < 20)
         stage = ('nested' if nested else 'contact' if contact else 'placed' if placed
                  else 'picked' if picked else 'no-pick')
+        extra = dict(images=np.array(images, dtype=np.uint8)) if args.images else {}
         np.savez_compressed(OUT / f'{uid}.npz', states=np.array(states), actions=np.array(actions),
-                            uid=uid, n=len(states), label=label, stage=stage)
+                            uid=uid, n=len(states), label=label, stage=stage, **extra)
         recs.append(dict(uid=uid, label=label, source=source, stage=stage, n=len(states)))
         print(f'{uid}({label[:4]},{source}): stage={stage} ({len(states)} frames)', flush=True)
     except Exception as e:

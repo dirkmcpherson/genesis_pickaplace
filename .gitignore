@@ -204,3 +204,14 @@ can_pos_recovery/videos_gallery/
 can_pos_recovery/videos_realsim/
 can_pos_recovery/videos_ss8/
 can_pos_recovery/rebuild_videos.log
+
+# session 2026-07 additions
+wandb/
+can_pos_recovery/videos_recollected/
+can_pos_recovery/_scratch/
+baselines/camera_rig_samples/
+# never track virtualenvs (cluster uses conda)
+.venv*/
+venv/
+**/.venv*/
+**/venv/

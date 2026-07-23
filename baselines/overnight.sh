@@ -5,7 +5,7 @@
 #   3. train FULL-TASK SACfD 400k on all 91 relabeled demos (GPU ~4h)
 #   4. eval full-task: 3-seed final @1200 + 6 rollout videos
 #   5. write morning summary to baselines/MORNING_REPORT.txt
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 PY=.venv-eval/bin/python
 LOG=baselines/overnight.log
 R=baselines/MORNING_REPORT.txt

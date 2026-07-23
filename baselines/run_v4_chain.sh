@@ -2,9 +2,9 @@
 # Detached v4 chain: finish collection -> convert -> train. Launched via setsid+nohup
 # so it survives agent-session teardown (harness background tasks die with the session).
 set -e
-cd /home/james/workspace/genesis_pickaplace
-SIMPY=/home/james/workspace/genesis_sim2real/venv/bin/python
-LEROBOT=/home/james/workspace/lerobot/.venv
+cd /home/j/workspace/genesis_pickaplace
+SIMPY=/home/j/workspace/genesis_pickaplace/.venv-eval/bin/python
+LEROBOT=/home/j/workspace/genesis_pickaplace/.venv-eval
 
 # remaining solved-success uids not yet collected and not already logged as skip/timeout
 UIDS=$($SIMPY -c "

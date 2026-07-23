@@ -4,7 +4,7 @@
 #   B: v6 contact-stage DP (33 corrected-goal contact demos) 100k -> eval + videos
 #   C: honest eval of the existing BC checkpoint (v4-era; old-goal obs caveat)
 # -> baselines/DAY_REPORT.txt
-cd /home/james/workspace/genesis_pickaplace
+cd /home/j/workspace/genesis_pickaplace
 PY=.venv-eval/bin/python
 LOG=baselines/day.log
 echo "[$(date)] DAY RUN START" > $LOG

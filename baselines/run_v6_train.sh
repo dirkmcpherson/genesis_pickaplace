@@ -1,8 +1,8 @@
 #!/bin/bash
 # v6 = corrected-goal (#27) human demo dataset. Mirrors run_v4_train.sh but adds the
 # convert step and points at episodes_raw_v6. Run AFTER v6 collection completes.
-cd /home/james/workspace/genesis_pickaplace
-LV=/home/james/workspace/lerobot/.venv/bin
+cd /home/j/workspace/genesis_pickaplace
+LV=/home/j/workspace/genesis_pickaplace/.venv-eval/bin
 CHAIN=baselines/run_v6_chain.log
 echo "[$(date)] v6 pipeline START" > $CHAIN
 
@@ -21,5 +21,5 @@ $LV/lerobot-train \
     --dataset.root=baselines/lerobot_dataset_v6/genesis_pickaplace \
     --policy.type=diffusion --policy.push_to_hub=false \
     --output_dir=baselines/outputs/dp_v6 --batch_size=64 --steps=100000 \
-    --wandb.enable=false > baselines/train_v6.log 2>&1
+    --wandb.enable=true --wandb.project=genesis_pickaplace --wandb.disable_artifact=true > baselines/train_v6.log 2>&1
 echo "[$(date)] v6 TRAIN exit $?" >> $CHAIN
