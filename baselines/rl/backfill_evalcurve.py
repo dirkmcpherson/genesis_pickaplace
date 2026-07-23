@@ -4,6 +4,7 @@ The live sacfd_all_v3 trainer logs eval rows backdated -> wandb drops them (file
 uploaded, no history). This tails the train log's '[wandb_eval] step N: ...' lines
 into a FRESH run (monotonic steps => every row visible), until the trainer exits.
 """
+import os
 import re, time, pathlib as pl
 import wandb
 

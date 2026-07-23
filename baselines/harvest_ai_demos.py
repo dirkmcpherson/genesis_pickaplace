@@ -25,6 +25,7 @@ Usage (.venv-eval, CPU):
       --checkpoint baselines/rl/checkpoints/sacfd_50000_steps.zip \
       --n 200 --scope pick --verify --outdir baselines/episodes_ai/sac_pick
 """
+import os
 import argparse
 import json
 import pathlib as pl
@@ -32,7 +33,7 @@ import sys
 
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))

@@ -2,10 +2,11 @@
 eef-frame axes (camera slightly retracted the opposite way), rendered at a GRASP
 state where the can sits between the fingers. The right axis shows can + fingertips.
 """
+import os
 import pathlib as pl, sys
 import numpy as np, cv2
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery')); sys.path.insert(0, str(REPO / 'baselines'))
 from replay_harness import build_world, gripper_targets
 

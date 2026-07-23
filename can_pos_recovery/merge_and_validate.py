@@ -6,10 +6,11 @@ Usage:
   merge_and_validate.py merge <shard.json ...>          -> writes trial_placements.json
   merge_and_validate.py validate [N]                    -> replays solved trials N times
 """
+import os
 import sys, json, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 OUT = REPO / 'can_pos_recovery/trial_placements.json'
 
 # world corrections the search ran under (see CAN_STARTING_POSITION.md follow-up notes):

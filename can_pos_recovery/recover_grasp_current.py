@@ -13,10 +13,11 @@ tool_pose is base-frame; base is at world (0,0), z+0.05, so tool xy ~= world xy.
 Stage 1 (rosbags venv): python recover_grasp_current.py extract   -> grasp_signals/*.npz
 Stage 2 (any):          python recover_grasp_current.py recover    -> grasp_current.json + FK compare
 """
+import os
 import sys, json, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 SIG = pl.Path('/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/'
               '5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad/grasp_signals')
 GOAL = (0.6, -0.2)

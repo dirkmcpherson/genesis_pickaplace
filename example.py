@@ -1,3 +1,4 @@
+import os
 import argparse
 import genesis as gs
 import time

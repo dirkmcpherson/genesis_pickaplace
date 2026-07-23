@@ -16,11 +16,12 @@ Driver (16-way):
   for k in $(seq 0 15); do python ... run --jobs J.json --slice $k 16 --out P_$k.json & done; wait
   python ... pick --parts P_*.json --out rescue_cpu.json
 """
+import os
 import argparse, json, sys, time, pathlib as pl
 import numpy as np
 
 sys.path.insert(0, str(pl.Path(__file__).parent))
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 
 BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381, -0.05)}
 

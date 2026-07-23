@@ -13,10 +13,11 @@ Observation dict:
 The action convention matches the demos: absolute joint-position targets applied for
 3 physics steps (dt=0.01, substeps from the placement table's world config).
 """
+import os
 import json, sys, pathlib as pl
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 import torch
 from replay_harness import (build_world, gripper_targets, tilt_deg, in_shelf_footprint,

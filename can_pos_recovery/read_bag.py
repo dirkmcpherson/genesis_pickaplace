@@ -6,6 +6,7 @@ Needs the pure-python `rosbags` package (not ROS):
 Prints, per gripper closure >=0.5s: tool_pose at close, min-z during closure (the grasp),
 and at release. tool_pose is in the ROBOT BASE frame; sim world z = this + 0.05.
 """
+import os
 import sys
 import numpy as np
 from rosbags.rosbag1 import Reader

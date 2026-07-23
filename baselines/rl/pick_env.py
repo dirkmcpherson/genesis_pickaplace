@@ -20,6 +20,7 @@ Action convention -- NORMALIZED [-1, 1] on all 7 dims (documented choice):
 
 One env instance per process (gs.init constraint); backend='cpu'.
 """
+import os
 import sys
 import pathlib as pl
 
@@ -27,7 +28,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 

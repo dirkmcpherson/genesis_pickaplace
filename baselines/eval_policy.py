@@ -13,11 +13,12 @@ Usage:
     python baselines/eval_policy.py <checkpoint_dir> [--reps 3] [--uids ...]
     python baselines/eval_policy.py <checkpoint_dir> --random 60 --seed 0 [--record-dir DIR]
 """
+import os
 import argparse
 import pathlib as pl
 import sys
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 import ic_sampling  # noqa: E402

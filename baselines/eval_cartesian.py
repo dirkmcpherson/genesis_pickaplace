@@ -13,11 +13,12 @@ Usage:
   python baselines/eval_cartesian.py <checkpoint> [--reps 3] [--uids ...]
   python baselines/eval_cartesian.py <checkpoint> --random 30 --seed 0 [--record-dir DIR]
 """
+import os
 import argparse
 import pathlib as pl
 import sys
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'bc'))
 from cartesian_env import CartesianCanEnv  # noqa: E402

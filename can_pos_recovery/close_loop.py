@@ -9,7 +9,7 @@ os.environ.setdefault('PYOPENGL_PLATFORM', 'egl')
 import sys, pathlib as pl
 import numpy as np
 MODE = sys.argv[1] if len(sys.argv) > 1 else 'bucket'
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO))
 import genesis as gs
 import torch

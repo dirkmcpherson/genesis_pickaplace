@@ -17,6 +17,7 @@ All in the Kinova base frame == sim frame, so the answer drops straight into the
 
 Usage: python can_pos_recovery/goal_from_slides.py [--drop 232 250 ...] [--plot out.png]
 """
+import os
 import argparse, json, pathlib as pl
 import numpy as np
 import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt

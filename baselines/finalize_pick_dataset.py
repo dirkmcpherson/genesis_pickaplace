@@ -8,8 +8,9 @@ FK-seeded picked demos (guessed ICs, more data).
 
 Usage: python baselines/finalize_pick_dataset.py [--include-fk]
 """
+import os
 import argparse, json, pathlib as pl, glob, os
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 ALL = REPO / 'baselines/episodes_all'
 PICK = REPO / 'baselines/episodes_pick'
 PICKED_STAGES = {'picked', 'placed', 'contact', 'nested'}

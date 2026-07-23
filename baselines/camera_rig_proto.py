@@ -6,10 +6,11 @@ sheets for the user to pick from. No dataset regen here -- view selection only.
 
 Usage: camera_rig_proto.py --out <dir>
 """
+import os
 import argparse, glob, pathlib as pl, sys
 import numpy as np, cv2
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery')); sys.path.insert(0, str(REPO / 'baselines'))
 import torch
 

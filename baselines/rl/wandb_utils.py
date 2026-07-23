@@ -11,12 +11,13 @@ Usage in a trainer:
     cb  = [WandbScalarCallback(run), VideoEvalCallback(run, out_dir, eval_freq=25_000)]
     model.learn(..., callback=CallbackList(cb))
 """
+import os
 import json, pathlib as pl, subprocess, sys, tempfile
 
 import numpy as np
 from stable_baselines3.common.callbacks import BaseCallback
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 PY = REPO / '.venv-eval/bin/python'
 
 

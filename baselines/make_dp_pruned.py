@@ -15,6 +15,7 @@ absolute joint targets a collapsed pause remains a valid (obs, hold) pair.
 
 Usage: make_dp_pruned.py [--src baselines/episodes_pick] [--dst baselines/episodes_pick_pruned]
 """
+import os
 import argparse, glob, pathlib as pl
 import numpy as np
 import sys
@@ -28,7 +29,7 @@ ap.add_argument('--margin', type=int, default=150, help='untouched frames before
 ap.add_argument('--idle-eps', type=float, default=1e-3)
 args = ap.parse_args()
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 SRC, DST = REPO / args.src, REPO / args.dst
 DST.mkdir(exist_ok=True)
 

@@ -12,10 +12,11 @@ never nest end with is_last=True / is_terminal=False so the value head bootstrap
 Usage: to_dreamer_demos.py [--src baselines/episodes_all_images]
                            [--dst ~/workspace/dreamerv3-torch/demonstrations/genesis]
 """
+import os
 import argparse, glob, pathlib as pl, sys
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 
 ap = argparse.ArgumentParser()

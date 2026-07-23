@@ -8,11 +8,12 @@ Usage:
   python baselines/rl/eval_sac.py <sacfd_ckpt.zip> [--reps 3] [--random N] [--seed 0]
                                   [--record-dir DIR]
 """
+import os
 import argparse
 import pathlib as pl
 import sys
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402

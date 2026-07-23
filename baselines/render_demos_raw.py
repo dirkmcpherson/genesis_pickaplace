@@ -9,10 +9,11 @@ flips a borderline demo the filename exposes it instead of hiding it.
 
 Usage: render_demos_raw.py <video_dir> [--uids U...]
 """
+import os
 import argparse, json, sys, pathlib as pl
 import numpy as np, cv2, torch
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv
 from replay_harness import (load_episode, tilt_deg, NESTED_TOUCH_DIST,

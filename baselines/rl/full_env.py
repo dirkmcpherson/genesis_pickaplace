@@ -5,6 +5,7 @@ Staged sparse reward, each granted the FIRST time the env's own honest predicate
 max_steps (default 900 = 30 s at 30 Hz; demo contact lands well inside that).
 Same normalized [-1,1]^7 action convention as PickOnlyEnv (see pick_env.py docstring).
 """
+import os
 import sys
 import pathlib as pl
 
@@ -12,7 +13,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv, np_  # noqa: E402

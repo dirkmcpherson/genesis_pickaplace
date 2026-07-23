@@ -6,10 +6,11 @@ is for human verification of framing only).
 
 Usage: render_rig_demo.py <uid> [--out x.mp4] [--res 256] [--stride 3]
 """
+import os
 import argparse, pathlib as pl, sys
 import numpy as np, cv2
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 
 ap = argparse.ArgumentParser()

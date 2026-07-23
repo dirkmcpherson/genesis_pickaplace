@@ -4,6 +4,7 @@ to nudge it. The placed (orange) can is the shared landmark (known world positio
 
 Usage: render_goal_tune.py --uid 232 --goal 0.704 -0.113 [--out <mp4>]
 """
+import os
 import argparse, json, sys, pathlib as pl
 import numpy as np, cv2, torch
 from replay_harness import (build_world, load_episode, gripper_targets, tilt_deg,

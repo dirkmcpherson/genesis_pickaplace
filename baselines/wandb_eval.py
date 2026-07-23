@@ -12,9 +12,10 @@ Usage:
   wandb_eval.py --kind dp --checkpoint baselines/outputs/dp_pick_v2/checkpoints/last/pretrained_model \
       --random 15 --group dp_pick_v3 --name dp_pick_v3-eval
 """
+import os
 import argparse, json, pathlib as pl, sys
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 

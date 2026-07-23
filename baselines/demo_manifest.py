@@ -13,8 +13,9 @@ Columns:
 Writes baselines/demo_manifest.{json,csv}. This is the PRELIMINARY manifest (gallery = render
 path); collect_all_classified.py refines `stage` by replaying every demo in the training env.
 """
+import os
 import json, pathlib, glob, os, csv
-REPO = pathlib.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pathlib.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 t = json.loads((REPO / 'can_pos_recovery/trial_placements.json').read_text())['trials']
 gal = {r['uid']: r for r in json.loads((REPO / 'can_pos_recovery/videos_gallery/metrics.json').read_text())}
 v6 = {int(os.path.basename(f)[:-4]) for f in glob.glob(str(REPO / 'baselines/episodes_raw_v6/*.npz'))}

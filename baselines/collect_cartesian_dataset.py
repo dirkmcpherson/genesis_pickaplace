@@ -21,9 +21,10 @@ velocity and the commanded linear velocity -- if ~1, the command and the joint m
 Output: baselines/episodes_cartesian/<uid>.npz  states(n,18) actions(n,5) n uid picked placed contact coh
 Usage: python baselines/collect_cartesian_dataset.py [--uids ...] [--outdir ...]
 """
+import os
 import argparse, json, glob, pathlib as pl
 import numpy as np, torch
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 import sys
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv

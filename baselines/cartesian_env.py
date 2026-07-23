@@ -16,6 +16,7 @@ for the 6 arm joints, and delegates to GenesisCanEnv.step (joint-position target
 _pose_step(pos, quat) exposes absolute ee-pose control too -- used to validate the IK
 pipeline by replaying a demo's FK ee-pose trajectory.
 """
+import os
 import sys
 import pathlib as pl
 
@@ -23,7 +24,7 @@ import numpy as np
 import torch
 from scipy.spatial.transform import Rotation as R
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv  # noqa: E402

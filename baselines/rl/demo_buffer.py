@@ -20,12 +20,13 @@ is truncated there -- the pick subtask ends at the pick. Demos that never
 satisfy the condition contribute all their transitions with r=0/done=False
 (pure state coverage; done=False so the critic still bootstraps).
 """
+import os
 import glob
 import pathlib as pl
 
 import numpy as np
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 RL_DIR = REPO / 'baselines/episodes_raw_rl'   # ALL demos incl failures (broad coverage)
 V4_DIR = REPO / 'baselines/episodes_raw_v4'
 V3_DIR = REPO / 'baselines/episodes_raw_v3'

@@ -10,6 +10,7 @@ with the contact metric and with training (no offset caveat).
 
 Usage: python can_pos_recovery/goal_from_sim_slides.py
 """
+import os
 import json, pathlib as pl
 import numpy as np, torch
 import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt

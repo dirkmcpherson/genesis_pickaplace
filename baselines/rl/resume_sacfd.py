@@ -6,9 +6,10 @@ re-seed it; standard SACfD resume). reset_num_timesteps=False so schedules/loggi
 
 Usage: resume_sacfd.py --ckpt <sacfd_final.zip> --steps 150000 --demo-dir <dir> --out-dir <dir>
 """
+import os
 import argparse, glob, pathlib as pl, sys, time
 
-REPO = pl.Path('/home/j/workspace/genesis_pickaplace')
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import pick_env  # noqa: E402
