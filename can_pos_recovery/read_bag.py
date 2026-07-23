@@ -14,7 +14,7 @@ from rosbags.typesys import Stores, get_typestore, get_types_from_msg
 
 
 def read(uid):
-    path = (f'/home/j/workspace/genesis_pickaplace/inthewild_trials/raw/'
+    path = (f'{REPO}/inthewild_trials/raw/'
             f'user_{uid}/trial_data.bag')
     ts = get_typestore(Stores.ROS1_NOETIC)
     with Reader(path) as r:

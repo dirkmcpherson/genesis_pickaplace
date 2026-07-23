@@ -28,7 +28,7 @@ DIAM = 0.066  # can diameter = 2*radius(0.033); two equal cans touching -> cente
 ap = argparse.ArgumentParser()
 ap.add_argument('--drop', type=int, nargs='*', default=[])
 ap.add_argument('--only', type=int, nargs='*', default=None, help='restrict to these uids')
-ap.add_argument('--plot', default='/home/j/workspace/genesis_pickaplace/can_pos_recovery/_scratch/goal_ring.png')
+ap.add_argument('--plot', default=str(REPO / 'can_pos_recovery/_scratch/goal_ring.png'))
 ap.add_argument('--win', type=int, default=30, help='frames before contact for approach dir')
 # when imported (e.g. by goal_from_sim_slides for slide_contact), don't consume the
 # importer's argv -> parse defaults; only read real CLI args when run as the main script.
@@ -161,8 +161,13 @@ ax.scatter([0.656], [-0.103], c='cyan', marker='P', s=160, label='A (0.656,-0.10
 ax.scatter([0.704], [-0.113], c='magenta', marker='P', s=160, label='B (0.704,-0.113)', zorder=5)
 ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.set_aspect('equal'); ax.grid(alpha=0.3)
 ax.legend(fontsize=8, loc='upper left'); ax.set_title(f'goal from {len(rows)} placement slides')
-plt.tight_layout(); plt.savefig(args.plot, dpi=90)
-print(f"\nplot -> {args.plot}")
+plt.tight_layout()
+try:
+    pl.Path(args.plot).parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(args.plot, dpi=90)
+    print(f"\nplot -> {args.plot}")
+except Exception as _e:
+    print(f"\n[warn] plot save skipped ({_e})")   # diagnostic only; never fatal
 
 # save estimate
 out = REPO / 'can_pos_recovery/goal_from_slides.json'

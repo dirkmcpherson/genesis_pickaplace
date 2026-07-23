@@ -53,7 +53,7 @@ for i in range(len(vel)):
     if i % 2 == 0: frames.append(np.asarray(cam.render()[0])[:, :, ::-1])
 for _ in range(60): scene.step()
 frames.append(np.asarray(cam.render()[0])[:, :, ::-1])
-out = args.out or f'/home/j/workspace/genesis_pickaplace/can_pos_recovery/_scratch/goaltune_{uid}_g{GX:.3f}_{GY:.3f}.mp4'
+out = args.out or f'{REPO}/can_pos_recovery/_scratch/goaltune_{uid}_g{GX:.3f}_{GY:.3f}.mp4'
 vw = cv2.VideoWriter(out, cv2.VideoWriter_fourcc(*'mp4v'), 15, (frames[0].shape[1], frames[0].shape[0]))
 for fr in frames: vw.write(fr.astype(np.uint8))
 vw.release()
