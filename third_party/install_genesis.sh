@@ -25,7 +25,17 @@ else
     || { echo "  ERROR: patch does not apply cleanly"; exit 1; }
 fi
 
-echo "== editable install (does NOT pull torch/taichi -- pin those yourself)"
+echo "== PREREQ CHECK: Genesis setup.py imports numpy at build time"
+if ! python -c "import numpy" 2>/dev/null; then
+  echo "  ERROR: numpy not installed. Install the base stack FIRST:"
+  echo "    pip install --index-url https://download.pytorch.org/whl/cu126 \\"
+  echo "        torch==2.7.0+cu126 torchvision==0.22.0+cu126 torchcodec==0.10.0+cu126"
+  echo "    grep -vE '^(-e|genesis|lerobot|torch==|torchvision==|torchcodec==)' \\"
+  echo "        <repo>/migration_requirements.txt | pip install -r /dev/stdin"
+  echo "  then re-run this script."
+  exit 1
+fi
+echo "== editable install (--no-build-isolation uses the numpy/torch already pinned)"
 pip install -e . --no-build-isolation
 echo "== CRITICAL pins for physics parity: torch==2.7.0+cu126  taichi==1.7.4  numpy==2.2.6"
 python -c "import genesis; print('genesis', genesis.__version__, 'OK')"
