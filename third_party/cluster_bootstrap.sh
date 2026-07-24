@@ -14,7 +14,14 @@ echo "== 2/4 base stack from the validated freeze (numpy, taichi 1.7.4, ...)"
 # other platforms/py builds (e.g. pymeshlab 2025.7.post1 needs >=3.11). Try the exact
 # freeze first; if it fails, relax the NON-numerics-critical pins and let pip pick
 # compatible versions. numpy/taichi stay hard-pinned -- they affect physics parity.
-BASE=$(grep -vE "^(-e|genesis|lerobot|torch==|torchvision==|torchcodec==)" \
+# Drop ALL nvidia-* lines from the freeze: torch's cu126 install (step 1) already
+# provides the correct -cu12 dependency set. The freeze also carries un-suffixed
+# CUDA-13 packages (nvidia-cudnn-cu13, nvidia-cublas 13.x, ...) -- old-box debris --
+# which install into the SAME site-packages/nvidia/ tree and CLOBBER torch's cuDNN:
+# the file at nvidia/cudnn/lib/libcudnn.so.9 ends up cuDNN 9.20-for-CUDA-13, and
+# torch cu126 then dies with CUDNN_STATUS_NOT_INITIALIZED on some GPUs (cluster
+# L40S; the dev 3080 Ti happens to tolerate the mix). Never install them.
+BASE=$(grep -vE "^(-e|genesis|lerobot|torch==|torchvision==|torchcodec==|nvidia-)" \
     "$REPO/migration_requirements.txt")
 if ! echo "$BASE" | pip install -r /dev/stdin 2>/tmp/pipbase.err; then
   echo "  exact freeze failed; retrying with non-critical pins relaxed"
@@ -26,6 +33,19 @@ fi
 
 echo "== 3/4 Genesis (upstream@31951c3f + headless patch)"
 "$REPO/third_party/install_genesis.sh"
+
+echo "== 3.5/4 verify the cuDNN tree is torch's own (guards the cu13-clobber class)"
+python - <<'PYCHK'
+import ctypes, glob, sysconfig
+p = glob.glob(sysconfig.get_paths()['purelib'] + '/nvidia/cudnn/lib/libcudnn.so.9')
+if p:
+    v = ctypes.CDLL(p[0]).cudnnGetVersion()
+    print(f'  embedded cuDNN: {v}')
+    assert v < 91000, (
+        f'cuDNN tree is {v} (CUDA-13 clobber). Fix: pip uninstall the un-suffixed '
+        f'nvidia-* cu13 packages, then pip install --force-reinstall --no-deps '
+        f'nvidia-cudnn-cu12==9.5.1.17')
+PYCHK
 
 echo "== 4/4 dreamer deps not in the freeze: tensorboard + old gym"
 # dreamer imports BOTH gym (0.26) and gymnasium; the freeze has only gymnasium.
