@@ -27,8 +27,10 @@ fi
 echo "== 3/4 Genesis (upstream@31951c3f + headless patch)"
 "$REPO/third_party/install_genesis.sh"
 
-echo "== 4/4 dreamer needs only tensorboard on top"
-pip install tensorboard
+echo "== 4/4 dreamer deps not in the freeze: tensorboard + old gym"
+# dreamer imports BOTH gym (0.26) and gymnasium; the freeze has only gymnasium.
+# gym 0.26.2 needs numpy>=1.18 (won't downgrade our 2.2.6). tensorboard is build-of-freeze.
+pip install tensorboard "gym==0.26.2"
 
 python -c "import torch,genesis,taichi,numpy; \
 print('torch',torch.__version__,'cuda',torch.cuda.is_available()); \

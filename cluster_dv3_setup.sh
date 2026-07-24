@@ -25,7 +25,7 @@ for m in tensorboard gym gymnasium einops "ruamel.yaml" moviepy wandb matplotlib
 done
 
 echo "== 3. install ONLY what's missing (edit this list from step 2 output)"
-echo "   e.g.: $PY -m pip install tensorboard"
+echo "   e.g.: $PY -m pip install tensorboard "gym==0.26.2"   # gym: dreamer needs old gym AND gymnasium"
 echo "   NB: do NOT let pip touch torch/taichi/numpy -- pin-lock or --no-deps if it tries."
 
 echo "== 4. runtime env vars (genesis forces PYOPENGL_PLATFORM=egl; mujoco must agree)"
