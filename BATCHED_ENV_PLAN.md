@@ -124,3 +124,32 @@ betting the training loop on them. **Do this first as a stepping stone.**
   dataset_size, or a fixed-fraction demo sampler — needs a fresh run per variant,
   which is only cheap once collection is batched. This is the highest-value
   follow-on given how sparse our reward is (0.11%).
+
+## 8. PROBE RESULTS (2026-07-23, baselines/probe_batched_semantics.py)
+
+- **Per-env API**: set_pos/set_quat/set_dofs_position/control_dofs_position/
+  zero_all_dofs_velocity all take `envs_idx` in our checkout. eef.get_pos() -> (N,3).
+- **Per-env reset isolation**: after fixing the probe's stale-control-target bug
+  (reset must COMMAND the reset pose, not just set it -- lesson for the adapter),
+  resetting env 1 mid-run leaves others within ~1.2mm of an unperturbed repeat, but
+  NOT bit-exact. Same magnitude as the phase-repeat baseline => per-env reset adds no
+  EXTRA contamination; the residual is GPU-side nondeterminism (atomics) amplified by
+  contact chaos. Fine for training; honest eval stays fresh-process CPU single-env.
+- **Cameras**: `move_to_attach` hard-raises with n_envs>0 (wrist attach dead).
+  With `env_separate_rigid=True`: static cam ONE call -> (N,64,64,3): 1.3ms@N=4,
+  4.1ms@N=16 (sublinear -- top cam solved). Wrist strategy S1 (per-env set_pose from
+  batched link pose, take row i of the stack): ~2ms@N=4 -> 4.6ms@N=16 PER CALL, total
+  ~N x 0.26N ms => quadratic-ish; pixel-obs throughput peaks ~N=8-16 at ~3-4x single
+  env. Future fix: patch rasterizer for per-env camera poses (engine surgery, later).
+- **Tiled-world trick (S2) DEAD**: 32ms/call AND contaminated (neighbors visible).
+- **env_spacing is VISUAL ONLY** (rasterizer adds envs_offset; physics coords local)
+  => batched physics frame matches the single-env world exactly.
+
+## 9. FINAL DESIGN (implemented)
+
+`tools.simulate` is two-pass (collect step-promises, then resolve) => N FACADES over
+one batched world barrier inside promise resolution with ZERO simulate changes.
+Facades implement TimeLimit/UUID internally; dreamer.py skips Damy for them.
+Core: baselines/genesis_vec_env.py (BatchedCanWorld). Dreamer: envs/genesis_vec.py.
+Training-only proxies (contact=proximity, nested=proxy) -- honest metrics stay in
+fresh-process single-env eval (genesis_eval.py), comparable to DP/SACfD as before.
