@@ -7,7 +7,9 @@
 #   ./third_party/install_genesis.sh [/dest/dir]   (default: ./Genesis)
 set -e
 DEST=${1:-$PWD/Genesis}
-PATCH="$(cd "$(dirname "$0")" && pwd)/genesis-headless-render.patch"
+# patch SERIES: headless-render + per-env-camera (see genesis-local-patches.patch;
+# the old single-patch file is kept for back-compat but the series supersedes it)
+PATCH="$(cd "$(dirname "$0")" && pwd)/genesis-local-patches.patch"
 
 echo "== clone upstream Genesis @ the validated commit"
 if [ ! -d "$DEST/.git" ]; then
@@ -17,7 +19,7 @@ cd "$DEST"
 git fetch --all --quiet
 git checkout -q 31951c3f7349a409e8ca729187abe7ae3fe63ec7
 
-echo "== apply the headless-render patch"
+echo "== apply the local patch series (headless render + per-env batched cameras)"
 if git apply --check "$PATCH" 2>/dev/null; then
   git apply "$PATCH" && echo "  patch applied"
 else

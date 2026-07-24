@@ -1,0 +1,160 @@
+From f41427d2c3b334a6b0bdb92471867dc7b079bd2d Mon Sep 17 00:00:00 2001
+From: james <dirkmcpherson@gmail.com>
+Date: Mon, 20 Jul 2026 12:07:21 -0400
+Subject: [PATCH 1/2] headless render: gate cv2.imshow/waitKey behind
+ use_imshow flag
+
+Offscreen camera.render() popped X11 windows on every call, breaking headless
+video rendering. Local patch carried since the genesis_pickaplace render work.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_011FZEb8uJiwi92FaSTTa2RJ
+---
+ genesis/vis/camera.py | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/genesis/vis/camera.py b/genesis/vis/camera.py
+index 8c462e5..a447a8b 100644
+--- a/genesis/vis/camera.py
++++ b/genesis/vis/camera.py
+@@ -146,7 +146,7 @@ class Camera(RBC):
+         self.set_pose(transform=transform)
+ 
+     @gs.assert_built
+-    def render(self, rgb=True, depth=False, segmentation=False, colorize_seg=False, normal=False):
++    def render(self, rgb=True, depth=False, segmentation=False, colorize_seg=False, normal=False, use_imshow=False):
+         """
+         Render the camera view. Note that the segmentation mask can be colorized, and if not colorized, it will store an object index in each pixel based on the segmentation level specified in `VisOptions.segmentation_level`. For example, if `segmentation_level='link'`, the segmentation mask will store `link_idx`, which can then be used to retrieve the actual link objects using `scene.rigid_solver.links[link_idx]`.
+         If `env_separate_rigid` in `VisOptions` is set to True, each component will return a stack of images, with the number of images equal to `len(rendered_envs_idx)`.
+@@ -226,7 +226,7 @@ class Camera(RBC):
+                 if self._rgb_stacked:
+                     rgb_img = rgb_img[0]
+                     rgb_env = " Environment 0"
+-                cv2.imshow(f"{title + rgb_env} [RGB]", rgb_img)
++                if use_imshow: cv2.imshow(f"{title + rgb_env} [RGB]", rgb_img)
+ 
+             other_env = " Environment 0" if self._other_stacked else ""
+             if depth:
+@@ -238,23 +238,23 @@ class Camera(RBC):
+                 if self._other_stacked:
+                     depth_img = depth_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Depth]", depth_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Depth]", depth_img)
+ 
+             if segmentation:
+                 seg_img = seg_color_arr[..., [2, 1, 0]]
+                 if self._other_stacked:
+                     seg_img = seg_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Segmentation]", seg_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Segmentation]", seg_img)
+ 
+             if normal:
+                 normal_img = normal_arr[..., [2, 1, 0]]
+                 if self._other_stacked:
+                     normal_img = normal_img[0]
+ 
+-                cv2.imshow(f"{title + other_env} [Normal]", normal_img)
++                if use_imshow: cv2.imshow(f"{title + other_env} [Normal]", normal_img)
+ 
+-            cv2.waitKey(1)
++            if use_imshow: cv2.waitKey(1)
+ 
+         if self._in_recording and rgb_arr is not None:
+             self._recorded_imgs.append(rgb_arr)
+-- 
+2.34.1
+
+
+From 170a85e55a5ca264703ad9c9ed123774321a4fb9 Mon Sep 17 00:00:00 2001
+From: j <dirkmcpherson@gmail.com>
+Date: Thu, 23 Jul 2026 23:53:30 -0400
+Subject: [PATCH 2/2] per-env camera poses for ENV_SEPARATE batched renders
+
+A camera node may carry env_poses (N,4,4) world transforms; env i's render pass then
+uses pose i for the view matrix (and derives cam_pos from it). Enables ONE batched
+render call to serve N differently-posed cameras -- e.g. wrist-mounted cams in
+scene.build(n_envs=N) scenes, where Camera.attach raises and N serial set_pose+render
+calls scale quadratically. No-op unless env_poses is set (validated bit-identical to
+the serial ground truth; 227x faster at N=8).
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01AVJaT7Q3CMdpEUB5ogc3GM
+---
+ genesis/ext/pyrender/renderer.py | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
+ mode change 100644 => 100755 genesis/ext/pyrender/renderer.py
+
+diff --git a/genesis/ext/pyrender/renderer.py b/genesis/ext/pyrender/renderer.py
+old mode 100644
+new mode 100755
+index 63d2a11..d1e4e43
+--- a/genesis/ext/pyrender/renderer.py
++++ b/genesis/ext/pyrender/renderer.py
+@@ -437,9 +437,8 @@ class Renderer(object):
+         glClearColor(0.0, 0.0, 0.0, 1.0)
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+ 
+-        V, P = self._get_camera_matrices(scene)
+-
+-        cam_pos = scene.get_pose(scene.main_camera_node)[:3, 3]
++        V, P = self._get_camera_matrices(scene, env_idx)
++        cam_pos = np.linalg.inv(V)[:3, 3]
+         screen_size = np.array([self.viewport_width, self.viewport_height], np.float32)
+ 
+         self.jit.forward_pass(
+@@ -474,8 +473,8 @@ class Renderer(object):
+             glDisable(GL_MULTISAMPLE)
+ 
+         # Set up camera matrices
+-        V, P = self._get_camera_matrices(scene)
+-        cam_pos = scene.get_pose(scene.main_camera_node)[:3, 3]
++        V, P = self._get_camera_matrices(scene, env_idx)
++        cam_pos = np.linalg.inv(V)[:3, 3]
+ 
+         floor_tex = self._floor_texture_color._texid if flags & RenderFlags.REFLECTIVE_FLOOR else 0
+         screen_size = np.array([self.viewport_width, self.viewport_height], np.float32)
+@@ -545,7 +544,7 @@ class Renderer(object):
+         program = None
+ 
+         # Set up camera matrices
+-        V, P = self._get_camera_matrices(scene)
++        V, P = self._get_camera_matrices(scene, env_idx)
+ 
+         # Now, render each object in sorted order
+         for node in scene.sorted_mesh_nodes():
+@@ -857,12 +856,20 @@ class Renderer(object):
+     # Camera Matrix Management
+     ###########################################################################
+ 
+-    def _get_camera_matrices(self, scene):
++    def _get_camera_matrices(self, scene, env_idx=-1):
+         main_camera_node = scene.main_camera_node
+         if main_camera_node is None:
+             raise ValueError("Cannot render scene without a camera")
+         P = main_camera_node.camera.get_projection_matrix(width=self.viewport_width, height=self.viewport_height)
+         pose = scene.get_pose(main_camera_node)
++        # genesis_pickaplace patch: per-env camera poses. A camera node may carry
++        # `env_poses` (N,4,4) world transforms; in an ENV_SEPARATE batched render,
++        # env i's pass then views from pose i. This makes ONE batched render call
++        # serve N differently-posed (e.g. wrist-mounted) cameras -- Camera.attach
++        # is unsupported for n_envs>0, and N separate calls scale quadratically.
++        env_poses = getattr(main_camera_node, "env_poses", None)
++        if env_poses is not None and env_idx >= 0:
++            pose = np.asarray(env_poses[env_idx], dtype=np.float64)
+         V = np.linalg.inv(pose)  # V maps from world to camera
+         return V, P
+ 
+@@ -1242,7 +1249,7 @@ class Renderer(object):
+ 
+     def _forward_pass_no_reset(self, scene, flags, env_idx=-1):
+         # Set up camera matrices
+-        V, P = self._get_camera_matrices(scene)
++        V, P = self._get_camera_matrices(scene, env_idx)
+ 
+         # Now, render each object in sorted order
+         for node in scene.sorted_mesh_nodes():
+-- 
+2.34.1
+
