@@ -153,3 +153,18 @@ Facades implement TimeLimit/UUID internally; dreamer.py skips Damy for them.
 Core: baselines/genesis_vec_env.py (BatchedCanWorld). Dreamer: envs/genesis_vec.py.
 Training-only proxies (contact=proximity, nested=proxy) -- honest metrics stay in
 fresh-process single-env eval (genesis_eval.py), comparable to DP/SACfD as before.
+
+## 10. BRIDGE VERDICT (2026-07-24, baselines/bridge_batched_gpu.py, n=32)
+
+**Stage agreement batched-GPU vs CPU-truth manifest: 29/32 = 91%.** Mean stage delta
++0.12 (slight OVER-achievement, no systematic under-achievement). Aggregate stage
+distributions near-identical (placed 21/21, nested 6->7, no-pick 5->4). The 3
+disagreements are the KNOWN borderline demos -- 261 (the documented load-sensitive
+flipper, no-pick->nested), 248 (nested->placed), 269 (placed->nested).
+
+**Interpretation: the GPU-batched world's disagreement rate (~9%) equals the CPU
+path's own borderline noise floor (8-10/91 demos flip under load/render-count
+changes). No transfer cliff for THIS world config (the historical batch_rescue cliff
+involved a stale finger_kp=100 world). Batched-GPU training data is trustworthy to
+the same tolerance we already accept; honest EVAL stays on the fresh-process CPU
+single-env path as always.**
