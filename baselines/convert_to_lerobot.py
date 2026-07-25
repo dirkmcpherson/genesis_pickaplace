@@ -38,6 +38,18 @@ files = [f for f in sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
 assert files, f'no episodes >= {MIN_FRAMES} frames in {RAW} - run collect_lerobot_dataset.py first'
 probe = np.load(files[0])
 has_images = 'images' in probe
+# 5th argv: which cameras from the (H,W,6) rig stack (ch 0:3 = top, 3:6 = wrist).
+# 'top' | 'top,wrist' | 'none' (ignore images even if present). Split into separate
+# 3-channel streams: video codecs are RGB -- a 6-channel "video" feature would be
+# silently mangled.
+CAMERAS = (sys.argv[5] if len(sys.argv) > 5 else ('top,wrist' if has_images else 'none'))
+CAMERAS = [] if CAMERAS == 'none' else CAMERAS.split(',')
+CAM_SLICE = {'top': slice(0, 3), 'wrist': slice(3, 6)}
+has_images = has_images and bool(CAMERAS)
+# 6th argv: image storage codec. "image" = PNG frames (PIL/torchvision decode, no
+# torchcodec/NPP -- avoids the video-stack ABI mess for small 64x64 frames);
+# "video" = mp4. Default "image".
+IMG_DTYPE = sys.argv[6] if len(sys.argv) > 6 else 'image'
 sdim = probe['states'].shape[1]; adim = probe['actions'].shape[1]
 
 # split the recorded state: proprio -> observation.state, world (can pose + goal xy)
@@ -51,13 +63,17 @@ features = {
                                       'names': None},
     'action': {'dtype': 'float32', 'shape': (adim,), 'names': None},
 }
-if has_images:
-    features['observation.images.cam'] = {'dtype': 'video',
-                                          'shape': tuple(probe['images'].shape[1:]),
-                                          'names': ['height', 'width', 'channels']}
+for cam in (CAMERAS if has_images else []):
+    h, w = probe['images'].shape[1:3]
+    features[f'observation.images.{cam}'] = {'dtype': IMG_DTYPE, 'shape': (h, w, 3),
+                                             'names': ['height', 'width', 'channels']}
 
+# image_writer_threads: async PNG writing (dtype=image is otherwise synchronous and
+# slow -- ~80 img/s single-threaded x 236k frames). Threads parallelize it.
 ds = LeRobotDataset.create(repo_id='local/genesis_pickaplace', fps=FPS, root=ROOT,
-                           features=features, use_videos=has_images)
+                           features=features,
+                           use_videos=(has_images and IMG_DTYPE == 'video'),
+                           image_writer_threads=(8 if IMG_DTYPE == 'image' and has_images else 0))
 for f in files:
     d = np.load(f)
     n = int(d['n'])
@@ -66,9 +82,14 @@ for f in files:
                  'observation.environment_state': d['states'][i][PROPRIO:],
                  'action': d['actions'][i],
                  'task': TASK}
-        if has_images:
-            frame['observation.images.cam'] = d['images'][i]
+        for cam in (CAMERAS if has_images else []):
+            frame[f'observation.images.{cam}'] = d['images'][i][:, :, CAM_SLICE[cam]]
         ds.add_frame(frame)
     ds.save_episode()
     print(f'{f.stem}: {n} frames', flush=True)
-print(f'\ndataset at {ROOT}: {len(files)} episodes')
+# CRITICAL: flush parquet footers + metadata while pyarrow is still alive. Without
+# this, cleanup falls to __del__ at interpreter exit, where module globals (pa) are
+# already None -> the metadata flush crashes and the dataset is left with a truncated
+# episodes table (info.json says 67, only ~60 committed) that lerobot-train can't load.
+ds.finalize()
+print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized)')

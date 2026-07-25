@@ -51,17 +51,27 @@ NO_PICK_ABORT = 700   # full scope: abort a rollout with no pick by here (no con
 STEM_BASE = 100000
 
 
-def load_teacher(teacher_type, checkpoint, seed):
+def dp_needs_rig(checkpoint):
+    """True iff the DP checkpoint declares observation.images.* input features."""
+    from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy as _DP
+    cfg = _DP.from_pretrained(str(checkpoint)).config
+    return any(k.startswith('observation.images.') for k in cfg.input_features)
+
+
+def load_teacher(teacher_type, checkpoint, seed, rig_provider=None):
     """-> (policy_action(obs)->physical 7-vec, policy_reset()).
 
     dp    : lerobot Diffusion Policy (dp_runner). policy_reset clears its action queue.
+            Image checkpoints get rig_provider (env.rig_obs) for camera features.
     sac   : SB3 SAC greedy, denormalized to physical.
     random: uniform physical action -- the negative-control teacher.
     """
     if teacher_type == 'dp':
         from dp_runner import load_dp_runner
-        policy_action, policy_reset, proprio = load_dp_runner(checkpoint)
-        print(f'[teacher] DP loaded, PROPRIO={proprio}', flush=True)
+        policy_action, policy_reset, proprio = load_dp_runner(
+            checkpoint, rig_provider=rig_provider)
+        print(f'[teacher] DP loaded, PROPRIO={proprio}, '
+              f'rig={"yes" if rig_provider else "no"}', flush=True)
         return policy_action, policy_reset
     if teacher_type == 'sac':
         from stable_baselines3 import SAC
@@ -81,18 +91,23 @@ def load_teacher(teacher_type, checkpoint, seed):
     raise ValueError(f'unknown teacher-type {teacher_type}')
 
 
-def rollout(env, policy_action, policy_reset, ic, scope):
-    """Closed-loop rollout from `ic`. Returns (states, actions, kept:bool).
+def rollout(env, policy_action, policy_reset, ic, scope, record_images=False):
+    """Closed-loop rollout from `ic`. Returns (states, actions, images|None, kept:bool).
 
     Records aligned (state_i, action_i): state_i is the obs the teacher saw, action_i the
     physical action stepped from it. Truncates shortly after the success event.
+    record_images additionally captures the (64,64,6) rig obs per step (aligned with
+    states) so harvested demos can train IMAGE students -- required for the ouroboros
+    loop when the teacher generation used cameras.
     """
     obs = env.reset(**ic)
     policy_reset()
-    states, actions = [], []
+    states, actions, images = [], [], ([] if record_images else None)
     picked_at = contact_at = -1
     cap = PICK_CAP if scope == 'pick' else env.max_steps
     for i in range(cap):
+        if record_images:
+            images.append(env.rig_obs())
         a = np.asarray(policy_action(obs), dtype=np.float32)
         states.append(obs['state'])
         actions.append(a)
@@ -101,17 +116,21 @@ def rollout(env, policy_action, policy_reset, ic, scope):
             picked_at = i
         if scope == 'pick':
             if picked_at >= 0 and i >= picked_at + PICK_TAIL:
-                return np.array(states), np.array(actions), True
+                return np.array(states), np.array(actions), _img(images), True
         else:  # full
             if contact_at < 0 and info['contact']:
                 contact_at = i
             if contact_at >= 0 and i >= contact_at + CONTACT_TAIL:
-                return np.array(states), np.array(actions), True
+                return np.array(states), np.array(actions), _img(images), True
             if picked_at < 0 and i >= NO_PICK_ABORT:
                 break  # no pick this late -> no contact possible, abort
         if done:
             break
-    return np.array(states), np.array(actions), False
+    return np.array(states), np.array(actions), _img(images), False
+
+
+def _img(images):
+    return None if images is None else np.array(images, dtype=np.uint8)
 
 
 def verify(env, ic, actions, scope):
@@ -151,6 +170,9 @@ def main():
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--verify', action='store_true',
                     help='independently replay each kept trajectory before serializing')
+    ap.add_argument('--images', action='store_true',
+                    help='record the (64,64,6) rig obs per step into the npz '
+                         '(required to train image students on the harvest)')
     args = ap.parse_args()
     if args.teacher_type != 'random' and not args.checkpoint:
         ap.error('--checkpoint required for dp/sac teachers')
@@ -158,8 +180,16 @@ def main():
     outdir = REPO / args.outdir if not pl.Path(args.outdir).is_absolute() else pl.Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    env = GenesisCanEnv(backend='cpu')
-    policy_action, policy_reset = load_teacher(args.teacher_type, args.checkpoint, args.seed)
+    # decide camera needs BEFORE the env is built (one genesis world per process):
+    # an image-DP teacher needs the rig for its own inputs; --images additionally
+    # records the rig per step for image-student retraining (ouroboros).
+    needs_rig = args.images or (args.teacher_type == 'dp'
+                                and dp_needs_rig(args.checkpoint))
+    env = GenesisCanEnv(backend='cpu', camera_rig=needs_rig)
+    rig = env.rig_obs if (args.teacher_type == 'dp' and needs_rig
+                          and dp_needs_rig(args.checkpoint)) else None
+    policy_action, policy_reset = load_teacher(args.teacher_type, args.checkpoint,
+                                               args.seed, rig_provider=rig)
     episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
     print(f'[harvest] teacher={args.teacher_type} scope={args.scope} n={args.n} '
           f'verify={args.verify} -> {outdir}', flush=True)
@@ -168,7 +198,8 @@ def main():
     kept_ic_list = []
     n_reject_verify = 0
     for idx, ic in enumerate(episodes):
-        states, actions, ok = rollout(env, policy_action, policy_reset, ic, args.scope)
+        states, actions, images, ok = rollout(env, policy_action, policy_reset, ic,
+                                              args.scope, record_images=args.images)
         if not ok:
             print(f'  ic{idx}: no {args.scope}-success ({len(states)} steps)', flush=True)
             continue
@@ -178,8 +209,10 @@ def main():
                   f'(recording misalignment?)', flush=True)
             continue
         stem = STEM_BASE + kept
-        np.savez_compressed(outdir / f'{stem}.npz', states=states, actions=actions,
-                            n=len(states), uid=stem)
+        payload = dict(states=states, actions=actions, n=len(states), uid=stem)
+        if images is not None:
+            payload['images'] = images
+        np.savez_compressed(outdir / f'{stem}.npz', **payload)
         kept += 1
         kept_ic_list.append(ic)
         print(f'  ic{idx}: KEPT ({len(states)} frames) -> {stem}.npz', flush=True)

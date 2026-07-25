@@ -48,8 +48,12 @@ for p in sorted(glob.glob(str(SRC / '*.npz'))):
         idle = np.concatenate([[False], da < args.idle_eps])  # frame t repeats t-1
         keep[:cut] = ~idle   # drop repeats; the frame that STARTED the pause survives
     ss, aa = s[keep], a[keep]
+    extra = {}
+    if 'images' in d.files:
+        extra['images'] = d['images'][keep]
     np.savez_compressed(DST / pl.Path(p).name, states=ss, actions=aa,
-                        uid=d['uid'], n=len(ss), label=d['label'], stage=d['stage'])
+                        uid=d['uid'], n=len(ss), label=d['label'], stage=d['stage'],
+                        **extra)
     tot_in += n; tot_out += len(ss)
     print(f"{d['uid']}: {n} -> {len(ss)} (j_pick={j}, cut={cut})", flush=True)
 print(f'\nTOTAL {tot_in} -> {tot_out} frames ({1 - tot_out/tot_in:.1%} pruned)')

@@ -42,7 +42,16 @@ import ic_sampling, eval_core  # noqa: E402
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 
 rec = args.record_dir or (str(pl.Path(args.checkpoint).with_suffix('')) + '_eval_videos')
-env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps)
+# Decide camera needs BEFORE building the env: genesis allows ONE world per process,
+# so probing the checkpoint after construction and rebuilding would double-gs.init.
+_needs_rig = False
+if args.kind == 'dp':
+    from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy as _DP
+    _cfg = _DP.from_pretrained(args.checkpoint).config
+    _needs_rig = any(k.startswith('observation.images.') for k in _cfg.input_features)
+    del _cfg
+env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
+                    camera_rig=_needs_rig)
 
 if args.kind == 'sac':
     from stable_baselines3 import SAC
@@ -55,7 +64,8 @@ if args.kind == 'sac':
     policy_reset = None
 else:
     from dp_runner import load_dp_runner
-    policy_action, policy_reset, _proprio = load_dp_runner(args.checkpoint)
+    policy_action, policy_reset, _proprio = load_dp_runner(
+        args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None))
 
 if args.random:
     episodes = ic_sampling.sample_support_ics(env, args.random, seed=args.seed)

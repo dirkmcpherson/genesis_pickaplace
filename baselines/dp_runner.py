@@ -13,11 +13,15 @@ import torch
 TASK = 'pick the can and slide it against the can on the shelf'
 
 
-def load_dp_runner(checkpoint, image=False, device=None):
+def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None):
     """-> (policy_action, policy_reset, proprio).
 
     policy_action(obs) returns a PHYSICAL 7-vector action. policy_reset() clears the
     diffusion action-chunking queue and MUST be called at the start of each episode.
+
+    Image checkpoints: input_features containing observation.images.top/.wrist are
+    fed from `rig_provider()` -- a callable returning the (H,W,6) rig frame
+    (top ch 0:3 ++ wrist ch 3:6), e.g. GenesisCanEnv(camera_rig=True).rig_obs.
     """
     from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy
     from lerobot.policies.factory import make_pre_post_processors
@@ -29,6 +33,12 @@ def load_dp_runner(checkpoint, image=False, device=None):
     pre, post = make_pre_post_processors(policy_cfg=policy.config,
                                          pretrained_path=checkpoint)
     proprio = policy.config.input_features['observation.state'].shape[0]
+    cam_keys = sorted(k for k in policy.config.input_features
+                      if k.startswith('observation.images.'))
+    if cam_keys and rig_provider is None:
+        raise ValueError(f'checkpoint consumes {cam_keys} but no rig_provider given')
+    CAM_SLICE = {'observation.images.top': slice(0, 3),
+                 'observation.images.wrist': slice(3, 6)}
 
     def policy_action(obs):
         s = obs['state']
@@ -42,6 +52,11 @@ def load_dp_runner(checkpoint, image=False, device=None):
         if image:
             img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
             batch['observation.images.cam'] = img.unsqueeze(0).to(device)
+        if cam_keys:
+            rig = rig_provider()               # (H,W,6) uint8, top ++ wrist
+            for k in cam_keys:
+                t = torch.from_numpy(np.ascontiguousarray(rig[:, :, CAM_SLICE[k]]))
+                batch[k] = (t.permute(2, 0, 1).float() / 255.0).unsqueeze(0).to(device)
         batch = pre(batch)
         batch = {k: (v.to(device) if torch.is_tensor(v) else v)
                  for k, v in batch.items()}
