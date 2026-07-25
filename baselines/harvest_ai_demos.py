@@ -217,7 +217,12 @@ def main():
                   f'(recording misalignment?)', flush=True)
             continue
         stem = STEM_BASE + kept
-        payload = dict(states=states, actions=actions, n=len(states), uid=stem)
+        # stage: what the kept trajectory PROVABLY reached (the keep criterion) --
+        # downstream relabelers (to_dreamer_demos/relabel_full) gate reward grants on
+        # it, and 'contact' fallback would over-rank pick-scope demos.
+        payload = dict(states=states, actions=actions, n=len(states), uid=stem,
+                       label='success',
+                       stage=('picked' if args.scope == 'pick' else 'contact'))
         if images is not None:
             payload['images'] = images
         np.savez_compressed(outdir / f'{stem}.npz', **payload)

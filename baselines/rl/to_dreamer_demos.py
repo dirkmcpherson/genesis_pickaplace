@@ -44,7 +44,7 @@ assert paths, f'no npz in {args.src}'
 n_out = n_rew = 0
 for p in paths:
     d = np.load(p, allow_pickle=True)
-    stage = str(d['stage'])
+    stage = str(d['stage']) if 'stage' in d.files else 'picked'  # old harvests lack it
     if args.pick_only and stage == 'no-pick':
         continue
     # per-frame staged rewards, gated by the episode's env-measured stage
