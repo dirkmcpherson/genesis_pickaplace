@@ -134,7 +134,9 @@ def build_world(show_viewer=False, backend='gpu', finger_force=None, finger_kp=N
     cam = None
     cam_top = cam_wrist = None
     if camera:
-        # behind the arm base (-x), elevated, looking down/forward at the shelf + arm
+        # behind the arm base (-x), elevated, looking down/forward at the shelf + arm.
+        # NB: created for camera=True AND camera='rig' -- image-policy eval needs the
+        # rig obs AND this 480p video cam for record_dir mp4s simultaneously.
         cam = scene.add_camera(res=(640, 560), pos=(-0.35, 0.0, 1.0),
                                lookat=(0.55, -0.08, 0.10), fov=48, GUI=False)
     if camera == 'rig':
