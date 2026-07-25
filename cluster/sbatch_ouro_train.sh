@@ -8,7 +8,7 @@
 #
 # --- Submit gen 0 ----------------------------------------------------------------
 #   cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace
-#   TAG=ouro1 CAMS=none DATASET=baselines/lerobot_dataset_pruned/genesis_pickaplace \
+#   TAG=ouro1 CAMS=none DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace \
 #     sbatch cluster/sbatch_ouro_train.sh
 #   CAMS: none | top | top,wrist  -- MUST match how DATASET was converted; controls
 #         whether eval/harvest build the camera rig.

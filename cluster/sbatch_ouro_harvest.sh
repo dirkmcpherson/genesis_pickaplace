@@ -57,6 +57,7 @@ echo "== negative control kept $NEG_KEPT/50"
 python baselines/harvest_ai_demos.py --teacher-type dp \
   --checkpoint "$CKPT" \
   --n "$HARVEST_N" --scope "$SCOPE" --verify --seed "$GEN" $IMG_FLAG \
+  --cap "${CAP:-600}" \
   --outdir "$G/harvest"
 KEPT=$(python -c "import json; print(json.load(open('$G/harvest/manifest.json'))['kept'])")
 echo "== gen$GEN harvest kept $KEPT/$HARVEST_N"

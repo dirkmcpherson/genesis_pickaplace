@@ -91,7 +91,8 @@ def load_teacher(teacher_type, checkpoint, seed, rig_provider=None):
     raise ValueError(f'unknown teacher-type {teacher_type}')
 
 
-def rollout(env, policy_action, policy_reset, ic, scope, record_images=False):
+def rollout(env, policy_action, policy_reset, ic, scope, record_images=False,
+            cap=None):
     """Closed-loop rollout from `ic`. Returns (states, actions, images|None, kept:bool).
 
     Records aligned (state_i, action_i): state_i is the obs the teacher saw, action_i the
@@ -104,7 +105,8 @@ def rollout(env, policy_action, policy_reset, ic, scope, record_images=False):
     policy_reset()
     states, actions, images = [], [], ([] if record_images else None)
     picked_at = contact_at = -1
-    cap = PICK_CAP if scope == 'pick' else env.max_steps
+    if cap is None:
+        cap = PICK_CAP if scope == 'pick' else env.max_steps
     for i in range(cap):
         if record_images:
             images.append(env.rig_obs())
@@ -170,6 +172,11 @@ def main():
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--verify', action='store_true',
                     help='independently replay each kept trajectory before serializing')
+    ap.add_argument('--cap', type=int, default=None,
+                    help='per-rollout step cap (default: 300 pick / env horizon full). '
+                         'SMOKE-CAUGHT: 300 truncates closed-loop DP teachers mid-'
+                         'approach (2.5%% yield vs 33%% eval pick rate) -- DP needs '
+                         '~600; SAC picks fast and 300 is fine.')
     ap.add_argument('--images', action='store_true',
                     help='record the (64,64,6) rig obs per step into the npz '
                          '(required to train image students on the harvest)')
@@ -199,7 +206,8 @@ def main():
     n_reject_verify = 0
     for idx, ic in enumerate(episodes):
         states, actions, images, ok = rollout(env, policy_action, policy_reset, ic,
-                                              args.scope, record_images=args.images)
+                                              args.scope, record_images=args.images,
+                                              cap=args.cap)
         if not ok:
             print(f'  ic{idx}: no {args.scope}-success ({len(states)} steps)', flush=True)
             continue
