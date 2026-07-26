@@ -33,7 +33,7 @@ sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 
 
-def build_rlpd_model(env, seed, device, utd=4):
+def build_rlpd_model(env, seed, device, utd=4, gamma=0.98):
     """SAC + LayerNorm critics + UTD>1. Demo mixing is done by DemoMixSAC."""
     from stable_baselines3 import SAC
     policy_kwargs = dict(
@@ -46,7 +46,7 @@ def build_rlpd_model(env, seed, device, utd=4):
         learning_starts=1_000,
         batch_size=256,
         tau=0.005,
-        gamma=0.98,
+        gamma=gamma,
         train_freq=1,
         gradient_steps=utd,           # UTD: gradient steps per env step
         ent_coef='auto',
@@ -126,6 +126,12 @@ def main():
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--device', default='cuda')
     ap.add_argument('--utd', type=int, default=4)
+    ap.add_argument('--gamma', type=float, default=0.98,
+                    help='0.98 = ~50-step credit window. Cartesian VCAP physics puts '
+                         'the first pick ~600 steps out (0.98^600~6e-6: reward '
+                         'mathematically invisible) -> use 0.999 (~1000-step window). '
+                         'Joint tolerated 0.98 because position-target SAC moves '
+                         'faster than the demonstrator.')
     ap.add_argument('--train-max-steps', type=int, default=900)
     ap.add_argument('--cartesian', action='store_true')
     ap.add_argument('--no-wandb', action='store_true')
@@ -153,7 +159,8 @@ def main():
     print(f'[env] {type(env).__name__} (max_steps={args.train_max_steps}) '
           f'in {time.time() - t0:.1f}s', flush=True)
 
-    model = build_rlpd_model(env, args.seed, args.device, utd=args.utd)
+    model = build_rlpd_model(env, args.seed, args.device, utd=args.utd,
+                             gamma=args.gamma)
     paths = sorted(glob.glob(str(REPO / demo_dir / '*.npz')))
     assert paths, f'no npz in {demo_dir}'
     transitions, stats = relabel(paths, env.pick_z)
