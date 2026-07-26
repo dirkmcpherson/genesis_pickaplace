@@ -33,7 +33,7 @@ sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 
 
-def build_rlpd_model(env, seed, device, utd=4, gamma=0.98):
+def build_rlpd_model(env, seed, device, utd=4, gamma=0.98, ent_coef='auto'):
     """SAC + LayerNorm critics + UTD>1. Demo mixing is done by DemoMixSAC."""
     from stable_baselines3 import SAC
     policy_kwargs = dict(
@@ -49,7 +49,7 @@ def build_rlpd_model(env, seed, device, utd=4, gamma=0.98):
         gamma=gamma,
         train_freq=1,
         gradient_steps=utd,           # UTD: gradient steps per env step
-        ent_coef='auto',
+        ent_coef=ent_coef,
         seed=seed,
         device=device,
         verbose=1,
@@ -132,6 +132,12 @@ def main():
                          'mathematically invisible) -> use 0.999 (~1000-step window). '
                          'Joint tolerated 0.98 because position-target SAC moves '
                          'faster than the demonstrator.')
+    ap.add_argument('--ent-coef', default='auto',
+                    help="SAC entropy coefficient. MUST be a small fixed value at "
+                         "high gamma: Q accumulates gamma^t*alpha*H ~ alpha*H/(1-gamma) "
+                         "-- at gamma .999 the probe measured start-state Q=+536 "
+                         "(task max ~8): the critic valued staying-random 60x above "
+                         "the task. e.g. 0.005 with --gamma 0.995.")
     ap.add_argument('--train-max-steps', type=int, default=900)
     ap.add_argument('--cartesian', action='store_true')
     ap.add_argument('--no-wandb', action='store_true')
@@ -159,8 +165,9 @@ def main():
     print(f'[env] {type(env).__name__} (max_steps={args.train_max_steps}) '
           f'in {time.time() - t0:.1f}s', flush=True)
 
+    ec = args.ent_coef if args.ent_coef == 'auto' else float(args.ent_coef)
     model = build_rlpd_model(env, args.seed, args.device, utd=args.utd,
-                             gamma=args.gamma)
+                             gamma=args.gamma, ent_coef=ec)
     paths = sorted(glob.glob(str(REPO / demo_dir / '*.npz')))
     assert paths, f'no npz in {demo_dir}'
     transitions, stats = relabel(paths, env.pick_z)
