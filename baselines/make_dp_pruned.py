@@ -27,6 +27,13 @@ ap.add_argument('--src', default='baselines/episodes_pick')
 ap.add_argument('--dst', default='baselines/episodes_pick_pruned')
 ap.add_argument('--margin', type=int, default=150, help='untouched frames before j_pick (5s)')
 ap.add_argument('--idle-eps', type=float, default=1e-3)
+ap.add_argument('--picked-only', action='store_true',
+                help='keep only episodes whose env-measured picked flag (cartesian '
+                     'collector) or stage rank (joint collector) reached >= picked '
+                     '-- the success-only recipe of the joint DP champion')
+ap.add_argument('--layout', choices=['joint', 'cartesian'], default='joint',
+                help='state/action layout: joint (17-dim s, a[:,6]=grip) or '
+                     'cartesian (18-dim ee-centric s, can_z=s[:,11], a[:,4]=grip 0..1)')
 args = ap.parse_args()
 
 REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
@@ -36,10 +43,20 @@ DST.mkdir(exist_ok=True)
 tot_in = tot_out = 0
 for p in sorted(glob.glob(str(SRC / '*.npz'))):
     d = np.load(p, allow_pickle=True)
+    if args.picked_only:
+        got_pick = (bool(d['picked']) if 'picked' in d.files else
+                    str(d['stage']) in ('picked', 'placed', 'contact', 'nested'))
+        if not got_pick:
+            print(f'{pl.Path(p).stem}: skip (no pick)', flush=True)
+            continue
     s, a = d['states'], d['actions']
     n = len(s)
-    can_z = s[:, 10]; grip = a[:, 6]
-    picked_f = (can_z > 0.09) & (grip > pick_env.GRIP_CLOSED_FRAC)
+    if args.layout == 'cartesian':
+        can_z = s[:, 11]; grip = a[:, 4]
+        picked_f = (can_z > 0.09) & (grip > 0.5)
+    else:
+        can_z = s[:, 10]; grip = a[:, 6]
+        picked_f = (can_z > 0.09) & (grip > pick_env.GRIP_CLOSED_FRAC)
     j = int(np.argmax(picked_f)) if picked_f.any() else n
     cut = max(0, j - args.margin)
     keep = np.ones(n, dtype=bool)
@@ -52,7 +69,9 @@ for p in sorted(glob.glob(str(SRC / '*.npz'))):
     if 'images' in d.files:
         extra['images'] = d['images'][keep]
     np.savez_compressed(DST / pl.Path(p).name, states=ss, actions=aa,
-                        uid=d['uid'], n=len(ss), label=d['label'], stage=d['stage'],
+                        uid=d['uid'], n=len(ss),
+                        label=(d['label'] if 'label' in d.files else 'success'),
+                        stage=(d['stage'] if 'stage' in d.files else 'picked'),
                         **extra)
     tot_in += n; tot_out += len(ss)
     print(f"{d['uid']}: {n} -> {len(ss)} (j_pick={j}, cut={cut})", flush=True)

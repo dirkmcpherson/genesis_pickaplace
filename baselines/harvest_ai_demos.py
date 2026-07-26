@@ -58,7 +58,8 @@ def dp_needs_rig(checkpoint):
     return any(k.startswith('observation.images.') for k in cfg.input_features)
 
 
-def load_teacher(teacher_type, checkpoint, seed, rig_provider=None):
+def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
+                 action_space='joint'):
     """-> (policy_action(obs)->physical 7-vec, policy_reset()).
 
     dp    : lerobot Diffusion Policy (dp_runner). policy_reset clears its action queue.
@@ -84,9 +85,14 @@ def load_teacher(teacher_type, checkpoint, seed, rig_provider=None):
         return policy_action, (lambda: None)
     if teacher_type == 'random':
         rng = np.random.default_rng(seed)
+        if action_space == 'cartesian':
+            from cartesian_env import CartesianCanEnv as _C
 
-        def policy_action(obs):
-            return denormalize_action(rng.uniform(-1.0, 1.0, ACT_DIM))
+            def policy_action(obs):
+                return _C.denormalize_action(rng.uniform(-1.0, 1.0, 5))
+        else:
+            def policy_action(obs):
+                return denormalize_action(rng.uniform(-1.0, 1.0, ACT_DIM))
         return policy_action, (lambda: None)
     raise ValueError(f'unknown teacher-type {teacher_type}')
 
@@ -172,6 +178,9 @@ def main():
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--verify', action='store_true',
                     help='independently replay each kept trajectory before serializing')
+    ap.add_argument('--action-space', choices=['joint', 'cartesian'], default='joint',
+                    help='cartesian: CartesianCanEnv, 5-dim ee-velocity physical '
+                         'actions (teacher trained on episodes_cartesian)')
     ap.add_argument('--cap', type=int, default=None,
                     help='per-rollout step cap (default: 300 pick / env horizon full). '
                          'SMOKE-CAUGHT: 300 truncates closed-loop DP teachers mid-'
@@ -192,11 +201,16 @@ def main():
     # records the rig per step for image-student retraining (ouroboros).
     needs_rig = args.images or (args.teacher_type == 'dp'
                                 and dp_needs_rig(args.checkpoint))
-    env = GenesisCanEnv(backend='cpu', camera_rig=needs_rig)
+    if args.action_space == 'cartesian':
+        from cartesian_env import CartesianCanEnv
+        env = CartesianCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=needs_rig)
+    else:
+        env = GenesisCanEnv(backend='cpu', camera_rig=needs_rig)
     rig = env.rig_obs if (args.teacher_type == 'dp' and needs_rig
                           and dp_needs_rig(args.checkpoint)) else None
     policy_action, policy_reset = load_teacher(args.teacher_type, args.checkpoint,
-                                               args.seed, rig_provider=rig)
+                                               args.seed, rig_provider=rig,
+                                               action_space=args.action_space)
     episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
     print(f'[harvest] teacher={args.teacher_type} scope={args.scope} n={args.n} '
           f'verify={args.verify} -> {outdir}', flush=True)

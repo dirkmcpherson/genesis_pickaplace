@@ -34,6 +34,8 @@ def np_(x): return x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else 
 ap = argparse.ArgumentParser()
 ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--outdir', default='baselines/episodes_cartesian')
+ap.add_argument('--images', action='store_true',
+                help='record the (64,64,6) camera rig per frame (for pixel students)')
 args = ap.parse_args()
 OUT = REPO / args.outdir; OUT.mkdir(parents=True, exist_ok=True)
 DT = 0.025   # demo frame period (cartesian_velocity integrates to tool_pose at this dt)
@@ -41,7 +43,10 @@ BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381
 
 tbl = json.loads((REPO / 'can_pos_recovery/trial_placements.json').read_text())['trials']
 fk = {int(k): v for k, v in json.loads((REPO / 'can_pos_recovery/fk_recovered.json').read_text()).items()}
-env = GenesisCanEnv(backend='cpu')
+# max_steps=10**9: tapes >1200 frames would otherwise trip env.step's done branch,
+# which runs _nested()'s 100 settle steps per subsequent command and desyncs the tape
+# (the #26 root cause). Episode length here is owned by the tape, not the env.
+env = GenesisCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=args.images)
 CANZ, GOALZ = env.w['can_start_z'], env.w['goal_start_z']
 STATIC_GOAL = (0.6, -0.2)
 
@@ -66,17 +71,24 @@ def place(uid):
 
 n_ok = n_pick = 0
 for uid in uids:
+    try:
+        can_pos, can_quat, goal_pos = place(uid)
+    except (TypeError, KeyError) as e:
+        print(f'{uid}: SKIP (no usable placement: {e})', flush=True)
+        continue
     d = np.load(REPO / f'inthewild_trials/{uid}_cartesian.npy', allow_pickle=True).item()
     jp = np.asarray(d['joint_pos'], float); cv = np.asarray(d['cartesian_velocity'], float)
     gp = np.asarray(d['gripper_pos'], float)[:, 0]
     n = len(jp)
-    can_pos, can_quat, goal_pos = place(uid)
     env.reset(can_pos=can_pos, can_quat=can_quat, goal_pos=goal_pos)
-    states, actions = [], []; picked = placed = contact = False
+    states, actions = [], []; images = [] if args.images else None
+    picked = placed = contact = False
     ee_prev = None; sim_v = []
     for i in range(n):
         grip = float(np.clip(gp[i] / 100.0, 0, 1))
         obs, done, info = env.step(np.concatenate([jp[i], [grip]]))
+        if args.images:
+            images.append(env.rig_obs())   # AFTER step: aligned with states (obs at q_i)
         ee = np_(env.w['eef'].get_pos()); eq = np_(env.w['eef'].get_quat())
         s = obs['state']
         states.append(np.concatenate([ee, eq, s[6:8], s[8:17]]).astype(np.float32))
@@ -93,8 +105,11 @@ for uid in uids:
         coh = float(np.mean(cs))
     else:
         coh = float('nan')
-    np.savez_compressed(OUT / f'{uid}.npz', states=np.array(states), actions=np.array(actions),
-                        n=n, uid=uid, picked=picked, placed=placed, contact=contact, coh=coh)
+    payload = dict(states=np.array(states), actions=np.array(actions),
+                   n=n, uid=uid, picked=picked, placed=placed, contact=contact, coh=coh)
+    if args.images:
+        payload['images'] = np.array(images, dtype=np.uint8)
+    np.savez_compressed(OUT / f'{uid}.npz', **payload)
     n_ok += 1; n_pick += picked
     print(f"{uid}: n={n} picked={picked} placed={placed} contact={contact} coherence(cos)={coh:.3f}", flush=True)
 print(f"\ncollected {n_ok} episodes ({n_pick} pick) -> {OUT}")

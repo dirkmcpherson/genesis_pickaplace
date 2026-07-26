@@ -52,8 +52,11 @@ class CartesianCanEnv:
     # wrist(eef link) -> tool(gripper tip) offset, since Genesis merges the URDF tool_frame link.
     REF_TOOL_AT_START = np.array([0.367, 0.011, 0.09])
 
-    def __init__(self, backend='cpu', render_size=None, max_steps=1200):
-        self.env = GenesisCanEnv(backend=backend, render_size=render_size, max_steps=max_steps)
+    PITCH_CAP = 1.0                                # plugin pitch-rate cap (rad/s, measured max |wy| over demos)
+
+    def __init__(self, backend='cpu', render_size=None, max_steps=1200, camera_rig=False):
+        self.env = GenesisCanEnv(backend=backend, render_size=render_size,
+                                 max_steps=max_steps, camera_rig=camera_rig)
         self.w = self.env.w
         self.arm = self.env.w['kdofs'][:6]
         self.eef = self.env.w['eef']
@@ -68,6 +71,23 @@ class CartesianCanEnv:
     def solved_uids(self): return self.env.solved_uids
     @property
     def world_cfg(self): return self.env.world_cfg
+    @property
+    def max_steps(self): return self.env.max_steps
+    def rig_obs(self): return self.env.rig_obs()
+
+    # normalized [-1,1]^5 <-> physical [vx,vy,vz (m/s), v_pitch (rad/s), grip 0..1]
+    @classmethod
+    def denormalize_action(cls, a):
+        a = np.asarray(a, float)
+        return np.concatenate([a[:3] * cls.VCAP, [a[3] * cls.PITCH_CAP],
+                               [(a[4] + 1.0) / 2.0]])
+
+    @classmethod
+    def normalize_action(cls, a):
+        a = np.asarray(a, float)
+        out = np.concatenate([a[..., :3] / cls.VCAP, a[..., 3:4] / cls.PITCH_CAP,
+                              a[..., 4:5] * 2.0 - 1.0], axis=-1)
+        return np.clip(out, -1.0, 1.0)
 
     # --- absolute ee-pose control (IK core) ---
     def _pose_step(self, pos, quat):

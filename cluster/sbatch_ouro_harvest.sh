@@ -27,7 +27,7 @@
 set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT
-TAG=${TAG:?} ; GEN=${GEN:?} ; CAMS=${CAMS:-none}
+TAG=${TAG:?} ; GEN=${GEN:?} ; CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint}
 MAXGEN=${MAXGEN:-3} ; SCOPE=${SCOPE:-pick} ; HARVEST_N=${HARVEST_N:-300}
 G=ouroboros/$TAG/gen$GEN
 NEXT=$((GEN + 1))
@@ -47,6 +47,7 @@ echo "== ouroboros $TAG gen$GEN HARVEST start $(date) scope=$SCOPE n=$HARVEST_N 
 
 # --- negative control FIRST (cheap; a broken predicate fails fast, before 300 rollouts)
 python baselines/harvest_ai_demos.py --teacher-type random \
+  --action-space "$ACTIONS" \
   --n 50 --scope "$SCOPE" --verify --seed 1 \
   --outdir "$G/harvest_negctl"
 NEG_KEPT=$(python -c "import json; print(json.load(open('$G/harvest_negctl/manifest.json'))['kept'])")
@@ -55,7 +56,7 @@ echo "== negative control kept $NEG_KEPT/50"
 
 # --- harvest model-demos from the gen-k teacher -----------------------------------
 python baselines/harvest_ai_demos.py --teacher-type dp \
-  --checkpoint "$CKPT" \
+  --checkpoint "$CKPT" --action-space "$ACTIONS" \
   --n "$HARVEST_N" --scope "$SCOPE" --verify --seed "$GEN" $IMG_FLAG \
   --cap "${CAP:-600}" \
   --outdir "$G/harvest"
@@ -68,14 +69,14 @@ NEXTG=ouroboros/$TAG/gen$NEXT
 mkdir -p "$NEXTG"
 rm -rf "$NEXTG/dataset"
 python baselines/convert_to_lerobot.py \
-  "$G/harvest" "$NEXTG/dataset" 8 4 "$CAMS" video
+  "$G/harvest" "$NEXTG/dataset" $( [ "$ACTIONS" = cartesian ] && echo 9 || echo 8 ) 4 "$CAMS" video
 echo "== gen$NEXT dataset ready"
 
 # --- chain: next generation's train (unless done) ---------------------------------
 if [ "$NEXT" -ge "$MAXGEN" ]; then
   echo "== ouroboros $TAG complete: $MAXGEN generations trained, final harvest banked"
 elif [ -z "${NO_CHAIN:-}" ]; then
-  sbatch --export=ALL,TAG=$TAG,GEN=$NEXT,CAMS=$CAMS,DATASET=$NEXTG/dataset,MAXGEN=$MAXGEN,SCOPE=$SCOPE,HARVEST_N=$HARVEST_N,TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
+  sbatch --export=ALL,TAG=$TAG,GEN=$NEXT,CAMS=$CAMS,ACTIONS=$ACTIONS,DATASET=$NEXTG/dataset,MAXGEN=$MAXGEN,SCOPE=$SCOPE,HARVEST_N=$HARVEST_N,TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
     cluster/sbatch_ouro_train.sh
   echo "== submitted train for gen$NEXT"
 fi

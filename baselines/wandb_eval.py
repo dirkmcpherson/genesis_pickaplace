@@ -27,6 +27,8 @@ ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--reps', type=int, default=1)
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
+ap.add_argument('--cartesian', action='store_true',
+                help='eval a cartesian-action policy through CartesianCanEnv')
 ap.add_argument('--record-dir', default=None, help='default: <checkpoint>_eval_videos')
 ap.add_argument('--json', dest='json_out', default=None, help='write metrics dict here')
 ap.add_argument('--videos', type=int, default=3, help='max videos uploaded to wandb')
@@ -50,8 +52,13 @@ if args.kind == 'dp':
     _cfg = _DP.from_pretrained(args.checkpoint).config
     _needs_rig = any(k.startswith('observation.images.') for k in _cfg.input_features)
     del _cfg
-env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
-                    camera_rig=_needs_rig)
+if args.cartesian:
+    from cartesian_env import CartesianCanEnv
+    env = CartesianCanEnv(backend='cpu', render_size=(480, 640),
+                          max_steps=args.max_steps, camera_rig=_needs_rig)
+else:
+    env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
+                        camera_rig=_needs_rig)
 
 if args.kind == 'sac':
     from stable_baselines3 import SAC
