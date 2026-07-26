@@ -62,7 +62,11 @@ else:
 
 if args.kind == 'sac':
     from stable_baselines3 import SAC
-    from pick_env import denormalize_action
+    if args.cartesian:
+        from cartesian_env import CartesianCanEnv as _C
+        denormalize_action = _C.denormalize_action
+    else:
+        from pick_env import denormalize_action
     model = SAC.load(args.checkpoint, device='cpu')
 
     def policy_action(obs):

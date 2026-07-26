@@ -110,6 +110,7 @@ class CartesianFullTaskEnv(gym.Env):
         self.max_steps = int(max_steps)
         self.fixed_uid = fixed_uid
         self.success_uids = sorted(self.genv.solved_uids)
+        self.pick_z = float(self.genv.w['pick_z'])
         self.observation_space = spaces.Box(-np.inf, np.inf, (18,), np.float32)
         self.action_space = spaces.Box(-1.0, 1.0, (5,), np.float32)
         self._t = 0

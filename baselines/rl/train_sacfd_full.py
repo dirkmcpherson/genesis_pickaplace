@@ -99,6 +99,10 @@ def main():
     ap.add_argument('--warm-start', default=None, metavar='CKPT',
                     help='initialize actor/critic from a trained pick-SACfD .zip (same '
                          '17/7 spaces) -- staged training: explore from "can already pick"')
+    ap.add_argument('--cartesian', action='store_true',
+                    help='CartesianFullTaskEnv (5-dim ee-velocity actions, tip '
+                         'termination) + episodes_cartesian demos relabeled on the '
+                         '18-dim layout. The EEF-modality RLfD leg.')
     ap.add_argument('--no-wandb', action='store_true')
     ap.add_argument('--run-name', default=None, help='wandb run name (default: out-dir stem)')
     ap.add_argument('--eval-freq', type=int, default=25_000,
@@ -108,9 +112,13 @@ def main():
     args = ap.parse_args()
 
     t0 = time.time()
-    env = FullTaskEnv(backend='cpu', max_steps=900)
-    print(f'[env] FullTaskEnv built in {time.time() - t0:.1f}s | pick_z={env.pick_z:.4f}',
-          flush=True)
+    if args.cartesian:
+        from full_env import CartesianFullTaskEnv
+        env = CartesianFullTaskEnv(backend='cpu', max_steps=900)
+    else:
+        env = FullTaskEnv(backend='cpu', max_steps=900)
+    print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s '
+          f'| pick_z={env.pick_z:.4f}', flush=True)
 
     if args.warm_start:
         from stable_baselines3 import SAC
@@ -123,12 +131,21 @@ def main():
 
     paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
     assert paths, f'no npz in {args.demo_dir}'
-    transitions, stats = relabel_full(paths, env.pick_z)
+    if args.cartesian:
+        from relabel_cartesian import relabel_cartesian
+        transitions, stats = relabel_cartesian(paths, env.pick_z)
+    else:
+        transitions, stats = relabel_full(paths, env.pick_z)
     n_r = sum(1 for t in transitions if t[2] > 0)
     print(f'[demos] {len(paths)} episodes -> {len(transitions)} transitions, '
           f'{n_r} rewarded | stage grants: {stats}', flush=True)
+    if args.cartesian:
+        from cartesian_env import CartesianCanEnv
+        _norm = CartesianCanEnv.normalize_action
+    else:
+        _norm = pick_env.normalize_action
     n_added = demo_buffer.inject_into_replay_buffer(
-        model, transitions, action_transform=pick_env.normalize_action,
+        model, transitions, action_transform=_norm,
         duplicate=args.duplicate)
     print(f'[demos] x{args.duplicate} -> {n_added} added; buffer pos={model.replay_buffer.pos} '
           f'full={model.replay_buffer.full}', flush=True)
@@ -141,7 +158,8 @@ def main():
            WandbScalarCallback(run)]
     if args.eval_freq:
         cbs.append(VideoEvalCallback(run, out, eval_freq=args.eval_freq,
-                                     max_steps=args.eval_max_steps, seed=args.seed))
+                                     max_steps=args.eval_max_steps, seed=args.seed,
+                                     cartesian=args.cartesian))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
     if run is not None:
