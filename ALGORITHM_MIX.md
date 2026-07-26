@@ -9,7 +9,7 @@ model-demos → policy-of-model-demos; do differences emerge across generations?
 | algorithm | family | status | infra |
 |---|---|---|---|
 | **DP** (Diffusion Policy) | BC | state leg: picked 0.33 / contact 0.11 / nested 0.07. Image legs (top / top+wrist) evaluated 2026-07-25: img2 picked 0.20 w/ 100% pick→place conversion; img1 weaker | lerobot; `run_dp_img.sh`; datasets `lerobot_dataset_*` |
-| **SACfD** | RLfD (off-policy) | pick champion: 0.55 mean / 0.93 best seed (trained on ALL 91 demos incl. failures) | SB3; `train_sacfd_full.py`; staged reward relabel |
+| **SACfD** | RLfD (off-policy) | JOINT pick champion: 0.55 mean / 0.93 best seed (ALL 91 demos incl. failures). **CARTESIAN: seed-once recipe FLAT 0.00** (h900 through 125k AND h1800 through 100k, 2026-07-26/27) -> RLPD-style variant (`train_rlpd.py`: immutable 50/50 demo buffer, LayerNorm critics, UTD 4) is the live cartesian RLfD leg | SB3; `train_sacfd_full.py` / `train_rlpd.py` |
 | **DV3fD** (DreamerV3 + demo prefill) | RLfD (model-based) | plumbing audited clean (reward census 272 ✓, negative control 0); 5M-step / ~104k-update run on cluster (TAG-resume across 48h allocations) | `dreamerv3-torch` branch `genesis`; batched vec env 23 FPS |
 
 Wave-1 deliverable: same-protocol comparison (15+ random ICs, x3 seeds where
