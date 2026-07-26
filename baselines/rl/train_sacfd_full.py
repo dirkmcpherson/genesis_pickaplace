@@ -99,6 +99,12 @@ def main():
     ap.add_argument('--warm-start', default=None, metavar='CKPT',
                     help='initialize actor/critic from a trained pick-SACfD .zip (same '
                          '17/7 spaces) -- staged training: explore from "can already pick"')
+    ap.add_argument('--train-max-steps', type=int, default=900,
+                    help='training episode horizon. Cartesian needs ~1800: the 0.11 '
+                         'm/s VCAP hard-caps the arm at human teleop speed (median '
+                         'demo pick frame 666, 23/67 picks past 900, median full '
+                         'demo 1707) -- joint SAC could outrun the demonstrator, '
+                         'cartesian cannot by construction.')
     ap.add_argument('--cartesian', action='store_true',
                     help='CartesianFullTaskEnv (5-dim ee-velocity actions, tip '
                          'termination) + episodes_cartesian demos relabeled on the '
@@ -114,9 +120,9 @@ def main():
     t0 = time.time()
     if args.cartesian:
         from full_env import CartesianFullTaskEnv
-        env = CartesianFullTaskEnv(backend='cpu', max_steps=900)
+        env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
     else:
-        env = FullTaskEnv(backend='cpu', max_steps=900)
+        env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s '
           f'| pick_z={env.pick_z:.4f}', flush=True)
 
