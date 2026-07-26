@@ -37,32 +37,39 @@ def relabel_cartesian(paths, pick_z=PICK_Z_DEFAULT):
         rank = STAGE_RANK.get(stage, 0)
         s = d['states'].astype(np.float32)
         a = d['actions'].astype(np.float32)
-        q = s[:, 12:16]
+        # Normalize both npz layouts to len(s) == len(a)+1 (transition-complete):
+        # realized store n+1 states / n actions already; commanded store n/n --
+        # drop the final action (it has no successor state).
+        if len(a) == len(s):
+            a = a[:-1]
+        assert len(s) == len(a) + 1, (len(s), len(a))
+        n = len(a)                       # transitions
+        q = s[:n, 12:16]
         tilt = np.degrees(np.arccos(np.clip(1 - 2 * (q[:, 1] ** 2 + q[:, 2] ** 2), -1, 1)))
         tipped_free = (tilt > TIP_DEG) & (a[:, 4] < GRIP_OPEN)
         j_tip = int(np.argmax(tipped_free)) if tipped_free.any() else -1
         if j_tip >= 0:
-            s, a = s[:j_tip + 1], a[:j_tip + 1]
-        n = len(s) - 1
+            s, a = s[:j_tip + 2], a[:j_tip + 1]
+            n = len(a)
         if n < 2:
             continue
         can_z = s[:, 11]
         grip = a[:, 4]
         rew = np.zeros(n, dtype=np.float32)
         done = np.zeros(n, dtype=bool)
-        picked_f = (can_z[:-1] > pick_z) & (grip[:-1] > GRIP_CLOSED)
+        picked_f = (can_z[:n] > pick_z) & (grip > GRIP_CLOSED)
         j_pick = int(np.argmax(picked_f)) if picked_f.any() and rank >= 1 else -1
         if j_pick == 0:
             continue
         if j_pick > 0:
             rew[j_pick] += STAGE_REWARD['picked']; stats['picked'] += 1
             if rank >= 2:
-                pl_f = (np.arange(n) > j_pick) & (can_z[:-1] > SHELF_LO) & (can_z[:-1] < SHELF_HI)
+                pl_f = (np.arange(n) > j_pick) & (can_z[:n] > SHELF_LO) & (can_z[:n] < SHELF_HI)
                 j_pl = int(np.argmax(pl_f)) if pl_f.any() else -1
                 if j_pl > 0:
                     rew[j_pl] += STAGE_REWARD['placed']; stats['placed'] += 1
                     if rank >= 3:
-                        dxy = np.hypot(s[:-1, 9] - s[:-1, 16], s[:-1, 10] - s[:-1, 17])
+                        dxy = np.hypot(s[:n, 9] - s[:n, 16], s[:n, 10] - s[:n, 17])
                         c_f = (np.arange(n) > j_pl) & (dxy < TOUCH_XY)
                         j_c = int(np.argmax(c_f)) if c_f.any() else -1
                         if j_c > 0:
