@@ -53,6 +53,11 @@ class CartesianCanEnv:
     REF_TOOL_AT_START = np.array([0.367, 0.011, 0.09])
 
     PITCH_CAP = 1.0                                # plugin pitch-rate cap (rad/s, measured max |wy| over demos)
+    # Pitch SETPOINT clamp. The integrator was unbounded -- RL wound the wrist through
+    # full revolutions (a sim affordance the hardware lacks; humans centered the stick
+    # so demos never exposed it). Demo envelope [-0.55,+0.30] rad; clamp at 2x demo
+    # span per the joint-limit convention (headroom for alternate paths).
+    PITCH_RANGE = (-1.1, 0.6)
 
     def __init__(self, backend='cpu', render_size=None, max_steps=1200, camera_rig=False):
         self.env = GenesisCanEnv(backend=backend, render_size=render_size,
@@ -123,7 +128,8 @@ class CartesianCanEnv:
         a = np.asarray(action, float)
         v = np.clip(a[:3], -self.VCAP, self.VCAP)
         self._sp = np.clip(self._sp + v * self.DT, self.WS[0], self.WS[1])  # integrate the TOOL setpoint
-        self._pitch += float(a[3]) * self.DT
+        self._pitch = float(np.clip(self._pitch + float(a[3]) * self.DT,
+                                    self.PITCH_RANGE[0], self.PITCH_RANGE[1]))
         self._grip = float(np.clip(a[4], 0.0, 1.0))
         tgt_quat = self._target_quat()
         # IK the WRIST so the TOOL lands on its setpoint: wrist_target = tool_sp - R @ offset_local
