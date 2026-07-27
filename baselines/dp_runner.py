@@ -23,11 +23,20 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None):
     fed from `rig_provider()` -- a callable returning the (H,W,6) rig frame
     (top ch 0:3 ++ wrist ch 3:6), e.g. GenesisCanEnv(camera_rig=True).rig_obs.
     """
-    from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy
     from lerobot.policies.factory import make_pre_post_processors
+    import json as _json
+    import pathlib as _pl
+
+    # auto-detect the policy class from the checkpoint's own config ("type") --
+    # DP and ACT share the select_action/reset interface, so one runner serves both.
+    _ptype = _json.loads((_pl.Path(checkpoint) / 'config.json').read_text()).get('type', 'diffusion')
+    if _ptype == 'act':
+        from lerobot.policies.act.modeling_act import ACTPolicy as _PolicyCls
+    else:
+        from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy as _PolicyCls
 
     device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
-    policy = DiffusionPolicy.from_pretrained(checkpoint)
+    policy = _PolicyCls.from_pretrained(checkpoint)
     policy.eval()
     policy.to(device)
     pre, post = make_pre_post_processors(policy_cfg=policy.config,

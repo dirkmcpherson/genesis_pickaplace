@@ -48,10 +48,10 @@ rec = args.record_dir or (str(pl.Path(args.checkpoint).with_suffix('')) + '_eval
 # so probing the checkpoint after construction and rebuilding would double-gs.init.
 _needs_rig = False
 if args.kind == 'dp':
-    from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy as _DP
-    _cfg = _DP.from_pretrained(args.checkpoint).config
-    _needs_rig = any(k.startswith('observation.images.') for k in _cfg.input_features)
-    del _cfg
+    import json as _json
+    _cfgd = _json.loads((pl.Path(args.checkpoint) / 'config.json').read_text())
+    _needs_rig = any(k.startswith('observation.images.')
+                     for k in _cfgd.get('input_features', {}))
 if args.cartesian:
     from cartesian_env import CartesianCanEnv
     env = CartesianCanEnv(backend='cpu', render_size=(480, 640),
