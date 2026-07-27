@@ -29,6 +29,8 @@ ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
 ap.add_argument('--cartesian', action='store_true',
                 help='eval a cartesian-action policy through CartesianCanEnv')
+ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+                help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--n-action-steps', type=int, default=None,
                 help='override the chunk-execution length (ACT default 100 = 2.5s '
                      'open-loop; velocity-integration drift compounds within chunks)')
@@ -58,7 +60,8 @@ if args.kind == 'dp':
 if args.cartesian:
     from cartesian_env import CartesianCanEnv
     env = CartesianCanEnv(backend='cpu', render_size=(480, 640),
-                          max_steps=args.max_steps, camera_rig=_needs_rig)
+                          max_steps=args.max_steps, camera_rig=_needs_rig,
+                          control=args.control)
 else:
     env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
                         camera_rig=_needs_rig)
