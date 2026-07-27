@@ -16,6 +16,13 @@ Wave-1 deliverable: same-protocol comparison (15+ random ICs, x3 seeds where
 feasible, stage metrics picked/placed/contact/nested, videos) of the three families
 on human demos — then pick the ouroboros teacher(s).
 
+**⚠ Single-seed caveat (2026-07-27):** every cartesian BC number so far (DP vel
+0.067 / DP realized 0.00 / DP delta 0.00 / ACT 0.00) is ONE seed — and joint DP's
+seed spread on identical configs was 0.00/0.07/0.47. Delta encoding itself is
+validated (open-loop demo-action replay picks 3/3). DP-delta seeds 1,2 in flight;
+no BC-vs-modality claim until they land. RLPD γ-fix (0.995+fixed-ent) remains the
+one confirmed cartesian learner.
+
 ## Wave 2 — queued behind wave-1 results
 
 | algorithm | family | why | cost |
