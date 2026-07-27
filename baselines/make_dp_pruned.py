@@ -43,13 +43,16 @@ DST.mkdir(exist_ok=True)
 tot_in = tot_out = 0
 for p in sorted(glob.glob(str(SRC / '*.npz'))):
     d = np.load(p, allow_pickle=True)
+    _s, _a = d['states'], d['actions']
+    if len(_s) == len(_a) + 1:
+        _s = _s[:-1]        # realized npz: drop the trailing next-state (BC pairs only)
     if args.picked_only:
         got_pick = (bool(d['picked']) if 'picked' in d.files else
                     str(d['stage']) in ('picked', 'placed', 'contact', 'nested'))
         if not got_pick:
             print(f'{pl.Path(p).stem}: skip (no pick)', flush=True)
             continue
-    s, a = d['states'], d['actions']
+    s, a = _s, _a
     n = len(s)
     if args.layout == 'cartesian':
         can_z = s[:, 11]; grip = a[:, 4]
@@ -67,7 +70,7 @@ for p in sorted(glob.glob(str(SRC / '*.npz'))):
     ss, aa = s[keep], a[keep]
     extra = {}
     if 'images' in d.files:
-        extra['images'] = d['images'][keep]
+        extra['images'] = d['images'][:n][keep]   # realized npz carry n+1 images
     np.savez_compressed(DST / pl.Path(p).name, states=ss, actions=aa,
                         uid=d['uid'], n=len(ss),
                         label=(d['label'] if 'label' in d.files else 'success'),
