@@ -13,7 +13,8 @@ import torch
 TASK = 'pick the can and slide it against the can on the shelf'
 
 
-def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None):
+def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None,
+                   n_action_steps=None):
     """-> (policy_action, policy_reset, proprio).
 
     policy_action(obs) returns a PHYSICAL 7-vector action. policy_reset() clears the
@@ -37,6 +38,8 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None):
 
     device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
     policy = _PolicyCls.from_pretrained(checkpoint)
+    if n_action_steps is not None:
+        policy.config.n_action_steps = int(n_action_steps)   # shorter replan interval
     policy.eval()
     policy.to(device)
     pre, post = make_pre_post_processors(policy_cfg=policy.config,

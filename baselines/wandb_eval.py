@@ -29,6 +29,9 @@ ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
 ap.add_argument('--cartesian', action='store_true',
                 help='eval a cartesian-action policy through CartesianCanEnv')
+ap.add_argument('--n-action-steps', type=int, default=None,
+                help='override the chunk-execution length (ACT default 100 = 2.5s '
+                     'open-loop; velocity-integration drift compounds within chunks)')
 ap.add_argument('--record-dir', default=None, help='default: <checkpoint>_eval_videos')
 ap.add_argument('--json', dest='json_out', default=None, help='write metrics dict here')
 ap.add_argument('--videos', type=int, default=3, help='max videos uploaded to wandb')
@@ -76,7 +79,8 @@ if args.kind == 'sac':
 else:
     from dp_runner import load_dp_runner
     policy_action, policy_reset, _proprio = load_dp_runner(
-        args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None))
+        args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None),
+        n_action_steps=args.n_action_steps)
 
 if args.random:
     episodes = ic_sampling.sample_support_ics(env, args.random, seed=args.seed)
