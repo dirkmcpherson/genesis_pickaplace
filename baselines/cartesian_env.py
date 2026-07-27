@@ -59,7 +59,31 @@ class CartesianCanEnv:
     # span per the joint-limit convention (headroom for alternate paths).
     PITCH_RANGE = (-1.1, 0.6)
 
-    def __init__(self, backend='cpu', render_size=None, max_steps=1200, camera_rig=False):
+    # Delta caps ~3.6x the max per-step demo motion (VCAP*DT=2.75mm). Cap==demo-max
+    # left zero tracking authority: delta-on-measured has no feed-forward (unlike the
+    # velocity integrator, whose setpoint LEADS the arm), so the arm moved at the
+    # fraction of 2.75mm PD covers per step -- open-loop under-travel, census 0/5.
+    # Larger caps let a closed-loop policy servo at full demo speed.
+    DCAP = 0.01                               # m/step
+    DPITCH_CAP = 0.075                        # rad/step
+    # Setpoint leash (delta mode): deltas INTEGRATE into a setpoint (feed-forward --
+    # the PD needs ~20mm of lead to track at demo speed; trace showed pure
+    # delta-on-measured stalls at ~20% speed with 9-20mm lag), but the setpoint is
+    # clamped to within LEASH of the MEASURED pose, so imitation errors cannot
+    # accumulate beyond it (the velocity integrator's failure). Anti-windup impedance.
+    LEASH = 0.025                             # m
+    LEASH_PITCH = 0.15                        # rad
+
+    def __init__(self, backend='cpu', render_size=None, max_steps=1200, camera_rig=False,
+                 control='vel'):
+        # control: 'vel'   -- ee-velocity, integrated SETPOINT (teleop-faithful, but a
+        #                     hidden integrator: imitation errors accumulate -> BC drifts
+        #                     OOD; DP 0.067/ACT 0.00 on random ICs).
+        #          'delta' -- ee-position DELTA applied to the MEASURED tool pose each
+        #                     step (target = clamp(measured + delta)): the reference is
+        #                     the actual robot state, so errors self-correct like joint
+        #                     position targets. Field-standard EEF encoding.
+        self.control = control
         self.env = GenesisCanEnv(backend=backend, render_size=render_size,
                                  max_steps=max_steps, camera_rig=camera_rig)
         self.w = self.env.w
@@ -79,6 +103,19 @@ class CartesianCanEnv:
     @property
     def max_steps(self): return self.env.max_steps
     def rig_obs(self): return self.env.rig_obs()
+
+    @classmethod
+    def denormalize_delta(cls, a):
+        a = np.asarray(a, float)
+        return np.concatenate([a[:3] * cls.DCAP, [a[3] * cls.DPITCH_CAP],
+                               [(a[4] + 1.0) / 2.0]])
+
+    @classmethod
+    def normalize_delta(cls, a):
+        a = np.asarray(a, float)
+        out = np.concatenate([a[..., :3] / cls.DCAP, a[..., 3:4] / cls.DPITCH_CAP,
+                              a[..., 4:5] * 2.0 - 1.0], axis=-1)
+        return np.clip(out, -1.0, 1.0)
 
     # normalized [-1,1]^5 <-> physical [vx,vy,vz (m/s), v_pitch (rad/s), grip 0..1]
     @classmethod
@@ -120,16 +157,32 @@ class CartesianCanEnv:
         self._grip = 0.0
         return self._obs(obs)
 
+    def _measured_pitch(self):
+        """Realized pitch of the wrist relative to the reset orientation q0."""
+        wq = np_(self.eef.get_quat())
+        rel = (R.from_quat(_gs_to_xyzw(wq)) * R.from_quat(_gs_to_xyzw(self._q0)).inv())
+        return float(rel.as_rotvec()[1])
+
     def _target_quat(self):
         r = R.from_rotvec([0.0, self._pitch, 0.0]) * R.from_quat(_gs_to_xyzw(self._q0))
         return _xyzw_to_gs(r.as_quat())
 
     def step(self, action):
         a = np.asarray(action, float)
-        v = np.clip(a[:3], -self.VCAP, self.VCAP)
-        self._sp = np.clip(self._sp + v * self.DT, self.WS[0], self.WS[1])  # integrate the TOOL setpoint
-        self._pitch = float(np.clip(self._pitch + float(a[3]) * self.DT,
-                                    self.PITCH_RANGE[0], self.PITCH_RANGE[1]))
+        if self.control == 'delta':
+            d = np.clip(a[:3], -self.DCAP, self.DCAP)
+            sp = np.clip(self._sp + d, self.WS[0], self.WS[1])
+            cur = self._tool_pos()
+            self._sp = cur + np.clip(sp - cur, -self.LEASH, self.LEASH)   # leash
+            dpitch = np.clip(float(a[3]), -self.DPITCH_CAP, self.DPITCH_CAP)
+            p = np.clip(self._pitch + dpitch, self.PITCH_RANGE[0], self.PITCH_RANGE[1])
+            mp = self._measured_pitch()
+            self._pitch = float(mp + np.clip(p - mp, -self.LEASH_PITCH, self.LEASH_PITCH))
+        else:
+            v = np.clip(a[:3], -self.VCAP, self.VCAP)
+            self._sp = np.clip(self._sp + v * self.DT, self.WS[0], self.WS[1])  # integrate the TOOL setpoint
+            self._pitch = float(np.clip(self._pitch + float(a[3]) * self.DT,
+                                        self.PITCH_RANGE[0], self.PITCH_RANGE[1]))
         self._grip = float(np.clip(a[4], 0.0, 1.0))
         tgt_quat = self._target_quat()
         # IK the WRIST so the TOOL lands on its setpoint: wrist_target = tool_sp - R @ offset_local

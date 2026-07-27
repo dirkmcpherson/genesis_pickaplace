@@ -31,6 +31,8 @@ ap.add_argument('--src', default='baselines/episodes_cartesian')
 ap.add_argument('--dst', default=os.path.expanduser(
     '~/workspace/dreamerv3-torch/demonstrations/genesis_cartesian'))
 ap.add_argument('--pick-only', action='store_true')
+ap.add_argument('--control', choices=['vel', 'delta'], default='delta',
+                help='action normalization: delta (DCAP per-step deltas) | vel (VCAP)')
 args = ap.parse_args()
 
 PICK_Z = 0.1505
@@ -62,6 +64,8 @@ for p in paths:
         continue
     s = d['states'].astype(np.float32)
     a_raw = d['actions'].astype(np.float32)          # [vx,vy,vz,wy,grip01] physical
+    if len(s) == len(a_raw) + 1:                     # transition-complete npz
+        s = s[:-1]
     # TIP TERMINATION (mirrors CartesianFullTaskEnv): truncate at the first frame the
     # can lies tipped FREE (tilt>60 AND grip open) with -0.5 and is_terminal. The
     # grip-open guard preserves demos that carry the can pitched in-hand (4/5
@@ -107,7 +111,9 @@ for p in paths:
         rew[n - 1] += -0.5                     # tip penalty at the truncated frame
         done[n - 1] = True                     # is_terminal: env terminates here too
         grants.setdefault('tipped', 0); grants['tipped'] += 1
-    act = CartesianCanEnv.normalize_action(a_raw[:n]).astype(np.float32)
+    _norm = (CartesianCanEnv.normalize_delta if args.control == 'delta'
+             else CartesianCanEnv.normalize_action)
+    act = _norm(a_raw[:n]).astype(np.float32)
     # --- dreamer shift + extend-by-one (see to_dreamer_demos.py rationale) ---------
     m = min(n + 1, len(d['images']))
     img = d['images'][:m].astype(np.uint8)

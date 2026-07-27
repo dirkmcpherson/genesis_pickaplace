@@ -101,11 +101,13 @@ class CartesianFullTaskEnv(gym.Env):
     GRIP_OPEN = 0.3          # grip command below this = not holding
 
     def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,
-                 camera_rig=False):
+                 camera_rig=False, control='vel'):
         super().__init__()
         from cartesian_env import CartesianCanEnv
+        self.control = control
         self.cenv = CartesianCanEnv(backend=backend, render_size=render_size,
-                                    max_steps=10 ** 9, camera_rig=camera_rig)
+                                    max_steps=10 ** 9, camera_rig=camera_rig,
+                                    control=control)
         self.genv = self.cenv.env               # underlying GenesisCanEnv
         self.max_steps = int(max_steps)
         self.fixed_uid = fixed_uid
@@ -127,7 +129,9 @@ class CartesianFullTaskEnv(gym.Env):
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
     def step(self, action):
-        a_phys = self.cenv.denormalize_action(np.asarray(action, np.float32))
+        _denorm = (self.cenv.denormalize_delta if self.control == 'delta'
+                   else self.cenv.denormalize_action)
+        a_phys = _denorm(np.asarray(action, np.float32))
         obs, _env_done, info = self.cenv.step(a_phys)
         self._t += 1
         # same per-step nested proxy as FullTaskEnv (honest settled nested is eval-only)
