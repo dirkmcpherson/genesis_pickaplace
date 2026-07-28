@@ -53,6 +53,13 @@ class FullTaskEnv(gym.Env):
         self._granted = set()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
+    def reset_to(self, ic):
+        """Reset to an explicit IC dict (ic_sampling-style) -- random-IC eval."""
+        obs = self.genv.reset(**ic)
+        self._t = 0
+        self._granted = set()
+        return obs['state'].astype(np.float32), {}
+
     def step(self, action):
         a_phys = denormalize_action(action)
         obs, _env_done, info = self.genv.step(a_phys)
@@ -127,6 +134,12 @@ class CartesianFullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
+
+    def reset_to(self, ic):
+        obs = self.cenv.reset(**ic)
+        self._t = 0
+        self._granted = set()
+        return obs['state'].astype(np.float32), {}
 
     def step(self, action):
         _denorm = (self.cenv.denormalize_delta if self.control == 'delta'

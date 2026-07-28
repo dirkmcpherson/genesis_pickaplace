@@ -41,10 +41,11 @@ from dp_runner import load_dp_runner  # noqa: E402
 
 if args.cartesian:
     from cartesian_env import CartesianCanEnv
-    env = CartesianCanEnv(backend='cpu', max_steps=1200, control=args.control)
+    env = CartesianCanEnv(backend='cpu', max_steps=1200, control=args.control,
+                          render_size=(480, 640))
 else:
     from genesis_can_env import GenesisCanEnv
-    env = GenesisCanEnv(backend='cpu', max_steps=1200)
+    env = GenesisCanEnv(backend='cpu', max_steps=1200, render_size=(480, 640))
 
 run = wandb.init(project='genesis_pickaplace', group=args.group,
                  name=args.name or f'{pl.Path(args.output_dir).name}-eval-live',
@@ -67,10 +68,15 @@ while True:
     for step, d in sorted(fresh):
         seen.add(d.parent.name)
         policy_action, policy_reset, _ = load_dp_runner(str(d))
+        vdir = pl.Path(args.output_dir) / f'watch_videos_{step}'
         agg = run_eval(env, policy_action, episodes, policy_reset=policy_reset,
-                       verbose=False)
+                       verbose=False, record_dir=str(vdir))
         n = max(agg['n'], 1)
         metrics = {f'eval/{k}': agg[k] / n for k in ('picked', 'placed', 'contact', 'nested')}
+        vids = sorted(vdir.glob('*.mp4'))[:3] if vdir.exists() else []
+        for i, v in enumerate(vids):
+            metrics[f'eval/video_{i}'] = wandb.Video(str(v), format='mp4',
+                                                     caption=v.stem)
         run.log(metrics, step=step)
         print(f'[watcher] ckpt {step}: ' +
               ' '.join(f'{k.split("/")[1]}={v:.2f}' for k, v in metrics.items()), flush=True)
