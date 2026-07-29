@@ -54,6 +54,11 @@ class BatchedCanWorld:
     C_LEASH, C_LEASH_PITCH = 0.025, 0.15
     C_PITCH_RANGE = (-1.1, 0.6)
     C_REF_TOOL = np.array([0.367, 0.011, 0.09])
+    # Tip rule (cartesian only, mirrors CartesianFullTaskEnv): terminate + penalty
+    # when the can lies tipped FREE. Cartesian DEMOS are tip-truncated with -0.5 and
+    # is_terminal, so a batched world without this trains the world model on
+    # different termination semantics than its own demos.
+    C_TIP_DEG, C_TIP_PENALTY, C_GRIP_OPEN = 60.0, -0.5, 0.3
 
     def __init__(self, n_envs, size=(64, 64), pixels=True, workspace_limit=False,
                  max_steps=1200, seed=0, control='joint'):
@@ -142,6 +147,7 @@ class BatchedCanWorld:
         self.placed = np.zeros(self.n, dtype=bool)
         self.contact = np.zeros(self.n, dtype=bool)
         self.granted = np.zeros((self.n, 4), dtype=bool)   # picked/placed/contact/nested
+        self.tipped_done = np.zeros(self.n, dtype=bool)    # tip penalty granted once
         self.ws_violations = np.zeros(self.n, dtype=np.int64)
         self._last_valid_q = np.tile(self._start_q[:6], (self.n, 1))
         # workspace tool offset (constant, from the calibration reference)
@@ -195,6 +201,7 @@ class BatchedCanWorld:
         self.t[idx] = 0
         self.picked[idx] = self.placed[idx] = self.contact[idx] = False
         self.granted[idx] = False
+        self.tipped_done[idx] = False
         self.ws_violations[idx] = 0
         self._last_valid_q[idx] = self._start_q[:6]
 
@@ -270,6 +277,15 @@ class BatchedCanWorld:
                           self.STAGE_REWARD['contact'], self.STAGE_REWARD['nested']])
         reward = (newly * rew_w).sum(axis=1).astype(np.float32)
         terminated = nested_now.copy()
+        if self.control == 'cart_delta':
+            # tilt of the picked can from vertical, per env
+            btilt = np.degrees(np.arccos(np.clip(
+                1 - 2 * (bq[:, 1] ** 2 + bq[:, 2] ** 2), -1, 1)))
+            tipped = (btilt > self.C_TIP_DEG) & (grip < self.C_GRIP_OPEN) & ~terminated
+            tipped &= ~self.tipped_done               # first time only
+            reward = reward + tipped * np.float32(self.C_TIP_PENALTY)
+            self.tipped_done |= tipped
+            terminated = terminated | tipped
         truncated = (~terminated) & (self.t >= self.max_steps)
 
         # ---- 17-dim state (GenesisCanEnv._obs layout) ----
