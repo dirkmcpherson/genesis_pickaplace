@@ -140,6 +140,11 @@ def main():
                          "the task. e.g. 0.005 with --gamma 0.995.")
     ap.add_argument('--train-max-steps', type=int, default=900)
     ap.add_argument('--cartesian', action='store_true')
+    ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+                    help="cartesian control mode. MUST match --demo-dir: 'vel' with "
+                         "episodes_cartesian[_realized], 'delta' with "
+                         "episodes_cartesian_delta. (Every cartesian RL run before "
+                         "2026-07-29 silently used 'vel' -- the constructor default.)")
     ap.add_argument('--no-wandb', action='store_true')
     ap.add_argument('--run-name', default=None)
     ap.add_argument('--eval-freq', type=int, default=25_000)
@@ -151,9 +156,13 @@ def main():
         from full_env import CartesianFullTaskEnv
         from relabel_cartesian import relabel_cartesian as relabel
         from cartesian_env import CartesianCanEnv
-        env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
-        norm = CartesianCanEnv.normalize_action
-        demo_dir = args.demo_dir or 'baselines/episodes_cartesian'
+        env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
+                                   control=args.control)
+        norm = (CartesianCanEnv.normalize_delta if args.control == 'delta'
+                else CartesianCanEnv.normalize_action)
+        demo_dir = args.demo_dir or ('baselines/episodes_cartesian_delta'
+                                     if args.control == 'delta'
+                                     else 'baselines/episodes_cartesian')
     else:
         from full_env import FullTaskEnv
         from train_sacfd_full import relabel_full

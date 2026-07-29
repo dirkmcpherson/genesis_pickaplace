@@ -105,6 +105,8 @@ def main():
                          'demo pick frame 666, 23/67 picks past 900, median full '
                          'demo 1707) -- joint SAC could outrun the demonstrator, '
                          'cartesian cannot by construction.')
+    ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+                    help='cartesian control mode; must match --demo-dir')
     ap.add_argument('--cartesian', action='store_true',
                     help='CartesianFullTaskEnv (5-dim ee-velocity actions, tip '
                          'termination) + episodes_cartesian demos relabeled on the '
@@ -120,7 +122,8 @@ def main():
     t0 = time.time()
     if args.cartesian:
         from full_env import CartesianFullTaskEnv
-        env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
+        env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
+                                   control=getattr(args, 'control', 'vel'))
     else:
         env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s '
