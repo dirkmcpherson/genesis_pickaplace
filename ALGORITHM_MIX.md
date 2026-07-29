@@ -8,7 +8,7 @@ model-demos → policy-of-model-demos; do differences emerge across generations?
 
 | algorithm | family | status | infra |
 |---|---|---|---|
-| **DP** (Diffusion Policy) | BC | state leg: picked 0.33 / contact 0.11 / nested 0.07. Image legs (top / top+wrist) evaluated 2026-07-25: img2 picked 0.20 w/ 100% pick→place conversion; img1 weaker | lerobot; `run_dp_img.sh`; datasets `lerobot_dataset_*` |
+| **DP** (Diffusion Policy) | BC | joint state leg: picked **0.07-0.53 across 4 seeds** (0.40/0.07/0.53 historical + 0.13 same-box replication 2026-07-29; mean 0.28) -- the "0.33" quoted earlier was a 3-seed MEAN of a wildly variable quantity, not a stable baseline. Image legs (top / top+wrist) evaluated 2026-07-25: img2 picked 0.20 w/ 100% pick→place conversion; img1 weaker | lerobot; `run_dp_img.sh`; datasets `lerobot_dataset_*` |
 | **SACfD** | RLfD (off-policy) | JOINT pick champion: 0.55 mean / 0.93 best seed (ALL 91 demos incl. failures). **CARTESIAN: seed-once recipe FLAT 0.00** (h900 through 125k AND h1800 through 100k, 2026-07-26/27) -> RLPD-style variant (`train_rlpd.py`: immutable 50/50 demo buffer, LayerNorm critics, UTD 4) is the live cartesian RLfD leg | SB3; `train_sacfd_full.py` / `train_rlpd.py` |
 | **DV3fD** (DreamerV3 + demo prefill) | RLfD (model-based) | plumbing audited clean (reward census 272 ✓, negative control 0); 5M-step / ~104k-update run on cluster (TAG-resume across 48h allocations) | `dreamerv3-torch` branch `genesis`; batched vec env 23 FPS |
 
@@ -21,7 +21,14 @@ on human demos — then pick the ouroboros teacher(s).
 seed spread on identical configs was 0.00/0.07/0.47. Delta encoding itself is
 validated (open-loop demo-action replay picks 3/3). DP-delta seeds 1,2 in flight;
 no BC-vs-modality claim until they land. RLPD γ-fix (0.995+fixed-ent) remains the
-one confirmed cartesian learner.
+one confirmed cartesian learner (30-ep post-hoc: picked 0.10 @50k, 0.133 @150k).
+
+**MODALITY VERDICT (2026-07-29, corrected effect size).** Cartesian BC: DP-delta
+0.00/0.00/0.00 (3 seeds), DP-realized 0.00, DP-vel 0.067, ACT 0.00 (chunk 100 and
+25) = 8 runs, one pick total. Joint BC: 0.07/0.13/0.40/0.53 (4 seeds) -- every seed
+nonzero. So the modality gap is REAL but it is `0.07-0.53 vs 0.00-0.067`, NOT the
+`0.33 vs 0.00` I stated earlier. Both modalities are weak and high-variance at 67
+demos; cartesian is reliably worse. Same-box, same-protocol, same-day replication.
 
 ## Wave 2 — queued behind wave-1 results
 
