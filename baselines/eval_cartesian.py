@@ -38,7 +38,7 @@ ck = pl.Path(args.checkpoint)
 is_bc = ck.is_file() and ck.suffix == '.pt'
 
 render_size = (480, 640) if args.record_dir else None
-env = CartesianCanEnv(backend='cpu', render_size=render_size)
+env = CartesianCanEnv(backend='cpu', render_size=render_size, control='vel')
 
 policy_reset = None
 if is_bc:

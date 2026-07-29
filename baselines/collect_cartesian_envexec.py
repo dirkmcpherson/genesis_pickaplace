@@ -34,7 +34,10 @@ fk = {int(k): v for k, v in json.loads((REPO / 'can_pos_recovery/fk_recovered.js
 STATIC_GOAL = (0.6, -0.2)
 BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381, -0.05)}
 
-env = CartesianCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=args.images)
+# commanded-velocity tapes -> velocity semantics by construction (explicit:
+# the control default must never be load-bearing)
+env = CartesianCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=args.images,
+                      control='vel')
 CANZ, GOALZ = env.env.w['can_start_z'], env.env.w['goal_start_z']
 
 

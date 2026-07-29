@@ -59,7 +59,7 @@ def dp_needs_rig(checkpoint):
 
 
 def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
-                 action_space='joint'):
+                 action_space='joint', control='vel'):
     """-> (policy_action(obs)->physical 7-vec, policy_reset()).
 
     dp    : lerobot Diffusion Policy (dp_runner). policy_reset clears its action queue.
@@ -87,9 +87,10 @@ def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
         rng = np.random.default_rng(seed)
         if action_space == 'cartesian':
             from cartesian_env import CartesianCanEnv as _C
+            _dn = _C.denormalize_delta if control == 'delta' else _C.denormalize_action
 
             def policy_action(obs):
-                return _C.denormalize_action(rng.uniform(-1.0, 1.0, 5))
+                return _dn(rng.uniform(-1.0, 1.0, 5))
         else:
             def policy_action(obs):
                 return denormalize_action(rng.uniform(-1.0, 1.0, ACT_DIM))
@@ -178,6 +179,10 @@ def main():
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--verify', action='store_true',
                     help='independently replay each kept trajectory before serializing')
+    ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+                    help='cartesian control mode -- MUST match how the teacher was '
+                         'trained. A delta teacher rolled out in a velocity env is a '
+                         'different command type and harvests garbage.')
     ap.add_argument('--action-space', choices=['joint', 'cartesian'], default='joint',
                     help='cartesian: CartesianCanEnv, 5-dim ee-velocity physical '
                          'actions (teacher trained on episodes_cartesian)')
@@ -203,14 +208,16 @@ def main():
                                 and dp_needs_rig(args.checkpoint))
     if args.action_space == 'cartesian':
         from cartesian_env import CartesianCanEnv
-        env = CartesianCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=needs_rig)
+        env = CartesianCanEnv(backend='cpu', max_steps=10 ** 9, camera_rig=needs_rig,
+                              control=args.control)
     else:
         env = GenesisCanEnv(backend='cpu', camera_rig=needs_rig)
     rig = env.rig_obs if (args.teacher_type == 'dp' and needs_rig
                           and dp_needs_rig(args.checkpoint)) else None
     policy_action, policy_reset = load_teacher(args.teacher_type, args.checkpoint,
                                                args.seed, rig_provider=rig,
-                                               action_space=args.action_space)
+                                               action_space=args.action_space,
+                                               control=args.control)
     episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
     print(f'[harvest] teacher={args.teacher_type} scope={args.scope} n={args.n} '
           f'verify={args.verify} -> {outdir}', flush=True)
