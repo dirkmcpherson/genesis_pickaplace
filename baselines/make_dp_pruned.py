@@ -55,7 +55,11 @@ for p in sorted(glob.glob(str(SRC / '*.npz'))):
     s, a = _s, _a
     n = len(s)
     if args.layout == 'cartesian':
-        can_z = s[:, 11]; grip = a[:, 4]
+        # grip column depends on the action encoding: 5-dim (vel/delta/abs) -> idx 4,
+        # 7-dim (abs6: pos3 + rotvec3 + grip) -> idx 6. Using the wrong column made
+        # the pick predicate read a rotation component (52.6% vs 16% pruned).
+        gidx = 6 if a.shape[1] >= 7 else 4
+        can_z = s[:, 11]; grip = a[:, gidx]
         picked_f = (can_z > 0.09) & (grip > 0.5)
     else:
         can_z = s[:, 10]; grip = a[:, 6]

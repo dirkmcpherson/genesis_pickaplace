@@ -74,6 +74,32 @@ class CartesianCanEnv:
     LEASH = 0.025                             # m
     LEASH_PITCH = 0.15                        # rad
 
+    # 6-DOF absolute pose: [x,y,z, rotvec3 (rel. to the reset orientation), grip].
+    # The 4-DOF space (position + pitch) CANNOT represent the demos' wrist: measured
+    # median 8.2deg / worst 88.8deg of unrepresentable rotation, which is fatal for a
+    # pinch grasp. This is FK-equivalent to absolute joint targets, which is why
+    # joint-space BC reaches 0.67 in-distribution while every 4-DOF cartesian
+    # encoding sits at 0.00-0.07.
+    ROTVEC_CAP = 1.6                           # rad per axis (~2x the demo max 1.34)
+
+    @classmethod
+    def denormalize_abs6(cls, a):
+        a = np.asarray(a, float)
+        lo, hi = cls.WS
+        pos = lo + (np.clip(a[..., :3], -1, 1) + 1.0) * 0.5 * (hi - lo)
+        rv = np.clip(a[..., 3:6], -1, 1) * cls.ROTVEC_CAP
+        grip = (a[..., 6:7] + 1.0) / 2.0
+        return np.concatenate([pos, rv, grip], axis=-1)
+
+    @classmethod
+    def normalize_abs6(cls, a):
+        a = np.asarray(a, float)
+        lo, hi = cls.WS
+        pos = 2.0 * (a[..., :3] - lo) / (hi - lo) - 1.0
+        rv = a[..., 3:6] / cls.ROTVEC_CAP
+        return np.clip(np.concatenate([pos, rv, a[..., 6:7] * 2.0 - 1.0], axis=-1),
+                       -1.0, 1.0)
+
     @classmethod
     def denormalize_abs(cls, a):
         """[-1,1]^5 -> absolute tool pose [x,y,z] in the workspace box, pitch, grip."""
@@ -174,6 +200,7 @@ class CartesianCanEnv:
         self._sp = self._tool_pos()                # TOOL setpoint (not wrist)
         self._q0 = wq                              # fixed roll/yaw base orientation (wrist==tool orientation)
         self._pitch = 0.0
+        self._rotvec = None if self.control != 'abs6' else np.zeros(3)
         self._grip = 0.0
         return self._obs(obs)
 
@@ -184,11 +211,23 @@ class CartesianCanEnv:
         return float(rel.as_rotvec()[1])
 
     def _target_quat(self):
-        r = R.from_rotvec([0.0, self._pitch, 0.0]) * R.from_quat(_gs_to_xyzw(self._q0))
+        rv = (self._rotvec if getattr(self, '_rotvec', None) is not None
+              else [0.0, self._pitch, 0.0])
+        r = R.from_rotvec(rv) * R.from_quat(_gs_to_xyzw(self._q0))
         return _xyzw_to_gs(r.as_quat())
 
     def step(self, action):
         a = np.asarray(action, float)
+        if self.control == 'abs6':
+            self._sp = np.clip(a[:3], self.WS[0], self.WS[1])
+            self._rotvec = np.asarray(a[3:6], float)
+            self._grip = float(np.clip(a[6], 0.0, 1.0))
+            tgt_quat = self._target_quat()
+            Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
+            wrist_target = self._sp - Rw.apply(self._offset_local)
+            joints = self._pose_step(wrist_target, tgt_quat)
+            obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
+            return self._obs(obs), done, info
         if self.control == 'abs':
             # ABSOLUTE tool-pose target: the ONLY self-correcting EEF encoding. A
             # relative command ('move +2.75mm x') is equally valid wherever the arm
