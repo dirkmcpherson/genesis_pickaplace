@@ -70,7 +70,10 @@ if args.kind == 'sac':
     from stable_baselines3 import SAC
     if args.cartesian:
         from cartesian_env import CartesianCanEnv as _C
-        denormalize_action = _C.denormalize_action
+        # MUST match the env's control mode: delta actions denormalized with the
+        # velocity scale (or vice versa) are a different command type entirely.
+        denormalize_action = (_C.denormalize_delta if args.control == 'delta'
+                              else _C.denormalize_action)
     else:
         from pick_env import denormalize_action
     model = SAC.load(args.checkpoint, device='cpu')

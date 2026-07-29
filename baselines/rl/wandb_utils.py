@@ -71,10 +71,11 @@ class VideoEvalCallback(BaseCallback):
     """
 
     def __init__(self, run, out_dir, eval_freq=25_000, n_random=10, max_steps=400,
-                 max_videos=3, seed=0, cartesian=False):
+                 max_videos=3, seed=0, cartesian=False, control='vel'):
         super().__init__()
         self.run = run
         self.cartesian = bool(cartesian)
+        self.control = control
         self.dir = pl.Path(out_dir) / 'wandb_eval'
         self.dir.mkdir(parents=True, exist_ok=True)
         self.eval_freq, self.n_random = eval_freq, n_random
@@ -124,6 +125,8 @@ class VideoEvalCallback(BaseCallback):
             old.unlink()
         cmd = [str(PY), str(REPO / 'baselines/wandb_eval.py'), '--kind', 'sac',
                *(['--cartesian'] if getattr(self, 'cartesian', False) else []),
+               *(['--control', getattr(self, 'control', 'vel')]
+                 if getattr(self, 'cartesian', False) else []),
                '--checkpoint', str(ck), '--random', str(self.n_random),
                '--seed', str(self.seed), '--max-steps', str(self.max_steps),
                '--record-dir', str(rec), '--json', str(self.dir / 'metrics.json'),

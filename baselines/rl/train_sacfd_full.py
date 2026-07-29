@@ -168,7 +168,8 @@ def main():
     if args.eval_freq:
         cbs.append(VideoEvalCallback(run, out, eval_freq=args.eval_freq,
                                      max_steps=args.eval_max_steps, seed=args.seed,
-                                     cartesian=args.cartesian))
+                                     cartesian=args.cartesian,
+                                     control=getattr(args, 'control', 'vel')))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
     if run is not None:
