@@ -25,7 +25,7 @@ REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/gene
 ap = argparse.ArgumentParser()
 ap.add_argument('--src', default='baselines/episodes_cartesian')
 ap.add_argument('--outdir', default='baselines/episodes_cartesian_realized')
-ap.add_argument('--mode', choices=['velocity', 'delta'], default='velocity',
+ap.add_argument('--mode', choices=['velocity', 'delta', 'abs'], default='velocity',
                 help='delta: actions are per-step tool-pose deltas (m, rad) for the '
                      'delta control mode -- self-correcting reference, BC-viable')
 args = ap.parse_args()
@@ -55,7 +55,13 @@ for p in sorted(glob.glob(str(REPO / args.src / '*.npz'))):
     if offset_local is None:
         offset_local = rot[0].inv().apply(REF_TOOL - ee[0])
     tool = ee + rot.apply(np.broadcast_to(offset_local, (len(s), 3)))
-    if args.mode == 'delta':
+    if args.mode == 'abs':
+        # absolute target = the pose the demo REACHES next step
+        v = tool[1:]
+        rel_all = (rot * rot[0].inv()).as_rotvec()[:, 1]
+        wy = rel_all[1:]
+        VC, PC = None, None
+    elif args.mode == 'delta':
         v = np.diff(tool, axis=0)                                    # per-step deltas (m)
         rel = (rot[1:] * rot[:-1].inv()).as_rotvec()
         wy = rel[:, 1]                                               # per-step pitch delta
@@ -68,11 +74,15 @@ for p in sorted(glob.glob(str(REPO / args.src / '*.npz'))):
         VC, PC = VCAP, PITCH_CAP
     grip = d['actions'][:, 4].astype(np.float64)                     # recorded 0..1
     m = len(v)                                                       # n-1 transitions
-    act = np.stack([np.clip(v[:, 0], -VC, VC),
-                    np.clip(v[:, 1], -VC, VC),
-                    np.clip(v[:, 2], -VC, VC),
-                    np.clip(wy, -PC, PC),
-                    np.clip(grip[:m], 0, 1)], axis=1).astype(np.float32)
+    if args.mode == 'abs':
+        act = np.stack([v[:, 0], v[:, 1], v[:, 2], wy,
+                        np.clip(grip[:m], 0, 1)], axis=1).astype(np.float32)
+    else:
+        act = np.stack([np.clip(v[:, 0], -VC, VC),
+                        np.clip(v[:, 1], -VC, VC),
+                        np.clip(v[:, 2], -VC, VC),
+                        np.clip(wy, -PC, PC),
+                        np.clip(grip[:m], 0, 1)], axis=1).astype(np.float32)
     payload = {k: d[k] for k in d.files if k not in ('actions',)}
     payload['states'] = d['states'][:m + 1]
     payload['actions'] = act

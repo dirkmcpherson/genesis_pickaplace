@@ -74,6 +74,26 @@ class CartesianCanEnv:
     LEASH = 0.025                             # m
     LEASH_PITCH = 0.15                        # rad
 
+    @classmethod
+    def denormalize_abs(cls, a):
+        """[-1,1]^5 -> absolute tool pose [x,y,z] in the workspace box, pitch, grip."""
+        a = np.asarray(a, float)
+        lo, hi = cls.WS
+        pos = lo + (np.clip(a[:3], -1, 1) + 1.0) * 0.5 * (hi - lo)
+        pit = cls.PITCH_RANGE[0] + (np.clip(a[3], -1, 1) + 1.0) * 0.5 * (
+            cls.PITCH_RANGE[1] - cls.PITCH_RANGE[0])
+        return np.concatenate([pos, [pit], [(a[4] + 1.0) / 2.0]])
+
+    @classmethod
+    def normalize_abs(cls, a):
+        a = np.asarray(a, float)
+        lo, hi = cls.WS
+        pos = 2.0 * (a[..., :3] - lo) / (hi - lo) - 1.0
+        pit = 2.0 * (a[..., 3:4] - cls.PITCH_RANGE[0]) / (
+            cls.PITCH_RANGE[1] - cls.PITCH_RANGE[0]) - 1.0
+        return np.clip(np.concatenate([pos, pit, a[..., 4:5] * 2.0 - 1.0], axis=-1),
+                       -1.0, 1.0)
+
     def __init__(self, backend='cpu', render_size=None, max_steps=1200, camera_rig=False,
                  control='vel'):
         # control: 'vel'   -- ee-velocity, integrated SETPOINT (teleop-faithful, but a
@@ -169,7 +189,16 @@ class CartesianCanEnv:
 
     def step(self, action):
         a = np.asarray(action, float)
-        if self.control == 'delta':
+        if self.control == 'abs':
+            # ABSOLUTE tool-pose target: the ONLY self-correcting EEF encoding. A
+            # relative command ('move +2.75mm x') is equally valid wherever the arm
+            # is, so BC action error INTEGRATES (measured: ~0.5mm/step -> 15cm off
+            # the demo path by t=150, gripper never closes). An absolute target is
+            # independent of current pose, exactly like the joint-position targets
+            # that make joint-space BC work.
+            self._sp = np.clip(a[:3], self.WS[0], self.WS[1])
+            self._pitch = float(np.clip(a[3], self.PITCH_RANGE[0], self.PITCH_RANGE[1]))
+        elif self.control == 'delta':
             d = np.clip(a[:3], -self.DCAP, self.DCAP)
             sp = np.clip(self._sp + d, self.WS[0], self.WS[1])
             cur = self._tool_pos()

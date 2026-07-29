@@ -34,7 +34,7 @@ ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='random
                      "A policy that scores well on demo ICs but zero on random ICs "
                      "is a generalization failure, not a broken pipeline -- the "
                      "positive control this project has never had.")
-ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+ap.add_argument('--control', choices=['vel', 'delta', 'abs'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--n-action-steps', type=int, default=None,
                 help='override the chunk-execution length (ACT default 100 = 2.5s '
@@ -77,8 +77,9 @@ if args.kind == 'sac':
         from cartesian_env import CartesianCanEnv as _C
         # MUST match the env's control mode: delta actions denormalized with the
         # velocity scale (or vice versa) are a different command type entirely.
-        denormalize_action = (_C.denormalize_delta if args.control == 'delta'
-                              else _C.denormalize_action)
+        denormalize_action = ({'delta': _C.denormalize_delta,
+                               'abs': _C.denormalize_abs}.get(args.control)
+                              or _C.denormalize_action)
     else:
         from pick_env import denormalize_action
     model = SAC.load(args.checkpoint, device='cpu')
