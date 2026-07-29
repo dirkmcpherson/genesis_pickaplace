@@ -29,6 +29,11 @@ ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
 ap.add_argument('--cartesian', action='store_true',
                 help='eval a cartesian-action policy through CartesianCanEnv')
+ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='random',
+                help="demo = the demos' OWN starting placements (in-distribution). "
+                     "A policy that scores well on demo ICs but zero on random ICs "
+                     "is a generalization failure, not a broken pipeline -- the "
+                     "positive control this project has never had.")
 ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--n-action-steps', type=int, default=None,
@@ -88,19 +93,46 @@ else:
         args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None),
         n_action_steps=args.n_action_steps)
 
+_ic_sets = {}
 if args.random:
-    episodes = ic_sampling.sample_support_ics(env, args.random, seed=args.seed)
+    if args.ic_mode in ('demo', 'both'):
+        _ic_sets['indist'] = ic_sampling.demo_ics(env, reps=1)[:args.random]
+    if args.ic_mode in ('random', 'both'):
+        _ic_sets['random'] = ic_sampling.sample_support_ics(
+            env, args.random, seed=args.seed)
 else:
-    episodes = ic_sampling.demo_ics(env, uids=args.uids, reps=args.reps)
+    _ic_sets['indist'] = ic_sampling.demo_ics(env, uids=args.uids, reps=args.reps)
+episodes = list(_ic_sets.values())[0]
 
-agg = eval_core.run_eval(env, policy_action, episodes, policy_reset=policy_reset,
-                         record_dir=rec, tag=args.kind)
+# Evaluate every prepared IC set in ONE env (genesis allows one world per process).
+# Prefix stays 'eval/' for the single-set case so existing dashboards keep working;
+# 'both' adds eval_indist/* and eval_random/* so the generalization gap is visible
+# on one chart instead of across two runs.
+metrics = {}
+_aggs = {}
+_single = len(_ic_sets) == 1
+for _name, _eps in _ic_sets.items():
+    _rec = rec if _single else str(pl.Path(rec) / _name)
+    _a = eval_core.run_eval(env, policy_action, _eps, policy_reset=policy_reset,
+                            record_dir=_rec, tag=f'{args.kind}:{_name}')
+    _aggs[_name] = _a
+    _n = max(_a['n'], 1)
+    _pref = 'eval' if _single else f'eval_{_name}'
+    metrics.update({f'{_pref}/{k}': _a[k] / _n for k in eval_core.STAGES})
+    metrics[f'{_pref}/n'] = _a['n']
+if not _single:                      # keep a canonical eval/* = the random (honest) set
+    _a = _aggs.get('random') or list(_aggs.values())[0]
+    _n = max(_a['n'], 1)
+    metrics.update({f'eval/{k}': _a[k] / _n for k in eval_core.STAGES})
+    metrics['eval/gen_gap_picked'] = (
+        (_aggs['indist']['picked'] / max(_aggs['indist']['n'], 1))
+        - (_aggs['random']['picked'] / max(_aggs['random']['n'], 1))
+    ) if 'indist' in _aggs and 'random' in _aggs else 0.0
+agg = _aggs.get('random') or list(_aggs.values())[0]
 n = max(agg['n'], 1)
-metrics = {f'eval/{k}': agg[k] / n for k in eval_core.STAGES}
-metrics['eval/n'] = agg['n']
 if args.step is not None:
     metrics['eval/train_step'] = args.step
-vids = sorted(str(p) for p in pl.Path(rec).glob('*.mp4'))
+vids = sorted(str(p) for p in pl.Path(rec).rglob('*.mp4'))
 tiled = None
 if len(vids) > 1:
     import subprocess

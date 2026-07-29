@@ -79,6 +79,11 @@ class FullTaskEnv(gym.Env):
             if info.get(stage) and stage not in self._granted:
                 reward += r
                 self._granted.add(stage)
+        if self.scope == 'pick':
+            terminated = bool(info.get('picked'))
+            if terminated:
+                truncated = False
+                return (obs['state'].astype(np.float32), reward, True, False, info)
         terminated = bool(info.get('nested'))
         if not terminated and float(a_phys[4]) < self.GRIP_OPEN \
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
@@ -108,10 +113,15 @@ class CartesianFullTaskEnv(gym.Env):
     GRIP_OPEN = 0.3          # grip command below this = not holding
 
     def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,
-                 camera_rig=False, control='vel'):
+                 camera_rig=False, control='vel', scope='full'):
         super().__init__()
         from cartesian_env import CartesianCanEnv
         self.control = control
+        # scope='pick': +1 and TERMINATE on the pick. Collapses the credit-assignment
+        # horizon from ~1700 steps to ~600 (median demo pick frame) and removes all
+        # downstream noise -- the simplest configuration that still exercises the
+        # whole stack, for use as a positive control.
+        self.scope = scope
         self.cenv = CartesianCanEnv(backend=backend, render_size=render_size,
                                     max_steps=10 ** 9, camera_rig=camera_rig,
                                     control=control)
@@ -159,6 +169,11 @@ class CartesianFullTaskEnv(gym.Env):
             if info.get(stage) and stage not in self._granted:
                 reward += r
                 self._granted.add(stage)
+        if self.scope == 'pick':
+            terminated = bool(info.get('picked'))
+            if terminated:
+                truncated = False
+                return (obs['state'].astype(np.float32), reward, True, False, info)
         terminated = bool(info.get('nested'))
         if not terminated and float(a_phys[4]) < self.GRIP_OPEN \
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
