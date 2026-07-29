@@ -48,8 +48,15 @@ class BatchedCanWorld:
 
     STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 
+    # --- cartesian delta-control constants (mirror CartesianCanEnv) --------------
+    C_WS = (np.array([0.3, -0.25, 0.015]), np.array([0.8, 0.25, 0.6]))
+    C_DCAP, C_DPITCH = 0.01, 0.075
+    C_LEASH, C_LEASH_PITCH = 0.025, 0.15
+    C_PITCH_RANGE = (-1.1, 0.6)
+    C_REF_TOOL = np.array([0.367, 0.011, 0.09])
+
     def __init__(self, n_envs, size=(64, 64), pixels=True, workspace_limit=False,
-                 max_steps=1200, seed=0):
+                 max_steps=1200, seed=0, control='joint'):
         import genesis as gs
         from kinova import JOINT_NAMES, EEF_NAME
         from replay_harness import (BOX_POS, BOX_SIZE, STATIC_BOTTLE_POSITION,
@@ -104,6 +111,9 @@ class BatchedCanWorld:
         self.scene = scene
         self.kdofs = [joint_dofs(self.kinova.get_joint(nm)) for nm in JOINT_NAMES]
         self.eef = self.kinova.get_link(EEF_NAME)
+        # cartesian delta mode: per-env tool setpoint + pitch setpoint + reset quats
+        self._c_sp = None; self._c_pitch = None; self._c_q0 = None
+        self.control = control          # 'joint' (7-dim) | 'cart_delta' (5-dim EEF)
 
         # validated gains (build_batched_world convention, world-cfg values)
         fkp = [wcfg['finger_kp']] * 4
@@ -171,6 +181,8 @@ class BatchedCanWorld:
         q = np.tile(self._start_q, (k, 1))
         self.kinova.set_dofs_position(q, self.kdofs, envs_idx=idx)
         self.kinova.control_dofs_position(q, dofs_idx_local=self.kdofs, envs_idx=idx)
+        if self.control == 'cart_delta':
+            self._c_init(idx)
         self.kinova.zero_all_dofs_velocity(envs_idx=idx)
         self.bottle.set_pos(can_pos, envs_idx=idx)
         self.bottle.set_quat(can_quat, envs_idx=idx)
@@ -188,8 +200,13 @@ class BatchedCanWorld:
 
     # ---------------- step ----------------
     def step_batch(self, actions):
-        """actions: (N,7) normalized [-1,1]. One global step for ALL envs.
+        """actions: (N,7) joint-normalized, or (N,5) cartesian-delta-normalized when
+        control='cart_delta'. One global step for ALL envs.
         Returns state (N,17), reward (N,), terminated (N,), info dict of arrays."""
+        if self.control == 'cart_delta':
+            arm, grip = self._c_arm_targets(np.asarray(actions))
+            blocked = np.zeros(self.n, dtype=bool); deep = None
+            return self._step_common(arm, grip, blocked, deep)
         from pick_env import denormalize_action
         a_phys = denormalize_action(np.asarray(actions))
         arm = a_phys[:, :6].astype(np.float64)
@@ -206,6 +223,9 @@ class BatchedCanWorld:
         else:
             blocked = np.zeros(self.n, dtype=bool); deep = None
 
+        return self._step_common(arm, grip, blocked, deep)
+
+    def _step_common(self, arm, grip, blocked, deep):
         self.kinova.control_dofs_position(arm, dofs_idx_local=self.kdofs[:6])
         gt = np.stack([self._grip_targets(g * 100.0) for g in grip])
         self.kinova.control_dofs_position(gt, dofs_idx_local=np.array(self.kdofs[-4:]))
@@ -281,6 +301,74 @@ class BatchedCanWorld:
         for i in range(self.n):
             out[i] = eefp[i] + self._quat_to_R(eefq[i]) @ self._tool_offset
         return out
+
+
+    # ---- cartesian delta control (batched) ------------------------------------
+    def _c_init(self, idx):
+        """(Re)anchor per-env cartesian setpoints for the envs in idx."""
+        from scipy.spatial.transform import Rotation as R
+        idx = np.atleast_1d(np.asarray(idx))
+        eefq = np_(self.eef.get_quat())
+        tool = self._tool_pos_batch()
+        if self._c_sp is None:
+            self._c_sp = np.zeros((self.n, 3))
+            self._c_pitch = np.zeros(self.n)
+            self._c_q0 = np.tile(np.array([1.0, 0, 0, 0]), (self.n, 1))
+        self._c_sp[idx] = tool[idx]
+        self._c_pitch[idx] = 0.0
+        self._c_q0[idx] = eefq[idx]
+
+    @staticmethod
+    def _gs2xyzw(q):
+        q = np.asarray(q, float)
+        return np.stack([q[..., 1], q[..., 2], q[..., 3], q[..., 0]], axis=-1)
+
+    @staticmethod
+    def _xyzw2gs(q):
+        q = np.asarray(q, float)
+        return np.stack([q[..., 3], q[..., 0], q[..., 1], q[..., 2]], axis=-1)
+
+    def _c_measured_pitch(self):
+        from scipy.spatial.transform import Rotation as R
+        wq = np_(self.eef.get_quat())
+        rel = (R.from_quat(self._gs2xyzw(wq)) *
+               R.from_quat(self._gs2xyzw(self._c_q0)).inv()).as_rotvec()
+        return rel[:, 1]
+
+    def _c_arm_targets(self, actions):
+        """(N,5) normalized delta actions -> (N,6) arm joint targets + (N,) grip.
+
+        Mirrors CartesianCanEnv delta mode exactly: integrate the delta into a
+        setpoint, LEASH the setpoint to within C_LEASH of the measured tool pose
+        (bounded drift + feed-forward), solve BATCHED IK for the wrist pose that
+        puts the tool on its setpoint.
+        """
+        from scipy.spatial.transform import Rotation as R
+        a = np.asarray(actions, float)
+        d = np.clip(a[:, :3], -1, 1) * self.C_DCAP
+        dp = np.clip(a[:, 3], -1, 1) * self.C_DPITCH
+        grip = np.clip((a[:, 4] + 1.0) / 2.0, 0.0, 1.0)
+
+        cur = self._tool_pos_batch()
+        sp = np.clip(self._c_sp + d, self.C_WS[0], self.C_WS[1])
+        self._c_sp = cur + np.clip(sp - cur, -self.C_LEASH, self.C_LEASH)
+
+        mp = self._c_measured_pitch()
+        p = np.clip(self._c_pitch + dp, self.C_PITCH_RANGE[0], self.C_PITCH_RANGE[1])
+        self._c_pitch = mp + np.clip(p - mp, -self.C_LEASH_PITCH, self.C_LEASH_PITCH)
+
+        rotv = np.zeros((self.n, 3)); rotv[:, 1] = self._c_pitch
+        tgt = R.from_rotvec(rotv) * R.from_quat(self._gs2xyzw(self._c_q0))
+        tgt_quat = self._xyzw2gs(tgt.as_quat())
+
+        # wrist target so the TOOL lands on its setpoint (offset is in the wrist frame)
+        Rw = R.from_quat(self._gs2xyzw(np_(self.eef.get_quat())))
+        wrist_target = self._c_sp - Rw.apply(np.broadcast_to(self._tool_offset, (self.n, 3)))
+
+        qpos = np_(self.kinova.inverse_kinematics(
+            link=self.eef, pos=wrist_target, quat=tgt_quat,
+            dofs_idx_local=self.kdofs[:6], max_samples=1, max_solver_iters=15))
+        return qpos[:, :6].astype(np.float64), grip
 
     def render_batch(self):
         """(N,64,64,6) uint8: batched top render ++ batched PER-ENV-POSE wrist render.
