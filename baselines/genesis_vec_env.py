@@ -187,7 +187,7 @@ class BatchedCanWorld:
         q = np.tile(self._start_q, (k, 1))
         self.kinova.set_dofs_position(q, self.kdofs, envs_idx=idx)
         self.kinova.control_dofs_position(q, dofs_idx_local=self.kdofs, envs_idx=idx)
-        if self.control == 'cart_delta':
+        if self.control in ('cart_delta', 'cart_abs6'):
             self._c_init(idx)
         self.kinova.zero_all_dofs_velocity(envs_idx=idx)
         self.bottle.set_pos(can_pos, envs_idx=idx)
@@ -210,8 +210,10 @@ class BatchedCanWorld:
         """actions: (N,7) joint-normalized, or (N,5) cartesian-delta-normalized when
         control='cart_delta'. One global step for ALL envs.
         Returns state (N,17), reward (N,), terminated (N,), info dict of arrays."""
-        if self.control == 'cart_delta':
-            arm, grip = self._c_arm_targets(np.asarray(actions))
+        if self.control in ('cart_delta', 'cart_abs6'):
+            arm, grip = (self._c_arm_targets_abs6(np.asarray(actions))
+                         if self.control == 'cart_abs6'
+                         else self._c_arm_targets(np.asarray(actions)))
             blocked = np.zeros(self.n, dtype=bool); deep = None
             return self._step_common(arm, grip, blocked, deep)
         from pick_env import denormalize_action
@@ -277,7 +279,7 @@ class BatchedCanWorld:
                           self.STAGE_REWARD['contact'], self.STAGE_REWARD['nested']])
         reward = (newly * rew_w).sum(axis=1).astype(np.float32)
         terminated = nested_now.copy()
-        if self.control == 'cart_delta':
+        if self.control in ('cart_delta', 'cart_abs6'):
             # tilt of the picked can from vertical, per env
             btilt = np.degrees(np.arccos(np.clip(
                 1 - 2 * (bq[:, 1] ** 2 + bq[:, 2] ** 2), -1, 1)))
@@ -350,6 +352,25 @@ class BatchedCanWorld:
         rel = (R.from_quat(self._gs2xyzw(wq)) *
                R.from_quat(self._gs2xyzw(self._c_q0)).inv()).as_rotvec()
         return rel[:, 1]
+
+    def _c_arm_targets_abs6(self, actions):
+        """(N,7) normalized [pos3, rotvec3, grip] -> (N,6) arm targets + (N,) grip.
+        Absolute 6-DOF pose: FK-equivalent to joint targets, and the only cartesian
+        encoding able to express the demos' wrist orientation."""
+        from scipy.spatial.transform import Rotation as R
+        a = np.asarray(actions, float)
+        lo, hi = self.C_WS
+        pos = lo + (np.clip(a[:, :3], -1, 1) + 1.0) * 0.5 * (hi - lo)
+        rv = np.clip(a[:, 3:6], -1, 1) * 1.6            # ROTVEC_CAP
+        grip = np.clip((a[:, 6] + 1.0) / 2.0, 0.0, 1.0)
+        tgt = R.from_rotvec(rv) * R.from_quat(self._gs2xyzw(self._c_q0))
+        tgt_quat = self._xyzw2gs(tgt.as_quat())
+        Rw = R.from_quat(self._gs2xyzw(np_(self.eef.get_quat())))
+        wrist_target = pos - Rw.apply(np.broadcast_to(self._tool_offset, (self.n, 3)))
+        qpos = np_(self.kinova.inverse_kinematics(
+            link=self.eef, pos=wrist_target, quat=tgt_quat,
+            dofs_idx_local=self.kdofs[:6], max_samples=1, max_solver_iters=15))
+        return qpos[:, :6].astype(np.float64), grip
 
     def _c_arm_targets(self, actions):
         """(N,5) normalized delta actions -> (N,6) arm joint targets + (N,) grip.

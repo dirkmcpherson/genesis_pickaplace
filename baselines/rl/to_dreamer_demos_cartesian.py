@@ -31,7 +31,7 @@ ap.add_argument('--src', default='baselines/episodes_cartesian')
 ap.add_argument('--dst', default=os.path.expanduser(
     '~/workspace/dreamerv3-torch/demonstrations/genesis_cartesian'))
 ap.add_argument('--pick-only', action='store_true')
-ap.add_argument('--control', choices=['vel', 'delta'], default='delta',
+ap.add_argument('--control', choices=['vel', 'delta', 'abs6'], default='delta',
                 help='action normalization: delta (DCAP per-step deltas) | vel (VCAP)')
 args = ap.parse_args()
 
@@ -74,7 +74,8 @@ for p in paths:
     # (234/318) truncate to nothing and are skipped.
     q = s[:, 12:16]
     tilt = np.degrees(np.arccos(np.clip(1 - 2 * (q[:, 1] ** 2 + q[:, 2] ** 2), -1, 1)))
-    tipped_free = (tilt > 60.0) & (a_raw[:, 4] < 0.3)
+    _g = a_raw[:, 6] if a_raw.shape[1] >= 7 else a_raw[:, 4]
+    tipped_free = (tilt > 60.0) & (_g < 0.3)
     j_tip = int(np.argmax(tipped_free)) if tipped_free.any() else -1
     if j_tip >= 0:
         s = s[:j_tip + 1]
@@ -84,7 +85,7 @@ for p in paths:
         print(f'{uid}: SKIP (tipped at frame {j_tip} -- nothing usable)', flush=True)
         continue
     can_z = s[:, 11]
-    grip = a_raw[:, 4]
+    grip = a_raw[:, 6] if a_raw.shape[1] >= 7 else a_raw[:, 4]
     rew = np.zeros(n, dtype=np.float32)
     done = np.zeros(n, dtype=bool)
     picked_f = (can_z[:-1] > PICK_Z) & (grip[:-1] > GRIP_CLOSED)
@@ -111,8 +112,9 @@ for p in paths:
         rew[n - 1] += -0.5                     # tip penalty at the truncated frame
         done[n - 1] = True                     # is_terminal: env terminates here too
         grants.setdefault('tipped', 0); grants['tipped'] += 1
-    _norm = (CartesianCanEnv.normalize_delta if args.control == 'delta'
-             else CartesianCanEnv.normalize_action)
+    _norm = {'delta': CartesianCanEnv.normalize_delta,
+             'abs6': CartesianCanEnv.normalize_abs6}.get(
+                 args.control, CartesianCanEnv.normalize_action)
     act = _norm(a_raw[:n]).astype(np.float32)
     # --- dreamer shift + extend-by-one (see to_dreamer_demos.py rationale) ---------
     m = min(n + 1, len(d['images']))
