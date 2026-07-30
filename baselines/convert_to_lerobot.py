@@ -92,4 +92,18 @@ for f in files:
 # already None -> the metadata flush crashes and the dataset is left with a truncated
 # episodes table (info.json says 67, only ~60 committed) that lerobot-train can't load.
 ds.finalize()
-print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized)')
+# INTEGRITY GATE: a dataset whose episodes table is shorter than info.json's
+# total_episodes trains fine on some `datasets` versions and raises
+# "Invalid key: N is out of bounds" on others -- a corrupt dataset that only fails
+# on another machine. Assert here so it can never be shipped.
+import json as _json
+import glob as _glob
+import pyarrow.parquet as _pq
+_info = _json.loads((ROOT / 'meta' / 'info.json').read_text())
+_rows = sum(_pq.read_table(f).num_rows
+            for f in _glob.glob(str(ROOT / 'meta' / 'episodes' / '**' / '*.parquet'),
+                                recursive=True))
+assert _rows == _info['total_episodes'], (
+    f'CORRUPT DATASET: info.json says {_info["total_episodes"]} episodes but the '
+    f'metadata table has {_rows} rows. Do not use it.')
+print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized, metadata verified)')
