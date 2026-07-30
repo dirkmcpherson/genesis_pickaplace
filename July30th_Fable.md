@@ -5,7 +5,7 @@ Everything here is reproducible on the dev box (`.venv-eval`) unless noted.
 
 ---
 
-## 1. PRIORITY: verify-rejection in the harvester (possible non-determinism)
+## 1. verify-rejection in the harvester — LIKELY RESOLVED, needs confirmation
 
 **Symptom.** Cluster negative control, random teacher, 50 rollouts:
 `kept 3/50, 7 rejected by verify` — "KEPT-by-rollout but FAILED verify".
@@ -29,8 +29,17 @@ generational result inherits the doubt.
 
 **What I already did (2026-07-30, commit f44fe71).** Added `MIN_KEEP_FRAMES=100` —
 a 15-frame "pick" appeared in that run, 5 steps after reset, when a genuine pick
-takes ~600 frames (median demo pick frame 666). That likely removes most of case
-(c). **It does not diagnose (a) or (b).**
+takes ~600 frames (median demo pick frame 666).
+
+**UPDATE (same day, after the fix):** the cluster negative control re-ran at
+`kept 0/50 (0%), 0 rejected by verify` — down from 3 kept / 7 verify-rejected. So on
+current evidence the rejections were **case (c)**: transient predicate firings on
+implausibly short episodes, which replay does not reproduce. Cases (a) and (b) are
+*not* implicated, and the bisect below is now a **confirmation** task rather than a
+hunt. Still worth doing once against a REAL (non-random) teacher harvest, because a
+random teacher may simply never produce the long marginal episodes where a genuine
+misalignment would show: check `rejected_by_verify` in the first real harvest's
+manifest, and only escalate to the state-by-state bisect if it is non-zero.
 
 **Suggested experiment.**
 1. Instrument `rollout()` to also record the *post-step* state, then replay and
