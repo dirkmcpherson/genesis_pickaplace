@@ -191,8 +191,20 @@ def ic_coverage(kept_ics, env, bins=4):
     """Per-bin histogram of kept can-xy over the demo-support box (visibility, not a gate)."""
     if not kept_ics:
         return {}
+    # ICs come in two shapes: explicit placements ({'can_pos': ...}, from the support
+    # box) and uid references ({'uid': N}, from --ic-mode demo/static). Resolve the
+    # latter through the placement table so coverage still reports.
+    def _xy(ic):
+        if 'can_pos' in ic:
+            return np.asarray(ic['can_pos'][:2], float)
+        pl_ = env.placements.get(int(ic['uid']), {}) if 'uid' in ic else {}
+        cp = pl_.get('can_pos')
+        return np.asarray(cp[:2], float) if cp else None
+    pts = [p for p in (_xy(ic) for ic in kept_ics) if p is not None]
+    if not pts:
+        return {'note': 'IC positions unavailable (uid-based ICs without placements)'}
     lo, hi = ic_sampling.support_box(env)
-    xy = np.array([ic['can_pos'][:2] for ic in kept_ics])
+    xy = np.array(pts)
     ix = np.clip(((xy - lo) / (hi - lo + 1e-9) * bins).astype(int), 0, bins - 1)
     grid = np.zeros((bins, bins), int)
     for a, b in ix:
