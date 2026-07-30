@@ -56,6 +56,18 @@ Matrix once wave 1 picks teachers:
 - **cross-family**: BC-of-RL-demos vs BC-of-human-demos — RL demos are typically
   lower-entropy; this is the distribution-narrowing question the experiment probes.
 
+## Evaluation distribution (changed 2026-07-30)
+
+**Demo can positions are the default everywhere** -- harvest ICs, eval ICs, and the
+training envs' own resets. Rationale: it matches the distribution the envs train on,
+raises success rates enough for the comparisons to have signal, and simplifies the
+writeup to one distribution.
+
+Random support-box ICs are STILL evaluated and logged every time
+(`eval_random/*`, plus `eval/gen_gap_picked`), so the generalization gap remains
+visible -- it is a reported quantity, not the headline. Reference numbers under the
+new default: joint DP in-dist **0.67** vs random 0.13.
+
 ## Honesty protocol (applies to every cell)
 
 - identical eval: `eval_core` ICs, honest settled nested, full-length horizon

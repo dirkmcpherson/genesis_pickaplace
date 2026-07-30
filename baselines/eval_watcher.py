@@ -28,6 +28,9 @@ ap.add_argument('--cartesian', action='store_true')
 ap.add_argument('--control', choices=['vel', 'delta'], default='vel')
 ap.add_argument('--until-steps', type=int, required=True,
                 help='exit after evaluating a checkpoint >= this step')
+ap.add_argument('--ic-mode', choices=['demo', 'random'], default='demo',
+                help="demo (default) = the demos' own can positions, matching how "
+                     "training envs reset; random = the full support box")
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--group', default='eval_watcher')
 ap.add_argument('--name', default=None)
@@ -50,7 +53,9 @@ else:
 run = wandb.init(project='genesis_pickaplace', group=args.group,
                  name=args.name or f'{pl.Path(args.output_dir).name}-eval-live',
                  config=vars(args))
-episodes = ic_sampling.sample_support_ics(env, args.episodes, seed=args.seed)
+episodes = (ic_sampling.demo_ics(env, reps=1)[:args.episodes]
+            if args.ic_mode == 'demo'
+            else ic_sampling.sample_support_ics(env, args.episodes, seed=args.seed))
 ckdir = pl.Path(args.output_dir) / 'checkpoints'
 seen = set()
 

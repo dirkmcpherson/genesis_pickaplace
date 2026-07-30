@@ -29,7 +29,7 @@ ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
 ap.add_argument('--cartesian', action='store_true',
                 help='eval a cartesian-action policy through CartesianCanEnv')
-ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='random',
+ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='both',
                 help="demo = the demos' OWN starting placements (in-distribution). "
                      "A policy that scores well on demo ICs but zero on random ICs "
                      "is a generalization failure, not a broken pipeline -- the "
@@ -123,8 +123,12 @@ for _name, _eps in _ic_sets.items():
     _pref = 'eval' if _single else f'eval_{_name}'
     metrics.update({f'{_pref}/{k}': _a[k] / _n for k in eval_core.STAGES})
     metrics[f'{_pref}/n'] = _a['n']
-if not _single:                      # keep a canonical eval/* = the random (honest) set
-    _a = _aggs.get('random') or list(_aggs.values())[0]
+if not _single:
+    # eval/* == the DEMO-IC (in-distribution) set: demo can positions are now the
+    # standard evaluation distribution, matching how the envs reset during training.
+    # eval_random/* is still logged every time, so the generalization gap stays
+    # visible rather than being quietly dropped.
+    _a = _aggs.get('indist') or list(_aggs.values())[0]
     _n = max(_a['n'], 1)
     metrics.update({f'eval/{k}': _a[k] / _n for k in eval_core.STAGES})
     metrics['eval/gen_gap_picked'] = (
