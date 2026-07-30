@@ -12,6 +12,11 @@
 set -eo pipefail
 
 LEROBOT_DIR=${LEROBOT_DIR:-$HOME/lerobot}
+# Pin to the VALIDATED ref, not the fork's default branch. lerobot main has moved to
+# requires-python >=3.12 while the cluster env (and the dev box) run 3.10; the
+# genesis-fixes branch is lerobot 0.4.5 (requires-python >=3.10) plus the
+# image_writer mkdir fix -- exactly what every local result was produced with.
+LEROBOT_REF=${LEROBOT_REF:-genesis-fixes}
 # The repo carries git-lfs pointers (test assets/media -- not needed to train).
 # Clusters rarely have git-lfs, and without it the CHECKOUT fails after a successful
 # clone, leaving a source tree with missing files. Skip the smudge filter entirely.
@@ -20,6 +25,9 @@ GITNOLFS="git -c filter.lfs.smudge= -c filter.lfs.process= -c filter.lfs.require
 if [ ! -d "$LEROBOT_DIR/.git" ]; then
   $GITNOLFS clone git@github.com:dirkmcpherson/lerobot.git "$LEROBOT_DIR"
 fi
+( cd "$LEROBOT_DIR" && $GITNOLFS fetch origin "$LEROBOT_REF" \
+  && $GITNOLFS checkout -f "$LEROBOT_REF" ) \
+  || { echo "FATAL: cannot check out lerobot ref '$LEROBOT_REF'"; exit 1; }
 # repair a clone whose checkout died mid-way (empty working tree, HEAD intact)
 if [ ! -f "$LEROBOT_DIR/pyproject.toml" ]; then
   echo "== repairing incomplete checkout in $LEROBOT_DIR"
@@ -27,6 +35,14 @@ if [ ! -f "$LEROBOT_DIR/pyproject.toml" ]; then
 fi
 [ -f "$LEROBOT_DIR/pyproject.toml" ] || {
   echo "FATAL: $LEROBOT_DIR has no pyproject.toml -- checkout still incomplete"; exit 1; }
+PYV=$(python -c 'import sys; print("%d.%d" % sys.version_info[:2])')
+REQ=$(grep -m1 requires-python "$LEROBOT_DIR/pyproject.toml" || true)
+echo "== lerobot ref $LEROBOT_REF ($REQ) against python $PYV"
+case "$REQ" in
+  *3.12*) echo "FATAL: this lerobot ref needs python >=3.12 but the env has $PYV."
+          echo "  Use LEROBOT_REF=genesis-fixes (0.4.5, python>=3.10) -- the ref every"
+          echo "  local result was produced with."; exit 1 ;;
+esac
 
 TORCH_V=$(python -c 'import torch; print(torch.__version__.split("+")[0])')
 case "$TORCH_V" in
