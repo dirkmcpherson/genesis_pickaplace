@@ -14,7 +14,11 @@
 # inference (100 denoise steps/chunk) is far faster on GPU even for state policies.
 
 #SBATCH -J ouro-harvest
-#SBATCH -p gpu
+#SBATCH -p gpu,preempt
+#SBATCH --requeue
+# 'preempt' has far more L40S but jobs can be KILLED at any moment. --requeue puts
+# the job straight back in the queue; the payload below must therefore RESUME rather
+# than restart, or preemption silently throws away hours of training.
 #SBATCH --gres=gpu:1
 #SBATCH --constraint="l40s|a100"
 #SBATCH -N 1

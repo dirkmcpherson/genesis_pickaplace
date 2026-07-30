@@ -19,7 +19,11 @@
 # All state lives under ouroboros/$TAG/gen$GEN/ (dp/, harvest/, dataset/, logs).
 
 #SBATCH -J ouro-train
-#SBATCH -p gpu
+#SBATCH -p gpu,preempt
+#SBATCH --requeue
+# 'preempt' has far more L40S but jobs can be KILLED at any moment. --requeue puts
+# the job straight back in the queue; the payload below must therefore RESUME rather
+# than restart, or preemption silently throws away hours of training.
 #SBATCH --gres=gpu:1
 #SBATCH --constraint="l40s|a100"
 #SBATCH -N 1
@@ -69,8 +73,17 @@ echo "== ouroboros $TAG gen$GEN TRAIN start $(date) dataset=$DATASET cams=$CAMS"
 echo "== trainer: $LEROBOT_TRAIN"
 
 # --- train -----------------------------------------------------------------------
-rm -rf "$G/dp"
-$LEROBOT_TRAIN \
+# PREEMPTION-SAFE: only wipe the output dir on a FIRST attempt. On a requeue
+# (SLURM_RESTART_COUNT>0) keep it and resume from the last checkpoint, otherwise
+# every preemption restarts training from zero.
+RESUME_ARG=""
+if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$G/dp/checkpoints/last" ]; then
+  echo "== requeued (restart #${SLURM_RESTART_COUNT}); RESUMING from $G/dp/checkpoints/last"
+  RESUME_ARG="--resume=true"
+else
+  rm -rf "$G/dp"
+fi
+$LEROBOT_TRAIN ${RESUME_ARG} \
   --dataset.repo_id="local/${TAG}_${ALGO}_gen${GEN}" \
   --dataset.root="$DATASET" \
   --policy.type=$( [ "$ALGO" = act ] && echo act || echo diffusion ) \
