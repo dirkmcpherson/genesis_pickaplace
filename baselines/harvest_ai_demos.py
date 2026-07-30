@@ -174,6 +174,14 @@ def main():
     ap.add_argument('--teacher-type', required=True, choices=['dp', 'sac', 'random'])
     ap.add_argument('--checkpoint', default=None)
     ap.add_argument('--n', type=int, default=200, help='number of ICs to roll out')
+    ap.add_argument('--ic-mode', choices=['support', 'demo', 'static'],
+                    default='support',
+                    help="which ICs to harvest from. 'support' = the full random "
+                         "support box (BROADENS coverage vs the human demos' ~3 can "
+                         "positions, which confounds 'human vs model demos' with "
+                         "'narrow vs broad ICs'). 'demo' = the demos' own placements, "
+                         "matching gen-0's distribution. 'static' = one fixed "
+                         "placement (highest yield, for bring-up).")
     ap.add_argument('--target-kept', type=int, default=None,
                     help='harvest until this many demos are KEPT (rollout budget = '
                          '--n as the cap). Sizing by rollouts instead makes dataset '
@@ -225,7 +233,15 @@ def main():
                                                args.seed, rig_provider=rig,
                                                action_space=args.action_space,
                                                control=args.control)
-    episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
+    if args.ic_mode == 'demo':
+        # cycle the demos' own placements so harvested data matches gen-0's IC support
+        _base = ic_sampling.demo_ics(env, reps=1)
+        episodes = [_base[i % len(_base)] for i in range(args.n)] if _base else []
+    elif args.ic_mode == 'static':
+        _base = ic_sampling.demo_ics(env, reps=1)
+        episodes = [_base[0]] * args.n if _base else []
+    else:
+        episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
     print(f'[harvest] teacher={args.teacher_type} scope={args.scope} n={args.n} '
           f'target_kept={args.target_kept} verify={args.verify} -> {outdir}', flush=True)
 
@@ -272,6 +288,7 @@ def main():
               flush=True)
     cov = ic_coverage(kept_ic_list, env)
     manifest = dict(teacher_type=args.teacher_type, checkpoint=args.checkpoint,
+                    ic_mode=args.ic_mode,
                     scope=args.scope, seed=args.seed, n_rollouts=n_rollouts_used,
                     rollout_budget=args.n, target_kept=args.target_kept,
                     short_of_target=bool(short), kept=kept,

@@ -1,0 +1,7 @@
+# SMOKE: tiny params to prove the self-chaining dependency works end to end.
+# Both lineages train 2k steps, harvest 8 kept demos, run 2 generations.
+# Launch with the tiny overrides:
+#   MAXGEN=2 TRAIN_STEPS=2000 HARVEST_N=60 TARGET_KEPT=8 MIN_KEPT=2 EVAL_EPS=4 \
+#     bash cluster/launch_ouroboros.sh cluster/conditions_smoke.txt
+TAG=smk_dp  ALGO=dp  ACTIONS=joint DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace
+TAG=smk_act ALGO=act ACTIONS=joint DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace

@@ -27,7 +27,7 @@
 set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT
-TAG=${TAG:?} ; GEN=${GEN:?} ; CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel} ; ALGO=${ALGO:-dp}
+TAG=${TAG:?} ; GEN=${GEN:?} ; CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel} ; ALGO=${ALGO:-dp} ; IC_MODE=${IC_MODE:-demo}
 MAXGEN=${MAXGEN:-3} ; SCOPE=${SCOPE:-pick} ; HARVEST_N=${HARVEST_N:-300}
 G=ouroboros/$TAG/gen$GEN
 NEXT=$((GEN + 1))
@@ -57,7 +57,7 @@ echo "== negative control kept $NEG_KEPT/50"
 # --- harvest model-demos from the gen-k teacher -----------------------------------
 python baselines/harvest_ai_demos.py --teacher-type dp \
   --checkpoint "$CKPT" --action-space "$ACTIONS" \
-  --n "$HARVEST_N" ${TARGET_KEPT:+--target-kept $TARGET_KEPT} \
+  --n "$HARVEST_N" ${TARGET_KEPT:+--target-kept $TARGET_KEPT} --ic-mode "$IC_MODE" \
   --scope "$SCOPE" --verify --seed "$GEN" $IMG_FLAG \
   --cap "${CAP:-600}" \
   --outdir "$G/harvest"
@@ -77,7 +77,7 @@ echo "== gen$NEXT dataset ready"
 if [ "$NEXT" -ge "$MAXGEN" ]; then
   echo "== ouroboros $TAG complete: $MAXGEN generations trained, final harvest banked"
 elif [ -z "${NO_CHAIN:-}" ]; then
-  sbatch --export=ALL,TAG=$TAG,GEN=$NEXT,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,ALGO=$ALGO,TARGET_KEPT=${TARGET_KEPT:-},MIN_KEPT=${MIN_KEPT:-10},DATASET=$NEXTG/dataset,MAXGEN=$MAXGEN,SCOPE=$SCOPE,HARVEST_N=$HARVEST_N,TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
+  sbatch --export=ALL,TAG=$TAG,GEN=$NEXT,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,ALGO=$ALGO,TARGET_KEPT=${TARGET_KEPT:-},MIN_KEPT=${MIN_KEPT:-10},IC_MODE=$IC_MODE,DATASET=$NEXTG/dataset,MAXGEN=$MAXGEN,SCOPE=$SCOPE,HARVEST_N=$HARVEST_N,TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
     cluster/sbatch_ouro_train.sh
   echo "== submitted train for gen$NEXT"
 fi

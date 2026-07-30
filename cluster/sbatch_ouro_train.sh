@@ -34,7 +34,7 @@ cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT
 TAG=${TAG:?set TAG (experiment name, stable across the whole chain)}
 GEN=${GEN:-0}
-CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel} ; ALGO=${ALGO:-dp}
+CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel} ; ALGO=${ALGO:-dp} ; IC_MODE=${IC_MODE:-demo}
 DATASET=${DATASET:?set DATASET (LeRobotDataset root for this generation)}
 G=ouroboros/$TAG/gen$GEN
 mkdir -p "$G"
@@ -74,7 +74,7 @@ echo "== gen$GEN train+eval done $(date)"
 
 # --- chain: job B (harvest+convert+next-gen submit) -------------------------------
 if [ -z "${NO_CHAIN:-}" ]; then
-  sbatch --export=ALL,TAG=$TAG,GEN=$GEN,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,ALGO=$ALGO,TARGET_KEPT=${TARGET_KEPT:-},MAXGEN=${MAXGEN:-3},SCOPE=${SCOPE:-pick},HARVEST_N=${HARVEST_N:-300},TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
+  sbatch --export=ALL,TAG=$TAG,GEN=$GEN,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,ALGO=$ALGO,TARGET_KEPT=${TARGET_KEPT:-},IC_MODE=$IC_MODE,MAXGEN=${MAXGEN:-3},SCOPE=${SCOPE:-pick},HARVEST_N=${HARVEST_N:-300},TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
     cluster/sbatch_ouro_harvest.sh
   echo "== submitted harvest for gen$GEN"
 fi

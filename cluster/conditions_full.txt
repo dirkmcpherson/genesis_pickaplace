@@ -1,0 +1,10 @@
+# Ouroboros queue. Every lineage self-chains gen0 -> gen1 -> gen2 (MAXGEN=3).
+# TARGET_KEPT=67 matches the human gen-0 demo count so all conditions and all
+# generations train on the same amount of data. IC_MODE=demo keeps generated data
+# on the human demos' can positions (no IC-coverage confound).
+#
+# JOINT ONLY for now: cartesian DP scores 0.00 in-distribution (joint 0.67), so a
+# cartesian lineage cannot harvest a gen-1 dataset. Add cartesian lines once that
+# is resolved.
+TAG=ouro_dp_joint  ALGO=dp  ACTIONS=joint DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace
+TAG=ouro_act_joint ALGO=act ACTIONS=joint DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace
