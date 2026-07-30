@@ -86,8 +86,12 @@ CKPT=$G/dp/checkpoints/last/pretrained_model
 python baselines/wandb_eval.py --kind dp --checkpoint "$CKPT" \
   $( [ "$ACTIONS" = cartesian ] && echo --cartesian --control $CTRL ) \
   --random "${EVAL_EPS:-15}" --seed 0 \
-  --group "${TAG}" --name "${TAG}_gen${GEN}-eval" \
-  || echo "WARN: eval failed (train artifact intact; harvest still submitted)"
+  --group "${TAG}" --name "${TAG}_${ALGO}_gen${GEN}-eval" \
+  > "$G/eval.log" 2>&1 \
+  || { echo "WARN: eval FAILED (train artifact intact; harvest still submitted)"
+       echo "---- last 25 lines of $G/eval.log ----"
+       tail -25 "$G/eval.log"
+       echo "---- end ----"; }
 
 echo "== gen$GEN train+eval done $(date)"
 
