@@ -43,6 +43,8 @@ export LD_LIBRARY_PATH="$(ls -d "$SITE"/nvidia/*/lib 2>/dev/null | tr '\n' ':')$
 IMG_FLAG=""
 [ "$CAMS" != "none" ] && IMG_FLAG="--images"
 
+python -c 'import lerobot' 2>/dev/null || {
+  echo "FATAL: lerobot not importable ($CONDA_PREFIX). Run: bash cluster/install_lerobot.sh"; exit 1; }
 echo "== ouroboros $TAG gen$GEN HARVEST start $(date) scope=$SCOPE n=$HARVEST_N cams=$CAMS"
 
 # --- negative control FIRST (cheap; a broken predicate fails fast, before 300 rollouts)

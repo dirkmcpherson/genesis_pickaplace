@@ -47,11 +47,23 @@ export MUJOCO_GL=egl
 SITE=$(python -c 'import site; print(site.getsitepackages()[0])')
 export LD_LIBRARY_PATH="$(ls -d "$SITE"/nvidia/*/lib 2>/dev/null | tr '\n' ':')${LD_LIBRARY_PATH:-}"
 
+# --- preflight: fail immediately with the remedy, not 50 lines in ---------------
+if command -v lerobot-train >/dev/null 2>&1; then
+  LEROBOT_TRAIN="lerobot-train"
+elif python -c 'import lerobot.scripts.lerobot_train' 2>/dev/null; then
+  LEROBOT_TRAIN="python -m lerobot.scripts.lerobot_train"   # console script absent
+else
+  echo "FATAL: lerobot is not importable in this env ($CONDA_PREFIX)."
+  echo "  Run once:  conda activate <env> && bash cluster/install_lerobot.sh"
+  exit 1
+fi
+[ -d "$DATASET" ] || { echo "FATAL: dataset missing: $DATASET (rsync it -- gitignored)"; exit 1; }
 echo "== ouroboros $TAG gen$GEN TRAIN start $(date) dataset=$DATASET cams=$CAMS"
+echo "== trainer: $LEROBOT_TRAIN"
 
 # --- train -----------------------------------------------------------------------
 rm -rf "$G/dp"
-lerobot-train \
+$LEROBOT_TRAIN \
   --dataset.repo_id="local/${TAG}_${ALGO}_gen${GEN}" \
   --dataset.root="$DATASET" \
   --policy.type=$( [ "$ALGO" = act ] && echo act || echo diffusion ) \
