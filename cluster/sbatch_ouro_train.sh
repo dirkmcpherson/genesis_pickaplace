@@ -34,7 +34,7 @@ cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT
 TAG=${TAG:?set TAG (experiment name, stable across the whole chain)}
 GEN=${GEN:-0}
-CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel}
+CAMS=${CAMS:-none} ; ACTIONS=${ACTIONS:-joint} ; CTRL=${CTRL:-vel} ; ALGO=${ALGO:-dp}
 DATASET=${DATASET:?set DATASET (LeRobotDataset root for this generation)}
 G=ouroboros/$TAG/gen$GEN
 mkdir -p "$G"
@@ -52,11 +52,12 @@ echo "== ouroboros $TAG gen$GEN TRAIN start $(date) dataset=$DATASET cams=$CAMS"
 # --- train -----------------------------------------------------------------------
 rm -rf "$G/dp"
 lerobot-train \
-  --dataset.repo_id="local/${TAG}_gen${GEN}" \
+  --dataset.repo_id="local/${TAG}_${ALGO}_gen${GEN}" \
   --dataset.root="$DATASET" \
-  --policy.type=diffusion --policy.push_to_hub=false \
+  --policy.type=$( [ "$ALGO" = act ] && echo act || echo diffusion ) \
+  --policy.push_to_hub=false \
   --output_dir="$G/dp" --batch_size=64 --steps="${TRAIN_STEPS:-100000}" \
-  --job_name="${TAG}_gen${GEN}" \
+  --job_name="${TAG}_${ALGO}_gen${GEN}" \
   --wandb.enable=true --wandb.project=genesis_pickaplace_ouro \
   --wandb.disable_artifact=true
 CKPT=$G/dp/checkpoints/last/pretrained_model
@@ -73,7 +74,7 @@ echo "== gen$GEN train+eval done $(date)"
 
 # --- chain: job B (harvest+convert+next-gen submit) -------------------------------
 if [ -z "${NO_CHAIN:-}" ]; then
-  sbatch --export=ALL,TAG=$TAG,GEN=$GEN,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,MAXGEN=${MAXGEN:-3},SCOPE=${SCOPE:-pick},HARVEST_N=${HARVEST_N:-300},TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
+  sbatch --export=ALL,TAG=$TAG,GEN=$GEN,CAMS=$CAMS,ACTIONS=$ACTIONS,CTRL=$CTRL,ALGO=$ALGO,TARGET_KEPT=${TARGET_KEPT:-},MAXGEN=${MAXGEN:-3},SCOPE=${SCOPE:-pick},HARVEST_N=${HARVEST_N:-300},TRAIN_STEPS=${TRAIN_STEPS:-100000},EVAL_EPS=${EVAL_EPS:-15},GENESIS_PICKAPLACE_ROOT=$GENESIS_PICKAPLACE_ROOT,CONDA_ENV=${CONDA_ENV:-} \
     cluster/sbatch_ouro_harvest.sh
   echo "== submitted harvest for gen$GEN"
 fi

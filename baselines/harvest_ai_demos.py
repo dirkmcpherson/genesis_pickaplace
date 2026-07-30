@@ -174,6 +174,13 @@ def main():
     ap.add_argument('--teacher-type', required=True, choices=['dp', 'sac', 'random'])
     ap.add_argument('--checkpoint', default=None)
     ap.add_argument('--n', type=int, default=200, help='number of ICs to roll out')
+    ap.add_argument('--target-kept', type=int, default=None,
+                    help='harvest until this many demos are KEPT (rollout budget = '
+                         '--n as the cap). Sizing by rollouts instead makes dataset '
+                         'size proportional to teacher strength, which confounds both '
+                         'generational and cross-algorithm comparisons: a 0.13-rate '
+                         'teacher yields half the data of a 0.26-rate one, so any '
+                         'difference downstream is dataset size, not the condition.')
     ap.add_argument('--scope', choices=['pick', 'full'], default='pick')
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--outdir', required=True)
@@ -220,7 +227,7 @@ def main():
                                                control=args.control)
     episodes = ic_sampling.sample_support_ics(env, args.n, seed=args.seed)
     print(f'[harvest] teacher={args.teacher_type} scope={args.scope} n={args.n} '
-          f'verify={args.verify} -> {outdir}', flush=True)
+          f'target_kept={args.target_kept} verify={args.verify} -> {outdir}', flush=True)
 
     kept = kept_ics = 0
     kept_ic_list = []
@@ -250,11 +257,24 @@ def main():
         kept += 1
         kept_ic_list.append(ic)
         print(f'  ic{idx}: KEPT ({len(states)} frames) -> {stem}.npz', flush=True)
+        if args.target_kept is not None and kept >= args.target_kept:
+            print(f'[harvest] target of {args.target_kept} kept demos reached after '
+                  f'{idx + 1} rollouts', flush=True)
+            break
 
-    yield_frac = kept / max(args.n, 1)
+    n_rollouts_used = idx + 1 if episodes else 0
+    yield_frac = kept / max(n_rollouts_used, 1)
+    short = (args.target_kept is not None and kept < args.target_kept)
+    if short:
+        print(f'[harvest] WARNING: SHORT -- kept {kept} of target {args.target_kept} '
+              f'after exhausting {n_rollouts_used} rollouts (raise --n or accept an '
+              f'unmatched dataset size; downstream comparisons must note it)',
+              flush=True)
     cov = ic_coverage(kept_ic_list, env)
     manifest = dict(teacher_type=args.teacher_type, checkpoint=args.checkpoint,
-                    scope=args.scope, seed=args.seed, n_rollouts=args.n, kept=kept,
+                    scope=args.scope, seed=args.seed, n_rollouts=n_rollouts_used,
+                    rollout_budget=args.n, target_kept=args.target_kept,
+                    short_of_target=bool(short), kept=kept,
                     yield_frac=round(yield_frac, 4), rejected_by_verify=n_reject_verify,
                     ic_coverage=cov)
     (outdir / 'manifest.json').write_text(json.dumps(manifest, indent=2))
