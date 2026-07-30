@@ -58,6 +58,12 @@ else
   exit 1
 fi
 [ -d "$DATASET" ] || { echo "FATAL: dataset missing: $DATASET (rsync it -- gitignored)"; exit 1; }
+if [ "$CAMS" != "none" ]; then
+  python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null || {
+    echo "FATAL: CAMS=$CAMS needs video decoding, but torchcodec/FFmpeg is unavailable."
+    echo "  Run with CAMS=none (state-only) or: conda install -c conda-forge 'ffmpeg<8'"
+    exit 1; }
+fi
 echo "== ouroboros $TAG gen$GEN TRAIN start $(date) dataset=$DATASET cams=$CAMS"
 echo "== trainer: $LEROBOT_TRAIN"
 

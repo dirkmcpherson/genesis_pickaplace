@@ -56,10 +56,26 @@ pip install -e "$LEROBOT_DIR" --no-deps
 pip install "$TC" diffusers einops datasets "huggingface_hub>=0.27" \
     jsonlines draccus av wandb imageio deepdiff termcolor
 
-python - <<'PY'
-import torch, torchcodec, lerobot
-from torchcodec.decoders import VideoDecoder
+# torchcodec needs FFmpeg shared libs (libavutil et al); conda envs often lack them.
+# Only IMAGE/VIDEO datasets decode -- state-only training (CAMS=none, which every
+# current ouroboros condition uses) never does. Try to supply them, do not require.
+python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null || {
+  echo "== torchcodec cannot load FFmpeg libs; attempting to install ffmpeg"
+  conda install -y -c conda-forge 'ffmpeg<8' >/dev/null 2>&1 || true
+}
+
+python - <<'VERIFY'
+import torch, lerobot
 from lerobot.policies.diffusion.configuration_diffusion import DiffusionConfig
-print(f'OK: torch {torch.__version__} + torchcodec {torchcodec.__version__} + lerobot {lerobot.__version__}')
-PY
-echo "lerobot install verified"
+from lerobot.policies.act.configuration_act import ACTConfig
+print(f'OK: torch {torch.__version__} + lerobot {lerobot.__version__} (dp+act configs load)')
+try:
+    import torchcodec
+    from torchcodec.decoders import VideoDecoder
+    print(f'OK: torchcodec {torchcodec.__version__} -- image/video datasets available')
+except Exception as e:
+    print('WARN: torchcodec/FFmpeg unavailable. STATE-ONLY datasets (CAMS=none) are')
+    print('      unaffected; image/video datasets would fail to load.')
+    print('      detail:', str(e).splitlines()[0][:100])
+VERIFY
+echo "lerobot install verified (state-only path is a hard requirement; see any WARN)"
