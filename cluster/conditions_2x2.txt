@@ -1,0 +1,7 @@
+# THE 2x2 that should settle why cartesian BC fails (July30th_Fable.md sec.2).
+# Joint DP reaches 0.67 in-dist; every EEF encoding reaches 0.00 -- but the
+# cartesian conditions changed the OBSERVATION (18-dim ee-centric) at the same time
+# as the ACTION, and the two have never been separated. MAXGEN=1 = train+eval only,
+# no harvesting: these are diagnostic legs, not lineages.
+TAG=x_jobs_jact ALGO=dp ACTIONS=joint     DATASET=baselines/lerobot_dataset_pick_pruned/genesis_pickaplace
+TAG=x_eobs_eact ALGO=dp ACTIONS=cartesian CTRL=abs6 DATASET=baselines/lerobot_dataset_cart_abs6/genesis_pickaplace

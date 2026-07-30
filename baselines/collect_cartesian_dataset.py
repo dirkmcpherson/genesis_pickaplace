@@ -92,6 +92,13 @@ for uid in uids:
         ee = np_(env.w['eef'].get_pos()); eq = np_(env.w['eef'].get_quat())
         s = obs['state']
         states.append(np.concatenate([ee, eq, s[6:8], s[8:17]]).astype(np.float32))
+        # also keep the RAW 17-dim joint obs and the joint command, so the
+        # observation and action representations can be varied INDEPENDENTLY
+        # (the obs x action 2x2 -- see July30th_Fable.md sec.2). Without this the
+        # joint and cartesian demo sets prune to different frame counts and cannot
+        # be paired per-uid.
+        states_joint.append(np.asarray(s, np.float32))
+        actions_joint.append(np.concatenate([jp[i], [grip]]).astype(np.float32))
         actions.append(np.array([cv[i, 0], cv[i, 1], cv[i, 2], cv[i, 4], grip], np.float32))
         picked = picked or info['picked']; placed = placed or info['placed']; contact = contact or info['contact']
         if ee_prev is not None:
@@ -106,6 +113,8 @@ for uid in uids:
     else:
         coh = float('nan')
     payload = dict(states=np.array(states), actions=np.array(actions),
+                   states_joint=np.array(states_joint, np.float32),
+                   actions_joint=np.array(actions_joint, np.float32),
                    n=n, uid=uid, picked=picked, placed=placed, contact=contact, coh=coh)
     if args.images:
         payload['images'] = np.array(images, dtype=np.uint8)
