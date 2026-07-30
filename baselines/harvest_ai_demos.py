@@ -57,10 +57,18 @@ STEM_BASE = 100000
 
 
 def dp_needs_rig(checkpoint):
-    """True iff the DP checkpoint declares observation.images.* input features."""
-    from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy as _DP
-    cfg = _DP.from_pretrained(str(checkpoint)).config
-    return any(k.startswith('observation.images.') for k in cfg.input_features)
+    """True iff the checkpoint declares observation.images.* input features.
+
+    Reads config.json directly rather than instantiating a policy class: the
+    lineage may be ACT, and constructing a DiffusionPolicy from an ACT config
+    raises (AttributeError: 'ACTConfig' has no 'diffusion_step_embed_dim').
+    Also avoids building a network just to inspect its inputs.
+    """
+    import json as _json
+    import pathlib as _pl
+    cfg = _json.loads((_pl.Path(checkpoint) / 'config.json').read_text())
+    return any(k.startswith('observation.images.')
+               for k in cfg.get('input_features', {}))
 
 
 def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
