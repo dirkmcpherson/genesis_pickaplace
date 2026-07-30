@@ -29,7 +29,7 @@ cd "${GENESIS_PICKAPLACE_ROOT:-$PWD}"
 : "${IC_MODE:=demo}"; : "${MIN_KEPT:=10}"; : "${CAMS:=none}"; : "${CTRL:=vel}"
 : "${TRAIN_STEPS:=100000}"; : "${EVAL_EPS:=15}"; : "${ACTIONS:=joint}"
 
-n=0
+n=0; skipped=0
 while IFS= read -r line; do
   line="${line%%#*}"; [ -z "${line// }" ] && continue
   # per-line KEY=VAL override the defaults above, in a subshell so lines are independent
@@ -38,7 +38,7 @@ while IFS= read -r line; do
     : "${TAG:?each line needs TAG=}"; : "${DATASET:?each line needs DATASET=}"
     if [ ! -d "$DATASET" ]; then
       echo "SKIP $TAG: gen-0 dataset missing: $DATASET" >&2
-      exit 0
+      exit 3                      # distinct code so the parent counts it as skipped
     fi
     echo "submit $TAG: ALGO=$ALGO ACTIONS=$ACTIONS CTRL=$CTRL scope=$SCOPE " \
          "maxgen=$MAXGEN target_kept=$TARGET_KEPT ic_mode=$IC_MODE"
@@ -49,8 +49,13 @@ TARGET_KEPT=$TARGET_KEPT,IC_MODE=$IC_MODE,MIN_KEPT=$MIN_KEPT,\
 TRAIN_STEPS=$TRAIN_STEPS,EVAL_EPS=$EVAL_EPS,\
 GENESIS_PICKAPLACE_ROOT=$PWD,CONDA_ENV=${CONDA_ENV:-} \
       cluster/sbatch_ouro_train.sh
-  )
-  n=$((n+1))
+  ) && n=$((n+1)) || { rc=$?; [ "$rc" = 3 ] && skipped=$((skipped+1)) || {
+        echo "FAILED to submit (rc=$rc)" >&2; skipped=$((skipped+1)); }; }
 done < "$CONDITIONS"
-echo "== submitted $n lineages; each self-chains through gen$((MAXGEN-1))"
+if [ "$n" -eq 0 ]; then
+  echo "== submitted NOTHING ($skipped skipped). Datasets are gitignored -- rsync the"
+  echo "   gen-0 dataset(s) named in $CONDITIONS from the box before launching." >&2
+  exit 1
+fi
+echo "== submitted $n lineages ($skipped skipped); each self-chains through gen$((MAXGEN-1))"
 echo "== watch: squeue -u \$USER | grep ouro   |   wandb project genesis_pickaplace_ouro"
