@@ -109,7 +109,7 @@ for p in paths:
                             rew[n - 1] += STAGE_REWARD['nested']; grants['nested'] += 1
                             done[n - 1] = True
     if j_tip >= 0 and not done[n - 1]:
-        rew[n - 1] += -0.5                     # tip penalty at the truncated frame
+        rew[n - 1] += 0.0                     # tip penalty at the truncated frame
         done[n - 1] = True                     # is_terminal: env terminates here too
         grants.setdefault('tipped', 0); grants['tipped'] += 1
     _norm = {'delta': CartesianCanEnv.normalize_delta,

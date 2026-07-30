@@ -109,7 +109,7 @@ class CartesianFullTaskEnv(gym.Env):
     # would outlaw demonstrated strategy. Picked-can only: goal-can orientation is not
     # in recorded states, so demos could not mirror a goal-tip rule without a replay.
     TIP_DEG = 60.0
-    TIP_PENALTY = -0.5
+    TIP_PENALTY = 0.0
     GRIP_OPEN = 0.3          # grip command below this = not holding
 
     def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,

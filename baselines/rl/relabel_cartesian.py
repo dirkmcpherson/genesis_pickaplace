@@ -23,7 +23,7 @@ TOUCH_XY = 0.081
 GRIP_CLOSED = 0.5
 STAGE_RANK = {'no-pick': 0, 'picked': 1, 'placed': 2, 'contact': 3, 'nested': 4}
 STAGE_REWARD = {'picked': 1.0, 'placed': 1.0, 'contact': 2.0, 'nested': 4.0}
-TIP_DEG, TIP_PENALTY, GRIP_OPEN = 60.0, -0.5, 0.3
+TIP_DEG, TIP_PENALTY, GRIP_OPEN = 60.0, 0.0, 0.3
 
 
 def relabel_cartesian(paths, pick_z=PICK_Z_DEFAULT):

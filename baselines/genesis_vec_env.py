@@ -58,7 +58,7 @@ class BatchedCanWorld:
     # when the can lies tipped FREE. Cartesian DEMOS are tip-truncated with -0.5 and
     # is_terminal, so a batched world without this trains the world model on
     # different termination semantics than its own demos.
-    C_TIP_DEG, C_TIP_PENALTY, C_GRIP_OPEN = 60.0, -0.5, 0.3
+    C_TIP_DEG, C_TIP_PENALTY, C_GRIP_OPEN = 60.0, 0.0, 0.3
 
     def __init__(self, n_envs, size=(64, 64), pixels=True, workspace_limit=False,
                  max_steps=1200, seed=0, control='joint'):
