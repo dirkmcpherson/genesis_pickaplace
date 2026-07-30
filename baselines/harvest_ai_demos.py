@@ -42,6 +42,11 @@ import ic_sampling  # noqa: E402
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 from pick_env import denormalize_action, ACT_DIM  # noqa: E402
 
+MIN_KEEP_FRAMES = 100  # a genuine pick from the reset pose takes ~600 frames (median
+                       # demo pick frame 666). A 15-frame "success" is the predicate
+                       # firing transiently -- e.g. a momentary can_z/grip coincidence
+                       # during a flail -- not a grasp. Reject them: they poison both
+                       # the negative control and any harvested dataset.
 PICK_TAIL = 10        # frames to keep after the pick lands (captures the lift)
 CONTACT_TAIL = 15     # frames to keep after first slide-contact
 PICK_CAP = 300        # per-rollout step cap for pick scope (matches PickOnlyEnv)
@@ -268,12 +273,18 @@ def main():
     kept = kept_ics = 0
     kept_ic_list = []
     n_reject_verify = 0
+    n_reject_short = 0
     for idx, ic in enumerate(episodes):
         states, actions, images, ok, s_alt, a_alt = rollout(
             env, policy_action, policy_reset, ic, args.scope,
             record_images=args.images, cap=args.cap)
         if not ok:
             print(f'  ic{idx}: no {args.scope}-success ({len(states)} steps)', flush=True)
+            continue
+        if len(states) < MIN_KEEP_FRAMES:
+            print(f'  ic{idx}: rejected -- only {len(states)} frames '
+                  f'(< {MIN_KEEP_FRAMES}); a real pick takes ~600', flush=True)
+            n_reject_short += 1
             continue
         if args.verify and not verify(env, ic, actions, args.scope):
             n_reject_verify += 1
