@@ -265,7 +265,8 @@ class CartesianCanEnv:
             Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
             wrist_target = self._sp - Rw.apply(self._offset_local)
             joints = self._pose_step(wrist_target, tgt_quat)
-            obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
+            self._last_joint_cmd = np.concatenate([joints, [self._grip]])
+            obs, done, info = self.env.step(self._last_joint_cmd)
             return self._obs(obs), done, info
         if self.control == 'abs6':
             self._sp = np.clip(a[:3], self.WS[0], self.WS[1])
@@ -275,7 +276,8 @@ class CartesianCanEnv:
             Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
             wrist_target = self._sp - Rw.apply(self._offset_local)
             joints = self._pose_step(wrist_target, tgt_quat)
-            obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
+            self._last_joint_cmd = np.concatenate([joints, [self._grip]])
+            obs, done, info = self.env.step(self._last_joint_cmd)
             return self._obs(obs), done, info
         if self.control == 'abs':
             # ABSOLUTE tool-pose target: the ONLY self-correcting EEF encoding. A
@@ -306,7 +308,8 @@ class CartesianCanEnv:
         Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
         wrist_target = self._sp - Rw.apply(self._offset_local)
         joints = self._pose_step(wrist_target, tgt_quat)
-        obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
+        self._last_joint_cmd = np.concatenate([joints, [self._grip]])
+        obs, done, info = self.env.step(self._last_joint_cmd)
         return self._obs(obs), done, info
 
     def _obs(self, obs):

@@ -87,10 +87,13 @@ def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
         rng = np.random.default_rng(seed)
         if action_space == 'cartesian':
             from cartesian_env import CartesianCanEnv as _C
-            _dn = _C.denormalize_delta if control == 'delta' else _C.denormalize_action
+            _dn = {'delta': _C.denormalize_delta, 'abs': _C.denormalize_abs,
+                   'abs6': _C.denormalize_abs6,
+                   'delta6': _C.denormalize_delta6}.get(control, _C.denormalize_action)
 
             def policy_action(obs):
-                return _dn(rng.uniform(-1.0, 1.0, 5))
+                return _dn(rng.uniform(-1.0, 1.0,
+                                       7 if control in ('abs6', 'delta6') else 5))
         else:
             def policy_action(obs):
                 return denormalize_action(rng.uniform(-1.0, 1.0, ACT_DIM))
@@ -111,6 +114,10 @@ def rollout(env, policy_action, policy_reset, ic, scope, record_images=False,
     obs = env.reset(**ic)
     policy_reset()
     states, actions, images = [], [], ([] if record_images else None)
+    # dual representation: a harvested demo must be trainable by BOTH observation
+    # types (joint 17-dim and ee-centric 18-dim), else a lineage's data is locked to
+    # the representation its teacher happened to use.
+    states_alt, actions_alt = [], []
     picked_at = contact_at = -1
     if cap is None:
         cap = PICK_CAP if scope == 'pick' else env.max_steps
@@ -120,26 +127,38 @@ def rollout(env, policy_action, policy_reset, ic, scope, record_images=False,
         a = np.asarray(policy_action(obs), dtype=np.float32)
         states.append(obs['state'])
         actions.append(a)
+        if 'joint_state' in obs:                 # cartesian env -> also log joint obs
+            states_alt.append(np.asarray(obs['joint_state'], np.float32))
         obs, done, info = env.step(a)
+        _jc = getattr(getattr(env, '_last_joint_cmd', None), 'shape', None)
+        if _jc is not None:                      # the joint command IK actually sent
+            actions_alt.append(np.asarray(env._last_joint_cmd, np.float32))
         if picked_at < 0 and info['picked']:
             picked_at = i
         if scope == 'pick':
             if picked_at >= 0 and i >= picked_at + PICK_TAIL:
-                return np.array(states), np.array(actions), _img(images), True
+                return (np.array(states), np.array(actions), _img(images), True,
+                        _alt(states_alt), _alt(actions_alt))
         else:  # full
             if contact_at < 0 and info['contact']:
                 contact_at = i
             if contact_at >= 0 and i >= contact_at + CONTACT_TAIL:
-                return np.array(states), np.array(actions), _img(images), True
+                return (np.array(states), np.array(actions), _img(images), True,
+                        _alt(states_alt), _alt(actions_alt))
             if picked_at < 0 and i >= NO_PICK_ABORT:
                 break  # no pick this late -> no contact possible, abort
         if done:
             break
-    return np.array(states), np.array(actions), _img(images), False
+    return (np.array(states), np.array(actions), _img(images), False,
+            _alt(states_alt), _alt(actions_alt))
 
 
 def _img(images):
     return None if images is None else np.array(images, dtype=np.uint8)
+
+
+def _alt(x):
+    return np.array(x, dtype=np.float32) if x else None
 
 
 def verify(env, ic, actions, scope):
@@ -194,7 +213,8 @@ def main():
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--verify', action='store_true',
                     help='independently replay each kept trajectory before serializing')
-    ap.add_argument('--control', choices=['vel', 'delta'], default='vel',
+    ap.add_argument('--control', choices=['vel', 'delta', 'abs', 'abs6', 'delta6'],
+                    default='vel',
                     help='cartesian control mode -- MUST match how the teacher was '
                          'trained. A delta teacher rolled out in a velocity env is a '
                          'different command type and harvests garbage.')
@@ -249,9 +269,9 @@ def main():
     kept_ic_list = []
     n_reject_verify = 0
     for idx, ic in enumerate(episodes):
-        states, actions, images, ok = rollout(env, policy_action, policy_reset, ic,
-                                              args.scope, record_images=args.images,
-                                              cap=args.cap)
+        states, actions, images, ok, s_alt, a_alt = rollout(
+            env, policy_action, policy_reset, ic, args.scope,
+            record_images=args.images, cap=args.cap)
         if not ok:
             print(f'  ic{idx}: no {args.scope}-success ({len(states)} steps)', flush=True)
             continue
@@ -269,6 +289,10 @@ def main():
                        stage=('picked' if args.scope == 'pick' else 'contact'))
         if images is not None:
             payload['images'] = images
+        if s_alt is not None:
+            payload['states_joint'] = s_alt      # 17-dim joint obs for joint students
+        if a_alt is not None:
+            payload['actions_joint'] = a_alt     # the joint command IK sent
         np.savez_compressed(outdir / f'{stem}.npz', **payload)
         kept += 1
         kept_ic_list.append(ic)
