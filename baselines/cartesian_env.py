@@ -89,6 +89,26 @@ class CartesianCanEnv:
     # joint targets, which is why joint BC reaches 0.67 in-distribution while every
     # roll/yaw-pinned cartesian encoding sits at 0.00-0.07.
     ROTVEC_CAP = 1.6                           # rad per axis (~2x the demo max 1.34)
+    DROT_CAP = 0.06                            # per-step rotation delta (3.6x the demo
+                                               # median-of-max 0.016, matching DCAP's
+                                               # tracking-authority convention)
+
+    @classmethod
+    def denormalize_delta6(cls, a):
+        """[-1,1]^7 -> per-step [dx,dy,dz, drotvec3, grip]. 6-DOF DIFFERENTIAL:
+        isolates 'absolute vs relative' from 'orientation control' (the 4-DOF
+        variants confounded them by pinning roll/yaw)."""
+        a = np.asarray(a, float)
+        return np.concatenate([np.clip(a[..., :3], -1, 1) * cls.DCAP,
+                               np.clip(a[..., 3:6], -1, 1) * cls.DROT_CAP,
+                               (a[..., 6:7] + 1.0) / 2.0], axis=-1)
+
+    @classmethod
+    def normalize_delta6(cls, a):
+        a = np.asarray(a, float)
+        return np.clip(np.concatenate([a[..., :3] / cls.DCAP,
+                                       a[..., 3:6] / cls.DROT_CAP,
+                                       a[..., 6:7] * 2.0 - 1.0], axis=-1), -1.0, 1.0)
 
     @classmethod
     def denormalize_abs6(cls, a):
@@ -208,7 +228,7 @@ class CartesianCanEnv:
         self._sp = self._tool_pos()                # TOOL setpoint (not wrist)
         self._q0 = wq                              # fixed roll/yaw base orientation (wrist==tool orientation)
         self._pitch = 0.0
-        self._rotvec = None if self.control != 'abs6' else np.zeros(3)
+        self._rotvec = (np.zeros(3) if self.control in ('abs6', 'delta6') else None)
         self._grip = 0.0
         return self._obs(obs)
 
@@ -226,6 +246,27 @@ class CartesianCanEnv:
 
     def step(self, action):
         a = np.asarray(action, float)
+        if self.control == 'delta6':
+            # integrate position AND orientation deltas, each leashed to the measured
+            # pose so imitation error cannot run away (feed-forward + bounded drift)
+            d = np.clip(a[:3], -self.DCAP, self.DCAP)
+            sp = np.clip(self._sp + d, self.WS[0], self.WS[1])
+            cur = self._tool_pos()
+            self._sp = cur + np.clip(sp - cur, -self.LEASH, self.LEASH)
+            drv = np.clip(np.asarray(a[3:6], float), -self.DROT_CAP, self.DROT_CAP)
+            tgt_rv = np.clip(np.asarray(self._rotvec) + drv,
+                             -self.ROTVEC_CAP, self.ROTVEC_CAP)
+            meas_rv = (R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
+                       * R.from_quat(_gs_to_xyzw(self._q0)).inv()).as_rotvec()
+            self._rotvec = meas_rv + np.clip(tgt_rv - meas_rv,
+                                             -self.LEASH_PITCH, self.LEASH_PITCH)
+            self._grip = float(np.clip(a[6], 0.0, 1.0))
+            tgt_quat = self._target_quat()
+            Rw = R.from_quat(_gs_to_xyzw(np_(self.eef.get_quat())))
+            wrist_target = self._sp - Rw.apply(self._offset_local)
+            joints = self._pose_step(wrist_target, tgt_quat)
+            obs, done, info = self.env.step(np.concatenate([joints, [self._grip]]))
+            return self._obs(obs), done, info
         if self.control == 'abs6':
             self._sp = np.clip(a[:3], self.WS[0], self.WS[1])
             self._rotvec = np.asarray(a[3:6], float)

@@ -31,7 +31,7 @@ ap.add_argument('--src', default='baselines/episodes_cartesian')
 ap.add_argument('--dst', default=os.path.expanduser(
     '~/workspace/dreamerv3-torch/demonstrations/genesis_cartesian'))
 ap.add_argument('--pick-only', action='store_true')
-ap.add_argument('--control', choices=['vel', 'delta', 'abs6'], default='delta',
+ap.add_argument('--control', choices=['vel', 'delta', 'abs6', 'delta6'], default='abs6',
                 help='action normalization: delta (DCAP per-step deltas) | vel (VCAP)')
 args = ap.parse_args()
 
@@ -113,7 +113,8 @@ for p in paths:
         done[n - 1] = True                     # is_terminal: env terminates here too
         grants.setdefault('tipped', 0); grants['tipped'] += 1
     _norm = {'delta': CartesianCanEnv.normalize_delta,
-             'abs6': CartesianCanEnv.normalize_abs6}.get(
+             'abs6': CartesianCanEnv.normalize_abs6,
+             'delta6': CartesianCanEnv.normalize_delta6}.get(
                  args.control, CartesianCanEnv.normalize_action)
     act = _norm(a_raw[:n]).astype(np.float32)
     # --- dreamer shift + extend-by-one (see to_dreamer_demos.py rationale) ---------
