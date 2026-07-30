@@ -82,6 +82,7 @@ for uid in uids:
     n = len(jp)
     env.reset(can_pos=can_pos, can_quat=can_quat, goal_pos=goal_pos)
     states, actions = [], []; images = [] if args.images else None
+    states_joint, actions_joint = [], []
     picked = placed = contact = False
     ee_prev = None; sim_v = []
     for i in range(n):
