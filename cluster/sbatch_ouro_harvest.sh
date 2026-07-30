@@ -71,8 +71,16 @@ echo "== gen$GEN harvest kept $KEPT/$HARVEST_N"
 NEXTG=ouroboros/$TAG/gen$NEXT
 mkdir -p "$NEXTG"
 rm -rf "$NEXTG/dataset"
+# Image datasets: mp4 needs torchcodec+FFmpeg (often absent in conda envs); PNG
+# frames decode through PIL and need neither. Pick whichever this env supports so
+# image conditions are not blocked on a system library. State-only ignores both.
+CODEC=video
+if [ "$CAMS" != "none" ]; then
+  python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null || CODEC=image
+  echo "== image codec: $CODEC$( [ "$CODEC" = image ] && echo '  (no FFmpeg -> PNG frames)' )"
+fi
 python baselines/convert_to_lerobot.py \
-  "$G/harvest" "$NEXTG/dataset" $( [ "$ACTIONS" = cartesian ] && echo 9 || echo 8 ) 4 "$CAMS" video
+  "$G/harvest" "$NEXTG/dataset" $( [ "$ACTIONS" = cartesian ] && echo 9 || echo 8 ) 4 "$CAMS" "$CODEC"
 echo "== gen$NEXT dataset ready"
 
 # --- chain: next generation's train (unless done) ---------------------------------

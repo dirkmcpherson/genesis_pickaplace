@@ -58,10 +58,11 @@ else
   exit 1
 fi
 [ -d "$DATASET" ] || { echo "FATAL: dataset missing: $DATASET (rsync it -- gitignored)"; exit 1; }
-if [ "$CAMS" != "none" ]; then
+if [ "$CAMS" != "none" ] && grep -q '"dtype": "video"' "$DATASET/meta/info.json" 2>/dev/null; then
+  # only VIDEO-encoded image datasets need decoding; PNG-frame datasets do not
   python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null || {
-    echo "FATAL: CAMS=$CAMS needs video decoding, but torchcodec/FFmpeg is unavailable."
-    echo "  Run with CAMS=none (state-only) or: conda install -c conda-forge 'ffmpeg<8'"
+    echo "FATAL: $DATASET is video-encoded but torchcodec/FFmpeg is unavailable."
+    echo "  Rebuild it with the PNG codec, or: conda install -c conda-forge 'ffmpeg<8'"
     exit 1; }
 fi
 echo "== ouroboros $TAG gen$GEN TRAIN start $(date) dataset=$DATASET cams=$CAMS"
