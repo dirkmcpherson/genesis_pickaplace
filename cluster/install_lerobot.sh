@@ -12,9 +12,21 @@
 set -eo pipefail
 
 LEROBOT_DIR=${LEROBOT_DIR:-$HOME/lerobot}
-if [ ! -d "$LEROBOT_DIR" ]; then
-  git clone git@github.com:dirkmcpherson/lerobot.git "$LEROBOT_DIR"
+# The repo carries git-lfs pointers (test assets/media -- not needed to train).
+# Clusters rarely have git-lfs, and without it the CHECKOUT fails after a successful
+# clone, leaving a source tree with missing files. Skip the smudge filter entirely.
+export GIT_LFS_SKIP_SMUDGE=1
+GITNOLFS="git -c filter.lfs.smudge= -c filter.lfs.process= -c filter.lfs.required=false"
+if [ ! -d "$LEROBOT_DIR/.git" ]; then
+  $GITNOLFS clone git@github.com:dirkmcpherson/lerobot.git "$LEROBOT_DIR"
 fi
+# repair a clone whose checkout died mid-way (empty working tree, HEAD intact)
+if [ ! -f "$LEROBOT_DIR/pyproject.toml" ]; then
+  echo "== repairing incomplete checkout in $LEROBOT_DIR"
+  ( cd "$LEROBOT_DIR" && $GITNOLFS checkout -f HEAD )
+fi
+[ -f "$LEROBOT_DIR/pyproject.toml" ] || {
+  echo "FATAL: $LEROBOT_DIR has no pyproject.toml -- checkout still incomplete"; exit 1; }
 
 TORCH_V=$(python -c 'import torch; print(torch.__version__.split("+")[0])')
 case "$TORCH_V" in
