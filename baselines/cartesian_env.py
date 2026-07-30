@@ -75,11 +75,19 @@ class CartesianCanEnv:
     LEASH_PITCH = 0.15                        # rad
 
     # 6-DOF absolute pose: [x,y,z, rotvec3 (rel. to the reset orientation), grip].
-    # The 4-DOF space (position + pitch) CANNOT represent the demos' wrist: measured
-    # median 8.2deg / worst 88.8deg of unrepresentable rotation, which is fatal for a
-    # pinch grasp. This is FK-equivalent to absolute joint targets, which is why
-    # joint-space BC reaches 0.67 in-distribution while every 4-DOF cartesian
-    # encoding sits at 0.00-0.07.
+    #
+    # WHY (corrected 2026-07-29): the real teleop commanded only 4 DOF -- verified,
+    # recorded wx=wz=0 in 25/25 demos, pitch (wy) nonzero in 25/25 -- but its
+    # Jacobian controller left roll/yaw FREE, so they drifted through the null space
+    # during demonstration (measured up to 1.03/1.34 rad). Our env instead PINS
+    # roll/yaw at their reset values, so the sim wrist cannot reach the orientations
+    # the demos grasped from (median 8.2deg, worst 88.8deg apart) and grasps fail.
+    # The command space was never insufficient; we constrained two DOF the real
+    # system left free. abs6 gives the policy explicit control of them -- which is
+    # also hardware-realizable (the gen3-lite accepts cartesian pose commands) and
+    # more reproducible than imitating null-space drift. FK-equivalent to absolute
+    # joint targets, which is why joint BC reaches 0.67 in-distribution while every
+    # roll/yaw-pinned cartesian encoding sits at 0.00-0.07.
     ROTVEC_CAP = 1.6                           # rad per axis (~2x the demo max 1.34)
 
     @classmethod
