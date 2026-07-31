@@ -215,3 +215,7 @@ baselines/camera_rig_samples/
 venv/
 **/.venv*/
 **/venv/
+# datasets are rsynced, never committed (862MB incident 2026-07-31)
+baselines/lerobot_x2x2_*/
+baselines/x2x2/
+ouroboros/
