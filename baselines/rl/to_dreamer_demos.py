@@ -25,7 +25,16 @@ ap.add_argument('--src', default='baselines/episodes_all_images')
 ap.add_argument('--dst', default='/home/j/workspace/dreamerv3-torch/demonstrations/genesis')
 ap.add_argument('--pick-only', action='store_true',
                 help='keep only demos that reached >= picked (drop no-pick negatives)')
+ap.add_argument('--scope', choices=['full', 'pick'], default='full',
+                help='pick: truncate each demo at the pick grant (first rewarded '
+                     'frame) with is_terminal there, matching the genesis_scope=pick '
+                     'env that terminates +1 on pick. Leaving demos full-length would '
+                     'teach the cont head that pick states continue AND show '
+                     'post-pick rewards the env never pays. No-pick episodes stay '
+                     'full-length (zero-reward dynamics data).')
 args = ap.parse_args()
+if args.scope == 'pick' and args.dst.rstrip('/').endswith('/genesis'):
+    args.dst = args.dst.rstrip('/') + '_pick'   # never mix scopes in one demo dir
 
 import pick_env  # noqa: E402
 from train_sacfd_full import relabel_full  # noqa: E402
@@ -85,6 +94,19 @@ for p in paths:
     is_last = np.zeros(m, dtype=bool); is_last[-1] = True
     discount = (1.0 - is_terminal.astype(np.float32))
     T = m
+    if args.scope == 'pick':
+        # Stage rewards are ordered grants (pick pays first), so the first rewarded
+        # frame IS the pick. Truncate there and terminate, exactly like the env.
+        ridx = np.flatnonzero(rew > 0)
+        if len(ridx):
+            k = int(ridx[0])
+            img, act, rew = img[:k + 1], act[:k + 1], rew[:k + 1]
+            rew[k] = 1.0                       # scope=pick pays +1 regardless of stage value
+            is_terminal = is_terminal[:k + 1]; is_terminal[k] = True
+            is_first = is_first[:k + 1]
+            is_last = np.zeros(k + 1, dtype=bool); is_last[k] = True
+            discount = (1.0 - is_terminal.astype(np.float32))
+            T = k + 1
     uid = int(d['uid'])
     np.savez_compressed(
         DST / f'genesis-{uid:04d}-{T}.npz',

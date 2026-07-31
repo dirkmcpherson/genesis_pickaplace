@@ -83,13 +83,13 @@ available as negative/RL data but never enter IL training sets.
 
 | id | demos | learner | status |
 |----|-------|---------|--------|
-| H-DP ×3   | 66 human            | DP  | 1 seed done (0.67); seeds 1,2 NEEDED |
+| H-DP ×3   | 66 human            | DP  | s0 0.67, s1 **0.73** in-dist (placed 0.60); s2 training in the local chain |
 | M1-DP ×3  | 66 gen-1 model      | DP  | ouroboros lineage running → harvest pending |
 | H-ACT ×3  | 66 human            | ACT | lineage running |
 | M1-ACT ×3 | 66 gen-1 model      | ACT | pending gen-1 harvest |
 | M2-DP ×3  | 66 gen-2 model      | DP  | pending (chain MAXGEN=3) |
-| H-DV3 ×3  | 91 human (image)    | DV3 | pick-scope run validating locally; cluster unblocked 07-31 |
-| M1-DV3 ×3 | gen-1 model (image) | DV3 | needs an IMAGE harvest (`--images`) from the gen-0 teacher — the CAMS=none lineage harvests carry no pixels |
+| H-DV3 ×3  | 91 human (image)    | DV3 | **pick-scope gate = the paper smoke** (hdv3_pick s0/s1 on cluster). NB the "local pick-scope run" believed in flight never existed — the 07-31 08:47 launch failed silently; full-scope joint_ref_local sat at log_picked 0.0 for 582k steps |
+| M1-DV3 ×3 | gen-1 model (image) | DV3 | smoke job A = first-ever `--images` harvest → `to_dreamer --scope pick` → m1dv3_pick_s0 |
 
 **Stretch matrix — TIME-PERMITTING ONLY (Decision Log 2026-07-31). Runs only if
 (a) the core matrix is complete with ×3 seeds, (b) a gap exists, and (c) there is
@@ -149,8 +149,8 @@ localized per stage rather than inferred through the funnel.
       pipeline docs — methods can be written NOW, they don't depend on results
 - [ ] Stage tooling: `reset_to_frame`, placed_v2 stage slicer, scope='place'/'slide'
       envs, per-stage eval protocol -- IN PROGRESS
-- [ ] Image harvest from the gen-0 teacher for M1-DV3 (`harvest --images`,
-      reuses the lineage checkpoint; then to_dreamer conversion)
+- [x] Image harvest from the gen-0 teacher for M1-DV3 — folded into the paper
+      smoke (job A of `cluster/launch_paper_smoke.sh`)
 - [ ] Monitor cluster lineages; report gen-1 harvest quality (kept, short_of_target,
       rejected_by_verify) the moment it lands
 
@@ -217,6 +217,20 @@ localized per stage rather than inferred through the funnel.
   force-push across all checkouts, some quiet day between runs. (user: "fine for now")
 
 ## Changelog (newest first)
+
+- 2026-07-31 (assistant): PAPER SMOKE defined (user: one smoke before the week,
+  across all algorithms). DP/ACT legs = the already-running ouroboros lineages
+  (their gen-1 manifests + train curves are the pass criteria — no duplicate jobs).
+  The launched piece covers the only zero-precedent paths:
+  `cluster/launch_paper_smoke.sh` = verified `--images` harvest from gen-0 →
+  pick-scope dreamer demos (M1-DV3 data path) → one dv3 multi job (H-DV3 pick ×2
+  seeds + M1-DV3 pick ×1, full 5M budget — doubles as the H4 learnability gate and,
+  if healthy, continues as real seeds). New tooling: `to_dreamer_demos --scope pick`
+  (truncate at pick grant, terminal, +1; validated on all 91 human demos → 79
+  pick-terminated, 12 zero-reward dynamics eps, `demonstrations/genesis_pick`),
+  `DEMODIR`/`SCOPE` keys in `sbatch_genesis_multi.sh`. Pass criteria in the
+  launcher header. Discovered en route: the local dv3 pick-scope gate run never
+  existed (silent launch failure), and H-DP seed 1 lands picked 0.73 in-dist.
 
 - 2026-07-31 (assistant): demo breakdown added; N corrected 67->66 (66 is the
   joint-graded human IL set; TARGET_KEPT follows). Running lineages used
