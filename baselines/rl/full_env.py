@@ -131,7 +131,8 @@ class CartesianFullTaskEnv(gym.Env):
         self.success_uids = sorted(self.genv.solved_uids)
         self.pick_z = float(self.genv.w['pick_z'])
         self.observation_space = spaces.Box(-np.inf, np.inf, (18,), np.float32)
-        self.action_space = spaces.Box(-1.0, 1.0, (5,), np.float32)
+        _adim = 7 if control in ('abs6', 'delta6') else 5
+        self.action_space = spaces.Box(-1.0, 1.0, (_adim,), np.float32)
         self._t = 0
         self._granted = set()
 
@@ -152,8 +153,17 @@ class CartesianFullTaskEnv(gym.Env):
         return obs['state'].astype(np.float32), {}
 
     def step(self, action):
-        _denorm = (self.cenv.denormalize_delta if self.control == 'delta'
-                   else self.cenv.denormalize_action)
+        # Explicit per-mode dispatch. The previous 'delta else velocity' fallback
+        # silently gave 7-dim abs6/delta6 actions the 5-dim VELOCITY denormalisation
+        # -> IndexError at a[6], i.e. CartesianFullTaskEnv was broken for BOTH 6-DOF
+        # modes (single-env path: RLPD/SACfD and non-VEC dv3; the batched world has
+        # its own dispatch and was unaffected).
+        _denorm = {
+            'delta': self.cenv.denormalize_delta,
+            'delta6': self.cenv.denormalize_delta6,
+            'abs': self.cenv.denormalize_abs,
+            'abs6': self.cenv.denormalize_abs6,
+        }.get(self.control, self.cenv.denormalize_action)
         a_phys = _denorm(np.asarray(action, np.float32))
         obs, _env_done, info = self.cenv.step(a_phys)
         self._t += 1
