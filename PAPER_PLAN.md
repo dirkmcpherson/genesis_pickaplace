@@ -36,6 +36,13 @@ a human-perception study (see Decision Log 2026-07-29).
   higher smoothness than human demos (which contain corrections/regrasps).
 - **H3 (contingent):** moderate action noise on model demos recovers part of the
   gap; excessive noise degrades. (Inverted-U.)
+- **H4 (world-model arm):** DreamerV3-from-demos benefits ~equally from human and
+  model demonstrations — |H-DV3 − M1-DV3| ≪ |H-DP − M1-DP| — because the world
+  model consumes demos as DYNAMICS data (any competent trajectory teaches the
+  transition function) while the policy improves against reward in imagination, not
+  by imitating the demonstrator. Strong prior from our earlier simulation work.
+  The paper's arc: BC inherits demo-source differences; world models route around
+  them.
 - **Null outcome is publishable:** "no difference at matched N" is a real finding
   given the community's assumption that human data is special.
 
@@ -63,6 +70,8 @@ a human-perception study (see Decision Log 2026-07-29).
 | H-ACT ×3  | 67 human            | ACT | lineage running |
 | M1-ACT ×3 | 67 gen-1 model      | ACT | pending gen-1 harvest |
 | M2-DP ×3  | 67 gen-2 model      | DP  | pending (chain MAXGEN=3) |
+| H-DV3 ×3  | 91 human (image)    | DV3 | pick-scope run validating locally; cluster unblocked 07-31 |
+| M1-DV3 ×3 | gen-1 model (image) | DV3 | needs an IMAGE harvest (`--images`) from the gen-0 teacher — the CAMS=none lineage harvests carry no pixels |
 
 **Stretch matrix — TIME-PERMITTING ONLY (Decision Log 2026-07-31). Runs only if
 (a) the core matrix is complete with ×3 seeds, (b) a gap exists, and (c) there is
@@ -87,8 +96,9 @@ GPU-week left. Not on the critical path; the paper stands without it.**
   MIN_KEEP_FRAMES, dual-representation recording. Audit-clean.
 - **2×2 obs×action study:** running on cluster (12 runs). NOT part of this paper's
   core claim — feeds the "why joint" justification and a possible appendix.
-- **dv3:** local pick-scope run in progress; cluster segfault unresolved. dv3 is
-  NOT in this paper's critical path `[PROPOSED: drop dv3 from the paper entirely]`.
+- **dv3:** IN the paper as the world-model arm (H4) — Decision Log 2026-07-31.
+  Cluster segfault RESOLVED (poisoned env; verify_env.sh passes incl. H200). Local
+  pick-scope run validating learnability. M1-DV3 needs a dedicated image harvest.
 - **Known-broken history:** see AUDIT_REQUEST_Fable.md — any number generated
   before its fixes must be re-derived, not quoted.
 
@@ -103,6 +113,8 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 - [ ] Per-condition results table auto-generated from eval logs (`analysis/collect_results.py`)
 - [ ] Paper skeleton in `paper/` (LaTeX), methods section drafted from the
       pipeline docs — methods can be written NOW, they don't depend on results
+- [ ] Image harvest from the gen-0 teacher for M1-DV3 (`harvest --images`,
+      reuses the lineage checkpoint; then to_dreamer conversion)
 - [ ] Monitor cluster lineages; report gen-1 harvest quality (kept, short_of_target,
       rejected_by_verify) the moment it lands
 
@@ -126,7 +138,11 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 3. **Verify-rejection rate on real teachers** is still unconfirmed at scale; if the
    first real harvest shows rejected_by_verify > ~5% we stop and diagnose before
    trusting any generated dataset (July30th_Fable.md §1).
-4. **Seed budget.** 3 seeds × ~4h × (2 learners × ≥2 sources + noise arm) ≈ several
+4. **H4 is conditional on dv3 learning at all.** If dv3 cannot reach nonzero
+   picked even at pick-scope, the world-model arm is untestable and H4 drops to
+   qualitative discussion. The local pick-scope run is the gate; decision point
+   when it reports.
+5. **Seed budget.** 3 seeds × ~4h × (2 learners × ≥2 sources + noise arm) ≈ several
    GPU-days. Cluster A100s can carry all DP/ACT training (no genesis needed).
 
 ## 7. Paper skeleton `[assistant drafts, user reshapes]`
@@ -141,6 +157,9 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 
 ## Decision Log
 
+- 2026-07-31: dv3 is IN the paper: the world-model arm, H4 = world models benefit
+  ~equally from all demo sources (strong prior from earlier sim work). Supersedes
+  the proposed drop. (user)
 - 2026-07-31: Noise arm is a STRETCH goal, time-permitting only -- core paper is
   the human-vs-model comparison + distributional analysis. σ calibration from the
   measured entropy gap agreed if it runs. (user)
