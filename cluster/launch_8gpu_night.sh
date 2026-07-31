@@ -28,7 +28,7 @@ for CELL in jobs_jact jobs_eact eobs_jact eobs_eact; do
   case $CELL in eobs_*) CTRL_ARGS="--cartesian --control abs6";; *) CTRL_ARGS="";; esac
   # one sbatch per cell; the three seeds share that GPU sequentially
   sub sbatch --job-name="x2x2-$CELL" -p "${PARTITION:-gpu,preempt}" --requeue \
-    --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s}" \
+    --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s|a100}" \
     -N 1 -n 8 --mem=48g --time=1-00:00:00 \
     --output="x2x2_${CELL}_%j.out" \
     --wrap="module load anaconda/2025.06.0; conda activate ${CONDA_ENV:-genesis}; \

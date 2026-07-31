@@ -25,7 +25,10 @@
 # the job straight back in the queue; the payload below must therefore RESUME rather
 # than restart, or preemption silently throws away hours of training.
 #SBATCH --gres=gpu:1
-#SBATCH --constraint="l40s"
+# GPU type: lerobot training touches no genesis, and its eval builds the env on the
+# CPU backend -- so A100 is fine here. Only dv3 (genesis on the GPU backend every
+# step) segfaults at taichi init on sm_80; those sbatches stay pinned to l40s.
+#SBATCH --constraint="l40s|a100"
 #SBATCH -N 1
 #SBATCH -n 8
 #SBATCH --mem=48g
