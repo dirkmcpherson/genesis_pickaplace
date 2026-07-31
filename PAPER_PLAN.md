@@ -99,6 +99,22 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 |----|-------|-------|
 | M1N-σ ×3 each | gen-1 model | Gaussian on actions, σ ∈ {0.5×, 1×, 2×} the human-vs-model entropy gap (calibrated from H2 measurement, not guessed) |
 
+**Stage-wise matrix (Decision Log 2026-07-31; user-proposed):** evaluate each
+stage in ISOLATION in addition to end-to-end, so the demo-source effect is
+localized per stage rather than inferred through the funnel.
+
+- Stages: pick (start -> grasp+lift), place (post-pick -> RELEASE-in-band, the
+  placed_v2 predicate, not the mid-lift proxy), slide (post-place -> nested).
+- Entry states for isolated eval: `reset_to_frame(uid, frame)` restores arm qpos +
+  can pose from recorded stage boundaries; matched entry sets across sources.
+- Specialists: DP only (ACT stays end-to-end). 3 stages x {human, model} x 3 seeds.
+- Chained eval: pick->place->slide specialist switching = compounding measurement
+  AND our best shot at a high-performing full-task teacher for later generations.
+- Known data thinness, reported not hidden: slide has only 26 human segments;
+  downstream model-demo harvests are stage-asymmetric in cost (a 0.67-pick teacher
+  demonstrates picks cheaply, contact ~5x dearer) -> per-stage matched-N =
+  min(human, harvestable).
+
 **Distributional measurements (no training needed, run on the demo sets):**
 - per-dim action entropy; velocity/accel smoothness; DTW pairwise trajectory
   diversity; grasp-pose variance at pick frame; time-to-pick distribution.
@@ -131,6 +147,8 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 - [ ] Per-condition results table auto-generated from eval logs (`analysis/collect_results.py`)
 - [ ] Paper skeleton in `paper/` (LaTeX), methods section drafted from the
       pipeline docs — methods can be written NOW, they don't depend on results
+- [ ] Stage tooling: `reset_to_frame`, placed_v2 stage slicer, scope='place'/'slide'
+      envs, per-stage eval protocol -- IN PROGRESS
 - [ ] Image harvest from the gen-0 teacher for M1-DV3 (`harvest --images`,
       reuses the lineage checkpoint; then to_dreamer conversion)
 - [ ] Monitor cluster lineages; report gen-1 harvest quality (kept, short_of_target,
@@ -175,6 +193,9 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 
 ## Decision Log
 
+- 2026-07-31: Stage-wise evaluation matrix added (isolated per-stage + chained
+  specialists); DP-only for specialists to bound scope. (user proposal, assistant
+  scoping)
 - 2026-07-31: dv3 is IN the paper: the world-model arm, H4 = world models benefit
   ~equally from all demo sources (strong prior from earlier sim work). Supersedes
   the proposed drop. (user)
