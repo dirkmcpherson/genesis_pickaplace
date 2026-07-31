@@ -100,6 +100,7 @@ CKPT=$G/dp/checkpoints/last/pretrained_model
 
 # --- honest eval: 15 random ICs, stage metrics + tiled video -> wandb -------------
 python baselines/wandb_eval.py --kind dp --checkpoint "$CKPT" \
+  --project genesis_pickaplace_ouro \
   $( [ "$ACTIONS" = cartesian ] && echo --cartesian --control $CTRL ) \
   --random "${EVAL_EPS:-15}" --seed 0 \
   --group "${TAG}" --name "${TAG}_${ALGO}_gen${GEN}-eval" \

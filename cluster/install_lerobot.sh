@@ -59,10 +59,13 @@ pip install "$TC" diffusers einops datasets "huggingface_hub>=0.27" \
 # torchcodec needs FFmpeg shared libs (libavutil et al); conda envs often lack them.
 # Only IMAGE/VIDEO datasets decode -- state-only training (CAMS=none, which every
 # current ouroboros condition uses) never does. Try to supply them, do not require.
-python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null || {
-  echo "== torchcodec cannot load FFmpeg libs; attempting to install ffmpeg"
-  conda install -y -c conda-forge 'ffmpeg<8' >/dev/null 2>&1 || true
-}
+# NEVER conda-install into this env: conda-forge packages carry their own
+# libstdc++/GLIBCXX which genesis/taichi's C++ (mesh loading) was not built against
+# -- prime suspect for the 07-30 segfaults-at-scene-build that appeared right after
+# an ffmpeg conda install here. The dev box proves pip-only coexistence works.
+# torchcodec/FFmpeg stays OPTIONAL: state-only datasets never decode video, and
+# image datasets fall back to PNG frames automatically.
+python -c 'from torchcodec.decoders import VideoDecoder' 2>/dev/null ||   echo "== note: torchcodec/FFmpeg unavailable (fine: state-only + PNG paths in use)"
 
 python - <<'VERIFY'
 import torch, lerobot
