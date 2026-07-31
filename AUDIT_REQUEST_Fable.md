@@ -127,3 +127,37 @@ Where this audit finds a claim with no attached measurement, assume it is unveri
    produce a confident wrong answer to the central open question.
 3. Cross-check the four **length-normalisation** implementations (C3).
 4. Run the **silent-default sweep** (C1).
+
+---
+---
+
+# AUDIT REPORT — completed 2026-07-31
+
+Method: every check below is a measurement, not a re-reading. Fixes were applied
+and pushed as they were found.
+
+## Verdicts
+
+| item | verdict |
+|---|---|
+| **A1 positive control** | **CONFIRMED — picked 0.67 in-dist, exactly replicated** on the rebuilt 66/66 dataset (was trained on 60/66). Downstream improved: placed 0.53 / contact 0.20 / nested 0.07; random-IC 0.27 (vs 0.13 historical — better, within known seed spread). The number the project calibrates against is real. |
+| **B1 (2×2 datasets)** | VALID. Hash-verified: states identical within obs rows, actions identical within action columns, differ across; builder abs6 == reference derivation to 0.0e+00; proprio splits 8/9 and 9/9 correct. Identical frame counts are the shared-source construction, not a bug. |
+| **B3 (dual representation)** | VALID. Command leads measurement (best lag 2, not 0) — `actions_joint` is the command, not a stale pose copy. |
+| **C3 (length normalizers)** | **BUG FOUND AND FIXED** (`afb45a8`): `relabel_cartesian` read grip from `a[:,4]` unconditionally — a ROTATION axis in 7-dim abs6/delta6 actions. Tip truncation off by 8 frames on the probe uid; pick predicate corrupted. Same grip-column bug fixed twice before in sibling files; the doc's §C3 named exactly this location. After fix: grants match the reference converter exactly (66/63/19/12/16). Blast radius: zero completed runs (masked by the `control='vel'` default — two silent-default bugs cancelled), would have corrupted the first real 6-DOF RL run. |
+| **C1 (silent-default sweep)** | Clean. 1 regex false positive (nested paren), 1 benign (`validate_cartesian`, standalone dev tool). Every live construction passes `control=` explicitly. |
+| **B2 (−0.5 remnants)** | **FOUND AND FIXED**: `genesis_cartesian` and `genesis_cartesian_delta` dreamer demos still carried −0.5; rebuilt, all five demo sets now min-reward 0.0. NB the CLUSTER copies of abs6/delta6 demos are still the −0.5 versions — re-rsync before the tip0 experiment. |
+| **BC tip-truncation asymmetry** | Documented as a deliberate decision in both BC dataset builders, with a revisit trigger. |
+
+## Meta-observation
+
+The audit found bugs precisely where the request predicted (§C3's independent
+normalizers, §B2's unrebuilt demo sets) and found the request's verified claims
+sound. The two-bugs-masking pattern (grip column × control default) is worth
+remembering: fixing one silent default can ARM a previously-dormant bug.
+
+## Still open after this audit
+
+- Cluster dv3 segfault: unresolved; bisect script ready (`cluster/bisect_genesis_crash.py`).
+- abs6-for-RL degeneracy (13-33 step episodes from unbounded pose commands): real,
+  needs a design decision (per-step target clamp?) before abs6 RL is meaningful.
+- Cluster demo rsync for tip0 (above).
