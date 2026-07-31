@@ -186,3 +186,28 @@ in a paper.
   queue is joint-only until §2 resolves.
 - **`no-pick` early-abort at 700 steps** (`NO_PICK_ABORT`) predates the pick-scope
   work and may be truncating slow-but-real picks in `--scope full` harvests.
+
+
+---
+
+## RESOLVED 2026-07-31: the dv3 cluster segfault saga
+
+**Root cause:** `install_lerobot.sh`'s `conda install -c conda-forge ffmpeg` (ran
+11:38 on 07-30) pulled conda-forge's libstdc++ into the env, breaking the C++
+runtime genesis/taichi mesh loading was built against. Every genesis run after that
+moment segfaulted at scene build on EVERY architecture; a meshless plane scene
+passed, which misdirected the investigation.
+
+**Fix:** `conda install --revision 0` + pip-only reinstall (installer no longer
+touches conda, ever). `cluster/verify_env.sh` passes all 4 checks -- including the
+full-world build, ON AN H200.
+
+**Hypotheses burned en route (in order):** A100 architecture, code regression,
+taichi cache contention, env-count, hardware-specific L40 issues. The A100 theory
+was refuted by timeline, not by test -- all its evidence came from inside the
+poisoned window. Retest A100 before excluding it.
+
+**Lesson for the file:** when a system that worked stops working, list every
+mutation to the ENVIRONMENT in the failure window before theorizing about
+code/hardware. The 11:38 conda install was in `conda list --revisions` the whole
+time.
