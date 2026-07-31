@@ -171,6 +171,12 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 - 2026-07-29: HRI venue deferred; ICRA/CoRL framing. (user + assistant)
 - 2026-07-29: All headline claims require ×3 seeds. (standing honesty protocol)
 
+## Deferred maintenance (not urgent, tracked so it isn't lost)
+
+- Git history carries ~862MB of accidentally-committed datasets (2026-07-31).
+  Cosmetic: fresh clones are slow. Fix = `git filter-repo` + coordinated
+  force-push across all checkouts, some quiet day between runs. (user: "fine for now")
+
 ## Changelog (newest first)
 
 - 2026-07-31 (assistant): noise arm demoted to stretch per user; priorities
