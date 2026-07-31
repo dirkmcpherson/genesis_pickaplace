@@ -46,7 +46,12 @@ def relabel_cartesian(paths, pick_z=PICK_Z_DEFAULT):
         n = len(a)                       # transitions
         q = s[:n, 12:16]
         tilt = np.degrees(np.arccos(np.clip(1 - 2 * (q[:, 1] ** 2 + q[:, 2] ** 2), -1, 1)))
-        tipped_free = (tilt > TIP_DEG) & (a[:, 4] < GRIP_OPEN)
+        # grip column depends on the action encoding: 5-dim (vel/delta/abs) -> 4,
+        # 7-dim (abs6/delta6: pos3+rot3+grip) -> 6. Reading 4 on a 7-dim action uses
+        # a ROTATION component as the gripper (audit finding, 2026-07-30: shifted the
+        # tip truncation by 8 frames and corrupted picked_f for 6-DOF demo sets).
+        gidx = 6 if a.shape[1] >= 7 else 4
+        tipped_free = (tilt > TIP_DEG) & (a[:, gidx] < GRIP_OPEN)
         j_tip = int(np.argmax(tipped_free)) if tipped_free.any() else -1
         if j_tip >= 0:
             s, a = s[:j_tip + 2], a[:j_tip + 1]
@@ -54,7 +59,7 @@ def relabel_cartesian(paths, pick_z=PICK_Z_DEFAULT):
         if n < 2:
             continue
         can_z = s[:, 11]
-        grip = a[:, 4]
+        grip = a[:, gidx]
         rew = np.zeros(n, dtype=np.float32)
         done = np.zeros(n, dtype=bool)
         picked_f = (can_z[:n] > pick_z) & (grip > GRIP_CLOSED)
