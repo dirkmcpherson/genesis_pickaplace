@@ -49,7 +49,7 @@ echo "== paper smoke harvest start $(date)  teacher=$TEACHER_CKPT  target=${SMOK
 python baselines/harvest_ai_demos.py --teacher-type dp \
   --checkpoint "$TEACHER_CKPT" --action-space joint \
   --ic-mode demo --scope pick --verify --images \
-  --n 200 --target-kept "${SMOKE_KEPT:-20}" --cap 600 --seed 7 \
+  --n "${HARVEST_N:-200}" --target-kept "${SMOKE_KEPT:-20}" --cap "${CAP:-600}" --seed 7 \
   --outdir "$HARV_OUT"
 
 echo "== harvest manifest:"
