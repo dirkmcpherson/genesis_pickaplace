@@ -20,7 +20,7 @@
 # the job straight back in the queue; the payload below must therefore RESUME rather
 # than restart, or preemption silently throws away hours of training.
 #SBATCH --gres=gpu:1
-#SBATCH --constraint="l40s|a100"
+#SBATCH --constraint="l40s"
 #SBATCH -N 1
 #SBATCH -n 8
 #SBATCH --mem=48g
