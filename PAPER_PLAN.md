@@ -58,18 +58,36 @@ a human-perception study (see Decision Log 2026-07-29).
   seed spread 0.07–0.53).
 - Demo source ICs: the demos' own ~3 can positions (`IC_MODE=demo`) so IC coverage
   cannot confound source.
-- Dataset size: 67 everywhere (`TARGET_KEPT=67` = the human demo count). Any
-  `short_of_target` harvest is reported, not hidden.
+- Dataset size: **66** everywhere (`TARGET_KEPT=66` = the human demo count; the
+  plan previously said 67, which is the cartesian-graded count -- one episode
+  grades differently across replay modes). Any `short_of_target` harvest is
+  reported, not hidden.
+
+**The human demo set (N=66), by furthest stage reached:**
+
+| stage reached | count | share |
+|---|---|---|
+| picked only          |  2 | 3%  |
+| placed (set down)    | 38 | 58% |
+| contact (slide to goal can) | 6 | 9% |
+| **nested (full task)** | **20** | **30%** |
+
+Provenance / why 66 is the ceiling: 93 in-the-wild trials recorded -> 2 stubs
+(gripper never closes) excluded -> 91 graded -> 75 success-labeled + 16 fail ->
+9 of the successes never achieve a pick under replay -> **66 usable for IL**
+(the no-IL-on-failures rule, Decision Log 07-30). More human demos would require
+new collection on the real robot; the 16 fail + 9 no-pick episodes remain
+available as negative/RL data but never enter IL training sets.
 
 **Condition matrix (core):**
 
 | id | demos | learner | status |
 |----|-------|---------|--------|
-| H-DP ×3   | 67 human            | DP  | 1 seed done (0.67); seeds 1,2 NEEDED |
-| M1-DP ×3  | 67 gen-1 model      | DP  | ouroboros lineage running → harvest pending |
-| H-ACT ×3  | 67 human            | ACT | lineage running |
-| M1-ACT ×3 | 67 gen-1 model      | ACT | pending gen-1 harvest |
-| M2-DP ×3  | 67 gen-2 model      | DP  | pending (chain MAXGEN=3) |
+| H-DP ×3   | 66 human            | DP  | 1 seed done (0.67); seeds 1,2 NEEDED |
+| M1-DP ×3  | 66 gen-1 model      | DP  | ouroboros lineage running → harvest pending |
+| H-ACT ×3  | 66 human            | ACT | lineage running |
+| M1-ACT ×3 | 66 gen-1 model      | ACT | pending gen-1 harvest |
+| M2-DP ×3  | 66 gen-2 model      | DP  | pending (chain MAXGEN=3) |
 | H-DV3 ×3  | 91 human (image)    | DV3 | pick-scope run validating locally; cluster unblocked 07-31 |
 | M1-DV3 ×3 | gen-1 model (image) | DV3 | needs an IMAGE harvest (`--images`) from the gen-0 teacher — the CAMS=none lineage harvests carry no pixels |
 
@@ -179,6 +197,9 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 
 ## Changelog (newest first)
 
+- 2026-07-31 (assistant): demo breakdown added; N corrected 67->66 (66 is the
+  joint-graded human IL set; TARGET_KEPT follows). Running lineages used
+  TARGET_KEPT=67 -- a 1-demo difference, noted as harmless but recorded.
 - 2026-07-31 (assistant): noise arm demoted to stretch per user; priorities
   reordered (core matrix > distributional analysis > skeleton > noise tooling).
 - 2026-07-31 (assistant): initial draft.
