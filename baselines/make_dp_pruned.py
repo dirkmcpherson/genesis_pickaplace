@@ -15,6 +15,13 @@ absolute joint targets a collapsed pause remains a valid (obs, hold) pair.
 
 Usage: make_dp_pruned.py [--src baselines/episodes_pick] [--dst baselines/episodes_pick_pruned]
 """
+# TIP-TRUNCATION DECISION (audit, 2026-07-31): BC datasets deliberately KEEP
+# post-tip frames. The RL relabelers truncate at the first tipped-free frame
+# (mirroring env termination) because TD bootstraps through those states; BC only
+# imitates state->action pairs it is fed, never visits post-tip states at eval
+# (the env terminates), and 67-demo BC is data-starved enough that dropping frames
+# costs more than the off-distribution tail risks. Revisit if BC evals ever show
+# can-down behaviors.
 import os
 import argparse, glob, pathlib as pl
 import numpy as np

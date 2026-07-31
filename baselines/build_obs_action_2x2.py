@@ -20,6 +20,13 @@ than reused from another directory, so every cell shares the same frames.
 Usage: build_obs_action_2x2.py [--src baselines/episodes_cartesian_dual]
                                [--outroot baselines/x2x2] [--picked-only]
 """
+# TIP-TRUNCATION DECISION (audit, 2026-07-31): BC datasets deliberately KEEP
+# post-tip frames. The RL relabelers truncate at the first tipped-free frame
+# (mirroring env termination) because TD bootstraps through those states; BC only
+# imitates state->action pairs it is fed, never visits post-tip states at eval
+# (the env terminates), and 67-demo BC is data-starved enough that dropping frames
+# costs more than the off-distribution tail risks. Revisit if BC evals ever show
+# can-down behaviors.
 import os
 import argparse
 import glob
