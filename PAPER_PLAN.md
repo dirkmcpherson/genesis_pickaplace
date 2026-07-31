@@ -181,8 +181,14 @@ localized per stage rather than inferred through the funnel.
    trusting any generated dataset (July30th_Fable.md §1).
 4. **H4 is conditional on dv3 learning at all.** If dv3 cannot reach nonzero
    picked even at pick-scope, the world-model arm is untestable and H4 drops to
-   qualitative discussion. The local pick-scope run is the gate; decision point
-   when it reports.
+   qualitative discussion. The cluster pick-scope smoke runs are the gate.
+   **Contingency (user, 07-31): r2dreamer** (github.com/NM512/r2dreamer — same
+   author as our dv3 fork; ICLR 2026; decoder-free, TD-MPC2-style latent-only
+   rep learning, ~1.6x faster). Well-matched to the suspected failure mode:
+   reconstruction loss burning capacity on the static scene while the can is a
+   few dozen pixels (image_loss ~70 dominates our runs). Port = genesis env
+   adapter + VEC facade + log_* keys + demo prefill into its Hydra structure,
+   ~a day. TRIGGER: hdv3_pick seeds flat (log_picked 0) at ~2M steps.
 5. **Seed budget.** 3 seeds × ~4h × (2 learners × ≥2 sources + noise arm) ≈ several
    GPU-days. Cluster A100s can carry all DP/ACT training (no genesis needed).
 
