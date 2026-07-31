@@ -61,7 +61,7 @@ class BatchedCanWorld:
     C_TIP_DEG, C_TIP_PENALTY, C_GRIP_OPEN = 60.0, 0.0, 0.3
 
     def __init__(self, n_envs, size=(64, 64), pixels=True, workspace_limit=False,
-                 max_steps=1200, seed=0, control='joint'):
+                 max_steps=1200, seed=0, control='joint', scope='full'):
         import genesis as gs
         from kinova import JOINT_NAMES, EEF_NAME
         from replay_harness import (BOX_POS, BOX_SIZE, STATIC_BOTTLE_POSITION,
@@ -120,6 +120,11 @@ class BatchedCanWorld:
         self._c_sp = None; self._c_pitch = None; self._c_q0 = None
         self._c_rotvec = None
         self.control = control          # 'joint' (7-dim) | 'cart_delta' (5-dim EEF)
+        # scope='pick': +1 and TERMINATE on the pick. Collapses the credit horizon
+        # from ~1700 steps to ~600 (median demo pick frame 666) and removes all
+        # downstream noise -- the task in sections, for establishing that dv3 can
+        # learn ANYTHING here before asking for the full chain.
+        self.scope = scope
 
         # validated gains (build_batched_world convention, world-cfg values)
         fkp = [wcfg['finger_kp']] * 4
@@ -281,6 +286,12 @@ class BatchedCanWorld:
                           self.STAGE_REWARD['contact'], self.STAGE_REWARD['nested']])
         reward = (newly * rew_w).sum(axis=1).astype(np.float32)
         terminated = nested_now.copy()
+        if self.scope == 'pick':
+            # use the STICKY picked flag, not granted[:,0]: granted is maintained only
+            # by the reward path in step_batch, so a condition depending on it silently
+            # never fires under replay_step_batch (verified: picked True at step 276
+            # while granted stayed False).
+            terminated = terminated | self.picked
         if self.control in ('cart_delta', 'cart_abs6', 'cart_delta6'):
             # tilt of the picked can from vertical, per env
             btilt = np.degrees(np.arccos(np.clip(
