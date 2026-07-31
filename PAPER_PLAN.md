@@ -18,8 +18,9 @@ Contributions we can honestly aim for:
    distribution, matched training recipe, ×3 seeds (the ouroboros gen-0 vs gen-1).
 2. Distributional characterization of *how* model demos differ (entropy, smoothness,
    trajectory diversity, IC coverage) — mechanism, not just outcome.
-3. **Contingent:** if a gap exists, a noise-injection intervention on model demos
-   (σ-sweep on actions) testing whether the gap is an entropy/diversity artifact.
+3. **Stretch (time-permitting):** if a gap exists, a noise-injection intervention
+   on model demos (σ-sweep calibrated from the measured entropy gap) testing
+   whether the gap is an entropy/diversity artifact.
 4. The methodology itself: verified harvesting (open-loop replay guard), negative
    controls, matched-size targeting — a template for honest self-training studies.
 
@@ -63,8 +64,9 @@ a human-perception study (see Decision Log 2026-07-29).
 | M1-ACT ×3 | 67 gen-1 model      | ACT | pending gen-1 harvest |
 | M2-DP ×3  | 67 gen-2 model      | DP  | pending (chain MAXGEN=3) |
 
-**Contingent matrix (only if H vs M1 gap ≥ some pre-agreed threshold — PROPOSE:
-Δpicked ≥ 0.15 at in-dist):**
+**Stretch matrix — TIME-PERMITTING ONLY (Decision Log 2026-07-31). Runs only if
+(a) the core matrix is complete with ×3 seeds, (b) a gap exists, and (c) there is
+GPU-week left. Not on the critical path; the paper stands without it.**
 
 | id | demos | noise |
 |----|-------|-------|
@@ -96,8 +98,8 @@ a human-perception study (see Decision Log 2026-07-29).
 - [ ] H-DP seeds 1,2 (local GPU, tonight)
 - [ ] Distributional measurement script (`analysis/demo_distributions.py`) + the
       human-demo half of the H2 figure — runnable now
-- [ ] Noise-injection tooling (`--action-noise-sigma` in a demo post-processor),
-      built but NOT run until the gap decision
+- [ ] Noise-injection tooling: DEPRIORITIZED to last -- build only after the core
+      matrix + distributional analysis + paper skeleton are done
 - [ ] Per-condition results table auto-generated from eval logs (`analysis/collect_results.py`)
 - [ ] Paper skeleton in `paper/` (LaTeX), methods section drafted from the
       pipeline docs — methods can be written NOW, they don't depend on results
@@ -139,6 +141,9 @@ a human-perception study (see Decision Log 2026-07-29).
 
 ## Decision Log
 
+- 2026-07-31: Noise arm is a STRETCH goal, time-permitting only -- core paper is
+  the human-vs-model comparison + distributional analysis. σ calibration from the
+  measured entropy gap agreed if it runs. (user)
 - 2026-07-31: Paper scope = human vs model demos; noise arm contingent on a gap.
   Living doc created. (user + assistant)
 - 2026-07-30: Demo can positions are the default IC distribution everywhere. (user)
@@ -149,4 +154,6 @@ a human-perception study (see Decision Log 2026-07-29).
 
 ## Changelog (newest first)
 
+- 2026-07-31 (assistant): noise arm demoted to stretch per user; priorities
+  reordered (core matrix > distributional analysis > skeleton > noise tooling).
 - 2026-07-31 (assistant): initial draft.
