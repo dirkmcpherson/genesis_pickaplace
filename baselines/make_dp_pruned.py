@@ -43,7 +43,8 @@ ap.add_argument('--layout', choices=['joint', 'cartesian'], default='joint',
                      'cartesian (18-dim ee-centric s, can_z=s[:,11], a[:,4]=grip 0..1)')
 args = ap.parse_args()
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 SRC, DST = REPO / args.src, REPO / args.dst
 DST.mkdir(exist_ok=True)
 

@@ -36,7 +36,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
-                              '/home/j/workspace/genesis_pickaplace'))
+                              pl.Path(__file__).resolve().parents[1]))
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--src', default='baselines/episodes_cartesian_dual')

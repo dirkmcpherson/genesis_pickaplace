@@ -17,7 +17,8 @@ import os
 import sys, json, pathlib as pl
 import numpy as np
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 SIG = pl.Path('/tmp/claude-1000/-home-james-workspace-genesis-pickaplace/'
               '5d60af7b-ae54-45fa-bc0c-e90077b3afaf/scratchpad/grasp_signals')
 GOAL = (0.6, -0.2)

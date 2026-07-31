@@ -20,7 +20,8 @@ import argparse, glob, pathlib as pl, sys, time
 
 import numpy as np
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import demo_buffer  # noqa: E402

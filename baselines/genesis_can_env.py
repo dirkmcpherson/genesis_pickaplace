@@ -17,7 +17,8 @@ import os
 import json, sys, pathlib as pl
 import numpy as np
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 import torch
 from replay_harness import (build_world, gripper_targets, tilt_deg, in_shelf_footprint,

@@ -21,7 +21,8 @@ import argparse, json, sys, time, pathlib as pl
 import numpy as np
 
 sys.path.insert(0, str(pl.Path(__file__).parent))
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 
 BUCKET = {0: (0.4381, 0.1), 1: (0.4381, -0.05), 2: (0.4381, -0.2), None: (0.4381, -0.05)}
 

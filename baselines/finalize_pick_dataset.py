@@ -10,7 +10,8 @@ Usage: python baselines/finalize_pick_dataset.py [--include-fk]
 """
 import os
 import argparse, json, pathlib as pl, glob, os
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 ALL = REPO / 'baselines/episodes_all'
 PICK = REPO / 'baselines/episodes_pick'
 PICKED_STAGES = {'picked', 'placed', 'contact', 'nested'}

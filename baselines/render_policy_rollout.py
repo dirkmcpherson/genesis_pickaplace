@@ -4,7 +4,8 @@ Usage: render_policy_rollout.py <checkpoint> <uid> [uid...]
 """
 import os
 import sys, pathlib as pl, numpy as np, torch, cv2
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(REPO/'baselines'))
 from genesis_can_env import GenesisCanEnv
 from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy

@@ -8,7 +8,8 @@ import os
 import re, time, pathlib as pl
 import wandb
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[2]))
 LOG = REPO / 'baselines/rl/train_sacfd_v3.log'
 PAT = re.compile(r'\[wandb_eval\] step (\d+): picked=([\d.]+) placed=([\d.]+) '
                  r'contact=([\d.]+) nested=([\d.]+)')

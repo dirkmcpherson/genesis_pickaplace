@@ -18,7 +18,8 @@ import sys
 import pathlib as pl
 import numpy as np
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 # argv: <raw_episode_dir> <dataset_root> [proprio_dim] -- parametrized so version
 # switches are explicit at the call site, not silent file edits (lesson: the v3 chain
 # once trained on stale v1 data because a path edit lived in a dead chain)

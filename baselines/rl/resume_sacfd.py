@@ -9,7 +9,8 @@ Usage: resume_sacfd.py --ckpt <sacfd_final.zip> --steps 150000 --demo-dir <dir> 
 import os
 import argparse, glob, pathlib as pl, sys, time
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import pick_env  # noqa: E402

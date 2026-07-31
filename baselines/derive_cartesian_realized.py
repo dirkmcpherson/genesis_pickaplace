@@ -20,7 +20,8 @@ import argparse, glob, pathlib as pl
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--src', default='baselines/episodes_cartesian')

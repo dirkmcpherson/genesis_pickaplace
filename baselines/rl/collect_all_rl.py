@@ -12,7 +12,8 @@ Usage: python baselines/rl/collect_all_rl.py [--uids ...]
 import os
 import argparse, json, sys, pathlib as pl
 import numpy as np
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv

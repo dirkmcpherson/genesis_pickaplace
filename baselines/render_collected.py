@@ -9,7 +9,8 @@ Usage: render_collected.py <episode_dir> <video_dir> [--once]
 import os
 import sys, time, glob, pathlib as pl
 import numpy as np, cv2, torch
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from genesis_can_env import GenesisCanEnv
 from replay_harness import tilt_deg, BOX_TOP_Z, in_shelf_footprint

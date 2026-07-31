@@ -8,7 +8,8 @@ import os
 import sys, argparse, pathlib as pl
 import numpy as np, torch
 from scipy.spatial.transform import Rotation as R
-REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'))
+REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+                              pl.Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(REPO/'baselines')); sys.path.insert(0, str(REPO/'can_pos_recovery'))
 from cartesian_env import CartesianCanEnv, _gs_to_xyzw
 from replay_harness import load_episode
