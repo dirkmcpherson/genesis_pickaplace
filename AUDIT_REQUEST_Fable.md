@@ -157,7 +157,9 @@ remembering: fixing one silent default can ARM a previously-dormant bug.
 
 ## Still open after this audit
 
-- Cluster dv3 segfault: unresolved; bisect script ready (`cluster/bisect_genesis_crash.py`).
+- ~~Cluster dv3 segfault~~ RESOLVED 07-31 (poisoned conda env; verify_env.sh).
+  A100 retest PASSED 07-31 (user-run): full world + 16-env batched/camera
+  build/reset/render clean on pax A100s — constraint widened to include a100.
 - abs6-for-RL degeneracy (13-33 step episodes from unbounded pose commands): real,
   needs a design decision (per-step target clamp?) before abs6 RL is meaningful.
 - Cluster demo rsync for tip0 (above).
