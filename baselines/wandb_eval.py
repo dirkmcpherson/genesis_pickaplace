@@ -37,6 +37,12 @@ ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='both',
                      "positive control this project has never had.")
 ap.add_argument('--control', choices=['vel', 'delta', 'abs', 'abs6', 'delta6'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
+ap.add_argument('--obs', choices=['env', 'joint', 'ee'], default='env',
+                help="obs layout the POLICY sees, when it differs from the env's own "
+                     "(the obs x action 2x2 mixed cells). The env must follow the "
+                     "ACTION type -- it executes what the policy emits -- so "
+                     "jobs_eact = '--cartesian --control abs6 --obs joint' and "
+                     "eobs_jact = '--obs ee' (joint env). 'env' = no adaptation.")
 ap.add_argument('--n-action-steps', type=int, default=None,
                 help='override the chunk-execution length (ACT default 100 = 2.5s '
                      'open-loop; velocity-integration drift compounds within chunks)')
@@ -96,6 +102,35 @@ else:
     policy_action, policy_reset, _proprio = load_dp_runner(
         args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None),
         n_action_steps=args.n_action_steps)
+
+# --- mixed obs x action cells: swap the state the policy sees, leave execution alone.
+# Both adapters replicate collect_cartesian_dataset's constructions exactly, so the
+# policy sees the same layout it trained on.
+if args.obs == 'joint':
+    # 17-dim joint obs inside a cartesian-executing env; CartesianCanEnv already
+    # carries it as obs['joint_state'].
+    assert args.cartesian, '--obs joint pairs a joint-obs policy with a cartesian env'
+    _base_action = policy_action
+
+    def policy_action(obs):
+        o = dict(obs); o['state'] = obs['joint_state']
+        return _base_action(o)
+elif args.obs == 'ee':
+    # 18-dim ee-centric obs synthesized from the joint env:
+    # ee_pos(3), ee_quat(4), grip+effort (s[6:8]), world (s[8:17])
+    assert not args.cartesian, '--obs ee pairs an ee-obs policy with the joint env'
+    _eef = env.w['eef']
+
+    def _np(x):
+        return x.detach().cpu().numpy() if hasattr(x, 'detach') else np.asarray(x)
+    _base_action = policy_action
+
+    def policy_action(obs):
+        s = obs['state']
+        o = dict(obs)
+        o['state'] = np.concatenate([_np(_eef.get_pos()), _np(_eef.get_quat()),
+                                     s[6:8], s[8:17]]).astype(np.float32)
+        return _base_action(o)
 
 _ic_sets = {}
 if args.random:
