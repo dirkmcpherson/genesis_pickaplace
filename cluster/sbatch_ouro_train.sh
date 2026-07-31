@@ -77,24 +77,27 @@ echo "== trainer: $LEROBOT_TRAIN"
 
 # --- train -----------------------------------------------------------------------
 # PREEMPTION-SAFE: only wipe the output dir on a FIRST attempt. On a requeue
-# (SLURM_RESTART_COUNT>0) keep it and resume from the last checkpoint, otherwise
-# every preemption restarts training from zero.
-RESUME_ARG=""
-if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$G/dp/checkpoints/last" ]; then
-  echo "== requeued (restart #${SLURM_RESTART_COUNT}); RESUMING from $G/dp/checkpoints/last"
-  RESUME_ARG="--resume=true"
+# (SLURM_RESTART_COUNT>0) keep it and resume from the last checkpoint.
+# lerobot 0.4.5's resume contract: pass ONLY --config_path (the train_config.json
+# the run saved) + --resume=true; the config carries every other argument. Passing
+# --resume alongside the full arg list raises "A config_path is expected when
+# resuming" -- this killed ouro_dp_joint gen-1 (job 2100014) after a preemption.
+TC="$G/dp/checkpoints/last/pretrained_model/train_config.json"
+if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -f "$TC" ]; then
+  echo "== requeued (restart #${SLURM_RESTART_COUNT}); RESUMING via $TC"
+  $LEROBOT_TRAIN --config_path="$TC" --resume=true
 else
   rm -rf "$G/dp"
+  $LEROBOT_TRAIN \
+    --dataset.repo_id="local/${TAG}_${ALGO}_gen${GEN}" \
+    --dataset.root="$DATASET" \
+    --policy.type=$( [ "$ALGO" = act ] && echo act || echo diffusion ) \
+    --policy.push_to_hub=false \
+    --output_dir="$G/dp" --batch_size=64 --steps="${TRAIN_STEPS:-100000}" \
+    --job_name="${TAG}_${ALGO}_gen${GEN}" \
+    --wandb.enable=true --wandb.project=genesis_pickaplace_ouro \
+    --wandb.disable_artifact=true
 fi
-$LEROBOT_TRAIN ${RESUME_ARG} \
-  --dataset.repo_id="local/${TAG}_${ALGO}_gen${GEN}" \
-  --dataset.root="$DATASET" \
-  --policy.type=$( [ "$ALGO" = act ] && echo act || echo diffusion ) \
-  --policy.push_to_hub=false \
-  --output_dir="$G/dp" --batch_size=64 --steps="${TRAIN_STEPS:-100000}" \
-  --job_name="${TAG}_${ALGO}_gen${GEN}" \
-  --wandb.enable=true --wandb.project=genesis_pickaplace_ouro \
-  --wandb.disable_artifact=true
 CKPT=$G/dp/checkpoints/last/pretrained_model
 [ -d "$CKPT" ] || { echo "FATAL: no checkpoint at $CKPT"; exit 1; }
 

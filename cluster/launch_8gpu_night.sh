@@ -34,12 +34,16 @@ for CELL in jobs_jact jobs_eact eobs_jact eobs_eact; do
     --wrap="module load anaconda/2025.06.0; conda activate ${CONDA_ENV:-genesis}; \
             cd $PWD; export GENESIS_PICKAPLACE_ROOT=$PWD MUJOCO_GL=egl; \
             for S in $SEEDS; do \
-              R=''; [ -d baselines/outputs/x2x2_${CELL}_s\$S/checkpoints/last ] && R='--resume=true'; \
-              lerobot-train \$R --dataset.repo_id=local/x2x2_${CELL}_s\$S \
-                --dataset.root=$DS --policy.type=diffusion --policy.push_to_hub=false \
-                --seed=\$S --output_dir=baselines/outputs/x2x2_${CELL}_s\$S \
-                --batch_size=64 --steps=$STEPS --job_name=x2x2_${CELL}_s\$S \
-                --wandb.enable=true --wandb.project=genesis_x2x2 --wandb.disable_artifact=true; \
+              TC=baselines/outputs/x2x2_${CELL}_s\$S/checkpoints/last/pretrained_model/train_config.json; \
+              if [ -f \$TC ]; then \
+                lerobot-train --config_path=\$TC --resume=true; \
+              else \
+                lerobot-train --dataset.repo_id=local/x2x2_${CELL}_s\$S \
+                  --dataset.root=$DS --policy.type=diffusion --policy.push_to_hub=false \
+                  --seed=\$S --output_dir=baselines/outputs/x2x2_${CELL}_s\$S \
+                  --batch_size=64 --steps=$STEPS --job_name=x2x2_${CELL}_s\$S \
+                  --wandb.enable=true --wandb.project=genesis_x2x2 --wandb.disable_artifact=true; \
+              fi; \
               python baselines/wandb_eval.py --kind dp $CTRL_ARGS --ic-mode both \
                 --checkpoint baselines/outputs/x2x2_${CELL}_s\$S/checkpoints/last/pretrained_model \
                 --random 15 --seed 0 --group x2x2_$CELL --name x2x2_${CELL}_s\$S-eval; \
