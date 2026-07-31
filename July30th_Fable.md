@@ -141,6 +141,8 @@ Every one produced *plausible but meaningless numbers* rather than a crash:
 | `control='vel'` in both RL trainers | **every** "cartesian RL" run was velocity-mode |
 | `--control` missing in the eval subprocess | delta policies evaluated under velocity semantics |
 | `--control` missing in `harvest_ai_demos` | a delta/abs6 teacher would harvest garbage |
+| grip column `a[:,4]` on 7-dim actions | found ×3 (audit caught the 3rd in `relabel_cartesian`) |
+| 2×2 eval env keyed off the OBS half of the cell name | mixed cells would eval in the wrong env: `jobs_eact` runs abs6 targets through the joint env (dim-compatible!) → ~0.00 regardless of truth. Found 07-31, BEFORE any number was read (poisoned env had killed the evals). Fix: env follows the ACTION half; `wandb_eval --obs` supplies the state layout |
 
 Pattern: a parameter added with a backward-compatible default whose default encodes a
 *semantic* choice. Mitigation applied: every cartesian call site now passes `control=`

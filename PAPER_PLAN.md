@@ -128,8 +128,13 @@ localized per stage rather than inferred through the funnel.
   smoke completed). DP + ACT lineages running with TARGET_KEPT=67, IC_MODE=demo.
 - **Verified-harvest guards:** negative control (rate-gated), open-loop verify,
   MIN_KEEP_FRAMES, dual-representation recording. Audit-clean.
-- **2×2 obs×action study:** running on cluster (12 runs). NOT part of this paper's
-  core claim — feeds the "why joint" justification and a possible appendix.
+- **2×2 obs×action study:** all 12 trainings COMPLETED on cluster (loss ~0.002 in
+  every cell); every eval died in the poisoned env — which was lucky, because the
+  original eval mapping was WRONG for the mixed cells (env keyed off the obs half;
+  it must follow the action half). Post-hoc eval with the corrected mapping =
+  `sbatch cluster/sbatch_eval_x2x2.sh` (wandb_eval `--obs` adapters, plumbing-
+  tested 07-31). NOT part of this paper's core claim — feeds the "why joint"
+  justification and a possible appendix.
 - **dv3:** IN the paper as the world-model arm (H4) — Decision Log 2026-07-31.
   Cluster segfault RESOLVED (poisoned env; verify_env.sh passes incl. H200). Local
   pick-scope run validating learnability. M1-DV3 needs a dedicated image harvest.
