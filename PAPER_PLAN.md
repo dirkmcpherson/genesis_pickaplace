@@ -284,3 +284,12 @@ localized per stage rather than inferred through the funnel.
 - 2026-07-31 (assistant): noise arm demoted to stretch per user; priorities
   reordered (core matrix > distributional analysis > skeleton > noise tooling).
 - 2026-07-31 (assistant): initial draft.
+
+**Pruning note for the paper (user, 08-01):** DP requires idle-frame pruning
+(collapse action-delta<1e-3 teleop pauses, pre-pick; make_dp_pruned) to be
+functional. REPORT BOTH RATES: pruned human DP = 0.67/0.73/0.80 picked in-dist;
+UNPRUNED same-frames control (jobs_jact_v2 s0) = 0.27/0.13 — a ~2.5x
+preprocessing effect. dH_DP trains on the PRUNED pick-phase set (29.6% frames
+dropped); SACfD/DV3 consume unpruned (idle frames are honest dynamics/negative
+data there). Model harvests contain no idle frames (closed-loop teachers), which
+is itself a source property the distributional analysis should quantify.
