@@ -80,6 +80,16 @@ Consequences:
   the four cells and rerun. Until then, no cell result is interpretable.
 - The 12 cluster x2x2 trainings + evals measured the bad source; treat as void.
 
+**08-01 v2 rebuild results (episodes_all_ee source, 91/91 bitwise-identical to
+proven data):**
+- `eobs_eact_v2` s0: **0.00 picked in-dist** — cartesian BC fails on PROVEN data
+  too. The dual-source finding voided v1's numbers but not the phenomenon.
+- **Open-loop replay of the derived abs6 actions COMPLETES THE TASK** (uids
+  232/242/300: 3/3 picked+placed, 1 contact). Data ✓, action encoding ✓,
+  execution path ✓ — the failure is isolated to the LEARNED obs→action mapping.
+- jobs_jact_v2 (control, data == positive control by construction) + the two
+  mixed cells training locally; the 2×2 is now running on valid footing.
+
 **The measurement.** Diffusion Policy, 100k steps, dual eval (demo ICs / random ICs):
 
 | action space | in-dist | random |
