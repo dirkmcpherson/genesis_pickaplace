@@ -29,7 +29,17 @@ ap.add_argument('--outdir', default='baselines/episodes_all')
 ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--images', action='store_true',
                 help='record the dv3 two-camera rig obs: images (n,64,64,6) uint8 per npz')
+ap.add_argument('--ee', action='store_true',
+                help='also record states_ee (n,18): ee_pos(3) ee_quat(4) grip+effort(2) '
+                     'world(9), read at the same sim time as each joint obs. This makes '
+                     'the PROVEN replay the source for the obs x action 2x2 -- the dual '
+                     'collector replayed bag joint_pos streams instead, and that source '
+                     'alone drops joint DP 0.73 -> 0.07 (July30th_Fable.md sec.2).')
 args = ap.parse_args()
+
+
+def np_(x):
+    return x.detach().cpu().numpy() if hasattr(x, 'detach') else np.asarray(x)
 
 OUT = REPO / args.outdir
 OUT.mkdir(exist_ok=True, parents=True)
@@ -65,12 +75,19 @@ for uid in uids:
             obs = env.reset(can_pos=(seed[0], seed[1], CANZ), can_quat=[1, 0, 0, 0], goal_pos=GOAL)
             source = 'fk-seed'
         vel, gp = load_episode(uid)
-        states, actions, images = [], [], []
+        states, actions, images, states_ee = [], [], [], []
         picked = placed = contact = False
         for i in range(len(vel) - 1):
             a = np.concatenate([vel[i], [np.clip(gp[i] / 100.0, 0, 1)]]).astype(np.float32)
             states.append(obs['state'])
             actions.append(a)
+            if args.ee:
+                # world has not stepped since obs was built, so this eef pose is
+                # simultaneous with states[-1]; layout matches CartesianCanEnv._obs
+                s = obs['state']
+                states_ee.append(np.concatenate([np_(env.w['eef'].get_pos()),
+                                                 np_(env.w['eef'].get_quat()),
+                                                 s[6:8], s[8:17]]).astype(np.float32))
             if args.images:
                 images.append(env.rig_obs())
             # EXECUTE the raw recorded gripper motor value (may overshoot <0): the [0,1]
@@ -96,6 +113,8 @@ for uid in uids:
         stage = ('nested' if nested else 'contact' if contact else 'placed' if placed
                  else 'picked' if picked else 'no-pick')
         extra = dict(images=np.array(images, dtype=np.uint8)) if args.images else {}
+        if args.ee:
+            extra['states_ee'] = np.array(states_ee, dtype=np.float32)
         np.savez_compressed(OUT / f'{uid}.npz', states=np.array(states), actions=np.array(actions),
                             uid=uid, n=len(states), label=label, stage=stage, **extra)
         recs.append(dict(uid=uid, label=label, source=source, stage=stage, n=len(states)))
