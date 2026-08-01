@@ -79,7 +79,22 @@ Provenance / why 66 is the ceiling: 93 in-the-wild trials recorded -> 2 stubs
 new collection on the real robot; the 16 fail + 9 no-pick episodes remain
 available as negative/RL data but never enter IL training sets.
 
-**Condition matrix (core):**
+**PHASE SCOPE (Decision Log 2026-08-01): the core paper is PHASE 1 — PICK.**
+Rationale: matched-N is only feasible at pick (place demos are unharvestable from
+a 0.00-place model policy; contact ~5x dearer); the pick predicate is the
+hack-resistant one (the z-band `placed` credits a knocked-on-shelf can — observed);
+and all existing cross-source results are pick-shaped. Phase 2 (place) follows
+LATER as specialists trained FROM PICKED ENTRY STATES (reset to a banked
+post-pick state; `placed_v2` release predicate gates its inclusion). Slide/nest
+leave the controlled comparison; full-task H-DP numbers remain as descriptive
+context. Fairness rule: BOTH demo sources truncate at the pick grant (same rule)
+— previously H trained full-length vs M1 pick-truncated.
+
+**Naming (user, 2026-08-01): `d{source}_{algorithm}`** — dH_DP (human demos → DP),
+dDP_DP (DP-harvested demos → DP), dDP2_DP (gen-2), dACT_ACT, dH_DV3, dDP_DV3.
+Old H-*/M1-*/M2-* names appear only in wandb archaeology before this date.
+
+**Condition matrix (core, PICK phase):**
 
 | id | demos | learner | status |
 |----|-------|---------|--------|
@@ -205,6 +220,12 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-01: PICK-PHASE CORE (user). Place phase later via specialists trained
+  from banked picked entry states; build tooling with that in mind. Phase-matched
+  truncation for both demo sources. Naming convention d{source}_{algorithm}.
+- 2026-08-01: dv3 evals must show truth/model reconstruction for both cameras
+  (train_openl-style); scope-matched eval mandatory (flail-place reward theater
+  observed under full-scope eval of pick-scope policies). (user)
 - 2026-07-31: Stage-wise evaluation matrix added (isolated per-stage + chained
   specialists); DP-only for specialists to bound scope. (user proposal, assistant
   scoping)
