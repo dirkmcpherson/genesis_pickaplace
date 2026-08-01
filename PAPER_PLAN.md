@@ -84,7 +84,7 @@ available as negative/RL data but never enter IL training sets.
 | id | demos | learner | status |
 |----|-------|---------|--------|
 | H-DP ×3   | 66 human            | DP  | **COMPLETE 07-31: picked 0.67 / 0.73 / 0.80 in-dist** (placed 0.53/0.60/0.60; s2 nested 0.13). Random-IC: 0.27/0.13/0.07 — the gen gap is where seed variance lives |
-| M1-DP ×3  | 66 gen-1 model      | DP  | ouroboros lineage running → harvest pending |
+| M1-DP ×3  | 66 gen-1 model      | DP  | **s0 (08-01): picked 0.87 in-dist / 0.33 random — ABOVE all human seeds on both** (self-distillation amplification from a 0.67 teacher). placed/contact/nested 0 is STRUCTURAL (pick-scope harvest has no post-pick content) — H1's downstream claim still untested. Seeds 1-2 + chain to gen-2 pending |
 | H-ACT ×3  | 66 human            | ACT | lineage running |
 | M1-ACT ×3 | 66 gen-1 model      | ACT | pending gen-1 harvest |
 | M2-DP ×3  | 66 gen-2 model      | DP  | pending (chain MAXGEN=3) |
