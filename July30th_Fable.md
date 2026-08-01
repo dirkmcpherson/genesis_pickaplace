@@ -61,6 +61,25 @@ same class of bug (hidden state surviving into a supposedly clean replay).
 
 ## 2. UNSOLVED: cartesian BC fails even in-distribution
 
+**2026-07-31 PIVOTAL UPDATE — the confound was the DATA SOURCE, not the
+representation.** The 2×2's own control cell settled it: `jobs_jact` (joint obs +
+joint actions, the exact format of the 0.67–0.80 positive control) trained on
+`episodes_cartesian_dual` reads **0.13/0.00/0.00 picked** on the cluster and
+**0.07 in a local replication** — dataset provenance alone moves joint DP from
+0.73 to 0.07. The dual source replays `{uid}_cartesian.npy` (bag `joint_pos`
+streams) rather than the proven vel-cmd replay; measured differences: ~20% more
+frames per demo with an INCONSISTENT time base (ratio 1.02–1.34 across demos),
+and smoother actions (measured positions, 0.0022 vs 0.0026 rad/step commanded).
+Consequences:
+- Every `episodes_cartesian*` dataset shares this replay lineage, so the entire
+  "cartesian BC fails" ledger below is confounded — the six killed hypotheses
+  were all tested WITHIN the weak source.
+- The 2×2 as built cannot answer obs-vs-action. Rebuild path: re-collect the dual
+  representation DURING the proven vel-cmd replay (read `w['eef']` per frame in
+  the episodes_all collector; derive abs6 as pose-reached-at-i+1), then re-emit
+  the four cells and rerun. Until then, no cell result is interpretable.
+- The 12 cluster x2x2 trainings + evals measured the bad source; treat as void.
+
 **The measurement.** Diffusion Policy, 100k steps, dual eval (demo ICs / random ICs):
 
 | action space | in-dist | random |
