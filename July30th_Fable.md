@@ -242,3 +242,11 @@ poisoned window. Retest A100 before excluding it.
 mutation to the ENVIRONMENT in the failure window before theorizing about
 code/hardware. The 11:38 conda install was in `conda list --revisions` the whole
 time.
+
+**08-01 v2 control verdict: jobs_jact_v2 s0 = picked 0.27 in-dist / 0.13 random —
+did NOT replicate the 0.67-0.80 positive control despite bitwise-equal source
+frames.** Prime suspect: `pick_pruned` (the 0.67 dataset) is PRUNED — likely
+trimmed lead-ins/segments — while v2 cells keep full tapes minus last frame.
+Diagnose by diffing lerobot_x2x2v2_jobs_jact vs lerobot_dataset_pick_pruned
+(episode lengths first). Until resolved, v2 cell numbers are relative to a 0.27
+control, NOT 0.7 — eobs_eact_v2's 0.00 stands but the effect size is unclear.
