@@ -54,9 +54,13 @@ for p in sorted(glob.glob(str(REPO / args.src / '*.npz'))):
         print(f'{d["uid"]}: SKIP -- proxy never fires (stage {d["stage"]})')
         continue
     k = int(grant[0])
+    # keep ONE frame past the grant (matches harvest episodes): relabel_full scans
+    # frames [:-1], so an episode ending AT the grant loses it (0 rewarded -- caught
+    # by the SACfD smoke 2026-08-01)
+    end = min(k + 2, len(s))
     np.savez_compressed(OUT / pl.Path(p).name,
-                        states=s[:k + 1], actions=a[:k + 1], uid=int(d['uid']),
-                        n=k + 1, label='success', stage='picked')
+                        states=s[:end], actions=a[:end], uid=int(d['uid']),
+                        n=end, label='success', stage='picked')
     bank[int(d['uid'])] = dict(
         frame=k,
         qpos=[float(x) for x in s[k, :6]],

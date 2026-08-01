@@ -118,15 +118,20 @@ def main():
                     help='video-eval subprocess cadence (0 disables)')
     ap.add_argument('--eval-max-steps', type=int, default=1200,
                     help='eval rollout horizon (#21 lever: 400 for pick-only curves)')
+    ap.add_argument('--scope', choices=['full', 'pick'], default='full',
+                    help='pick: +1 and terminate on the pick (phase-1 paper core)')
+    ap.add_argument('--project', default='genesis_pickaplace', help='wandb project')
     args = ap.parse_args()
 
     t0 = time.time()
     if args.cartesian:
         from full_env import CartesianFullTaskEnv
         env = CartesianFullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
-                                   control=getattr(args, 'control', 'vel'))
+                                   control=getattr(args, 'control', 'vel'),
+                                   scope=args.scope)
     else:
-        env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps)
+        env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
+                          scope=args.scope)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s '
           f'| pick_z={env.pick_z:.4f}', flush=True)
 
@@ -146,6 +151,12 @@ def main():
         transitions, stats = relabel_cartesian(paths, env.pick_z)
     else:
         transitions, stats = relabel_full(paths, env.pick_z)
+    if args.scope == 'pick':
+        # demo termination must match the env's: the pick grant ENDS the episode,
+        # so its transition is terminal (done=True) or the critic bootstraps
+        # through a state the env never continues from
+        transitions = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                       (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
     n_r = sum(1 for t in transitions if t[2] > 0)
     print(f'[demos] {len(paths)} episodes -> {len(transitions)} transitions, '
           f'{n_r} rewarded | stage grants: {stats}', flush=True)
@@ -163,7 +174,8 @@ def main():
     from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
     from wandb_utils import init_wandb, WandbScalarCallback, VideoEvalCallback
     out = pl.Path(args.out_dir); out.mkdir(parents=True, exist_ok=True)
-    run = init_wandb(args, name=args.run_name or out.name, tags=('sacfd',))
+    run = init_wandb(args, name=args.run_name or out.name, tags=('sacfd',),
+                     project=args.project)
     cbs = [CheckpointCallback(save_freq=50_000, save_path=str(out), name_prefix='sacfd'),
            WandbScalarCallback(run)]
     if args.eval_freq:

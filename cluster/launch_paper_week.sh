@@ -15,19 +15,23 @@
 # that teacher) and chains the training behind it with --dependency=afterok.
 # Conversion harvest->lerobot happens inside the training job if needed.
 #
-#   condition   algo demos-from                    teacher (for auto-harvest)
-#   dH_DP       DP   66 human pick-truncated       -- (rsync lerobot_dH_pick)
-#   dH_ACT      ACT  same human set                --
-#   dDP_DP      DP   gen-0 DP harvest (m1_full)    ouro_dp_joint/gen0
-#   dDP2_DP     DP   gen-1 DP harvest (m2_full)    ouro_dp_joint/gen1 (the 0.87)
-#   dACT_ACT    ACT  gen-0 ACT harvest             ouro_act_joint/gen0
-#   dACT2_ACT   ACT  gen-1 ACT harvest             ouro_act_joint/gen1
-#   dDP_DV3     dv3  genesis_m1_full images        (same demos as dDP_DP)
-#   dH_DV3      dv3  = the RUNNING hdv3_pick_s0/1/2 (not resubmitted; N=5 adds s3 s4)
+# THREE LEARNER CLASSES (user, 2026-08-01: ACT duplicates DP's class -- swap for
+# SACfD): pure imitation (DP) / RL with demo buffer (SACfD) / world model (DV3).
 #
-# PREFLIGHT rsync (datasets travel by rsync, never git):
+#   condition   class demos-from                    teacher (for auto-harvest)
+#   dH_DP       BC    66 human pick-truncated       -- (rsync lerobot_dH_pick)
+#   dDP_DP      BC    gen-0 DP harvest (m1_full)    ouro_dp_joint/gen0
+#   dDP2_DP     BC    gen-1 DP harvest (m2_full)    ouro_dp_joint/gen1 (the 0.87)
+#   dH_SACfD    RLfD  66 human pick-truncated npz   -- (rsync episodes_pick_phase)
+#   dDP_SACfD   RLfD  gen-0 DP harvest npz          (same m1_full harvest)
+#   dDP_DV3     WM    genesis_m1_full images        (same demos as dDP_DP/dDP_SACfD)
+#   dH_DV3      WM    = the RUNNING hdv3_pick_s0/1/2 (not resubmitted; N=5 adds s3 s4)
+#
+# PREFLIGHT rsyncs (datasets travel by rsync, never git):
 #   rsync -av <devbox>:~/workspace/genesis_pickaplace/baselines/lerobot_dH_pick/ \
 #       <repo>/baselines/lerobot_dH_pick/
+#   rsync -av <devbox>:~/workspace/genesis_pickaplace/baselines/episodes_pick_phase/ \
+#       <repo>/baselines/episodes_pick_phase/
 set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:-$PWD}"
 export GENESIS_PICKAPLACE_ROOT="$PWD"
@@ -39,12 +43,9 @@ PROJ=${PROJ:-genesis_paper}
 # cond: PTYPE|DS(lerobot)|RAW(harvest dir)|TEACHER ckpt|DEMO_NAME(dv3 demo dir)
 declare -A C
 C[dH_DP]="diffusion|baselines/lerobot_dH_pick/genesis_pickaplace|||"
-C[dH_ACT]="act|baselines/lerobot_dH_pick/genesis_pickaplace|||"
 C[dDP_DP]="diffusion|paper_smoke/lerobot_m1_full/genesis_pickaplace|paper_smoke/m1_harvest_full|ouroboros/ouro_dp_joint/gen0/dp/checkpoints/last/pretrained_model|genesis_m1_full"
 C[dDP2_DP]="diffusion|paper_smoke/lerobot_m2_full/genesis_pickaplace|paper_smoke/m2_harvest_full|ouroboros/ouro_dp_joint/gen1/dp/checkpoints/last/pretrained_model|genesis_m2_full"
-C[dACT_ACT]="act|paper_smoke/lerobot_mact_full/genesis_pickaplace|paper_smoke/mact_harvest_full|ouroboros/ouro_act_joint/gen0/dp/checkpoints/last/pretrained_model|genesis_mact_full"
-C[dACT2_ACT]="act|paper_smoke/lerobot_mact2_full/genesis_pickaplace|paper_smoke/mact2_harvest_full|ouroboros/ouro_act_joint/gen1/dp/checkpoints/last/pretrained_model|genesis_mact2_full"
-ORDER="dH_DP dDP_DP dH_ACT dACT_ACT dDP2_DP dACT2_ACT"
+ORDER="dH_DP dDP_DP dDP2_DP"
 
 sub() { if [ -n "${DRYRUN:-}" ]; then echo "  [dry] $*" >&2; echo "DRY"; else "$@"; fi; }
 
@@ -98,6 +99,35 @@ for COND in $ORDER; do
                 --random 15 --seed 0 --project $PROJ --group $COND --name ${COND}_s\$S-eval; \
             done")
   echo "  $COND: train+eval job $JID ${DEP:+(waits on harvest)}"
+done
+
+echo "== SACfD conditions (one job PER SEED: ~6-8h each; preemption restarts the seed)"
+for COND in dH_SACfD dDP_SACfD; do
+  case $COND in
+    dH_SACfD)  DDIR=baselines/episodes_pick_phase;;
+    dDP_SACfD) DDIR=paper_smoke/m1_harvest_full;;
+  esac
+  if [ ! -d "$DDIR" ] || { [ "$COND" = dDP_SACfD ] && [ ! -f "$DDIR/manifest.json" ]; }; then
+    echo "  $COND: demos not ready ($DDIR) -- rsync/wait for harvest, rerun launcher. SKIPPED."
+    continue
+  fi
+  for S in $SEEDS; do
+    sub sbatch --job-name="${COND}_s$S" -p "${PARTITION:-gpu,preempt}" --requeue \
+      --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s|a100|l40|h200}" \
+      -N 1 -n 8 --mem=32g --time=1-00:00:00 \
+      --output="paper_${COND}_s${S}_%j.out" \
+      --wrap="module load anaconda/2025.06.0; conda activate ${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}; \
+              cd $PWD; export GENESIS_PICKAPLACE_ROOT=$PWD MUJOCO_GL=egl PYTHONUNBUFFERED=1; \
+              O=baselines/outputs/paper/${COND}_s$S; \
+              python baselines/rl/train_sacfd_full.py --scope pick \
+                --demo-dir $DDIR --steps ${SACFD_STEPS:-200000} --seed $S \
+                --train-max-steps 900 --out-dir \$O --run-name ${COND}_s$S \
+                --project $PROJ --eval-freq 50000; \
+              python baselines/wandb_eval.py --kind sac --ic-mode both \
+                --checkpoint \$O/sacfd_final.zip --random 15 --seed 0 \
+                --project $PROJ --group $COND --name ${COND}_s${S}-eval" >/dev/null \
+      && echo "  ${COND}_s$S submitted"
+  done
 done
 
 echo "== dDP_DV3 (dv3 pick-scope, model image demos -- same set as dDP_DP)"

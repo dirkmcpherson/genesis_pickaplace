@@ -96,15 +96,23 @@ Old H-*/M1-*/M2-* names appear only in wandb archaeology before this date.
 
 **Condition matrix (core, PICK phase):**
 
-| id | demos | learner | status |
-|----|-------|---------|--------|
-| H-DP ×3   | 66 human            | DP  | **COMPLETE 07-31: picked 0.67 / 0.73 / 0.80 in-dist** (placed 0.53/0.60/0.60; s2 nested 0.13). Random-IC: 0.27/0.13/0.07 — the gen gap is where seed variance lives |
-| M1-DP ×3  | 66 gen-1 model      | DP  | **s0 (08-01): picked 0.87 in-dist / 0.33 random — ABOVE all human seeds on both** (self-distillation amplification from a 0.67 teacher). placed/contact/nested 0 is STRUCTURAL (pick-scope harvest has no post-pick content) — H1's downstream claim still untested. Seeds 1-2 + chain to gen-2 pending |
-| H-ACT ×3  | 66 human            | ACT | lineage running |
-| M1-ACT ×3 | 66 gen-1 model      | ACT | pending gen-1 harvest |
-| M2-DP ×3  | 66 gen-2 model      | DP  | pending (chain MAXGEN=3) |
-| H-DV3 ×3  | 91 human (image)    | DV3 | **pick-scope gate = the paper smoke** (hdv3_pick s0/s1 on cluster). NB the "local pick-scope run" believed in flight never existed — the 07-31 08:47 launch failed silently; full-scope joint_ref_local sat at log_picked 0.0 for 582k steps |
-| M1-DV3 ×3 | gen-1 model (image) | DV3 | smoke job A = first-ever `--images` harvest → `to_dreamer --scope pick` → m1dv3_pick_s0 |
+Three learner CLASSES (user 08-01; ACT dropped — it duplicates DP's class):
+pure imitation (DP) / RL-from-demos (SACfD) / world model (DV3). All conditions
+launch via `cluster/launch_paper_week.sh` (matched-rule datasets: human truncated
+at pick grant; model = cap-1200 target-66 verified harvest per generation).
+
+| id | class | demos | status |
+|----|-------|-------|--------|
+| dH_DP ×3    | BC   | 66 human pick-trunc  | week launcher (NB: full-demo predecessors hit 0.67/0.73/0.80 in-dist, 07-31 — kept as descriptive context) |
+| dDP_DP ×3   | BC   | gen-0 DP harvest     | week launcher. Cap-600 lineage predecessor s0: **picked 0.87 in-dist / 0.33 random — above all human seeds** (self-distillation amplification) |
+| dDP2_DP ×3  | BC   | gen-1 DP harvest     | launcher auto-harvests from the 0.87 teacher |
+| dH_SACfD ×3 | RLfD | 66 human pick-trunc  | week launcher (train_sacfd_full --scope pick; smoke-verified 66/66 grants) |
+| dDP_SACfD ×3| RLfD | gen-0 DP harvest     | week launcher (same m1_full harvest as dDP_DP) |
+| dH_DV3 ×3   | WM   | 91 human (image)     | RUNNING (hdv3_pick s0/s1/s2, 5M budget) — also the H4 learnability gate |
+| dDP_DV3 ×3  | WM   | gen-0 harvest (image)| launcher, after m1_full harvest lands (same demos as dDP_DP/dDP_SACfD) |
+
+Archival: the ouro ACT lineage (gen0-2 trained, datasets banked) stays as
+appendix/backup material; its conditions left the core when ACT was dropped.
 
 **Stretch matrix — TIME-PERMITTING ONLY (Decision Log 2026-07-31). Runs only if
 (a) the core matrix is complete with ×3 seeds, (b) a gap exists, and (c) there is
