@@ -26,14 +26,23 @@ STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 
 
 class FullTaskEnv(gym.Env):
+    TIP_DEG = 60.0
+    TIP_PENALTY = 0.0
+    GRIP_OPEN = 0.3          # grip command below this = not holding
     metadata = {'render_modes': []}
 
     def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,
-                 camera_rig=False, workspace_limit=False):
+                 camera_rig=False, workspace_limit=False, scope='full'):
         super().__init__()
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
                                   workspace_limit=workspace_limit)
+        # scope='pick': +1 and terminate on the pick (matches CartesianFullTaskEnv).
+        # step() has referenced self.scope since the pick-scope work, but this
+        # constructor never set it -- every FullTaskEnv.step crashed (found by the
+        # eval-side genesis_scope restore, 2026-08-01: ALL periodic evals of the
+        # joint dv3 smoke runs were failing on this).
+        self.scope = scope
         self.max_steps = int(max_steps)
         self.fixed_uid = fixed_uid
         self.success_uids = sorted(
@@ -86,7 +95,11 @@ class FullTaskEnv(gym.Env):
                 truncated = False
                 return (obs['state'].astype(np.float32), reward, True, False, info)
         terminated = bool(info.get('nested'))
-        if not terminated and float(a_phys[4]) < self.GRIP_OPEN \
+        # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --
+        # the grip-column bug, 4th sighting; this block also never ran before
+        # 2026-08-01: self.scope and the class constants were missing entirely, so
+        # every FullTaskEnv.step crashed and all joint dv3 periodic evals failed)
+        if not terminated and float(a_phys[6]) < self.GRIP_OPEN \
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
             reward += self.TIP_PENALTY
             terminated = True
@@ -186,7 +199,13 @@ class CartesianFullTaskEnv(gym.Env):
                 truncated = False
                 return (obs['state'].astype(np.float32), reward, True, False, info)
         terminated = bool(info.get('nested'))
-        if not terminated and float(a_phys[4]) < self.GRIP_OPEN \
+        # grip column is mode-dependent: index 4 in 5-dim vel/delta/abs actions,
+        # index 6 in 7-dim abs6/delta6 (index 4 there is a ROTATION axis -- the
+        # grip-column bug, 5th sighting; misread grip made the tip rule fire on
+        # wrist rotation in 6-DOF modes, a candidate cause of the abs6-RL
+        # 13-33-step degenerate episodes)
+        _grip = float(a_phys[6] if len(a_phys) >= 7 else a_phys[4])
+        if not terminated and _grip < self.GRIP_OPEN \
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
             reward += self.TIP_PENALTY
             terminated = True
