@@ -41,7 +41,9 @@ SITE=$(python -c 'import site; print(site.getsitepackages()[0])')
 export LD_LIBRARY_PATH="$(ls -d "$SITE"/nvidia/*/lib 2>/dev/null | tr '\n' ':')${LD_LIBRARY_PATH:-}"
 
 FAIL=0; DONE=0
-for CELL in jobs_jact jobs_eact eobs_jact eobs_eact; do
+# ~85 min per eval x 12 outruns the 12h limit around checkpoint 8; resubmit the
+# remainder with e.g.:  CELLS="eobs_jact eobs_eact" sbatch --export=ALL,CELLS ...
+for CELL in ${CELLS:-jobs_jact jobs_eact eobs_jact eobs_eact}; do
   case $CELL in
     jobs_jact) FLAGS="";                              OBS=env;;
     jobs_eact) FLAGS="--cartesian --control abs6";    OBS=joint;;
