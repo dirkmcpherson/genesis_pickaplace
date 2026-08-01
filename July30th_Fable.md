@@ -250,3 +250,16 @@ trimmed lead-ins/segments — while v2 cells keep full tapes minus last frame.
 Diagnose by diffing lerobot_x2x2v2_jobs_jact vs lerobot_dataset_pick_pruned
 (episode lengths first). Until resolved, v2 cell numbers are relative to a 0.27
 control, NOT 0.7 — eobs_eact_v2's 0.00 stands but the effect size is unclear.
+
+**08-01 THE 2x2 ANSWER (v2, unpruned data, s0, control=0.27):**
+             joint actions   abs6 actions
+  joint obs      0.27            0.07
+  ee obs         0.53            0.00
+**The ACTION representation is the killer.** Both abs6-action cells ~0 regardless
+of obs; both joint-action cells work; ee OBSERVATIONS actually HELP (0.53 > 0.27).
+Combined with open-loop abs6 replay completing the task: the failure is DP
+LEARNING to emit ee-space absolute-pose actions (suspect: near-degenerate
+normalized target variance -- pose targets hug the current pose -- vs joint
+targets), not execution, not data, not obs. The week-old mystery is localized.
+Next: single-seed confirm at x3, then (if pursued) action-head fixes: delta-from-
+current parameterization with proper scaling, or per-dim normalization surgery.
