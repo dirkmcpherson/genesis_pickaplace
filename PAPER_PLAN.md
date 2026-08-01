@@ -83,7 +83,7 @@ available as negative/RL data but never enter IL training sets.
 
 | id | demos | learner | status |
 |----|-------|---------|--------|
-| H-DP ×3   | 66 human            | DP  | s0 0.67, s1 **0.73** in-dist (placed 0.60); s2 training in the local chain |
+| H-DP ×3   | 66 human            | DP  | **COMPLETE 07-31: picked 0.67 / 0.73 / 0.80 in-dist** (placed 0.53/0.60/0.60; s2 nested 0.13). Random-IC: 0.27/0.13/0.07 — the gen gap is where seed variance lives |
 | M1-DP ×3  | 66 gen-1 model      | DP  | ouroboros lineage running → harvest pending |
 | H-ACT ×3  | 66 human            | ACT | lineage running |
 | M1-ACT ×3 | 66 gen-1 model      | ACT | pending gen-1 harvest |
