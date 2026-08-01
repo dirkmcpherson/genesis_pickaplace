@@ -71,6 +71,27 @@ for p in sorted(glob.glob(str(REPO / args.src / '*.npz'))):
         goal_xy=[float(x) for x in s[k, 15:17]])
     n_out += 1
 
+# --- the ALL set (successes + fails) for RLfD/WM consumers ---------------------
+# BC must never see fails (user rule); SACfD/DV3 use them as zero-reward negative
+# data. Fails have no grant to truncate at -- cap at 1200 (the harvest cap).
+ALL = REPO / (args.outdir + '_all')
+ALL.mkdir(parents=True, exist_ok=True)
+import shutil
+n_fail = 0
+for f in glob.glob(str(OUT / '*.npz')):
+    shutil.copy(f, ALL / pl.Path(f).name)
+for p in sorted(glob.glob(str(REPO / args.src / '*.npz'))):
+    d = np.load(p, allow_pickle=True)
+    if str(d['label']) == 'success' and str(d['stage']) != 'no-pick':
+        continue
+    s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
+    end = min(len(s), 1200)
+    np.savez_compressed(ALL / pl.Path(p).name,
+                        states=s[:end], actions=a[:end], uid=int(d['uid']),
+                        n=end, label='fail', stage='no-pick')
+    n_fail += 1
+print(f'ALL set: {n_out} success + {n_fail} fail -> {ALL}')
+
 (REPO / args.bank).write_text(json.dumps(bank, indent=1))
 lens = [np.load(f)['n'] for f in glob.glob(str(OUT / '*.npz'))]
 print(f'{n_out} pick-phase demos -> {OUT} ({n_skip} skipped); '

@@ -252,6 +252,10 @@ def main():
                          'SMOKE-CAUGHT: 300 truncates closed-loop DP teachers mid-'
                          'approach (2.5%% yield vs 33%% eval pick rate) -- DP needs '
                          '~600; SAC picks fast and 300 is fine.')
+    ap.add_argument('--keep-fails', type=int, default=0,
+                    help='also serialize up to N FAILED rollouts (label=fail, '
+                         'stage=no-pick) as zero-reward negative data for RLfD/WM '
+                         'consumers. BC converters must filter label==success.')
     ap.add_argument('--images', action='store_true',
                     help='record the (64,64,6) rig obs per step into the npz '
                          '(required to train image students on the harvest)')
@@ -294,6 +298,7 @@ def main():
     kept = kept_ics = 0
     kept_ic_list = []
     n_reject_verify = 0
+    n_fails = 0
     n_reject_short = 0
     for idx, ic in enumerate(episodes):
         states, actions, images, ok, s_alt, a_alt = rollout(
@@ -301,6 +306,22 @@ def main():
             record_images=args.images, cap=args.cap)
         if not ok:
             print(f'  ic{idx}: no {args.scope}-success ({len(states)} steps)', flush=True)
+            # RLfD/WM consumers benefit from failures as zero-reward negative data
+            # (BC must never see them -- their converters filter label=='success').
+            # Capped so the fail share stays comparable to the human set's (~25/66).
+            if args.keep_fails and n_fails < args.keep_fails \
+                    and len(states) >= MIN_KEEP_FRAMES:
+                fstem = 500000 + n_fails
+                fpay = dict(states=states, actions=actions, n=len(states), uid=fstem,
+                            label='fail', stage='no-pick')
+                if images is not None:
+                    fpay['images'] = images
+                if s_alt is not None:
+                    fpay['states_joint'] = s_alt
+                if a_alt is not None:
+                    fpay['actions_joint'] = a_alt
+                np.savez_compressed(outdir / f'{fstem}.npz', **fpay)
+                n_fails += 1
             continue
         if len(states) < MIN_KEEP_FRAMES:
             print(f'  ic{idx}: rejected -- only {len(states)} frames '
@@ -349,6 +370,7 @@ def main():
                     rollout_budget=args.n, target_kept=args.target_kept,
                     short_of_target=bool(short), kept=kept,
                     yield_frac=round(yield_frac, 4), rejected_by_verify=n_reject_verify,
+                    fails_kept=n_fails,
                     ic_coverage=cov)
     (outdir / 'manifest.json').write_text(json.dumps(manifest, indent=2))
     print(f'\n[harvest] kept {kept}/{args.n} (yield {yield_frac:.2%}), '

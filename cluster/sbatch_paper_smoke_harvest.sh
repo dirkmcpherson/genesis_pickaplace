@@ -37,7 +37,7 @@ TEACHER_CKPT=${TEACHER_CKPT:-ouroboros/ouro_dp_joint/gen0/dp/checkpoints/last/pr
 HARV_OUT=${HARV_OUT:-paper_smoke/m1_harvest}
 DEMO_NAME=${DEMO_NAME:-genesis_m1_smoke}
 MIN_KEPT=${MIN_KEPT:-12}
-[ -d "$TEACHER_CKPT" ] || { echo "FATAL: teacher checkpoint missing: $TEACHER_CKPT"; exit 1; }
+[ -e "$TEACHER_CKPT" ] || { echo "FATAL: teacher checkpoint missing: $TEACHER_CKPT"; exit 1; }   # -e: SAC ckpts are FILES (.zip)
 
 module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
@@ -45,10 +45,11 @@ export MUJOCO_GL=egl PYTHONUNBUFFERED=1
 SITE=$(python -c 'import site; print(site.getsitepackages()[0])')
 export LD_LIBRARY_PATH="$(ls -d "$SITE"/nvidia/*/lib 2>/dev/null | tr '\n' ':')${LD_LIBRARY_PATH:-}"
 
-echo "== paper smoke harvest start $(date)  teacher=$TEACHER_CKPT  target=${SMOKE_KEPT:-20} -> $HARV_OUT"
-python baselines/harvest_ai_demos.py --teacher-type dp \
+echo "== paper smoke harvest start $(date)  teacher=$TEACHER_CKPT (${TEACHER_TYPE:-dp})  target=${SMOKE_KEPT:-20} -> $HARV_OUT"
+python baselines/harvest_ai_demos.py --teacher-type "${TEACHER_TYPE:-dp}" \
   --checkpoint "$TEACHER_CKPT" --action-space joint \
   --ic-mode demo --scope pick --verify --images \
+  --keep-fails "${KEEP_FAILS:-0}" \
   --n "${HARVEST_N:-200}" --target-kept "${SMOKE_KEPT:-20}" --cap "${CAP:-600}" --seed 7 \
   --outdir "$HARV_OUT"
 

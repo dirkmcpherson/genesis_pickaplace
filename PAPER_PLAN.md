@@ -96,10 +96,15 @@ Old H-*/M1-*/M2-* names appear only in wandb archaeology before this date.
 
 **Condition matrix (core, PICK phase):**
 
-Three learner CLASSES (user 08-01; ACT dropped — it duplicates DP's class):
-pure imitation (DP) / RL-from-demos (SACfD) / world model (DV3). All conditions
-launch via `cluster/launch_paper_week.sh` (matched-rule datasets: human truncated
-at pick grant; model = cap-1200 target-66 verified harvest per generation).
+Three learner CLASSES (user 08-01; ACT dropped — duplicates DP's class):
+pure imitation (DP) / RL-from-demos (SACfD) / world model (DV3).
+**CROSS-ALGORITHM DEMO MATRIX (user 08-01, supersedes generational DP): each
+learner trains on each source's demos. SACfD/DV3 also consume FAILED demos
+(zero-reward negatives: human set 66+25, harvests --keep-fails 30); DP only ever
+sees successes.** Sources: dH (human), dDP (gen-0 DP harvest), dSACfD (harvest
+from the best dH_SACfD, wave 2), dDV3 (wave 3: needs the H4 gate to pass + a
+dv3-teacher mode in harvest_ai_demos). 3×3(+diag) conditions ×3-5 seeds via
+`cluster/launch_paper_week.sh` — rerun it as teachers appear; it fills in.
 
 | id | class | demos | status |
 |----|-------|-------|--------|
