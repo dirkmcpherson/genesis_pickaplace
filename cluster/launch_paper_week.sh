@@ -73,7 +73,7 @@ for S_NAME in dH dDP dSACfD; do
   [ "$S_NAME" != dH ] && CONV="if [ ! -d $DS ]; then T=\$(mktemp -d); cp $RAW/1*.npz \$T/; python baselines/convert_to_lerobot.py \$T $DS 8 4 none; rm -rf \$T; fi;"
   sub sbatch --job-name="${S_NAME}_DP" $DEP -p "${PARTITION:-gpu,preempt}" --requeue \
     --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s|a100|l40|h200}" \
-    -N 1 -n 8 --mem=48g --time=1-00:00:00 --output="paper_${S_NAME}_DP_%j.out" \
+    -N 1 -n 8 --mem=48g --time=0-14:00:00 --output="paper_${S_NAME}_DP_%j.out" \
     --wrap="$PRE; $CONV \
       for S in $SEEDS; do \
         O=baselines/outputs/paper/${S_NAME}_DP_s\$S; \
@@ -93,7 +93,7 @@ for S_NAME in dH dDP dSACfD; do
   for S in $SEEDS; do
     sub sbatch --job-name="${S_NAME}_SACfD_s$S" $DEP -p "${PARTITION:-gpu,preempt}" --requeue \
       --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s|a100|l40|h200}" \
-      -N 1 -n 8 --mem=32g --time=1-00:00:00 --output="paper_${S_NAME}_SACfD_s${S}_%j.out" \
+      -N 1 -n 8 --mem=32g --time=0-10:00:00 --output="paper_${S_NAME}_SACfD_s${S}_%j.out" \
       --wrap="$PRE; O=baselines/outputs/paper/${S_NAME}_SACfD_s$S; \
         python baselines/rl/train_sacfd_full.py --scope pick \
           --demo-dir $NPZ --steps ${SACFD_STEPS:-200000} --seed $S \
