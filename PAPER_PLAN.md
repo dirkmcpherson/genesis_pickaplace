@@ -293,3 +293,8 @@ preprocessing effect. dH_DP trains on the PRUNED pick-phase set (29.6% frames
 dropped); SACfD/DV3 consume unpruned (idle frames are honest dynamics/negative
 data there). Model harvests contain no idle frames (closed-loop teachers), which
 is itself a source property the distributional analysis should quantify.
+
+- 2026-08-02 (assistant): archival lineage generational curve COMPLETE at pick
+  scope: gen-0 0.67 -> gen-1 0.87 -> gen-2 0.87 picked in-dist (single seeds,
+  cap-600 harvests). Self-distillation amplifies once then PLATEAUS -- no
+  model-collapse through two generations. Feeds the discussion section.
