@@ -20,6 +20,12 @@ from stable_baselines3.common.callbacks import BaseCallback
 REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
                               pl.Path(__file__).resolve().parents[2]))
 PY = REPO / '.venv-eval/bin/python'
+if not PY.exists():
+    # cluster runs use a conda env, not the dev box's venv: a hardcoded PY made
+    # Popen raise FileNotFoundError at the FIRST eval tick and killed all three
+    # dH_SACfD trainers ~2h in (2026-08-02). Same interpreter that runs training.
+    import sys as _sys
+    PY = pl.Path(_sys.executable)
 
 
 def init_wandb(args, name=None, project='genesis_pickaplace', tags=()):
@@ -133,10 +139,16 @@ class VideoEvalCallback(BaseCallback):
                '--record-dir', str(rec), '--json', str(self.dir / 'metrics.json'),
                '--no-wandb', '--step', str(self.num_timesteps)]
         self.proc_step = self.num_timesteps
-        self.proc = subprocess.Popen(cmd, stdout=open(self.dir / 'eval.log', 'w'),
-                                     stderr=subprocess.STDOUT)
-        print(f'[wandb_eval] step {self.num_timesteps}: eval subprocess launched',
-              flush=True)
+        try:
+            self.proc = subprocess.Popen(cmd, stdout=open(self.dir / 'eval.log', 'w'),
+                                         stderr=subprocess.STDOUT)
+            print(f'[wandb_eval] step {self.num_timesteps}: eval subprocess launched',
+                  flush=True)
+        except Exception as e:
+            # an eval-side failure must NEVER kill training (it did, 2026-08-02)
+            self.proc = None
+            print(f'[wandb_eval] SKIPPED -- could not launch eval subprocess: {e}',
+                  flush=True)
         return True
 
     def _on_training_end(self):
