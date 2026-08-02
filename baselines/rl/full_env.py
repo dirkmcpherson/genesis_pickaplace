@@ -11,7 +11,9 @@ scope='place': reset restores a random banked POST-PICK entry state
     goal), settles ~20 steps holding the entry commands and verifies the can is
     still held (resamples otherwise); +1 and terminate on PLACED_V2 = grip cmd
     released (<0.45) + can in shelf footprint/z-band + tilt<20 deg, sustained 10
-    consecutive frames. Default cap 600 steps. Tip rule applies in all scopes.
+    consecutive frames. Default cap 600 steps. Tip rule applies in all scopes;
+    scope='place' ONLY also pays PLACE_TIP_PENALTY (-0.25) on the tip
+    termination (other scopes keep TIP_PENALTY = 0.0, termination only).
 """
 import os
 import sys
@@ -38,9 +40,10 @@ PLACE_ENTRY_BANK = REPO / 'baselines' / 'pick_entry_states.json'
 
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
-    TIP_PENALTY = 0.0
+    TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
     GRIP_OPEN = 0.3          # grip command below this = not holding
     # --- scope='place' (PLACED_V2, release-based -- PAPER_PLAN stage-wise matrix) ---
+    PLACE_TIP_PENALTY = -0.25  # scope='place' ONLY: penalty on the tip termination
     PLACE_RELEASE = 0.45     # grip command below this counts as released
     PLACE_TILT_DEG = 20.0    # can must be near-upright
     PLACE_SUSTAIN = 10       # predicate must hold this many CONSECUTIVE frames
@@ -233,7 +236,9 @@ class FullTaskEnv(gym.Env):
         # every FullTaskEnv.step crashed and all joint dv3 periodic evals failed)
         if not terminated and float(a_phys[6]) < self.GRIP_OPEN \
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
-            reward += self.TIP_PENALTY
+            # scope='place' ONLY pays a penalty for the tip (dropped the held
+            # can); pick/full keep TIP_PENALTY = 0.0 (termination only).
+            reward += self.PLACE_TIP_PENALTY if self.scope == 'place' else self.TIP_PENALTY
             terminated = True
             info['tipped'] = True
         truncated = (not terminated) and self._t >= self.max_steps
