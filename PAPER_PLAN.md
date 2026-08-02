@@ -298,3 +298,9 @@ is itself a source property the distributional analysis should quantify.
   scope: gen-0 0.67 -> gen-1 0.87 -> gen-2 0.87 picked in-dist (single seeds,
   cap-600 harvests). Self-distillation amplifies once then PLATEAUS -- no
   model-collapse through two generations. Feeds the discussion section.
+
+- 2026-08-02 (assistant): **dH_DP x3 COMPLETE (matched-rule, pruned pick-phase
+  data): picked 0.80/0.60/0.60 in-dist (mean 0.67), random 0.13/0.33/0.20.**
+  First full matrix row. dH_SACfD s0 official: 0.40 in-dist / 0.33 random -- gen
+  gap 0.07, the smallest of ANY policy so far (RL generalizes; BC memorizes --
+  echoes the 07-18 SACfD-vs-DP pattern at phase-1 scope).
