@@ -219,3 +219,4 @@ venv/
 baselines/lerobot_x2x2_*/
 baselines/x2x2/
 ouroboros/
+baselines/demonstrations/
