@@ -304,3 +304,13 @@ is itself a source property the distributional analysis should quantify.
   First full matrix row. dH_SACfD s0 official: 0.40 in-dist / 0.33 random -- gen
   gap 0.07, the smallest of ANY policy so far (RL generalizes; BC memorizes --
   echoes the 07-18 SACfD-vs-DP pattern at phase-1 scope).
+
+- 2026-08-02 (assistant): **CORE RESULT LANDS — dDP_DP_s0 (matched-rule cap-1200
+  harvest): picked 0.87 in-dist / 0.27 random. Model demos BEAT the human DP row
+  (0.80/0.60/0.60) under the fairest protocol**, replicating the lineage 0.87.
+  Seeds 1-2 training. SACfD rows COMPLETE (official evals): dH_SACfD =
+  0.40/0.53/0.13 (mean 0.35, random 0.33/0.33/0.07); dDP_SACfD = 0.07/0.13/0.60
+  (mean 0.27, random 0/0.2/0.2). RLfD verdict at n=3: source effect within seed
+  noise — human and model demos serve RL comparably (H4-adjacent), while BC
+  slightly FAVORS model demos. Seed variance in SACfD (0.07-0.60) is the
+  dominant uncertainty; N=5 would sharpen it if the week allows.
