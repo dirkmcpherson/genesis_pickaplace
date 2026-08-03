@@ -138,6 +138,7 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._pv2_run = 0
+        self._attempted = False
         self._phi = 0.0
 
     def _place_phi(self, bp):
@@ -217,7 +218,7 @@ class FullTaskEnv(gym.Env):
                 self._survival_reported = True
             if ok:
                 self._t = 0
-                self._pv2_run = 0
+                self._pv2_run = 0; self._attempted = False
                 # seed the shaping potential at the settled entry state (cheap;
                 # computed unconditionally so shaping toggling never desyncs it)
                 self._phi = self._place_phi(np_(self.genv.w['bottle'].get_pos()))
@@ -286,6 +287,13 @@ class FullTaskEnv(gym.Env):
                 reward += (self.PLACE_SHAPING_GAMMA * phi - self._phi
                            - self.PLACE_STEP_COST)
                 self._phi = phi
+            # v7: one-time bonus for a release ATTEMPT in the zone (grip open in
+            # footprint+z-band), so trying strictly beats clamping shut
+            if (self.scope == 'place' and not getattr(self, '_attempted', False)
+                    and float(a_phys[6]) < self.PLACE_RELEASE
+                    and in_shelf_footprint(bp) and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.10):
+                reward += 0.2
+                self._attempted = True
             ok = (float(a_phys[6]) < self.PLACE_RELEASE
                   and in_shelf_footprint(bp)
                   and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07
@@ -309,7 +317,16 @@ class FullTaskEnv(gym.Env):
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
             # scope='place' ONLY pays a penalty for the tip (dropped the held
             # can); pick/full keep TIP_PENALTY = 0.0 (termination only).
-            reward += self.PLACE_TIP_PENALTY if self.scope == 'place' else self.TIP_PENALTY
+            if self.scope == 'place':
+                # v7: a tip ON the shelf is a near-miss from a place ATTEMPT --
+                # cheap (-0.1) so failure during experimentation stays affordable;
+                # a drop elsewhere is a real failure (-1). A flat -1 (v6) taught
+                # the actor that opening the grip is globally dangerous: release
+                # attempts -> 0, places -> 0 despite the curriculum.
+                reward += (-0.1 if in_shelf_footprint(np_(self.genv.w['bottle'].get_pos()))
+                           else self.PLACE_TIP_PENALTY)
+            else:
+                reward += self.TIP_PENALTY
             terminated = True
             info['tipped'] = True
         truncated = (not terminated) and self._t >= self.max_steps
