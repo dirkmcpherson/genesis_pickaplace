@@ -7,7 +7,11 @@ Same normalized [-1,1]^7 action convention as PickOnlyEnv (see pick_env.py docst
 
 scope='pick':  +1 and terminate on the pick grant.
 scope='place': reset restores a random banked POST-PICK entry state
-    (baselines/pick_entry_states.json; arm qpos + finger closure + held can pose +
+    (constructor entry_bank=; default baselines/pick_entry_states.json = one
+    entry per demo at the pick grant. A DENSE bank -- a JSON LIST of entries,
+    e.g. baselines/place_entry_states_dense.json from make_place_entry_bank.py,
+    every 25th frame along each demo's carry segment -- is sampled uniformly
+    over ENTRIES; arm qpos + finger closure + held can pose +
     goal), settles ~20 steps holding the entry commands and verifies the can is
     still held (resamples otherwise); +1 and terminate on PLACED_V2 = grip cmd
     released (<0.45) + can in shelf footprint/z-band + tilt<20 deg, sustained 10
@@ -77,7 +81,8 @@ class FullTaskEnv(gym.Env):
     metadata = {'render_modes': []}
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
-                 camera_rig=False, workspace_limit=False, scope='full', shaping=False):
+                 camera_rig=False, workspace_limit=False, scope='full', shaping=False,
+                 entry_bank=None):
         super().__init__()
         # TRAINING-ONLY dense shaping (scope='place' only; see PLACE_SHAPING_*
         # constants). Default False so eval and every other caller are unchanged.
@@ -105,9 +110,22 @@ class FullTaskEnv(gym.Env):
         self.success_uids = sorted(
             u for u, r in self.genv.placements.items() if r.get('label') == 'success')
         if scope == 'place':
-            self._entry_bank = {int(u): e for u, e in
-                                json.loads(PLACE_ENTRY_BANK.read_text()).items()}
-            assert self._entry_bank, f'empty entry bank {PLACE_ENTRY_BANK}'
+            # entry_bank: path to the bank JSON. Default = the legacy single-
+            # entry-per-demo bank (uid-keyed DICT) so existing runs are byte-
+            # identical. A dense bank (make_place_entry_bank.py) is a LIST of
+            # entries each carrying 'uid'; reset samples uniformly over ENTRIES.
+            bank_path = pl.Path(entry_bank) if entry_bank else PLACE_ENTRY_BANK
+            raw = json.loads(bank_path.read_text())
+            if isinstance(raw, dict):
+                self._entries = [dict(e, uid=int(u)) for u, e in raw.items()]
+            else:
+                self._entries = [dict(e, uid=int(e['uid'])) for e in raw]
+            assert self._entries, f'empty entry bank {bank_path}'
+            # legacy uid->entry view (earliest frame per uid) kept for external
+            # consumers (verify_place_scope reads _entry_bank[uid]['frame'])
+            self._entry_bank = {}
+            for e in sorted(self._entries, key=lambda x: (x['uid'], x['frame'])):
+                self._entry_bank.setdefault(e['uid'], e)
             self.success_uids = sorted(self._entry_bank)
             # survival accounting (printed once after the first reset; entries whose
             # held-can state does not survive the restore+settle are resampled)
@@ -128,8 +146,9 @@ class FullTaskEnv(gym.Env):
         dy = float(bp[1]) - self.PLACE_SHAPING_TARGET[1]
         return -self.PLACE_SHAPING_SCALE * float(np.hypot(dx, dy))
 
-    def _restore_place_entry(self, uid):
-        """Restore one banked post-pick state; True if the can survives the settle.
+    def _restore_place_entry(self, e):
+        """Restore one banked post-pick entry dict; True if the can survives the
+        settle.
 
         Order matters: genv.reset first (clears velocities, seeds goal/can, steps
         once with the arm at HARDCODED_START), THEN overwrite arm+finger joints and
@@ -137,7 +156,6 @@ class FullTaskEnv(gym.Env):
         ~0.5 mm), THEN hold the entry commands for PLACE_SETTLE physics steps so
         the grasp re-engages before the policy sees the state.
         """
-        e = self._entry_bank[uid]
         w = self.genv.w
         goal_pos = (e['goal_xy'][0], e['goal_xy'][1], w['goal_start_z'])
         self.genv.reset(can_pos=e['can_pos'], can_quat=e['can_quat'],
@@ -180,10 +198,16 @@ class FullTaskEnv(gym.Env):
 
     def _reset_place(self, uid=None):
         tried = []
+        # explicit uid: resample only among that uid's entries (dense bank may
+        # hold several); no cross-uid swap (fail loudly, as before)
+        pool = self._entries if uid is None else \
+            [e for e in self._entries if e['uid'] == int(uid)]
+        assert pool, f'no bank entries for uid {uid}'
         for _ in range(self.PLACE_MAX_TRIES):
-            u = int(uid) if uid is not None else int(self.np_random.choice(self.success_uids))
+            e = pool[int(self.np_random.integers(len(pool)))]
+            u = e['uid']
             self.place_attempts += 1
-            ok = self._restore_place_entry(u)
+            ok = self._restore_place_entry(e)
             if ok:
                 self.place_survived += 1
             if not self._survival_reported and self.place_attempts >= 1 and ok:
@@ -203,12 +227,11 @@ class FullTaskEnv(gym.Env):
                 self.genv._picked = True
                 self._granted = {'picked'}
                 return (self.genv._obs()['state'].astype(np.float32),
-                        {'uid': u, 'entry_frame': int(self._entry_bank[u]['frame'])})
-            tried.append(u)
-            print(f'[place] entry {u} did not survive restore (can dropped), '
-                  f'resampling', flush=True)
-            if uid is not None:      # explicit uid requested: fail loudly, no swap
-                break
+                        {'uid': u, 'entry_frame': int(e['frame']),
+                         'entry_frac': float(e.get('frac', 0.0))})
+            tried.append((u, int(e['frame'])))
+            print(f'[place] entry {u}@{int(e["frame"])} did not survive restore '
+                  f'(can dropped), resampling', flush=True)
         raise RuntimeError(f'scope=place reset: no entry survived restore '
                            f'(tried {tried})')
 
