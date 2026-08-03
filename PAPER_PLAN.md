@@ -314,3 +314,14 @@ is itself a source property the distributional analysis should quantify.
   noise — human and model demos serve RL comparably (H4-adjacent), while BC
   slightly FAVORS model demos. Seed variance in SACfD (0.07-0.60) is the
   dominant uncertainty; N=5 would sharpen it if the week allows.
+
+- 2026-08-03 (assistant): **CENTRAL TABLE COMPLETE — BC head-to-head at matched
+  everything (N=66, same truncation rule, same ICs, same recipe, x3 seeds):**
+    dH_DP  = 0.80/0.60/0.60 in-dist (mean 0.67) | random 0.13/0.33/0.20 (0.22)
+    dDP_DP = 0.87/0.73/0.67 in-dist (mean 0.76) | random 0.27/0.20/0.33 (0.27)
+  **Model demonstrations BEAT human demonstrations on both distributions at the
+  pick phase — H1 is refuted (inverted) here.** Consistent with the SACfD rows
+  (no source effect) and the generational plateau (0.67->0.87->0.87): for this
+  task/phase, success-filtered teacher demos are simply cleaner imitation
+  targets, and nothing collapses across generations. The paper's arc holds with
+  the sign flipped: "human data is special" is not supported at the grasp phase.
