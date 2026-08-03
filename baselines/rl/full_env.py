@@ -14,6 +14,9 @@ scope='place': reset restores a random banked POST-PICK entry state
     consecutive frames. Default cap 600 steps. Tip rule applies in all scopes;
     scope='place' ONLY also pays PLACE_TIP_PENALTY (-0.25) on the tip
     termination (other scopes keep TIP_PENALTY = 0.0, termination only).
+    Constructor shaping=True (place only, TRAINING-ONLY, default False) adds a
+    potential-based dense term toward the shelf + a per-step cost; the honest
+    reported metric remains the sparse placed_v2 terminal (see PLACE_SHAPING_*).
 """
 import os
 import sys
@@ -32,7 +35,7 @@ from genesis_can_env import GenesisCanEnv, np_  # noqa: E402
 from pick_env import STATE_DIM, ACT_DIM, denormalize_action  # noqa: E402
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from replay_harness import (tilt_deg, in_shelf_footprint, BOX_TOP_Z,  # noqa: E402
-                            HARDCODED_START, gripper_targets)
+                            BOX_POS, HARDCODED_START, gripper_targets)
 
 STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 PLACE_ENTRY_BANK = REPO / 'baselines' / 'pick_entry_states.json'
@@ -50,11 +53,36 @@ class FullTaskEnv(gym.Env):
     PLACE_HELD_Z = 0.13      # entry-restore verification: can center above this = still held
     PLACE_SETTLE = 20        # physics steps holding the entry pose before verifying
     PLACE_MAX_TRIES = 30     # resamples per reset before giving up
+    # --- scope='place' TRAINING-ONLY shaping (constructor shaping=True; run-3 lever) ---
+    # Potential-based term r += GAMMA*phi(s') - phi(s), phi = -SCALE * xy-dist(can,
+    # shelf target), plus a small per-step cost that breaks the hold-forever
+    # equilibrium (run 2: 600-step timeouts, zero placed_v2 ever experienced).
+    # Target = center of the SAME shelf footprint rectangle the placed_v2 predicate
+    # checks (in_shelf_footprint: BOX_POS +- BOX_SIZE/2) -> (0.75, -0.1875).
+    # GAMMA deliberately matches the AGENT's discount (r2dreamer horizon 1000 ->
+    # 1 - 1/1000 = 0.999), NOT the spec'd generic 0.99: a stationary agent leaks
+    # +(1-GAMMA)*SCALE*d per step, and at 0.99 that is +0.02d -- net-POSITIVE of
+    # the step cost at 65/66 banked entry states (d 0.24-0.48 m, median 0.34 ->
+    # +0.0018/step -> +1.1 over a 600-step timeout, MORE than the +1 terminal:
+    # the shaping would re-create the hold-forever it exists to break; measured
+    # in test_place_shaping_unit.py). At 0.999 the leak is 0.002d <= 0.001 <
+    # step cost everywhere reachable, holding is net-negative, and matched-gamma
+    # potential shaping is exactly policy-invariant (Ng et al. 1999).
+    # SHAPING IS TRAINING-ONLY: eval paths construct FullTaskEnv without shaping=,
+    # and the honest reported metric remains the sparse placed_v2 terminal.
+    PLACE_SHAPING_GAMMA = 0.999
+    PLACE_SHAPING_SCALE = 2.0
+    PLACE_STEP_COST = 0.005
+    PLACE_SHAPING_TARGET = (BOX_POS[0], BOX_POS[1])
     metadata = {'render_modes': []}
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
-                 camera_rig=False, workspace_limit=False, scope='full'):
+                 camera_rig=False, workspace_limit=False, scope='full', shaping=False):
         super().__init__()
+        # TRAINING-ONLY dense shaping (scope='place' only; see PLACE_SHAPING_*
+        # constants). Default False so eval and every other caller are unchanged.
+        assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
+        self.shaping = bool(shaping)
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
                                   workspace_limit=workspace_limit)
@@ -92,6 +120,13 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._pv2_run = 0
+        self._phi = 0.0
+
+    def _place_phi(self, bp):
+        """Shaping potential: -SCALE * xy-distance(can center, shelf target)."""
+        dx = float(bp[0]) - self.PLACE_SHAPING_TARGET[0]
+        dy = float(bp[1]) - self.PLACE_SHAPING_TARGET[1]
+        return -self.PLACE_SHAPING_SCALE * float(np.hypot(dx, dy))
 
     def _restore_place_entry(self, uid):
         """Restore one banked post-pick state; True if the can survives the settle.
@@ -159,6 +194,9 @@ class FullTaskEnv(gym.Env):
             if ok:
                 self._t = 0
                 self._pv2_run = 0
+                # seed the shaping potential at the settled entry state (cheap;
+                # computed unconditionally so shaping toggling never desyncs it)
+                self._phi = self._place_phi(np_(self.genv.w['bottle'].get_pos()))
                 # the pick already happened in the demo this state came from: the
                 # env-level picked flag must be up for placed/contact predicates,
                 # and 'picked' is pre-granted so the restored pick pays no reward
@@ -215,6 +253,16 @@ class FullTaskEnv(gym.Env):
             # near-upright, sustained PLACE_SUSTAIN consecutive frames.
             w = self.genv.w
             bp = np_(w['bottle'].get_pos())
+            if self.shaping:
+                # TRAINING-ONLY potential-based shaping + per-step cost (run-3
+                # lever; see PLACE_SHAPING_* constants). Applied before the
+                # placed_v2 early return so the terminal step is shaped too.
+                # The honest metric remains the sparse placed_v2 terminal --
+                # eval envs are built with shaping=False (the default).
+                phi = self._place_phi(bp)
+                reward += (self.PLACE_SHAPING_GAMMA * phi - self._phi
+                           - self.PLACE_STEP_COST)
+                self._phi = phi
             ok = (float(a_phys[6]) < self.PLACE_RELEASE
                   and in_shelf_footprint(bp)
                   and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07
