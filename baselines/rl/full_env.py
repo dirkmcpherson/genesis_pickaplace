@@ -50,7 +50,7 @@ class FullTaskEnv(gym.Env):
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
     GRIP_OPEN = 0.3          # grip command below this = not holding
     # --- scope='place' (PLACED_V2, release-based -- PAPER_PLAN stage-wise matrix) ---
-    PLACE_TIP_PENALTY = -1.0   # v6: must be WORSE than holding to timeout (max step-cost ~-0.6), else quick-tip dominates  # scope='place' ONLY: penalty on the tip termination
+    PLACE_TIP_PENALTY = -0.25  # v8: off-shelf drop; on-shelf near-miss stays -0.1  # scope='place' ONLY: penalty on the tip termination
     PLACE_RELEASE = 0.45     # grip command below this counts as released
     PLACE_TILT_DEG = 20.0    # can must be near-upright
     PLACE_SUSTAIN = 10       # predicate must hold this many CONSECUTIVE frames
@@ -76,7 +76,7 @@ class FullTaskEnv(gym.Env):
     # and the honest reported metric remains the sparse placed_v2 terminal.
     PLACE_SHAPING_GAMMA = 0.999
     PLACE_SHAPING_SCALE = 2.0
-    PLACE_STEP_COST = 0.001   # v6: 600 steps => -0.6 total; must stay ABOVE tip (-1) and far below success (+3)
+    PLACE_STEP_COST = 0.0     # v8: NO step cost -- it made quick-tip beat holding (v4/v5 collapse); hold~0 > tip ensures no termination farming
     PLACE_SHAPING_TARGET = (BOX_POS[0], BOX_POS[1])
     metadata = {'render_modes': []}
 
@@ -287,13 +287,6 @@ class FullTaskEnv(gym.Env):
                 reward += (self.PLACE_SHAPING_GAMMA * phi - self._phi
                            - self.PLACE_STEP_COST)
                 self._phi = phi
-            # v7: one-time bonus for a release ATTEMPT in the zone (grip open in
-            # footprint+z-band), so trying strictly beats clamping shut
-            if (self.scope == 'place' and not getattr(self, '_attempted', False)
-                    and float(a_phys[6]) < self.PLACE_RELEASE
-                    and in_shelf_footprint(bp) and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.10):
-                reward += 0.2
-                self._attempted = True
             ok = (float(a_phys[6]) < self.PLACE_RELEASE
                   and in_shelf_footprint(bp)
                   and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07
@@ -302,7 +295,7 @@ class FullTaskEnv(gym.Env):
             info['placed_v2'] = self._pv2_run >= self.PLACE_SUSTAIN
             if info['placed_v2']:
                 self._granted.add('placed_v2')
-                return (obs['state'].astype(np.float32), reward + 3.0, True, False,
+                return (obs['state'].astype(np.float32), reward + 1.0, True, False,
                         info)   # v6: success must dominate the shaped-return landscape
         # place scope does NOT terminate on the nested proxy: a nesting release is
         # the best place outcome and satisfies placed_v2 ~10 frames later -- letting
