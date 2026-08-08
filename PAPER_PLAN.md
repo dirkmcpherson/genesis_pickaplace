@@ -325,3 +325,11 @@ is itself a source property the distributional analysis should quantify.
   task/phase, success-filtered teacher demos are simply cleaner imitation
   targets, and nothing collapses across generations. The paper's arc holds with
   the sign flipped: "human data is special" is not supported at the grasp phase.
+
+- 2026-08-08 (assistant): **CLAIM RECALIBRATION (Bayesian analysis,
+  paper/results_significance.md): hierarchical P(model>human) = 0.76 BC in-dist
+  / 0.64 BC random / 0.35, 0.21 SACfD — all indecisive at n=3.** The earlier
+  "H1 refuted/inverted" language OVERCLAIMED: the defensible statement is
+  "consistent direction favoring model demos for BC (~3:1 posterior odds), no
+  detectable source effect for RLfD; n=5 in flight decides." Supersedes the
+  08-03 phrasing wherever they conflict.
