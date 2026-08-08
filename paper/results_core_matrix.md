@@ -106,6 +106,40 @@ Caveats:
 
 ---
 
+## SE-bar variants (`*_se.png`) and why range is the primary display
+
+Each figure has a standard-error variant: `figs/bc_central_picked_se.png` and
+`figs/sacfd_picked_se.png` show mean ± SE = std(ddof=1)/sqrt(3) over seeds,
+seeds still visible as dots. SE over n=3 seeds is fragile — with three draws
+from a heavy-tailed seed distribution (SACfD spans 0.07–0.60) the sample std
+badly underestimates true seed variability, and ±1 SE intervals will
+under-cover. The min/max-range versions remain the primary display; n=5 seeds
+is the planned remedy if the GPU-week allows. For the lineage,
+`figs/lineage_picked_se.png` carries a different bar entirely: with a SINGLE
+seed per generation, seed-SE is undefined, so its bars are per-eval binomial
+SE sqrt(p(1-p)/15) over the 15 episodes — evaluation noise, not seed
+variability. Do not compare lineage SE bars to the matrix SE bars.
+
+Computed SE values (seed-level, n=3): dH_DP in-dist 0.667±0.067, random
+0.222±0.059; dDP_DP in-dist 0.756±0.059, random 0.267±0.038; dH_SACfD in-dist
+0.356±0.118, random 0.244±0.089; dDP_SACfD in-dist 0.267±0.168, random
+0.133±0.067.
+
+## Cross-learner reading (stated honestly)
+
+BC favors model demonstrations: the direction is consistent — all three
+dDP_DP seed means sit at or above the dH_DP mean in-dist, and the source
+ordering holds on both eval distributions (0.76 vs 0.67 in-dist, 0.27 vs 0.22
+random) — though the seed ranges overlap at n=3. SACfD's nominal human
+advantage (mean 0.36 vs 0.27 in-dist) is WITHIN seed noise: the ranges
+(0.13–0.53 vs 0.07–0.60) nearly coincide, and a single seed swap
+(dDP_SACfD_s2 at 0.60 vs dH_SACfD_s2 at 0.13) would invert the ordering. The
+defensible claim for RLfD is source-indifference, not a human advantage.
+Together: no learner shows a human-demo advantage; BC shows a consistent
+model-demo direction, RLfD shows no resolvable source effect — consistent
+with the generational plateau (success-filtered teacher demos are clean
+imitation targets and nothing collapses).
+
 ## Discrepancies and provenance flags (wandb vs PAPER_PLAN)
 
 1. **Lineage gen-0 provenance (FLAG).** There is NO gen-0 eval run in
