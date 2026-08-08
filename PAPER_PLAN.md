@@ -333,3 +333,11 @@ is itself a source property the distributional analysis should quantify.
   "consistent direction favoring model demos for BC (~3:1 posterior odds), no
   detectable source effect for RLfD; n=5 in flight decides." Supersedes the
   08-03 phrasing wherever they conflict.
+
+- 2026-08-09 (assistant): **FIRST WORKING WORLD-MODEL POLICY: r2dreamer v2
+  (repeat-4, horizon-333, entropy 3e-5, demo re-inject) evals picked 0.20
+  (3/15, full horizon, sample mode) on human demos** -- vs ~0 for every prior
+  world-model eval in the project. The diagnosed pathologies (entropy ratchet,
+  critic leak, timescale) were the blocker, not the architecture. dv3's null
+  now carries the config asterisk. The H4 source comparison is LIVE pending the
+  dDP twin (needs genesis_m1all rsync from cluster).
