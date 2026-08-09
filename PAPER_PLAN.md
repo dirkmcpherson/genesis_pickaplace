@@ -341,3 +341,13 @@ is itself a source property the distributional analysis should quantify.
   critic leak, timescale) were the blocker, not the architecture. dv3's null
   now carries the config asterisk. The H4 source comparison is LIVE pending the
   dDP twin (needs genesis_m1all rsync from cluster).
+
+- 2026-08-09 (assistant): **FINAL n=8 VERDICT (supersedes all earlier claim
+  language): BC in-dist P(model>human) = 0.994 — DECISIVE. dH_DP 0.62
+  (0.40-0.80) vs dDP_DP 0.80 (0.67-0.93). The advantage is IN-DISTRIBUTION
+  ONLY (random: 0.23 vs 0.23, P=0.45). SACfD: indecisive both distributions
+  (P=0.78/0.44; nominal direction flipped between n=3 and n=8 — pure seed
+  noise), source-indifference stands. Paper claims: (1) model demos make
+  measurably better in-distribution imitators at matched N; (2) they buy NO
+  generalization; (3) RL-from-demos is source-indifferent; (4) no generational
+  collapse. Full stats in paper/results_significance.md.**
