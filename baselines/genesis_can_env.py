@@ -45,6 +45,20 @@ WS_MARGIN = 0.02   # recovery poses must be >=2cm inside the box (anti boundary-
 # tool_pose at HARDCODED_START (cartesian_env.REF_TOOL_AT_START). ~140mm.
 REF_TOOL_AT_START = np.array([0.367, 0.011, 0.09])
 
+# --- picked predicate guard (2026-08-09, r2dreamer pick_dH_v4 audit) -------------
+# `can_z > pick_z AND grip commanded closed` alone is RL-gameable: the v4 dreamer
+# policy learned to WHACK the can airborne with fingers closed -- "picks" at 8-24
+# sim steps from reset (physically impossible grasps; 148 episodes even collected
+# placed/contact on the same instant as the flung can crossed the shelf, scores
+# 200/400 at reward_scale 100). Guard: the can must RIDE the gripper -- all of
+# (z > pick_z, grip closed, |eef-can| < PICK_EEF_DIST) sustained PICK_SUSTAIN
+# consecutive frames. A genuinely held can tracks the eef at ~0.146 m, sub-mm
+# stable, for the whole lift (measured on the uid232 raw-action replay); a batted
+# can separates ballistically and falls back through pick_z. Cost: the grant lands
+# PICK_SUSTAIN-1 frames (~0.3 s) later than before; demos still grant (verified).
+PICK_EEF_DIST = 0.20
+PICK_SUSTAIN = 10
+
 
 def _quat_to_R(q):
     """wxyz -> 3x3 rotation matrix (avoids a scipy import on the hot path)."""
@@ -75,6 +89,7 @@ class GenesisCanEnv:
                         camera='rig' if camera_rig else (render_size is not None))
         self.w = w
         self._t = 0
+        self._pick_run = 0
         self._uid = None
         self.camera_rig = camera_rig
         self.workspace_limit = workspace_limit   # enforce the teleop tool box
@@ -158,6 +173,7 @@ class GenesisCanEnv:
         w['scene'].step()
         self._t = 0
         self._picked = self._placed = self._contact = False
+        self._pick_run = 0   # consecutive frames satisfying the held-can guard
         # Seed with the reset configuration: HARDCODED_START is inside the box by
         # construction, so the very first out-of-box action can be held against it.
         # (Leaving this None meant the cache could never populate -- the first action
@@ -226,7 +242,15 @@ class GenesisCanEnv:
                 w['kinova'].get_dofs_position(dofs_idx_local=w['kdofs'][:6])).copy()
         self._t += 1
         bp = np_(w['bottle'].get_pos())
-        if bp[2] > w['pick_z'] and grip * 100.0 > GP_CLOSE: self._picked = True
+        ee = np_(w['eef'].get_pos())
+        # held-can guard, sustained (see PICK_EEF_DIST/PICK_SUSTAIN above): z +
+        # commanded-grip alone was gamed by whack-flings (r2dreamer v4 audit).
+        if bp[2] > w['pick_z'] and grip * 100.0 > GP_CLOSE \
+                and float(np.linalg.norm(ee - bp)) < PICK_EEF_DIST:
+            self._pick_run += 1
+        else:
+            self._pick_run = 0
+        if self._pick_run >= PICK_SUSTAIN: self._picked = True
         if self._picked and in_shelf_footprint(bp) and \
            BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07: self._placed = True
         # contact counts only if the can was actually PICKED first -- otherwise a can
@@ -234,7 +258,7 @@ class GenesisCanEnv:
         # any pick/place/slide (confirmed on trial 284: contact at table level, z=0.10)
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
         if self._picked and (c.size and c.shape[0]) and \
-           float(np_(w['eef'].get_pos())[0]) < float(bp[0]):
+           float(ee[0]) < float(bp[0]):
             self._contact = True
         done = self._t >= self.max_steps
         info = dict(picked=self._picked, placed=self._placed, contact=self._contact,
