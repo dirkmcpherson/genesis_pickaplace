@@ -370,3 +370,14 @@ is itself a source property the distributional analysis should quantify.
   it has no real picks to harvest; (3) harvest_ai_demos now writes
   rejected_short to the manifest + warns on the fling signature
   (short-rejects > kept), so this failure mode is self-diagnosing.
+
+- 2026-08-10 (assistant): **PREDICATE CERTIFIED, v2 CLAIM RETRACTED.** DP
+  positive control under the hardened pick predicate: 0.67/0.53/0.20/0.07 —
+  byte-identical to its historical numbers, so the predicate change does NOT
+  move genuine grasps and ALL paper BC/SACfD numbers stand unchanged. r2dreamer
+  v2's 0.20 does not survive it (0/15 on recheck, reproduced deterministically):
+  the world-model arms (dv3 AND r2dreamer, all configs) have produced NO
+  working policy — every apparent success (v1 20% train, v2 0.20 eval, v4 30%
+  train) was a measurement artifact caught by paired controls. H4 = a
+  rigorously instrumented null; the diagnosis ledger (entropy ratchet, critic
+  leak, timescale, predicate gaming) is the paper's methods contribution.
