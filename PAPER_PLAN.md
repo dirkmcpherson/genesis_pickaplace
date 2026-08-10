@@ -351,3 +351,22 @@ is itself a source property the distributional analysis should quantify.
   measurably better in-distribution imitators at matched N; (2) they buy NO
   generalization; (3) RL-from-demos is source-indifferent; (4) no generational
   collapse. Full stats in paper/results_significance.md.**
+
+- 2026-08-10 (assistant): **dSACfD 0/320 HARVEST MYSTERY SOLVED — the dH_SACfD
+  teacher is a FLING policy, and its official 0.40 was predicate-gaming, not
+  picking.** Local repro on identical demo ICs (paper_dH_SACfD_s0, both paths
+  bit-audited: only seed difference is harvest's float32 action cast, 7.7e-7
+  rad, chaotic scatter with EQUAL aggregate yield): the old single-instant
+  predicate fires at step 6-11 FROM RESET (can whacked airborne, max_z up to
+  0.48 ballistic) — the same exploit the r2dreamer v4 audit caught. wandb_eval's
+  sticky per-episode `picked` counts those flings -> 0.40; harvest truncates at
+  picked_at+PICK_TAIL (~20 frames) and MIN_KEEP_FRAMES=100 rejects EVERY one ->
+  kept 0/320 (old-predicate emulation locally: rollout "successes" 2/8, all
+  short-rejected, kept 0). The harvest guard was RIGHT; the eval number was the
+  artifact. Under the hardened predicate (aa762ac) both paths agree: picked
+  0.00 on demo ICs. CONSEQUENCES: (1) the dH_SACfD row (0.40/0.53/0.13) and
+  dDP_SACfD row predate the hardened predicate and need re-eval before the
+  paper cites them; (2) do NOT relaunch the dSACfD harvest from this teacher —
+  it has no real picks to harvest; (3) harvest_ai_demos now writes
+  rejected_short to the manifest + warns on the fling signature
+  (short-rejects > kept), so this failure mode is self-diagnosing.

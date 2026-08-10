@@ -370,13 +370,28 @@ def main():
                     rollout_budget=args.n, target_kept=args.target_kept,
                     short_of_target=bool(short), kept=kept,
                     yield_frac=round(yield_frac, 4), rejected_by_verify=n_reject_verify,
+                    rejected_short=n_reject_short,
                     fails_kept=n_fails,
                     ic_coverage=cov)
     (outdir / 'manifest.json').write_text(json.dumps(manifest, indent=2))
     print(f'\n[harvest] kept {kept}/{args.n} (yield {yield_frac:.2%}), '
-          f'{n_reject_verify} rejected by verify | coverage '
+          f'{n_reject_verify} rejected by verify, {n_reject_short} rejected short | '
+          f'coverage '
           f"{cov.get('occupied_cells','?')}/{cov.get('total_cells','?')} cells -> {outdir}",
           flush=True)
+    if n_reject_short > kept:
+        # FLING-TEACHER SIGNATURE (dH_SACfD 0/320 incident, 2026-08-10): a policy
+        # that games the pick predicate by whacking the can airborne "picks" within
+        # ~6-11 steps of reset; the rollout then truncates at picked_at+PICK_TAIL
+        # (~20 frames) and EVERY success dies here as a short-reject, while the
+        # sticky per-episode `picked` flag makes the SAME policy eval at 0.3-0.4.
+        # A harvest dominated by short-rejects therefore means the TEACHER'S EVAL
+        # NUMBER IS AN ARTIFACT of a transient/gameable predicate, not that the
+        # harvest is broken -- do not "fix" this by lowering MIN_KEEP_FRAMES.
+        print(f'[harvest] WARNING: short-rejects ({n_reject_short}) exceed kept '
+              f'({kept}) -- transient "picks" (fling signature): the teacher likely '
+              f'games the pick predicate and its eval pick rate is untrustworthy.',
+              flush=True)
     if args.teacher_type == 'random' and kept > max(1, int(0.05 * args.n)):
         print('[harvest] WARNING: random teacher kept >5% -- success predicate may be '
               'too loose (negative control failing).', flush=True)
