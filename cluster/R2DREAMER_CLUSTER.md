@@ -75,8 +75,15 @@ One run per GPU. From the genesis_pickaplace root:
 
 ```bash
 cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace
-CONFIG=genesis_pick_v3       SEED=0 sbatch cluster/sbatch_r2dreamer.sh   # msparity (abs joint)
-CONFIG=genesis_pick_v4_delta SEED=0 sbatch cluster/sbatch_r2dreamer.sh   # delta-joint
+# 2026-08-10 night: v3 (absolute) FAILED locally (0/2479 eps at 850k, no entropy
+# collapse) and v4_delta is SUPERSEDED by v5_delta (bounded_normal_clipped actor
+# dist + delta_cap 0.025 + entropy 3e-5 — see r2dreamer/GENESIS_PORT_STATUS.md
+# 2026-08-10 night). Launch v5 seeds; demo dir is the RE-ENCODED delta25 set.
+CONFIG=genesis_pick_v5_delta SEED=1 DEMO_DIR=$HOME/demonstrations/genesis_pick_pruned_delta25 sbatch cluster/sbatch_r2dreamer.sh
+CONFIG=genesis_pick_v5_delta SEED=2 DEMO_DIR=$HOME/demonstrations/genesis_pick_pruned_delta25 sbatch cluster/sbatch_r2dreamer.sh
+# (local box runs SEED=0; rsync must include BOTH the r2dreamer tree -- new
+# files: distributions/networks/_base_/envs changes, configs/env/genesis_pick_v5_delta.yaml,
+# replay_gate.py -- and demonstrations/genesis_pick_pruned_delta25/)
 ```
 
 Defaults = the dev-box full-spec recipe: `env.steps=3e6`, `env.env_num=6`,

@@ -233,6 +233,21 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-10 (night): ACTION-SPACE FIX STACK for the r2dreamer arm (user
+  directive: "restrict the range of the env's diff_joint action space so it's
+  not so different from the demonstrations"). Forensics on pick_delta_s0's
+  learn-then-decay (train picked 0.24 -> 0.08, lunge-tips in 1-2 agent steps)
+  found (1) r2dreamer's bounded_normal actor bounds the MEAN only — samples hit
+  +-4, env executed clip(a) but buffer/imagination stored the raw value
+  (fictional-action dynamics, the unnormalized-demo bug family on the policy
+  side); (2) delta_cap 0.04 = 1.5x demo p99 speed (demo median |a| 0.002!);
+  (3) v4_delta silently inherited stock entropy 3e-4 (10x v2 recipe). Fixes:
+  bounded_normal_clipped dist (sample+rsample projected), cap 0.025 == demo p99
+  speed (re-encoded demo set delta25, replay gate 3/3, permanent replay_gate.py),
+  entropy 3e-5. dv3 audited NOT affected (ContDist absmax=1.0). msparity
+  absolute-control killed at 850k: 0/2479 episodes, no stable entropy collapse
+  — the MS recipe does not transplant onto absolute joints. v5_delta running
+  local full-GPU. Details: r2dreamer/GENESIS_PORT_STATUS.md 2026-08-10 night.
 - 2026-08-01: PICK-PHASE CORE (user). Place phase later via specialists trained
   from banked picked entry states; build tooling with that in mind. Phase-matched
   truncation for both demo sources. Naming convention d{source}_{algorithm}.
