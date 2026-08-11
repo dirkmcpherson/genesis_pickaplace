@@ -129,3 +129,32 @@ the r2dreamer port/upstream — not a physics, predicate, eval, or metric issue.
    dropout-like paths) -- replicas ran agent.eval(); the live trainer may act
    with modules in train() mode. **<- CHEAPEST: rerun replica WITHOUT
    agent.eval()** (not yet tried -- do this first).
+
+---
+# RESOLUTION (~05:15 actual): CHAMPION FOUND — 15/15 EVAL. No extraction bug.
+
+**ckpt_1576820 (1.58M steps) evals PERFECT: picked 15/15, mean 33 agent steps,
+sampled actions, demo ICs, hardened predicate.** Banked as
+runs/pick_delta25d4_s0/CHAMPION_1576820.pt (+step-stamped copy). x3-rep
+confirmation chain (2 more sampled seeds + mode eval) running; results land in
+wandb r2dreamer_genesis.
+
+**The night mystery resolves the boring way**: collapse onsets are <5k steps
+wide; my +-15k instantaneous-rate windows mislabeled write moments; six
+checkpoints genuinely landed on dead phases, the seventh landed on a peak. The
+eval stack, save path, and metrics were healthy all along — the eight
+"eliminated hypotheses" were all correctly eliminated, including the apparent
+phenomenon itself. The addendum's extraction-bug framing is RETRACTED.
+
+**Standing results for the paper (world-model arm):**
+- r2dreamer + delta-joint (cap=demo-p99) + bounded actor samples + 4x demo
+  density: eval curve 0.07 -> 0.13 -> **1.00** (15/15) at 1.58M steps. First
+  fully-eval-confirmed world-model policy in the project.
+- The lambda-return explosion + bistable oscillation remain REAL and diagnosed
+  (targets 130-640 > max 100): the run flickers between champion-level and
+  destroyed. The clamp fix would stabilize; the champion checkpoint already in
+  hand reduces its urgency for the pick phase.
+- Seed 1 launched ~01:10 (same recipe, verified config, seed=1), ~860k steps in.
+- Random-IC eval of the champion still to run (queued after the x3 reps).
+
+Next: dDP twin under the same recipe = the H4 comparison the paper wants.
