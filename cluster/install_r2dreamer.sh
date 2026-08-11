@@ -41,7 +41,9 @@ cd "$(dirname "$0")/.."
 PICKAPLACE_ROOT="$PWD"
 
 VENV=${1:-$HOME/r2d_venv}
-R2D_DIR=${R2D_DIR:-$HOME/r2dreamer}
+# default: prefer the lab-storage checkout (home quotas are tight), then ~
+_R2D_LAB=/cluster/tufts/shortlab/$USER/r2dreamer
+R2D_DIR=${R2D_DIR:-$([ -d "$_R2D_LAB" ] && echo "$_R2D_LAB" || echo "$HOME/r2dreamer")}
 GENESIS_DIR=${GENESIS_DIR:-$HOME/Genesis}
 
 # --- the two rsynced checkouts: fail early with the remedy ------------------------
