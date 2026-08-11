@@ -136,8 +136,12 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
     if [ "$T1" != "$T0" ] && [ "$T1" -gt 0 ]; then
       T0=$T1; sleep 15
       CK="$LOGDIR/ckpt_$T1.pt"; cp "$LOGDIR/latest.pt" "$CK"
+      # DEVICE CPU, deliberately: a second CUDA process on the training GPU
+      # kills the compiled (cudagraph) trainer -- all four dH_R2D jobs died at
+      # ~230k steps, exactly when the first concurrent cuda eval ran
+      # (2026-08-11). The model is small; CPU eval just takes ~20 min.
       P=$( (cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$CK" \
-            --episodes 15 --mode sample --seed 0 --device cuda \
+            --episodes 15 --mode sample --seed 0 --device cpu --torch-threads 2 \
             --append-metrics "$LOGDIR" 2>/dev/null) \
            | grep -oP 'picked \K[0-9.]+' | head -1 )
       echo -e "$CK\t${P:-ERR}" >> "$LOGDIR/ckpt_scores.tsv"
