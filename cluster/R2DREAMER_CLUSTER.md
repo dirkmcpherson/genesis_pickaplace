@@ -123,3 +123,54 @@ Same as the dev-box runs (GENESIS_PORT_STATUS.md "ManiSkill-parity"):
 `train/action_entropy` MUST fall (the MS fingerprint); `episode/score` 100.0 on
 honest picks (predicate hardened 2026-08-09, fling-proof); `train/data/reward_frames`
 ~6+/batch. Browse: https://wandb.ai/jambotime/r2dreamer_genesis.
+
+
+## 2026-08-11 — THE STATISTICS WAVE (champion recipe, d{src}_R2D matrix)
+
+Champion recipe = `genesis_pick_v5d4_delta` (delta cap 0.025 == demo p99 speed,
+bounded_normal_clipped actor, entropy 3e-5, demo_duplicate 4 + reinject 150k
+BAKED IN). Local proof: CHAMPION_1576820 eval 0.91 sampled (n=45) / 1.00 mode.
+Training is bistable -- the sbatch now archives+evals every checkpoint, prunes
+to best-2+newest, and post-train CONFIRMS the best checkpoint on x3 fresh eval
+seeds (+1 mode). Headline metric per run = the confirmation mean; secondary =
+P(discovery) across seeds (local seed variance was severe: s0 discovered by
+300k, s1 never in 1.9M).
+
+### rsync manifest (dev box -> cluster)
+    rsync -a <devbox>:~/workspace/r2dreamer/ ~/r2dreamer/ \
+      --exclude runs --exclude .venv --exclude wandb
+    rsync -a <devbox>:~/workspace/dreamerv3-torch/demonstrations/genesis_pick_pruned_delta25/ \
+      ~/dreamerv3-torch/demonstrations/genesis_pick_pruned_delta25/
+    # (new files this wave: configs/env/genesis_pick_v5d4_delta.yaml, replay_gate.py
+    #  --raw-dir/--uids auto, distributions/networks/_base_/envs bounded-dist changes,
+    #  eval_genesis action-mode fix -- ALL required)
+
+### dDP demo set: convert + gate ON THE CLUSTER (harvest lives there)
+    module load anaconda/2025.06.0 && conda activate <genesis env>
+    cd ~/genesis_pickaplace
+    python baselines/rl/to_dreamer_demos.py --src paper_smoke/m1all_harvest \
+      --scope pick --action-encoding delta_joint --delta-cap 0.025 --grant-slack 48 \
+      --dst ~/dreamerv3-torch/demonstrations/genesis_m1all_delta25
+    # gate (r2d venv; model-demo ICs are random draws -> --raw-dir mode):
+    cd ~/r2dreamer && ~/r2d_venv/bin/python replay_gate.py \
+      --demo-dir ~/dreamerv3-torch/demonstrations/genesis_m1all_delta25 \
+      --delta-cap 0.025 --leash-mult 5 --uids auto \
+      --raw-dir ~/genesis_pickaplace/paper_smoke/m1all_harvest
+    # GATE MUST PASS before launching dDP seeds.
+
+### Launch (5 seeds per source; sbatch defaults resolve demo dir for v5*)
+    cd ~/genesis_pickaplace
+    for S in 0 1 2 3 4; do
+      CONFIG=genesis_pick_v5d4_delta SEED=$S \
+        LOGDIR=$HOME/r2dreamer/runs/dH_R2D_s$S sbatch cluster/sbatch_r2dreamer.sh
+    done
+    for S in 0 1 2 3 4; do
+      CONFIG=genesis_pick_v5d4_delta SEED=$S \
+        DEMO_DIR=$HOME/dreamerv3-torch/demonstrations/genesis_m1all_delta25 \
+        LOGDIR=$HOME/r2dreamer/runs/dDP_R2D_s$S sbatch cluster/sbatch_r2dreamer.sh
+    done
+    # optional denser lottery sampling: SAVE_EVERY=50000 (default 1e5)
+
+Official statistics = CLUSTER runs only (same-machine baseline rule); the local
+s0/s1 pair is the pilot. Do NOT pass REINJECT/DUPLICATE for v5d4 (baked; the
+sbatch passes them only if explicitly set).
