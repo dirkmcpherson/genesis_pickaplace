@@ -396,3 +396,23 @@ is itself a source property the distributional analysis should quantify.
   train) was a measurement artifact caught by paired controls. H4 = a
   rigorously instrumented null; the diagnosis ledger (entropy ratchet, critic
   leak, timescale, predicate gaming) is the paper's methods contribution.
+
+- 2026-08-10 (night, assistant): **RLfD ROW FINAL — SACfD IS ZERO UNDER THE
+  HONEST PREDICATE.** The full hardened-predicate retrain wave (n=8 per source,
+  200k steps, cluster; runs dH_SACfD_s0-7 / dDP_SACfD_s0-7 created 21:44Z)
+  completed with rollout/ep_rew_mean flat at 0 (one seed 0.01) for the entire
+  200k and eval 0.00 in-dist AND random for every seed of BOTH sources. The
+  concurrent re-evals of the OLD checkpoints under the hardened predicate agree
+  (0/0/0/0.07 so far): the previously reported SACfD band (0.07-0.60) was fling
+  exploit top to bottom. PAPER FRAMING: at this budget the RLfD source
+  comparison is degenerate (0 vs 0) — the honest claim is "every
+  reward-optimizing learner in the study (SACfD, dv3, r2dreamer) found the
+  predicate exploit before the task; success-filtered imitation is the only
+  approach that performs at the pick phase without reward-integrity
+  engineering." The old 07-18 'RL leads pick' narrative inverts. CONSEQUENCES:
+  (1) wave-2 dSACfD conditions are DOA — the hardened dH_SACfD_s0 teacher
+  picks 0.00, harvest would yield nothing; scancel the 7 pending dSACfD jobs
+  (recommended to user). (2) Bayesian source analysis for RLfD is moot at n=8
+  all-zeros. (3) A nonzero honest RLfD row would need a different experiment
+  (longer budget / shaping / demo-speed action caps a la r2dreamer v5) — out of
+  scope unless the user opts in.
