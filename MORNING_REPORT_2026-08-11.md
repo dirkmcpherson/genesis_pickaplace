@@ -63,3 +63,34 @@ go: **clamp lambda-return targets at the known max return** (see Mechanism).
 - Full diagnostic ledger in r2dreamer/GENESIS_PORT_STATUS.md (bug #7, A/B
   probe, spike-onset table method).
 - Grid videos + all evals in wandb `r2dreamer_genesis` (runs *-eval-step*).
+
+---
+## ADDENDUM (~06:45): the train-vs-eval contradiction, hunted to its last hypothesis
+
+After the report above was written, later checkpoints kept evaling 0/15 even when
+written at instantaneous train rates of 0.39-0.57. Systematic elimination
+(all on identical weights, ckpt_974910 = 57% instantaneous train rate):
+
+| hypothesis | test | verdict |
+|---|---|---|
+| eval-harness reset path | A/B probe, training-style vs eval-style resets | dead (0/10 + 0/10) |
+| stale checkpoint save | weight diffs across checkpoints | dead (~4%/200k drift) |
+| phase timing / metric lag | instantaneous windowed rates at write times | dead (0.57 at a dead ckpt; 0.038 at the 0.13-eval ckpt — inverted) |
+| frozen-clone lag | frozen vs raw weights in ckpt | dead (identical) |
+| warm RSSM state carry-over | obs_step is_first audit | dead (state zeroed correctly) |
+| demo episodes in the metric | length histogram (81% of picks <=40 steps; shortest demo 55) + reinject timing (anti-correlated) | dead |
+| CPU-vs-GPU numerics | GPU probe | dead (0/12) |
+| **compiled-act path (cudagraphs)** | full 6-worker collection replica: compile=False -> **0/42**; compile=True -> RUNNING | **pending — the last one standing** |
+
+If the compiled replica picks ~0.5: the "policy" that picks exists only inside
+torch.compile's captured graph (an aliasing/staleness bug in r2dreamer's act
+path) — the honest skill of the saved weights is ~0, train metrics were real
+picks by a ghost policy no checkpoint contains, and the entire local d4 result
+chain needs the compile bug fixed before any claim survives. If it does NOT
+pick: the contradiction is unresolved and the trainer's live process holds
+state no reproduction reaches — either way DO NOT cite d4 numbers beyond the
+two early evals (0.07/0.13) until this closes.
+
+Also confirmed overnight: reinject anti-correlation (picks vanish right after
+750k/900k reinjections) — consistent with reinject-triggered value shock
+feeding the lambda-return explosion (the clamp recommendation stands).
