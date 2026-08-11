@@ -94,3 +94,38 @@ two early evals (0.07/0.13) until this closes.
 Also confirmed overnight: reinject anti-correlation (picks vanish right after
 750k/900k reinjections) — consistent with reinject-triggered value shock
 feeding the lambda-return explosion (the clamp recommendation stands).
+
+## FINAL (~07:20): compiled replica 0/42 — all eight hypotheses dead; live behavior VIDEO-VERIFIED real
+
+The compiled-act replica also failed (0/42), and the checkpoint load is
+byte-perfect (0 missing / 0 unexpected keys; frozen==raw). Meanwhile the live
+trainer's own train_video (worker 0, step ~1.45M) SHOWS the arm approaching,
+grasping, and carrying the can — the collection behavior is real, the metric is
+honest, the predicate is honest. Cumulative extraction attempts: ~0/104
+episodes across 8 controlled variants (harness, resets, mode, CPU/GPU, batch,
+spawn workers, compile on/off).
+
+**Bottom line: the picking policy exists only inside the live training process.
+Something the state_dict does not carry (or an act-path heisenbug the replicas
+don't trigger) is load-bearing. This is now a code-level reproducibility bug in
+the r2dreamer port/upstream — not a physics, predicate, eval, or metric issue.**
+
+### What this means for the paper, as of this morning
+- Citable world-model numbers remain ONLY: d4 evals 0.07 (350k) and 0.13 (500k),
+  and the instrumented-null absolute rows.
+- The d4 run (still training, ~1.5M/3M) is a live specimen — I recommend NOT
+  killing it until we decide whether to introspect it (py-spy / live-probe) —
+  the ~10 step-stamped checkpoint archives are all banked regardless.
+- The lambda-return explosion diagnosis + clamp recommendation stand unchanged.
+- SACfD -dj cluster wave unaffected by any of this (SB3 stack, no shared code).
+
+### Debug leads for the extraction bug (fresh-eyes list)
+1. Diff the LIVE act outputs vs loaded-agent act outputs on identical obs
+   (needs live introspection: py-spy dump, or a debug hook + restart).
+2. Audit dreamer.py clone_and_freeze copy_ pattern vs torch.compile caching
+   (line 176/196/258) -- the replicas construct FRESH agents; the live agent's
+   frozen clones have been copy_'d thousands of times.
+3. Check whether act() behavior depends on train-mode side effects (norm layers,
+   dropout-like paths) -- replicas ran agent.eval(); the live trainer may act
+   with modules in train() mode. **<- CHEAPEST: rerun replica WITHOUT
+   agent.eval()** (not yet tried -- do this first).
