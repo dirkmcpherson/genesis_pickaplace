@@ -1,0 +1,1870 @@
+{
+ "bc": {
+  "wave1": {
+   "dDP_s0": {
+    "indist": 0.8666666666666667,
+    "random": 0.26666666666666666,
+    "created": "2026-08-02T23:42:45"
+   },
+   "dDP_s1": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-03T02:28:26"
+   },
+   "dDP_s2": {
+    "indist": 0.6666666666666666,
+    "random": 0.3333333333333333,
+    "created": "2026-08-03T05:13:32"
+   },
+   "dDP_s3": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T18:09:23"
+   },
+   "dDP_s4": {
+    "indist": 0.6666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T20:42:03"
+   },
+   "dDP_s5": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-08T23:16:08"
+   },
+   "dDP_s6": {
+    "indist": 0.9333333333333332,
+    "random": 0.2,
+    "created": "2026-08-09T01:50:17"
+   },
+   "dDP_s7": {
+    "indist": 0.9333333333333332,
+    "random": 0.3333333333333333,
+    "created": "2026-08-09T04:24:44"
+   },
+   "dH_s0": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-02T03:17:53"
+   },
+   "dH_s1": {
+    "indist": 0.6,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T07:24:21"
+   },
+   "dH_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-02T11:33:02"
+   },
+   "dH_s3": {
+    "indist": 0.6,
+    "random": 0.26666666666666666,
+    "created": "2026-08-08T18:33:29"
+   },
+   "dH_s4": {
+    "indist": 0.4,
+    "random": 0.2,
+    "created": "2026-08-08T21:25:42"
+   },
+   "dH_s5": {
+    "indist": 0.6,
+    "random": 0.4,
+    "created": "2026-08-09T00:20:25"
+   },
+   "dH_s6": {
+    "indist": 0.6666666666666666,
+    "random": 0.26666666666666666,
+    "created": "2026-08-09T03:15:03"
+   },
+   "dH_s7": {
+    "indist": 0.6666666666666666,
+    "random": 0.06666666666666667,
+    "created": "2026-08-09T06:12:08"
+   }
+  },
+  "wave2": {
+   "dDP_s0": {
+    "indist": 0.7333333333333333,
+    "random": 0.3333333333333333,
+    "created": "2026-08-10T22:41:45"
+   },
+   "dDP_s1": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-10T23:39:15"
+   },
+   "dDP_s2": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-11T00:35:08"
+   },
+   "dDP_s3": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T01:31:45"
+   },
+   "dDP_s4": {
+    "indist": 0.6666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T02:28:56"
+   },
+   "dDP_s5": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-11T03:26:39"
+   },
+   "dDP_s6": {
+    "indist": 0.9333333333333332,
+    "random": 0.2,
+    "created": "2026-08-11T04:23:34"
+   },
+   "dDP_s7": {
+    "indist": 0.9333333333333332,
+    "random": 0.3333333333333333,
+    "created": "2026-08-11T05:20:13"
+   },
+   "dH_s0": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-10T22:41:05"
+   },
+   "dH_s1": {
+    "indist": 0.6,
+    "random": 0.3333333333333333,
+    "created": "2026-08-10T23:38:40"
+   },
+   "dH_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-11T00:35:13"
+   },
+   "dH_s3": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-11T01:32:54"
+   },
+   "dH_s4": {
+    "indist": 0.4666666666666667,
+    "random": 0.2,
+    "created": "2026-08-11T02:29:48"
+   },
+   "dH_s5": {
+    "indist": 0.5333333333333333,
+    "random": 0.2,
+    "created": "2026-08-11T03:26:44"
+   },
+   "dH_s6": {
+    "indist": 0.6666666666666666,
+    "random": 0.26666666666666666,
+    "created": "2026-08-11T04:24:54"
+   },
+   "dH_s7": {
+    "indist": 0.6,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T05:21:40"
+   }
+  }
+ },
+ "sacfd": {
+  "old_eval": {
+   "dDP_s0": {
+    "indist": 0.06666666666666667,
+    "random": 0,
+    "created": "2026-08-02T23:25:24",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0.13333333333333333,
+    "random": 0.2,
+    "created": "2026-08-02T23:23:31",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-02T23:26:12",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0.3333333333333333,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:07:55",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0.26666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T18:31:08",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0.2,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:31:31",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0.4,
+    "random": 0.26666666666666666,
+    "created": "2026-08-08T18:42:52",
+    "state": "finished"
+   },
+   "dH_s0": {
+    "indist": 0.4,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T11:27:58",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0.5333333333333333,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T23:20:49",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0.13333333333333333,
+    "random": 0.06666666666666667,
+    "created": "2026-08-02T23:25:58",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0.4,
+    "random": 0.2,
+    "created": "2026-08-08T18:31:31",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-08T18:35:48",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:34:52",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0.06666666666666667,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:34:48",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0.06666666666666667,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:12:58",
+    "state": "finished"
+   }
+  },
+  "hardened_eval": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:54:43",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T02:22:27",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T02:52:11",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:20:21",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:49:23",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T04:17:46",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T04:46:08",
+    "state": "finished"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T22:11:20",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T22:39:44",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T23:06:57",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0.06666666666666667,
+    "random": 0,
+    "created": "2026-08-10T23:35:30",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:03:24",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:30:57",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:58:26",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:26:58",
+    "state": "finished"
+   }
+  },
+  "retrain": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:13",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:42",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:45",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:41",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:40",
+    "state": "crashed"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:43:53",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:23:07",
+    "state": "finished"
+   }
+  },
+  "retrain_eval": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:17:42",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:18:01",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:32",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:21",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:01",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:26:18",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:22:25",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:34",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:27:42",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:12",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:44",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:22:00",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:15:29",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:55:06",
+    "state": "finished"
+   }
+  }
+ },
+ "dv3": {
+  "dDP_s0": [
+   {
+    "step": 102000,
+    "picked": 0.0,
+    "created": "2026-08-03T00:03:03"
+   },
+   {
+    "step": 182000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T02:07:58"
+   },
+   {
+    "step": 272016,
+    "picked": 0.0,
+    "created": "2026-08-03T04:13:30"
+   },
+   {
+    "step": 362000,
+    "picked": 0.0,
+    "created": "2026-08-03T06:18:20"
+   },
+   {
+    "step": 452016,
+    "picked": 0.0,
+    "created": "2026-08-03T08:24:21"
+   },
+   {
+    "step": 532016,
+    "picked": 0.0,
+    "created": "2026-08-03T10:31:15"
+   },
+   {
+    "step": 616624,
+    "picked": 0.0,
+    "created": "2026-08-03T12:37:53"
+   },
+   {
+    "step": 693424,
+    "picked": 0.0,
+    "created": "2026-08-03T14:44:49"
+   },
+   {
+    "step": 772016,
+    "picked": 0.0,
+    "created": "2026-08-03T16:51:35"
+   },
+   {
+    "step": 852016,
+    "picked": 0.0,
+    "created": "2026-08-03T18:57:23"
+   },
+   {
+    "step": 933655,
+    "picked": 0.0,
+    "created": "2026-08-11T01:28:41"
+   },
+   {
+    "step": 1013655,
+    "picked": 0.0,
+    "created": "2026-08-11T03:35:14"
+   }
+  ],
+  "dDP_s1": [
+   {
+    "step": 12016,
+    "picked": 0.0,
+    "created": "2026-08-02T22:12:29"
+   },
+   {
+    "step": 102000,
+    "picked": 0.0,
+    "created": "2026-08-03T00:18:44"
+   },
+   {
+    "step": 182000,
+    "picked": 0.0,
+    "created": "2026-08-03T02:24:35"
+   },
+   {
+    "step": 262000,
+    "picked": 0.0,
+    "created": "2026-08-03T04:29:34"
+   },
+   {
+    "step": 362000,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-03T06:32:21"
+   },
+   {
+    "step": 442000,
+    "picked": 0.0,
+    "created": "2026-08-03T08:37:19"
+   },
+   {
+    "step": 522000,
+    "picked": 0.0,
+    "created": "2026-08-03T10:41:39"
+   },
+   {
+    "step": 602000,
+    "picked": 0.0,
+    "created": "2026-08-03T12:47:37"
+   },
+   {
+    "step": 682000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T14:49:09"
+   },
+   {
+    "step": 762000,
+    "picked": 0.0,
+    "created": "2026-08-03T16:51:49"
+   },
+   {
+    "step": 842000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T18:53:45"
+   },
+   {
+    "step": 912016,
+    "picked": 0.0,
+    "created": "2026-08-03T20:55:09"
+   },
+   {
+    "step": 963832,
+    "picked": 0.0,
+    "created": "2026-08-11T01:31:00"
+   },
+   {
+    "step": 1038968,
+    "picked": 0.0,
+    "created": "2026-08-11T03:33:29"
+   },
+   {
+    "step": 1137434,
+    "picked": 0.0,
+    "created": "2026-08-11T06:59:37"
+   },
+   {
+    "step": 1269370,
+    "picked": 0.0,
+    "created": "2026-08-11T09:03:51"
+   },
+   {
+    "step": 1444710,
+    "picked": 0.0,
+    "created": "2026-08-11T12:18:58"
+   },
+   {
+    "step": 1564710,
+    "picked": 0.0,
+    "created": "2026-08-11T14:20:52"
+   },
+   {
+    "step": 1674726,
+    "picked": 0.0,
+    "created": "2026-08-11T16:24:34"
+   }
+  ],
+  "dDP_s2": [
+   {
+    "step": 42000,
+    "picked": 0.0,
+    "created": "2026-08-02T22:21:09"
+   },
+   {
+    "step": 122000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T00:26:00"
+   },
+   {
+    "step": 202000,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-03T02:30:13"
+   },
+   {
+    "step": 282000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T04:33:53"
+   },
+   {
+    "step": 372016,
+    "picked": 0.0,
+    "created": "2026-08-03T06:39:12"
+   },
+   {
+    "step": 462736,
+    "picked": 0.0,
+    "created": "2026-08-03T08:44:03"
+   },
+   {
+    "step": 542000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T10:47:50"
+   },
+   {
+    "step": 622000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T12:51:29"
+   },
+   {
+    "step": 702000,
+    "picked": 0.0,
+    "created": "2026-08-03T14:56:24"
+   },
+   {
+    "step": 782000,
+    "picked": 0.0,
+    "created": "2026-08-03T17:02:28"
+   },
+   {
+    "step": 862000,
+    "picked": 0.0,
+    "created": "2026-08-03T19:07:46"
+   },
+   {
+    "step": 943644,
+    "picked": 0.0,
+    "created": "2026-08-11T01:45:03"
+   },
+   {
+    "step": 1023644,
+    "picked": 0.0,
+    "created": "2026-08-11T03:52:21"
+   },
+   {
+    "step": 1185667,
+    "picked": 0.0,
+    "created": "2026-08-11T07:15:06"
+   },
+   {
+    "step": 1315651,
+    "picked": 0.0,
+    "created": "2026-08-11T09:30:24"
+   },
+   {
+    "step": 1462791,
+    "picked": 0.0,
+    "created": "2026-08-11T12:29:59"
+   },
+   {
+    "step": 1582791,
+    "picked": 0.0,
+    "created": "2026-08-11T14:34:45"
+   },
+   {
+    "step": 1702791,
+    "picked": 0.0,
+    "created": "2026-08-11T16:39:04"
+   }
+  ],
+  "dH_s3": [
+   {
+    "step": 12016,
+    "picked": 0.0,
+    "created": "2026-08-08T16:43:32"
+   },
+   {
+    "step": 112016,
+    "picked": 0.0,
+    "created": "2026-08-08T18:47:06"
+   },
+   {
+    "step": 202000,
+    "picked": 0.0,
+    "created": "2026-08-08T20:51:09"
+   },
+   {
+    "step": 302000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T22:55:11"
+   },
+   {
+    "step": 392016,
+    "picked": 0.0,
+    "created": "2026-08-09T00:57:59"
+   },
+   {
+    "step": 503022,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T03:30:42"
+   },
+   {
+    "step": 593038,
+    "picked": 0.0,
+    "created": "2026-08-09T05:33:55"
+   },
+   {
+    "step": 683022,
+    "picked": 0.0,
+    "created": "2026-08-09T07:36:28"
+   },
+   {
+    "step": 773038,
+    "picked": 0.0,
+    "created": "2026-08-09T09:38:52"
+   },
+   {
+    "step": 885774,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T11:40:50"
+   },
+   {
+    "step": 1003022,
+    "picked": 0.0,
+    "created": "2026-08-09T13:44:22"
+   },
+   {
+    "step": 1123022,
+    "picked": 0.0,
+    "created": "2026-08-09T15:49:13"
+   },
+   {
+    "step": 1243022,
+    "picked": 0.0,
+    "created": "2026-08-09T17:52:32"
+   },
+   {
+    "step": 1363022,
+    "picked": 0.0,
+    "created": "2026-08-09T19:56:09"
+   },
+   {
+    "step": 1493038,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T22:00:05"
+   },
+   {
+    "step": 1615278,
+    "picked": 0.0,
+    "created": "2026-08-10T00:03:53"
+   },
+   {
+    "step": 1733038,
+    "picked": 0.0,
+    "created": "2026-08-10T02:07:32"
+   },
+   {
+    "step": 1847150,
+    "picked": 0.0,
+    "created": "2026-08-10T04:13:24"
+   },
+   {
+    "step": 1963022,
+    "picked": 0.0,
+    "created": "2026-08-10T06:18:25"
+   },
+   {
+    "step": 2083022,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T08:22:41"
+   },
+   {
+    "step": 2203022,
+    "picked": 0.0,
+    "created": "2026-08-10T10:27:03"
+   },
+   {
+    "step": 2323022,
+    "picked": 0.0,
+    "created": "2026-08-10T12:31:48"
+   },
+   {
+    "step": 2443022,
+    "picked": 0.0,
+    "created": "2026-08-10T14:37:35"
+   },
+   {
+    "step": 2553038,
+    "picked": 0.0,
+    "created": "2026-08-10T16:42:35"
+   },
+   {
+    "step": 2673038,
+    "picked": 0.0,
+    "created": "2026-08-10T18:47:25"
+   },
+   {
+    "step": 2793038,
+    "picked": 0.0,
+    "created": "2026-08-10T20:52:19"
+   },
+   {
+    "step": 2913038,
+    "picked": 0.0,
+    "created": "2026-08-10T22:56:19"
+   },
+   {
+    "step": 3033038,
+    "picked": 0.0,
+    "created": "2026-08-11T01:00:16"
+   }
+  ],
+  "dH_s4": [
+   {
+    "step": 40336,
+    "picked": 0.0,
+    "created": "2026-08-08T16:55:35"
+   },
+   {
+    "step": 132016,
+    "picked": 0.0,
+    "created": "2026-08-08T19:00:42"
+   },
+   {
+    "step": 232336,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T21:04:50"
+   },
+   {
+    "step": 322000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T23:06:18"
+   },
+   {
+    "step": 412016,
+    "picked": 0.0,
+    "created": "2026-08-09T01:07:07"
+   },
+   {
+    "step": 561187,
+    "picked": 0.0,
+    "created": "2026-08-11T02:37:09"
+   },
+   {
+    "step": 671203,
+    "picked": 0.0,
+    "created": "2026-08-11T04:41:16"
+   },
+   {
+    "step": 791203,
+    "picked": 0.0,
+    "created": "2026-08-11T06:43:14"
+   },
+   {
+    "step": 901187,
+    "picked": 0.0,
+    "created": "2026-08-11T08:45:49"
+   },
+   {
+    "step": 1021187,
+    "picked": 0.0,
+    "created": "2026-08-11T10:49:44"
+   },
+   {
+    "step": 1151203,
+    "picked": 0.0,
+    "created": "2026-08-11T12:53:28"
+   },
+   {
+    "step": 1271203,
+    "picked": 0.0,
+    "created": "2026-08-11T14:57:02"
+   },
+   {
+    "step": 1391203,
+    "picked": 0.0,
+    "created": "2026-08-11T17:02:05"
+   }
+  ],
+  "dH_s5": [
+   {
+    "step": 42000,
+    "picked": 0.0,
+    "created": "2026-08-08T17:05:41"
+   },
+   {
+    "step": 142000,
+    "picked": 0.0,
+    "created": "2026-08-08T19:09:02"
+   },
+   {
+    "step": 242000,
+    "picked": 0.0,
+    "created": "2026-08-08T21:15:48"
+   },
+   {
+    "step": 332016,
+    "picked": 0.0,
+    "created": "2026-08-08T23:21:59"
+   },
+   {
+    "step": 424336,
+    "picked": 0.0,
+    "created": "2026-08-09T01:25:22"
+   },
+   {
+    "step": 512850,
+    "picked": 0.0,
+    "created": "2026-08-09T03:54:14"
+   },
+   {
+    "step": 612850,
+    "picked": 0.0,
+    "created": "2026-08-09T06:00:22"
+   },
+   {
+    "step": 702834,
+    "picked": 0.0,
+    "created": "2026-08-09T08:06:32"
+   },
+   {
+    "step": 792850,
+    "picked": 0.0,
+    "created": "2026-08-09T10:12:44"
+   },
+   {
+    "step": 878453,
+    "picked": 0.0,
+    "created": "2026-08-11T02:51:42"
+   },
+   {
+    "step": 1000437,
+    "picked": 0.0,
+    "created": "2026-08-11T04:58:00"
+   },
+   {
+    "step": 1108437,
+    "picked": 0.0,
+    "created": "2026-08-11T07:03:00"
+   },
+   {
+    "step": 1230773,
+    "picked": 0.0,
+    "created": "2026-08-11T09:07:09"
+   },
+   {
+    "step": 1348437,
+    "picked": 0.0,
+    "created": "2026-08-11T11:10:00"
+   },
+   {
+    "step": 1468437,
+    "picked": 0.0,
+    "created": "2026-08-11T13:11:49"
+   },
+   {
+    "step": 1588437,
+    "picked": 0.0,
+    "created": "2026-08-11T15:13:25"
+   }
+  ],
+  "dH_s6": [
+   {
+    "step": 110416,
+    "picked": 0.0,
+    "created": "2026-08-09T04:01:33"
+   },
+   {
+    "step": 200400,
+    "picked": 0.0,
+    "created": "2026-08-09T06:05:48"
+   },
+   {
+    "step": 290416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T08:09:11"
+   },
+   {
+    "step": 380400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T10:12:16"
+   },
+   {
+    "step": 490416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T12:14:06"
+   },
+   {
+    "step": 620400,
+    "picked": 0.0,
+    "created": "2026-08-09T14:17:33"
+   },
+   {
+    "step": 740400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T16:21:05"
+   },
+   {
+    "step": 860400,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-09T18:22:10"
+   },
+   {
+    "step": 980400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T20:24:50"
+   },
+   {
+    "step": 1100400,
+    "picked": 0.0,
+    "created": "2026-08-09T22:26:17"
+   },
+   {
+    "step": 1220400,
+    "picked": 0.0,
+    "created": "2026-08-10T00:28:29"
+   },
+   {
+    "step": 1330416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T02:30:22"
+   },
+   {
+    "step": 1450416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T04:32:42"
+   },
+   {
+    "step": 1570416,
+    "picked": 0.0,
+    "created": "2026-08-10T06:35:38"
+   },
+   {
+    "step": 1680400,
+    "picked": 0.0,
+    "created": "2026-08-10T08:37:27"
+   },
+   {
+    "step": 1800400,
+    "picked": 0.0,
+    "created": "2026-08-10T10:38:50"
+   },
+   {
+    "step": 1910416,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-10T12:40:48"
+   },
+   {
+    "step": 2030416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T14:43:19"
+   },
+   {
+    "step": 2140400,
+    "picked": 0.0,
+    "created": "2026-08-10T16:44:58"
+   },
+   {
+    "step": 2250416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T18:49:04"
+   },
+   {
+    "step": 2370416,
+    "picked": 0.0,
+    "created": "2026-08-10T20:53:28"
+   },
+   {
+    "step": 2500400,
+    "picked": 0.0,
+    "created": "2026-08-10T22:57:47"
+   },
+   {
+    "step": 2618192,
+    "picked": 0.0,
+    "created": "2026-08-11T01:01:45"
+   }
+  ],
+  "dH_s7": [
+   {
+    "step": 52016,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T17:24:44"
+   },
+   {
+    "step": 162000,
+    "picked": 0.0,
+    "created": "2026-08-08T19:28:11"
+   },
+   {
+    "step": 252016,
+    "picked": 0.0,
+    "created": "2026-08-08T21:32:16"
+   },
+   {
+    "step": 347600,
+    "picked": 0.0,
+    "created": "2026-08-08T23:34:37"
+   },
+   {
+    "step": 432016,
+    "picked": 0.0,
+    "created": "2026-08-09T01:38:42"
+   },
+   {
+    "step": 532913,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T04:13:58"
+   },
+   {
+    "step": 622897,
+    "picked": 0.0,
+    "created": "2026-08-09T06:18:45"
+   },
+   {
+    "step": 712913,
+    "picked": 0.0,
+    "created": "2026-08-09T08:23:05"
+   },
+   {
+    "step": 808433,
+    "picked": 0.0,
+    "created": "2026-08-09T10:25:44"
+   },
+   {
+    "step": 923633,
+    "picked": 0.0,
+    "created": "2026-08-09T12:28:23"
+   },
+   {
+    "step": 1042897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T14:30:18"
+   },
+   {
+    "step": 1162897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T16:32:18"
+   },
+   {
+    "step": 1282897,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-09T18:33:57"
+   },
+   {
+    "step": 1402897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T20:35:20"
+   },
+   {
+    "step": 1522897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T22:36:15"
+   },
+   {
+    "step": 1642897,
+    "picked": 0.0,
+    "created": "2026-08-10T00:38:54"
+   },
+   {
+    "step": 1762897,
+    "picked": 0.0,
+    "created": "2026-08-10T02:41:22"
+   },
+   {
+    "step": 1884273,
+    "picked": 0.0,
+    "created": "2026-08-10T04:43:30"
+   },
+   {
+    "step": 1999441,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T06:45:50"
+   },
+   {
+    "step": 2114609,
+    "picked": 0.0,
+    "created": "2026-08-10T08:49:13"
+   },
+   {
+    "step": 2232913,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T10:52:18"
+   },
+   {
+    "step": 2344977,
+    "picked": 0.0,
+    "created": "2026-08-10T12:54:50"
+   },
+   {
+    "step": 2462897,
+    "picked": 0.0,
+    "created": "2026-08-10T14:57:26"
+   },
+   {
+    "step": 2582897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T17:00:52"
+   },
+   {
+    "step": 2692913,
+    "picked": 0.0,
+    "created": "2026-08-10T19:04:49"
+   },
+   {
+    "step": 2812913,
+    "picked": 0.0,
+    "created": "2026-08-10T21:09:55"
+   },
+   {
+    "step": 2942897,
+    "picked": 0.0,
+    "created": "2026-08-10T23:15:06"
+   },
+   {
+    "step": 3052913,
+    "picked": 0.0,
+    "created": "2026-08-11T01:20:58"
+   },
+   {
+    "step": 3096913,
+    "picked": 0.0,
+    "created": "2026-08-11T03:10:49"
+   },
+   {
+    "step": 3206929,
+    "picked": 0.0,
+    "created": "2026-08-11T05:15:23"
+   },
+   {
+    "step": 3326929,
+    "picked": 0.0,
+    "created": "2026-08-11T07:19:27"
+   },
+   {
+    "step": 3446929,
+    "picked": 0.0,
+    "created": "2026-08-11T09:24:21"
+   },
+   {
+    "step": 3566929,
+    "picked": 0.0,
+    "created": "2026-08-11T11:29:55"
+   },
+   {
+    "step": 3690353,
+    "picked": 0.0,
+    "created": "2026-08-11T13:35:13"
+   },
+   {
+    "step": 3806929,
+    "picked": 0.0,
+    "created": "2026-08-11T15:40:12"
+   }
+  ]
+ },
+ "r2": [
+  {
+   "seed": 0,
+   "name_step": 372436,
+   "ckpt_step": 372436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T02:57:46",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "4acul8jy",
+   "valid": false
+  },
+  {
+   "seed": 0,
+   "name_step": 372436,
+   "ckpt_step": 372436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:10:48",
+   "picked": 0.06666666666666667,
+   "episodes": 15,
+   "id": "j5gpnjhj",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 472436,
+   "ckpt_step": 472436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:26:30",
+   "picked": 0.13333333333333333,
+   "episodes": 15,
+   "id": "b6h1exlt",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 572432,
+   "ckpt_step": 572432,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:49:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jtkco5be",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 672424,
+   "ckpt_step": 672424,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T04:15:01",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "1l4vfx8o",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 772424,
+   "ckpt_step": 772424,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T04:47:16",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "yiy0knm5",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 772424,
+   "ckpt_step": 772424,
+   "ckpt": "banked_peak.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:20:02",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "415apcg6",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 872428,
+   "ckpt_step": 872428,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:05:33",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "eduxdzgd",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 972436,
+   "ckpt_step": 974910,
+   "ckpt": "ckpt_974910.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:46:20",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j7o9if9i",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 972436,
+   "ckpt_step": 974910,
+   "ckpt": "ckpt_974910.pt",
+   "mode": "mode",
+   "created": "2026-08-11T06:15:14",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "0b1vsuew",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1172428,
+   "ckpt_step": 1178312,
+   "ckpt": "ckpt_1178312.pt",
+   "mode": "sample",
+   "created": "2026-08-11T06:57:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "sdqqgzdp",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1272416,
+   "ckpt_step": 1275224,
+   "ckpt": "ckpt_1275224.pt",
+   "mode": "sample",
+   "created": "2026-08-11T07:32:34",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "o3qgd7n4",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1372416,
+   "ckpt_step": 1373326,
+   "ckpt": "ckpt_1373326.pt",
+   "mode": "sample",
+   "created": "2026-08-11T08:07:02",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "3kjz4r92",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1472432,
+   "ckpt_step": 1473840,
+   "ckpt": "ckpt_1473840.pt",
+   "mode": "sample",
+   "created": "2026-08-11T08:43:23",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jev6iyuj",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "ckpt_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:09:26",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "zsv8f97y",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:12:04",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "irr8okoj",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:14:10",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "975kzneb",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "mode",
+   "created": "2026-08-11T09:16:00",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "ovrhyzry",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1672428,
+   "ckpt_step": 1674825,
+   "ckpt": "ckpt_1674825.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:45:07",
+   "picked": 0.3333333333333333,
+   "episodes": 15,
+   "id": "g29gaq9a",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1772416,
+   "ckpt_step": 1775171,
+   "ckpt": "ckpt_1775171.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:29:33",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "2yd8gsvw",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1872436,
+   "ckpt_step": 1878491,
+   "ckpt": "ckpt_1878491.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:05:59",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "72y1dyiy",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 1972428,
+   "ckpt_step": 1976056,
+   "ckpt": "ckpt_1976056.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:31:07",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "c33o0ffj",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2072428,
+   "ckpt_step": 2075772,
+   "ckpt": "ckpt_2075772.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:15:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "wfqk73ou",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2172428,
+   "ckpt_step": 2173601,
+   "ckpt": "ckpt_2173601.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:50:00",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j6mvll7l",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2272416,
+   "ckpt_step": 2276356,
+   "ckpt": "ckpt_2276356.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:25:14",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "p3oltrvz",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2372416,
+   "ckpt_step": 2376000,
+   "ckpt": "ckpt_2376000.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:01:37",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "14xb4v2p",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2472436,
+   "ckpt_step": 2474388,
+   "ckpt": "ckpt_2474388.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:36:07",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "h4f2zuhd",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2572416,
+   "ckpt_step": 2577420,
+   "ckpt": "ckpt_2577420.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:10:06",
+   "picked": 0.2,
+   "episodes": 15,
+   "id": "xzt8lsyh",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2672432,
+   "ckpt_step": 2676181,
+   "ckpt": "ckpt_2676181.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:46:26",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "0jwyr5qb",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2772428,
+   "ckpt_step": 2778434,
+   "ckpt": "ckpt_2778434.pt",
+   "mode": "sample",
+   "created": "2026-08-11T16:22:49",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ejsfq5tl",
+   "valid": true
+  },
+  {
+   "seed": 0,
+   "name_step": 2872420,
+   "ckpt_step": 2875997,
+   "ckpt": "ckpt_2875997.pt",
+   "mode": "sample",
+   "created": "2026-08-11T16:47:26",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "e8w4f0qy",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 972424,
+   "ckpt_step": 973417,
+   "ckpt": "ckpt_973417.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:04:47",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lr79jjm6",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1072436,
+   "ckpt_step": 1077995,
+   "ckpt": "ckpt_1077995.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:41:42",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "2c1unb14",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1172428,
+   "ckpt_step": 1177110,
+   "ckpt": "ckpt_1177110.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:15:42",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "w6s7ao51",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1272416,
+   "ckpt_step": 1273272,
+   "ckpt": "ckpt_1273272.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:50:33",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "o7jczuak",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1372428,
+   "ckpt_step": 1377895,
+   "ckpt": "ckpt_1377895.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:27:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lwwqcy3a",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1472420,
+   "ckpt_step": 1477432,
+   "ckpt": "ckpt_1477432.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:02:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "zhj5lzeb",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1572420,
+   "ckpt_step": 1575961,
+   "ckpt": "ckpt_1575961.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:37:32",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "xuockmwb",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1672428,
+   "ckpt_step": 1675168,
+   "ckpt": "ckpt_1675168.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:12:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j5nv65o2",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1772428,
+   "ckpt_step": 1773544,
+   "ckpt": "ckpt_1773544.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:47:29",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jowrnxpp",
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "name_step": 1872436,
+   "ckpt_step": 1873419,
+   "ckpt": "ckpt_1873419.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:22:35",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "rzjalpnd",
+   "valid": true
+  }
+ ]
+}
