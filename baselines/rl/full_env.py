@@ -36,7 +36,7 @@ REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv, np_  # noqa: E402
-from pick_env import STATE_DIM, ACT_DIM, denormalize_action  # noqa: E402
+from pick_env import STATE_DIM, ACT_DIM, ARM_LO, ARM_HI, denormalize_action  # noqa: E402
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from replay_harness import (tilt_deg, in_shelf_footprint, BOX_TOP_Z,  # noqa: E402
                             BOX_POS, HARDCODED_START, gripper_targets)
@@ -82,8 +82,25 @@ class FullTaskEnv(gym.Env):
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
-                 entry_bank=None):
+                 entry_bank=None, action_mode='absolute', delta_cap=0.025,
+                 delta_leash_mult=5.0):
         super().__init__()
+        # action_mode 'delta_joint' (2026-08-11, user: "do 1" -- port the delta
+        # action space to SACfD): arm dims in [-1,1] are per-STEP joint-target
+        # deltas of a*delta_cap rad integrated onto a persistent target (init =
+        # measured qpos at every reset; clipped to ARM_LO/HI; leashed to measured
+        # qpos within delta_leash_mult*cap). Grip dim stays absolute ([-1,1] ->
+        # 0..1). Same geometry that fixed the r2dreamer arm: absolute joint
+        # targets turn an exploring policy's sampled actions into arm thrash,
+        # which the hardened pick predicate (sustained hold) can never reward.
+        # Cap 0.025 = the demos' p99 per-frame commanded delta (44 deg/s
+        # saturated); leash 5*0.025 = 0.125 covers the demos' |cmd-q| PD lead
+        # (p99 0.126). MUST match the demo-buffer delta encoding
+        # (train_sacfd_full --action-mode delta_joint uses the same cap).
+        assert action_mode in ('absolute', 'delta_joint'), action_mode
+        self.action_mode = action_mode
+        self.delta_cap = float(delta_cap)
+        self.delta_leash = float(delta_leash_mult) * float(delta_cap)
         # TRAINING-ONLY dense shaping (scope='place' only; see PLACE_SHAPING_*
         # constants). Default False so eval and every other caller are unchanged.
         assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
@@ -141,6 +158,18 @@ class FullTaskEnv(gym.Env):
         self._attempted = False
         self._phi = 0.0
 
+    def _sync_dj_target(self):
+        """(Re-)seed the delta_joint persistent target from measured qpos.
+
+        Must run on EVERY reset variant (reset/_reset_place/reset_to) or the
+        target carries over from the previous episode and the first steps lunge
+        toward a stale pose. No-op in absolute mode."""
+        if self.action_mode != 'delta_joint':
+            return
+        q = np.asarray(self.genv._obs()['state'][:6], dtype=np.float64)
+        self._dj_target = q.copy()
+        self._dj_qmeas = q.copy()
+
     def _place_phi(self, bp):
         """Shaping potential: -SCALE * xy-distance(can center, shelf target)."""
         dx = float(bp[0]) - self.PLACE_SHAPING_TARGET[0]
@@ -195,6 +224,7 @@ class FullTaskEnv(gym.Env):
         obs = self.genv.reset(uid=int(uid))
         self._t = 0
         self._granted = set()
+        self._sync_dj_target()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
     def _reset_place(self, uid=None):
@@ -227,6 +257,7 @@ class FullTaskEnv(gym.Env):
                 # and 'picked' is pre-granted so the restored pick pays no reward
                 self.genv._picked = True
                 self._granted = {'picked'}
+                self._sync_dj_target()
                 return (self.genv._obs()['state'].astype(np.float32),
                         {'uid': u, 'entry_frame': int(e['frame']),
                          'entry_frac': float(e.get('frac', 0.0))})
@@ -241,11 +272,23 @@ class FullTaskEnv(gym.Env):
         obs = self.genv.reset(**ic)
         self._t = 0
         self._granted = set()
+        self._sync_dj_target()
         return obs['state'].astype(np.float32), {}
 
     def step(self, action):
-        a_phys = denormalize_action(action)
+        if self.action_mode == 'delta_joint':
+            a = np.asarray(action, dtype=np.float64)
+            d = np.clip(a[:6], -1.0, 1.0) * self.delta_cap
+            sp = np.clip(self._dj_target + d, ARM_LO, ARM_HI)
+            self._dj_target = self._dj_qmeas + np.clip(
+                sp - self._dj_qmeas, -self.delta_leash, self.delta_leash)
+            a_phys = np.concatenate(
+                [self._dj_target, [(np.clip(a[6], -1.0, 1.0) + 1.0) / 2.0]])
+        else:
+            a_phys = denormalize_action(action)
         obs, _env_done, info = self.genv.step(a_phys)
+        if self.action_mode == 'delta_joint':
+            self._dj_qmeas = np.asarray(obs['state'][:6], dtype=np.float64)
         self._t += 1
         # GenesisCanEnv only computes the honest (settled) nested at its own horizon, and
         # _nested() steps the sim so it can't run per-step. TRAINING uses a cheap proxy:

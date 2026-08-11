@@ -425,3 +425,19 @@ is itself a source property the distributional analysis should quantify.
   bottleneck is exploration/credit assignment, not world-model capacity.
   Non-confounding levers now in play: demo_duplicate=4 + reinject 150k
   (pick_delta25d4_s0, running).
+
+- 2026-08-11 (user: "do 1"): **SACfD MOVES TO DELTA-JOINT ACTIONS.** The
+  r2dreamer action-geometry fix ported to the RLfD arm: FullTaskEnv gains
+  action_mode='delta_joint' (per-step joint-target deltas, cap 0.025 = demo p99
+  speed, leash 5*cap; target re-seeded on every reset variant), train_sacfd_full
+  --action-mode delta-encodes the demo buffer with the same converter math
+  (66/66 pick grants preserved), wandb_eval integrates deltas statefully and
+  auto-detects the mode from a .action_mode.json sidecar (legacy zips ->
+  absolute). Replay gate 3/3 (232/242/243 re-earn picks open-loop, 3-8 steps
+  PD catch-up); 400-step train smoke + sidecar eval smoke PASS. Launcher:
+  SACfD defaults to delta with '-dj' suffixed names/dirs; the 16 absolute-mode
+  zeros of 08-10 stand as the matched control row. Rationale: SB3's actor is
+  properly tanh-bounded, but absolute joint targets make its exploration
+  thrash, which the hardened sustained-hold predicate can never reward -- DP
+  works on absolute joints precisely because it does not explore (action
+  geometry interacts with exploration, not imitation).

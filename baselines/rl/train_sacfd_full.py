@@ -16,7 +16,7 @@ Usage: train_sacfd_full.py --steps 400000 --demo-dir baselines/episodes_all
                            --out-dir baselines/rl/checkpoints/sacfd_full --device cuda
 """
 import os
-import argparse, glob, pathlib as pl, sys, time
+import argparse, glob, json, pathlib as pl, sys, time
 
 import numpy as np
 
@@ -89,6 +89,33 @@ def relabel_full(paths, pick_z):
     return transitions, stats
 
 
+def delta_encode_transitions(paths, pick_z, scope, cap):
+    """relabel_full per episode, then replace each transition's RAW absolute
+    action [6 rad, grip 0..1] with the delta-normalized action the delta_joint
+    env expects: arm = clip((cmd_t - cmd_{t-1})/cap, -1, 1) (row 0 vs the
+    measured start pose -- max |cmd_0 - q_0| over demos is 0.012 rad), grip =
+    raw*2-1. Same encoding as to_dreamer_demos --action-encoding delta_joint;
+    integrating these through FullTaskEnv(action_mode='delta_joint') reproduces
+    the validated commanded replay (gate: sacfd_delta_gate below)."""
+    out = []
+    for p in paths:
+        trans, _ = relabel_full([p], pick_z)
+        if not trans:
+            continue
+        if scope == 'pick':
+            trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                     (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
+        cmds = np.stack([t[1] for t in trans]).astype(np.float64)
+        prev = np.concatenate([trans[0][0][None, :6].astype(np.float64),
+                               cmds[:-1, :6]])
+        dq = np.clip((cmds[:, :6] - prev) / cap, -1.0, 1.0)
+        grip = np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0
+        acts = np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
+        out.extend((o, acts[i], r, o2, d)
+                   for i, (o, _, r, o2, d) in enumerate(trans))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--steps', type=int, default=400_000)
@@ -118,6 +145,14 @@ def main():
                     help='video-eval subprocess cadence (0 disables)')
     ap.add_argument('--eval-max-steps', type=int, default=1200,
                     help='eval rollout horizon (#21 lever: 400 for pick-only curves)')
+    ap.add_argument('--action-mode', choices=['absolute', 'delta_joint'],
+                    default='absolute',
+                    help='delta_joint: env actions are per-step joint-target '
+                         'deltas (cap 0.025 = demo p99 speed, leash 5*cap) and '
+                         'demo-buffer actions are delta-encoded to match -- the '
+                         'r2dreamer fix ported to SACfD (2026-08-11). A sidecar '
+                         '<out>/sacfd_final.action_mode.json records the mode '
+                         'for wandb_eval --action-mode auto.')
     ap.add_argument('--scope', choices=['full', 'pick'], default='full',
                     help='pick: +1 and terminate on the pick (phase-1 paper core)')
     ap.add_argument('--project', default='genesis_pickaplace', help='wandb project')
@@ -131,7 +166,7 @@ def main():
                                    scope=args.scope)
     else:
         env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
-                          scope=args.scope)
+                          scope=args.scope, action_mode=args.action_mode)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s '
           f'| pick_z={env.pick_z:.4f}', flush=True)
 
@@ -163,6 +198,16 @@ def main():
     if args.cartesian:
         from cartesian_env import CartesianCanEnv
         _norm = CartesianCanEnv.normalize_action
+    elif args.action_mode == 'delta_joint':
+        # Delta encoding needs per-episode context (delta_t = (cmd_t - cmd_{t-1})
+        # / cap; row 0 from the measured start pose) -- a stateless per-transition
+        # action_transform cannot do it, so re-encode the transitions' actions
+        # here, per episode, with the SAME math as to_dreamer_demos (commanded
+        # deltas, grip absolute [-1,1]). Transitions were built per-path in order
+        # so episode boundaries are recoverable from the paths loop below.
+        transitions = delta_encode_transitions(paths, env.pick_z, args.scope,
+                                               env.delta_cap)
+        _norm = None
     else:
         _norm = pick_env.normalize_action
     n_added = demo_buffer.inject_into_replay_buffer(
@@ -185,6 +230,10 @@ def main():
                                      control=getattr(args, 'control', 'vel')))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
+    # sidecar: lets wandb_eval --action-mode auto pick the right control path
+    # (the silent-default bug family rule: control mode travels WITH the artifact)
+    (out / 'sacfd_final.action_mode.json').write_text(
+        json.dumps({'action_mode': args.action_mode}))
     if run is not None:
         run.finish()
     print(f'[full] done in {(time.time() - t0)/3600:.1f}h -> {out}/sacfd_final.zip', flush=True)

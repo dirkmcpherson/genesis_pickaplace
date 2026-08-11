@@ -13,6 +13,11 @@
 # target-66 verified harvest from the gen-0 DP teacher WITH --keep-fails 30;
 # dSACfD = same harvest recipe from the best dH_SACfD checkpoint (exists only
 # after wave 1 -- rerun this launcher and it fills in; override SACFD_TEACHER).
+# 2026-08-11: SACfD trains in DELTA-JOINT action mode by default
+# (SACFD_ACTION_MODE=absolute + SACFD_SUFFIX= restores the old geometry). Run
+# names/out-dirs get SACFD_SUFFIX (default '-dj') so the delta wave cannot
+# collide with the 16 absolute-mode 200k retrains of 08-10 (all 0.00 -- they
+# are the matched control row for this wave).
 # Missing harvests are auto-submitted; trainings chain behind them (afterok).
 # BC datasets take ONLY success episodes (stems 1xxxxx; fails are 5xxxxx).
 #
@@ -91,18 +96,19 @@ for S_NAME in dH dDP dSACfD; do
 
   # ---- SACfD learner (successes + fails) ------------------------------------
   for S in $SEEDS; do
-    sub sbatch --job-name="${S_NAME}_SACfD_s$S" $DEP -p "${PARTITION:-gpu,preempt}" --requeue \
+    sub sbatch --job-name="${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s$S" $DEP -p "${PARTITION:-gpu,preempt}" --requeue \
       --gres=gpu:1 --constraint="${GPU_CONSTRAINT:-l40s|a100|l40|h200}" \
-      -N 1 -n 8 --mem=32g --time=0-10:00:00 --output="paper_${S_NAME}_SACfD_s${S}_%j.out" \
-      --wrap="$PRE; O=baselines/outputs/paper/${S_NAME}_SACfD_s$S; \
+      -N 1 -n 8 --mem=32g --time=0-10:00:00 --output="paper_${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s${S}_%j.out" \
+      --wrap="$PRE; O=baselines/outputs/paper/${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s$S; \
         python baselines/rl/train_sacfd_full.py --scope pick \
           --demo-dir $NPZ --steps ${SACFD_STEPS:-200000} --seed $S \
-          --train-max-steps 900 --out-dir \$O --run-name ${S_NAME}_SACfD_s$S \
+          --action-mode ${SACFD_ACTION_MODE:-delta_joint} \
+          --train-max-steps 900 --out-dir \$O --run-name ${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s$S \
           --project $PROJ --eval-freq 50000; \
         python baselines/wandb_eval.py --kind sac --ic-mode both \
           --checkpoint \$O/sacfd_final.zip --random 15 --seed 0 \
-          --project $PROJ --group ${S_NAME}_SACfD --name ${S_NAME}_SACfD_s${S}-eval" \
-      >/dev/null && echo "  ${S_NAME}_SACfD_s$S submitted ${DEP:+(waits on harvest)}"
+          --project $PROJ --group ${S_NAME}_SACfD${SACFD_SUFFIX:--dj} --name ${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s${S}-eval" \
+      >/dev/null && echo "  ${S_NAME}_SACfD${SACFD_SUFFIX:--dj}_s$S submitted ${DEP:+(waits on harvest)}"
   done
 
   # ---- DV3 learner (fails included via the demo dir) -------------------------

@@ -35,6 +35,15 @@ ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='both',
                      "A policy that scores well on demo ICs but zero on random ICs "
                      "is a generalization failure, not a broken pipeline -- the "
                      "positive control this project has never had.")
+ap.add_argument('--action-mode', choices=['auto', 'absolute', 'delta_joint'],
+                default='auto',
+                help="JOINT sac checkpoints only: 'delta_joint' integrates the "
+                     "policy's per-step joint deltas onto a leashed target "
+                     "(FullTaskEnv delta mode, cap 0.025/leash 5x -- must match "
+                     "training). 'auto' reads the <ckpt>.action_mode.json "
+                     "sidecar written by train_sacfd_full and falls back to "
+                     "absolute (all pre-2026-08-11 checkpoints) with a printed "
+                     "note.")
 ap.add_argument('--control', choices=['vel', 'delta', 'abs', 'abs6', 'delta6'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--obs', choices=['env', 'joint', 'ee'], default='env',
@@ -93,10 +102,43 @@ if args.kind == 'sac':
         from pick_env import denormalize_action
     model = SAC.load(args.checkpoint, device='cpu')
 
-    def policy_action(obs):
-        a, _ = model.predict(obs['state'], deterministic=True)
-        return denormalize_action(a)
-    policy_reset = None
+    _mode = args.action_mode
+    if _mode == 'auto' and not args.cartesian:
+        _sc = pl.Path(str(args.checkpoint)).with_suffix('.action_mode.json')
+        if _sc.exists():
+            _mode = json.loads(_sc.read_text())['action_mode']
+            print(f'[eval] action_mode from sidecar: {_mode}')
+        else:
+            _mode = 'absolute'
+            print('[eval] no action_mode sidecar -> absolute (legacy checkpoint)')
+
+    if _mode == 'delta_joint' and not args.cartesian:
+        # Stateful delta integration, mirroring FullTaskEnv(action_mode=
+        # 'delta_joint') exactly: target seeded from measured q on the first
+        # step of each episode, integrated by a*cap, clipped to joint limits,
+        # leashed to measured q. Constants MUST match training.
+        from pick_env import ARM_LO, ARM_HI
+        DJ_CAP, DJ_LEASH = 0.025, 5.0 * 0.025
+        _dj = {'target': None}
+
+        def policy_action(obs):
+            a, _ = model.predict(obs['state'], deterministic=True)
+            q = np.asarray(obs['state'][:6], dtype=np.float64)
+            if _dj['target'] is None:
+                _dj['target'] = q.copy()
+            sp = np.clip(_dj['target'] + np.clip(a[:6], -1.0, 1.0) * DJ_CAP,
+                         ARM_LO, ARM_HI)
+            _dj['target'] = q + np.clip(sp - q, -DJ_LEASH, DJ_LEASH)
+            return np.concatenate(
+                [_dj['target'], [(np.clip(a[6], -1.0, 1.0) + 1.0) / 2.0]])
+
+        def policy_reset():
+            _dj['target'] = None
+    else:
+        def policy_action(obs):
+            a, _ = model.predict(obs['state'], deterministic=True)
+            return denormalize_action(a)
+        policy_reset = None
 else:
     from dp_runner import load_dp_runner
     policy_action, policy_reset, _proprio = load_dp_runner(
