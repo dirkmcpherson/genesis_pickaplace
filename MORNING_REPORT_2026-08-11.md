@@ -158,3 +158,12 @@ phenomenon itself. The addendum's extraction-bug framing is RETRACTED.
 - Random-IC eval of the champion still to run (queued after the x3 reps).
 
 Next: dDP twin under the same recipe = the H4 comparison the paper wants.
+
+## Confirmation protocol COMPLETE (~05:45)
+CHAMPION_1576820 (r2dreamer, delta-joint, 1.58M steps), demo ICs, hardened
+predicate, 15 eps/rep:
+- sampled actions x3 seeds: **1.00 / 0.87 / 0.87 (mean 0.91, n=45)**
+- mode actions: **1.00 (15/15)**
+- zero timeouts in all 60 episodes; mean ~35 agent steps (~4.7 s)
+- grid videos: wandb r2dreamer_genesis (runs 4-digit suffixes irr8okoj,
+  975kzneb, ovrhyzry + the original discovery eval)

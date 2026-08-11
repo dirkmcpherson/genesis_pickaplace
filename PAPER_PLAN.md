@@ -441,3 +441,17 @@ is itself a source property the distributional analysis should quantify.
   thrash, which the hardened sustained-hold predicate can never reward -- DP
   works on absolute joints precisely because it does not explore (action
   geometry interacts with exploration, not imitation).
+
+- 2026-08-11 (~05:45, assistant): **WORLD-MODEL ARM LANDS — CHAMPION 0.91/1.00.**
+  r2dreamer + delta-joint actions (cap = demo p99 speed) + bounded actor
+  samples + 4x demo density (demos as DATA only, no BC): checkpoint at 1.58M
+  steps evals picked **0.91 sampled (1.00/0.87/0.87, n=45) / 1.00 mode (15/15)**
+  on demo ICs under the hardened predicate — the first fully confirmed
+  world-model policy in the project (banked:
+  r2dreamer/runs/pick_delta25d4_s0/CHAMPION_1576820.pt). Training is bistable
+  (diagnosed lambda-return explosion past the 100 max; checkpoint = phase
+  lottery, 1-in-7 hit rate) — the return-target clamp remains the
+  reliability fix. Seed 1 running. H4 unblocked: the dDP twin under this exact
+  recipe is the paper's comparison. dv3-absolute rows stand as the
+  action-geometry ablation; SACfD-dj cluster wave = the RLfD leg of the same
+  story.
