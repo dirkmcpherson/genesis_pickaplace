@@ -455,3 +455,12 @@ is itself a source property the distributional analysis should quantify.
   recipe is the paper's comparison. dv3-absolute rows stand as the
   action-geometry ablation; SACfD-dj cluster wave = the RLfD leg of the same
   story.
+
+- 2026-08-11 (evening, assistant): **clamp hypothesis refuted by pilot** —
+  return_clamp=100 eliminates target overshoot entirely (ret_max>105: 0.85 ->
+  0.00 of logs) yet entropy-collapse cycles persist unchanged (15 vs 12 spike
+  onsets over matched 1.1M). The 08-11 morning claim that clamping would
+  stabilize training is retracted; bistability cause remains open (AMP
+  inf-grads / reinject shocks are the live suspects). Stability for the paper
+  rests on the best-checkpoint + independent-confirmation protocol, which is
+  measurement-side and hypothesis-free.
