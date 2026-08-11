@@ -136,10 +136,12 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
     if [ "$T1" != "$T0" ] && [ "$T1" -gt 0 ]; then
       T0=$T1; sleep 15
       CK="$LOGDIR/ckpt_$T1.pt"; cp "$LOGDIR/latest.pt" "$CK"
-      # DEVICE CPU, deliberately: a second CUDA process on the training GPU
-      # kills the compiled (cudagraph) trainer -- all four dH_R2D jobs died at
-      # ~230k steps, exactly when the first concurrent cuda eval ran
-      # (2026-08-11). The model is small; CPU eval just takes ~20 min.
+      # DEVICE CPU: precaution only -- keeps a second CUDA process off the
+      # training GPU. (CORRECTION 2026-08-11: the "jobs died at 230k" alarm
+      # that prompted this was a monitoring artifact -- sync_runs_to_wandb
+      # marks the run 'finished' after EVERY sync cycle, and the step count
+      # lagged; the trainers were healthy throughout. wandb run state is NOT
+      # a liveness signal for these runs; poll env_step growth instead.)
       P=$( (cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$CK" \
             --episodes 15 --mode sample --seed 0 --device cpu --torch-threads 2 \
             --append-metrics "$LOGDIR" 2>/dev/null) \
