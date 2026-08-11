@@ -174,3 +174,25 @@ P(discovery) across seeds (local seed variance was severe: s0 discovered by
 Official statistics = CLUSTER runs only (same-machine baseline rule); the local
 s0/s1 pair is the pilot. Do NOT pass REINJECT/DUPLICATE for v5d4 (baked; the
 sbatch passes them only if explicitly set).
+
+## No-rsync path (2026-08-11): the port travels IN THIS REPO
+`cluster/r2dreamer_port.tar.gz` = the complete uncommitted r2dreamer port
+(30 source files, 86KB; modified + new files against upstream commit 546e4fa).
+Apply on the cluster:
+
+    git clone https://github.com/NM512/r2dreamer.git ~/r2dreamer 2>/dev/null || true
+    cd ~/r2dreamer && git checkout 546e4fa
+    tar xzf ~/genesis_pickaplace/cluster/r2dreamer_port.tar.gz -C ~/r2dreamer
+    ls configs/env/genesis_pick_v5d4_delta.yaml replay_gate.py || echo APPLY-FAILED
+
+Demo sets are NOT in git (rsync-only rule). For the dH delta25 set, in order of
+preference:
+1. If `~/genesis_pickaplace/baselines/episodes_pick_pruned_img/` exists on the
+   cluster: regenerate CANONICALLY (byte-equivalent to the dev box):
+       python baselines/rl/to_dreamer_demos.py --src baselines/episodes_pick_pruned_img \
+         --scope pick --action-encoding delta_joint --delta-cap 0.025 --grant-slack 48 \
+         --dst ~/dreamerv3-torch/demonstrations/genesis_pick_pruned_delta25
+   then replay-gate it (uids 232 242 243, must pass 3/3).
+2. Else: VPN rsync from the dev box (the set is only 75MB -- minutes).
+The dDP set is generated on the cluster either way (harvest lives there; see
+the STATISTICS WAVE section above).
