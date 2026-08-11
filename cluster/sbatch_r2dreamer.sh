@@ -137,7 +137,8 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
       T0=$T1; sleep 15
       CK="$LOGDIR/ckpt_$T1.pt"; cp "$LOGDIR/latest.pt" "$CK"
       P=$( (cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$CK" \
-            --episodes 15 --mode sample --seed 0 --device cuda --wandb 2>/dev/null) \
+            --episodes 15 --mode sample --seed 0 --device cuda \
+            --append-metrics "$LOGDIR" 2>/dev/null) \
            | grep -oP 'picked \K[0-9.]+' | head -1 )
       echo -e "$CK\t${P:-ERR}" >> "$LOGDIR/ckpt_scores.tsv"
       echo "== ckpt eval: $CK picked=${P:-ERR}"
@@ -166,7 +167,7 @@ kill $ARCH_PID 2>/dev/null || true
 if [ -z "${NO_EVAL:-}" ]; then
   ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/latest.pt" \
       --episodes "${EVAL_EPS:-15}" --max-steps "${EVAL_MAX_STEPS:-400}" \
-      --mode sample --seed 0 --device cuda --wandb ) 2>&1 | tee "$LOGDIR/eval.log" \
+      --mode sample --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee "$LOGDIR/eval.log" \
     || echo "WARN: final eval FAILED"
   BEST=$(sort -k2 -rn "$LOGDIR/ckpt_scores.tsv" 2>/dev/null | head -1 | cut -f1)
   if [ -n "$BEST" ] && [ -f "$BEST" ]; then
@@ -174,10 +175,10 @@ if [ -z "${NO_EVAL:-}" ]; then
     echo "== confirming best checkpoint $BEST (selected on seed-0 eval)"
     for ES in 1 2 3; do
       ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/BEST_selected.pt" \
-          --episodes 15 --mode sample --seed $ES --device cuda --wandb ) 2>&1 | tee -a "$LOGDIR/confirm.log"
+          --episodes 15 --mode sample --seed $ES --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee -a "$LOGDIR/confirm.log"
     done
     ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/BEST_selected.pt" \
-        --episodes 15 --mode mode --seed 0 --device cuda --wandb ) 2>&1 | tee -a "$LOGDIR/confirm.log"
+        --episodes 15 --mode mode --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee -a "$LOGDIR/confirm.log"
     grep -h "15 episodes" "$LOGDIR/confirm.log" | tail -4
   else
     echo "WARN: no scored checkpoints -- lottery coverage produced nothing (see ckpt_scores.tsv)"
