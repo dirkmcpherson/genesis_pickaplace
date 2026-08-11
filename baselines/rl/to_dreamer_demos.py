@@ -32,9 +32,46 @@ ap.add_argument('--scope', choices=['full', 'pick'], default='full',
                      'teach the cont head that pick states continue AND show '
                      'post-pick rewards the env never pays. No-pick episodes stay '
                      'full-length (zero-reward dynamics data).')
+ap.add_argument('--action-encoding', choices=['abs', 'delta_joint'], default='abs',
+                help='delta_joint: arm dims = clip((cmd_t - cmd_{t-1})/cap, -1, 1) '
+                     'from the COMMANDED joint targets (npz actions[:, :6]; row 0 = '
+                     '(cmd_0 - q_0)/cap ~ 0), grip stays absolute (raw 0..1 -> '
+                     '[-1,1]). Commanded (not measured-q) deltas: integrating them '
+                     'reproduces the validated commanded-replay trajectory, whereas '
+                     'measured-q deltas make the replay arm chase its own PD lag '
+                     '(~40 raw frames behind by the lift -- gate-tested FAIL '
+                     '2026-08-10). Matches the r2dreamer GenesisPick '
+                     'action_mode=delta_joint adapter, which integrates a*cap onto a '
+                     'persistent leashed joint target each SIM step. Downsample '
+                     'composition is exact by construction: demo_prefill mean-pools '
+                     'the window\'s per-frame actions, which telescopes to '
+                     '(cmd_{t+N}-cmd_t)/(N*cap), and the adapter re-integrates it '
+                     'as N sim steps of a*cap -- no converter-side downsampling.')
+ap.add_argument('--grant-slack', type=int, default=0,
+                help='scope=pick only: keep this many RAW frames past the recorded '
+                     '(old-predicate) pick-grant frame, moving the +1/is_terminal to '
+                     'the new final row. Needed for delta_joint replay: the recorded '
+                     'grant frame is the OLD z+grip predicate, the hardened env '
+                     'predicate (2026-08-09) adds a 10-frame sustain, and open-loop '
+                     'delta replay lags the demo by ~4-8 agent steps (PD following '
+                     'error on measured-q targets) -- a tape cut at the grant frame '
+                     'ends before the replayed lift can cross pick_z. Slack frames '
+                     'are the demo\'s own continued lift (all pick demos carry on '
+                     'toward place). Benign for training: online pick episodes '
+                     'TERMINATE at the grant, so the higher-lift demo states do not '
+                     'contradict any online reward label. 0 = old behavior.')
+ap.add_argument('--delta-cap', type=float, default=0.04,
+                help='rad per SIM step per arm dim (delta_joint only). MUST equal the '
+                     'adapter\'s env.delta_cap. Calibrated 2026-08-10 on '
+                     'episodes_pick_pruned_img (118,194 frames), COMMANDED deltas: '
+                     'global p99 0.0249, max per-dim p99 0.0307 (joint 4), 0.17%% of '
+                     'values clip at 0.04 (max ever 0.059). Leash headroom: |cmd-q| '
+                     'lead p99 0.126 ~ 3*0.04.')
 args = ap.parse_args()
 if args.scope == 'pick' and args.dst.rstrip('/').endswith('/genesis'):
     args.dst = args.dst.rstrip('/') + '_pick'   # never mix scopes in one demo dir
+if args.action_encoding == 'delta_joint' and 'delta' not in pl.Path(args.dst).name:
+    args.dst = args.dst.rstrip('/') + '_delta'  # never mix encodings in one demo dir
 
 import pick_env  # noqa: E402
 from train_sacfd_full import relabel_full  # noqa: E402
@@ -68,8 +105,25 @@ for p in paths:
     # made the world model learn dynamics conditioned on a scale the policy can never
     # produce (62.6% of demo action values fell outside [-1,1]) -- present in every run
     # v6-v13. SACfD never hit this because demo_buffer applies normalize_action.
-    act = pick_env.normalize_action(
-        np.stack([t[1] for t in trans]).astype(np.float32)).astype(np.float32)
+    if args.action_encoding == 'delta_joint':
+        # Forward-looking delta action at t: the target the demo COMMANDED at
+        # obs_t, as a delta from the previous commanded target (row 0: from the
+        # measured start pose, ~0 -- max |cmd_0 - q_0| over demos is 0.012 rad).
+        # Integrated through the adapter (target init = measured qpos at reset)
+        # this reproduces the commanded-target trajectory, i.e. the validated
+        # commanded replay. The shift below then makes row t carry the delta
+        # that PRODUCED obs_t, dreamer's convention.
+        # Grip stays ABSOLUTE: raw commanded 0..1 -> [-1,1] (adapter maps back).
+        cmds = np.stack([t[1] for t in trans]).astype(np.float64)  # raw [6 rad, grip]
+        cmd = cmds[:, :6]
+        prev = np.concatenate([d['states'][:1, :6].astype(np.float64), cmd[:-1]])
+        dq = np.clip((cmd - prev) / args.delta_cap, -1.0, 1.0)
+        act = np.concatenate(
+            [dq, (np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0)[:, None]], axis=1
+        ).astype(np.float32)
+    else:
+        act = pick_env.normalize_action(
+            np.stack([t[1] for t in trans]).astype(np.float32)).astype(np.float32)
     rew = np.array([t[2] for t in trans], dtype=np.float32)
     done = np.array([t[4] for t in trans], dtype=bool)
     is_first = np.zeros(T, dtype=bool); is_first[0] = True
@@ -99,10 +153,11 @@ for p in paths:
         # frame IS the pick. Truncate there and terminate, exactly like the env.
         ridx = np.flatnonzero(rew > 0)
         if len(ridx):
-            k = int(ridx[0])
-            img, act, rew = img[:k + 1], act[:k + 1], rew[:k + 1]
+            k = min(int(ridx[0]) + args.grant_slack, len(img) - 1)
+            img, act = img[:k + 1], act[:k + 1]
+            rew = np.zeros(k + 1, dtype=np.float32)
             rew[k] = 1.0                       # scope=pick pays +1 regardless of stage value
-            is_terminal = is_terminal[:k + 1]; is_terminal[k] = True
+            is_terminal = np.zeros(k + 1, dtype=bool); is_terminal[k] = True
             is_first = is_first[:k + 1]
             is_last = np.zeros(k + 1, dtype=bool); is_last[k] = True
             discount = (1.0 - is_terminal.astype(np.float32))
