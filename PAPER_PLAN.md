@@ -416,3 +416,12 @@ is itself a source property the distributional analysis should quantify.
   all-zeros. (3) A nonzero honest RLfD row would need a different experiment
   (longer budget / shaping / demo-speed action caps a la r2dreamer v5) — out of
   scope unless the user opts in.
+
+- 2026-08-11 (user decision): **NO actor-BC in the world-model arm** — it
+  imitates demonstrator actions and confounds the H4 design (WM learners must
+  consume demos as dynamics/reward data only). The bc-run (picked 0.08 @153k,
+  entropy collapsed from start) was aborted on this rule and is retained only
+  as a diagnostic: an action prior makes the recipe learn quickly, so the WM
+  bottleneck is exploration/credit assignment, not world-model capacity.
+  Non-confounding levers now in play: demo_duplicate=4 + reinject 150k
+  (pick_delta25d4_s0, running).
