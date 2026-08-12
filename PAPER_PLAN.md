@@ -464,3 +464,18 @@ is itself a source property the distributional analysis should quantify.
   inf-grads / reinject shocks are the live suspects). Stability for the paper
   rests on the best-checkpoint + independent-confirmation protocol, which is
   measurement-side and hypothesis-free.
+
+- 2026-08-12 (assistant): **single-lever gamma pilot FAILED** — SACfD with
+  delta actions AND gamma 0.998 (fixing the silent 0.98 that made the demo
+  terminal ~1.6e-6 from start states) still scores 0.00 at 200k (train reward
+  flat zero; both eval modes 0). The RLfD failure is therefore attributable to
+  neither action geometry alone nor discount alone: with matched geometry,
+  visible reward, and demo-seeded replay, one-step TD from a single critic
+  still never consolidates. Remaining candidate differences vs the working
+  world-model learner: value-propagation machinery (RLPD's ensemble +
+  symmetric sampling + high UTD) and/or imagination-based credit assignment
+  itself. The RLPD implementation plan (agent-audited 08-12; includes the
+  measured cost table and pre-registered pilot criteria) is the motivated next
+  step. In-train eval action-mode bug (snapshot evals of delta runs ran
+  absolute) found and fixed en route — dj in-train CURVES are unreliable;
+  final evals unaffected.
