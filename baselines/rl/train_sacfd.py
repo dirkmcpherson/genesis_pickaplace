@@ -40,7 +40,12 @@ import pick_env  # noqa: E402
 CKPT_DIR = RL_DIR / 'checkpoints'
 
 
-def build_model(env, seed, device):
+def build_model(env, seed, device, gamma=0.98):
+    # gamma NOTE (2026-08-12): 0.98 was a silent killer for scope=pick -- the
+    # demos' median pick frame is 662 at 30Hz, and 0.98^662 ~ 1.6e-6: the demo
+    # terminal was mathematically invisible from start states in every SACfD
+    # wave. Callers that train pick-scope MUST pass gamma explicitly
+    # (train_sacfd_full --gamma, default 0.998 there).
     from stable_baselines3 import SAC
     return SAC(
         'MlpPolicy', env,
@@ -49,7 +54,7 @@ def build_model(env, seed, device):
         learning_starts=100,      # small: buffer is pre-seeded with demos
         batch_size=256,
         tau=0.005,
-        gamma=0.98,               # short-horizon sparse task
+        gamma=gamma,
         train_freq=1,
         gradient_steps=1,
         ent_coef='auto',

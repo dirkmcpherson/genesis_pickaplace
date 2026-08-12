@@ -78,11 +78,18 @@ class VideoEvalCallback(BaseCallback):
     """
 
     def __init__(self, run, out_dir, eval_freq=25_000, n_random=10, max_steps=400,
-                 max_videos=3, seed=0, cartesian=False, control='vel'):
+                 max_videos=3, seed=0, cartesian=False, control='vel',
+                 action_mode=None):
         super().__init__()
         self.run = run
         self.cartesian = bool(cartesian)
         self.control = control
+        # JOINT action mode for the eval subprocess. None = wandb_eval's 'auto'
+        # (sidecar lookup) -- but the tmp snapshot has NO sidecar, so auto falls
+        # back to ABSOLUTE: every in-train eval curve of a delta_joint run
+        # before 2026-08-12 evaluated the policy in the wrong MDP (found by the
+        # RLPD planning audit). Trainers of delta policies MUST pass it.
+        self.action_mode = action_mode
         self.dir = pl.Path(out_dir) / 'wandb_eval'
         self.dir.mkdir(parents=True, exist_ok=True)
         self.eval_freq, self.n_random = eval_freq, n_random
@@ -134,6 +141,8 @@ class VideoEvalCallback(BaseCallback):
                *(['--cartesian'] if getattr(self, 'cartesian', False) else []),
                *(['--control', getattr(self, 'control', 'vel')]
                  if getattr(self, 'cartesian', False) else []),
+               *(['--action-mode', self.action_mode]
+                 if getattr(self, 'action_mode', None) else []),
                '--checkpoint', str(ck), '--random', str(self.n_random),
                '--seed', str(self.seed), '--max-steps', str(self.max_steps),
                '--record-dir', str(rec), '--json', str(self.dir / 'metrics.json'),

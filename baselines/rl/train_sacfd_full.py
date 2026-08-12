@@ -153,6 +153,11 @@ def main():
                          'r2dreamer fix ported to SACfD (2026-08-11). A sidecar '
                          '<out>/sacfd_final.action_mode.json records the mode '
                          'for wandb_eval --action-mode auto.')
+    ap.add_argument('--gamma', type=float, default=0.998,
+                    help='discount. 0.998 ~ 500-step credit window; the old '
+                         'build_model default 0.98 made the demo pick terminal '
+                         '(median frame 662) worth ~1.6e-6 from start states -- '
+                         'a silent cause of the uniform SACfD zeros.')
     ap.add_argument('--scope', choices=['full', 'pick'], default='full',
                     help='pick: +1 and terminate on the pick (phase-1 paper core)')
     ap.add_argument('--project', default='genesis_pickaplace', help='wandb project')
@@ -177,7 +182,8 @@ def main():
         print(f'[warm-start] loaded {args.warm_start}', flush=True)
     else:
         from train_sacfd import build_model
-        model = build_model(env, args.seed, args.device)
+        model = build_model(env, args.seed, args.device, gamma=args.gamma)
+        print(f'[cfg] gamma={args.gamma} scope={args.scope} action_mode={args.action_mode}', flush=True)
 
     paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
     assert paths, f'no npz in {args.demo_dir}'
@@ -227,7 +233,8 @@ def main():
         cbs.append(VideoEvalCallback(run, out, eval_freq=args.eval_freq,
                                      max_steps=args.eval_max_steps, seed=args.seed,
                                      cartesian=args.cartesian,
-                                     control=getattr(args, 'control', 'vel')))
+                                     control=getattr(args, 'control', 'vel',
+                                     action_mode=(args.action_mode if args.action_mode != 'absolute' else None))))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
     # sidecar: lets wandb_eval --action-mode auto pick the right control path
