@@ -1,0 +1,4603 @@
+{
+ "bc": {
+  "wave1": {
+   "dDP_s0": {
+    "indist": 0.8666666666666667,
+    "random": 0.26666666666666666,
+    "created": "2026-08-02T23:42:45"
+   },
+   "dDP_s1": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-03T02:28:26"
+   },
+   "dDP_s2": {
+    "indist": 0.6666666666666666,
+    "random": 0.3333333333333333,
+    "created": "2026-08-03T05:13:32"
+   },
+   "dDP_s3": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T18:09:23"
+   },
+   "dDP_s4": {
+    "indist": 0.6666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T20:42:03"
+   },
+   "dDP_s5": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-08T23:16:08"
+   },
+   "dDP_s6": {
+    "indist": 0.9333333333333332,
+    "random": 0.2,
+    "created": "2026-08-09T01:50:17"
+   },
+   "dDP_s7": {
+    "indist": 0.9333333333333332,
+    "random": 0.3333333333333333,
+    "created": "2026-08-09T04:24:44"
+   },
+   "dH_s0": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-02T03:17:53"
+   },
+   "dH_s1": {
+    "indist": 0.6,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T07:24:21"
+   },
+   "dH_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-02T11:33:02"
+   },
+   "dH_s3": {
+    "indist": 0.6,
+    "random": 0.26666666666666666,
+    "created": "2026-08-08T18:33:29"
+   },
+   "dH_s4": {
+    "indist": 0.4,
+    "random": 0.2,
+    "created": "2026-08-08T21:25:42"
+   },
+   "dH_s5": {
+    "indist": 0.6,
+    "random": 0.4,
+    "created": "2026-08-09T00:20:25"
+   },
+   "dH_s6": {
+    "indist": 0.6666666666666666,
+    "random": 0.26666666666666666,
+    "created": "2026-08-09T03:15:03"
+   },
+   "dH_s7": {
+    "indist": 0.6666666666666666,
+    "random": 0.06666666666666667,
+    "created": "2026-08-09T06:12:08"
+   }
+  },
+  "wave2": {
+   "dDP_s0": {
+    "indist": 0.7333333333333333,
+    "random": 0.3333333333333333,
+    "created": "2026-08-10T22:41:45"
+   },
+   "dDP_s1": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-10T23:39:15"
+   },
+   "dDP_s2": {
+    "indist": 0.7333333333333333,
+    "random": 0.2,
+    "created": "2026-08-11T00:35:08"
+   },
+   "dDP_s3": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T01:31:45"
+   },
+   "dDP_s4": {
+    "indist": 0.6666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T02:28:56"
+   },
+   "dDP_s5": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-11T03:26:39"
+   },
+   "dDP_s6": {
+    "indist": 0.9333333333333332,
+    "random": 0.2,
+    "created": "2026-08-11T04:23:34"
+   },
+   "dDP_s7": {
+    "indist": 0.9333333333333332,
+    "random": 0.3333333333333333,
+    "created": "2026-08-11T05:20:13"
+   },
+   "dH_s0": {
+    "indist": 0.8,
+    "random": 0.13333333333333333,
+    "created": "2026-08-10T22:41:05"
+   },
+   "dH_s1": {
+    "indist": 0.6,
+    "random": 0.3333333333333333,
+    "created": "2026-08-10T23:38:40"
+   },
+   "dH_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-11T00:35:13"
+   },
+   "dH_s3": {
+    "indist": 0.8,
+    "random": 0.2,
+    "created": "2026-08-11T01:32:54"
+   },
+   "dH_s4": {
+    "indist": 0.4666666666666667,
+    "random": 0.2,
+    "created": "2026-08-11T02:29:48"
+   },
+   "dH_s5": {
+    "indist": 0.5333333333333333,
+    "random": 0.2,
+    "created": "2026-08-11T03:26:44"
+   },
+   "dH_s6": {
+    "indist": 0.6666666666666666,
+    "random": 0.26666666666666666,
+    "created": "2026-08-11T04:24:54"
+   },
+   "dH_s7": {
+    "indist": 0.6,
+    "random": 0.13333333333333333,
+    "created": "2026-08-11T05:21:40"
+   }
+  }
+ },
+ "sacfd": {
+  "old_eval": {
+   "dDP_s0": {
+    "indist": 0.06666666666666667,
+    "random": 0,
+    "created": "2026-08-02T23:25:24",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0.13333333333333333,
+    "random": 0.2,
+    "created": "2026-08-02T23:23:31",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0.6,
+    "random": 0.2,
+    "created": "2026-08-02T23:26:12",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0.3333333333333333,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:07:55",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0.26666666666666666,
+    "random": 0.13333333333333333,
+    "created": "2026-08-08T18:31:08",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0.2,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:31:31",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0.4,
+    "random": 0.26666666666666666,
+    "created": "2026-08-08T18:42:52",
+    "state": "finished"
+   },
+   "dH_s0": {
+    "indist": 0.4,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T11:27:58",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0.5333333333333333,
+    "random": 0.3333333333333333,
+    "created": "2026-08-02T23:20:49",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0.13333333333333333,
+    "random": 0.06666666666666667,
+    "created": "2026-08-02T23:25:58",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0.4,
+    "random": 0.2,
+    "created": "2026-08-08T18:31:31",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-08T18:35:48",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:34:52",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0.06666666666666667,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:34:48",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0.06666666666666667,
+    "random": 0.06666666666666667,
+    "created": "2026-08-08T18:12:58",
+    "state": "finished"
+   }
+  },
+  "hardened_eval": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:54:43",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T02:22:27",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T02:52:11",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:20:21",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:49:23",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T04:17:46",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T04:46:08",
+    "state": "finished"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T22:11:20",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T22:39:44",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T23:06:57",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0.06666666666666667,
+    "random": 0,
+    "created": "2026-08-10T23:35:30",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:03:24",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:30:57",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:58:26",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:26:58",
+    "state": "finished"
+   }
+  },
+  "retrain": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:13",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:42",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:45",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:41",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:15",
+    "state": "finished"
+   },
+   "dDP_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:45:40",
+    "state": "crashed"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:43:53",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-10T21:44:05",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T01:23:07",
+    "state": "finished"
+   }
+  },
+  "retrain_eval": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:17:42",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:18:01",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:32",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:21",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:01",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:26:18",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:22:25",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:16:34",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:27:42",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:12",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:19:44",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:22:00",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T00:15:29",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "created": "2026-08-11T03:55:06",
+    "state": "finished"
+   }
+  }
+ },
+ "sacfd_dj": {
+  "train": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T01:02:04",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T01:37:19",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T01:50:55",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T01:53:24",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0.03,
+    "timesteps": null,
+    "created": "2026-08-12T02:01:59",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0.02,
+    "timesteps": null,
+    "created": "2026-08-12T03:19:32",
+    "state": "finished"
+   },
+   "dDP_s6": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T03:21:03",
+    "state": "running"
+   },
+   "dDP_s7": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T03:21:37",
+    "state": "running"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T17:38:08",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T17:38:30",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T17:38:30",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T21:22:47",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-12T06:05:53",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T21:44:26",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T21:44:26",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": 0,
+    "timesteps": null,
+    "created": "2026-08-11T21:45:58",
+    "state": "finished"
+   }
+  },
+  "eval": {
+   "dDP_s0": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T05:14:02",
+    "state": "finished"
+   },
+   "dDP_s1": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T05:46:57",
+    "state": "finished"
+   },
+   "dDP_s2": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T06:00:05",
+    "state": "finished"
+   },
+   "dDP_s3": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T06:05:15",
+    "state": "finished"
+   },
+   "dDP_s4": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T06:11:27",
+    "state": "finished"
+   },
+   "dDP_s5": {
+    "indist": 0.06666666666666667,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T07:36:36",
+    "state": "finished"
+   },
+   "dH_s0": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-11T21:45:12",
+    "state": "finished"
+   },
+   "dH_s1": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-11T21:43:25",
+    "state": "finished"
+   },
+   "dH_s2": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-11T21:43:51",
+    "state": "finished"
+   },
+   "dH_s3": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T01:35:54",
+    "state": "finished"
+   },
+   "dH_s4": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T10:12:35",
+    "state": "finished"
+   },
+   "dH_s5": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T01:52:36",
+    "state": "finished"
+   },
+   "dH_s6": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T01:49:58",
+    "state": "finished"
+   },
+   "dH_s7": {
+    "indist": 0,
+    "random": 0,
+    "ep_rew_mean": null,
+    "timesteps": null,
+    "created": "2026-08-12T02:00:53",
+    "state": "finished"
+   }
+  }
+ },
+ "dv3": {
+  "dDP_s0": [
+   {
+    "step": 102000,
+    "picked": 0.0,
+    "created": "2026-08-03T00:03:03"
+   },
+   {
+    "step": 182000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T02:07:58"
+   },
+   {
+    "step": 272016,
+    "picked": 0.0,
+    "created": "2026-08-03T04:13:30"
+   },
+   {
+    "step": 362000,
+    "picked": 0.0,
+    "created": "2026-08-03T06:18:20"
+   },
+   {
+    "step": 452016,
+    "picked": 0.0,
+    "created": "2026-08-03T08:24:21"
+   },
+   {
+    "step": 532016,
+    "picked": 0.0,
+    "created": "2026-08-03T10:31:15"
+   },
+   {
+    "step": 616624,
+    "picked": 0.0,
+    "created": "2026-08-03T12:37:53"
+   },
+   {
+    "step": 693424,
+    "picked": 0.0,
+    "created": "2026-08-03T14:44:49"
+   },
+   {
+    "step": 772016,
+    "picked": 0.0,
+    "created": "2026-08-03T16:51:35"
+   },
+   {
+    "step": 852016,
+    "picked": 0.0,
+    "created": "2026-08-03T18:57:23"
+   },
+   {
+    "step": 933655,
+    "picked": 0.0,
+    "created": "2026-08-11T01:28:41"
+   },
+   {
+    "step": 1013655,
+    "picked": 0.0,
+    "created": "2026-08-11T03:35:14"
+   }
+  ],
+  "dDP_s1": [
+   {
+    "step": 12016,
+    "picked": 0.0,
+    "created": "2026-08-02T22:12:29"
+   },
+   {
+    "step": 102000,
+    "picked": 0.0,
+    "created": "2026-08-03T00:18:44"
+   },
+   {
+    "step": 182000,
+    "picked": 0.0,
+    "created": "2026-08-03T02:24:35"
+   },
+   {
+    "step": 262000,
+    "picked": 0.0,
+    "created": "2026-08-03T04:29:34"
+   },
+   {
+    "step": 362000,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-03T06:32:21"
+   },
+   {
+    "step": 442000,
+    "picked": 0.0,
+    "created": "2026-08-03T08:37:19"
+   },
+   {
+    "step": 522000,
+    "picked": 0.0,
+    "created": "2026-08-03T10:41:39"
+   },
+   {
+    "step": 602000,
+    "picked": 0.0,
+    "created": "2026-08-03T12:47:37"
+   },
+   {
+    "step": 682000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T14:49:09"
+   },
+   {
+    "step": 762000,
+    "picked": 0.0,
+    "created": "2026-08-03T16:51:49"
+   },
+   {
+    "step": 842000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T18:53:45"
+   },
+   {
+    "step": 912016,
+    "picked": 0.0,
+    "created": "2026-08-03T20:55:09"
+   },
+   {
+    "step": 963832,
+    "picked": 0.0,
+    "created": "2026-08-11T01:31:00"
+   },
+   {
+    "step": 1038968,
+    "picked": 0.0,
+    "created": "2026-08-11T03:33:29"
+   },
+   {
+    "step": 1137434,
+    "picked": 0.0,
+    "created": "2026-08-11T06:59:37"
+   },
+   {
+    "step": 1269370,
+    "picked": 0.0,
+    "created": "2026-08-11T09:03:51"
+   },
+   {
+    "step": 1444710,
+    "picked": 0.0,
+    "created": "2026-08-11T12:18:58"
+   },
+   {
+    "step": 1564710,
+    "picked": 0.0,
+    "created": "2026-08-11T14:20:52"
+   },
+   {
+    "step": 1674726,
+    "picked": 0.0,
+    "created": "2026-08-11T16:24:34"
+   },
+   {
+    "step": 1794726,
+    "picked": 0.0,
+    "created": "2026-08-11T18:26:01"
+   },
+   {
+    "step": 1894726,
+    "picked": 0.0,
+    "created": "2026-08-11T20:27:20"
+   },
+   {
+    "step": 2004710,
+    "picked": 0.0,
+    "created": "2026-08-11T22:30:23"
+   },
+   {
+    "step": 2114246,
+    "picked": 0.0,
+    "created": "2026-08-12T00:33:39"
+   },
+   {
+    "step": 2214726,
+    "picked": 0.0,
+    "created": "2026-08-12T02:36:59"
+   },
+   {
+    "step": 2334726,
+    "picked": 0.0,
+    "created": "2026-08-12T04:39:02"
+   },
+   {
+    "step": 2444710,
+    "picked": 0.0,
+    "created": "2026-08-12T06:42:22"
+   },
+   {
+    "step": 2554726,
+    "picked": 0.0,
+    "created": "2026-08-12T08:46:57"
+   },
+   {
+    "step": 2674726,
+    "picked": 0.0,
+    "created": "2026-08-12T10:52:24"
+   }
+  ],
+  "dDP_s2": [
+   {
+    "step": 42000,
+    "picked": 0.0,
+    "created": "2026-08-02T22:21:09"
+   },
+   {
+    "step": 122000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T00:26:00"
+   },
+   {
+    "step": 202000,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-03T02:30:13"
+   },
+   {
+    "step": 282000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T04:33:53"
+   },
+   {
+    "step": 372016,
+    "picked": 0.0,
+    "created": "2026-08-03T06:39:12"
+   },
+   {
+    "step": 462736,
+    "picked": 0.0,
+    "created": "2026-08-03T08:44:03"
+   },
+   {
+    "step": 542000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T10:47:50"
+   },
+   {
+    "step": 622000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-03T12:51:29"
+   },
+   {
+    "step": 702000,
+    "picked": 0.0,
+    "created": "2026-08-03T14:56:24"
+   },
+   {
+    "step": 782000,
+    "picked": 0.0,
+    "created": "2026-08-03T17:02:28"
+   },
+   {
+    "step": 862000,
+    "picked": 0.0,
+    "created": "2026-08-03T19:07:46"
+   },
+   {
+    "step": 943644,
+    "picked": 0.0,
+    "created": "2026-08-11T01:45:03"
+   },
+   {
+    "step": 1023644,
+    "picked": 0.0,
+    "created": "2026-08-11T03:52:21"
+   },
+   {
+    "step": 1185667,
+    "picked": 0.0,
+    "created": "2026-08-11T07:15:06"
+   },
+   {
+    "step": 1315651,
+    "picked": 0.0,
+    "created": "2026-08-11T09:30:24"
+   },
+   {
+    "step": 1462791,
+    "picked": 0.0,
+    "created": "2026-08-11T12:29:59"
+   },
+   {
+    "step": 1582791,
+    "picked": 0.0,
+    "created": "2026-08-11T14:34:45"
+   },
+   {
+    "step": 1702791,
+    "picked": 0.0,
+    "created": "2026-08-11T16:39:04"
+   },
+   {
+    "step": 1822791,
+    "picked": 0.0,
+    "created": "2026-08-11T18:42:42"
+   },
+   {
+    "step": 1922791,
+    "picked": 0.0,
+    "created": "2026-08-11T20:46:11"
+   },
+   {
+    "step": 2037255,
+    "picked": 0.0,
+    "created": "2026-08-11T22:47:26"
+   },
+   {
+    "step": 2142791,
+    "picked": 0.0,
+    "created": "2026-08-12T00:52:05"
+   },
+   {
+    "step": 2252807,
+    "picked": 0.0,
+    "created": "2026-08-12T02:55:08"
+   },
+   {
+    "step": 2372807,
+    "picked": 0.0,
+    "created": "2026-08-12T04:58:41"
+   },
+   {
+    "step": 2482791,
+    "picked": 0.0,
+    "created": "2026-08-12T07:03:48"
+   },
+   {
+    "step": 2602791,
+    "picked": 0.0,
+    "created": "2026-08-12T09:08:44"
+   },
+   {
+    "step": 2712807,
+    "picked": 0.0,
+    "created": "2026-08-12T11:12:19"
+   }
+  ],
+  "dH_s3": [
+   {
+    "step": 12016,
+    "picked": 0.0,
+    "created": "2026-08-08T16:43:32"
+   },
+   {
+    "step": 112016,
+    "picked": 0.0,
+    "created": "2026-08-08T18:47:06"
+   },
+   {
+    "step": 202000,
+    "picked": 0.0,
+    "created": "2026-08-08T20:51:09"
+   },
+   {
+    "step": 302000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T22:55:11"
+   },
+   {
+    "step": 392016,
+    "picked": 0.0,
+    "created": "2026-08-09T00:57:59"
+   },
+   {
+    "step": 503022,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T03:30:42"
+   },
+   {
+    "step": 593038,
+    "picked": 0.0,
+    "created": "2026-08-09T05:33:55"
+   },
+   {
+    "step": 683022,
+    "picked": 0.0,
+    "created": "2026-08-09T07:36:28"
+   },
+   {
+    "step": 773038,
+    "picked": 0.0,
+    "created": "2026-08-09T09:38:52"
+   },
+   {
+    "step": 885774,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T11:40:50"
+   },
+   {
+    "step": 1003022,
+    "picked": 0.0,
+    "created": "2026-08-09T13:44:22"
+   },
+   {
+    "step": 1123022,
+    "picked": 0.0,
+    "created": "2026-08-09T15:49:13"
+   },
+   {
+    "step": 1243022,
+    "picked": 0.0,
+    "created": "2026-08-09T17:52:32"
+   },
+   {
+    "step": 1363022,
+    "picked": 0.0,
+    "created": "2026-08-09T19:56:09"
+   },
+   {
+    "step": 1493038,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T22:00:05"
+   },
+   {
+    "step": 1615278,
+    "picked": 0.0,
+    "created": "2026-08-10T00:03:53"
+   },
+   {
+    "step": 1733038,
+    "picked": 0.0,
+    "created": "2026-08-10T02:07:32"
+   },
+   {
+    "step": 1847150,
+    "picked": 0.0,
+    "created": "2026-08-10T04:13:24"
+   },
+   {
+    "step": 1963022,
+    "picked": 0.0,
+    "created": "2026-08-10T06:18:25"
+   },
+   {
+    "step": 2083022,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T08:22:41"
+   },
+   {
+    "step": 2203022,
+    "picked": 0.0,
+    "created": "2026-08-10T10:27:03"
+   },
+   {
+    "step": 2323022,
+    "picked": 0.0,
+    "created": "2026-08-10T12:31:48"
+   },
+   {
+    "step": 2443022,
+    "picked": 0.0,
+    "created": "2026-08-10T14:37:35"
+   },
+   {
+    "step": 2553038,
+    "picked": 0.0,
+    "created": "2026-08-10T16:42:35"
+   },
+   {
+    "step": 2673038,
+    "picked": 0.0,
+    "created": "2026-08-10T18:47:25"
+   },
+   {
+    "step": 2793038,
+    "picked": 0.0,
+    "created": "2026-08-10T20:52:19"
+   },
+   {
+    "step": 2913038,
+    "picked": 0.0,
+    "created": "2026-08-10T22:56:19"
+   },
+   {
+    "step": 3033038,
+    "picked": 0.0,
+    "created": "2026-08-11T01:00:16"
+   }
+  ],
+  "dH_s4": [
+   {
+    "step": 40336,
+    "picked": 0.0,
+    "created": "2026-08-08T16:55:35"
+   },
+   {
+    "step": 132016,
+    "picked": 0.0,
+    "created": "2026-08-08T19:00:42"
+   },
+   {
+    "step": 232336,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T21:04:50"
+   },
+   {
+    "step": 322000,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T23:06:18"
+   },
+   {
+    "step": 412016,
+    "picked": 0.0,
+    "created": "2026-08-09T01:07:07"
+   },
+   {
+    "step": 561187,
+    "picked": 0.0,
+    "created": "2026-08-11T02:37:09"
+   },
+   {
+    "step": 671203,
+    "picked": 0.0,
+    "created": "2026-08-11T04:41:16"
+   },
+   {
+    "step": 791203,
+    "picked": 0.0,
+    "created": "2026-08-11T06:43:14"
+   },
+   {
+    "step": 901187,
+    "picked": 0.0,
+    "created": "2026-08-11T08:45:49"
+   },
+   {
+    "step": 1021187,
+    "picked": 0.0,
+    "created": "2026-08-11T10:49:44"
+   },
+   {
+    "step": 1151203,
+    "picked": 0.0,
+    "created": "2026-08-11T12:53:28"
+   },
+   {
+    "step": 1271203,
+    "picked": 0.0,
+    "created": "2026-08-11T14:57:02"
+   },
+   {
+    "step": 1391203,
+    "picked": 0.0,
+    "created": "2026-08-11T17:02:05"
+   },
+   {
+    "step": 1511203,
+    "picked": 0.0,
+    "created": "2026-08-11T19:07:51"
+   },
+   {
+    "step": 1631203,
+    "picked": 0.0,
+    "created": "2026-08-11T21:11:47"
+   },
+   {
+    "step": 1751203,
+    "picked": 0.0,
+    "created": "2026-08-11T23:14:45"
+   },
+   {
+    "step": 1861187,
+    "picked": 0.0,
+    "created": "2026-08-12T01:19:48"
+   },
+   {
+    "step": 1981187,
+    "picked": 0.0,
+    "created": "2026-08-12T03:23:19"
+   },
+   {
+    "step": 2101187,
+    "picked": 0.0,
+    "created": "2026-08-12T05:28:32"
+   },
+   {
+    "step": 2221187,
+    "picked": 0.0,
+    "created": "2026-08-12T07:33:42"
+   },
+   {
+    "step": 2344547,
+    "picked": 0.0,
+    "created": "2026-08-12T09:37:52"
+   }
+  ],
+  "dH_s5": [
+   {
+    "step": 42000,
+    "picked": 0.0,
+    "created": "2026-08-08T17:05:41"
+   },
+   {
+    "step": 142000,
+    "picked": 0.0,
+    "created": "2026-08-08T19:09:02"
+   },
+   {
+    "step": 242000,
+    "picked": 0.0,
+    "created": "2026-08-08T21:15:48"
+   },
+   {
+    "step": 332016,
+    "picked": 0.0,
+    "created": "2026-08-08T23:21:59"
+   },
+   {
+    "step": 424336,
+    "picked": 0.0,
+    "created": "2026-08-09T01:25:22"
+   },
+   {
+    "step": 512850,
+    "picked": 0.0,
+    "created": "2026-08-09T03:54:14"
+   },
+   {
+    "step": 612850,
+    "picked": 0.0,
+    "created": "2026-08-09T06:00:22"
+   },
+   {
+    "step": 702834,
+    "picked": 0.0,
+    "created": "2026-08-09T08:06:32"
+   },
+   {
+    "step": 792850,
+    "picked": 0.0,
+    "created": "2026-08-09T10:12:44"
+   },
+   {
+    "step": 878453,
+    "picked": 0.0,
+    "created": "2026-08-11T02:51:42"
+   },
+   {
+    "step": 1000437,
+    "picked": 0.0,
+    "created": "2026-08-11T04:58:00"
+   },
+   {
+    "step": 1108437,
+    "picked": 0.0,
+    "created": "2026-08-11T07:03:00"
+   },
+   {
+    "step": 1230773,
+    "picked": 0.0,
+    "created": "2026-08-11T09:07:09"
+   },
+   {
+    "step": 1348437,
+    "picked": 0.0,
+    "created": "2026-08-11T11:10:00"
+   },
+   {
+    "step": 1468437,
+    "picked": 0.0,
+    "created": "2026-08-11T13:11:49"
+   },
+   {
+    "step": 1588437,
+    "picked": 0.0,
+    "created": "2026-08-11T15:13:25"
+   },
+   {
+    "step": 1708437,
+    "picked": 0.0,
+    "created": "2026-08-11T17:15:46"
+   },
+   {
+    "step": 1828437,
+    "picked": 0.0,
+    "created": "2026-08-11T19:18:50"
+   },
+   {
+    "step": 1948437,
+    "picked": 0.0,
+    "created": "2026-08-11T21:22:25"
+   },
+   {
+    "step": 2068437,
+    "picked": 0.0,
+    "created": "2026-08-11T23:25:46"
+   },
+   {
+    "step": 2178453,
+    "picked": 0.0,
+    "created": "2026-08-12T01:26:48"
+   },
+   {
+    "step": 2298453,
+    "picked": 0.0,
+    "created": "2026-08-12T03:28:36"
+   },
+   {
+    "step": 2408437,
+    "picked": 0.0,
+    "created": "2026-08-12T05:30:26"
+   },
+   {
+    "step": 2528437,
+    "picked": 0.0,
+    "created": "2026-08-12T07:34:57"
+   },
+   {
+    "step": 2651637,
+    "picked": 0.0,
+    "created": "2026-08-12T09:39:40"
+   }
+  ],
+  "dH_s6": [
+   {
+    "step": 110416,
+    "picked": 0.0,
+    "created": "2026-08-09T04:01:33"
+   },
+   {
+    "step": 200400,
+    "picked": 0.0,
+    "created": "2026-08-09T06:05:48"
+   },
+   {
+    "step": 290416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T08:09:11"
+   },
+   {
+    "step": 380400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T10:12:16"
+   },
+   {
+    "step": 490416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T12:14:06"
+   },
+   {
+    "step": 620400,
+    "picked": 0.0,
+    "created": "2026-08-09T14:17:33"
+   },
+   {
+    "step": 740400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T16:21:05"
+   },
+   {
+    "step": 860400,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-09T18:22:10"
+   },
+   {
+    "step": 980400,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T20:24:50"
+   },
+   {
+    "step": 1100400,
+    "picked": 0.0,
+    "created": "2026-08-09T22:26:17"
+   },
+   {
+    "step": 1220400,
+    "picked": 0.0,
+    "created": "2026-08-10T00:28:29"
+   },
+   {
+    "step": 1330416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T02:30:22"
+   },
+   {
+    "step": 1450416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T04:32:42"
+   },
+   {
+    "step": 1570416,
+    "picked": 0.0,
+    "created": "2026-08-10T06:35:38"
+   },
+   {
+    "step": 1680400,
+    "picked": 0.0,
+    "created": "2026-08-10T08:37:27"
+   },
+   {
+    "step": 1800400,
+    "picked": 0.0,
+    "created": "2026-08-10T10:38:50"
+   },
+   {
+    "step": 1910416,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-10T12:40:48"
+   },
+   {
+    "step": 2030416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T14:43:19"
+   },
+   {
+    "step": 2140400,
+    "picked": 0.0,
+    "created": "2026-08-10T16:44:58"
+   },
+   {
+    "step": 2250416,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T18:49:04"
+   },
+   {
+    "step": 2370416,
+    "picked": 0.0,
+    "created": "2026-08-10T20:53:28"
+   },
+   {
+    "step": 2500400,
+    "picked": 0.0,
+    "created": "2026-08-10T22:57:47"
+   },
+   {
+    "step": 2618192,
+    "picked": 0.0,
+    "created": "2026-08-11T01:01:45"
+   }
+  ],
+  "dH_s7": [
+   {
+    "step": 52016,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-08T17:24:44"
+   },
+   {
+    "step": 162000,
+    "picked": 0.0,
+    "created": "2026-08-08T19:28:11"
+   },
+   {
+    "step": 252016,
+    "picked": 0.0,
+    "created": "2026-08-08T21:32:16"
+   },
+   {
+    "step": 347600,
+    "picked": 0.0,
+    "created": "2026-08-08T23:34:37"
+   },
+   {
+    "step": 432016,
+    "picked": 0.0,
+    "created": "2026-08-09T01:38:42"
+   },
+   {
+    "step": 532913,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T04:13:58"
+   },
+   {
+    "step": 622897,
+    "picked": 0.0,
+    "created": "2026-08-09T06:18:45"
+   },
+   {
+    "step": 712913,
+    "picked": 0.0,
+    "created": "2026-08-09T08:23:05"
+   },
+   {
+    "step": 808433,
+    "picked": 0.0,
+    "created": "2026-08-09T10:25:44"
+   },
+   {
+    "step": 923633,
+    "picked": 0.0,
+    "created": "2026-08-09T12:28:23"
+   },
+   {
+    "step": 1042897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T14:30:18"
+   },
+   {
+    "step": 1162897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T16:32:18"
+   },
+   {
+    "step": 1282897,
+    "picked": 0.3333333333333333,
+    "created": "2026-08-09T18:33:57"
+   },
+   {
+    "step": 1402897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T20:35:20"
+   },
+   {
+    "step": 1522897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-09T22:36:15"
+   },
+   {
+    "step": 1642897,
+    "picked": 0.0,
+    "created": "2026-08-10T00:38:54"
+   },
+   {
+    "step": 1762897,
+    "picked": 0.0,
+    "created": "2026-08-10T02:41:22"
+   },
+   {
+    "step": 1884273,
+    "picked": 0.0,
+    "created": "2026-08-10T04:43:30"
+   },
+   {
+    "step": 1999441,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T06:45:50"
+   },
+   {
+    "step": 2114609,
+    "picked": 0.0,
+    "created": "2026-08-10T08:49:13"
+   },
+   {
+    "step": 2232913,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T10:52:18"
+   },
+   {
+    "step": 2344977,
+    "picked": 0.0,
+    "created": "2026-08-10T12:54:50"
+   },
+   {
+    "step": 2462897,
+    "picked": 0.0,
+    "created": "2026-08-10T14:57:26"
+   },
+   {
+    "step": 2582897,
+    "picked": 0.16666666666666666,
+    "created": "2026-08-10T17:00:52"
+   },
+   {
+    "step": 2692913,
+    "picked": 0.0,
+    "created": "2026-08-10T19:04:49"
+   },
+   {
+    "step": 2812913,
+    "picked": 0.0,
+    "created": "2026-08-10T21:09:55"
+   },
+   {
+    "step": 2942897,
+    "picked": 0.0,
+    "created": "2026-08-10T23:15:06"
+   },
+   {
+    "step": 3052913,
+    "picked": 0.0,
+    "created": "2026-08-11T01:20:58"
+   },
+   {
+    "step": 3096913,
+    "picked": 0.0,
+    "created": "2026-08-11T03:10:49"
+   },
+   {
+    "step": 3206929,
+    "picked": 0.0,
+    "created": "2026-08-11T05:15:23"
+   },
+   {
+    "step": 3326929,
+    "picked": 0.0,
+    "created": "2026-08-11T07:19:27"
+   },
+   {
+    "step": 3446929,
+    "picked": 0.0,
+    "created": "2026-08-11T09:24:21"
+   },
+   {
+    "step": 3566929,
+    "picked": 0.0,
+    "created": "2026-08-11T11:29:55"
+   },
+   {
+    "step": 3690353,
+    "picked": 0.0,
+    "created": "2026-08-11T13:35:13"
+   },
+   {
+    "step": 3806929,
+    "picked": 0.0,
+    "created": "2026-08-11T15:40:12"
+   },
+   {
+    "step": 3926929,
+    "picked": 0.0,
+    "created": "2026-08-11T17:43:10"
+   },
+   {
+    "step": 4046929,
+    "picked": 0.0,
+    "created": "2026-08-11T19:48:41"
+   },
+   {
+    "step": 4166929,
+    "picked": 0.0,
+    "created": "2026-08-11T21:54:23"
+   },
+   {
+    "step": 4286929,
+    "picked": 0.0,
+    "created": "2026-08-11T23:55:35"
+   },
+   {
+    "step": 4406929,
+    "picked": 0.0,
+    "created": "2026-08-12T01:57:56"
+   },
+   {
+    "step": 4516913,
+    "picked": 0.0,
+    "created": "2026-08-12T04:02:13"
+   },
+   {
+    "step": 4636913,
+    "picked": 0.0,
+    "created": "2026-08-12T06:05:44"
+   },
+   {
+    "step": 4746929,
+    "picked": 0.0,
+    "created": "2026-08-12T08:08:26"
+   },
+   {
+    "step": 4866929,
+    "picked": 0.0,
+    "created": "2026-08-12T10:10:23"
+   }
+  ]
+ },
+ "r2": [
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1172436,
+   "ckpt_step": 1225758,
+   "ckpt": "ckpt_1225758.pt",
+   "mode": "sample",
+   "created": "2026-08-11T20:32:11",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "0952xduj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1272416,
+   "ckpt_step": 1278875,
+   "ckpt": "ckpt_1278875.pt",
+   "mode": "sample",
+   "created": "2026-08-11T20:46:43",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "zei1f6ub",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1372420,
+   "ckpt_step": 1373651,
+   "ckpt": "ckpt_1373651.pt",
+   "mode": "sample",
+   "created": "2026-08-11T21:10:43",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "erqmhgli",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1472420,
+   "ckpt_step": 1475409,
+   "ckpt": "ckpt_1475409.pt",
+   "mode": "sample",
+   "created": "2026-08-11T21:44:53",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lan8mzrp",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1572428,
+   "ckpt_step": 1577021,
+   "ckpt": "ckpt_1577021.pt",
+   "mode": "sample",
+   "created": "2026-08-11T22:03:19",
+   "picked": 0.7333333333333333,
+   "episodes": 15,
+   "id": "5g77cw4p",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1672420,
+   "ckpt_step": 1679550,
+   "ckpt": "ckpt_1679550.pt",
+   "mode": "sample",
+   "created": "2026-08-11T22:29:13",
+   "picked": 0.6,
+   "episodes": 15,
+   "id": "mnhea2qj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1772420,
+   "ckpt_step": 1780042,
+   "ckpt": "ckpt_1780042.pt",
+   "mode": "sample",
+   "created": "2026-08-11T22:57:50",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "fj7x7f9j",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1872432,
+   "ckpt_step": 1875040,
+   "ckpt": "ckpt_1875040.pt",
+   "mode": "sample",
+   "created": "2026-08-11T23:19:20",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "921e9x97",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1872432,
+   "ckpt_step": 1875040,
+   "ckpt": "ckpt_1875040.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:55:35",
+   "picked": 0.8,
+   "episodes": 15,
+   "id": "j0e3zfh4",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1872432,
+   "ckpt_step": 1875040,
+   "ckpt": "ckpt_1875040.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:57:24",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "ruai3uw2",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1872432,
+   "ckpt_step": 1875040,
+   "ckpt": "ckpt_1875040.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:58:24",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "ke1n13r5",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1872432,
+   "ckpt_step": 1875040,
+   "ckpt": "ckpt_1875040.pt",
+   "mode": "mode",
+   "created": "2026-08-12T06:00:17",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "ulaytx5m",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 1972436,
+   "ckpt_step": 1974412,
+   "ckpt": "ckpt_1974412.pt",
+   "mode": "sample",
+   "created": "2026-08-11T23:45:29",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "c4ekit2l",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2072424,
+   "ckpt_step": 2076241,
+   "ckpt": "ckpt_2076241.pt",
+   "mode": "sample",
+   "created": "2026-08-12T00:22:25",
+   "picked": NaN,
+   "episodes": null,
+   "id": "tcfnxe7c",
+   "state": "crashed",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2172420,
+   "ckpt_step": 2179917,
+   "ckpt": "ckpt_2179917.pt",
+   "mode": "sample",
+   "created": "2026-08-12T00:47:48",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "avdzk9td",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2272432,
+   "ckpt_step": 2274883,
+   "ckpt": "ckpt_2274883.pt",
+   "mode": "sample",
+   "created": "2026-08-12T01:11:49",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "csz9ie9r",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2372420,
+   "ckpt_step": 2377428,
+   "ckpt": "ckpt_2377428.pt",
+   "mode": "sample",
+   "created": "2026-08-12T01:51:19",
+   "picked": 0.3333333333333333,
+   "episodes": 15,
+   "id": "jdb5fdka",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2472420,
+   "ckpt_step": 2472420,
+   "ckpt": "ckpt_2472420.pt",
+   "mode": "sample",
+   "created": "2026-08-12T02:30:36",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "hjfuxxe8",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2572424,
+   "ckpt_step": 2573063,
+   "ckpt": "ckpt_2573063.pt",
+   "mode": "sample",
+   "created": "2026-08-12T03:01:15",
+   "picked": 0.26666666666666666,
+   "episodes": 15,
+   "id": "q9v8z3uu",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2672432,
+   "ckpt_step": 2677906,
+   "ckpt": "ckpt_2677906.pt",
+   "mode": "sample",
+   "created": "2026-08-12T03:32:54",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "uyu3fsbj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2772420,
+   "ckpt_step": 2773696,
+   "ckpt": "ckpt_2773696.pt",
+   "mode": "sample",
+   "created": "2026-08-12T04:06:27",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "k2u9guih",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2872428,
+   "ckpt_step": 2875288,
+   "ckpt": "ckpt_2875288.pt",
+   "mode": "sample",
+   "created": "2026-08-12T04:42:43",
+   "picked": 0.9333333333333332,
+   "episodes": 15,
+   "id": "uwchiwrq",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 2972424,
+   "ckpt_step": 2973212,
+   "ckpt": "ckpt_2973212.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:16:53",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "r35kbjmr",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_d4clamp",
+   "seed": 0,
+   "name_step": 3000000,
+   "ckpt_step": 2999931,
+   "ckpt": "ckpt_2999931.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:26:26",
+   "picked": 0.6666666666666666,
+   "episodes": 15,
+   "id": "lhfn6mn0",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 372436,
+   "ckpt_step": 372436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T02:57:46",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "4acul8jy",
+   "state": "finished",
+   "valid": false
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 372436,
+   "ckpt_step": 372436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:10:48",
+   "picked": 0.06666666666666667,
+   "episodes": 15,
+   "id": "j5gpnjhj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 472436,
+   "ckpt_step": 472436,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:26:30",
+   "picked": 0.13333333333333333,
+   "episodes": 15,
+   "id": "b6h1exlt",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 572432,
+   "ckpt_step": 572432,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T03:49:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jtkco5be",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 672424,
+   "ckpt_step": 672424,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T04:15:01",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "1l4vfx8o",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 772424,
+   "ckpt_step": 772424,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T04:47:16",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "yiy0knm5",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 772424,
+   "ckpt_step": 772424,
+   "ckpt": "banked_peak.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:20:02",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "415apcg6",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 872428,
+   "ckpt_step": 872428,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:05:33",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "eduxdzgd",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 972436,
+   "ckpt_step": 974910,
+   "ckpt": "ckpt_974910.pt",
+   "mode": "sample",
+   "created": "2026-08-11T05:46:20",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j7o9if9i",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 972436,
+   "ckpt_step": 974910,
+   "ckpt": "ckpt_974910.pt",
+   "mode": "mode",
+   "created": "2026-08-11T06:15:14",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "0b1vsuew",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1172428,
+   "ckpt_step": 1178312,
+   "ckpt": "ckpt_1178312.pt",
+   "mode": "sample",
+   "created": "2026-08-11T06:57:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "sdqqgzdp",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1272416,
+   "ckpt_step": 1275224,
+   "ckpt": "ckpt_1275224.pt",
+   "mode": "sample",
+   "created": "2026-08-11T07:32:34",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "o3qgd7n4",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1372416,
+   "ckpt_step": 1373326,
+   "ckpt": "ckpt_1373326.pt",
+   "mode": "sample",
+   "created": "2026-08-11T08:07:02",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "3kjz4r92",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1472432,
+   "ckpt_step": 1473840,
+   "ckpt": "ckpt_1473840.pt",
+   "mode": "sample",
+   "created": "2026-08-11T08:43:23",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jev6iyuj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "ckpt_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:09:26",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "zsv8f97y",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:12:04",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "irr8okoj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:14:10",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "975kzneb",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1572420,
+   "ckpt_step": 1576820,
+   "ckpt": "CHAMPION_1576820.pt",
+   "mode": "mode",
+   "created": "2026-08-11T09:16:00",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "ovrhyzry",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1672428,
+   "ckpt_step": 1674825,
+   "ckpt": "ckpt_1674825.pt",
+   "mode": "sample",
+   "created": "2026-08-11T09:45:07",
+   "picked": 0.3333333333333333,
+   "episodes": 15,
+   "id": "g29gaq9a",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1772416,
+   "ckpt_step": 1775171,
+   "ckpt": "ckpt_1775171.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:29:33",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "2yd8gsvw",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1872436,
+   "ckpt_step": 1878491,
+   "ckpt": "ckpt_1878491.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:05:59",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "72y1dyiy",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 1972428,
+   "ckpt_step": 1976056,
+   "ckpt": "ckpt_1976056.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:31:07",
+   "picked": 0.8666666666666667,
+   "episodes": 15,
+   "id": "c33o0ffj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2072428,
+   "ckpt_step": 2075772,
+   "ckpt": "ckpt_2075772.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:15:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "wfqk73ou",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2172428,
+   "ckpt_step": 2173601,
+   "ckpt": "ckpt_2173601.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:50:00",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j6mvll7l",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2272416,
+   "ckpt_step": 2276356,
+   "ckpt": "ckpt_2276356.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:25:14",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "p3oltrvz",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2372416,
+   "ckpt_step": 2376000,
+   "ckpt": "ckpt_2376000.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:01:37",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "14xb4v2p",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2472436,
+   "ckpt_step": 2474388,
+   "ckpt": "ckpt_2474388.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:36:07",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "h4f2zuhd",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2572416,
+   "ckpt_step": 2577420,
+   "ckpt": "ckpt_2577420.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:10:06",
+   "picked": 0.2,
+   "episodes": 15,
+   "id": "xzt8lsyh",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2672432,
+   "ckpt_step": 2676181,
+   "ckpt": "ckpt_2676181.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:46:26",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "0jwyr5qb",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2772428,
+   "ckpt_step": 2778434,
+   "ckpt": "ckpt_2778434.pt",
+   "mode": "sample",
+   "created": "2026-08-11T16:22:49",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ejsfq5tl",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2872420,
+   "ckpt_step": 2875997,
+   "ckpt": "ckpt_2875997.pt",
+   "mode": "sample",
+   "created": "2026-08-11T16:47:26",
+   "picked": 1.0,
+   "episodes": 15,
+   "id": "e8w4f0qy",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 2972436,
+   "ckpt_step": 2974611,
+   "ckpt": "ckpt_2974611.pt",
+   "mode": "sample",
+   "created": "2026-08-11T17:24:38",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "07gfkktk",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 3000000,
+   "ckpt_step": 2999977,
+   "ckpt": "ckpt_2999977.pt",
+   "mode": "sample",
+   "created": "2026-08-11T17:35:14",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "jon2bvyt",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 0,
+   "name_step": 3000000,
+   "ckpt_step": 3000000,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-12T00:52:19",
+   "picked": 0.5333333333333333,
+   "episodes": 15,
+   "id": "0f01ys74",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 972424,
+   "ckpt_step": 973417,
+   "ckpt": "ckpt_973417.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:04:47",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lr79jjm6",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1072436,
+   "ckpt_step": 1077995,
+   "ckpt": "ckpt_1077995.pt",
+   "mode": "sample",
+   "created": "2026-08-11T10:41:42",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "2c1unb14",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1172428,
+   "ckpt_step": 1177110,
+   "ckpt": "ckpt_1177110.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:15:42",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "w6s7ao51",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1272416,
+   "ckpt_step": 1273272,
+   "ckpt": "ckpt_1273272.pt",
+   "mode": "sample",
+   "created": "2026-08-11T11:50:33",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "o7jczuak",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1372428,
+   "ckpt_step": 1377895,
+   "ckpt": "ckpt_1377895.pt",
+   "mode": "sample",
+   "created": "2026-08-11T12:27:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lwwqcy3a",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1472420,
+   "ckpt_step": 1477432,
+   "ckpt": "ckpt_1477432.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:02:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "zhj5lzeb",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1572420,
+   "ckpt_step": 1575961,
+   "ckpt": "ckpt_1575961.pt",
+   "mode": "sample",
+   "created": "2026-08-11T13:37:32",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "xuockmwb",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1672428,
+   "ckpt_step": 1675168,
+   "ckpt": "ckpt_1675168.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:12:31",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "j5nv65o2",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1772428,
+   "ckpt_step": 1773544,
+   "ckpt": "ckpt_1773544.pt",
+   "mode": "sample",
+   "created": "2026-08-11T14:47:29",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "jowrnxpp",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 1,
+   "name_step": 1872436,
+   "ckpt_step": 1873419,
+   "ckpt": "ckpt_1873419.pt",
+   "mode": "sample",
+   "created": "2026-08-11T15:22:35",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "rzjalpnd",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 172416,
+   "ckpt_step": 172416,
+   "ckpt": "ckpt_172416.pt",
+   "mode": "sample",
+   "created": "2026-08-12T00:51:35",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "zjjz9mwc",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 272432,
+   "ckpt_step": 273564,
+   "ckpt": "ckpt_273564.pt",
+   "mode": "sample",
+   "created": "2026-08-12T01:27:50",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "by3riqzj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 372424,
+   "ckpt_step": 377558,
+   "ckpt": "ckpt_377558.pt",
+   "mode": "sample",
+   "created": "2026-08-12T02:04:21",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "t342q8wi",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 472436,
+   "ckpt_step": 476832,
+   "ckpt": "ckpt_476832.pt",
+   "mode": "sample",
+   "created": "2026-08-12T02:33:33",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "z0w2posh",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 572436,
+   "ckpt_step": 577420,
+   "ckpt": "ckpt_577420.pt",
+   "mode": "sample",
+   "created": "2026-08-12T03:13:52",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "1mnq0rl8",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 672428,
+   "ckpt_step": 675689,
+   "ckpt": "ckpt_675689.pt",
+   "mode": "sample",
+   "created": "2026-08-12T03:48:08",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "6kn852yx",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 772432,
+   "ckpt_step": 774141,
+   "ckpt": "ckpt_774141.pt",
+   "mode": "sample",
+   "created": "2026-08-12T04:22:23",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "961kbdqm",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 872424,
+   "ckpt_step": 878340,
+   "ckpt": "ckpt_878340.pt",
+   "mode": "sample",
+   "created": "2026-08-12T04:58:34",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ln9qz3o1",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 972416,
+   "ckpt_step": 976133,
+   "ckpt": "ckpt_976133.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:31:48",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "4jd6eghv",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1072420,
+   "ckpt_step": 1077436,
+   "ckpt": "ckpt_1077436.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:58:42",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "xnbaillx",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1172436,
+   "ckpt_step": 1180102,
+   "ckpt": "ckpt_1180102.pt",
+   "mode": "sample",
+   "created": "2026-08-12T06:25:28",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "qklu7i4m",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1272416,
+   "ckpt_step": 1274941,
+   "ckpt": "ckpt_1274941.pt",
+   "mode": "sample",
+   "created": "2026-08-12T06:50:06",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "257a6idt",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1372428,
+   "ckpt_step": 1377163,
+   "ckpt": "ckpt_1377163.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:16:54",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "otzpoogf",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1472424,
+   "ckpt_step": 1480293,
+   "ckpt": "ckpt_1480293.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:43:46",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ea6kifmj",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1572428,
+   "ckpt_step": 1575543,
+   "ckpt": "ckpt_1575543.pt",
+   "mode": "sample",
+   "created": "2026-08-12T08:05:38",
+   "picked": 0.06666666666666667,
+   "episodes": 15,
+   "id": "k29cfcz1",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1672428,
+   "ckpt_step": 1673946,
+   "ckpt": "ckpt_1673946.pt",
+   "mode": "sample",
+   "created": "2026-08-12T08:34:25",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "e3v8kb4y",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1772424,
+   "ckpt_step": 1777741,
+   "ckpt": "ckpt_1777741.pt",
+   "mode": "sample",
+   "created": "2026-08-12T09:01:11",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ftc3eo26",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1872428,
+   "ckpt_step": 1880675,
+   "ckpt": "ckpt_1880675.pt",
+   "mode": "sample",
+   "created": "2026-08-12T09:28:04",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "0h3iz69t",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 1972436,
+   "ckpt_step": 1976689,
+   "ckpt": "ckpt_1976689.pt",
+   "mode": "sample",
+   "created": "2026-08-12T09:52:51",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "kq7pzp7n",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 2072432,
+   "ckpt_step": 2079679,
+   "ckpt": "ckpt_2079679.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:19:32",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lw8wi7ph",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 2172436,
+   "ckpt_step": 2174441,
+   "ckpt": "ckpt_2174441.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:44:12",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "uiz93lta",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 2272420,
+   "ckpt_step": 2276152,
+   "ckpt": "ckpt_2276152.pt",
+   "mode": "sample",
+   "created": "2026-08-12T11:10:52",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "qwmrid8g",
+   "state": "finished",
+   "valid": true
+  },
+  {
+   "family": "pick_delta25d4",
+   "seed": 2,
+   "name_step": 2372436,
+   "ckpt_step": 2378688,
+   "ckpt": "ckpt_2378688.pt",
+   "mode": "sample",
+   "created": "2026-08-12T11:37:37",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "kzljedny",
+   "state": "finished",
+   "valid": true
+  }
+ ],
+ "r2d_train": {
+  "dDP_s0": {
+   "id": "n8izagfo",
+   "state": "finished",
+   "created": "2026-08-11T18:06:13",
+   "env_step": 2999744,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 381832,
+     "picked": 0
+    },
+    {
+     "env_step": 481832,
+     "picked": 0
+    },
+    {
+     "env_step": 581840,
+     "picked": 0
+    },
+    {
+     "env_step": 681844,
+     "picked": 0
+    },
+    {
+     "env_step": 781840,
+     "picked": 0
+    },
+    {
+     "env_step": 881848,
+     "picked": 0
+    },
+    {
+     "env_step": 981844,
+     "picked": 0
+    },
+    {
+     "env_step": 1081832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1481840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1581836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1681840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1781832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1881844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1981848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2081832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2181832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2281844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2381852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2481852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2581844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2681844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2781848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2881840.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dDP_s1": {
+   "id": "okv6kkyl",
+   "state": "finished",
+   "created": "2026-08-11T18:06:13",
+   "env_step": 2999936,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 381848,
+     "picked": 0
+    },
+    {
+     "env_step": 481832,
+     "picked": 0
+    },
+    {
+     "env_step": 581848,
+     "picked": 0
+    },
+    {
+     "env_step": 681844,
+     "picked": 0
+    },
+    {
+     "env_step": 781848,
+     "picked": 0
+    },
+    {
+     "env_step": 881848,
+     "picked": 0
+    },
+    {
+     "env_step": 981844,
+     "picked": 0
+    },
+    {
+     "env_step": 1081840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1481840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1581852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1681840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1781840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1881832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1981844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2081844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2181836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2281848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2381844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2481840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2581832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2681832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2781844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2881852.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dDP_s2": {
+   "id": "4lkaemus",
+   "state": "finished",
+   "created": "2026-08-11T18:06:13",
+   "env_step": 2999640,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 381848,
+     "picked": 0
+    },
+    {
+     "env_step": 481848,
+     "picked": 0
+    },
+    {
+     "env_step": 581840,
+     "picked": 0
+    },
+    {
+     "env_step": 681840,
+     "picked": 0
+    },
+    {
+     "env_step": 781836,
+     "picked": 0
+    },
+    {
+     "env_step": 881840,
+     "picked": 0
+    },
+    {
+     "env_step": 981840,
+     "picked": 0
+    },
+    {
+     "env_step": 1081840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1481848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1581848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1681836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1781836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1881840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1981840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2081848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2181844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2281844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2381844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2481832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2581832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2681840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2781840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2881836.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dDP_s3": {
+   "id": "7okrmf55",
+   "state": "finished",
+   "created": "2026-08-11T18:06:15",
+   "env_step": 1005921,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 381848,
+     "picked": 0
+    },
+    {
+     "env_step": 381848,
+     "picked": 0
+    },
+    {
+     "env_step": 481844,
+     "picked": 0
+    },
+    {
+     "env_step": 481848,
+     "picked": 0
+    },
+    {
+     "env_step": 581848,
+     "picked": 0
+    },
+    {
+     "env_step": 581852,
+     "picked": 0
+    },
+    {
+     "env_step": 681836,
+     "picked": 0
+    },
+    {
+     "env_step": 681848,
+     "picked": 0
+    },
+    {
+     "env_step": 781840,
+     "picked": 0
+    },
+    {
+     "env_step": 781848,
+     "picked": 0
+    },
+    {
+     "env_step": 881844,
+     "picked": 0
+    },
+    {
+     "env_step": 881848,
+     "picked": 0
+    },
+    {
+     "env_step": 981844,
+     "picked": 0
+    },
+    {
+     "env_step": 1081848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1481840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1581836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1681848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1781848.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dDP_s4": {
+   "id": "tyd1z26g",
+   "state": "finished",
+   "created": "2026-08-11T18:06:15",
+   "env_step": 1495548,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 281832,
+     "picked": 0
+    },
+    {
+     "env_step": 381832,
+     "picked": 0
+    },
+    {
+     "env_step": 381836,
+     "picked": 0
+    },
+    {
+     "env_step": 381836,
+     "picked": 0
+    },
+    {
+     "env_step": 381848,
+     "picked": 0
+    },
+    {
+     "env_step": 481832,
+     "picked": 0
+    },
+    {
+     "env_step": 481852,
+     "picked": 0
+    },
+    {
+     "env_step": 581836,
+     "picked": 0
+    },
+    {
+     "env_step": 581840,
+     "picked": 0
+    },
+    {
+     "env_step": 681840,
+     "picked": 0
+    },
+    {
+     "env_step": 681840,
+     "picked": 0
+    },
+    {
+     "env_step": 781840,
+     "picked": 0
+    },
+    {
+     "env_step": 781848,
+     "picked": 0
+    },
+    {
+     "env_step": 881844,
+     "picked": 0
+    },
+    {
+     "env_step": 881852,
+     "picked": 0
+    },
+    {
+     "env_step": 981832,
+     "picked": 0
+    },
+    {
+     "env_step": 981852,
+     "picked": 0
+    },
+    {
+     "env_step": 1081840.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1081848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181832.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1181844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1281848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381836.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1381844.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1481852.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1581848.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1681852.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dH_s0": {
+   "id": "hc4kxufk",
+   "state": "finished",
+   "created": "2026-08-11T17:35:10",
+   "env_step": 1224192,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 272416,
+     "picked": 0
+    },
+    {
+     "env_step": 272420,
+     "picked": 0
+    },
+    {
+     "env_step": 372420,
+     "picked": 0
+    },
+    {
+     "env_step": 372436,
+     "picked": 0
+    },
+    {
+     "env_step": 472416,
+     "picked": 0
+    },
+    {
+     "env_step": 472432,
+     "picked": 0
+    },
+    {
+     "env_step": 572436,
+     "picked": 0
+    },
+    {
+     "env_step": 572436,
+     "picked": 0
+    },
+    {
+     "env_step": 672424,
+     "picked": 0
+    },
+    {
+     "env_step": 672432,
+     "picked": 0
+    },
+    {
+     "env_step": 772420,
+     "picked": 0
+    },
+    {
+     "env_step": 772428,
+     "picked": 0
+    },
+    {
+     "env_step": 872428,
+     "picked": 0
+    },
+    {
+     "env_step": 872432,
+     "picked": 0
+    },
+    {
+     "env_step": 972424,
+     "picked": 0
+    },
+    {
+     "env_step": 972436,
+     "picked": 0
+    },
+    {
+     "env_step": 1072436.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1072436.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1172420.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1172424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1272432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1372432.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dH_s1": {
+   "id": "dsl0t2ax",
+   "state": "finished",
+   "created": "2026-08-11T17:35:10",
+   "env_step": 2999532,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 272420,
+     "picked": 0
+    },
+    {
+     "env_step": 372424,
+     "picked": 0
+    },
+    {
+     "env_step": 472436,
+     "picked": 0
+    },
+    {
+     "env_step": 572420,
+     "picked": 0
+    },
+    {
+     "env_step": 672420,
+     "picked": 0
+    },
+    {
+     "env_step": 772416,
+     "picked": 0
+    },
+    {
+     "env_step": 872436,
+     "picked": 0
+    },
+    {
+     "env_step": 972416,
+     "picked": 0
+    },
+    {
+     "env_step": 1072424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1172436.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1272420.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1372432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1472420.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1572432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1672428.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1772416.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1872432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1972424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2072420.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2172436.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2272424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2372416.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2472420.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2572432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2672424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2772436.0,
+     "picked": 0
+    },
+    {
+     "env_step": 2872416.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dH_s2": {
+   "id": "rs3irreo",
+   "state": "finished",
+   "created": "2026-08-11T17:35:10",
+   "env_step": 1359976,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 272420,
+     "picked": 0
+    },
+    {
+     "env_step": 272436,
+     "picked": 0
+    },
+    {
+     "env_step": 372416,
+     "picked": 0
+    },
+    {
+     "env_step": 372432,
+     "picked": 0
+    },
+    {
+     "env_step": 472416,
+     "picked": 0
+    },
+    {
+     "env_step": 472416,
+     "picked": 0
+    },
+    {
+     "env_step": 572416,
+     "picked": 0
+    },
+    {
+     "env_step": 572432,
+     "picked": 0
+    },
+    {
+     "env_step": 672432,
+     "picked": 0
+    },
+    {
+     "env_step": 672436,
+     "picked": 0
+    },
+    {
+     "env_step": 772416,
+     "picked": 0
+    },
+    {
+     "env_step": 772424,
+     "picked": 0
+    },
+    {
+     "env_step": 872420,
+     "picked": 0
+    },
+    {
+     "env_step": 972428,
+     "picked": 0
+    },
+    {
+     "env_step": 1072432.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1172424.0,
+     "picked": 0
+    },
+    {
+     "env_step": 1272432.0,
+     "picked": 0
+    }
+   ]
+  },
+  "dH_s3": {
+   "id": "tuf70qkt",
+   "state": "finished",
+   "created": "2026-08-11T17:35:10",
+   "env_step": 1278364,
+   "summary_eval_picked": 0,
+   "summary_train_picked": 0,
+   "eval_history": [
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 172416,
+     "picked": 0
+    },
+    {
+     "env_step": 272424,
+     "picked": 0
+    },
+    {
+     "env_step": 272436,
+     "picked": 0
+    },
+    {
+     "env_step": 372420,
+     "picked": 0
+    },
+    {
+     "env_step": 372436,
+     "picked": 0
+    },
+    {
+     "env_step": 472432,
+     "picked": 0
+    },
+    {
+     "env_step": 472436,
+     "picked": 0
+    },
+    {
+     "env_step": 572416,
+     "picked": 0
+    },
+    {
+     "env_step": 572432,
+     "picked": 0
+    },
+    {
+     "env_step": 672428,
+     "picked": 0
+    },
+    {
+     "env_step": 672432,
+     "picked": 0
+    },
+    {
+     "env_step": 772432,
+     "picked": 0
+    },
+    {
+     "env_step": 772436,
+     "picked": 0
+    },
+    {
+     "env_step": 872428,
+     "picked": 0
+    },
+    {
+     "env_step": 972416,
+     "picked": 0
+    },
+    {
+     "env_step": 1072416.0,
+     "picked": 0.06666666666666667
+    },
+    {
+     "env_step": 1172420.0,
+     "picked": 0
+    }
+   ]
+  }
+ },
+ "r2d_eval": [
+  {
+   "src": "dDP",
+   "seed": 0,
+   "name_step": 3000000,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:50:16",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "fwabay3d",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 0,
+   "name_step": 2881840,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T08:01:27",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lk1w8xwk",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 0,
+   "name_step": 2881840,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T08:13:22",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "x6vky51b",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 0,
+   "name_step": 2881840,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T08:25:19",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "6w7e34v2",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 0,
+   "name_step": 2881840,
+   "ckpt": "BEST_selected.pt",
+   "mode": "mode",
+   "created": "2026-08-12T08:37:16",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lctvqfyy",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 1,
+   "name_step": 3000000,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:14:48",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ja8yk4hq",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 1,
+   "name_step": 2881852,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:25:40",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "iib5hab8",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 1,
+   "name_step": 2881852,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:37:16",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "sddpvsuc",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 1,
+   "name_step": 2881852,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T07:48:53",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "xdhpzb77",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 1,
+   "name_step": 2881852,
+   "ckpt": "BEST_selected.pt",
+   "mode": "mode",
+   "created": "2026-08-12T08:00:38",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "75mykekh",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 2,
+   "name_step": 3000000,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-12T05:53:56",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "kf54x7jg",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 2,
+   "name_step": 2881836,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T06:03:48",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "mzjmd0gl",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 2,
+   "name_step": 2881836,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T06:14:17",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "8b7qu9po",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 2,
+   "name_step": 2881836,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T06:24:48",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lpj79cyb",
+   "state": "finished"
+  },
+  {
+   "src": "dDP",
+   "seed": 2,
+   "name_step": 2881836,
+   "ckpt": "BEST_selected.pt",
+   "mode": "mode",
+   "created": "2026-08-12T06:35:17",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "ssusdmq0",
+   "state": "finished"
+  },
+  {
+   "src": "dH",
+   "seed": 1,
+   "name_step": 3000000,
+   "ckpt": "latest.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:05:34",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "5zup490q",
+   "state": "finished"
+  },
+  {
+   "src": "dH",
+   "seed": 1,
+   "name_step": 2872416,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:17:39",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "qpazan01",
+   "state": "finished"
+  },
+  {
+   "src": "dH",
+   "seed": 1,
+   "name_step": 2872416,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:30:36",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "n82247tf",
+   "state": "finished"
+  },
+  {
+   "src": "dH",
+   "seed": 1,
+   "name_step": 2872416,
+   "ckpt": "BEST_selected.pt",
+   "mode": "sample",
+   "created": "2026-08-12T10:43:40",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "wmysadtl",
+   "state": "finished"
+  },
+  {
+   "src": "dH",
+   "seed": 1,
+   "name_step": 2872416,
+   "ckpt": "BEST_selected.pt",
+   "mode": "mode",
+   "created": "2026-08-12T10:56:39",
+   "picked": 0.0,
+   "episodes": 15,
+   "id": "lumszh0f",
+   "state": "finished"
+  }
+ ],
+ "r2_local": {
+  "pick_delta25d4_s0": {
+   "last_step": 2999977,
+   "eval_series": [],
+   "n_train_eps": 11204,
+   "n_train_nonzero": 5004,
+   "first_train_success_step": 228057,
+   "sustained_discovery_step_roll50_ge0.1": 339305
+  },
+  "pick_delta25d4_s1": {
+   "last_step": 1913169,
+   "eval_series": [],
+   "n_train_eps": 4530,
+   "n_train_nonzero": 56,
+   "first_train_success_step": 206557,
+   "sustained_discovery_step_roll50_ge0.1": 224597
+  },
+  "pick_delta25d4_s2": {
+   "last_step": 2433045,
+   "eval_series": [
+    {
+     "step": 172416,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 272432,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 372424,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 472436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 572436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 672428,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 772432,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 872424,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 972416,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1072420,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1172436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1272416,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1372428,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1472424,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1572428,
+     "picked": 0.06666666666666667,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1672428,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1772424,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1872428,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1972436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2072432,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2172436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2272420,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2372436,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    }
+   ],
+   "n_train_eps": 5906,
+   "n_train_nonzero": 2,
+   "first_train_success_step": 190128,
+   "sustained_discovery_step_roll50_ge0.1": null
+  },
+  "pick_d4clamp_s0": {
+   "last_step": 3000000,
+   "eval_series": [
+    {
+     "step": 1172436,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1272416,
+     "picked": 0.8666666666666667,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1372420,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1472420,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1572428,
+     "picked": 0.7333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1672420,
+     "picked": 0.6,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1772420,
+     "picked": 0.5333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1872432,
+     "picked": 1.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 1972436,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2072424,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2172420,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2272432,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2372420,
+     "picked": 0.3333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2472420,
+     "picked": 0.0,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2572424,
+     "picked": 0.26666666666666666,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2672432,
+     "picked": 0.8666666666666667,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2772420,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2872428,
+     "picked": 0.9333333333333333,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 2972424,
+     "picked": 0.8666666666666667,
+     "mode_flag": 0.0
+    },
+    {
+     "step": 3000000,
+     "picked": 0.6666666666666666,
+     "mode_flag": 0.0
+    }
+   ],
+   "n_train_eps": 23691,
+   "n_train_nonzero": 18305,
+   "first_train_success_step": 503413,
+   "sustained_discovery_step_roll50_ge0.1": 691625
+  }
+ }
+}
