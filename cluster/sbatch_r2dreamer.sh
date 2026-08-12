@@ -112,6 +112,19 @@ fi
 N_NPZ=$(ls "$DEMO_DIR"/*.npz 2>/dev/null | wc -l)
 [ "$N_NPZ" -gt 0 ] || { echo "FATAL: $DEMO_DIR has no *.npz"; exit 1; }
 mkdir -p "$LOGDIR"
+
+# Double-submission guard (2026-08-12): dDP_R2D_s4 had TWO jobs writing one
+# LOGDIR (1103 interleaved env_step jumps in wandb, checkpoint-clobber risk).
+# flock is per-node only, so also refuse if another RUNNING slurm job claimed
+# this LOGDIR (claim file carries the job id; stale claims from dead jobs pass).
+if [ -f "$LOGDIR/.claim" ]; then
+  OTHER=$(cat "$LOGDIR/.claim")
+  if [ "$OTHER" != "${SLURM_JOB_ID:-none}" ] && squeue -h -j "$OTHER" -t RUNNING 2>/dev/null | grep -q .; then
+    echo "FATAL: job $OTHER is already RUNNING on $LOGDIR (double-submission guard)"; exit 1
+  fi
+fi
+echo "${SLURM_JOB_ID:-none}" > "$LOGDIR/.claim"
+
 echo "== r2dreamer $CONFIG seed $SEED start $(date) demo=$DEMO_DIR ($N_NPZ eps) logdir=$LOGDIR"
 
 # --- background wandb sync (idempotent; safe on the live run) ---------------------
