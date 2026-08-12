@@ -233,8 +233,8 @@ def main():
         cbs.append(VideoEvalCallback(run, out, eval_freq=args.eval_freq,
                                      max_steps=args.eval_max_steps, seed=args.seed,
                                      cartesian=args.cartesian,
-                                     control=getattr(args, 'control', 'vel',
-                                     action_mode=(args.action_mode if args.action_mode != 'absolute' else None))))
+                                     control=getattr(args, 'control', 'vel'),
+                                     action_mode=(args.action_mode if args.action_mode != 'absolute' else None)))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'sacfd_final'))
     # sidecar: lets wandb_eval --action-mode auto pick the right control path
