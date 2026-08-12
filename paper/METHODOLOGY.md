@@ -269,7 +269,35 @@ The gate has caught: measured-vs-commanded encoding, grant-slack necessity,
 and validates every re-encoded set (0.025 human set 3/3; harvested sets are
 gated with per-episode ICs from raw states since their ICs are random draws).
 
-### 7.5 The cross-learner geometry finding
+### 7.5 Why delta-JOINT rather than delta-EEF (design rejection record)
+ManiSkill's working recipe uses end-effector deltas (`pd_ee_delta_pos`);
+we deliberately transplanted the *mechanism* rather than the frame. Delta-EEF
+was rejected on three grounds:
+1. **Demo provenance.** The validated demonstration tapes are commanded joint
+   targets (the teleop's cartesian velocities were integrated by the robot's
+   own controller before recording; the joint-command stream is what replays
+   bit-identically). Joint-delta encoding telescopes exactly from these tapes
+   and passes the open-loop replay gate; EEF-delta encoding would put an
+   IK/Jacobian controller inside the training loop — a second dynamical system
+   with its own documented sim-to-sim gap history on this stack (issue #26,
+   tool-frame velocity fixes) and, in the 4-DOF cartesian environment, an
+   orientation restriction (pitch only) that demonstrated behavior violates
+   (demos carry the can rolled past 60 deg in-hand).
+2. **Direct evidence.** The 2x2 observation-by-action study isolated the
+   failure: every learned EEF action head scored ~0.00 for BC (both absolute
+   6-DOF cells) even though open-loop replay of the same encoding completes
+   the task — the deficit is in learning EEF action heads on this task, not in
+   the encoding's expressiveness; EEF-action RL was likewise degenerate.
+   Joint-space actions are the only family that has ever produced a working
+   learned policy here.
+3. **Frame-independence of the mechanism.** What makes deltas work under
+   entropy-driven exploration is mean-reversion (a max-entropy policy hovers
+   near its pose instead of thrashing) plus bounded per-step motion — both
+   captured by joint deltas with the leash, with no new controller, no IK
+   failure surface, and a strictly smaller validation burden. The champion
+   results (Sec. 8) vindicate the transplant.
+
+### 7.5b The cross-learner geometry finding
 Action-space geometry interacts with **exploration, not imitation**: BC
 thrives on absolute joints (it never explores); every exploring learner
 failed on them (SACfD 15×0, dv3 null, r2dreamer-absolute null — entropy-driven
