@@ -133,6 +133,15 @@ GPU-week left. Not on the critical path; the paper stands without it.**
 stage in ISOLATION in addition to end-to-end, so the demo-source effect is
 localized per stage rather than inferred through the funnel.
 
+> **BLOCKED 2026-08-13 — delta-joint replay does not reproduce downstream demo
+> phases.** All three learner arms now train on delta_joint actions, but the
+> delta open-loop replay loses the demonstrated downstream outcomes: canonical
+> VELOCITY-replay labels say contact 9 / nested 22, while delta replay through
+> FullTaskEnv measures contact 5 / nested 4 at repeat-1. This blocks Phase 2
+> (place/slide specialists) and every full-task delta number until resolved.
+> The PICK phase — the core paper's scope — is unaffected. See the 08-13
+> decision-log entry and FABLE_HANDOFF_2026-08-13.md §8.
+
 - Stages: pick (start -> grasp+lift), place (post-pick -> RELEASE-in-band, the
   placed_v2 predicate, not the mid-lift proxy), slide (post-place -> nested).
 - Entry states for isolated eval: `reset_to_frame(uid, frame)` restores arm qpos +
@@ -546,3 +555,49 @@ is itself a source property the distributional analysis should quantify.
   filenames -> true overwrite), which is why only the random dir shows it.
   Mitigation used: filter by mtime to isolate one run. Proper fix: stamp the
   eval-seed/run id into the video path.
+
+- 2026-08-13 (peer session newbox_genesis, user-flagged; recorded here by
+  newbox_supp): **P1 OPEN PROBLEM — THE DELTA-JOINT REPRESENTATION DOES NOT
+  REPRODUCE THE DEMONSTRATED DOWNSTREAM PHASES.** All three learner arms
+  (RLPD, dv3, r2dreamer) now train on delta_joint actions. But open-loop
+  replay of the human demos THROUGH the delta representation loses the
+  downstream outcomes those demos are labelled with. Canonical VELOCITY replay
+  (collect_all_classified -> GenesisCanEnv), which produced the labels, gives
+  contact 9 / nested 22. Delta replay through FullTaskEnv measures **contact 5
+  / nested 4** at repeat-1 over the 72 resettable demos.
+  **Localization (22 nested-labelled demos): 6 unresettable, 8 LOSE THE PICK
+  ENTIRELY, 2 stop at picked, 5 reach placed, 1 reaches nested.** So the
+  dominant failure is delta-replay FIDELITY — it fails to reproduce even the
+  GRASP on half the resettable nested demos — not a downstream-predicate
+  mismatch, which is what one would naively assume from the aggregate counts.
+  Hypothesis tests: cap saturation REFUTED (pick-losers and pick-keepers both
+  peak ~2x delta_cap and exceed cap on only 0.4-2% of frames — statistically
+  identical). Length CORRELATES: pick-losers median ~2600 frames vs keepers
+  ~1480. Leading diagnosis: open-loop delta integration accumulates tracking
+  divergence over long/complex (multi-attempt, drag, regrasp) trajectories, so
+  the arm drifts off the demonstrated path before the grasp. Velocity replay
+  does not have this. Echoes the historical #26 env-vs-replay divergence theme.
+  **CONSEQUENCES:** (1) the PICK phase — the core paper's scope — is
+  UNAFFECTED, and every BC/RLPD number above stands; (2) **Phase 2 (place/slide
+  specialists) and the stage-wise matrix are BLOCKED** until this is understood,
+  because the demo buffer cannot carry an uncorrupted downstream reward/dynamics
+  signal in the representation the learners consume; (3) the pick-gate "5/5" and
+  "repeat 1..8 safe" results used the 5 GENTLEST hand-picked pick demos and must
+  NOT be cited as full-task evidence. Options on the table: larger delta_cap /
+  longer leash for the full task; closed-loop demo re-recording in the delta env
+  (the derive_cartesian_realized pattern); or accept delta for pick-scope only
+  and use velocity/absolute downstream. Detail: FABLE_HANDOFF_2026-08-13.md §8.
+
+- 2026-08-13 (assistant, newbox_supp): **cross-check on the above — the
+  downstream delta measurement disagrees with the labels in BOTH directions,
+  not just by loss.** From the same sweep: repeat-1 env-measured nested = 4 over
+  the resettable set, yet only 1 of the 22 nested-LABELLED demos actually
+  reaches nested. So ~3 of the 4 env-measured nested successes come from demos
+  the canonical velocity replay did NOT label nested. Combined with the sweep's
+  own observation that 11-15 demos GAIN a stage under subsampling (coarser
+  control should not improve outcomes), the downstream stage measurement is not
+  merely lossy — it is high-variance in both directions on a 4-5 demo baseline.
+  Practical rule: no contact/nested claim should be reported from delta
+  open-loop replay at all until the fidelity issue is resolved, including
+  claims that would FAVOUR us. The pick baseline (34 demos) is large enough to
+  trust; the downstream baselines are not.
