@@ -71,8 +71,17 @@ def main():
     ap.add_argument('--target-entropy', type=float, default=None,
                     help='default -dim/2 (= -3.5 for the 7-dim joint action)')
     ap.add_argument('--train-max-steps', type=int, default=900,
-                    help='training episode horizon (joint; position-target SAC can '
-                         'outrun the demonstrator so 900 suffices for pick).')
+                    help='training episode horizon in SIM steps (joint; position-'
+                         'target SAC can outrun the demonstrator so 900 suffices for '
+                         'pick). With --action-repeat N this is ceil(900/N) decisions.')
+    ap.add_argument('--action-repeat', type=int, default=1,
+                    help='hold each policy decision for N consecutive sim steps '
+                         '(delta_joint: same delta N times => N*a*cap target advance). '
+                         'N=4 shrinks the 900-step episode to ~225 decisions, inside '
+                         'the gamma=0.998 credit horizon (~500). MUST be passed '
+                         'explicitly: it travels in the checkpoint sidecar and is '
+                         'mirrored by the demo encoder, the in-train eval, and '
+                         'wandb_eval --action-mode auto (the silent-default rule).')
     # --- shared-with-SACfD flags (mirror train_sacfd_full) ---
     ap.add_argument('--scope', choices=['full', 'pick'], default='pick',
                     help='pick: +1 and terminate on the pick (phase-1 paper core)')
@@ -96,15 +105,24 @@ def main():
     t0 = time.time()
     from full_env import FullTaskEnv, STAGE_REWARD
     import pick_env
-    from train_sacfd_full import relabel_full, delta_encode_transitions
+    from train_sacfd_full import (relabel_full, delta_encode_transitions,
+                                  delta_encode_transitions_repeat)
+    assert args.action_repeat >= 1, args.action_repeat
+    if args.action_repeat > 1:
+        assert args.action_mode == 'delta_joint', (
+            'action_repeat is only wired for delta_joint (the repeat-encoder + eval '
+            f'repeat assume it); got action_mode={args.action_mode}')
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
-                      scope=args.scope, action_mode=args.action_mode)
+                      scope=args.scope, action_mode=args.action_mode,
+                      action_repeat=args.action_repeat)
     # asserts: no silent defaults -- the env must be running the mode we asked for
     assert env.scope == args.scope, (env.scope, args.scope)
     assert env.action_mode == args.action_mode, (env.action_mode, args.action_mode)
+    assert env.action_repeat == args.action_repeat, (env.action_repeat, args.action_repeat)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
-          f'delta_cap={env.delta_cap}', flush=True)
+          f'delta_cap={env.delta_cap} action_repeat={env.action_repeat} '
+          f'(~{-(-args.train_max_steps // args.action_repeat)} decisions/ep)', flush=True)
 
     # ---- model (RLPDSAC: LN ensemble critics built at construction) ----
     from rlpd_sac import make_rlpd, DemoData
@@ -115,15 +133,23 @@ def main():
     print(f'[cfg] RLPD | E={args.ensemble_size} Z={args.subset_size} UTD={args.utd} '
           f'gamma={args.gamma} ent_coef={args.ent_coef} '
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
-          f'scope={args.scope} action_mode={args.action_mode}', flush=True)
+          f'scope={args.scope} action_mode={args.action_mode} '
+          f'action_repeat={args.action_repeat}', flush=True)
     print(model.critic, flush=True)
 
     # ---- demos: SAME encoder as train_sacfd_full (bit-identical tensors) ----
     paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
     assert paths, f'no npz in {args.demo_dir}'
     if args.action_mode == 'delta_joint':
-        transitions = delta_encode_transitions(paths, env.pick_z, args.scope,
-                                               env.delta_cap)
+        # EXPLICIT encoder selection (no silent stride-1 fallback): action_repeat>1
+        # decision-level demos vs the stride-1 encoder. repeat==1 keeps the exact
+        # stride-1 tensors SACfD/the gate assert bit-equality against.
+        if args.action_repeat > 1:
+            transitions = delta_encode_transitions_repeat(
+                paths, env.pick_z, args.scope, env.delta_cap, args.action_repeat)
+        else:
+            transitions = delta_encode_transitions(paths, env.pick_z, args.scope,
+                                                   env.delta_cap)
         norm = None                    # actions already in normalized delta space
     else:
         transitions, _ = relabel_full(paths, env.pick_z)
@@ -140,7 +166,11 @@ def main():
     # ---- output + action_mode sidecars (the silent-default-bug rule: control mode
     # travels WITH the artifact so wandb_eval --action-mode auto reads it) ----
     out = pl.Path(args.out_dir); out.mkdir(parents=True, exist_ok=True)
-    sidecar = {'action_mode': args.action_mode}
+    # action_repeat travels WITH the artifact so wandb_eval --action-mode auto applies
+    # the SAME repeat at eval time (stateful: one policy query per N env steps). Evaling
+    # a repeat-N policy at stride 1 is the exact silent-default bug family this repo keeps
+    # hitting -- the sidecar closes it.
+    sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
@@ -157,7 +187,8 @@ def main():
         cbs.append(VideoEvalCallback(
             run, out, eval_freq=args.eval_freq, max_steps=args.eval_max_steps,
             seed=args.seed, cartesian=False,
-            action_mode=(args.action_mode if args.action_mode != 'absolute' else None)))
+            action_mode=(args.action_mode if args.action_mode != 'absolute' else None),
+            action_repeat=args.action_repeat))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'rlpd_final'))
     (out / 'rlpd_final.action_mode.json').write_text(json.dumps(sidecar))

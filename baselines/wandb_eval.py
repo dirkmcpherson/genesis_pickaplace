@@ -44,6 +44,14 @@ ap.add_argument('--action-mode', choices=['auto', 'absolute', 'delta_joint'],
                      "sidecar written by train_sacfd_full and falls back to "
                      "absolute (all pre-2026-08-11 checkpoints) with a printed "
                      "note.")
+ap.add_argument('--action-repeat', type=int, default=None,
+                help="JOINT delta_joint eval only: hold each policy decision N env "
+                     "steps (query the model once per N steps, integrate the SAME "
+                     "delta each step) so eval runs the SAME MDP as a repeat-N "
+                     "training run. None = read action_repeat from the "
+                     "<ckpt>.action_mode.json sidecar (falls back to 1 for sidecars "
+                     "predating the field); an explicit value overrides. Evaling a "
+                     "repeat-N policy at stride 1 is the silent-default bug family.")
 ap.add_argument('--control', choices=['vel', 'delta', 'abs', 'abs6', 'delta6'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--obs', choices=['env', 'joint', 'ee'], default='env',
@@ -103,29 +111,46 @@ if args.kind == 'sac':
     model = SAC.load(args.checkpoint, device='cpu')
 
     _mode = args.action_mode
+    _repeat = args.action_repeat            # None => resolve from sidecar/default
+    _sc = pl.Path(str(args.checkpoint)).with_suffix('.action_mode.json')
+    _side = json.loads(_sc.read_text()) if _sc.exists() else {}
     if _mode == 'auto' and not args.cartesian:
-        _sc = pl.Path(str(args.checkpoint)).with_suffix('.action_mode.json')
-        if _sc.exists():
-            _mode = json.loads(_sc.read_text())['action_mode']
+        if _side:
+            _mode = _side['action_mode']
             print(f'[eval] action_mode from sidecar: {_mode}')
         else:
             _mode = 'absolute'
             print('[eval] no action_mode sidecar -> absolute (legacy checkpoint)')
+    if _repeat is None:
+        # sidecars predating action_repeat -> stride 1 (the old behaviour); a repeat-N
+        # run always writes the field, so this only defaults legacy stride-1 runs.
+        _repeat = int(_side.get('action_repeat', 1))
+    _repeat = max(1, int(_repeat))
 
     if _mode == 'delta_joint' and not args.cartesian:
+        print(f'[eval] action_repeat={_repeat} '
+              f'(1 policy query per {_repeat} env step(s))')
         # Stateful delta integration, mirroring FullTaskEnv(action_mode=
         # 'delta_joint') exactly: target seeded from measured q on the first
         # step of each episode, integrated by a*cap, clipped to joint limits,
         # leashed to measured q. Constants MUST match training.
         from pick_env import ARM_LO, ARM_HI
         DJ_CAP, DJ_LEASH = 0.025, 5.0 * 0.025
-        _dj = {'target': None}
+        # action_repeat: query the model once every _repeat env steps and hold its
+        # normalized delta for that many steps, integrating it EACH step -- mirrors
+        # FullTaskEnv(action_repeat=_repeat) exactly (same delta fed to _step_once N
+        # times => N*a*cap target advance), which is what training and the demo
+        # encoding assume. _repeat==1 is the original stride-1 integrator.
+        _dj = {'target': None, 'a': None, 'k': 0}
 
         def policy_action(obs):
-            a, _ = model.predict(obs['state'], deterministic=True)
             q = np.asarray(obs['state'][:6], dtype=np.float64)
             if _dj['target'] is None:
                 _dj['target'] = q.copy()
+            if _dj['k'] % _repeat == 0:
+                _dj['a'], _ = model.predict(obs['state'], deterministic=True)
+            _dj['k'] += 1
+            a = _dj['a']
             sp = np.clip(_dj['target'] + np.clip(a[:6], -1.0, 1.0) * DJ_CAP,
                          ARM_LO, ARM_HI)
             _dj['target'] = q + np.clip(sp - q, -DJ_LEASH, DJ_LEASH)
@@ -134,6 +159,8 @@ if args.kind == 'sac':
 
         def policy_reset():
             _dj['target'] = None
+            _dj['a'] = None
+            _dj['k'] = 0
     else:
         def policy_action(obs):
             a, _ = model.predict(obs['state'], deterministic=True)

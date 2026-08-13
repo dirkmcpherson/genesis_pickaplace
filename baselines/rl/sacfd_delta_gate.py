@@ -18,6 +18,7 @@ Two guarantees, cheap to re-run before any cluster spend (RLPD_PLAN.md ladder (b
 Usage:  .venv-eval/bin/python baselines/rl/sacfd_delta_gate.py
 """
 import os
+import argparse
 import glob
 import pathlib as pl
 import sys
@@ -52,9 +53,26 @@ def _paths_for(uids):
     return out
 
 
+def _encode(paths, pick_z, scope, cap, repeat):
+    """stride-1 vs action-repeat encoder, selected EXPLICITLY (no silent fallback)."""
+    from train_sacfd_full import (delta_encode_transitions,
+                                  delta_encode_transitions_repeat)
+    if repeat > 1:
+        return delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat)
+    return delta_encode_transitions(paths, pick_z, scope, cap)
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--action-repeat', type=int, default=1,
+                    help='validate the decision-level (action-repeat N) delta pipeline: '
+                         'demos encoded by delta_encode_transitions_repeat and replayed '
+                         'through FullTaskEnv(action_repeat=N) must re-earn the pick. '
+                         'N=1 is the original stride-1 gate.')
+    args = ap.parse_args()
+    repeat = max(1, int(args.action_repeat))
+
     from full_env import FullTaskEnv, STAGE_REWARD
-    from train_sacfd_full import delta_encode_transitions
     from rlpd_sac import DemoData
     import torch as th
 
@@ -66,14 +84,14 @@ def main():
     # marginal-terminal pick-phase demos -- truncated ~2 frames past pick_z -- can
     # never satisfy even under a perfect replay; see GATE_UIDS note above.)
     env = FullTaskEnv(backend='cpu', max_steps=1800, scope='full',
-                      action_mode='delta_joint')
+                      action_mode='delta_joint', action_repeat=repeat)
     from pick_env import GRIP_CLOSED_FRAC
-    print(f'[gate] env built | pick_z={env.pick_z:.4f} delta_cap={env.delta_cap}',
-          flush=True)
+    print(f'[gate] env built | pick_z={env.pick_z:.4f} delta_cap={env.delta_cap} '
+          f'action_repeat={env.action_repeat}', flush=True)
 
     # ---- (1) tensor equality: DemoData actions == encoder output ----
     all_paths = _paths_for(GATE_UIDS)
-    trans = delta_encode_transitions(all_paths, env.pick_z, 'pick', env.delta_cap)
+    trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat)
     dd = DemoData(trans, action_transform=None, device=th.device('cpu'))
     ref_act = np.stack([t[1] for t in trans]).astype(np.float32)
     ref_obs = np.stack([t[0] for t in trans]).astype(np.float32)
@@ -86,7 +104,7 @@ def main():
     passed = 0
     for uid, p in zip(GATE_UIDS, all_paths):
         # encode on the FULL episode (scope='full' => keep post-pick rows, no done cut)
-        ep = delta_encode_transitions([p], env.pick_z, 'full', env.delta_cap)
+        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat)
         acts = [t[1] for t in ep]
         env.reset(options={'uid': uid})
         picked, canz_max, steps = False, -9.0, 0

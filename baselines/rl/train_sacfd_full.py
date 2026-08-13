@@ -116,6 +116,61 @@ def delta_encode_transitions(paths, pick_z, scope, cap):
     return out
 
 
+def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat):
+    """Action-repeat (decision-level) sibling of delta_encode_transitions.
+
+    Re-encodes each demo at STRIDE = `repeat` so one decision matches exactly what
+    FullTaskEnv(action_mode='delta_joint', action_repeat=repeat) executes: the same
+    normalized arm delta held `repeat` sim steps advances the joint target by
+    repeat*a*cap total, so to span the demo command from just-before the window to
+    the window's last frame the decision action is
+        a_arm = clip((cmd_end - cmd_prev) / (repeat*cap), -1, 1),
+    where cmd_prev is the standing command before the window (the measured start pose
+    for window 0, else the frame just before the window). Dividing by `repeat` (NOT the
+    window length) makes the target REACH cmd_end after `repeat` repeats regardless of
+    how many demo frames the (possibly short final) window held. This is the average of
+    the `repeat` constituent stride-1 deltas, so it is <= each in magnitude -> clips
+    LESS and sits comfortably inside the same leash the stride-1 gate already passes.
+
+    Per decision: obs = window-start state; next_obs = state after the last sim step in
+    the window; reward = SUM over the window (the terminal +1 is preserved); done = ANY
+    within the window; grip = the LAST frame's grip command in the window (raw*2-1) --
+    chosen over a majority vote so the pick's grip-close is never lost to a late-window
+    closure (grip is held constant across the window in both env and eval).
+
+    Do NOT route the stride-1 path here: repeat==1 still strides/averages trivially and
+    is arithmetically identical to delta_encode_transitions, but callers select this
+    sibling EXPLICITLY (the silent-default rule); repeat==1 callers keep the stride-1
+    encoder.
+    """
+    assert int(repeat) >= 1, repeat
+    repeat = int(repeat)
+    out = []
+    for p in paths:
+        trans, _ = relabel_full([p], pick_z)
+        if not trans:
+            continue
+        if scope == 'pick':
+            trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                     (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
+        n = len(trans)
+        cmds = np.stack([t[1] for t in trans]).astype(np.float64)   # (n, 7)
+        C = cmds[:, :6]
+        start_q = trans[0][0][:6].astype(np.float64)
+        for k in range(0, n, repeat):
+            end = min(k + repeat - 1, n - 1)          # last frame index in the window
+            prev = start_q if k == 0 else C[k - 1]    # standing command before window
+            dq = np.clip((C[end] - prev) / (repeat * cap), -1.0, 1.0)
+            grip = np.clip(cmds[end, 6], 0.0, 1.0) * 2.0 - 1.0
+            act = np.concatenate([dq, [grip]]).astype(np.float32)
+            obs = trans[k][0]
+            nobs = trans[end][3]
+            rew = float(sum(trans[i][2] for i in range(k, end + 1)))
+            done = bool(any(trans[i][4] for i in range(k, end + 1)))
+            out.append((obs, act, rew, nobs, done))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--steps', type=int, default=400_000)

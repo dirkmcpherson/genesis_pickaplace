@@ -83,8 +83,20 @@ class FullTaskEnv(gym.Env):
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
-                 delta_leash_mult=5.0):
+                 delta_leash_mult=5.0, action_repeat=1):
         super().__init__()
+        # action_repeat N (2026-08-13): ONE policy decision is held for N consecutive
+        # env (sim) steps -- the SAME normalized action feeds _step_once N times, so in
+        # delta_joint mode the arm target advances up to N*a*delta_cap total and the
+        # grip command is constant over the window; rewards accumulate; the window
+        # breaks early on terminate/truncate. max_steps stays a SIM-step budget, so a
+        # 900-sim-step episode is ceil(900/N) decisions -- shrinking the decision
+        # horizon inside the gamma credit window (the r2dreamer repeat-4 lever). N=1 is
+        # the exact stride-1 behaviour (loop runs once), so no existing caller changes.
+        # MUST match the demo encoding (train_sacfd_full.delta_encode_transitions_repeat)
+        # AND the eval-time repeat (wandb_eval reads action_repeat from the sidecar).
+        assert int(action_repeat) >= 1, action_repeat
+        self.action_repeat = int(action_repeat)
         # action_mode 'delta_joint' (2026-08-11, user: "do 1" -- port the delta
         # action space to SACfD): arm dims in [-1,1] are per-STEP joint-target
         # deltas of a*delta_cap rad integrated onto a persistent target (init =
@@ -276,6 +288,20 @@ class FullTaskEnv(gym.Env):
         return obs['state'].astype(np.float32), {}
 
     def step(self, action):
+        # action_repeat: hold the SAME decision for N sim steps, accumulate reward,
+        # break early on terminate/truncate. N=1 -> a single _step_once (identical to
+        # the pre-repeat behaviour). The delta integration in _step_once re-adds a*cap
+        # each of the N calls, so total target advance = N*a*cap -- exactly what the
+        # decision-level demo encoding (delta_encode_transitions_repeat) assumes.
+        total_reward = 0.0
+        for _ in range(self.action_repeat):
+            obs, reward, terminated, truncated, info = self._step_once(action)
+            total_reward += reward
+            if terminated or truncated:
+                break
+        return obs, total_reward, terminated, truncated, info
+
+    def _step_once(self, action):
         if self.action_mode == 'delta_joint':
             a = np.asarray(action, dtype=np.float64)
             d = np.clip(a[:6], -1.0, 1.0) * self.delta_cap

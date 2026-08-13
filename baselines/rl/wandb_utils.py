@@ -79,7 +79,7 @@ class VideoEvalCallback(BaseCallback):
 
     def __init__(self, run, out_dir, eval_freq=25_000, n_random=10, max_steps=400,
                  max_videos=3, seed=0, cartesian=False, control='vel',
-                 action_mode=None):
+                 action_mode=None, action_repeat=1):
         super().__init__()
         self.run = run
         self.cartesian = bool(cartesian)
@@ -90,6 +90,10 @@ class VideoEvalCallback(BaseCallback):
         # before 2026-08-12 evaluated the policy in the wrong MDP (found by the
         # RLPD planning audit). Trainers of delta policies MUST pass it.
         self.action_mode = action_mode
+        # decision-level action repeat, passed EXPLICITLY so the in-train eval runs
+        # in the SAME MDP as training (a repeat-N policy evaluated at stride 1 is the
+        # silent-default bug family). Default 1 = stride-1 trainers unchanged.
+        self.action_repeat = int(action_repeat)
         self.dir = pl.Path(out_dir) / 'wandb_eval'
         self.dir.mkdir(parents=True, exist_ok=True)
         self.eval_freq, self.n_random = eval_freq, n_random
@@ -143,6 +147,7 @@ class VideoEvalCallback(BaseCallback):
                  if getattr(self, 'cartesian', False) else []),
                *(['--action-mode', self.action_mode]
                  if getattr(self, 'action_mode', None) else []),
+               '--action-repeat', str(getattr(self, 'action_repeat', 1)),
                '--checkpoint', str(ck), '--random', str(self.n_random),
                '--seed', str(self.seed), '--max-steps', str(self.max_steps),
                '--record-dir', str(rec), '--json', str(self.dir / 'metrics.json'),
