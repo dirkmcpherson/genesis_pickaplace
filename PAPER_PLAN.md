@@ -115,6 +115,8 @@ dv3-teacher mode in harvest_ai_demos). 3×3(+diag) conditions ×3-5 seeds via
 | dDP_SACfD ×3| RLfD | gen-0 DP harvest     | week launcher (same m1_full harvest as dDP_DP) |
 | dH_DV3 ×3   | WM   | 91 human (image)     | RUNNING (hdv3_pick s0/s1/s2, 5M budget) — also the H4 learnability gate |
 | dDP_DV3 ×3  | WM   | gen-0 harvest (image)| launcher, after m1_full harvest lands (same demos as dDP_DP/dDP_SACfD) |
+| dH_RLPD ×7  | RLfD | 66 human pick-trunc  | **FIRST NONZERO MODEL-FREE ROW.** 6/7 seeds ignite; best seed s0 @150k = **0.40 demo-IC / 0.16 random**. Post-hoc best-checkpoint-of-best-seed — NOT a seed-mean; see 08-13 decision-log caveat |
+| dDP_RLPD    | RLfD | gen-0 DP harvest     | NOT RUN — required to make the RLPD row a source comparison rather than a single-source result |
 
 Archival: the ouro ACT lineage (gen0-2 trained, datasets banked) stays as
 appendix/backup material; its conditions left the core when ACT was dropped.
@@ -479,3 +481,68 @@ is itself a source property the distributional analysis should quantify.
   step. In-train eval action-mode bug (snapshot evals of delta runs ran
   absolute) found and fixed en route — dj in-train CURVES are unreliable;
   final evals unaffected.
+
+- 2026-08-13 (assistant, newbox_supp): **RLPD IS THE FIRST HONEST NONZERO
+  MODEL-FREE RESULT** (~30 SACfD zeros precede it). Ball-2023-style: E=10
+  LayerNorm critic ensemble, min over a random 2, symmetric 128/128 demo/online
+  batches, UTD 10, delta-joint actions, gamma 0.998. 7 seeds x 200k local:
+  **6/7 ignited**, first nonzero 75-175k. Best seed s0 @150k checkpoint:
+  **picked 0.40 demo-IC / 0.156 random-IC**, placed/contact/nested 0.00
+  throughout (a pick-phase-only policy). Videos sent to user 08-13.
+
+- 2026-08-13 (assistant, newbox_supp): **TWO CORRECTIONS to the RLPD confirm
+  numbers as first reported.**
+  (1) **The "0.40 confirmed across 3 independent eval seeds" is ONE
+  deterministic measurement repeated three times, not three samples.** es1/es2/
+  es3 return a byte-identical per-episode outcome pattern (P.P...P..P..P.P over
+  the same 15 demo uids, 232/234/235/...). The demo-IC eval holds ICs fixed and
+  the SAC eval policy is deterministic, so the eval seed cannot perturb this
+  arm; the 3x agreement carries no more information than a single run and is NOT
+  evidence of robustness. Honest uncertainty on the headline stays binomial:
+  6/15 = 0.40 +- 0.13 (1 SD). The random-IC arm IS genuinely stochastic
+  (patterns differ every seed) and is where eval-seed replication has meaning.
+  **Protocol consequence: for demo-IC evals, "x3" must mean 3 TRAINING seeds or
+  3 stochastic-policy samples — repeating a deterministic rollout is a null
+  operation.** This is a measurement-layer error of exactly the kind the 08-13
+  poller-filter and 08-11 syncer incidents were: the runs were fine.
+  (2) **Random-IC is 0.156, not ~0.30.** Per-seed 0.20/0.20/0.07 (3/15, 3/15,
+  1/15). The 0.30 figure in SESSION_STATE_2026-08-13 was a single noisy
+  snapshot; the x3 mean supersedes it. Generalization gap = 0.40 -> 0.156.
+  Both corrections verified against primary evidence (scratchpad/
+  rlpd_s0_confirm.log) rather than the wandb summary.
+
+- 2026-08-13 (assistant, newbox_supp): **SELECTION vs CONFIRMATION FLAG on the
+  RLPD row.** 0.40 is the best checkpoint (150k of 4 snapshots) of the best seed
+  (s0 of 7), chosen after seeing the evals. Under the project's own
+  selection-not-confirmation rule it is a SELECTED maximum and must not be
+  quoted as the RLPD row's expected performance. The seed-mean over the 6
+  ignited seeds (snapshot peaks 0.2-0.4) is the defensible row statistic; at
+  n=10-15 eval episodes per snapshot (SD ~0.13) single snapshots are noisy.
+  What is safely claimable: (a) RLPD IGNITES where SACfD never did (6/7 vs
+  0/16), which is a claim about the ensemble/UTD/symmetric-sampling machinery,
+  not about the demo source; (b) the ignition itself is the finding. A
+  confirmation eval on a HELD-OUT criterion (fixed checkpoint chosen before
+  eval, or stochastic-sample n=45 like the r2dreamer champion protocol) is what
+  would turn 0.40 into a reportable number.
+
+- 2026-08-13 (assistant, newbox_supp): **dv3 correction carried in from the
+  Fable handoff (peer session):** `bounded_normal` is NOT a dv3 gap — dv3's
+  actor is already bounded (`ContDist(absmax=1.0)`, models.py:278). It was an
+  r2dreamer-only bug. The real dv3 gap is that it never received the recipe
+  that made r2dreamer ignite: delta-joint actions + short horizon +
+  terminate-on-success + single sparse terminal reward
+  (dreamerv3-torch/MANISKILL_VS_GENESIS.md "Top-3"). The dv3 null is therefore
+  NOT yet a clean architecture verdict — it is a null under a recipe the
+  working arm never used, and the paper must say so.
+
+- 2026-08-13 (assistant, newbox_supp): **Video-directory accumulation hazard.**
+  `<ckpt>/rlpd_150000_steps_eval_videos/random/` held 22 mp4s for a 15-episode
+  eval: filenames encode the OUTCOME (`ep4_picked` vs `ep4_fail`), so a re-eval
+  writes a NEW file instead of overwriting, and stale episodes from earlier eval
+  seeds accumulate. Counting `*_picked.mp4` in such a directory would have read
+  7/15 = 0.47 where the true es3 rate is 1/15 = 0.07 — a 6x overstatement
+  available to anyone who eyeballs the directory instead of the log. The
+  deterministic demo-IC dir is immune (identical outcomes -> identical
+  filenames -> true overwrite), which is why only the random dir shows it.
+  Mitigation used: filter by mtime to isolate one run. Proper fix: stamp the
+  eval-seed/run id into the video path.
