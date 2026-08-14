@@ -465,3 +465,12 @@ TRANSFER CAVEAT: the paired control measures the bug's effect on RLPD POLICY
 rollouts. The phase sweep is open-loop DEMO replay — different action source,
 different trajectories, different time-in-contact. The paired delta is an
 order-of-magnitude indicator for the sweep re-run, not a substitute for it.
+
+### Addendum 3: scope of "training was unaffected" (Fable correction)
+
+The 3a7a713 commit message says training was unaffected by the #26 inner-horizon
+regression. That is true for the JOINT arms (episode cap 900 < 1200) but NOT for
+cartesian training: train_sacfd_full defaults --train-max-steps 1800 for cartesian
+(VCAP-limited demos need it), so cartesian episodes past 1200 inner steps trained
+under phantom-settle physics. All such runs scored 0 for other reasons, but any
+future cartesian revival must note its historical training data crossed this bug.
