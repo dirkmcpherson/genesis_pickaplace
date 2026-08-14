@@ -162,11 +162,14 @@ class RLPDSAC(SAC):
     save/load, logging, ent-coef auto/fixed -- is stock SB3 2.8 SAC."""
 
     def __init__(self, *args, ensemble_size=10, subset_size=2, demo_batch=128,
-                 q_watchdog=2.0, **kwargs):
+                 q_watchdog=2.0, backup_entropy=False, **kwargs):
         self.ensemble_size = int(ensemble_size)
         self.subset_size = int(subset_size)
         self.demo_batch = int(demo_batch)
         self.q_watchdog = float(q_watchdog)
+        # False = RLPD's setting for every sparse domain (audit bug 1). True
+        # restores the pre-audit (SB3-SAC-inherited) behavior for comparison runs.
+        self.backup_entropy = bool(backup_entropy)
         self.demo_data = None
         self._watchdog_tripped = False
         super().__init__(*args, **kwargs)
@@ -217,7 +220,16 @@ class RLPDSAC(SAC):
                 next_q_all = self.critic_target(nobs, next_act)          # (E, B, 1)
                 subset = th.randperm(self.ensemble_size, device=self.device)[:self.subset_size]
                 next_q, _ = th.min(next_q_all[subset], dim=0)            # (B, 1)
-                next_q = next_q - ent_coef * next_logp.reshape(-1, 1)
+                # ENTROPY BACKUP (audit 2026-08-14, paper/rlpd_audit_2026-08-14.md
+                # bug 1): RLPD sets backup_entropy=False for EVERY sparse domain
+                # (Table 2: AntMaze, Adroit, pixel-DMC). With it ON at gamma=0.998
+                # the critic's zero-reward fixed point is 500*alpha*H — measured
+                # Q 269..2400 vs max task return 1.0, and terminals (the PICKS)
+                # get target 1.0 vs ~400 for non-terminals: a 400:1 incentive
+                # AGAINST completing the task. Off by default for sparse scopes;
+                # callers set it EXPLICITLY (train_rlpd --backup-entropy).
+                if self.backup_entropy:
+                    next_q = next_q - ent_coef * next_logp.reshape(-1, 1)
                 target_q = rewards + (1.0 - dones) * self.gamma * next_q
             current_q_all = self.critic(obs, act)                       # (E, B, 1)
             target_exp = target_q.unsqueeze(0).expand_as(current_q_all)
@@ -261,11 +273,16 @@ class RLPDSAC(SAC):
         # small ent_coef (--ent-coef 0.005) restart. ----
         if q_means:
             qm = float(np.mean(q_means))
-            if qm > self.q_watchdog and not self._watchdog_tripped:
-                self._watchdog_tripped = True
+            # RE-ARMING (audit: the one-shot warn fired once at step 1001/Q=2.82
+            # and the later ride to Q 269-2400 was never re-flagged). Warns at most
+            # once per 10k steps. The old 'fixed --ent-coef 0.005' prescription is
+            # RETIRED (audit: it explodes worse, Q->1.6e5).
+            if qm > self.q_watchdog and \
+                    self.num_timesteps - getattr(self, '_watchdog_last', -10**9) >= 10_000:
+                self._watchdog_last = self.num_timesteps
                 print(f'[Q-WATCHDOG] mean actor-state Q={qm:.2f} > {self.q_watchdog} '
-                      f'at step {self.num_timesteps} -- suspected value explosion; '
-                      f'pre-registered fix: restart with fixed --ent-coef 0.005',
+                      f'at step {self.num_timesteps} -- value scale far above max '
+                      f'task return; check backup_entropy and critic health',
                       flush=True)
             self.logger.record('train/actor_q_mean', qm)
 
@@ -287,7 +304,7 @@ class RLPDSAC(SAC):
 
 def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
               gamma=0.998, ent_coef='auto', target_entropy=None, demo_batch=128,
-              net_arch=(256, 256), q_watchdog=2.0):
+              net_arch=(256, 256), q_watchdog=2.0, backup_entropy=False):
     """Construct an RLPDSAC with the pinned RLPD hypers. target_entropy defaults to
     -dim/2 (RLPD_PLAN: -3.5 for the 7-dim joint action)."""
     dev = th.device(device)
@@ -297,7 +314,7 @@ def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
     model = RLPDSAC(
         RLPDPolicy, env,
         ensemble_size=ensemble_size, subset_size=subset_size, demo_batch=demo_batch,
-        q_watchdog=q_watchdog,
+        q_watchdog=q_watchdog, backup_entropy=backup_entropy,
         learning_rate=3e-4,
         buffer_size=300_000,          # ONLINE data only; demos live in DemoData
         learning_starts=1_000,

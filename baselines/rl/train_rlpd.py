@@ -60,6 +60,12 @@ def main():
                     help='Z: target = min over a random Z-of-E TARGET critics')
     ap.add_argument('--demo-batch', type=int, default=128,
                     help='demo half of the 256 batch (128 demo + 128 online = 50/50)')
+    ap.add_argument('--backup-entropy', choices=['on', 'off'], default='off',
+                    help="entropy term in the CRITIC TARGET. 'off' = RLPD's setting "
+                         "for every sparse domain (audit bug 1: 'on' at gamma=0.998 "
+                         "gives a 500*alpha*H zero-reward fixed point that buries "
+                         "the +1 and pays 400:1 AGAINST terminating). 'on' restores "
+                         "the pre-audit behavior for comparison only.")
     ap.add_argument('--gamma', type=float, default=0.998,
                     help='0.998 ~ 500-step credit window. 0.98 made the demo pick '
                          'terminal (median frame 662) worth ~1.6e-6 from start '
@@ -127,6 +133,7 @@ def main():
     # ---- model (RLPDSAC: LN ensemble critics built at construction) ----
     from rlpd_sac import make_rlpd, DemoData
     model = make_rlpd(env, args.seed, args.device,
+                      backup_entropy=(args.backup_entropy == 'on'),
                       ensemble_size=args.ensemble_size, subset_size=args.subset_size,
                       utd=args.utd, gamma=args.gamma, ent_coef=args.ent_coef,
                       target_entropy=args.target_entropy, demo_batch=args.demo_batch)
@@ -170,7 +177,8 @@ def main():
     # the SAME repeat at eval time (stateful: one policy query per N env steps). Evaling
     # a repeat-N policy at stride 1 is the exact silent-default bug family this repo keeps
     # hitting -- the sidecar closes it.
-    sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat}
+    sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat,
+               'backup_entropy': args.backup_entropy}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
