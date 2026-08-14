@@ -251,15 +251,43 @@ negative control, pre-registered criterion, same-machine baselines.
 ---
 
 ## 4a-0. **P2 — CROSS-EPISODE STATE CONTAMINATION**
-**STATUS 08-14 00:50: FIX LANDED + GATED (e9f6e24).** reset() re-issues controller
-targets; re-probe: identical-command divergence 0.0506 rad -> 7.4e-06, used-vs-used
-resets agree to 1.3e-05. RESIDUAL: fresh-vs-used 0.0022 on grip-effort dim
-(suspected solver caches) -> one-episode-per-process REMAINS the paper standard.
-Boundary: processes launched after 2026-08-14T00:49:57-04:00 run post-fix (the s3
-snapshot eval pre-dates it and is wholly pre-fix). newbox_supp runs the prefix-
-length probe (2,3,4,5,6 -> uid 243) on fixed code; Fable's registered prediction:
-no prefix flips it post-fix. HOLD on published numbers stays until that probe +
-protocol re-registration. (Discovery record follows.)
+
+**STATUS 08-14 ~01:30 — FABLE'S PREDICTION REFUTED; PROTOCOL, NOT ENV FIX, IS THE
+RESOLUTION.**
+
+1. Controller-target fix (e9f6e24) closed ONE channel (divergence 0.0506 ->
+   7.4e-06 rad at 20-step probe horizon; used-vs-used resets 1.3e-05). Fable's
+   registered prediction ("no prefix flips 243 post-fix") was **REFUTED**: post-fix
+   dose-response T,F,T,F,F,F,F,T over prefix lengths 1-8. History still decides
+   borderline episodes. Residual channel = solver/contact state.
+2. **Fable's "bounded small" claim was a probe-horizon error**: 20-step bound
+   extrapolated to 400-step contact-rich episodes (20-fold gap, compounding).
+   Named as such; do not repeat the pattern (a bound is only as long as its
+   measurement window).
+3. **The fix CHANGED THE BASELINE** (243 alone: pre-fix False -> post-fix True).
+   Post-fix numbers are a NEW measurement, not corrected versions of old ones.
+   NOTHING pre-fix is comparable to anything post-fix.
+4. **Determinism-given-sequence means reproducibility is evidence of nothing**:
+   identical sequences reproduce byte-identically; the value is one fixed
+   arbitrary draw. Borderline episodes exhibit sensitive dependence — microscopic
+   state resolves them arbitrarily. Repeating an eval cannot sample the
+   distribution; only changing the sequence/process can.
+5. **STANDARD (final): one episode per FRESH PROCESS** for every paper-facing
+   number. Only protocol that is reproducible AND meaningful here. Episode order
+   becomes moot by construction.
+6. **NO further env-level fixes now** — chasing solver-state reset is a separate,
+   longer project, not a prerequisite for trustworthy numbers.
+7. In flight: newbox_supp measuring ar4_s2 demo-IC as 15 fresh processes (sequence
+   protocol said 0.07) — the delta = the protocol-artifact size on a real cell.
+8. ar8 in-train curves: doubly deprecated (sequence-based AND straddling the fix
+   boundary). Only fresh-process post-hoc evals count, under a re-registered
+   protocol.
+9. What still survives P2 in ANY protocol: SACfD = 0 across every seed, snapshot,
+   and sequence (no draw ever produced a pick) vs RLPD producing picks under many
+   draws. Magnitudes: all carry unknown protocol error until fresh-process
+   measurement.
+
+(Discovery record follows.)
 
 **Discovery (newbox_supp):** same checkpoint, same flags, deterministic policy —
 uid 243 picks as episode 7 of a 15- or 10-episode sequence, does NOT pick alone.
