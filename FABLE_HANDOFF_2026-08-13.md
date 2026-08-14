@@ -779,3 +779,21 @@ NOT the only value pathology — per-member-LN wave running tests the second).
 NEXT (Fable): nb wave has NO 150k ckpts (100k budget) — later-checkpoint
 question needs an nb-long (200k) wave after the ln wave frees the GPU; decide
 after ln readout which config earns the long run.
+
+## 14b. EEF playback RESULT (newbox_supp, 08-14) — WORK ORDER COMPLETE
+
+Census (72 resettable, frozen gate config, settled predicates):
+labels 65/62/25/16 | joint-rerec 61/55/28/20 | eef-6dof 44/39/20/12 |
+**eef-4dof 49/48/20/13**.
+**GATE (c): 4-DOF matches or exceeds 6-DOF at every stage** (+5 picked / +9
+placed / 0 contact / +1 nested). CONFOUND stated: arrival-rule strictness
+differs (6dof requires full rotvec within tol -> more dwell/truncation 24-vs-21),
+so the defensible claim is direction-neutral: **4-DOF is NOT WORSE anywhere
+under matched budgets** — the user's minimal-shift/action-space-cut rationale
+survives. Per-uid flips 26/72 in both directions = P2 borderline noise;
+aggregate only. EEF trails joint re-record (49 vs 61 picked) but 1/3 of
+episodes truncated at the 3.0x dilation cap: LOWER BOUNDS, not a ceiling.
+v2 pass (raised cap + symmetric arrival) would tighten absolutes; the 4v6
+answer would not change. Artifacts: baselines/playback_eef_demos.py +
+scratchpad eef_playback/ manifests. NEXT DECISION (user): v2 fidelity pass,
+or advance to the RECORDING phase in 4-DOF, or both.
