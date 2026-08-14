@@ -843,3 +843,23 @@ joint-rerec 61/55/28/20).
   at pick scope the encoder grants downstream rewards too (153 terminals/220
   reward vs dH 66/66). REMEDY BUILT: episodes_delta_rerecord_pick (54 demos,
   pick-truncated). mref wave (3 seeds, PMLN=off) queues AFTER the pair.
+
+## 14d. EEF v3 census (08-14) — STOP RULE FIRED; EEF ARC CLOSED
+
+v3-4dof picked = 35/72. The registered >=55 bar FAILS. Per the user's stop rule:
+no v4, EEF work ends, joint re-record remains the demo path.
+
+THE FINDING (worth the arc): **path fidelity anti-correlates with grasp success.**
+v3 levers worked as designed (lag 28.4mm -> 4.2mm, dilation 2.50x -> 1.42x,
+stalls 296 -> 23) and picks DROPPED 49 -> 35. v2's slop (lag + time dilation)
+was an accidental adaptation that won borderline grasps. Nested rose 11 -> 13
+while picks fell: survivors of precise tracking complete more, fewer survive.
+MECHANISM: same tool pose != same joint config (IK multiplicity); the grasp is
+brittle to the wrist configuration. Joint-space reproduction (61) is the only
+follower that clears 60. Task-space reproduction is insufficient for this grasp.
+
+SURVIVING CLAIMS: (1) pick-scope 4dof >= 6dof in every version; (2) the follower
+machinery/FK/conventions validated — the physics premise failed, not the tooling;
+(3) EEF CAN complete the full task at mm precision on individual demos (325, 326
+settled-nested) — just not reliably across the population.
+Manifests: eef_playback/census_4dof_v3/. 6dof-v3 gate-failed, not censused.
