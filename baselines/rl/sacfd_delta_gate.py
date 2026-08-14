@@ -44,10 +44,10 @@ GATE_UIDS = [308, 325, 297, 326, 265]
 MIN_PASS = 4        # >=4/5 re-earn (one physics flake tolerated); deterministic CPU sim
 
 
-def _paths_for(uids):
+def _paths_for(uids, demo_dir=DEMO_DIR):
     out = []
     for u in uids:
-        p = REPO / DEMO_DIR / f'{u}.npz'
+        p = REPO / demo_dir / f'{u}.npz'
         assert p.exists(), f'missing gate demo {p}'
         out.append(str(p))
     return out
@@ -134,6 +134,12 @@ def main():
                          "integration (existing; P1 frozen drift), 'measured' = "
                          "re-referenced to measured qpos each step (self-healing). "
                          "Applies to gate AND sweep; encoder + env selected together.")
+    ap.add_argument('--demo-dir', default=DEMO_DIR,
+                    help='source of the 5 GATE_UIDS tapes. Default = the original '
+                         'episodes_pick_phase_all (unchanged gate). Point it at '
+                         'baselines/episodes_delta_rerecord to gate the closed-loop '
+                         're-recorded tapes, which are NATIVE to delta_ref=measured '
+                         '(pair with --delta-ref measured).')
     ap.add_argument('--shard-idx', type=int, default=0)
     ap.add_argument('--shard-n', type=int, default=1,
                     help='sweep mode: replay only paths[shard_idx::shard_n], so many '
@@ -163,10 +169,12 @@ def main():
                       delta_ref=args.delta_ref)
     from pick_env import GRIP_CLOSED_FRAC
     print(f'[gate] env built | pick_z={env.pick_z:.4f} delta_cap={env.delta_cap} '
-          f'action_repeat={env.action_repeat}', flush=True)
+          f'delta_leash={env.delta_leash} delta_ref={env.delta_ref} '
+          f'action_repeat={env.action_repeat} demo_dir={args.demo_dir}', flush=True)
+    assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
 
     # ---- (1) tensor equality: DemoData actions == encoder output ----
-    all_paths = _paths_for(GATE_UIDS)
+    all_paths = _paths_for(GATE_UIDS, args.demo_dir)
     trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat, args.delta_ref)
     dd = DemoData(trans, action_transform=None, device=th.device('cpu'))
     ref_act = np.stack([t[1] for t in trans]).astype(np.float32)

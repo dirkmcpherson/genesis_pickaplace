@@ -103,6 +103,18 @@ def main():
                          'to match, IMPORTED from train_sacfd_full so tensors are '
                          'bit-identical to SACfD. A sidecar records the mode for '
                          'wandb_eval --action-mode auto.')
+    ap.add_argument('--delta-ref', choices=['target', 'measured'], default='target',
+                    help="delta_joint only: WHAT a delta is applied to. 'target' "
+                         "(default, every pre-2026-08-14 run) integrates onto a "
+                         "running target -- open-loop, so a clipped frame leaves a "
+                         "permanent offset (P1). 'measured' re-references the "
+                         "MEASURED qpos each step (ManiSkill pd_delta style, leash-"
+                         "scaled) and pairs with the measured-ref demo encoders + "
+                         "the closed-loop re-recorded tapes "
+                         "(baselines/episodes_delta_rerecord). Passed EXPLICITLY "
+                         "(silent-default rule); it travels in the checkpoint "
+                         "sidecar so wandb_eval --delta-ref auto integrates the "
+                         "policy in the SAME space it trained in.")
     ap.add_argument('--no-wandb', action='store_true')
     ap.add_argument('--run-name', default=None)
     ap.add_argument('--project', default='genesis_paper', help='wandb project')
@@ -117,22 +129,30 @@ def main():
     from full_env import FullTaskEnv, STAGE_REWARD
     import pick_env
     from train_sacfd_full import (relabel_full, delta_encode_transitions,
-                                  delta_encode_transitions_repeat)
+                                  delta_encode_transitions_repeat,
+                                  delta_encode_transitions_measured,
+                                  delta_encode_transitions_measured_repeat)
     assert args.action_repeat >= 1, args.action_repeat
     if args.action_repeat > 1:
         assert args.action_mode == 'delta_joint', (
             'action_repeat is only wired for delta_joint (the repeat-encoder + eval '
             f'repeat assume it); got action_mode={args.action_mode}')
+    if args.delta_ref == 'measured':
+        assert args.action_mode == 'delta_joint', (
+            'delta_ref=measured is a delta_joint concept (it changes what the delta '
+            f'is applied to); got action_mode={args.action_mode}')
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
                       scope=args.scope, action_mode=args.action_mode,
-                      action_repeat=args.action_repeat)
+                      action_repeat=args.action_repeat, delta_ref=args.delta_ref)
     # asserts: no silent defaults -- the env must be running the mode we asked for
     assert env.scope == args.scope, (env.scope, args.scope)
     assert env.action_mode == args.action_mode, (env.action_mode, args.action_mode)
     assert env.action_repeat == args.action_repeat, (env.action_repeat, args.action_repeat)
+    assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
-          f'delta_cap={env.delta_cap} action_repeat={env.action_repeat} '
+          f'delta_cap={env.delta_cap} delta_leash={env.delta_leash} '
+          f'delta_ref={env.delta_ref} action_repeat={env.action_repeat} '
           f'(~{-(-args.train_max_steps // args.action_repeat)} decisions/ep)', flush=True)
 
     # ---- model (RLPDSAC: LN ensemble critics built at construction) ----
@@ -147,8 +167,10 @@ def main():
           f'gamma={args.gamma} ent_coef={args.ent_coef} '
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
           f'backup_entropy={args.backup_entropy} '
+          f'per_member_ln={args.per_member_ln} '
           f'scope={args.scope} action_mode={args.action_mode} '
-          f'action_repeat={args.action_repeat}', flush=True)
+          f'delta_ref={args.delta_ref} '
+          f'action_repeat={args.action_repeat} demo_dir={args.demo_dir}', flush=True)
     print(model.critic, flush=True)
 
     # ---- demos: SAME encoder as train_sacfd_full (bit-identical tensors) ----
@@ -158,12 +180,23 @@ def main():
         # EXPLICIT encoder selection (no silent stride-1 fallback): action_repeat>1
         # decision-level demos vs the stride-1 encoder. repeat==1 keeps the exact
         # stride-1 tensors SACfD/the gate assert bit-equality against.
-        if args.action_repeat > 1:
-            transitions = delta_encode_transitions_repeat(
-                paths, env.pick_z, args.scope, env.delta_cap, args.action_repeat)
+        # delta_ref picks the REFERENCE the encoder differences against, in lockstep
+        # with the env: 'target' = previous COMMAND (open-loop), 'measured' = the
+        # demo's RECORDED measured qpos, leash-scaled (mirrors _step_once's measured
+        # branch). Mixing the two is the P1 failure mode, so both are explicit here.
+        if args.delta_ref == 'measured':
+            _enc = (delta_encode_transitions_measured_repeat
+                    if args.action_repeat > 1 else delta_encode_transitions_measured)
         else:
-            transitions = delta_encode_transitions(paths, env.pick_z, args.scope,
-                                                   env.delta_cap)
+            _enc = (delta_encode_transitions_repeat
+                    if args.action_repeat > 1 else delta_encode_transitions)
+        if args.action_repeat > 1:
+            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
+                               args.action_repeat)
+        else:
+            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap)
+        print(f'[demos] encoder={_enc.__name__} delta_ref={args.delta_ref} '
+              f'cap={env.delta_cap} leash={env.delta_leash}', flush=True)
         norm = None                    # actions already in normalized delta space
     else:
         transitions, _ = relabel_full(paths, env.pick_z)
@@ -191,8 +224,10 @@ def main():
     except Exception:
         _git = 'unknown'
     sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat,
+               'delta_ref': args.delta_ref,
                'backup_entropy': args.backup_entropy,
-               'per_member_ln': args.per_member_ln, 'git': _git or 'unknown'}
+               'per_member_ln': args.per_member_ln, 'git': _git or 'unknown',
+               'demo_dir': args.demo_dir, 'scope': args.scope}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
@@ -234,7 +269,7 @@ def main():
             run, out, eval_freq=args.eval_freq, max_steps=args.eval_max_steps,
             seed=args.seed, cartesian=False,
             action_mode=(args.action_mode if args.action_mode != 'absolute' else None),
-            action_repeat=args.action_repeat))
+            action_repeat=args.action_repeat, delta_ref=args.delta_ref))
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
     model.save(str(out / 'rlpd_final'))
     (out / 'rlpd_final.action_mode.json').write_text(json.dumps(sidecar))

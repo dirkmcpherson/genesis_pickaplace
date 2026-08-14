@@ -79,7 +79,7 @@ class VideoEvalCallback(BaseCallback):
 
     def __init__(self, run, out_dir, eval_freq=25_000, n_random=10, max_steps=400,
                  max_videos=3, seed=0, cartesian=False, control='vel',
-                 action_mode=None, action_repeat=1):
+                 action_mode=None, action_repeat=1, delta_ref='target'):
         super().__init__()
         self.run = run
         self.cartesian = bool(cartesian)
@@ -94,6 +94,12 @@ class VideoEvalCallback(BaseCallback):
         # in the SAME MDP as training (a repeat-N policy evaluated at stride 1 is the
         # silent-default bug family). Default 1 = stride-1 trainers unchanged.
         self.action_repeat = int(action_repeat)
+        # delta reference frame ('target' | 'measured'), passed EXPLICITLY to the eval
+        # subprocess for delta_joint runs so the in-train curve integrates the policy
+        # in the SAME space training does. Default 'target' = every pre-2026-08-14
+        # trainer/checkpoint, so existing runs are byte-identical.
+        assert delta_ref in ('target', 'measured'), delta_ref
+        self.delta_ref = delta_ref
         self.dir = pl.Path(out_dir) / 'wandb_eval'
         self.dir.mkdir(parents=True, exist_ok=True)
         self.eval_freq, self.n_random = eval_freq, n_random
@@ -147,6 +153,8 @@ class VideoEvalCallback(BaseCallback):
                  if getattr(self, 'cartesian', False) else []),
                *(['--action-mode', self.action_mode]
                  if getattr(self, 'action_mode', None) else []),
+               *(['--delta-ref', getattr(self, 'delta_ref', 'target')]
+                 if getattr(self, 'action_mode', None) == 'delta_joint' else []),
                '--action-repeat', str(getattr(self, 'action_repeat', 1)),
                '--checkpoint', str(ck), '--random', str(self.n_random),
                '--seed', str(self.seed), '--max-steps', str(self.max_steps),

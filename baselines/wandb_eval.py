@@ -52,6 +52,18 @@ ap.add_argument('--action-repeat', type=int, default=None,
                      "<ckpt>.action_mode.json sidecar (falls back to 1 for sidecars "
                      "predating the field); an explicit value overrides. Evaling a "
                      "repeat-N policy at stride 1 is the silent-default bug family.")
+ap.add_argument('--delta-ref', choices=['auto', 'target', 'measured'], default='auto',
+                help="JOINT delta_joint eval only: WHAT the policy's delta is applied "
+                     "to, mirroring FullTaskEnv._step_once. 'target' = running-target "
+                     "integration scaled by the cap (every pre-2026-08-14 checkpoint). "
+                     "'measured' = re-referenced to the MEASURED qpos each step and "
+                     "scaled by the LEASH (5*cap) -- the closed-loop/re-record space. "
+                     "'auto' (default) reads delta_ref from the "
+                     "<ckpt>.action_mode.json sidecar and falls back to 'target' for "
+                     "sidecars predating the field. A sidecar saying 'measured' is "
+                     "ALWAYS honored: asking for target-ref on a measured-ref "
+                     "checkpoint ASSERTS rather than silently evaling the wrong MDP "
+                     "(the documented silent-fallback trap).")
 ap.add_argument('--control', choices=['vel', 'delta', 'abs', 'abs6', 'delta6'], default='vel',
                 help='cartesian env control mode (must match the policy training data)')
 ap.add_argument('--obs', choices=['env', 'joint', 'ee'], default='env',
@@ -95,6 +107,7 @@ else:
     env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
                         camera_rig=_needs_rig)
 
+_dref = None            # resolved delta reference frame (sac/delta_joint only)
 if args.kind == 'sac':
     from stable_baselines3 import SAC
     if args.cartesian:
@@ -127,8 +140,35 @@ if args.kind == 'sac':
         _repeat = int(_side.get('action_repeat', 1))
     _repeat = max(1, int(_repeat))
 
+    # --- delta reference frame (2026-08-14). Resolution rules, in order:
+    #   1. the sidecar is AUTHORITATIVE for 'measured': a measured-ref checkpoint
+    #      integrated as target-ref is a different MDP and evals ~0.00, and that zero
+    #      looks like a result (the silent-fallback trap this repo has now hit four
+    #      times: grip column, control mode, action_mode, action_repeat).
+    #   2. 'auto' with no delta_ref in the sidecar -> 'target' = the behaviour of every
+    #      pre-2026-08-14 checkpoint, so legacy evals are byte-identical.
+    _side_dref = _side.get('delta_ref')
+    _dref = args.delta_ref
+    if _dref == 'auto':
+        if _side_dref:
+            _dref = str(_side_dref)
+            print(f'[eval] delta_ref from sidecar: {_dref}')
+        else:
+            _dref = 'target'
+            print('[eval] no delta_ref in sidecar -> target (legacy checkpoint)')
+    else:
+        assert not (_side_dref == 'measured' and _dref != 'measured'), (
+            f'checkpoint sidecar says delta_ref=measured but --delta-ref {_dref} was '
+            f'requested: integrating a measured-ref policy as target-ref evaluates a '
+            f'DIFFERENT MDP and silently returns ~0.00. Refusing. ({_sc})')
+        print(f'[eval] delta_ref from flag: {_dref} (sidecar: {_side_dref})')
+    assert _dref in ('target', 'measured'), _dref
+    assert not (_dref == 'measured' and (_mode != 'delta_joint' or args.cartesian)), (
+        f'delta_ref=measured is a JOINT delta_joint concept; got action_mode={_mode} '
+        f'cartesian={args.cartesian}')
+
     if _mode == 'delta_joint' and not args.cartesian:
-        print(f'[eval] action_repeat={_repeat} '
+        print(f'[eval] action_repeat={_repeat} delta_ref={_dref} '
               f'(1 policy query per {_repeat} env step(s))')
         # Stateful delta integration, mirroring FullTaskEnv(action_mode=
         # 'delta_joint') exactly: target seeded from measured q on the first
@@ -151,8 +191,20 @@ if args.kind == 'sac':
                 _dj['a'], _ = model.predict(obs['state'], deterministic=True)
             _dj['k'] += 1
             a = _dj['a']
-            sp = np.clip(_dj['target'] + np.clip(a[:6], -1.0, 1.0) * DJ_CAP,
-                         ARM_LO, ARM_HI)
+            if _dref == 'measured':
+                # MIRROR of FullTaskEnv._step_once's delta_ref='measured' branch --
+                # do not innovate here, the two integrators have diverged once
+                # already. The action is the normalized desired PD ERROR off the
+                # MEASURED arm, so it scales by the LEASH (not the cap): cap-scaling
+                # under-drives 5x and the arm never keeps the demo's timing. `q` is
+                # the measured qpos after the previous sim step, which is exactly
+                # what the env carries in self._dj_qmeas (seeded from measured qpos
+                # at reset by _sync_dj_target).
+                sp = np.clip(q + np.clip(a[:6], -1.0, 1.0) * DJ_LEASH,
+                             ARM_LO, ARM_HI)
+            else:
+                sp = np.clip(_dj['target'] + np.clip(a[:6], -1.0, 1.0) * DJ_CAP,
+                             ARM_LO, ARM_HI)
             _dj['target'] = q + np.clip(sp - q, -DJ_LEASH, DJ_LEASH)
             return np.concatenate(
                 [_dj['target'], [(np.clip(a[6], -1.0, 1.0) + 1.0) / 2.0]])
@@ -256,7 +308,7 @@ if len(vids) > 1:
         tiled = None
     vids = [v for v in vids if not v.endswith('tiled.mp4')]
 result = dict(metrics=metrics, videos=vids, tiled=tiled, checkpoint=args.checkpoint,
-              seed=args.seed, max_steps=args.max_steps)
+              seed=args.seed, max_steps=args.max_steps, delta_ref=_dref)
 
 if args.json_out:
     pl.Path(args.json_out).write_text(json.dumps(result, indent=1))
