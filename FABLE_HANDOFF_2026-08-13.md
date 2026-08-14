@@ -763,3 +763,19 @@ Known traps handed over: control-mode defaults, VCAP/1800-step horizon +
 possible un-fixed #26-class inner default in the cartesian chain, FK calib
 timing, pitch convention, P2 in the cartesian reset path. User monitors
 newbox_supp's session directly.
+
+## 12c. NB SWEEP (08-14): FIX WAVE IGNITES — diagnosis confirmed BY INTERVENTION
+
+§4a-2 protocol (fixed 100k, 15 fresh procs/IC mode, explicit flags):
+s0 1/15 | **s1 4/15 demo-IC (4 DIFFERENT uids, each its own process) — MEETS the
+pre-registered >=3/15 bar** | s2 1/15. Random-IC 1/2/0.
+First RLPD number that survives every methodological control now in force.
+Entropy-backup diagnosis confirmed by intervention: single lever, ignition
+returns at 100k (defective config needed 150k+ on its best seed).
+CAPTION LIMITS (newbox_supp, adopted): ignition-RESTORED not ignition-RELIABLE
+(1/3 seeds; old config also had one good seed); s0/s2 1/15 = floor noise;
+Q still refluxes 250-1600 (entropy channel sufficient to gate ignition on s1,
+NOT the only value pathology — per-member-LN wave running tests the second).
+NEXT (Fable): nb wave has NO 150k ckpts (100k budget) — later-checkpoint
+question needs an nb-long (200k) wave after the ln wave frees the GPU; decide
+after ln readout which config earns the long run.
