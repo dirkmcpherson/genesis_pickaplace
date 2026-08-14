@@ -357,9 +357,42 @@ Also note: the §7 phase sweeps (pre- AND post-fix) used sequential per-shard
 replays → contaminated start states; the pre/post #26 comparison retains meaning
 (matched schedules), absolute stage counts get the same caveat.
 
-## 4a. PRE-REGISTERED ar8 verdict protocol — **SUSPENDED 08-14 pending P2**
-(the >=3/15 threshold assumed 15 independent draws; P2 shows they are not.
-Protocol to be re-registered after the reset fix + re-probe. Original text kept:)
+## 4a-1. P2 RESOLUTION (08-14 ~03:30) — robustness structure + closed HOLD
+
+- **s0@150k re-measured: 0.40, episode-for-episode identical** across (i) the
+  original sequence protocol, (ii) post-fix sequence, (iii) 15 FRESH PROCESSES.
+  Same six episodes pick in all three. Combined with the floor checkpoint
+  (ar4_s2: 0.07/0.07/0.07, same uid picking), the STRUCTURE is: **real capability
+  = robust-basin picks that survive protocol AND env-fix changes; floor-level
+  rates = borderline picks that flip under microscopic state.** Mid/high rates
+  trustworthy; single-pick cells not. `placed` is NOT covered by this robustness
+  (moved 0.00->0.07 across the fix) — picked only.
+- **JOINT RECOMMENDATION TO USER (Fable + newbox_supp): do NOT re-run the BC
+  central table.** Its rates (0.6-0.8) sit squarely in the robust regime with
+  direct evidence mid-range rates survive both changes. Ship a methods paragraph:
+  the eval-layer defect, the fresh-process standard going forward, and this
+  robustness check. More informative than a silent re-run.
+- **0.40 vindicated, with a provenance caveat recorded:** the original confirm
+  log carries no action_mode/repeat/horizon lines and the invoking script was not
+  kept — the headline figure was not reproducible from its own record until the
+  fresh-process replication. NEW RULE: every eval log must record mode / repeat /
+  horizon / checkpoint; keep the invoking script with the result.
+- newbox_supp's HOLD withdrawn; its table enters the unified readout with the
+  agreed caveats (floor cells indistinguishable, sensitivity column dead,
+  threshold-sensitive ignition counts, no cross-n comparisons).
+
+## 4a-2. ar8 verdict protocol — RE-REGISTERED 08-14 (~03:30, before any ar8
+## post-hoc data)
+- Fixed checkpoint: 100k decisions (rlpd_100000_steps.zip per seed).
+- Protocol: **15 fresh processes** demo-IC + 15 fresh random-IC per seed,
+  explicit --action-mode delta_joint --action-repeat 8, 400 env steps, picks
+  from stdout, post-fix code only.
+- Decision rule: ar8 "worth pursuing" iff >=1 seed reaches >=3/15 demo-IC.
+  Rationale: 3 picks exceeds anything observed from contamination/borderline
+  effects alone (NOT a binomial claim). No sensitivity column (withdrawn — it
+  confounds residue schedule with horizon).
+
+## 4a. ORIGINAL pre-registration — superseded by 4a-2 (kept for the record)
 
 - Checkpoint: **100k decisions** = rlpd_100000_steps.zip per seed (same step as
   rlpd_final at this budget; use the _steps file for symmetry with other arms).
