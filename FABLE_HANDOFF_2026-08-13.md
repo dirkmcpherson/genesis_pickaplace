@@ -885,3 +885,18 @@ band, watch. Monitor re-armed (alert = first nonzero cluster pick).
 - Others at 690-999k, eval 0 so far. Prediction band: ~3/10 (1-6).
 - msrecipe entropy still deepening: -0.44/-0.72/-0.69 at ~60-70k, picked 0
   (MS takeoff window 110-137k approaches).
+
+## 12e. ln FORMAL SWEEP (newbox_supp): NULL CONFIRMED — 0/15 demo-IC all seeds
+
+Two-lever ledger, final:
+- backup-off (nb): ignition RESTORED (s1 4/15), Q still 250-1600.
+- backup-off + per-member-LN (ln): ignition LOST (0/15 x3), Q 2640-3600.
+The diversity intervention ACTIVELY HURT — coherent across mechanism and outcome.
+REWARD DENSITY is now the top lever. Pair-on-nb-config retro-validated; the
+re-run branch is dead.
+
+NEW PATTERN for the ledger (newbox_supp, cost 1h): derived scripts inherit
+implicit preconditions the original satisfied out-of-band (sed path swap without
+mkdir -> every redirect failed pre-python, verdict-only monitor silent). Rule:
+derived scripts re-verify their own preconditions; monitors must cover
+driver-death/missing-file, not just verdicts. Sits next to the pgrep entry.
