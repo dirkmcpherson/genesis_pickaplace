@@ -40,8 +40,21 @@ paper/rlpd_literature_comparison_2026-08-13.md.
 5. **RLPD ignites — the machinery is the claim; 0.40 is a SELECTED MAX, not a
    confirmed row number.** (Corrected by newbox_supp from primary evidence; I
    re-verified by diffing the confirm-log episodes.)
-   - Stride-1: **6/7 seeds ignited vs SACfD 0/16.** THIS is the surviving claim —
-     ignition machinery, not a performance number.
+   - Stride-1: ~~"6/7 seeds ignited"~~ **DEFINITION-INFLATED (newbox_supp post-hoc
+     analysis, 2026-08-13 night; Fisher + binomial verified by Fable).** "Ignited" =
+     nonzero at ANY snapshot = multiple testing: stride-1 seeds were scanned over
+     ~8 snapshots x n=10 = ~80 eps, where a TRUE pick rate of 0.03 (indistinguishable
+     from broken) registers "ignited" 91% of the time (37% at one fixed n=15
+     endpoint). Post-hoc at fixed 100k, one protocol: stride-1 3/7 seeds >=1 pick
+     (4/105 eps), ar4 2/6 (2/90), Fisher p=0.69 — the arms are indistinguishable and
+     both near the floor at 100k. At n=15, >=3 picks is the first
+     not-explainable-by-chance level; NO seed in either arm reaches it at 100k.
+   - **RESTATED CLAIM (use this):** "6/7 seeds produced at least one pick at some
+     checkpoint; at a fixed 150k checkpoint the best seed reaches 0.40 (6/15, well
+     clear of the noise floor); at 100k no seed exceeds 2/15." The RLPD-vs-SACfD
+     contrast SURVIVES — SACfD = literally zero picks across 16 seeds and every
+     snapshot, immune to the scanning artifact; RLPD produces real picks and one
+     checkpoint well above floor. The "6/7" figure must NOT go in the paper as-is.
    - Seed 0 / 150k / demo-IC: **6/15 = 0.40 ± 0.13** (1 SD binomial). This is ONE
      deterministic measurement. The es1/es2/es3 "x3" is a NULL operation: demo-IC
      fixes the ICs and the SAC eval policy is deterministic, so all three return the
