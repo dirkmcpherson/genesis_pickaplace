@@ -824,3 +824,22 @@ joint-rerec 61/55/28/20).
 - v3 levers (not launched, user decision): (1) tight arrival tol during grip
   transitions only, (2) larger leash (feed-forward authority), (3) no-dwell-skip.
 - v2 is the citable version (zero truncation). Manifests eef_playback/census_*_v2.
+
+## 12d. ln wave PRELIMINARY (08-14) + PAIR LAUNCH
+
+- ln wave (per-member LN) finals: in-train 0.00/0.00/0.00, Q 3600/3210/2640 —
+  WORSE than nb (250-1600). Registered mechanism gate (Q<=2, quiet watchdog)
+  FAILED. Per-member LN is NOT the second channel's fix. Formal §4a-2 sweep
+  pending (checkpoints rlpd_ln_dH_s{0,1,2}/rlpd_100000_steps.zip); presumptive
+  config winner = nb (backup-off, shared LN). REWARD DENSITY moves up the ladder.
+- **MATCHED PAIR LAUNCHED (GPU was idle): dH_RLPD-pair_s{0,1,2} (episodes_pick_
+  phase_all) vs dDP_RLPD-pair_s{0,1,2} (m1all_harvest), nb config, stride-1,
+  100k.** Rationale for not awaiting the formal ln sweep: the pair measures a
+  CONTRAST — identical config across arms is the requirement; nb is the proven
+  igniter and the Q/endpoint evidence made it presumptive. Deviation noted.
+- Measured-ref integration LANDED (398e078): gates 4/5+PASS+PASS+PASS, eval
+  fails loudly on unsupported measured checkpoints, target path byte-identical.
+  TRUNCATION CONFOUND found by the agent: re-record tapes are full-length ->
+  at pick scope the encoder grants downstream rewards too (153 terminals/220
+  reward vs dH 66/66). REMEDY BUILT: episodes_delta_rerecord_pick (54 demos,
+  pick-truncated). mref wave (3 seeds, PMLN=off) queues AFTER the pair.
