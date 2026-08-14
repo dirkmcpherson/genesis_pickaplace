@@ -448,3 +448,20 @@ sensitivity evals ran PRE-fix by launch-timing accident (ar4d_s0/s1, launched
 re-run POST-fix under identical protocol. Pre-vs-post delta = the phantom-settle
 bug's measured impact at the 1600-step horizon. If they agree, the bug is inert
 at this horizon and the 54/72 phase-sweep exposure is bounded.
+
+### Addendum 2: pre-/post-1200 tagging investigated and IMPOSSIBLE (2026-08-13)
+
+The proposed mitigation for the mixed sensitivity column — tag each eval by
+whether its outcome was decided before or after inner step 1200 — cannot be done:
+eval stdout emits per-episode BOOLEANS only (no step, no picked_at), and the
+--json payload is aggregate rates. Verified by grep on a completed log. Adding
+step logging mid-sweep was correctly declined (shared runtime file, jobs in
+flight, protocol change mid-sweep). The paired pre-/post-fix control is therefore
+the ONLY measurement of the #26 effect at the 1600 horizon, not merely the better
+one. Deliberate instrumentation change (emit picked_at in eval_core) queued for
+AFTER both waves finish, with its own gate.
+
+TRANSFER CAVEAT: the paired control measures the bug's effect on RLPD POLICY
+rollouts. The phase sweep is open-loop DEMO replay — different action source,
+different trajectories, different time-in-contact. The paired delta is an
+order-of-magnitude indicator for the sweep re-run, not a substitute for it.
