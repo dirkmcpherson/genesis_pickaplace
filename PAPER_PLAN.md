@@ -556,6 +556,77 @@ is itself a source property the distributional analysis should quantify.
   Mitigation used: filter by mtime to isolate one run. Proper fix: stamp the
   eval-seed/run id into the video path.
 
+- 2026-08-14 (assistant, newbox_supp): **ACTION-REPEAT CLOSED — CLEAN NEGATIVE.**
+  All three arms post-hoc evaluated at the matched 100k-decision checkpoint under
+  ONE documented protocol (explicit --action-mode delta_joint + --action-repeat,
+  demo-IC 15 + random-IC 15, 400 env steps = equal SIM time, picks read from
+  stdout):
+
+  | arm | mean demo-IC | picks | seeds >=2 picks |
+  |---|---|---|---|
+  | stride-1 (7 seeds) | 0.039 | 4/105 | 1 |
+  | ar4 (6 seeds)      | 0.023 | 2/90  | 0 |
+  | ar8 (6 seeds)      | 0.000 | 0/90  | 0 |
+
+  Monotone decreasing in N, no arm above the noise floor, stride-1 vs ar4
+  indistinguishable (Fisher exact p=0.69). **Action-repeat bought nothing
+  measurable at this budget; the horizon hypothesis from
+  paper/rlpd_literature_comparison_2026-08-13.md is NOT supported by our data.**
+  ar8 ran under a pre-registration committed before the data existed (>=3/15
+  demo-IC = "worth pursuing"); 0/6 seeds cleared it. SCOPE LIMIT for the caption:
+  these policies were TRAINED at repeat-N and evaluated at equal SIM time, so
+  ar8's 0/90 does not establish that repeat-8 fails as a TRAINING regime -- it may
+  be horizon-truncated at eval. The defensible claim is operational: at equal
+  physical time, repeat-8 produces no picks in any seed.
+
+- 2026-08-14 (assistant, newbox_supp + peer): **EVAL-LAYER DEFECT FOUND, AND
+  BOUNDED.** Eval episodes were not independent: `step()` issued
+  control_dofs_position targets that `reset()` never re-issued, so each reset's
+  scene.step() ran under the PREVIOUS episode's controller target (peer's probe:
+  identical-command divergence across histories 0.0506 rad; fixed 00:49:57, now
+  7.4e-06; residual fresh-vs-used 0.0022 on grip effort remains = solver/contact
+  caches, so the fix is PARTIAL). Per-episode outcomes at floor-level rates are
+  chaotic (uid 243 dose-response over prefix lengths 1-8: T,F,T,F,F,F,F,T --
+  neither accumulation nor parity).
+  **BUT the measured rates held.** Two checkpoints x three cells (pre-fix
+  sequence / post-fix sequence / post-fix 15-fresh-processes):
+  ar4_s2@100k = 0.07 / 0.07 / 0.07 (same uid picking); dH_s0@150k = 0.40 / 0.40 /
+  0.40 with the demo-IC pattern P.P...P..P..P.P **episode-identical** between the
+  original confirm and 15 independent fresh processes.
+  **Structure: real capability yields ROBUST picks (wide basin); floor-level
+  rates yield BORDERLINE picks that flip under perturbation.** Mid/high rates are
+  trustworthy; single-pick cells are not -- and every cell of the action-repeat
+  table above is the latter, which is why it is reported as indistinguishable.
+  `placed` did NOT hold (0.00 -> 0.07 on ar4_s2): the robustness conclusion
+  covers `picked` only.
+  **CONSEQUENCES.** (1) The fix CHANGED THE BASELINE rather than cleaning old
+  numbers (uid 243 alone: False pre-fix -> True post-fix), so pre- and post-fix
+  numbers are different experiments and "re-run everything post-fix" was never a
+  repair path. (2) Re-running an identical eval gains NOTHING -- the eval is
+  deterministic given a sequence, so repetition returns the same arbitrary draw
+  with zero variance. Perfect reproducibility here is evidence of nothing (this
+  is why the RLPD "0.40 confirmed x3" was a null operation). (3) Paper-facing
+  standard going forward: ONE EPISODE PER FRESH PROCESS. Never compare across
+  different n (in-train n=10 vs post-hoc n=15 are different experiments).
+
+- 2026-08-14 (assistant, newbox_supp): **BC TABLE — RECOMMENDATION: DO NOT
+  RE-RUN.** [PROPOSED, user decision] The n=8 BC rates (0.6-0.8) sit in the
+  robust regime for which mid-range invariance was just demonstrated across both
+  the reset fix and the protocol change. Re-measuring is unlikely to move
+  P(model>human)=0.994. Proposed instead: a methods paragraph documenting the
+  eval-layer defect, the fresh-process standard, and the two-checkpoint x
+  three-cell robustness check. Cheaper, and more informative to a reader than a
+  silently re-run table. Joint recommendation with the peer session.
+
+- 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
+  RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
+  carries no action-mode line, no action_repeat line, no horizon, and no invoking
+  script survives -- and for a delta_joint policy wandb_eval always prints the
+  action_repeat line, so that run took a different code path. The number itself
+  is CORRECT (reproduced exactly, episode-for-episode, by 15 fresh processes
+  under a documented protocol). Rule adopted: eval logs must record
+  mode/repeat/horizon/checkpoint and the invoking script must be kept.
+
 - 2026-08-13 (peer session newbox_genesis, user-flagged; recorded here by
   newbox_supp): **P1 OPEN PROBLEM — THE DELTA-JOINT REPRESENTATION DOES NOT
   REPRODUCE THE DEMONSTRATED DOWNSTREAM PHASES.** All three learner arms
