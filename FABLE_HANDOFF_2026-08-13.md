@@ -911,3 +911,26 @@ POWER CAVEAT (pre-written into the report skeleton): at ~1/3 ignition power and
 n=3/arm, a null = "no effect detectable at this n and budget", NOT "no effect".
 The reward-density lever raises ignition rates AND therefore the contrast's
 power — the two threads converge.
+
+## 18. HOLD-REWARD ARM BUILT + GATED (08-14 evening)
+
+Commits f612c55 + 7a9eda5 (agent-built, all gates pass, default paths proven
+byte-identical incl. 28/28 policy tensors of a no-flag smoke):
+- Census (episodes_all, K=25): **1,966 rewarded frames / 100,148 transitions =
+  1.96% density** vs old 66/83,465 = 0.079%. 30x frames, 25x density. Expected
+  rewarded transitions per 128 demo minibatch: 0.10 -> 2.5.
+- ONE predicate definition (full_env.pick_hold_held), imported by env AND
+  relabeler — the import structure is WHY env-demo consistency passes (3/3,
+  reward exactly K, termination within 1-2 frames of the demo terminal).
+- Q-watchdog RESCALED under the flag: healthy fixed point ~24.4 -> threshold
+  2*(1-g^K)/(1-g) = 48.82; without the flag exactly 2.0 as before. (The 2.0
+  threshold under hold reward would have screamed on healthy critics — the
+  entropy-backup wave-off pattern, pre-empted this time.)
+- Necessarily moves TWO things: density AND tape set (truncated dH tapes have
+  ZERO hold region — asserted loudly). Mitigation: pick-phase files verified
+  bitwise prefixes of episodes_all. Returns not cross-arm comparable (~25 max);
+  compare EVAL PICK RATE only.
+- GPU PLAN after the pair (~4h): hold-reward wave (3 seeds, nb config,
+  --pick-hold-reward on, episodes_all) + mref wave (3 seeds, measured-ref,
+  episodes_delta_rerecord_pick) = 6 concurrent (ar8-proven capacity). Both get
+  §4a-2 sweeps. Pre-registered bar each: >=1 seed >=3/15 demo-IC.
