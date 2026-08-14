@@ -187,6 +187,10 @@ their own copy of the delta math.)
   (sha256 per tensor) — the default training path is numerically unchanged, not merely
   similarly configured.
 
+The pre-existing durable gate is also clean post-change:
+`baselines/rl/sacfd_delta_gate.py` → `TENSOR-EQUALITY OK: 2538 transitions, 5 rewarded`,
+`OPEN-LOOP REPLAY 4/5`, **GATE PASS** — its documented expected result, unchanged.
+
 ### (b) REWARD CENSUS — **PASS** (section 2). Nothing pathological; negatives paid 0.
 
 ### (c) ENV-DEMO CONSISTENCY — **PASS 3/3**
