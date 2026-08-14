@@ -750,3 +750,16 @@ WHAT EACH WAVE DECIDES: dH+dDP 20-29 firms the ignition contrast (another
 3/10-vs-0/10 -> cumulative ~6/20 vs 0/20, Fisher ~0.008 = paper-grade; 2-3 dDP
 ignitions dissolve it). dv3 msrecipe discriminates architecture-vs-task-shaping
 for the dv3 null. Cross-wave pooling carries the E2 caveat (ledger).
+
+## 14. EEF playback work order (user-directed, 08-14) — DELEGATED to newbox_supp
+
+Closed-loop EEF waypoint PLAYBACK (no recording until confident — user scope):
+6-DOF delta6 variant (fidelity; pins IK-resolved wrist) vs 4-DOF delta variant
+(MS parity; the user's motivation: smaller action space + minimal distribution
+shift, since demos were teleoperated 4-DOF). Census delta between variants =
+the measured answer to "does 4-DOF suffice". Gates: pick-gate >=4/5 (6-DOF)
+-> dual 72-demo census vs labels 65/62/25/16 and joint re-record 61/55/28/20.
+Known traps handed over: control-mode defaults, VCAP/1800-step horizon +
+possible un-fixed #26-class inner default in the cartesian chain, FK calib
+timing, pitch convention, P2 in the cartesian reset path. User monitors
+newbox_supp's session directly.
