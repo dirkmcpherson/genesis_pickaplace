@@ -250,7 +250,16 @@ negative control, pre-registered criterion, same-machine baselines.
 
 ---
 
-## 4a-0. **P2 — CROSS-EPISODE STATE CONTAMINATION (OPEN, HOLD IN EFFECT, 08-14 ~01:00)**
+## 4a-0. **P2 — CROSS-EPISODE STATE CONTAMINATION**
+**STATUS 08-14 00:50: FIX LANDED + GATED (e9f6e24).** reset() re-issues controller
+targets; re-probe: identical-command divergence 0.0506 rad -> 7.4e-06, used-vs-used
+resets agree to 1.3e-05. RESIDUAL: fresh-vs-used 0.0022 on grip-effort dim
+(suspected solver caches) -> one-episode-per-process REMAINS the paper standard.
+Boundary: processes launched after 2026-08-14T00:49:57-04:00 run post-fix (the s3
+snapshot eval pre-dates it and is wholly pre-fix). newbox_supp runs the prefix-
+length probe (2,3,4,5,6 -> uid 243) on fixed code; Fable's registered prediction:
+no prefix flips it post-fix. HOLD on published numbers stays until that probe +
+protocol re-registration. (Discovery record follows.)
 
 **Discovery (newbox_supp):** same checkpoint, same flags, deterministic policy —
 uid 243 picks as episode 7 of a 15- or 10-episode sequence, does NOT pick alone.
