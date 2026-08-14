@@ -26,7 +26,7 @@ sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import demo_buffer  # noqa: E402
 import pick_env  # noqa: E402
-from full_env import FullTaskEnv, STAGE_REWARD  # noqa: E402
+from full_env import FullTaskEnv, STAGE_REWARD, pick_hold_held  # noqa: E402
 
 STAGE_RANK = {'no-pick': 0, 'picked': 1, 'placed': 2, 'contact': 3, 'nested': 4}
 SHELF_LO, SHELF_HI = 0.12, 0.20    # can_z band for the placed proxy (BOX_TOP 0.11 + 1..7cm)
@@ -89,6 +89,181 @@ def relabel_full(paths, pick_z):
     return transitions, stats
 
 
+def _delta_actions(trans, cap, delta_ref):
+    """Normalized delta actions for ONE episode's transitions -- one definition,
+    shared by the stride-1 delta encoders and the hold-region encoder.
+
+    'target'   : arm = clip((cmd_t - cmd_{t-1}) / cap, -1, 1), row 0 differenced
+                 against the measured start pose (max |cmd_0 - q_0| over demos is
+                 0.012 rad). Mirrors FullTaskEnv(delta_ref='target').
+    'measured' : arm = clip((cmd_t - qmeas_t) / (5*cap), -1, 1) -- the recorded PD
+                 lead, LEASH-scaled. Mirrors FullTaskEnv(delta_ref='measured').
+    Grip is absolute in both: raw 0..1 -> [-1, 1].
+    """
+    assert delta_ref in ('target', 'measured'), delta_ref
+    cmds = np.stack([t[1] for t in trans]).astype(np.float64)
+    if delta_ref == 'measured':
+        ref = np.stack([t[0][:6] for t in trans]).astype(np.float64)
+        dq = np.clip((cmds[:, :6] - ref) / (5.0 * cap), -1.0, 1.0)
+    else:
+        ref = np.concatenate([trans[0][0][None, :6].astype(np.float64),
+                              cmds[:-1, :6]])
+        dq = np.clip((cmds[:, :6] - ref) / cap, -1.0, 1.0)
+    grip = np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0
+    return np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
+
+
+def relabel_hold_region(paths, pick_z, hold_k):
+    """REWARD-DENSITY relabel (2026-08-14): per-frame HOLD reward, raw actions.
+
+    Offline mirror of FullTaskEnv(scope='pick', pick_hold_reward=True):
+      * +1 on EVERY frame the honest hold condition holds -- full_env.pick_hold_held,
+        the SAME function the env calls (can above pick_z AND grip commanded closed).
+        pick_z is the caller's (train_rlpd passes env.pick_z); the closure threshold
+        is pick_env.GRIP_CLOSED_FRAC, imported, never copied.
+      * done=True on the frame where the run of consecutive held frames first reaches
+        hold_k, and EVERY LATER FRAME IS DROPPED -- exactly the env's termination, so
+        the critic never bootstraps through a state the env would not have continued
+        from (and the demo buffer is not padded with post-success transport).
+      * demos whose env-measured stage never reached 'picked' get all-zero reward and
+        no terminal (unchanged negatives). The stage gate is what makes a geometric
+        proxy false-positive unable to manufacture reward, as in relabel_full.
+
+    Indexing note (deliberate deviation from relabel_full): the env pays step i's
+    reward from the state REACHED, so held_i = pick_hold_held(s[i+1], a[i]).
+    relabel_full instead evaluates its pick proxy at s[i] -- one frame late relative
+    to the env. Here the env-exact convention is used, because the whole point of
+    this lever is that the demo reward stream matches the env's per-step reward
+    stream frame for frame (gate c).
+
+    Requires FULL-LENGTH tapes (episodes_all / episodes_delta_rerecord). On a
+    pick-TRUNCATED set (episodes_pick_phase_all, cut ~2 frames past the lift) almost
+    no demo can show hold_k consecutive held frames -- the census reports that as
+    n_terminal ~ 0 and callers should assert on it.
+
+    Returns (transitions, census).
+    """
+    hold_k = int(hold_k)
+    assert hold_k >= 1, hold_k
+    transitions = []
+    census = dict(n_demos=0, n_positive=0, n_negative=0, n_skipped_short=0,
+                  n_skipped_t0=0, n_terminal=0, n_holding_never_k=0,
+                  n_positive_zero_reward=0, n_frames=0, n_rewarded_frames=0,
+                  total_reward=0.0, n_negative_rewarded_frames=0,
+                  n_negative_proxy_frames=0, hold_lens=[], hold_starts=[],
+                  hold_k=hold_k, pick_z=float(pick_z))
+    for p in paths:
+        d = np.load(p, allow_pickle=True)
+        s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
+        ep_stage = str(d['stage']) if 'stage' in d.files else 'contact'
+        rank = STAGE_RANK.get(ep_stage, 0)
+        n = len(s) - 1
+        if n < 2:
+            census['n_skipped_short'] += 1
+            continue
+        # env-exact: reward for transition i comes from the state REACHED, s[i+1]
+        proxy = np.asarray(pick_hold_held(s[1:, 10], a[:-1, 6], pick_z), dtype=bool)
+        census['n_demos'] += 1
+        if rank < 1:
+            # negatives: the episode never picked (env-measured stage), so no proxy
+            # positive may pay -- identical gating principle to relabel_full
+            census['n_negative'] += 1
+            census['n_negative_proxy_frames'] += int(proxy.sum())
+            held = np.zeros(n, dtype=bool)
+        else:
+            census['n_positive'] += 1
+            held = proxy
+            if bool(pick_hold_held(s[0, 10], a[0, 6], pick_z)):
+                census['n_skipped_t0'] += 1     # bad state at frame 0 (cf relabel_full)
+                census['n_demos'] -= 1
+                census['n_positive'] -= 1
+                continue
+        run, j_term = 0, -1
+        for i in range(n):
+            run = run + 1 if held[i] else 0
+            if run >= hold_k:
+                j_term = i
+                break
+        end = j_term + 1 if j_term >= 0 else n
+        rew = held[:end].astype(np.float32)
+        done = np.zeros(end, dtype=bool)
+        if j_term >= 0:
+            done[j_term] = True
+            census['n_terminal'] += 1
+            census['hold_lens'].append(int(rew.sum()))
+            census['hold_starts'].append(int(np.argmax(held)))
+        elif held.any():
+            census['n_holding_never_k'] += 1
+        elif rank >= 1:
+            census['n_positive_zero_reward'] += 1
+        census['n_frames'] += end
+        census['n_rewarded_frames'] += int(rew.sum())
+        census['total_reward'] += float(rew.sum())
+        if rank < 1:
+            census['n_negative_rewarded_frames'] += int(rew.sum())
+        for i in range(end):
+            transitions.append((s[i], a[i], float(rew[i]), s[i + 1], bool(done[i])))
+    return transitions, census
+
+
+def print_hold_census(census, tag=''):
+    """One-screen reward census for the hold-region relabel (gate b)."""
+    hl = np.array(sorted(census['hold_lens']), dtype=float)
+    q = (lambda f: float(np.percentile(hl, f)) if hl.size else float('nan'))
+    print(f'[hold-census]{" " + tag if tag else ""} K={census["hold_k"]} '
+          f'pick_z={census["pick_z"]:.4f}', flush=True)
+    print(f'[hold-census] demos {census["n_demos"]} = {census["n_positive"]} '
+          f'>=picked + {census["n_negative"]} negatives | skipped '
+          f'{census["n_skipped_short"]} short, {census["n_skipped_t0"]} bad-t0',
+          flush=True)
+    print(f'[hold-census] terminal (reached K consecutive held) {census["n_terminal"]} '
+          f'| held-but-never-K {census["n_holding_never_k"]} | positive-with-zero-hold '
+          f'{census["n_positive_zero_reward"]}', flush=True)
+    frac = (100.0 * census['n_rewarded_frames'] / census['n_frames']
+            if census['n_frames'] else 0.0)
+    print(f'[hold-census] rewarded frames {census["n_rewarded_frames"]} / '
+          f'{census["n_frames"]} transitions ({frac:.2f}%) | total reward '
+          f'{census["total_reward"]:.1f}', flush=True)
+    print(f'[hold-census] per-demo rewarded-frame count (terminal demos): '
+          f'min {hl.min() if hl.size else float("nan"):.0f} p25 {q(25):.0f} '
+          f'med {q(50):.0f} p75 {q(75):.0f} max '
+          f'{hl.max() if hl.size else float("nan"):.0f}', flush=True)
+    print(f'[hold-census] negatives paid {census["n_negative_rewarded_frames"]} frames '
+          f'(MUST be 0); their proxy-positive frames suppressed by the stage gate: '
+          f'{census["n_negative_proxy_frames"]}', flush=True)
+    assert census['n_negative_rewarded_frames'] == 0, census
+
+
+def hold_region_encode_transitions(paths, pick_z, cap, hold_k, delta_ref='target'):
+    """Delta-encoded sibling of relabel_hold_region (the RLPD demo path).
+
+    Same per-episode delta math as delta_encode_transitions / ..._measured (shared
+    _delta_actions), applied to the hold-region relabel instead of the staged one.
+    No scope argument: the hold region IS the pick scope. No action-repeat variant
+    yet -- train_rlpd asserts action_repeat == 1 with this encoder rather than
+    silently striding (the silent-default rule).
+
+    Returns (transitions, census).
+    """
+    out, census = [], None
+    for p in paths:
+        trans, c = relabel_hold_region([p], pick_z, hold_k)
+        if census is None:
+            census = c
+        else:
+            for k, v in c.items():
+                if isinstance(v, list):
+                    census[k] = census[k] + v
+                elif isinstance(v, (int, float)) and k not in ('hold_k', 'pick_z'):
+                    census[k] = census[k] + v
+        if not trans:
+            continue
+        acts = _delta_actions(trans, cap, delta_ref)
+        out.extend((o, acts[i], r, o2, d)
+                   for i, (o, _, r, o2, d) in enumerate(trans))
+    return out, (census or dict(n_demos=0))
+
+
 def delta_encode_transitions(paths, pick_z, scope, cap):
     """relabel_full per episode, then replace each transition's RAW absolute
     action [6 rad, grip 0..1] with the delta-normalized action the delta_joint
@@ -105,12 +280,7 @@ def delta_encode_transitions(paths, pick_z, scope, cap):
         if scope == 'pick':
             trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
                      (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
-        cmds = np.stack([t[1] for t in trans]).astype(np.float64)
-        prev = np.concatenate([trans[0][0][None, :6].astype(np.float64),
-                               cmds[:-1, :6]])
-        dq = np.clip((cmds[:, :6] - prev) / cap, -1.0, 1.0)
-        grip = np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0
-        acts = np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
+        acts = _delta_actions(trans, cap, 'target')
         out.extend((o, acts[i], r, o2, d)
                    for i, (o, _, r, o2, d) in enumerate(trans))
     return out
@@ -187,13 +357,9 @@ def delta_encode_transitions_measured(paths, pick_z, scope, cap):
         if scope == 'pick':
             trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
                      (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
-        cmds = np.stack([t[1] for t in trans]).astype(np.float64)
-        qmeas = np.stack([t[0][:6] for t in trans]).astype(np.float64)
         # divide by the LEASH (env measured-mode scale): a = normalized recorded
         # PD lead. cap-scaling under-drove 5x (gate 0/5, 2026-08-14).
-        dq = np.clip((cmds[:, :6] - qmeas) / (5.0 * cap), -1.0, 1.0)
-        grip = np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0
-        acts = np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
+        acts = _delta_actions(trans, cap, 'measured')
         out.extend((o, acts[i], r, o2, d)
                    for i, (o, _, r, o2, d) in enumerate(trans))
     return out

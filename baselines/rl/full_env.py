@@ -6,6 +6,18 @@ max_steps (default 900 = 30 s at 30 Hz; demo contact lands well inside that).
 Same normalized [-1,1]^7 action convention as PickOnlyEnv (see pick_env.py docstring).
 
 scope='pick':  +1 and terminate on the pick grant.
+    Constructor pick_hold_reward=True (pick scope ONLY, default False) switches the
+    pick reward from that single terminal grant to a PER-STEP HOLD reward: +1 on
+    EVERY step the honest pick condition holds (pick_hold_held: can above pick_z AND
+    gripper commanded closed), terminating after pick_hold_k (default 25) CONSECUTIVE
+    held steps. Literature precedent (paper/rlpd_literature_comparison_2026-08-13.md
+    RQ1/RQ5): ManiSkill pays +1 per solved step and terminates on success; sparse
+    Adroit (RLPD's own sparse-manipulation domain, Ball et al. 2023) pays +1 per
+    solved step to the horizon, so its return IS the fraction of solved timesteps.
+    Our terminal-only variant put 66 rewarded frames in 83,465 demo transitions
+    (0.08%) -- ~1000x sparser than any published RLPD setup and the top-ranked
+    explanatory delta for slow ignition. This flag closes that gap; the honest
+    EVALUATED metric is unchanged (eval still asks "did it pick").
 scope='place': reset restores a random banked POST-PICK entry state
     (constructor entry_bank=; default baselines/pick_entry_states.json = one
     entry per demo at the pick grant. A DENSE bank -- a JSON LIST of entries,
@@ -36,13 +48,37 @@ REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
 sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 from genesis_can_env import GenesisCanEnv, np_  # noqa: E402
-from pick_env import STATE_DIM, ACT_DIM, ARM_LO, ARM_HI, denormalize_action  # noqa: E402
+from pick_env import (STATE_DIM, ACT_DIM, ARM_LO, ARM_HI,  # noqa: E402
+                      GRIP_CLOSED_FRAC, denormalize_action)
 sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from replay_harness import (tilt_deg, in_shelf_footprint, BOX_TOP_Z,  # noqa: E402
                             BOX_POS, HARDCODED_START, gripper_targets)
 
 STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 PLACE_ENTRY_BANK = REPO / 'baselines' / 'pick_entry_states.json'
+
+# --- reward-density lever (2026-08-14): ONE definition of the honest pick condition -
+# The hold reward is paid per step by the ENV and per frame by the OFFLINE relabeler
+# (train_sacfd_full.hold_region_*). Those two must agree exactly or the demo buffer
+# teaches a reward the env never pays. This repo's recurring bug family (grip column
+# x3, control mode x3) lived precisely in re-implemented predicate math, so both sides
+# CALL THIS FUNCTION; pick_z comes from the env instance (genv.w['pick_z']) and the
+# closure threshold is pick_env.GRIP_CLOSED_FRAC -- neither is ever copied.
+#
+# Note this is the RELABELER's predicate (can above pick_z AND gripper COMMANDED
+# closed), NOT genesis_can_env's hardened `picked` (which additionally requires
+# |eef-can| < PICK_EEF_DIST sustained PICK_SUSTAIN=10 frames). The hardened guard
+# exists to stop a policy from WHACKING the can airborne and collecting a one-shot
+# grant; here the K-consecutive-frame requirement (default 25 > PICK_SUSTAIN) supplies
+# that same anti-gaming sustain, and using the relabeler's predicate is what lets the
+# demo tapes -- which carry only the recorded 17-dim state, no eef position -- label
+# the identical condition offline.
+def pick_hold_held(can_z, grip_cmd, pick_z):
+    """HONEST per-step pick condition: can above pick_z AND gripper commanded closed.
+
+    Scalars or numpy arrays (elementwise); returns np.bool_ / bool array."""
+    return ((np.asarray(can_z) > float(pick_z))
+            & (np.asarray(grip_cmd) > GRIP_CLOSED_FRAC))
 
 
 class FullTaskEnv(gym.Env):
@@ -83,8 +119,20 @@ class FullTaskEnv(gym.Env):
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
-                 delta_leash_mult=5.0, action_repeat=1, delta_ref='target'):
+                 delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
+                 pick_hold_reward=False, pick_hold_k=25):
         super().__init__()
+        # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
+        # Default False keeps every existing caller byte-identical (single +1 via the
+        # STAGE_REWARD 'picked' grant, terminate on the env's hardened picked flag).
+        # Passed EXPLICITLY by train_rlpd and recorded in the checkpoint sidecar.
+        assert not (pick_hold_reward and scope != 'pick'), (
+            'pick_hold_reward is a scope=pick lever (the hold region is the pick '
+            f'itself); got scope={scope}')
+        assert int(pick_hold_k) >= 1, pick_hold_k
+        self.pick_hold_reward = bool(pick_hold_reward)
+        self.pick_hold_k = int(pick_hold_k)
+        self._hold_run = 0
         # action_repeat N (2026-08-13): ONE policy decision is held for N consecutive
         # env (sim) steps -- the SAME normalized action feeds _step_once N times, so in
         # delta_joint mode the arm target advances up to N*a*delta_cap total and the
@@ -258,6 +306,7 @@ class FullTaskEnv(gym.Env):
         obs = self.genv.reset(uid=int(uid))
         self._t = 0
         self._granted = set()
+        self._hold_run = 0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
@@ -306,6 +355,7 @@ class FullTaskEnv(gym.Env):
         obs = self.genv.reset(**ic)
         self._t = 0
         self._granted = set()
+        self._hold_run = 0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {}
 
@@ -364,14 +414,37 @@ class FullTaskEnv(gym.Env):
                 # scope='place' pays ONLY the +1 placed_v2 terminal (below); stage
                 # grants are still tracked for logging (r2dreamer adapter reads
                 # _granted) but carry no reward -- the restored pick is pre-granted.
-                if self.scope != 'place':
+                # pick_hold_reward likewise pays ONLY the per-step hold reward below:
+                # keeping the one-shot 'picked' grant too would double-pay the lift
+                # and re-import the terminal-only signal the lever exists to replace.
+                if self.scope != 'place' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
         if self.scope == 'pick':
-            terminated = bool(info.get('picked'))
-            if terminated:
-                truncated = False
-                return (obs['state'].astype(np.float32), reward, True, False, info)
+            if self.pick_hold_reward:
+                # REWARD-DENSITY lever (ManiSkill/Adroit semantics; class docstring):
+                # +1 for EVERY step the honest hold condition holds, terminate after
+                # pick_hold_k CONSECUTIVE held steps. The run counter -- not a
+                # separate predicate -- is what makes a whack-fling unprofitable: a
+                # batted can separates and falls back through pick_z in a few frames,
+                # collecting a few +1s but never the K-frame terminal, while a real
+                # grasp holds indefinitely. Mirrored offline frame-for-frame by
+                # train_sacfd_full.hold_region_encode_transitions (same K, same
+                # pick_hold_held call, same "drop everything after the terminal").
+                held = bool(pick_hold_held(float(obs['state'][10]),
+                                           float(a_phys[6]), self.pick_z))
+                self._hold_run = self._hold_run + 1 if held else 0
+                reward += 1.0 if held else 0.0
+                info['pick_held'] = held
+                info['pick_hold_run'] = int(self._hold_run)
+                if self._hold_run >= self.pick_hold_k:
+                    info['pick_hold_done'] = True
+                    return (obs['state'].astype(np.float32), reward, True, False, info)
+            else:
+                terminated = bool(info.get('picked'))
+                if terminated:
+                    truncated = False
+                    return (obs['state'].astype(np.float32), reward, True, False, info)
         if self.scope == 'place':
             # PLACED_V2 (release-based, supersedes the mid-lift z-band proxy):
             # grip commanded open + can inside the shelf footprint/z-band +
@@ -402,6 +475,10 @@ class FullTaskEnv(gym.Env):
         # the best place outcome and satisfies placed_v2 ~10 frames later -- letting
         # nested cut the sustain window paid 0 for it (seen on uid 242's replay,
         # terminated rewardless at step 274, 9 frames short of its placed_v2).
+        # (pick_hold_reward reaches this line only on a NON-held step; the nested proxy
+        # needs contact, which needs the hardened picked -- 10 held frames -- plus a
+        # carry and release, so it cannot pre-empt a 25-frame hold in practice, and the
+        # tip rule below cannot fire mid-hold either: it requires grip OPEN.)
         terminated = bool(info.get('nested')) and self.scope != 'place'
         # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --
         # the grip-column bug, 4th sighting; this block also never ran before
