@@ -178,8 +178,14 @@ def main():
     # the SAME repeat at eval time (stateful: one policy query per N env steps). Evaling
     # a repeat-N policy at stride 1 is the exact silent-default bug family this repo keeps
     # hitting -- the sidecar closes it.
+    import subprocess
+    try:
+        _git = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=str(REPO),
+                              capture_output=True, text=True, timeout=5).stdout.strip()
+    except Exception:
+        _git = 'unknown'
     sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat,
-               'backup_entropy': args.backup_entropy}
+               'backup_entropy': args.backup_entropy, 'git': _git or 'unknown'}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.

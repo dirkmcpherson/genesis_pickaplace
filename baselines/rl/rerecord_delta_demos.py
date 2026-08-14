@@ -287,6 +287,9 @@ def run(args):
     man = outdir / f'_manifest_shard{args.shard_idx}of{args.shard_n}.json'
     man.write_text(json.dumps(dict(
         config=dict(demo_dir=args.demo_dir, action_repeat=args.action_repeat,
+                    git=__import__('subprocess').run(
+                        ['git', 'rev-parse', '--short', 'HEAD'], cwd=str(REPO),
+                        capture_output=True, text=True).stdout.strip() or 'unknown',
                     tol=args.tol, max_dwell=args.max_dwell,
                     dilation_cap=args.dilation_cap, settle=args.settle,
                     delta_ref='measured', delta_cap=env.delta_cap,
