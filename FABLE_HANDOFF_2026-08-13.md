@@ -572,3 +572,13 @@ parity ~100 decisions-to-pick; 88% pick / 90% place preservation). This matches 
 current experimental scope (all three arms are scope=pick). To pin N for the full
 task's delicate phases later, we need a higher-fidelity test (closed-loop, or a
 better replay) — the open-loop delta_joint replay cannot answer it.
+
+## 9. Post-P2-fix gate re-verification (08-14 ~02:00)
+
+dv3 msrecipe gate re-run on the FIXED env: **GATE PASS 4/5** — but uid 326 FLIPPED
+(pre-fix lift 0.155 -> post-fix 0.102, fail). Independent confirmation, from a
+different pipeline, of both P2 lessons: the reset fix changed the baseline, and
+marginal episodes resolve arbitrarily under microscopic state changes. The >=4/5
+tolerance absorbed it by design — thresholds with slack survive P2; exact
+per-episode outcomes do not. The RLPD stride-gate and msrecipe gate pass on both
+sides of the fix; cluster submit spec remains valid.
