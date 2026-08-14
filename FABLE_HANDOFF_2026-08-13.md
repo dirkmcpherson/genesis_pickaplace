@@ -687,3 +687,35 @@ dwells instead of saturating). DECISION GUIDANCE: N=4 usable for PICK-scope
 demos; stride-1 re-record is the full-task set. Same caveats as §10 (sequential
 shards / P2 residue; single census per N; fresh-process re-census before paper).
 r4/r8 npz stamped via backfill after shard exit.
+
+## 12. RLPD AUDIT (08-14, paper/rlpd_audit_2026-08-14.md) — ROOT CAUSE FOUND
+
+**Bug 1 (CONFIRMED, quantitatively sufficient): entropy backup was ON; RLPD turns
+it OFF for every sparse domain.** Inherited from SB3 SAC. At gamma=0.998 the
+critic's zero-reward fixed point is 500*alpha*H; the formula reproduces EVERY
+logged Q window (269..2400 vs max return 1.0). The +1 was 0.04-2% of the
+regression target, and terminals (the picks) got target 1.0 vs ~400 for
+non-terminals — **400:1 against completing the task.** Explains marginal
+ignition, post-ignition decay, SACfD's uniform zeros (same defect), and the
+fixed-alpha arm's Q->1.6e5 (that prescription is RETIRED). The Q-watchdog fired
+correctly at step 1001 (Q=2.82) and was waved off; one-shot design never
+re-flagged the ride — now re-arms every 10k.
+**Bug 2 (queued lever): ensemble members share LayerNorm affine params** (inter-
+member corr measured -0.015 at init is fine but diversity degrades in training).
+**Bug 3 (minor): 2-layer critic vs paper's 3.**
+CLEAN: truncation bootstrapping (both paths, measured 0.000 mistreated), demo
+tensors/grip/reward parity, subset-min over targets, tau, target_entropy.
+ALSO SURFACED: eval-horizon asymmetry — RLPD row evals at 400 sim steps, the
+DP/SACfD matrix at wandb_eval's 1200 default (median pick frame 662). Size
+unknown; flag on any cross-arm table.
+
+**CONSEQUENCE: the repeat-N verdict (§4a-3) is RE-DECLARED PROVISIONAL.** A flat
+result across N is exactly what a signal-invisible critic produces at any N.
+RLPD>SACfD survives (shared defect, strict zero vs occasional picks).
+
+**FIX WAVE (running): dH_RLPD-nb_s{0,1,2}** — backup_entropy off (the ONLY
+lever changed; bug 2/3 deliberately deferred for single-lever attribution),
+stride-1, 100k, same demos/protocol. Commit f906ee6; flag explicit + in sidecar
++ cfg line; loaded-model attr verified False. SUCCESS CRITERION (pre-registered):
+>=1 seed >=3/15 demo-IC at fixed 100k under fresh-process protocol. If flat, bug
+2 is the next single lever.
