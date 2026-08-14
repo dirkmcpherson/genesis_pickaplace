@@ -719,3 +719,14 @@ stride-1, 100k, same demos/protocol. Commit f906ee6; flag explicit + in sidecar
 + cfg line; loaded-model attr verified False. SUCCESS CRITERION (pre-registered):
 >=1 seed >=3/15 demo-IC at fixed 100k under fresh-process protocol. If flat, bug
 2 is the next single lever.
+
+## 12b. Eval-horizon asymmetry RESOLVED (newbox_supp A/B, 08-14)
+
+s0@150k, 15 fresh processes per horizon: 400 steps = 6/15, 1200 steps = 6/15,
+IDENTICAL episodes. The trained policy picks well inside 400 steps — the 662
+median is a DEMO statistic; the policy is faster than its demonstrator. The
+horizon gap stays a stated caption, not a re-measurement campaign. LIMIT: covers
+the strongest checkpoint only (weaker policies could be slower); if the nb fix
+wave produces a strong policy, run ONE confirmatory 15-process A/B on its
+pre-registered checkpoint rather than assuming transitivity. PAPER_PLAN 83a5277
+carries the same record; the two docs agree.
