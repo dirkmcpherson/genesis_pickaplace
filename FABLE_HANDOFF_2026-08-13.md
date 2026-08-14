@@ -934,3 +934,24 @@ byte-identical incl. 28/28 policy tensors of a no-flag smoke):
   --pick-hold-reward on, episodes_all) + mref wave (3 seeds, measured-ref,
   episodes_delta_rerecord_pick) = 6 concurrent (ar8-proven capacity). Both get
   §4a-2 sweeps. Pre-registered bar each: >=1 seed >=3/15 demo-IC.
+
+## 19. PAIR SWEEP RESULT (newbox_supp) — THE PAPER'S RLfD ROW
+
+| arm | seeds | >=3/15 seeds | pooled |
+|---|---|---|---|
+| dH  | 1/15, 4/15, 1/15 | 1/3 | 6/45 |
+| dDP | 1/15, 0/15, 1/15 | 0/3 | 2/45 |
+
+**NO DETECTABLE SOURCE EFFECT** (Fisher p=0.27, ignition diff 1 seed). The
+registered claim governs: "no source effect detectable at n=3/arm at 100k" —
+NOT "no effect". newbox_supp's pre-exposure prediction survived.
+KEY REPLICATION: dH reproduced the nb wave EXACTLY (1/4/1) on fresh training
+seeds — the config has a stable ~1/3 ignition signature on human demos, which
+retro-strengthens nb and makes dDP's 0/3 more informative. Direction nominally
+favors dH (6 vs 2 picks) but rests on floor-noise cells — the report language
+must not drift past the registered claim. PAPER_PLAN 2b2d07e carries the row.
+
+LAUNCHED after the pair: hold wave (dH_RLPD-hold_s0-2; q_watchdog auto-rescaled
+48.82, census pending) + mref wave (dH_RLPD-mref_s0-2; 54 eps / 71,082
+transitions / 54 rewarded, measured encoder). Sweeps chained on newbox_supp's
+artifact-gated waiters.
