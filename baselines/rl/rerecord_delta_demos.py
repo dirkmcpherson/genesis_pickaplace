@@ -233,7 +233,14 @@ def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle, repeat=1):
     arrays = dict(states=states, actions=acts_abs, actions_delta=acts_dn,
                   rewards=np.asarray(rews, np.float32),
                   dones=np.asarray(dones, bool),
-                  uid=uid, n=len(states), label=label, stage=stage)
+                  uid=uid, n=len(states), label=label, stage=stage,
+                  # ENCODING STAMP (newbox_supp audit 08-14): actions_delta is
+                  # LEASH-referenced (a = (target - qmeas)/0.125), NOT cap-referenced.
+                  # Re-deriving with cap yields a clean 5x error that looks like
+                  # corruption. Same class as the action_mode sidecar; the tape
+                  # carries its own semantics so a loader can assert, not assume.
+                  delta_ref='measured', delta_scale=float(env.delta_leash),
+                  action_repeat=int(repeat))
     rec.update(status='OK', stage=stage, n_rerecord_steps=int(steps),
                dwell_stalls=int(stalls), truncated=bool(truncated),
                dilation=float(steps) / float(n_src),
