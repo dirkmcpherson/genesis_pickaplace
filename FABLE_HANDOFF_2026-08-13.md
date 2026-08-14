@@ -254,7 +254,38 @@ metrics.jsonl, .log) before any urgent claim.
 
 ---
 
-## 8. OPEN PROBLEM (P1) — NEEDS FABLE: delta_joint replay loses downstream phases
+## 8. P1 — RESOLVED 2026-08-13 (diagnosis complete; fixes staged)
+
+**VERDICT (full report: paper/p1_delta_divergence_2026-08-13.md, commit 3a7a713):**
+Of the 8 nested-labeled demos that lost the pick under delta replay:
+- **6 = FROZEN TARGET DRIFT (root cause).** The delta encoder encodes command
+  DIFFERENCES, so one cap-clipped frame leaves a PERMANENT offset in the integrated
+  target — open-loop delta replay never re-converges (uid 328: offset froze at
+  0.2260 rad, std 0.00000 over the last quarter). Velocity replay re-sends ABSOLUTE
+  commands and self-heals; that is the structural delta-vs-velocity difference.
+  Drift begins in FREE SPACE (can error exactly 0.0mm for hundreds of steps) — not
+  contact chaos. An offline encoder+leash predictor separates losers from keepers
+  (0.060 vs 0.045 rad at grasp, p=0.0010).
+- **2 = a #26 REGRESSION in full_env.py** (inner GenesisCanEnv left at default
+  max_steps=1200 → 100 phantom sim steps per call past 1200; the collector fixed
+  this 07-20, FullTaskEnv never got it; 54/72 sweep replays crossed 1200).
+  **FIXED + pushed (3a7a713).** Training was unaffected (outer horizon 900 < 1200);
+  replays and any eval past 1200 inner steps were not.
+- **0 = truncation.** Max pick frame 3693 < 4000.
+- Cap saturation stays refuted (the trace agent found a discriminator, then
+  withdrew it as length-confounded — documented in the report).
+- Manufactured successes have three sources: nested-proxy transients (305),
+  phantom-settle perturbation (274, 316 — gone post-fix), lucky drift (261).
+
+**FIXES, ordered:** (1) inner-horizon fix — DONE; (2) closed-loop re-record of
+demos in the delta env (the only cure for frozen offset; derive_cartesian_realized
+is the template); (3) delta-for-pick-only + velocity downstream = valid interim;
+larger cap/leash = partial at best. Never report proxy-derived nested.
+
+**STILL TODO:** §7 phase-sweep re-run post-fix (54/72 replays were contaminated);
+re-run when the eval sweep frees the cores. Original problem statement follows.
+
+### (original P1 statement, kept for the record)
 
 **User flagged this as a problem (2026-08-13). It is bigger than the repeat-n question.**
 
