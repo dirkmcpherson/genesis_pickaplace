@@ -66,6 +66,11 @@ def main():
                          "gives a 500*alpha*H zero-reward fixed point that buries "
                          "the +1 and pays 400:1 AGAINST terminating). 'on' restores "
                          "the pre-audit behavior for comparison only.")
+    ap.add_argument('--per-member-ln', choices=['on', 'off'], default='off',
+                    help="per-member LayerNorm affine in the critic ensemble (audit "
+                         "bug 2: shared affine ties member scales, degrading the "
+                         "min-of-Z pessimism; Q refluxed to 250-1600 in the nb wave "
+                         "with backup off). 'off' = original shared-LN (old ckpts).")
     ap.add_argument('--gamma', type=float, default=0.998,
                     help='0.998 ~ 500-step credit window. 0.98 made the demo pick '
                          'terminal (median frame 662) worth ~1.6e-6 from start '
@@ -134,6 +139,7 @@ def main():
     from rlpd_sac import make_rlpd, DemoData
     model = make_rlpd(env, args.seed, args.device,
                       backup_entropy=(args.backup_entropy == 'on'),
+                      per_member_ln=(args.per_member_ln == 'on'),
                       ensemble_size=args.ensemble_size, subset_size=args.subset_size,
                       utd=args.utd, gamma=args.gamma, ent_coef=args.ent_coef,
                       target_entropy=args.target_entropy, demo_batch=args.demo_batch)
@@ -185,7 +191,8 @@ def main():
     except Exception:
         _git = 'unknown'
     sidecar = {'action_mode': args.action_mode, 'action_repeat': args.action_repeat,
-               'backup_entropy': args.backup_entropy, 'git': _git or 'unknown'}
+               'backup_entropy': args.backup_entropy,
+               'per_member_ln': args.per_member_ln, 'git': _git or 'unknown'}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.

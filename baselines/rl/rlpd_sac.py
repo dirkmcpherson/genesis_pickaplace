@@ -68,6 +68,26 @@ class EnsembleLinear(nn.Module):
         return th.baddbmm(self.bias, x, self.weight)  # (E, B, out)
 
 
+class EnsembleLayerNorm(nn.Module):
+    """Per-member LayerNorm for an (E, B, h) ensemble stream. nn.LayerNorm(h) in this
+    position normalizes each row correctly but SHARES its affine weight/bias across
+    all E members (audit bug 2) -- the members' post-norm scales are tied, degrading
+    ensemble diversity and with it the min-of-Z pessimism. This module gives each
+    member its own (h,) weight/bias. Opt-in via per_member_ln; default off preserves
+    byte-identical construction so every pre-existing checkpoint still loads."""
+
+    def __init__(self, ensemble_size, h, eps=1e-5):
+        super().__init__()
+        self.eps = eps
+        self.weight = nn.Parameter(th.ones(ensemble_size, 1, h))
+        self.bias = nn.Parameter(th.zeros(ensemble_size, 1, h))
+
+    def forward(self, x):                      # (E, B, h)
+        mu = x.mean(dim=-1, keepdim=True)
+        var = x.var(dim=-1, keepdim=True, unbiased=False)
+        return (x - mu) / th.sqrt(var + self.eps) * self.weight + self.bias
+
+
 class EnsembleCritic(BaseModel):
     """Drop-in for SB3's ContinuousCritic: same constructor signature (so
     SACPolicy.make_critic can pass critic_kwargs unchanged) but builds ONE vectorized
@@ -78,7 +98,7 @@ class EnsembleCritic(BaseModel):
 
     def __init__(self, observation_space, action_space, net_arch, features_extractor,
                  features_dim, activation_fn=nn.ReLU, normalize_images=True,
-                 n_critics=10, share_features_extractor=True):
+                 n_critics=10, share_features_extractor=True, per_member_ln=False):
         super().__init__(observation_space, action_space,
                          features_extractor=features_extractor,
                          normalize_images=normalize_images)
@@ -86,10 +106,13 @@ class EnsembleCritic(BaseModel):
         self.share_features_extractor = share_features_extractor
         self.n_critics = n_critics
         E = n_critics
+        self.per_member_ln = bool(per_member_ln)
         layers, last = [], features_dim + action_dim
         for h in net_arch:
             layers.append(EnsembleLinear(last, h, E))
-            layers.append(nn.LayerNorm(h))          # RLPD stabilizer, per member+row
+            # default (False) = original shared-affine nn.LayerNorm -> old ckpts load
+            layers.append(EnsembleLayerNorm(E, h) if self.per_member_ln
+                          else nn.LayerNorm(h))
             layers.append(activation_fn())
             last = h
         layers.append(EnsembleLinear(last, 1, E))
@@ -107,12 +130,24 @@ class RLPDPolicy(SACPolicy):
     """SACPolicy whose critic/critic_target are EnsembleCritics. Everything else
     (actor, features extractor, save/load constructor params incl. n_critics) is the
     stock SACPolicy machinery, so `SAC.load(<rlpd checkpoint>)` in a fresh process
-    rebuilds the identical LayerNorm ensemble and loads its state dict cleanly."""
+    rebuilds the identical LayerNorm ensemble and loads its state dict cleanly.
+    per_member_ln travels in the constructor parameters so save/load round-trips
+    it; default False keeps every pre-flag checkpoint loadable byte-identically."""
+
+    def __init__(self, *args, per_member_ln=False, **kwargs):
+        self.per_member_ln = bool(per_member_ln)
+        super().__init__(*args, **kwargs)
 
     def make_critic(self, features_extractor=None):
         critic_kwargs = self._update_features_extractor(self.critic_kwargs,
                                                         features_extractor)
-        return EnsembleCritic(**critic_kwargs).to(self.device)
+        return EnsembleCritic(per_member_ln=self.per_member_ln,
+                              **critic_kwargs).to(self.device)
+
+    def _get_constructor_parameters(self):
+        data = super()._get_constructor_parameters()
+        data.update(per_member_ln=self.per_member_ln)
+        return data
 
 
 class DemoData:
@@ -304,7 +339,8 @@ class RLPDSAC(SAC):
 
 def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
               gamma=0.998, ent_coef='auto', target_entropy=None, demo_batch=128,
-              net_arch=(256, 256), q_watchdog=2.0, backup_entropy=False):
+              net_arch=(256, 256), q_watchdog=2.0, backup_entropy=False,
+              per_member_ln=False):
     """Construct an RLPDSAC with the pinned RLPD hypers. target_entropy defaults to
     -dim/2 (RLPD_PLAN: -3.5 for the 7-dim joint action)."""
     dev = th.device(device)
@@ -331,6 +367,7 @@ def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
         policy_kwargs=dict(
             net_arch=dict(pi=list(net_arch), qf=list(net_arch)),
             n_critics=ensemble_size,
+            per_member_ln=per_member_ln,
         ),
     )
     return model
