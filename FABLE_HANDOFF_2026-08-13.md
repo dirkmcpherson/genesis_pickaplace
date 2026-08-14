@@ -730,3 +730,23 @@ the strongest checkpoint only (weaker policies could be slower); if the nb fix
 wave produces a strong policy, run ONE confirmatory 15-process A/B on its
 pre-registered checkpoint rather than assuming transitivity. PAPER_PLAN 83a5277
 carries the same record; the two docs agree.
+
+## 13. REGISTERED PREDICTIONS for the cluster wave (08-14, before submission)
+
+| item | P(ignite)/seed | expected igniters | success GIVEN ignition (best-ckpt picked) |
+|---|---|---|---|
+| r2d dH s20-29 (10) | ~0.30 (band 0.15-0.50) | ~3 (1-6) | bimodal: ~1/3 of igniters >=0.9; rest 0.2-0.5 |
+| r2d dDP s20-29 (10) | ~0.05 (0/18 posterior) | 0-1 | no data; assume dH-like conditional |
+| dv3 msrecipe x3 | 0.15-0.30 (wide, by design) | 0-1 | 0.5-0.9 IF the MS analogy transfers |
+
+Bases: dH = pooled 5/14 measured (cluster 3/10 + local 2/4), carried across the
+E2 boundary under the training-validity doctrine (approximate, flagged). dDP =
+0/18 all-time -> Beta-posterior mean ~0.05. dv3 = NO direct prior (0 ignitions
+ever, but never this recipe); the 0.15-0.30 band spans the two live hypotheses
+(shaping-was-blocker -> r2d-like ~0.3; architecture-is-blocker -> ~0). Its gate:
+actor_entropy must fall by ~2.7e5 steps.
+
+WHAT EACH WAVE DECIDES: dH+dDP 20-29 firms the ignition contrast (another
+3/10-vs-0/10 -> cumulative ~6/20 vs 0/20, Fisher ~0.008 = paper-grade; 2-3 dDP
+ignitions dissolve it). dv3 msrecipe discriminates architecture-vs-task-shaping
+for the dv3 null. Cross-wave pooling carries the E2 caveat (ledger).
