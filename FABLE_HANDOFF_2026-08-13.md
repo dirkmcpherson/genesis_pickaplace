@@ -167,12 +167,46 @@ yet have the full set.
 - SETUP DONE (2026-08-13): sbatch_genesis_multi.sh now has an ACTREP knob
   (--action_repeat) + SCOPE=pick. Submit shape:
     RUNS="TAG=dH_ar8 SCOPE=pick ACTREP=8 DEMODIR=<stride8_pick_demos> SEED=0 STEPS=1e6"
-- BLOCKER (why dv3 repeat-8 is NOT a config flip): dv3 does NOT downsample demos for
-  action_repeat and loads demos from FILES. Its pick demos are STRIDE-1 (and carry
-  IMAGES — dv3 is the pixel arm). ACTREP=8 with stride-1 demos = demo/online
-  time-base MISMATCH (the silent bug). A valid dv3 repeat-8 run needs a stride-8
-  IMAGE demo set first (genesis_pick_pruned_delta25 -> stride-8, stamped). Generating
-  it is part of THIS recipe port. Until it exists, do not submit ACTREP>1 for dv3.
+- **PORT COMPLETE (overnight 08-13→14, Opus agent; gates independently re-run by
+  Fable: encoder PASS, reward PASS, replay 5/5 PASS).** dreamerv3-torch commits
+  eed7afb/d4b9503/69b11e4, PUSHED. Demo set demonstrations/genesis_pick_msr_delta25_r4
+  (67 eps, stride-4, stamped repeat.json, +100 terminal, 6700 total reward audited,
+  91-demo negative control clean; 31MB, RSYNC ONLY — not in git). dreamer.py CRASHES
+  on stride/terminal mismatch or unstamped dir + repeat>1; sbatch pre-checks the same.
+  MSR=1 knob in sbatch_genesis_multi.sh. Full writeup: dreamerv3-torch/
+  MSRECIPE_PORT_STATUS.md.
+- KNOWN RISKS (agent-flagged): (1) time_limit 150 decisions = MS parity but covers
+  only ~70% of the demos' own pick times (stride-4 pick decision median 127, max
+  630) — if the run stalls, time_limit 900 is the FIRST knob; (2) converter refuses
+  non-pick scopes by design (P1 frozen-target drift loses downstream stages).
+- GATE ON THE RUN: train/actor_entropy MUST FALL (MS fingerprint: ≈−2.1 nats by
+  ~17k updates ≈ 2.7e5 env steps at this train_ratio — readable inside 3e5).
+
+**MORNING COMMANDS (user):**
+```
+# 1. cluster picks up the port
+ssh <cluster>  &&  cd /cluster/tufts/shortlab/jstale02/dreamerv3-torch  &&  git pull
+# 2. demo set travels by rsync (NEVER git)
+rsync -av ~/workspace/dreamerv3-torch/demonstrations/genesis_pick_msr_delta25_r4/ \
+  <cluster>:/cluster/tufts/shortlab/jstale02/dreamerv3-torch/demonstrations/genesis_pick_msr_delta25_r4/
+# 3. submit (3 seeds, one job)
+REPO_DIR=$PWD WANDB=1 \
+RUNS="TAG=dH_msr_ar4_s0 MSR=1 SCOPE=pick ACTREP=4 DEMODIR=genesis_pick_msr_delta25_r4 SEED=0 STEPS=3e5 | \
+      TAG=dH_msr_ar4_s1 MSR=1 SCOPE=pick ACTREP=4 DEMODIR=genesis_pick_msr_delta25_r4 SEED=1 STEPS=3e5 | \
+      TAG=dH_msr_ar4_s2 MSR=1 SCOPE=pick ACTREP=4 DEMODIR=genesis_pick_msr_delta25_r4 SEED=2 STEPS=3e5" \
+sbatch sbatch_genesis_multi.sh
+# 4. r2dreamer firming wave, dH seeds 20-29 (from genesis_pickaplace checkout root):
+for S in 20 21 22 23 24 25 26 27 28 29; do
+  CONFIG=genesis_pick_v5d4_delta STEPS=1e6 SEED=$S \
+  LOGDIR=/cluster/tufts/shortlab/jstale02/r2dreamer/runs/dH_R2Dshort_s$S \
+  sbatch --time=1-00:00:00 cluster/sbatch_r2dreamer.sh
+done
+# 5. dDP twin seeds 20-29: reuse your 08-12 wave-B submission line from shell
+#    history (it carries DUPLICATE=7 + the m1 DEMO_DIR) with SEED=20..29 —
+#    do not retype it from memory.
+# 6. DECISION still open: rsync genesis_m1all to this box (unblocks dDP_RLPD +
+#    dDP world-model twins — recommended) or approve a fresh local harvest.
+```
 
 ### 3c. r2dreamer  (world model, WORKS — but unstable)
 - Champion exists: 0.91 sampled / 1.00 mode
