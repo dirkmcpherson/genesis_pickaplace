@@ -664,6 +664,26 @@ is itself a source property the distributional analysis should quantify.
   transitive to the floor-level 100k cells -- but it does cover the checkpoint that
   any RLPD-vs-DP comparison would actually cite.
 
+- 2026-08-14 (assistant, newbox_supp): **ENTROPY-BACKUP FIX CONFIRMED BY
+  INTERVENTION — THE NB WAVE IGNITES.** Pre-registered sweep (§4a-2: fixed 100k
+  checkpoint, 15 fresh processes per IC mode per seed, explicit flags):
+  dH_RLPD-nb s0 = 1/15, **s1 = 4/15 demo-IC (uids 235/243/246/248, each its own
+  process) — clears the >=3/15 bar**, s2 = 1/15. First RLPD number that survives
+  every methodological control now in force (pre-registration, fresh processes,
+  contamination-derived threshold, authored sidecars). Establishes the
+  entropy-backup diagnosis causally: one lever (backup off) restores ignition at
+  100k where the defective config needed 150k on its best seed. Caption limits:
+  ignition RESTORED, not RELIABLE (1/3 seeds; the defective config also had one
+  good seed); s0/s2 are floor-level noise; Q still runs to 250-1600 with backup
+  off, so the second overestimation channel (shared-LN diversity collapse, audit
+  bug 2) remains live — per-member-LN wave running as the next single lever.
+  PAPER CONSEQUENCE: the "every reward-optimizing learner found the predicate
+  exploit / RLfD row is zero" framing (08-10) is superseded — the RLfD failure
+  was a CONFIG DEFECT (SB3 entropy backup in a sparse task), not a fundamental
+  limit; the honest RLfD row is "zero under the defect, ignites without it,"
+  which strengthens the methods narrative (formula-matched diagnosis ->
+  single-lever intervention -> pre-registered confirmation).
+
 - 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
   RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
   carries no action-mode line, no action_repeat line, no horizon, and no invoking
