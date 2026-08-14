@@ -618,6 +618,52 @@ is itself a source property the distributional analysis should quantify.
   three-cell robustness check. Cheaper, and more informative to a reader than a
   silently re-run table. Joint recommendation with the peer session.
 
+- 2026-08-14 (peer session; recorded by newbox_supp): **RLPD ROOT CAUSE FOUND —
+  ENTROPY BACKUP IN THE CRITIC TARGET** (paper/rlpd_audit_2026-08-14.md, commit
+  2402184). SB3 SAC includes the entropy term in the critic target; RLPD disables
+  it for every sparse domain (Ball 2023 Table 2). Ours was ON. At gamma=0.998 the
+  zero-reward fixed point is 500*alpha*H, and that formula reproduces every logged
+  Q window (269..2400 against a max task return of 1.0). Terminals -- the picks --
+  received target 1.0 while non-terminals received ~400: **the critic paid 400:1
+  AGAINST completing the task.** Explains marginal ignition, post-ignition decay,
+  SACfD's uniform zeros (same defect), and the fixed-alpha explosion (that
+  pre-registered prescription is retired). Fix wave running: dH_RLPD-nb_s{0,1,2},
+  backup_entropy off as a SINGLE lever (two further suspected defects deliberately
+  deferred for attribution).
+  **CONSEQUENCE FOR THE ACTION-REPEAT ROW ABOVE: re-declared PROVISIONAL.** The
+  measurement is correct as taken, but a flat result across N is exactly what a
+  signal-invisible critic produces at ANY N, so no mechanism claim can hang on it.
+  Caption: "measured under the entropy-backup defect; repeat-N to be re-tested
+  post-fix if the fix wave ignites." RLPD > SACfD survives (shared defect; strict
+  zero vs occasional picks).
+  **METHODS EXHIBIT:** the Q-watchdog fired correctly at step 1001 (Q=2.82) and
+  was waved off by the operator. The instrument worked and the human-in-the-loop
+  overrode it -- the same pattern as the poller-filter false alarm (08-13) and the
+  syncer false alarm (08-11). Belongs in the methods section beside the P2 chain.
+
+- 2026-08-14 (assistant, newbox_supp): **HORIZON MISMATCH — RLPD AND DP ROWS ARE
+  NOT MATCHED MEASUREMENTS.** RLPD evaluates at 400 sim steps
+  (`train_rlpd.py:100` default); the DP/SACfD matrix takes `wandb_eval.py:30`'s
+  default of **1200**. The median demo pick frame is **662** -- past the RLPD
+  cutoff, inside the DP one. So `RLPD 0.039 @400` vs `dH_DP 0.62 @1200` cannot be
+  compared as reported, and the action-repeat table's "equal SIM time" caption is
+  correct WITHIN the repeat-N arms while silently unmatched against every other
+  arm. Rule adopted: **state the eval horizon on every row, and never compare rows
+  across horizons.**
+  **A/B RESOLVED — THE MISMATCH COSTS RLPD NOTHING.** dH_s0@150k, demo-IC, 15
+  fresh processes at each horizon (fresh processes make horizon the only variable;
+  this is what the earlier sequence-based attempt could not do):
+  **@400 = 6/15, @1200 = 6/15, pattern P.P...P..P..P.P IDENTICAL.** Tripling the
+  horizon changes neither the rate nor which episodes succeed. The trained policy
+  completes its picks well inside 400 steps -- the 662 median is a DEMO statistic,
+  and the policy is simply faster than the demonstrations it learned from. So the
+  horizon gap is real as a CODE FACT but has zero measured effect on the RLPD row:
+  no re-measurement campaign is warranted, and the caveat reduces to a stated
+  caption. LIMIT: measured on the strongest RLPD checkpoint (0.40). Weaker
+  policies could plausibly be slower to grasp, so the finding is not automatically
+  transitive to the floor-level 100k cells -- but it does cover the checkpoint that
+  any RLPD-vs-DP comparison would actually cite.
+
 - 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
   RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
   carries no action-mode line, no action_repeat line, no horizon, and no invoking
