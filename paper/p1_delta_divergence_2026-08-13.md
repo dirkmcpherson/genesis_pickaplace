@@ -432,3 +432,19 @@ default horizon and ~5 min raised. That cost is itself a symptom of the bug.
   control), not by direct trace.
 - 6 of the 22 nested-labelled demos remain UNRESETTABLE and were not touched here.
   That is still open (handoff §8 item 4).
+
+## Addendum (2026-08-13, newbox_supp verification)
+
+The "primary 400-step evals are clean" claim holds ONLY because
+`GenesisCanEnv.reset()` sets `self._t = 0` (baselines/genesis_can_env.py:174) —
+the inner counter resets per EPISODE. Had `_t` accumulated across episodes within
+one eval process, the 1200 boundary would have been crossed from episode 4 onward
+and the primary column would have been contaminated too. "400 < 1200" is
+conditional on per-episode reset; verified directly, not assumed.
+
+Also in flight: a paired control for the #26 regression's effect size — two ar4
+sensitivity evals ran PRE-fix by launch-timing accident (ar4d_s0/s1, launched
+~109s before commit 3a7a713 landed in the shared working tree); both are being
+re-run POST-fix under identical protocol. Pre-vs-post delta = the phantom-settle
+bug's measured impact at the 1600-step horizon. If they agree, the bug is inert
+at this horizon and the 54/72 phase-sweep exposure is bounded.

@@ -241,6 +241,16 @@ metrics.jsonl, .log) before any urgent claim.
 
 ## 6. Coordination + standing rules
 
+**SHARED WORKING TREE (learned the hard way 2026-08-13):** both sessions operate in
+the SAME checkout on this box. An edit to a runtime file (env, encoder, eval) is
+LIVE for every process the other session launches from that instant — no pull, no
+notification. Two of newbox_supp's sensitivity evals silently launched pre-fix and
+four post-fix across one of my commits. RULE: announce any edit to a shared runtime
+file to the other session BEFORE saving it while that session has jobs in flight;
+the announcer states the file, the change, and the commit; the other session
+records which of its in-flight processes predate it. (Processes hold the OLD code
+in memory; only new launches pick up the edit — both facts matter for attribution.)
+
 - **Second session `newbox_supp`** is live on this box in parallel. Proposed split
   (sent, but the cross-session channel was not reachable via SendMessage — user to
   relay): newbox_supp takes the RLPD s0 confirm writeup + videos, and the PAPER_PLAN
