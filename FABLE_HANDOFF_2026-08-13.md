@@ -465,6 +465,14 @@ the announcer states the file, the change, and the commit; the other session
 records which of its in-flight processes predate it. (Processes hold the OLD code
 in memory; only new launches pick up the edit — both facts matter for attribution.)
 
+**PGREP SELF-MATCH, CROSS-SESSION VARIANT (08-14, bit BOTH sessions):** Fable's
+ar8 watcher gated on `until ! pgrep -f "train_rlpd.*action-repeat 8"` — the
+pattern matched the watcher's OWN cmdline, so it deadlocked (backfill never ran),
+AND newbox_supp's sweep gate matched Fable's stuck watcher, stalling its sweep an
+hour behind trainers that had already finished. RULE: gate on ARTIFACTS (marker
+files, checkpoint counts, output staleness), never process patterns; kill by PID
+or TaskStop, never by pattern when siblings share substrings.
+
 - **Second session `newbox_supp`** is live on this box in parallel. Proposed split
   (sent, but the cross-session channel was not reachable via SendMessage — user to
   relay): newbox_supp takes the RLPD s0 confirm writeup + videos, and the PAPER_PLAN
