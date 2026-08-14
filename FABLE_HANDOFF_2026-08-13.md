@@ -216,6 +216,25 @@ negative control, pre-registered criterion, same-machine baselines.
 
 ---
 
+## 4a. PRE-REGISTERED ar8 verdict protocol (fixed 2026-08-13 night, BEFORE any
+## ar8 post-hoc number existed)
+
+- Checkpoint: **100k decisions** = rlpd_100000_steps.zip per seed (same step as
+  rlpd_final at this budget; use the _steps file for symmetry with other arms).
+- PRIMARY: 400 env steps (equal SIM TIME across arms; at ar8 that is 50 decisions —
+  that IS the action-repeat tradeoff, not a confound). demo-IC n=15 + random n=15,
+  explicit --action-mode delta_joint --action-repeat 8, picks from stdout.
+- SENSITIVITY: 3200 env steps (decision-matched to stride-1's 400). Runs entirely
+  POST-fix (unlike ar4's mixed pair). Informs interpretation; does not decide.
+- DECISION RULE: ar8 = "worth pursuing" iff >=1 seed reaches >=3/15 picks demo-IC
+  under PRIMARY. If a seed crosses >=3/15 ONLY in the sensitivity column, the
+  verdict is "inconclusive-elevate": bring to the user (policy may have learned but
+  needs more physical time than equal-sim-time allows), do not auto-kill and do not
+  auto-pursue.
+- Unified-table rule: any "best-any-snapshot" exploratory column is labeled with the
+  episode count it was scanned over (verify per arm from logs; ~80 eps expected for
+  all three at their cadences — 8 snapshots x n=10 — but COUNT, do not assume).
+
 ## 4b. Sidecar state (2026-08-13 late)
 
 - train_rlpd now writes the action-mode sidecar next to EVERY snapshot (authored at
