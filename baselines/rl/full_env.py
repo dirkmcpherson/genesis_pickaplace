@@ -120,6 +120,14 @@ class FullTaskEnv(gym.Env):
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
                                   workspace_limit=workspace_limit)
+        # CRITICAL (#26 regression, found by the P1 trace 2026-08-13): the inner
+        # env's default max_steps=1200 is an EVAL horizon. Once its `done` goes true,
+        # genv.step runs _nested() -- 100 phantom sim steps -- on EVERY later call,
+        # silently perturbing physics for any rollout past 1200 inner steps (54/72
+        # sweep replays; recovered 2 lost picks, removed 2 spurious nesteds).
+        # collect_all_classified.py has carried this exact fix since 07-20;
+        # FullTaskEnv never got it. THIS env's own max_steps does the truncating.
+        self.genv.max_steps = 10 ** 9
         # scope='pick': +1 and terminate on the pick (matches CartesianFullTaskEnv).
         # step() has referenced self.scope since the pick-scope work, but this
         # constructor never set it -- every FullTaskEnv.step crashed (found by the
