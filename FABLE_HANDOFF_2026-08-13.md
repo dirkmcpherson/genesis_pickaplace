@@ -900,3 +900,14 @@ implicit preconditions the original satisfied out-of-band (sed path swap without
 mkdir -> every redirect failed pre-python, verdict-only monitor silent). Rule:
 derived scripts re-verify their own preconditions; monitors must cover
 driver-death/missing-file, not just verdicts. Sits next to the pgrep entry.
+
+## 17. PAIR SWEEP STAGED + PREDICTION REGISTERED (newbox_supp, pre-exposure)
+
+Prediction (registered before seeing any pair curve): NO detectable source
+effect — both arms 0-2 of 3 seeds at >=3/15, |dH - dDP| <= 1 seed, no mean
+separation beyond floor noise. Fable registers NO counter-prediction (same
+rationale as ar8: identical expectation adds nothing to the register).
+POWER CAVEAT (pre-written into the report skeleton): at ~1/3 ignition power and
+n=3/arm, a null = "no effect detectable at this n and budget", NOT "no effect".
+The reward-density lever raises ignition rates AND therefore the contrast's
+power — the two threads converge.
