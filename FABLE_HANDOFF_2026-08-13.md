@@ -807,3 +807,20 @@ or advance to the RECORDING phase in 4-DOF, or both.
   rollout-counter provenance PASS, carries images too (dual rep).
 **dDP_RLPD twin: UNBLOCKED.** Launch plan: matched dH+dDP pair, SAME config
 (winner of the ln readout), same machine, same wave, §4a-2 sweep protocol.
+
+## 14c. EEF v2 census (08-14) — recording NOT approved; v1 orientation claim retracted
+
+v2 config: raised dilation cap (6.0) + SYMMETRIC arrival rules. Truncation 0+0
+(was 24+21). Census: v2-6dof 46/44/22/14, v2-4dof 49/48/17/11 (labels 65/62/25/16,
+joint-rerec 61/55/28/20).
+- Registered bar fired: v2-4dof picked = 49 = unchanged. Cap was NOT binding.
+  Pick gap to joint-rerec (49 vs 61) = grasp-tracking lag (~25mm median). Gap
+  closed 0% -> per the user's criterion, DO NOT advance to recording.
+- v1 "4dof better everywhere" RETRACTED (arrival confound). Symmetric rules:
+  4dof leads the early funnel, 6dof leads the late funnel (orientation helps
+  precision phases). Deltas 3-5 demos vs flip band ~20 -> suggestive only.
+- Paper pick-scope note: 4dof >= 6dof at pick in BOTH versions. The action-space
+  cut survives at pick scope.
+- v3 levers (not launched, user decision): (1) tight arrival tol during grip
+  transitions only, (2) larger leash (feed-forward authority), (3) no-dwell-skip.
+- v2 is the citable version (zero truncation). Manifests eef_playback/census_*_v2.
