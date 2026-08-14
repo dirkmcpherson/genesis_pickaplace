@@ -684,6 +684,34 @@ is itself a source property the distributional analysis should quantify.
   which strengthens the methods narrative (formula-matched diagnosis ->
   single-lever intervention -> pre-registered confirmation).
 
+- 2026-08-14 (assistant, newbox_supp): **THE PAIR — THE RLfD HUMAN-VS-MODEL ROW
+  LANDS: NO DETECTABLE SOURCE EFFECT.** First matched dH-vs-dDP RLPD comparison
+  on a WORKING config (backup_entropy off, stride-1, 100k), identical everything
+  except demo source (dH = 66 human pick-trunc; dDP = m1all_harvest, 93 eps
+  incl 30 zero-reward fails). §4a-2 protocol: fixed 100k checkpoint, 15 fresh
+  processes per IC mode per seed, explicit flags, authored sidecars.
+
+  | arm | s0 | s1 | s2 | seeds >=3/15 | pooled picks |
+  |---|---|---|---|---|---|
+  | dH  | 1/15 | **4/15** | 1/15 | 1/3 | 6/45 |
+  | dDP | 1/15 | 0/15 | 1/15 | 0/3 | 2/45 |
+
+  Pooled Fisher p = 0.27. Ignition difference = 1 seed. The registered
+  pre-exposure prediction (newbox_supp: both arms 0-2 seeds, |diff| <= 1, no
+  separation beyond floor noise) SURVIVES. The registered power caveat governs
+  the claim: **"no source effect detectable at n=3 per arm at 100k" — NOT "no
+  effect."** At ~1/3 ignition power the contrast is weak by design; the
+  hold-reward lever (1.96% reward density, 25x signal rate) is what raises both
+  ignition and contrast power, so if hold ignites, the DEFINITIVE source
+  comparison is a hold-reward pair (the two workstreams merge).
+  Replication note: the dH arm reproduced the nb wave's profile EXACTLY (1/4/1
+  on fresh training seeds) — arm-level ignition behavior of this config is
+  stable, which strengthens both waves retroactively.
+  H4-adjacent reading: RLfD consumes demos as off-policy value data, and at
+  this budget neither success-filtered model demos nor human demos separate —
+  consistent with the BC-only source effect (in-dist imitation quality) being
+  the paper's one confirmed source-sensitive pathway.
+
 - 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
   RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
   carries no action-mode line, no action_repeat line, no horizon, and no invoking
