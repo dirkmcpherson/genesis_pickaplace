@@ -119,8 +119,17 @@ yet have the full set.
   Rationale: pick scope makes the P1 downstream-fidelity problem irrelevant, so the
   most aggressive stride is the cleanest test of "is horizon compression worth it".
   READ THIS FIRST when online. Build the ar8-vs-ar4-vs-stride-1 ignition/pick table.
-- newbox_supp took the dDP_RLPD-ar8 twin (model-demo counterpart, matched config).
-  If it ran on a different machine, that pair is FIRST-LOOK only (same-machine rule).
+- dDP_RLPD-ar8 twin (newbox_supp): **BLOCKED ON DATA — near-miss caught 2026-08-13.**
+  My instruction named `episodes_pick_phase_dppruned` as the model-demo set. WRONG:
+  `dppruned` = DP-PRUNED HUMAN demos (idle-frame collapse, the DP-arm preprocessing),
+  uids 232+, label=success. NO model-harvest demos exist on this box — every
+  episodes_* dir is human-uid-keyed; a real harvest carries rollout indices. The twin
+  needs `genesis_m1all` rsynced from the cluster (user-owned; PAPER_PLAN 2026-08-09)
+  or a fresh local harvest from dp_pick_pruned weights (different harvest than the
+  dDP_DP row used — worse). newbox_supp stopped before launching; had it run, the
+  "human vs model" row would have been human-vs-human with plausible curves and no
+  downstream check to catch it. Same silent-default family as AUDIT_REQUEST_Fable.
+  Runs on THIS box once data exists → pair can be official (same machine).
 - NOT YET TRIED: reward-density half. Two options, literature-supported:
   1. Per-step hold reward over the whole grasped-hold region (not one terminal +1).
   2. Keep demos un-truncated through the sustained hold (they truncate ~2 frames
@@ -193,6 +202,21 @@ Every trained policy → eval videos to the user. Every reported number → ≥3
 negative control, pre-registered criterion, same-machine baselines.
 
 ---
+
+## 4b. Sidecar state (2026-08-13 late)
+
+- train_rlpd now writes the action-mode sidecar next to EVERY snapshot (authored at
+  save time from live config — commit 51b4e27). Before that, only rlpd_final got one;
+  snapshot evals fell back to absolute@1 (third silent-default instance; newbox_supp
+  caught it before it zeroed the 100k post-hoc sweep).
+- The 50 pre-existing snapshots got BACKFILLED sidecars, inferred from the directory
+  name. Each is stamped {"backfilled": true, "backfill_source": "dir-name-inference
+  2026-08-13"} so reconstructions are distinguishable from authored records. Treat a
+  backfilled sidecar as a claim, not a fact — if a dir was ever misnamed, the
+  reconstruction silently wins (same inference-from-name shape as the dppruned
+  near-miss). Authored (no flag) = trustworthy.
+- The ar8 runs hold pre-fix code in memory: their final snapshots land sidecar-less.
+  Re-run the backfill once they finish (same stamp).
 
 ## 5. Running jobs + how to monitor
 
