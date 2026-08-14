@@ -165,6 +165,18 @@ class GenesisCanEnv:
         kin = w['kinova']
         kin.set_dofs_position(np.array(HARDCODED_START), w['kdofs'])
         kin.zero_all_dofs_velocity()
+        # P2 FIX (2026-08-14): re-issue the CONTROLLER TARGETS, not just the poses.
+        # set_dofs_position teleports qpos but the PD controllers keep the PREVIOUS
+        # episode's final control_dofs_position target, so the scene.step() below --
+        # and every step until the next command lands -- ran under stale, history-
+        # dependent control. Probe: post-reset obs differed by history (grip-effort
+        # dim by 33.9) and identical command sequences diverged 0.05 rad (2x delta
+        # cap) across histories; eval episodes were NOT independent (uid 243 picked
+        # as episode 7 of a sequence, failed alone). Mirrors step()'s own calls.
+        kin.control_dofs_position(np.array(HARDCODED_START[:6]),
+                                  dofs_idx_local=w['kdofs'][:6])
+        kin.control_dofs_position(np.array(HARDCODED_START[-4:]),
+                                  dofs_idx_local=np.array(w['kdofs'][-4:]))
         w['bottle'].set_pos(can_pos); w['bottle'].set_quat(list(can_quat or [1, 0, 0, 0]))
         w['goal'].set_pos(goal_pos); w['goal'].set_quat([1, 0, 0, 0])
         for ent in (w['bottle'], w['goal']):
