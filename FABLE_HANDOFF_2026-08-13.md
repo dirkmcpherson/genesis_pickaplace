@@ -250,8 +250,79 @@ negative control, pre-registered criterion, same-machine baselines.
 
 ---
 
-## 4a. PRE-REGISTERED ar8 verdict protocol (fixed 2026-08-13 night, BEFORE any
-## ar8 post-hoc number existed)
+## 4a-0. **P2 — CROSS-EPISODE STATE CONTAMINATION (OPEN, HOLD IN EFFECT, 08-14 ~01:00)**
+
+**Discovery (newbox_supp):** same checkpoint, same flags, deterministic policy —
+uid 243 picks as episode 7 of a 15- or 10-episode sequence, does NOT pick alone.
+Episode outcomes depend on what ran before them in the same process.
+
+**Mechanism (Fable, code + probe, CONFIRMED):** step() issues control_dofs_position
+targets (genesis_can_env.py:231-232); reset() NEVER re-issues them — it teleports
+positions (set_dofs_position), zeroes velocities, then runs scene.step() under the
+PREVIOUS episode's final controller target. Probe (scratchpad/reset_leak_probe.py):
+post-reset obs differs by history (qpos ~0.01-0.02 rad; obs dim 7 gripper-effort
+differs 33.9 fresh-vs-used); an IDENTICAL 20-step command sequence after different
+histories diverges up to **0.0506 rad = 2x the delta cap** — enough to flip a
+marginal grasp. Genesis solver caches may add residue beyond this; the controller
+target is the dominant confirmed channel.
+
+**Blast radius:** every multi-episode single-process eval: RLPD/SACfD wandb_eval,
+BC central-table evals, r2dreamer/dv3 periodic evals, the phase sweeps. Sequences
+were fixed → results REPRODUCIBLE but not independent draws: binomial +-, Fisher,
+multiple-testing math, and the >=3/15 threshold all assumed independence they do
+not have. Between-ARM comparisons are partially protected where both arms ran the
+SAME fixed sequence (same residue context), but the significance machinery needs
+re-derivation. Training rollouts always had this property (less of a validity
+issue; RL policies trained AND evaled under the same residue distribution).
+
+**Second bug (newbox_supp):** wandb_eval `--uids` silently IGNORED unless
+`--random 0` (line ~205), and `--random` caps the demo-IC episode count (why n=10
+vs n=15 differed across runs). Same silent-default family. Fix post-wave.
+
+**DOSE-RESPONSE (newbox_supp, CONFIRMED 08-14):** uid 243 as terminal episode,
+same checkpoint/flags/horizon: 0 predecessors = False (x2), 1 predecessor = False,
+**7 predecessors = True**. Residue ACCUMULATES across resets. The 400-vs-1600
+"horizon effect" was never physics — longer predecessors leave different residue.
+
+**TRIAGE (newbox_supp, adopted):**
+- DEAD: the ar4 sensitivity column (horizon changes the residue schedule — it
+  cannot isolate truncation). The "inconclusive-elevate" branch of the ar8
+  pre-registration is WITHDRAWN with it (it compared primary vs sensitivity).
+- DEAD: all absolute success rates; all cross-n comparisons (n=10 in-train vs
+  n=15 post-hoc = different residue schedules; the earlier "pipeline validated by
+  s2 overlap" finding is withdrawn by its author).
+- WEAKENED BUT USABLE: matched-protocol comparisons (same episode count + order).
+  stride-1 0.039 vs ar4 0.023 demo-IC, Fisher p=0.69 = "no detectable difference"
+  stands — a null is the one result contamination cannot manufacture.
+- The >=3/15 threshold survives with a NEW rationale: "3 picks exceeds anything
+  observed from contamination alone", NOT binomial p<0.05.
+
+**RULES + FIX PLAN (in force):**
+1. IMMEDIATE RULE: compared conditions must share episode COUNT and ORDER; never
+   compare across different n.
+2. PAPER-FACING NUMBERS: one episode per process (clean by construction, ~15x
+   process overhead, affordable).
+3. RESET FIX (Fable, after in-flight probes finish, announced per shared-tree
+   rule): reset() re-issues controller targets (arm + gripper) to HARDCODED_START
+   BEFORE its scene.step() — the probe-confirmed dominant channel. Gate: re-probe
+   must show history-independent post-reset obs AND identical-command trajectories.
+   Solver-cache residue beyond the controller channel cannot be excluded — which
+   is why rule 2 stays even after the fix.
+4. ar8 trainers: LET FINISH (training validity is not the issue — policies train
+   and act in the residue env either way); re-evaluate later under the fixed
+   protocol + re-registered criterion.
+5. OPEN QUESTION FOR THE USER (neither session acts alone): does P2 touch the
+   central BC table (dH_DP vs dDP_DP, n=8, P=0.994)? Those evals ran the same
+   multi-episode path. Matched protocols across arms may protect the COMPARISON;
+   absolute rates and the significance machinery need re-derivation or re-running.
+   User's call on how much re-running the paper warrants.
+Also note: the §7 phase sweeps (pre- AND post-fix) used sequential per-shard
+replays → contaminated start states; the pre/post #26 comparison retains meaning
+(matched schedules), absolute stage counts get the same caveat.
+
+## 4a. PRE-REGISTERED ar8 verdict protocol — **SUSPENDED 08-14 pending P2**
+(the >=3/15 threshold assumed 15 independent draws; P2 shows they are not.
+Protocol to be re-registered after the reset fix + re-probe. Original text kept:)
 
 - Checkpoint: **100k decisions** = rlpd_100000_steps.zip per seed (same step as
   rlpd_final at this budget; use the _steps file for symmetry with other arms).
