@@ -863,3 +863,17 @@ machinery/FK/conventions validated — the physics premise failed, not the tooli
 (3) EEF CAN complete the full task at mm precision on individual demos (325, 326
 settled-nested) — just not reliably across the population.
 Manifests: eef_playback/census_4dof_v3/. 6dof-v3 gate-failed, not censused.
+
+## 16. dv3 msrecipe: ENTROPY FINGERPRINT FIRED (08-14 afternoon)
+
+Cluster monitor sighting: actor_entropy s0 = -0.52, s1 = 0.19, s2 = 0.065 at
+~50-67k env steps. Every failing dv3 run in project history sat flat-high at
+8-9.5 nats. All three msrecipe seeds have COLLAPSED toward the ManiSkill
+signature (~-2 nats). picked=0 / train_return=0 so far — this MATCHES the MS
+pattern: the actor commits BEFORE the first env success (imitation of in-buffer
+demos through the world model), and MS takeoff followed at ~110-137k env steps.
+Budget 3e5. The architecture-vs-shaping question is leaning SHAPING: stock dv3's
+actor receives an advantage gradient on genesis for the first time.
+Also: dH firming seeds at 600-838k, eval_picked 0 so far (10/10); two dDP seeds
+already running via QOS drip. No ignitions yet in wave 2 — inside the lottery
+band, watch. Monitor re-armed (alert = first nonzero cluster pick).
