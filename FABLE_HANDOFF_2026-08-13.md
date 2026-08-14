@@ -797,3 +797,13 @@ v2 pass (raised cap + symmetric arrival) would tighten absolutes; the 4v6
 answer would not change. Artifacts: baselines/playback_eef_demos.py +
 scratchpad eef_playback/ manifests. NEXT DECISION (user): v2 fidelity pass,
 or advance to the RECORDING phase in 4-DOF, or both.
+
+## 15. dDP data LANDED + VERIFIED (08-14)
+
+- baselines/genesis_m1all/ — 93 dreamer-format IMAGE episodes (dDP world-model
+  twin source; msrecipe converter needs a dreamer-format reader branch first).
+- baselines/m1all_harvest/ — 93 episodes-format npz, states 17-dim 93/93,
+  63 picked/success + 30 no-pick/fail (--keep-fails design; human set 66+25),
+  rollout-counter provenance PASS, carries images too (dual rep).
+**dDP_RLPD twin: UNBLOCKED.** Launch plan: matched dH+dDP pair, SAME config
+(winner of the ln readout), same machine, same wave, §4a-2 sweep protocol.
