@@ -877,3 +877,11 @@ actor receives an advantage gradient on genesis for the first time.
 Also: dH firming seeds at 600-838k, eval_picked 0 so far (10/10); two dDP seeds
 already running via QOS drip. No ignitions yet in wave 2 — inside the lottery
 band, watch. Monitor re-armed (alert = first nonzero cluster pick).
+
+## 16b. First wave-2 ignition (08-14 ~16:20)
+
+- **dH_R2Dshort_s22: eval_picked 0.4 at ~1M env steps** — wave-2's first igniter.
+- dH_R2Dshort_s21: completed 1M, eval 0 (first confirmed wave-2 null).
+- Others at 690-999k, eval 0 so far. Prediction band: ~3/10 (1-6).
+- msrecipe entropy still deepening: -0.44/-0.72/-0.69 at ~60-70k, picked 0
+  (MS takeoff window 110-137k approaches).
