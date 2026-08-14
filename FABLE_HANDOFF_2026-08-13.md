@@ -669,3 +669,21 @@ marginal episodes resolve arbitrarily under microscopic state changes. The >=4/5
 tolerance absorbed it by design — thresholds with slack survive P2; exact
 per-episode outcomes do not. The RLPD stride-gate and msrecipe gate pass on both
 sides of the fix; cluster submit spec remains valid.
+
+## 11. skip-N re-record censuses (08-14 morning) — COMPLETE
+
+| N | >=picked | >=placed | >=contact | >=nested | median decisions | saturation |
+|---|---|---|---|---|---|---|
+| 1 | 61 | 55 | 28 | 20 | 1957 | 1.4% |
+| 4 | 58 | 32 | 10 | 8 | 1138 | 1.0% |
+| 8 | 43 | 29 | 6 | 4 | 592 | 2.3% |
+
+READING: pick survives N=4 nearly intact (58 vs 61); everything downstream
+degrades sharply already at N=4 (55->32 placed, 28->10 contact, 20->8 nested).
+Effective compression is SUB-LINEAR (1957->1138 = 1.7x at nominal 4x; 3.3x at
+nominal 8x) because dwell catch-up eats the stride. Saturation stays low at all
+N — strain shows as TIME DILATION and stage loss, not clipping (the follower
+dwells instead of saturating). DECISION GUIDANCE: N=4 usable for PICK-scope
+demos; stride-1 re-record is the full-task set. Same caveats as §10 (sequential
+shards / P2 residue; single census per N; fresh-process re-census before paper).
+r4/r8 npz stamped via backfill after shard exit.
