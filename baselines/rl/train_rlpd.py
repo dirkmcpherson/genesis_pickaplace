@@ -179,9 +179,33 @@ def main():
 
     from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
     from wandb_utils import init_wandb, WandbScalarCallback, VideoEvalCallback
+
+    class SidecarCheckpointCallback(CheckpointCallback):
+        """Write the action-mode sidecar NEXT TO EVERY snapshot checkpoint.
+
+        The stock callback saves rlpd_<N>_steps.zip with no sidecar, so wandb_eval
+        --action-mode auto resolves <stem>.action_mode.json, finds nothing, and
+        falls back to absolute@1 -- a delta policy then evals ~0.00 and the zero
+        looks like a result. Third member of the silent-default family (grip
+        column, control mode; caught by newbox_supp 2026-08-13 before it produced
+        13 artifact zeros in the 100k post-hoc sweep)."""
+
+        def __init__(self, sidecar_json, **kw):
+            super().__init__(**kw)
+            self._sidecar_json = sidecar_json
+
+        def _on_step(self):
+            ok = super()._on_step()
+            if self.n_calls % self.save_freq == 0:
+                zip_path = pl.Path(self._checkpoint_path(extension='zip'))
+                zip_path.with_name(zip_path.stem + '.action_mode.json').write_text(
+                    self._sidecar_json)
+            return ok
+
     run = init_wandb(args, name=args.run_name or out.name, tags=('rlpd',),
                      project=args.project)
-    cbs = [CheckpointCallback(save_freq=50_000, save_path=str(out), name_prefix='rlpd'),
+    cbs = [SidecarCheckpointCallback(json.dumps(sidecar), save_freq=50_000,
+                                     save_path=str(out), name_prefix='rlpd'),
            WandbScalarCallback(run)]
     if args.eval_freq:
         cbs.append(VideoEvalCallback(
