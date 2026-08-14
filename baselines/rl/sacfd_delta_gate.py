@@ -53,16 +53,25 @@ def _paths_for(uids):
     return out
 
 
-def _encode(paths, pick_z, scope, cap, repeat):
-    """stride-1 vs action-repeat encoder, selected EXPLICITLY (no silent fallback)."""
+def _encode(paths, pick_z, scope, cap, repeat, delta_ref='target'):
+    """stride x reference encoder, selected EXPLICITLY (no silent fallback).
+    delta_ref='measured' pairs with FullTaskEnv(delta_ref='measured')."""
     from train_sacfd_full import (delta_encode_transitions,
-                                  delta_encode_transitions_repeat)
+                                  delta_encode_transitions_repeat,
+                                  delta_encode_transitions_measured,
+                                  delta_encode_transitions_measured_repeat)
+    assert delta_ref in ('target', 'measured'), delta_ref
+    if delta_ref == 'measured':
+        if repeat > 1:
+            return delta_encode_transitions_measured_repeat(paths, pick_z, scope,
+                                                            cap, repeat)
+        return delta_encode_transitions_measured(paths, pick_z, scope, cap)
     if repeat > 1:
         return delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat)
     return delta_encode_transitions(paths, pick_z, scope, cap)
 
 
-def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1):
+def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1, delta_ref='target'):
     """ALL-demos, ALL-phases replay at action-repeat=N, measured by the env's OWN
     stage grants (FullTaskEnv._granted), so this shares the exact measurement TRAINING
     credits -- no reimplemented stage ladder. Prints one parseable line per demo:
@@ -77,8 +86,9 @@ def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1):
     RANK2NAME = {v: k for k, v in STAGE_RANK.items()}
 
     env = FullTaskEnv(backend='cpu', max_steps=4000, scope='full',
-                      action_mode='delta_joint', action_repeat=repeat)
-    print(f'[sweep] env built | repeat={repeat} pick_z={env.pick_z:.4f} '
+                      action_mode='delta_joint', action_repeat=repeat,
+                      delta_ref=delta_ref)
+    print(f'[sweep] env built | repeat={repeat} ref={delta_ref} pick_z={env.pick_z:.4f} '
           f'cap={env.delta_cap} action_repeat={env.action_repeat}', flush=True)
 
     paths = sorted(glob.glob(str(REPO / demo_dir / '*.npz')),
@@ -89,7 +99,7 @@ def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1):
         d = np.load(p, allow_pickle=True)
         uid = int(d['uid'])
         label = str(d['stage']) if 'stage' in d.files else '?'
-        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat)
+        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat, delta_ref)
         acts = [t[1] for t in ep]
         try:
             env.reset(options={'uid': uid})
@@ -102,7 +112,7 @@ def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1):
             if term or trunc:
                 break
         rank = max((STAGE_RANK.get(s, 0) for s in env._granted), default=0)
-        print(f'SWEEP uid={uid} repeat={repeat} stage={RANK2NAME.get(rank, "no-pick")} '
+        print(f'SWEEP uid={uid} repeat={repeat} ref={delta_ref} stage={RANK2NAME.get(rank, "no-pick")} '
               f'rank={rank} label={label} n_dec={len(acts)}', flush=True)
     print(f'[sweep] DONE repeat={repeat} demo_dir={demo_dir}', flush=True)
 
@@ -119,6 +129,11 @@ def main():
                          'report the env-granted stage (all phases), instead of the '
                          '5-uid pick gate. Used to find the coarsest N safe for the '
                          'full task.')
+    ap.add_argument('--delta-ref', choices=['target', 'measured'], default='target',
+                    help="what a delta is applied to: 'target' = running-target "
+                         "integration (existing; P1 frozen drift), 'measured' = "
+                         "re-referenced to measured qpos each step (self-healing). "
+                         "Applies to gate AND sweep; encoder + env selected together.")
     ap.add_argument('--shard-idx', type=int, default=0)
     ap.add_argument('--shard-n', type=int, default=1,
                     help='sweep mode: replay only paths[shard_idx::shard_n], so many '
@@ -128,7 +143,8 @@ def main():
     repeat = max(1, int(args.action_repeat))
 
     if args.all_demos:
-        all_demos_sweep(args.all_demos, repeat, args.shard_idx, args.shard_n)
+        all_demos_sweep(args.all_demos, repeat, args.shard_idx, args.shard_n,
+                        args.delta_ref)
         return
 
     from full_env import FullTaskEnv, STAGE_REWARD
@@ -143,14 +159,15 @@ def main():
     # marginal-terminal pick-phase demos -- truncated ~2 frames past pick_z -- can
     # never satisfy even under a perfect replay; see GATE_UIDS note above.)
     env = FullTaskEnv(backend='cpu', max_steps=1800, scope='full',
-                      action_mode='delta_joint', action_repeat=repeat)
+                      action_mode='delta_joint', action_repeat=repeat,
+                      delta_ref=args.delta_ref)
     from pick_env import GRIP_CLOSED_FRAC
     print(f'[gate] env built | pick_z={env.pick_z:.4f} delta_cap={env.delta_cap} '
           f'action_repeat={env.action_repeat}', flush=True)
 
     # ---- (1) tensor equality: DemoData actions == encoder output ----
     all_paths = _paths_for(GATE_UIDS)
-    trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat)
+    trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat, args.delta_ref)
     dd = DemoData(trans, action_transform=None, device=th.device('cpu'))
     ref_act = np.stack([t[1] for t in trans]).astype(np.float32)
     ref_obs = np.stack([t[0] for t in trans]).astype(np.float32)
@@ -163,7 +180,7 @@ def main():
     passed = 0
     for uid, p in zip(GATE_UIDS, all_paths):
         # encode on the FULL episode (scope='full' => keep post-pick rows, no done cut)
-        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat)
+        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat, args.delta_ref)
         acts = [t[1] for t in ep]
         env.reset(options={'uid': uid})
         picked, canz_max, steps = False, -9.0, 0

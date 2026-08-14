@@ -83,7 +83,7 @@ class FullTaskEnv(gym.Env):
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
-                 delta_leash_mult=5.0, action_repeat=1):
+                 delta_leash_mult=5.0, action_repeat=1, delta_ref='target'):
         super().__init__()
         # action_repeat N (2026-08-13): ONE policy decision is held for N consecutive
         # env (sim) steps -- the SAME normalized action feeds _step_once N times, so in
@@ -113,6 +113,20 @@ class FullTaskEnv(gym.Env):
         self.action_mode = action_mode
         self.delta_cap = float(delta_cap)
         self.delta_leash = float(delta_leash_mult) * float(delta_cap)
+        # delta_ref (2026-08-14, user-directed after P1): what a delta is APPLIED TO.
+        # 'target'   = existing behavior: sp = running_target + a*cap. Open-loop
+        #              integration -- a clipped frame leaves a PERMANENT offset the
+        #              replay never heals (P1 frozen drift; kills downstream phases).
+        # 'measured' = sp = measured_qpos + a*cap (ManiSkill pd_delta style). Each
+        #              action re-references the actual arm, so errors cannot
+        #              accumulate; the demos' recorded qpos supplies the reference
+        #              for offline encoding (delta_encode_transitions_measured*).
+        # Default 'target' so every existing call site/protocol is unchanged;
+        # callers opt in EXPLICITLY (silent-default rule). Note the trade-off: in
+        # 'measured' mode a stalled arm keeps being pushed +a*cap relative to where
+        # it IS (sustained contact push), vs 'target' which caps total intent.
+        assert delta_ref in ('target', 'measured'), delta_ref
+        self.delta_ref = delta_ref
         # TRAINING-ONLY dense shaping (scope='place' only; see PLACE_SHAPING_*
         # constants). Default False so eval and every other caller are unchanged.
         assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
@@ -312,8 +326,18 @@ class FullTaskEnv(gym.Env):
     def _step_once(self, action):
         if self.action_mode == 'delta_joint':
             a = np.asarray(action, dtype=np.float64)
-            d = np.clip(a[:6], -1.0, 1.0) * self.delta_cap
-            sp = np.clip(self._dj_target + d, ARM_LO, ARM_HI)
+            if self.delta_ref == 'measured':
+                # Measured mode scales by the LEASH, not the cap: the action is the
+                # normalized desired PD ERROR (target offset from the actual arm).
+                # The demos drive with lead up to ~0.126 rad (p99 == leash); scaling
+                # by cap under-drives 5x and the arm never keeps the demo's timing
+                # (smoke 0/5, can untouched). With leash scaling, replaying the
+                # recorded lead reproduces the recorded drive.
+                d = np.clip(a[:6], -1.0, 1.0) * self.delta_leash
+                sp = np.clip(self._dj_qmeas + d, ARM_LO, ARM_HI)
+            else:
+                d = np.clip(a[:6], -1.0, 1.0) * self.delta_cap
+                sp = np.clip(self._dj_target + d, ARM_LO, ARM_HI)
             self._dj_target = self._dj_qmeas + np.clip(
                 sp - self._dj_qmeas, -self.delta_leash, self.delta_leash)
             a_phys = np.concatenate(

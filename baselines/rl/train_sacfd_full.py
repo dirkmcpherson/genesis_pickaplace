@@ -171,6 +171,68 @@ def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat):
     return out
 
 
+def delta_encode_transitions_measured(paths, pick_z, scope, cap):
+    """Measured-referenced sibling of delta_encode_transitions (2026-08-14,
+    user-directed after P1). Action = clip((cmd_t - qmeas_t)/cap, -1, 1) where
+    qmeas_t = the demo's RECORDED measured qpos (states[t,:6]) -- the reference the
+    demo files already carry. Executed in FullTaskEnv(delta_ref='measured') each
+    action re-references the actual arm, so a clipped frame cannot leave the P1
+    permanent offset: the next action points from wherever the arm IS toward the
+    recorded command. Grip unchanged (raw*2-1)."""
+    out = []
+    for p in paths:
+        trans, _ = relabel_full([p], pick_z)
+        if not trans:
+            continue
+        if scope == 'pick':
+            trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                     (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
+        cmds = np.stack([t[1] for t in trans]).astype(np.float64)
+        qmeas = np.stack([t[0][:6] for t in trans]).astype(np.float64)
+        # divide by the LEASH (env measured-mode scale): a = normalized recorded
+        # PD lead. cap-scaling under-drove 5x (gate 0/5, 2026-08-14).
+        dq = np.clip((cmds[:, :6] - qmeas) / (5.0 * cap), -1.0, 1.0)
+        grip = np.clip(cmds[:, 6], 0.0, 1.0) * 2.0 - 1.0
+        acts = np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
+        out.extend((o, acts[i], r, o2, d)
+                   for i, (o, _, r, o2, d) in enumerate(trans))
+    return out
+
+
+def delta_encode_transitions_measured_repeat(paths, pick_z, scope, cap, repeat):
+    """Measured-referenced decision-level (skip-N) encoder. Per window of `repeat`
+    sim steps the decision action is a = clip((cmd_end - qmeas_start)/(repeat*cap),
+    -1, 1): reach the window's final recorded command from the window-START recorded
+    arm pose, spread over `repeat` measured-referenced steps. Window rules match
+    delta_encode_transitions_repeat exactly: grip = LAST frame, reward = SUM,
+    done = ANY, obs = window start, next_obs = window end."""
+    assert int(repeat) >= 1, repeat
+    repeat = int(repeat)
+    out = []
+    for p in paths:
+        trans, _ = relabel_full([p], pick_z)
+        if not trans:
+            continue
+        if scope == 'pick':
+            trans = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                     (o, a, r, o2, d) for (o, a, r, o2, d) in trans]
+        n = len(trans)
+        cmds = np.stack([t[1] for t in trans]).astype(np.float64)
+        C = cmds[:, :6]
+        for k in range(0, n, repeat):
+            end = min(k + repeat - 1, n - 1)
+            qref = trans[k][0][:6].astype(np.float64)   # measured qpos, window start
+            # leash scaling (matches env delta_ref='measured'); window gap may exceed
+            # the leash at large N -> clipped, healed by next window's re-reference.
+            dq = np.clip((C[end] - qref) / (5.0 * cap), -1.0, 1.0)
+            grip = np.clip(cmds[end, 6], 0.0, 1.0) * 2.0 - 1.0
+            act = np.concatenate([dq, [grip]]).astype(np.float32)
+            rew = float(sum(trans[i][2] for i in range(k, end + 1)))
+            done = bool(any(trans[i][4] for i in range(k, end + 1)))
+            out.append((trans[k][0], act, rew, trans[end][3], done))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--steps', type=int, default=400_000)
