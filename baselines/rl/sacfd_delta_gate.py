@@ -62,6 +62,51 @@ def _encode(paths, pick_z, scope, cap, repeat):
     return delta_encode_transitions(paths, pick_z, scope, cap)
 
 
+def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1):
+    """ALL-demos, ALL-phases replay at action-repeat=N, measured by the env's OWN
+    stage grants (FullTaskEnv._granted), so this shares the exact measurement TRAINING
+    credits -- no reimplemented stage ladder. Prints one parseable line per demo:
+        SWEEP uid=<u> repeat=<N> stage=<name> rank=<k> label=<recorded>
+    The honest comparison across N is repeat-1 vs repeat-N under this SAME measurement
+    (run the sweep at N=1 too), which isolates subsampling from any predicate mismatch
+    against the recorded d['stage'] label.
+    """
+    import glob
+    from full_env import FullTaskEnv
+    from train_sacfd_full import STAGE_RANK
+    RANK2NAME = {v: k for k, v in STAGE_RANK.items()}
+
+    env = FullTaskEnv(backend='cpu', max_steps=4000, scope='full',
+                      action_mode='delta_joint', action_repeat=repeat)
+    print(f'[sweep] env built | repeat={repeat} pick_z={env.pick_z:.4f} '
+          f'cap={env.delta_cap} action_repeat={env.action_repeat}', flush=True)
+
+    paths = sorted(glob.glob(str(REPO / demo_dir / '*.npz')),
+                   key=lambda p: int(pl.Path(p).stem))
+    if shard_n > 1:
+        paths = paths[shard_idx::shard_n]     # every shard_n-th demo (interleaved balance)
+    for p in paths:
+        d = np.load(p, allow_pickle=True)
+        uid = int(d['uid'])
+        label = str(d['stage']) if 'stage' in d.files else '?'
+        ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat)
+        acts = [t[1] for t in ep]
+        try:
+            env.reset(options={'uid': uid})
+        except Exception as e:
+            print(f'SWEEP uid={uid} repeat={repeat} stage=UNRESETTABLE rank=-1 '
+                  f'label={label} ({type(e).__name__})', flush=True)
+            continue
+        for a in acts:
+            _o, _r, term, trunc, _i = env.step(a)
+            if term or trunc:
+                break
+        rank = max((STAGE_RANK.get(s, 0) for s in env._granted), default=0)
+        print(f'SWEEP uid={uid} repeat={repeat} stage={RANK2NAME.get(rank, "no-pick")} '
+              f'rank={rank} label={label} n_dec={len(acts)}', flush=True)
+    print(f'[sweep] DONE repeat={repeat} demo_dir={demo_dir}', flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--action-repeat', type=int, default=1,
@@ -69,8 +114,22 @@ def main():
                          'demos encoded by delta_encode_transitions_repeat and replayed '
                          'through FullTaskEnv(action_repeat=N) must re-earn the pick. '
                          'N=1 is the original stride-1 gate.')
+    ap.add_argument('--all-demos', metavar='DIR', default=None,
+                    help='sweep mode: replay EVERY demo in DIR at --action-repeat and '
+                         'report the env-granted stage (all phases), instead of the '
+                         '5-uid pick gate. Used to find the coarsest N safe for the '
+                         'full task.')
+    ap.add_argument('--shard-idx', type=int, default=0)
+    ap.add_argument('--shard-n', type=int, default=1,
+                    help='sweep mode: replay only paths[shard_idx::shard_n], so many '
+                         'workers can split one repeat across cores (CPU sim is ~1 core '
+                         'per proc).')
     args = ap.parse_args()
     repeat = max(1, int(args.action_repeat))
+
+    if args.all_demos:
+        all_demos_sweep(args.all_demos, repeat, args.shard_idx, args.shard_n)
+        return
 
     from full_env import FullTaskEnv, STAGE_REWARD
     from rlpd_sac import DemoData
