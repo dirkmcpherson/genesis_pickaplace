@@ -391,6 +391,13 @@ replays → contaminated start states; the pre/post #26 comparison retains meani
   Rationale: 3 picks exceeds anything observed from contamination/borderline
   effects alone (NOT a binomial claim). No sensitivity column (withdrawn — it
   confounds residue schedule with horizon).
+- EXECUTION (newbox_supp, staged behind the last trainers): 180 fresh processes.
+  APPROVED DEVIATION: random-IC arm = 15 INDEPENDENT ICs (--random 1 --seed k,
+  k=0..14), not one stream's 15 — independent draws are if anything cleaner; the
+  criterion arm (demo-IC) is exact. newbox_supp's registered prediction
+  (pre-data): 0/6 seeds reach >=3/15. Fable registers NO counter-prediction —
+  the in-train signal (one stray 0.10 at 62.5k across 6 seeds) points the same
+  way, and a second identical prediction adds nothing.
 
 ## 4a. ORIGINAL pre-registration — superseded by 4a-2 (kept for the record)
 
