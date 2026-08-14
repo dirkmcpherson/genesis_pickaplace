@@ -140,6 +140,7 @@ def main():
     print(f'[cfg] RLPD | E={args.ensemble_size} Z={args.subset_size} UTD={args.utd} '
           f'gamma={args.gamma} ent_coef={args.ent_coef} '
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
+          f'backup_entropy={args.backup_entropy} '
           f'scope={args.scope} action_mode={args.action_mode} '
           f'action_repeat={args.action_repeat}', flush=True)
     print(model.critic, flush=True)
