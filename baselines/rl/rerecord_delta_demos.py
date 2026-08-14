@@ -116,7 +116,7 @@ def _np(x):
     return x.detach().cpu().numpy() if hasattr(x, 'detach') else np.asarray(x)
 
 
-def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle):
+def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle, repeat=1):
     """Closed-loop follow one demo. Returns (arrays dict, record dict) or (None, rec)
     if the uid is not resettable."""
     from replay_harness import tilt_deg, NESTED_TOUCH_DIST
@@ -141,8 +141,10 @@ def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle):
     # waypoint has no successor frame and reuses the last recorded pose.
     ref = np.concatenate([S[1:, :6], S[-1:, :6]], axis=0)
 
-    step_cap = int(np.ceil(dilation_cap * n_src))
-    env.max_steps = step_cap + settle + 10      # env truncation must not pre-empt us
+    # step_cap counts DECISIONS. At repeat>1 each decision spans `repeat` sim steps
+    # and may advance up to `repeat` waypoints, so the decision budget divides by it.
+    step_cap = int(np.ceil(dilation_cap * n_src / repeat))
+    env.max_steps = (step_cap + settle) * repeat + 10   # env truncation in SIM steps
     t0 = time.time()
     try:
         obs, _info = env.reset(options={'uid': uid})
@@ -158,8 +160,12 @@ def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle):
     steps = 0
     while j < n_src and steps < step_cap:
         q = np.asarray(obs[:6], dtype=np.float64)
-        a_arm = np.clip((cmd[j] - q) / leash, -1.0, 1.0)
-        a = np.concatenate([a_arm, [grip[j] * 2.0 - 1.0]]).astype(np.float32)
+        # decision-level window (skip-N): aim at the window-END waypoint and take its
+        # grip -- the same window rules as delta_encode_transitions_*_repeat (grip =
+        # last frame in window). At repeat==1 this is exactly the original follower.
+        jt = min(j + repeat - 1, n_src - 1)
+        a_arm = np.clip((cmd[jt] - q) / leash, -1.0, 1.0)
+        a = np.concatenate([a_arm, [grip[jt] * 2.0 - 1.0]]).astype(np.float32)
         states.append(np.asarray(obs, dtype=np.float32))
         obs, r, term, trunc, info = env.step(a)
         steps += 1
@@ -174,13 +180,22 @@ def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle):
             term_step = steps
             tipped = bool(info.get('tipped'))
         qn = np.asarray(obs[:6], dtype=np.float64)
-        if float(np.max(np.abs(qn - ref[j]))) < tol:
-            j += 1
+        # advance to the FURTHEST arrived waypoint in the window (mid-window points
+        # are passed in transit during the repeat sim steps; requiring each at the
+        # decision boundary would spuriously dwell). repeat==1 degenerates to the
+        # original single-waypoint check.
+        adv = -1
+        for k in range(jt, j - 1, -1):
+            if float(np.max(np.abs(qn - ref[k]))) < tol:
+                adv = k
+                break
+        if adv >= 0:
+            j = adv + 1
             dwell = 0
         else:
             dwell += 1
             if dwell >= max_dwell:
-                j += 1
+                j = jt + 1
                 dwell = 0
                 stalls += 1
     truncated = j < n_src
@@ -193,7 +208,7 @@ def rerecord_one(env, src_path, tol, max_dwell, dilation_cap, settle):
     placed = bool(env.genv._placed)
     contact = bool(env.genv._contact)
     # settle: hold the LAST waypoint (closed-loop position hold), then score nested
-    for _ in range(settle):
+    for _ in range(max(1, settle // repeat)):
         q = np.asarray(obs[:6], dtype=np.float64)
         a_arm = np.clip((cmd[-1] - q) / leash, -1.0, 1.0)
         a = np.concatenate([a_arm, [grip[-1] * 2.0 - 1.0]]).astype(np.float32)
@@ -245,7 +260,8 @@ def run(args):
 
     # ONE env per PROCESS (P2): shard across processes, never threads.
     env = FullTaskEnv(backend='cpu', max_steps=4000, scope='full',
-                      action_mode='delta_joint', action_repeat=1,
+                      action_repeat=args.action_repeat,
+                      action_mode='delta_joint',
                       delta_ref='measured')
     print(f'[rerec] env built | delta_ref=measured cap={env.delta_cap} '
           f'leash={env.delta_leash} pick_z={env.pick_z:.4f} | tol={args.tol} '
@@ -255,14 +271,16 @@ def run(args):
     recs = []
     for p in paths:
         arrays, rec = rerecord_one(env, p, args.tol, args.max_dwell,
-                                   args.dilation_cap, args.settle)
+                                   args.dilation_cap, args.settle,
+                                   repeat=args.action_repeat)
         if arrays is not None and not args.no_write:
             np.savez_compressed(outdir / f"{rec['uid']}.npz", **arrays)
         recs.append(rec)
         print('RERECORD ' + ' '.join(f'{k}={v}' for k, v in rec.items()), flush=True)
     man = outdir / f'_manifest_shard{args.shard_idx}of{args.shard_n}.json'
     man.write_text(json.dumps(dict(
-        config=dict(demo_dir=args.demo_dir, tol=args.tol, max_dwell=args.max_dwell,
+        config=dict(demo_dir=args.demo_dir, action_repeat=args.action_repeat,
+                    tol=args.tol, max_dwell=args.max_dwell,
                     dilation_cap=args.dilation_cap, settle=args.settle,
                     delta_ref='measured', delta_cap=env.delta_cap,
                     delta_leash=env.delta_leash,
@@ -330,6 +348,11 @@ def main():
     ap.add_argument('--max-dwell', type=int, default=DEFAULT_MAX_DWELL)
     ap.add_argument('--dilation-cap', type=float, default=DEFAULT_DILATION_CAP)
     ap.add_argument('--settle', type=int, default=DEFAULT_SETTLE)
+    ap.add_argument('--action-repeat', type=int, default=1,
+                    help='decision-level skip-N: one follower decision spans N sim '
+                         'steps and may advance up to N waypoints (window-end '
+                         'target + window-end grip, matching the repeat encoders). '
+                         'OUTDIR should encode N; the manifest records it.')
     ap.add_argument('--no-write', action='store_true', help='pilot: sim but do not save npz')
     ap.add_argument('--merge', action='store_true', help='no sim: union shard manifests')
     args = ap.parse_args()

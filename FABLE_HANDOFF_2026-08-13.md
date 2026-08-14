@@ -399,6 +399,22 @@ replays → contaminated start states; the pre/post #26 comparison retains meani
   the in-train signal (one stray 0.10 at 62.5k across 6 seeds) points the same
   way, and a second identical prediction adds nothing.
 
+## 4a-3. ar8 VERDICT (newbox_supp, 08-14 ~05:30, per §4a-2): **NOT WORTH PURSUING.**
+0/90 demo-IC picks across all 6 seeds (1/90 random-IC = borderline noise). Both
+registered predictions honored (newbox_supp predicted 0/6; correct — noting a
+confirmed null prediction is weak evidence next to a failed one).
+SCOPE LIMIT (caption material): trained at repeat-8, EVALUATED at 400 env steps
+= 50 decisions (equal sim time). The defensible claim is operational — "at equal
+physical time, repeat-8 produces no picks" — NOT a training-regime mechanism claim
+(the column that would separate those was killed as confounded).
+
+**REPEAT-N CLOSED, one protocol, 100k decisions:** stride-1 0.039 (4/105) |
+ar4 0.023 (2/90) | ar8 0.000 (0/90). Monotone decreasing, nothing clears the noise
+floor, stride-1 vs ar4 p=0.69. **Action-repeat bought nothing measurable at this
+budget; the literature's horizon hypothesis is unsupported by our data.** Clean
+negative result; report it as such. ar8 in-train curves doubly superseded — cite
+only this table.
+
 ## 4a. ORIGINAL pre-registration — superseded by 4a-2 (kept for the record)
 
 - Checkpoint: **100k decisions** = rlpd_100000_steps.zip per seed (same step as
@@ -620,6 +636,29 @@ parity ~100 decisions-to-pick; 88% pick / 90% place preservation). This matches 
 current experimental scope (all three arms are scope=pick). To pin N for the full
 task's delicate phases later, we need a higher-fidelity test (closed-loop, or a
 better replay) — the open-loop delta_joint replay cannot answer it.
+
+## 10. CLOSED-LOOP RE-RECORD (P1 SOLUTION) — census 08-14 ~05:00
+
+baselines/rl/rerecord_delta_demos.py (commit a164cdf): waypoint follower in
+FullTaskEnv(delta_ref='measured'), advance-on-arrival vs recorded MEASURED poses,
+dwell-capped, settled-nested scoring (collector semantics, proxy kept separate).
+
+**CENSUS (72 resettable, stride-1): picked 61 / placed 55 / contact 28 / nested 20**
+vs labels 65/62/25/16 and the target-ref tape 42/40/5/1. DOWNSTREAM FULLY
+RECOVERED. Dilation median 1.013x (p90 2.27x, 1 truncated at the 3x cap; 59/72
+used dwell catch-up somewhere). Encoder round-trip max err 9.5e-7 — the tapes are
+bit-consistent with delta_encode_transitions_measured. Overshoot vs labels
+(contact +3, nested +4) = borderline flips in our favor (P2 class), flag not
+celebrate. 9 demos below label incl. 6 no-picks — census aggregate is the signal.
+Demo set: baselines/episodes_delta_rerecord/ (72 npz + shard manifests, RSYNC ONLY).
+CAVEAT: sequential shards -> P2 residue; fresh-process re-census before paper use.
+
+**skip-N (user directive "how short can trajectories get"): RUNNING** — follower
+extended to decision-level N (window-end target + window-end grip, furthest-arrived
+advance; smoke uid 308 @N=8: 1354 frames -> 508 decisions, stage placed).
+Censuses at N=4 and N=8 in flight (episodes_delta_rerecord_r{4,8}). NB the ar8
+RLPD training null does NOT cancel this — different question (demo compression
+for credit assignment, not policy training at coarse control).
 
 ## 9. Post-P2-fix gate re-verification (08-14 ~02:00)
 
