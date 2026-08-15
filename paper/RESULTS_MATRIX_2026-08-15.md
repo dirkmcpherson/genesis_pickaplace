@@ -45,3 +45,63 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 1. P2: sequence evals are not independent draws. Paper numbers use fresh-process or carry the methods paragraph.
 2. Env fixes changed baselines twice (E1, E2). Rows never pool across those boundaries (RUN_LEDGER maps every run).
 3. Eval horizons: RLPD rows at 400 steps, DP/SACfD at 1200. Measured effect on the strongest checkpoint: nil. Stated per table.
+
+## IGNITION STATISTICS (added 08-15, user request)
+
+Ignition = a seed produces a policy above the noise floor (RLPD: >=3/15 fresh-
+process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval).
+
+### Measured rates
+
+| arm | config | ignited / seeds | rate | rough 95% CI |
+|---|---|---|---|---|
+| RLPD nb | fixed trainer, 100k | 1/3 | 0.33 | — |
+| RLPD pair-dH | same | 1/3 | 0.33 | — |
+| RLPD hold | +25x density | 1/3 | 0.33 | — |
+| RLPD mref | measured-ref demos | 1/3 | 0.33 | — |
+| **RLPD pooled (dH-class)** | 4 waves | **4/12** | **0.33** | [0.10, 0.65] |
+| RLPD pair-dDP | model demos | 0/3 | 0.00 | [0, 0.71] |
+| r2dreamer dH local | delta recipe | 2/4 | 0.50 | — |
+| r2dreamer dH cluster w1 | 1M steps | 3/10 | 0.30 | — |
+| r2dreamer dH cluster w2 | post-fix env | 1/10 | 0.10 | — |
+| **r2dreamer dH pooled** | | **6/24** | **0.25** | [0.10, 0.47] |
+| r2dreamer dDP | both waves | 0/~20 | 0.00 | [0, 0.17] |
+| dv3 historical | any config | 0/all | 0.00 | — |
+| dv3 msrecipe | MS-shaped task | entropy 3/3, takeoff TBD | — | — |
+| SACfD | defective trainer | 0/30+ | 0.00 | confounded (T1) |
+| same dv3 code on ManiSkill | their task | ~always | ~1.0 | dozens of seeds |
+
+### Structural facts
+1. The RLPD rate is EXACTLY one seed per wave, four waves running. Pooled picks
+   5-7/45 every wave. The rate is invariant to reward density (25x), critic
+   diversity, demo source, and action-space consistency.
+2. Within an igniting r2dreamer run there is a SECOND lottery: checkpoint
+   bistability (~1-in-7 checkpoints good on the champion run).
+3. WHICH demos a seed unlocks is seed-dependent (two 4-pick seeds share 1 of 8
+   uids). The COUNT is what is stable. Ignition is a basin-entry event.
+4. The same algorithms ignite ~always on ManiSkill. The lottery is a property
+   of THIS task's exploration/credit landscape (pending cells A/B confirmation).
+
+### Interpretation and the multi-policy-per-world-model proposal (user, 08-15)
+The lottery does NOT live in the learned models of the world:
+- r2dreamer's world model keeps improving in non-igniting runs; the failures are
+  actor-side (entropy-collapse cycles, lambda-return explosion).
+- Direct prior evidence (2026-08-11 bc-run diagnostic, already in the record):
+  giving the recipe an action prior made it learn QUICKLY -> "the WM bottleneck
+  is exploration/credit assignment, not world-model capacity."
+- The four-wave RLPD invariance says the same thing model-free: the value/reward
+  plumbing is fine; the seed decides whether exploration enters the grasp basin.
+
+PROPOSAL (user): train MULTIPLE POLICIES against ONE world model. The WM trains
+on all experience regardless of actor luck; actors are cheap; N actor draws cost
+~1 WM training run plus imagination. Two concrete forms:
+1. r2dreamer ACTOR RE-DRAWS: periodically re-init actor+critic (keep WM +
+   buffer), or train K parallel actor heads on shared imagination; select by
+   imagined return, confirm by eval. K lottery tickets per WM.
+2. RLPD analog: periodic actor-critic RESETS keeping the replay buffer —
+   literature-anchored (primacy bias: Nikishin et al. 2022; high-replay resets:
+   D'Oro et al. 2023 — resets at high UTD recover plasticity and are the
+   standard fix for exactly this pathology class).
+This is now the leading candidate lever, ahead of brute-force budget (200k x n5):
+it attacks the measured mechanism (seed-level basin entry) instead of buying
+more draws at the same rate, and both forms reuse trained components.
