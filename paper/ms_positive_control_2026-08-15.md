@@ -283,11 +283,21 @@ transitions, 50 rewarded (1.453%)`; step-0 negative control `success=0.00
 (n=10) grasp=0.00` on every seed; wandb online (runs `pmr05gt1`, `y9dax9i9`,
 `sggm1ylq`). No Q-watchdog trip, no NaN, no traceback.
 
-**Throughput / ETA.** ~7.8 env steps/s per seed with all three concurrent
-(1.7 GB / 12 GB GPU, 43% util — the runs are launch-bound, not memory-bound),
-so **≈10.5 h per seed, all three finishing together**; first 50k checkpoint +
-eval at ≈1.8 h. Running three in parallel costs the same wall-clock total as
-running them sequentially and gets every seed's early checkpoints at once.
+**Throughput / ETA** (measured, corrected — the first estimate from a single
+early interval was optimistic). Per-interval rate on s0 with all three seeds
+concurrent: 7.81 → 6.67 → **6.13** env steps/s (steps 2k/3k/4k), converging
+near ~6. GPU 1.9 GB / 12 GB at 37% util with **no clock throttling**
+(`clocks_throttle_reasons.active 0x0`), so the runs are kernel-launch/CPU-bound,
+not memory- or thermally-limited.
+
+At ~6 steps/s: **≈14 h per seed, all three finishing together** (≈01:00 local,
+not the same evening); first 50k checkpoint + eval at **≈2.3 h**. Running three
+in parallel costs the same wall-clock total as running them sequentially and
+delivers every seed's early checkpoints at once, which is what the bar is read
+from. No intervention is needed if a seed is still short of 300k in the
+morning — the 50k checkpoints and `rlpd_ms_best.zip` are already decisive for
+"≥0.50 at any checkpoint", and a seed's trajectory to that point is readable
+from wandb.
 
 **How to read the result.** Watch `eval/success` in wandb project
 `genesis_paper` (tag `positive-control`), or
