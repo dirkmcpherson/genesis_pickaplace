@@ -1026,3 +1026,24 @@ launch the 3 cell-B seeds immediately. Bars stand as registered (>=2/3 at
 >=3/15 = dataset problem; <=1/3 = methods/task).
 Shared-file note: sacfd_delta_gate.py gained --uids/--min-pass + stamped-ic_uid
 reset (byte-identical without flags; needed to gate harvests at all).
+
+## 25. BOARD SNAPSHOT (08-15, pre-compaction) — read this first on resume
+
+CLUSTER ALLOCATION (user ruling): controls BEFORE wave 3. Assignment:
+- r2dreamer-on-MS -> CLUSTER when its build lands (own venv, pip-safe, L40S).
+  The build agent delivers the cluster route (rsync + pip steps for r2d_venv).
+- dv3-on-MS-at-HEAD spot-check -> LOCAL queue (after RLPD control frees GPU).
+  Do NOT pip mani_skill into the shared cluster genesis conda env (dep-clash
+  risk with genesis-world; the env-poisoning history applies).
+- RLPD-on-MS: stays local (already running, ~12h left).
+- r2dreamer wave 3 (seeds 30-39): DEFERRED until controls resolve.
+
+RUNNING: MS_RLPD-ctl x3 (local GPU, bar >=2/3 at >=0.5 by 300k); msrecipe x3
+(cluster, entropy collapsed, takeoff window); dDP firming stragglers; cluster
+monitor loop.
+QUEUED (order): cell B wave (rule: control clears bar early OR completes) ->
+dv3-MS-at-HEAD spot-check. Building: r2dreamer-on-MS control (agent).
+HELD for user: reset/multi-actor spec (results doc); disk cleanup tiers; RLPD
+budget decision (gated on cells A/B).
+USER STATE: catching up; exceptions-only reporting; results doc + this handoff
++ run ledger are the reading order.
