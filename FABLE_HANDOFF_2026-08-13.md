@@ -996,3 +996,16 @@ PAPER_PLAN 1c4337d has the four-wave table + morning decision framing.
 - dDP wave-2: 6+ seeds done at 1M, ALL 0 so far — tracking the 0-1/10 prediction.
 - Cumulative ignition contrast: dH 4/20 vs dDP 0/~20 -> Fisher ~0.05 — tightening
   toward but not yet at paper-grade. The contrast direction holds.
+
+## 23. MS POSITIVE CONTROL LAUNCHED (08-15)
+
+Cell A running: MS_RLPD-ctl_s{0,1,2}, our shipped RLPD config on MS PickCube-v1
+(state obs, pd_ee_delta_pos, native sparse), 50 motion-planning demos (1.45%
+density), gamma 0.99 (task-scale; documented), bugs 2/3 deliberately AS-SHIPPED
+so the control tests the configuration we actually ran. Gates all green;
+genesis paths zero-diff. BAR (pre-registered): VALIDATED iff >=2/3 seeds reach
+eval success >=0.50 by 300k. ~10.5h; first eval ~1.8h. Caveat registered:
+primary metric = relaxed success (dv3-parity), not directly comparable to
+published static-requirement PickCube rates. NOTE: agent pip-installed
+sb3==2.8.0 into the dreamerv3-torch venv (clean, zero dep churn) — recorded.
+Cell B (champion clean-demo harvest) building in parallel.
