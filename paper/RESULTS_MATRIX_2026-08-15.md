@@ -17,7 +17,7 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 | dH_RLPD | stable signature: 1/3 seeds ignite, 4-6 picks/45 at 100k; best single ckpt 0.40 (s0@150k, fresh-process replicated) | fresh-process, registered bars, 4 independent waves | **HOLD** — see credibility gap below |
 | dDP_RLPD | 0/3 seeds at bar, 2/45 pooled | matched pair, same machine/wave | ready ONLY as the conditional claim: "no source effect detectable at n=3/100k" (p=0.27) |
 | dH_R2D (r2dreamer) | champion 0.91 sampled / 1.00 mode (n=45+15) | best-checkpoint + independent confirmation | **READY** with the lottery protocol stated (ignition 4/20 cumulative; bistability documented; clamp fix refuted) |
-| dDP_R2D | 0 ignitions in ~20 seeds | two waves, dilution-fixed | **NEAR-READY** — the contrast dH 4/20 vs dDP 0/20 is p~0.05; direction never violated |
+| dDP_R2D | 0 ignitions in 20 seeds (FINAL — firming wave completed 08-15, all seeds ~1M steps) | two waves, dilution-fixed | **READY as the contrast**: pooled dH 6/24 vs dDP 0/20, Fisher one-sided p=0.019. Caveats: pooling crosses the E2 boundary (per-wave: dH 2/4, 3/10, 1/10 vs dDP 0/10, 0/10); the firming wave alone is underpowered (1/10 vs 0/10, p=0.5). Direction never violated in any wave |
 | dH_DV3 | null historically (instrumented); msrecipe RUNNING: entropy fingerprint FIRED on 3/3 seeds, takeoff pending | in-flight | **WAIT** — resolves within the 3e5 budget |
 | dDP_DV3 | not run under msrecipe | data local (genesis_m1all), converter needs a dreamer-format reader | **BLOCKED** on dH_DV3 verdict |
 
@@ -39,7 +39,9 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 2. Cell B verdict (dataset-vs-method).
 3. msrecipe verdict (does dv3 join the matrix or stay a null).
 4. The RLPD budget decision.
-5. Firming-wave completion (last dDP stragglers) -> final ignition-contrast p.
+5. ~~Firming-wave completion~~ RESOLVED 08-15: wave done at ~1M steps/seed.
+   dH 1/10 (s22: training-loop 0.4; fresh evals 0.067/0.133 @972k, 0 @1M —
+   checkpoint bistability again). dDP 0/10. Final contrast: pooled p=0.019.
 
 ## Cross-cutting caveats that apply to every row
 1. P2: sequence evals are not independent draws. Paper numbers use fresh-process or carry the methods paragraph.
@@ -65,7 +67,7 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
 | r2dreamer dH cluster w1 | 1M steps | 3/10 | 0.30 | — |
 | r2dreamer dH cluster w2 | post-fix env | 1/10 | 0.10 | — |
 | **r2dreamer dH pooled** | | **6/24** | **0.25** | [0.10, 0.47] |
-| r2dreamer dDP | both waves | 0/~20 | 0.00 | [0, 0.17] |
+| r2dreamer dDP | both waves (FINAL 08-15) | 0/20 | 0.00 | [0, 0.17] |
 | dv3 historical | any config | 0/all | 0.00 | — |
 | dv3 msrecipe | MS-shaped task | entropy 3/3, takeoff TBD | — | — |
 | SACfD | defective trainer | 0/30+ | 0.00 | confounded (T1) |
