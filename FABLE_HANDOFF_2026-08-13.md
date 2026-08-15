@@ -971,3 +971,19 @@ Power levers for the morning decision: 200k budget (150k-peak precedent),
 n>=5 per arm, or continuation training from igniting checkpoints.
 Curiosity on record: hold-s2's four uids overlap nb-s1's four on ONE uid —
 which demos unlock is seed-dependent; the COUNT is what is stable.
+
+## 21. MREF SWEEP + REGISTERED SET CLOSED (newbox_supp) — night complete
+
+mref: 0/15, 3/15 (s1, MEETS bar), 2/15. **Four-wave invariance: every wave
+exactly ONE seed at the bar, pooled 5-7/45** (nb 1/4/1 | pair-dH 1/4/1 |
+hold 2/1/4 | mref 0/3/2). Measured-ref actions join density, diversity, and
+demo source on the no-effect list. BUDGET is the evening's surviving lever.
+The mref result also means: the re-recorded dataset TRAINS (first policy ever
+trained in the measured-ref space) and matches the standard signature — its
+real advantage (downstream phases) remains untested at pick scope by design.
+
+REGISTERED SCOREBOARD (all pre-committed): pair prediction SURVIVED; hold bar
+letter-pass/spirit-fail; mref bar letter-pass/same-signature; ln mechanism gate
+FAILED as Q predicted; EEF v3 STOP fired as registered; ar8 0/6 confirmed.
+Six commitments, six resolved against pre-stated criteria, zero retrofitted.
+PAPER_PLAN 1c4337d has the four-wave table + morning decision framing.
