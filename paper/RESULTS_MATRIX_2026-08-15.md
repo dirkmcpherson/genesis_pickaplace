@@ -26,7 +26,7 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 |---|---|
 | joint DP 0.67 in-dist (audit-replicated) | standing |
 | MS_RLPD-ctl (our RLPD on ManiSkill PickCube) | RUNNING — bar: >=2/3 seeds >=0.5 by 300k |
-| cell B (clean in-sim champion demos -> our RLPD) | building — discriminates dataset-vs-method |
+| cell B (clean in-sim champion demos -> our RLPD) | **DEMOS BUILT + GATED; wave launch-ready, held behind the MS control.** 66 demos, median 131 frames (human 746), density 0.724% (human 0.079%, ManiSkill 1.45%). Guards: negctl 0/54, open-loop 4/5 (human gate 4/5 same session), provenance stamped. Bars pre-registered. See paper/cell_b_clean_demos_2026-08-15.md |
 
 ## The RLPD credibility gap (the user's concern, stated plainly)
 1. The numbers are low: ~1/3 ignition, peaks 0.27-0.40. Reviewers will suspect the implementation.
