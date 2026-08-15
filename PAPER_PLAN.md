@@ -712,6 +712,29 @@ is itself a source property the distributional analysis should quantify.
   consistent with the BC-only source effect (in-dist imitation quality) being
   the paper's one confirmed source-sensitive pathway.
 
+- 2026-08-14 (assistant, newbox_supp): **FOUR-WAVE INVARIANCE — THE IGNITION
+  SIGNATURE IS A CONFIG CONSTANT AT 100k.** All §4a-2 fresh-process sweeps,
+  fixed 100k checkpoints, three seeds per wave:
+
+  | wave | lever varied | per-seed demo-IC | seeds >=3/15 | pooled |
+  |---|---|---|---|---|
+  | nb | backup off (base) | 1/4/1 | 1/3 | 6/45 |
+  | pair-dH | fresh seeds | 1/4/1 | 1/3 | 6/45 |
+  | hold | 25x reward density | 2/1/4 | 1/3 | 7/45 |
+  | mref | measured-ref actions | 0/3/2 | 1/3 | 5/45 |
+
+  Reward density, action reference, and (from the pair) demo source all fail to
+  move the signature: **exactly one seed in three clears the bar in every wave,
+  pooled picks 5-7/45.** The only variation that BROKE it was per-member LN
+  (0/3, actively harmful). The only lever never varied is BUDGET — every wave
+  stopped at 100k, and the sole result ever above 4/15 (dH_s0's 6/15 = 0.40)
+  came at 150k. Per-seed picked-demo sets barely overlap across waves (hold-s2
+  vs nb-s1 share 1 of 4 uids): WHICH demos become pickable is seed lottery,
+  the COUNT is the config property. Morning decision (user): 200k x n>=5, or
+  continuation from the three igniting checkpoints, or take the row as
+  measured. Hold-pair merged experiment NOT launched — hold did not raise
+  ignition, so it would re-measure the pair's floor at GPU-day cost.
+
 - 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
   RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
   carries no action-mode line, no action_repeat line, no horizon, and no invoking
