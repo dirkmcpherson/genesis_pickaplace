@@ -105,3 +105,27 @@ on all experience regardless of actor luck; actors are cheap; N actor draws cost
 This is now the leading candidate lever, ahead of brute-force budget (200k x n5):
 it attacks the measured mechanism (seed-level basin entry) instead of buying
 more draws at the same rate, and both forms reuse trained components.
+
+### Code-era caveats on the ignition table (added after user challenge, 08-15)
+
+1. **The dv3-on-MS reference (~1.0) is HISTORICAL — March 2026 code.** ~200 wandb
+   runs, Feb 27 - Mar 2. Nobody has re-run MS on the current HEAD, which has
+   since gained the vec facade, scope plumbing, eval ingestion, and the msrecipe
+   port. The 08-10 audit verified CONFIG parity, not code-era parity. The claim
+   "same code both sides" is really "same code as of March". PENDING CONTROL
+   (queued, not launched): 1-2 seed MS PickCube spot-check on current HEAD with
+   the March config. Cheap; closes the gap.
+2. **The genesis side of dv3 IS current-HEAD measured**: the msrecipe runs on
+   the cluster right now are today's code (entropy collapse 3/3). The stale
+   side is the POSITIVE reference, not the null.
+3. **r2dreamer pooled rates (6/24) cross the E2 env boundary**: local + wave 1
+   pre-reset-fix, wave 2 post-fix. Per-wave rates: 2/4, 3/10, 1/10. The pooled
+   figure is indicative; per-wave is citable. (Already the ledger's rule;
+   restated here because the pooled number appears above.)
+4. **The four RLPD waves ran on four successive commits** (nb f906ee6 -> pair
+   -> hold f612c55 -> mref 398e078). Pooling is justified BY CONSTRUCTION, not
+   assumption: every intermediate change shipped with a byte-identity gate on
+   the default path (proven, incl. 28/28 policy tensors), and each wave's lever
+   was the only behavioral delta. This is what the gate discipline buys.
+5. A null replicated across many code states (dv3-genesis, historical) is
+   robust to this caveat. A positive measured at one old state (dv3-MS) is not.
