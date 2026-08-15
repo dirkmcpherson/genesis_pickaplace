@@ -987,3 +987,12 @@ letter-pass/spirit-fail; mref bar letter-pass/same-signature; ln mechanism gate
 FAILED as Q predicted; EEF v3 STOP fired as registered; ar8 0/6 confirmed.
 Six commitments, six resolved against pre-stated criteria, zero retrofitted.
 PAPER_PLAN 1c4337d has the four-wave table + morning decision framing.
+
+## 22. Firming wave near-complete (08-15 ~05:00)
+
+- dH wave-2: **1/10 ignited** (s22 only: 1M eval 0.4; its 972k best-ckpt confirms
+  0.07-0.13 = weak igniter, s13-class). 9/10 at ~1M eval 0. Bottom of the
+  registered band (~3/10, band 1-6).
+- dDP wave-2: 6+ seeds done at 1M, ALL 0 so far — tracking the 0-1/10 prediction.
+- Cumulative ignition contrast: dH 4/20 vs dDP 0/~20 -> Fisher ~0.05 — tightening
+  toward but not yet at paper-grade. The contrast direction holds.
