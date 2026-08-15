@@ -18,8 +18,8 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 | dDP_RLPD | 0/3 seeds at bar, 2/45 pooled | matched pair, same machine/wave | ready ONLY as the conditional claim: "no source effect detectable at n=3/100k" (p=0.27) |
 | dH_R2D (r2dreamer) | champion 0.91 sampled / 1.00 mode (n=45+15) | best-checkpoint + independent confirmation | **READY** with the lottery protocol stated (ignition 4/20 cumulative; bistability documented; clamp fix refuted) |
 | dDP_R2D | 0 ignitions in 20 seeds (FINAL — firming wave completed 08-15, all seeds ~1M steps) | two waves, dilution-fixed | **READY as the contrast**: pooled dH 6/24 vs dDP 0/20, Fisher one-sided p=0.019. Caveats: pooling crosses the E2 boundary (per-wave: dH 2/4, 3/10, 1/10 vs dDP 0/10, 0/10); the firming wave alone is underpowered (1/10 vs 0/10, p=0.5). Direction never violated in any wave |
-| dH_DV3 | null historically (instrumented); msrecipe RUNNING: entropy fingerprint FIRED on 3/3 seeds, takeoff pending | in-flight | **WAIT** — resolves within the 3e5 budget |
-| dDP_DV3 | not run under msrecipe | data local (genesis_m1all), converter needs a dreamer-format reader | **BLOCKED** on dH_DV3 verdict |
+| dH_DV3 | **NULL, final (08-15)**: all 3 seeds finished the 3e5 budget with return 0 / picked 0. Entropy fingerprint fired 3/3 but takeoff never followed (s1/s2 rebounded to +2.3/+3.2; s0 stayed committed at -0.61 to the end) | msrecipe port, registered budget = 2.2-2.7x the reference MS takeoff window (110-137k) | **READY as a null** — publish as: the MS-shaped recipe transfers the entropy-collapse precursor but not takeoff. Fingerprint = necessary, not sufficient. Option HELD for user: resume s0 (still collapsed at budget end) with extended budget |
+| dDP_DV3 | not run | moot under the dH null (no source comparison without ignition) | **CLOSED** unless dH_DV3 reopens |
 
 ## Positive controls
 | control | status |
@@ -37,7 +37,9 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 ## What must resolve before a full run
 1. MS positive control verdict (implementation credibility).
 2. Cell B verdict (dataset-vs-method).
-3. msrecipe verdict (does dv3 join the matrix or stay a null).
+3. ~~msrecipe verdict~~ RESOLVED 08-15: NULL at budget. dv3 stays out of the
+   matrix as a learner; the fingerprint-without-takeoff result joins the
+   actor-side-lottery evidence. s0-resume option held for user.
 4. The RLPD budget decision.
 5. ~~Firming-wave completion~~ RESOLVED 08-15: wave done at ~1M steps/seed.
    dH 1/10 (s22: training-loop 0.4; fresh evals 0.067/0.133 @972k, 0 @1M —
@@ -69,7 +71,7 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
 | **r2dreamer dH pooled** | | **6/24** | **0.25** | [0.10, 0.47] |
 | r2dreamer dDP | both waves (FINAL 08-15) | 0/20 | 0.00 | [0, 0.17] |
 | dv3 historical | any config | 0/all | 0.00 | — |
-| dv3 msrecipe | MS-shaped task | entropy 3/3, takeoff TBD | — | — |
+| dv3 msrecipe | MS-shaped task (FINAL 08-15) | entropy 3/3, takeoff 0/3 | 0.00 | [0, 0.71] |
 | SACfD | defective trainer | 0/30+ | 0.00 | confounded (T1) |
 | same dv3 code on ManiSkill | their task | ~always | ~1.0 | dozens of seeds |
 

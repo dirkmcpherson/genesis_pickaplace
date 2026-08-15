@@ -1076,3 +1076,7 @@ Named risk: sapien needs Vulkan on the node; installer ends with a render probe.
 STATUS ADDENDA: RLPD MS control s0 @50k = 0.00 success (first decision point,
 not encouraging). msrecipe: s1/s2 entropy REBOUNDED (+2.3/+3.2) at ~270k of
 3e5, s0 still committed (-0.61), all returns 0 -> trending null.
+§26 addendum (08-15 evening): msrecipe FINAL = NULL. All 3 seeds finished 3e5
+with return 0. Fingerprint 3/3, takeoff 0/3. Firming wave also FINAL (dH 1/10,
+dDP 0/10; pooled contrast p=0.019). Cluster is now IDLE pending the user's
+r2d-MS submission. Gates resolved 3/5; open = MS RLPD control + budget decision.
