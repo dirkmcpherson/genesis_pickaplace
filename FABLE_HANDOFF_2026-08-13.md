@@ -1047,3 +1047,32 @@ HELD for user: reset/multi-actor spec (results doc); disk cleanup tiers; RLPD
 budget decision (gated on cells A/B).
 USER STATE: catching up; exceptions-only reporting; results doc + this handoff
 + run ledger are the reading order.
+
+## 26. r2dreamer-on-MS control: BUILT + GATED, launch-ready (08-15, agent build)
+
+Corrects one §25 line: the cluster venv is a NEW `~/r2d_ms_venv`, NOT r2d_venv.
+The genesis r2d venv pins gymnasium 1.2.0 / numpy 2.4.6; mani_skill would
+downgrade both under the live genesis arm. Third dedicated pip-only venv
+(local: r2dreamer/.venv-ms py3.11, two deviations from stock pyproject).
+
+GATES (all green, report = paper/, commit cde08f2; r2dreamer c25eb3b local):
+(a) adapter smoke exact-shape, random-policy 0 success, 105 steps/s.
+(a2) replay gate CAUGHT A REAL BUG: success predicate used |dx| not the norm
+    (inherited [0] index). Post-fix, 5/5 demo tapes terminate at the exact
+    frames the independent RLPD control measured. Random control could never
+    catch this class.
+(b) demo census 10 eps / 0.936% density / +100 terminal via the train loader.
+(c) 2500-step train smoke: demo rewards reach batches, fresh-process ckpt
+    round-trip, 0.00 success = expected negctl.
+(d) genesis arm untouched, proven functionally in the genesis venv.
+ARCHITECTURE UNDER TEST = ours (decoder-free, size12M, LaProp, bounded_normal);
+all genesis recipe levers set to stock. bounded_normal samples to +/-4 in the
+smoke — left stock DELIBERATELY, pre-named suspect #1 if the control fails.
+BAR (registered): >=2/3 seeds eval success >=0.50 by 300k. Decision points =
+50k multiples ONLY (10k evals are monitoring; 30 draws vs 0.5 inflates a null).
+CLUSTER ROUTE (dry-run verified): rsync r2dreamer + ManiSkill fork + demo dir
+-> bash cluster/install_r2dreamer_ms.sh ~/r2d_ms_venv -> sbatch x3 seeds.
+Named risk: sapien needs Vulkan on the node; installer ends with a render probe.
+STATUS ADDENDA: RLPD MS control s0 @50k = 0.00 success (first decision point,
+not encouraging). msrecipe: s1/s2 entropy REBOUNDED (+2.3/+3.2) at ~270k of
+3e5, s0 still committed (-0.61), all returns 0 -> trending null.
