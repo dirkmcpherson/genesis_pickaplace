@@ -1009,3 +1009,20 @@ primary metric = relaxed success (dv3-parity), not directly comparable to
 published static-requirement PickCube rates. NOTE: agent pip-installed
 sb3==2.8.0 into the dreamerv3-torch venv (clean, zero dep churn) — recorded.
 Cell B (champion clean-demo harvest) building in parallel.
+
+## 24. CELL B BUILT + GATED (08-15) — launch-ready, held
+
+66 champion-harvested clean demos (baselines/episodes_champion_pick, rsync only):
+median 131 frames vs human 746 (5.7x shorter), density 0.724% (9.2x human,
+within 2x of ManiSkill's 1.45%). Yield 66/75. Guards: random-teacher negctl
+0/54 keeps; open-loop verify 4/5 on full recordings (human gate same-session
+4/5; the truncated-tape 3/5 is a marginal-terminal artifact, flagged post-hoc
+honestly in the report). Provenance stamped; rollout-index filenames.
+DECISIONS (Fable): (1) NAMING = dR2D_RLPD-clean_s{k} — champion demos are a
+THIRD source (r2dreamer teacher), not dH; adopts the agent's recommendation and
+the d{source} convention. (2) LAUNCH RULE = hold behind the MS control until
+either a control seed clears the 0.5 bar early or the control completes; then
+launch the 3 cell-B seeds immediately. Bars stand as registered (>=2/3 at
+>=3/15 = dataset problem; <=1/3 = methods/task).
+Shared-file note: sacfd_delta_gate.py gained --uids/--min-pass + stamped-ic_uid
+reset (byte-identical without flags; needed to gate harvests at all).
