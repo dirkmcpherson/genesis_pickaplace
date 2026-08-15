@@ -82,11 +82,13 @@ Why not route (a), the local dv3 teleop npz: those *do* carry usable state
 "they may be image-only" worry does not apply. Three reasons the h5 route wins,
 and the teleop set stays available behind `--demo-source teleop`:
 
-1. Only **10** episodes exist (~700 transitions after cutting at success).
-   RLPD's Adroit setup uses 25 human demos; 50 MS demos give 3440 transitions.
-2. Teleop lengths are 83–133 steps; three of ten **exceed the 100-step horizon**,
-   i.e. the demonstrator is slower than the agent's own budget. Motion-planning
-   demos are 49–92 steps, all inside it.
+1. Only **10** episodes exist. Measured census (`--demo-source teleop`, run to
+   confirm the fallback is real): 10 eps → **884** transitions, 10 rewarded,
+   1.131% density. RLPD's Adroit setup uses 25 human demos; 50 MS demos give
+   3440 transitions.
+2. Teleop lengths are 82–132 steps and, cut at success, **3 of 10 exceed the
+   100-step horizon** (median 90) — the demonstrator is slower than the agent's
+   own budget. Motion-planning demos are 49–92 raw / 34–86 cut, all inside it.
 3. The h5 carries per-step `success`, `env_states` and the reset seed, which
    makes the fidelity gate in §5 possible; the npz does not.
 
@@ -271,3 +273,25 @@ cd /home/j/workspace/genesis_pickaplace
 ```
 
 Logs: `baselines/rl/checkpoints/rlpd_msctl_s{0,1,2}/train.log`.
+
+**Health at launch + 5 min** (all three seeds identical): env
+`PickCube-v1 obs=state(42,) act=pd_ee_delta_pos(4,) robot=panda_wristcam
+reward=sparse/relaxed horizon=100`; cfg `E=10 Z=2 UTD=10 gamma=0.99
+target_entropy=-2.0 demo_batch=128/256 backup_entropy=off per_member_ln=off
+buffer=300000 learning_starts=1000 q_watchdog=2.0`; demos `50 eps -> 3440
+transitions, 50 rewarded (1.453%)`; step-0 negative control `success=0.00
+(n=10) grasp=0.00` on every seed; wandb online (runs `pmr05gt1`, `y9dax9i9`,
+`sggm1ylq`). No Q-watchdog trip, no NaN, no traceback.
+
+**Throughput / ETA.** ~7.8 env steps/s per seed with all three concurrent
+(1.7 GB / 12 GB GPU, 43% util — the runs are launch-bound, not memory-bound),
+so **≈10.5 h per seed, all three finishing together**; first 50k checkpoint +
+eval at ≈1.8 h. Running three in parallel costs the same wall-clock total as
+running them sequentially and gets every seed's early checkpoints at once.
+
+**How to read the result.** Watch `eval/success` in wandb project
+`genesis_paper` (tag `positive-control`), or
+`grep '^\[eval' baselines/rl/checkpoints/rlpd_msctl_s*/train.log`. Apply §6
+verbatim: ≥2 of 3 seeds at ≥0.50 at any checkpoint ≤300k. Best-so-far
+checkpoints are saved as `rlpd_ms_best.zip` per seed (with sidecar), so a
+near-bar seed can be re-measured in a fresh process without retraining.
