@@ -53,6 +53,19 @@ def _paths_for(uids, demo_dir=DEMO_DIR):
     return out
 
 
+def _ic_uid(path, fallback):
+    """The env IC a tape must be replayed from.
+
+    HUMAN tapes are uid-keyed: stem == uid == the recorded trial placement. HARVESTED
+    tapes are ROLLOUT-keyed (uid = rollout index >= 100000) and carry the IC they were
+    rolled from in `ic_uid`. Replaying a harvest at its stem raises KeyError in
+    genesis_can_env.reset -- loud, but only because the harvest stamps its IC. Prefer
+    the stamp; fall back to the stem for every pre-existing (human) set.
+    """
+    d = np.load(path, allow_pickle=True)
+    return int(d['ic_uid']) if 'ic_uid' in d.files else int(fallback)
+
+
 def _encode(paths, pick_z, scope, cap, repeat, delta_ref='target'):
     """stride x reference encoder, selected EXPLICITLY (no silent fallback).
     delta_ref='measured' pairs with FullTaskEnv(delta_ref='measured')."""
@@ -102,7 +115,7 @@ def all_demos_sweep(demo_dir, repeat, shard_idx=0, shard_n=1, delta_ref='target'
         ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat, delta_ref)
         acts = [t[1] for t in ep]
         try:
-            env.reset(options={'uid': uid})
+            env.reset(options={'uid': _ic_uid(p, uid)})
         except Exception as e:
             print(f'SWEEP uid={uid} repeat={repeat} stage=UNRESETTABLE rank=-1 '
                   f'label={label} ({type(e).__name__})', flush=True)
@@ -140,6 +153,13 @@ def main():
                          'baselines/episodes_delta_rerecord to gate the closed-loop '
                          're-recorded tapes, which are NATIVE to delta_ref=measured '
                          '(pair with --delta-ref measured).')
+    ap.add_argument('--uids', type=int, nargs='*', default=None,
+                    help='override GATE_UIDS with an explicit list (the file stems in '
+                         '--demo-dir). Needed for HARVESTED sets, whose stems are '
+                         'rollout indices (>=100000), not human trial uids. Default '
+                         'keeps the frozen 5-uid human gate byte-for-byte.')
+    ap.add_argument('--min-pass', type=int, default=None,
+                    help='override MIN_PASS (default 4 of 5). Scale it with --uids.')
     ap.add_argument('--shard-idx', type=int, default=0)
     ap.add_argument('--shard-n', type=int, default=1,
                     help='sweep mode: replay only paths[shard_idx::shard_n], so many '
@@ -147,6 +167,8 @@ def main():
                          'per proc).')
     args = ap.parse_args()
     repeat = max(1, int(args.action_repeat))
+    gate_uids = [int(u) for u in args.uids] if args.uids else GATE_UIDS
+    min_pass = int(args.min_pass) if args.min_pass is not None else MIN_PASS
 
     if args.all_demos:
         all_demos_sweep(args.all_demos, repeat, args.shard_idx, args.shard_n,
@@ -174,7 +196,7 @@ def main():
     assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
 
     # ---- (1) tensor equality: DemoData actions == encoder output ----
-    all_paths = _paths_for(GATE_UIDS, args.demo_dir)
+    all_paths = _paths_for(gate_uids, args.demo_dir)
     trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat, args.delta_ref)
     dd = DemoData(trans, action_transform=None, device=th.device('cpu'))
     ref_act = np.stack([t[1] for t in trans]).astype(np.float32)
@@ -186,11 +208,11 @@ def main():
 
     # ---- (2) open-loop replay: delta actions must re-earn the demonstrated LIFT ----
     passed = 0
-    for uid, p in zip(GATE_UIDS, all_paths):
+    for uid, p in zip(gate_uids, all_paths):
         # encode on the FULL episode (scope='full' => keep post-pick rows, no done cut)
         ep = _encode([p], env.pick_z, 'full', env.delta_cap, repeat, args.delta_ref)
         acts = [t[1] for t in ep]
-        env.reset(options={'uid': uid})
+        env.reset(options={'uid': _ic_uid(p, uid)})
         picked, canz_max, steps = False, -9.0, 0
         for a in acts:
             obs, _r, _term, trunc, _info = env.step(a)
@@ -207,9 +229,9 @@ def main():
               f'(pick_z={env.pick_z:.4f}) steps={steps} demo_len={len(acts)}',
               flush=True)
 
-    print(f'[gate] OPEN-LOOP REPLAY {passed}/{len(GATE_UIDS)} re-earned the '
-          f'demonstrated lift (need >={MIN_PASS})', flush=True)
-    ok = passed >= MIN_PASS
+    print(f'[gate] OPEN-LOOP REPLAY {passed}/{len(gate_uids)} re-earned the '
+          f'demonstrated lift (need >={min_pass})', flush=True)
+    ok = passed >= min_pass
     print('GATE PASS' if ok else 'GATE FAIL', flush=True)
     sys.exit(0 if ok else 1)
 

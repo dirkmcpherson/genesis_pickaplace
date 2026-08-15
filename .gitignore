@@ -187,6 +187,8 @@ baselines/episodes_raw_v4/
 # generated artifacts (2026-07-20 sweep): datasets, videos, checkpoints, run logs
 baselines/episodes_all*/
 baselines/episodes_pick*/
+# cell B: in-sim champion harvest (rsync only, never git)
+baselines/episodes_champion*/
 baselines/episodes_raw_v5/
 baselines/episodes_raw_v6/
 baselines/episodes_raw_rl/
