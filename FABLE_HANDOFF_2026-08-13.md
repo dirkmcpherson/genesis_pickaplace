@@ -955,3 +955,19 @@ LAUNCHED after the pair: hold wave (dH_RLPD-hold_s0-2; q_watchdog auto-rescaled
 48.82, census pending) + mref wave (dH_RLPD-mref_s0-2; 54 eps / 71,082
 transitions / 54 rewarded, measured encoder). Sweeps chained on newbox_supp's
 artifact-gated waiters.
+
+## 20. HOLD SWEEP (newbox_supp): bar passes by LETTER, density effect ABSENT
+
+hold: 2/15, 1/15, 4/15 (s2 MEETS >=3/15). But: profile statistically identical
+to nb (1/4/1) and pair-dH (1/4/1) — total picks 7/45 vs 6/45 vs 6/45. **The 25x
+density increase did not move ignition at 100k.** THE FINDING: the config
+carries a stable ~1/3-seeds, ~6-7-picks/45 signature INVARIANT to reward
+density (three independent waves now). The lottery lives elsewhere
+(exploration reaching the hold region, or optimization-path luck) — or 100k is
+too short for the density gradient to compound.
+CONVERGENCE CONDITION READ HONESTLY: "hold raises ignition" did NOT fire.
+hold-pair NOT launched (would re-measure the same floor at GPU-day cost).
+Power levers for the morning decision: 200k budget (150k-peak precedent),
+n>=5 per arm, or continuation training from igniting checkpoints.
+Curiosity on record: hold-s2's four uids overlap nb-s1's four on ONE uid —
+which demos unlock is seed-dependent; the COUNT is what is stable.
