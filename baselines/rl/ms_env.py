@@ -181,14 +181,25 @@ class MSPickCubeEnv(gym.Env):
     render_mode = None
     spec = None
 
-    def __init__(self, success_mode='relaxed', horizon=HORIZON, seed=None):
+    def __init__(self, success_mode='relaxed', horizon=HORIZON, seed=None,
+                 reward_mode='sparse'):
+        # reward_mode (ADDITIVE param, 2026-08-16 dense-pair discriminator):
+        #   'sparse' (DEFAULT) = the original behavior, byte-identical: +1 on
+        #     the selected success predicate, 0 otherwise (regression-gated
+        #     against the pre-edit file in paper/ms_dense_pair_2026-08-16.md).
+        #   'normalized_dense' = ManiSkill's own shaped reward passed through
+        #     unmodified.  Termination/truncation/success logic UNCHANGED in
+        #     both modes (still terminate on the selected predicate).  This is
+        #     the reward the March dv3 MS positive trained on.
         import mani_skill  # noqa: F401
         from mani_skill.utils.wrappers import CPUGymWrapper
         assert success_mode in ('relaxed', 'native'), success_mode
+        assert reward_mode in ('sparse', 'normalized_dense'), reward_mode
         self.success_mode = success_mode
+        self.reward_mode = reward_mode
         self.horizon = int(horizon)
         base = gym.make(ENV_ID, num_envs=1, obs_mode=OBS_MODE,
-                        control_mode=CONTROL_MODE, reward_mode=REWARD_MODE,
+                        control_mode=CONTROL_MODE, reward_mode=reward_mode,
                         robot_uids=ROBOT_UIDS, max_episode_steps=self.horizon,
                         render_mode=None, sim_backend=SIM_BACKEND)
         # CPUGymWrapper unbatches the (1, ...) torch tensors to numpy scalars/arrays.
@@ -217,7 +228,10 @@ class MSPickCubeEnv(gym.Env):
         relaxed = bool(info['is_grasped']) and bool(info['is_obj_placed'])
         native = bool(info['success'])          # is_obj_placed AND is_robot_static
         solved = relaxed if self.success_mode == 'relaxed' else native
-        reward = 1.0 if solved else 0.0         # ManiSkill's sparse = success indicator
+        if self.reward_mode == 'sparse':
+            reward = 1.0 if solved else 0.0     # ManiSkill's sparse = success indicator
+        else:
+            reward = float(_msr)                # normalized_dense: MS's own shaping
         terminated = solved
         truncated = bool(trunc) or self._t >= self.horizon
         if terminated:

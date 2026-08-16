@@ -40,7 +40,8 @@ sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 
 
-def evaluate(model, success_mode, horizon, n_episodes, seed_offset, deterministic=True):
+def evaluate(model, success_mode, horizon, n_episodes, seed_offset, deterministic=True,
+             reward_mode='sparse'):
     """Deterministic-policy eval in a FRESH env instance with unseen seeds.
 
     Returns (success_rate, mean_len, native_rate, grasp_rate).  Protocol caveats
@@ -49,7 +50,8 @@ def evaluate(model, success_mode, horizon, n_episodes, seed_offset, deterministi
     was trained on.
     """
     from ms_env import MSPickCubeEnv
-    env = MSPickCubeEnv(success_mode=success_mode, horizon=horizon)
+    env = MSPickCubeEnv(success_mode=success_mode, horizon=horizon,
+                        reward_mode=reward_mode)
     n_ok = n_native = n_grasp = 0
     lens = []
     for i in range(n_episodes):
@@ -99,6 +101,14 @@ def main():
     ap.add_argument('--horizon', type=int, default=100,
                     help='decision steps per episode (dv3 MS runs used 100; stock '
                          'ManiSkill registers PickCube at 50)')
+    ap.add_argument('--reward-mode', choices=['sparse', 'normalized_dense'],
+                    default='sparse',
+                    help="ONLINE reward. sparse (default) = the original +1-on-"
+                         'success control. normalized_dense = ManiSkill\'s own '
+                         'shaped reward (what the March dv3 MS positive trained '
+                         'on). Demo tapes stay sparse-relabeled in BOTH modes -- '
+                         'that dense-online + sparse-demo mixture is the proven '
+                         'dv3-positive recipe.')
     # --- RLPD machinery: defaults are OUR genesis values, unchanged ---
     ap.add_argument('--utd', type=int, default=10)
     ap.add_argument('--ensemble-size', type=int, default=10)
@@ -136,19 +146,24 @@ def main():
     from rlpd_sac import make_rlpd, DemoData
 
     # ---- env ----
-    env = MSPickCubeEnv(success_mode=args.success_mode, horizon=args.horizon)
+    env = MSPickCubeEnv(success_mode=args.success_mode, horizon=args.horizon,
+                        reward_mode=args.reward_mode)
     assert env.success_mode == args.success_mode
     assert env.horizon == args.horizon
+    assert env.reward_mode == args.reward_mode
     env = Monitor(env, info_keywords=('success', 'success_native', 'is_grasped'))
     print(f'[env] {ENV_ID} obs={OBS_MODE}{env.observation_space.shape} '
           f'act={CONTROL_MODE}{env.action_space.shape} robot={ROBOT_UIDS} '
-          f'reward={REWARD_MODE}/{args.success_mode} horizon={args.horizon} '
+          f'reward={args.reward_mode}/{args.success_mode} horizon={args.horizon} '
           f'(built in {time.time() - t0:.1f}s)', flush=True)
 
     # ---- model: OUR machinery, imported unmodified ----
-    # q_watchdog stays at 2.0: max task return is exactly 1.0 here (one +1, then
-    # terminate), the same shape as the genesis terminal-only pick reward.
-    model = make_rlpd(env, args.seed, args.device, q_watchdog=2.0,
+    # q_watchdog = 2x max task return.  sparse: max return 1.0 -> 2.0 (the
+    # original control value, unchanged).  normalized_dense: per-step reward in
+    # [0,1] over up to `horizon` steps -> max return ~horizon -> 2*horizon.
+    # The watchdog is warn-only; this keeps its log line meaningful per mode.
+    q_watchdog = 2.0 if args.reward_mode == 'sparse' else 2.0 * args.horizon
+    model = make_rlpd(env, args.seed, args.device, q_watchdog=q_watchdog,
                       backup_entropy=(args.backup_entropy == 'on'),
                       per_member_ln=(args.per_member_ln == 'on'),
                       ensemble_size=args.ensemble_size, subset_size=args.subset_size,
@@ -161,7 +176,8 @@ def main():
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
           f'backup_entropy={args.backup_entropy} per_member_ln={args.per_member_ln} '
           f'buffer={model.buffer_size} learning_starts={model.learning_starts} '
-          f'q_watchdog=2.0 steps={args.steps}', flush=True)
+          f'q_watchdog={q_watchdog} reward_mode={args.reward_mode} '
+          f'steps={args.steps}', flush=True)
 
     # ---- demos: same reward semantics as the env, by construction ----
     transitions, census = load_ms_demos(source=args.demo_source,
@@ -186,7 +202,7 @@ def main():
     sidecar = {
         'env': 'ms', 'env_id': ENV_ID, 'robot_uids': ROBOT_UIDS,
         'obs_mode': OBS_MODE, 'control_mode': CONTROL_MODE,
-        'reward_mode': REWARD_MODE, 'success_mode': args.success_mode,
+        'reward_mode': args.reward_mode, 'success_mode': args.success_mode,
         'horizon': args.horizon, 'terminate_on_success': True,
         'action_mode': 'ms_pd_ee_delta_pos', 'action_repeat': 1,
         'demo_source': args.demo_source, 'demo_file': census['path'],
@@ -231,7 +247,8 @@ def main():
         def _do_eval(self, tag):
             t = time.time()
             sr, ml, nat, gr = evaluate(self.model, args.success_mode, args.horizon,
-                                       args.eval_episodes, args.eval_seed_base)
+                                       args.eval_episodes, args.eval_seed_base,
+                                       reward_mode=args.reward_mode)
             print(f'[eval @{self.num_timesteps} ({tag})] success={sr:.2f} '
                   f'(n={args.eval_episodes}) native={nat:.2f} grasp={gr:.2f} '
                   f'mean_len={ml:.0f} in {time.time() - t:.0f}s', flush=True)
@@ -266,7 +283,8 @@ def main():
     model.save(str(out / 'rlpd_ms_final'))
     (out / 'rlpd_ms_final.sidecar.json').write_text(sidecar_json)
     sr, ml, nat, gr = evaluate(model, args.success_mode, args.horizon,
-                               max(args.eval_episodes, 20), args.eval_seed_base)
+                               max(args.eval_episodes, 20), args.eval_seed_base,
+                               reward_mode=args.reward_mode)
     print(f'[final eval] success={sr:.2f} native={nat:.2f} grasp={gr:.2f} '
           f'mean_len={ml:.0f}', flush=True)
     if run is not None:
