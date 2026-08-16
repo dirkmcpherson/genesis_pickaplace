@@ -88,6 +88,7 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
 | RLPD mref | measured-ref demos | 1/3 | 0.33 | — |
 | **RLPD pooled (dH-class)** | 4 waves | **4/12** | **0.33** | [0.10, 0.65] |
 | RLPD pair-dDP | model demos | 0/3 | 0.00 | [0, 0.71] |
+| **RLPD clean (dR2D champion demos)** | same trainer, short clean in-sim demos, 100k | **2/3** | **0.67** | [0.13, 0.98] |
 | r2dreamer dH local | delta recipe | 2/4 | 0.50 | — |
 | r2dreamer dH cluster w1 | 1M steps | 3/10 | 0.30 | — |
 | r2dreamer dH cluster w2 | post-fix env | 1/10 | 0.10 | — |
@@ -96,7 +97,17 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
 | dv3 historical | any config | 0/all | 0.00 | — |
 | dv3 msrecipe | MS-shaped task (FINAL 08-15) | entropy 3/3, takeoff 0/3 | 0.00 | [0, 0.71] |
 | SACfD | defective trainer | 0/30+ | 0.00 | confounded (T1) |
-| same dv3 code on ManiSkill | their task | ~always | ~1.0 | dozens of seeds |
+| same dv3 code on ManiSkill | their task | ~always | ~1.0 | dozens of seeds (March code) |
+| our RLPD on MS PickCube | sparse, 300k | 0/3 | 0.00 | unfair control — see swap section |
+| reference RLPD on MS (same setup) | sparse, 300k | 0/3 | 0.00 | fails identically |
+| reference RLPD on MS | dense, 300k | 0/3 at success bar | 0.00 | but grasp 0.3-0.6 emerges |
+
+**AUDIT STATUS (08-16):** every wave row above re-aggregated from RAW stdout
+logs AND jsons after the cell-B scoring bug (AUDIT C3/C5): nb 1/4/1, hold
+2/1/4, mref 0/3/2, ln 0/0/0, ar8 0x6, pair dH 1/4/1, pair dDP 1/0/1 — ZERO
+mismatches; all recorded numbers stand. The only bad aggregation was the
+cell-B one (mine), now corrected: clean-demo sweep demo-IC 0/9/3 of 15,
+random-IC 2/1/2 of 15.
 
 ### Structural facts
 1. The RLPD rate is EXACTLY one seed per wave, four waves running. Pooled picks
@@ -106,8 +117,17 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
    bistability (~1-in-7 checkpoints good on the champion run).
 3. WHICH demos a seed unlocks is seed-dependent (two 4-pick seeds share 1 of 8
    uids). The COUNT is what is stable. Ignition is a basin-entry event.
-4. The same algorithms ignite ~always on ManiSkill. The lottery is a property
-   of THIS task's exploration/credit landscape (pending cells A/B confirmation).
+4. REVISED 08-16 (cells A/B resolved): the lottery is NOT a fixed property of
+   the task — demo quality moves it. Same trainer, same task, same budget:
+   human demos 4/12 ignition, champion clean demos 2/3 with a 9/15 seed.
+   The "MS always ignites" contrast is WITHDRAWN as evidence: the only MS
+   positive is March dv3 on DENSE reward; both RLPD implementations fail
+   sparse-MS identically (and dense buys grasping but not completion under
+   terminate-on-success + high gamma — audit C1). Standing residue: even with
+   clean demos one seed stayed at 0 — a reduced lottery, not a dead one. The
+   multi-policy/reset proposal remains live for r2dreamer (its ignition story
+   is separate: 6/24 with in-run bistability) and as variance insurance for
+   RLPD; it is no longer the leading explanation for RLPD's rate.
 
 ### Interpretation and the multi-policy-per-world-model proposal (user, 08-15)
 The lottery does NOT live in the learned models of the world:
