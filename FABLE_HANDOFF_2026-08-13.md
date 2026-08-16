@@ -1102,3 +1102,27 @@ failure isolates to wrapper/config; <=1/3 -> shared methods defect firmed.
 
 STILL VALUABLE UNCHANGED: the r2d-MS cluster control (different codebase),
 user submit batch stands.
+
+## 28. Swap test (cell A') BUILT + GATED (08-15/16 night) + §27 correction
+
+CORRECTION to §27: "actor_q_mean 0.39 vs +100 terminal" was a UNITS ERROR.
+The MS control relabels +1 terminal (max return 1.0). Q=0.39 is unremarkable.
+The real cell-A symptom is grasp~0 throughout = exploration failure, not
+value propagation. (+100 exists only in the r2dreamer-MS loader.)
+
+SWAP TEST: reference RLPD (ikostrikov/rlpd, JAX) on OUR ms_env wrapper + OUR
+50 demo tapes. Venv ~/workspace/rlpd_ref/.venv (pip-only, jax cuda12, torch
+kept CPU-only to avoid nvidia-lib collision). Gates ALL PASS: (a) adapter
+exact shapes/horizon, tapes 3/3 succeed through wrapper; (b) census EXACT
+match to control (50/3440/50/1.4535%); (c) 3k smoke, demo frames in batches
+at expectation (74.5k cumulative), fresh-process restore; (d) negctl 0.00.
+Hyperparams = their Adroit-sparse recipe VERBATIM (UTD 20, num_qs 10/min 2,
+LN, 3x256, backup_entropy off, warmup 5k). 11 deviations documented; load-
+bearing: 300k budget (bar symmetry vs their 1M). Bar pre-registered =
+identical to failed control (>=2/3 seeds >=0.50 by 300k, 50k points only).
+LAUNCH: rlpd_ref/swap_test/run_seeds.sh [--parallel], ~5h/seed. Waiting for
+cell B to free the card per announced sequencing.
+PRE-NAMED if reference ALSO fails: mid-motion terminals (11/50 cut frames
+native-success), 100-step horizon. PRE-NAMED if reference passes: config-gap
+vs code-bug still open -> cheap reference-at-our-knobs ablation separates.
+Commits: gpk 47696c4 (report), rlpd_ref branch swap-test 0e1b34d.
