@@ -1175,3 +1175,31 @@ normalized_dense PickCube (dv3-proven learnable, takeoff ~110-137k), demos
 kept, 3 seeds each, bar >=2/3 at >=0.5 by 300k per trainer. Discriminates
 "our core functional" vs "trainer indicted". ms_env gains a reward_mode param
 (default sparse = byte-identical default path).
+
+## 31. AUDIT CORRECTIONS (08-16, independent audit dc3e18b) — §29/§30 partially overturned
+
+C3 REFUTED -> CELL B VERDICT FLIPS TO **DATASET**. The 0/90 sweep number was
+MY scoring bug: the sweep jsons nest metrics under 'metrics' with key
+'eval/picked'; my aggregator read top-level 'picked' via .get() -> silently
+scored all 90 episodes 0. The silent-default family, in my own tooling.
+TRUE sweep numbers (verified twice: audit + my own re-read of stdout logs,
+jsons, and _picked.mp4 artifacts): demo-IC s1 9/15, s2 3/15, s0 0/15;
+random-IC 2/1/2. Pre-registered bar (>=2/3 seeds >=3/15): MET by 2 seeds ->
+DATASET verdict. s1 0.60 fresh demo-IC = best RLPD result in the project
+(prior best 4/15). WARMED-PROCESS STORY RETRACTED: fresh picks are a SUPERSET
+of sequential picks (uid 242 fresh-only). §29's mechanism claim, the matrix
+entry, and memory rule 8 corrected. The in-train-vs-sweep "gap" was ordinary
+episode-set/n variation.
+C1 HALF-REFUTED: hover-farming beats completion in OUR wrapper at gamma 0.99
+(~60-95x) AND STILL at 0.8 (~3-5x; break-even ~0.42). The MS baseline is
+immune NOT via gamma but via ignore_terminations=True (success never ends the
+episode; post-success override 1.0/step > hover). -> msknobs trio was
+non-discriminating AND unregistered: KILLED at ~1h (PIDs 3013822/3/4).
+Correct next design if wanted: wrapper option for non-terminating success.
+C2 OVERSTATED (recorded): msknobs matched only gamma/horizon/reward-mode;
+UTD, critics, demos, batch, env-count all differ. Sparse demo tapes at 50%
+batch weight inside dense runs = standing confound in BOTH dense-pair arms.
+C4 AFFIRMED w/ caveat: 0-vs-0 cannot separate "both fine" from "both broken".
+C5: prior wave sweeps (nb/pair/hold/mref) used the same single-uid wandb_eval
+pattern — RE-AGGREGATE FROM RAW LOGS before the paper cites them (newbox_supp
+scratchpad 85fd3758.../pairfinal etc).

@@ -26,7 +26,7 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 |---|---|
 | joint DP 0.67 in-dist (audit-replicated) | standing |
 | MS_RLPD-ctl (our RLPD on ManiSkill PickCube) | **FAILED, final (08-15)**: 0/3 seeds. Flat 0.00 at every 50k decision point through 300k (single transient: s0 success 0.10 / grasp 0.10 at 150k). Grasp rate ~0 throughout — the agent never enters the grasp basin on THEIR task either. End-state diagnostics (s0): ent_coef collapsed to 4.6e-4, critic_loss ~5e-4. CORRECTION (08-15, swap-test build): the earlier "actor_q_mean 0.39 vs +100 terminal" line was a units error — the control's relabel is +1 terminal (max return 1.0), so Q=0.39 vs a solved-policy value ~0.5-0.6 is unremarkable. The real symptom is grasp≈0 throughout: pure exploration failure, not value-propagation failure. Registered reading: the implementation (or its config) does not reproduce published RLPD-class results on the reference benchmark → the genesis RLPD rows are NOT evidence about the task or dataset until this is explained. The four-wave invariance now has a fifth candidate cause: a defect or config gap shared by all waves |
-| cell B (clean in-sim champion demos -> our RLPD) | **RESOLVED 08-16 with a split verdict.** (1) Registered protocol (fresh-process): 0/45 demo-IC, 0/45 random-IC, 0/3 seeds at bar -> METHODS/TASK verdict by the registration. Clean demos moved the signature DOWN (standard waves: 5-7/45). (2) NEW FINDING that the registered dichotomy did not anticipate: s1 picks 5/10 and s2 3/10 on the SAME uids, SAME bit-identical checkpoint, SAME eval script — when the 10 episodes run sequentially in ONE process. Replicated exactly (same 5 uids, seed-independent, deterministic). The policies DID learn to pick in their training MDP (a long-lived env process, matching how the demos were harvested); the skill does not survive a cold fresh process. Prior waves showed no such gap at mid/high rates. Interpretation: narrow deterministic teacher tapes -> policies coupled to warmed-solver dynamics; a dataset-property effect wearing a protocol costume. See handoff §29 |
+| cell B (clean in-sim champion demos -> our RLPD) | **CORRECTED 08-16 (independent audit): DATASET verdict, and the strongest RLPD result in the project.** Fresh-process sweep, properly aggregated: demo-IC **s1 9/15, s2 3/15, s0 0/15** (random-IC 2/1/2 of 15). By the pre-registered bar (>=2/3 seeds >=3/15): **2 of 3 seeds pass -> DATASET problem**. s1's 9/15 (0.60) beats every human-demo wave (best prior: 4/15). THE EARLIER "0/90 -> METHODS verdict + warmed-process mechanism" ENTRY WAS FALSE — a scoring-script silent-default bug (read top-level 'picked'; the json nests 'metrics'->'eval/picked'; .get() default scored every episode 0). Found by the adversarial audit (AUDIT_ms_chain_2026-08-16.md C3), verified against stdout logs and _picked.mp4 videos. The warmed-process/solver-coupling story is RETRACTED: fresh-process picks are a SUPERSET of the sequential picks (242 fails sequential, picks fresh). What survives of that thread: the in-train 5/10 vs final-sweep difference was ordinary n=10-vs-15 + episode-set variation, nothing exotic. Handoff §29 and commit 3104df7 superseded by §31 |
 
 ## The RLPD credibility gap (the user's concern, stated plainly)
 1. The numbers are low: ~1/3 ignition, peaks 0.27-0.40. Reviewers will suspect the implementation.
@@ -38,11 +38,11 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 1. ~~MS positive control verdict~~ RESOLVED 08-15: FAILED 0/3 (see controls
    table). Implementation credibility is now the OPEN question, inverted:
    the burden moved from "is the dataset bad" to "is the trainer sound".
-2. Cell B verdict (dataset-vs-method). LAUNCHED 08-15 (dR2D_RLPD-clean_s{0,1,2},
-   startup gates passed: 66 eps / 9118 transitions / 66 rewarded, x3).
-   Interpretation caveat now that cell A failed: >=2/3 ignite would show the
-   trainer CAN work (and isolate the MS-control failure to its wrapper/config);
-   <=1/3 firms a shared methods defect. The pre-registered bars stand.
+2. ~~Cell B verdict~~ RESOLVED 08-16 (post-audit correction): **DATASET** —
+   2/3 seeds over the bar, s1 9/15 fresh demo-IC (project-best). The trainer
+   CAN work; the MS-control failure isolates toward its wrapper/task shaping,
+   and the human-demo signature (1/3 seeds, 5-7/45) now reads as a
+   demo-quality ceiling, not a trainer defect.
 3. ~~msrecipe verdict~~ RESOLVED 08-15: NULL at budget. dv3 stays out of the
    matrix as a learner; the fingerprint-without-takeoff result joins the
    actor-side-lottery evidence. s0-resume option held for user.
