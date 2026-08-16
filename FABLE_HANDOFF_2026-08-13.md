@@ -1126,3 +1126,35 @@ PRE-NAMED if reference ALSO fails: mid-motion terminals (11/50 cut frames
 native-success), 100-step horizon. PRE-NAMED if reference passes: config-gap
 vs code-bug still open -> cheap reference-at-our-knobs ablation separates.
 Commits: gpk 47696c4 (report), rlpd_ref branch swap-test 0e1b34d.
+
+## 29. CELL B VERDICT (08-16 ~00:30) — split: registered null + a new eval finding
+
+SWEEP (registered §4a-2, 90 fresh processes): 0/45 demo-IC, 0/45 random-IC,
+0/3 seeds at bar. By the registration: METHODS/TASK verdict. Clean demos moved
+picks DOWN vs every human-demo wave (5-7/45 standard).
+
+DISCREPANCY FOUND AND NAILED: in-train evals (same wandb_eval.py, fresh
+subprocess, same flags, same uid family) read s1 5/10, s2 3/10 at 100k.
+Eliminated in order: checkpoint (28/28 tensors bit-identical snapshot-vs-100k),
+seed (repro used a different one), script/flags (identical invocation).
+REPLICATED EXACTLY: sequential 10-episode process picks the same 5 uids
+(236/237/239/243/244) for s1; single-episode fresh processes pick 0/15 on a
+superset of those uids. Deterministic. The difference is ONLY episodes-
+before-this-one in the same process.
+
+READING: cell-B policies learned to pick in the WARMED env process (their
+training MDP — and the champion demos were harvested in a long-lived process
+too) and do not transfer to cold-process dynamics. Prior waves (human demos)
+showed NO such gap at mid/high rates — the robustness result in the P2 memory
+does not transfer across demo sources. This looks like a dataset-property
+effect (narrow deterministic teacher tapes -> solver-state-coupled policies)
+wearing a protocol costume. The registered dichotomy did not anticipate an
+outcome where learning SUCCEEDS in-MDP and the protocol measures transfer.
+
+PAPER CONSEQUENCE: fresh-process stays the official protocol (unchanged).
+Cell B reports BOTH numbers with the mechanism. The "clean demos" arm is not
+evidence for dataset-quality rescue; it is evidence that demo NARROWNESS has
+its own failure mode.
+OPEN (cheap, un-launched): minimal warm-up probe — how many prior episodes
+flip uid 236 (e.g. 2-episode process 235->236)? Would separate "any warm-up"
+from "specific residue schedule". Held for user priority call.
