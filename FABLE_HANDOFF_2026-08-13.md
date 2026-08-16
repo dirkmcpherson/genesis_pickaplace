@@ -1158,3 +1158,20 @@ its own failure mode.
 OPEN (cheap, un-launched): minimal warm-up probe — how many prior episodes
 flip uid 236 (e.g. 2-episode process 235->236)? Would separate "any warm-up"
 from "specific residue schedule". Held for user priority call.
+
+## 30. SWAP TEST VERDICT (08-16 ~06:30): reference RLPD fails IDENTICALLY
+
+0/3 seeds, success and grasp 0.00 at all seven decision points to 300k. Same
+wrapper, same demos, same bar as the failed control. Our trainer is NOT the
+distinguishing defect.
+KEY REFRAME (from MANISKILL_VS_GENESIS.md): the March dv3-MS positive (~1.0)
+ran on NORMALIZED_DENSE online reward + success termination; demo tapes alone
+were sparse-relabeled. Both RLPD MS runs used SPARSE online reward. So cell A
+compared against a reference point that never existed: no method has ever
+passed sparse-PickCube at 300k here, and published sparse RLPD (Adroit) is a
+1M-step setting. Cell A = "too hard as configured", not "trainer broken".
+NEXT (building via the swap-test agent): DENSE PAIR — both trainers on
+normalized_dense PickCube (dv3-proven learnable, takeoff ~110-137k), demos
+kept, 3 seeds each, bar >=2/3 at >=0.5 by 300k per trainer. Discriminates
+"our core functional" vs "trainer indicted". ms_env gains a reward_mode param
+(default sparse = byte-identical default path).

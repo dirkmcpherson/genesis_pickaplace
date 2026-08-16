@@ -51,6 +51,23 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
    dH 1/10 (s22: training-loop 0.4; fresh evals 0.067/0.133 @972k, 0 @1M —
    checkpoint bistability again). dDP 0/10. Final contrast: pooled p=0.019.
 
+## Swap test verdict (08-16): reference RLPD MATCHES our failure exactly
+1. Reference RLPD (authors' JAX code, their Adroit-sparse recipe, UTD 20): 0/3
+   seeds, success AND grasp 0.00 at every 50k decision point through 300k — the
+   same profile as our trainer, on the same wrapper and demos.
+2. Consequence: our trainer is NOT the distinguishing defect. Partial
+   absolution; "implementation equivalence on this setting", not soundness.
+3. RE-READING CELL A: it was never a fair positive control. The only MS
+   positive we own (dv3 March, ~1.0) trained on NORMALIZED_DENSE online reward
+   (+100 terminal, success-terminating). Both RLPD runs used the sparse
+   relabel. Nothing has ever passed sparse-PickCube-at-300k in this project.
+   The published RLPD sparse results (Adroit) run 1M steps.
+4. Open discriminator (building): the DENSE-reward pair — both trainers on
+   normalized_dense PickCube, the setting dv3 provably ignites in at ~110-137k.
+   Reference learns + ours doesn't -> trainer indicted after all. Both learn ->
+   our core is functional and cell A collapses to "sparse at 300k is too hard
+   for everyone", which partially rehabilitates the genesis RLPD rows.
+
 ## Cross-cutting caveats that apply to every row
 1. P2: sequence evals are not independent draws. Paper numbers use fresh-process or carry the methods paragraph.
 2. Env fixes changed baselines twice (E1, E2). Rows never pool across those boundaries (RUN_LEDGER maps every run).
