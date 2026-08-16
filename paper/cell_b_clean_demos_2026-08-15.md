@@ -319,3 +319,19 @@ dir is wrong.
 | gate logs | `scratchpad/cellb/gate_full_target.log`, `gate_champion{,_measured}.log` |
 | population sweep | `scratchpad/cellb/sweep_full_s*.log` |
 | teacher videos (8/8 picked) | `scratchpad/cellb/champion_demo_videos/` |
+
+---
+
+## 7. BUDGET EXTENSION (registered 08-16, pre-launch): dR2D_RLPD-clean-long
+
+Question: does the clean-demo config approach literature-typical endpoints
+(>=0.8) with literature-scale budget, and does seed variance shrink?
+Design: 5 seeds x 300k steps, config identical to the cell-B wave (one
+variable: --steps). Checkpoints every 50k. PRIMARY: §4a-2 sweep at the 300k
+checkpoint (15 fresh demo-IC + 15 random-IC per seed). SECONDARY: sweep the
+100k checkpoint of seeds 3-4 to grow the 100k-ignition sample from n=3 to n=5.
+Registered expectations: no point prediction; the readable outcomes are
+(a) rates climb with budget -> "works as literature says, budget was the
+binding constraint"; (b) rates plateau at ~0.6 -> task/demo ceiling below
+literature endpoints; (c) 100k-style seed lottery persists at 300k -> budget
+does not buy ignition, only sharpens ignited seeds.
