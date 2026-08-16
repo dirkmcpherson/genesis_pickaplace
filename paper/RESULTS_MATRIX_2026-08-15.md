@@ -25,7 +25,7 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 | control | status |
 |---|---|
 | joint DP 0.67 in-dist (audit-replicated) | standing |
-| MS_RLPD-ctl (our RLPD on ManiSkill PickCube) | RUNNING — bar: >=2/3 seeds >=0.5 by 300k |
+| MS_RLPD-ctl (our RLPD on ManiSkill PickCube) | **FAILED, final (08-15)**: 0/3 seeds. Flat 0.00 at every 50k decision point through 300k (single transient: s0 success 0.10 / grasp 0.10 at 150k). Grasp rate ~0 throughout — the agent never enters the grasp basin on THEIR task either. End-state diagnostics (s0): ent_coef collapsed to 4.6e-4, actor_q_mean 0.39 vs +100 terminal reward, critic_loss ~5e-4. Registered reading: the implementation (or its config) does not reproduce published RLPD-class results on the reference benchmark → the genesis RLPD rows are NOT evidence about the task or dataset until this is explained. The four-wave invariance now has a fifth candidate cause: a defect or config gap shared by all waves |
 | cell B (clean in-sim champion demos -> our RLPD) | **DEMOS BUILT + GATED; wave launch-ready, held behind the MS control.** 66 demos, median 131 frames (human 746), density 0.724% (human 0.079%, ManiSkill 1.45%). Guards: negctl 0/54, open-loop 4/5 (human gate 4/5 same session), provenance stamped. Bars pre-registered. See paper/cell_b_clean_demos_2026-08-15.md |
 
 ## The RLPD credibility gap (the user's concern, stated plainly)
@@ -35,8 +35,14 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 4. Decision pending: 200k x n>=5, continuation training, or take the row as measured.
 
 ## What must resolve before a full run
-1. MS positive control verdict (implementation credibility).
-2. Cell B verdict (dataset-vs-method).
+1. ~~MS positive control verdict~~ RESOLVED 08-15: FAILED 0/3 (see controls
+   table). Implementation credibility is now the OPEN question, inverted:
+   the burden moved from "is the dataset bad" to "is the trainer sound".
+2. Cell B verdict (dataset-vs-method). LAUNCHED 08-15 (dR2D_RLPD-clean_s{0,1,2},
+   startup gates passed: 66 eps / 9118 transitions / 66 rewarded, x3).
+   Interpretation caveat now that cell A failed: >=2/3 ignite would show the
+   trainer CAN work (and isolate the MS-control failure to its wrapper/config);
+   <=1/3 firms a shared methods defect. The pre-registered bars stand.
 3. ~~msrecipe verdict~~ RESOLVED 08-15: NULL at budget. dv3 stays out of the
    matrix as a learner; the fingerprint-without-takeoff result joins the
    actor-side-lottery evidence. s0-resume option held for user.

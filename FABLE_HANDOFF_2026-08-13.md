@@ -1080,3 +1080,25 @@ not encouraging). msrecipe: s1/s2 entropy REBOUNDED (+2.3/+3.2) at ~270k of
 with return 0. Fingerprint 3/3, takeoff 0/3. Firming wave also FINAL (dH 1/10,
 dDP 0/10; pooled contrast p=0.019). Cluster is now IDLE pending the user's
 r2d-MS submission. Gates resolved 3/5; open = MS RLPD control + budget decision.
+
+## 27. MS RLPD control FAILED + cell B launched (08-15 late)
+
+CELL A VERDICT: FAILED, 0/3 seeds. Flat 0.00 at every 50k decision point to
+300k. Grasp ~0 throughout (one transient: s0 0.10 success/grasp at 150k).
+End diagnostics (s0): ent_coef 4.6e-4, actor_q_mean 0.39 vs +100 terminal,
+critic_loss 5e-4. Registered consequence: the burden inverts — the genesis
+RLPD rows are not evidence about task/dataset until the trainer is explained.
+The four-wave invariance gains a fifth candidate cause: a shared defect or
+config gap in our trainer.
+
+CELL B: LAUNCHED per the pre-registered rule (control completed). Runs =
+dR2D_RLPD-clean_s{0,1,2} (renamed from dH_ per §24 decision), project
+genesis_paper, out-dir rlpd_clean_s{k}, nb-wave config, one variable changed
+(--demo-dir episodes_champion_pick). Startup gates passed x3: 66 eps -> 9118
+transitions, 66 rewarded, flags explicit. PIDs 2862173/4/5, logs in session
+scratchpad cellb/. Post-train: §4a-2 sweep + eval videos to user.
+Interpretation with cell A failed: >=2/3 ignite -> trainer can work, MS
+failure isolates to wrapper/config; <=1/3 -> shared methods defect firmed.
+
+STILL VALUABLE UNCHANGED: the r2d-MS cluster control (different codebase),
+user submit batch stands.
