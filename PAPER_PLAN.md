@@ -707,6 +707,13 @@ is itself a source property the distributional analysis should quantify.
   Replication note: the dH arm reproduced the nb wave's profile EXACTLY (1/4/1
   on fresh training seeds) — arm-level ignition behavior of this config is
   stable, which strengthens both waves retroactively.
+  **[STRUCK 2026-08-17, seed audit 2fbed2a: this was NOT a replication. The
+  demo-RNG was hard-seeded to 0 in train_rlpd, so pair-dH with training seeds
+  0/1/2 was a LITERAL RE-EXECUTION of the nb wave — same computation measured
+  twice. The "exact" agreement was determinism, not stability. The pair's
+  SOURCE comparison survives (the dDP arm was genuinely new; dH numbers remain
+  a valid dH measurement, just not an independent one), but pair-dH contributes
+  ZERO additional dH evidence. RNG now per-run (seed-0 back-compat proven).]**
   H4-adjacent reading: RLfD consumes demos as off-policy value data, and at
   this budget neither success-filtered model demos nor human demos separate —
   consistent with the BC-only source effect (in-dist imitation quality) being
@@ -734,6 +741,14 @@ is itself a source property the distributional analysis should quantify.
   continuation from the three igniting checkpoints, or take the row as
   measured. Hold-pair merged experiment NOT launched — hold did not raise
   ignition, so it would re-measure the pair's floor at GPU-day cost.
+  **[CORRECTED 2026-08-17, seed audit 2fbed2a: the pair-dH row is STRUCK — it
+  was a literal re-execution of nb (demo-RNG hard-seeded 0), not an independent
+  wave. The invariance is THREE-wave (nb, hold, mref): 3/9 independent dH
+  seeds at the bar, pooled 5-7/45 per wave. Weaker than "four-for-four" but
+  the conclusion stands on the three genuine waves; budget remains the
+  never-varied lever. Later fresh-process evidence (cell-B clean demos, s1
+  9/15, 08-16) exceeded the 4/15 ceiling this entry describes — see the
+  handoff ignition section for the current table; this entry is historical.]**
 
 - 2026-08-14 (assistant, newbox_supp): **RLPD 0.40 PROVENANCE.** The headline
   RLPD figure was NOT reproducible from its own record: rlpd_s0_confirm.log
