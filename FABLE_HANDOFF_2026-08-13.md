@@ -1216,3 +1216,28 @@ reference dense grasp 0.3-0.6. Descriptive only — UTD/arch/batch confounds
 (audit C2) block a trainer-vs-trainer claim; both consistent with the C1
 hover analysis. Dense pair CLOSED as "no completion either arm; ref grasps,
 ours barely".
+
+## 33. AGENDA (user, 08-16 night): the n=20 sbatch discussion — PREP FOR TOMORROW
+
+User wants to discuss expectations for n=20 cluster waves of ALL dH algos and
+d{algo} arms. Prepare before the discussion:
+1. PREDICTION SHEET per condition from measured rates (binomial CIs at n=20):
+   RLPD dH 0.33 -> expect ~7/20, CI half-width ~0.2; r2d dH 0.25 -> ~5/20;
+   dv3 0 -> null-confirm at [0, 0.17]; RLPD dDP 0, r2d dDP 0.
+   Contrast power: 7/20 vs 0/20 Fisher p~0.004; 5/20 vs 0/20 p~0.02.
+2. NEW ARM DECISION: dR2D-clean (2/3 at n=3) belongs in the matrix at n=20 —
+   it is currently the strongest RL cell. Expect ~13/20 +- 4 if 0.67 holds.
+3. BUDGET DECISION feeds in TONIGHT: clean-long 300k endpoints (~morning)
+   decide whether RLPD seeds run 100k or 200-300k on the cluster. r2d stays
+   1M. dv3: include only if user wants the null at n=20 (costly, confirms CI).
+4. EVAL-MACHINE POLICY (unresolved, must be settled BEFORE launch): official
+   numbers are same-machine (G2/G3 gates: cross-box deltas are real). 20
+   seeds x 30 fresh evals x conditions = thousands of eval procs. Options:
+   evals on ONE cluster node type pinned per condition, or rsync checkpoints
+   home + local eval queue (slow). Decide with user.
+5. LOGISTICS: sbatch templates exist (nb-wave family); need seed-range +
+   VENV/R2D_DIR explicit-path discipline (§ cluster lessons); double-
+   submission guard; sidecars authored at save time (established).
+6. CARRY-INS pending before/alongside: r2d-MS cluster control (user submit
+   batch, unchanged); clean-long s3-4 relaunch (~9h); wave-sweep aggregator
+   now key-safe (post-audit).
