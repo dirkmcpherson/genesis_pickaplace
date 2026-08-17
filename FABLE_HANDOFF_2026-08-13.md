@@ -1241,3 +1241,24 @@ d{algo} arms. Prepare before the discussion:
 6. CARRY-INS pending before/alongside: r2d-MS cluster control (user submit
    batch, unchanged); clean-long s3-4 relaunch (~9h); wave-sweep aggregator
    now key-safe (post-audit).
+
+## 34. SEED AUDIT (user-prompted, 08-17 ~01:00) + overnight expansion chain
+
+TWO DEFECTS FOUND on "is a single seed setting everything":
+1. DemoData._g was manual_seed(0) ALWAYS -> every run consumed the identical
+   demo-batch curriculum; same-arm seeds were correlated through it. FIXED
+   (per-run seed, 2fbed2a); seed=0 reproduces the old stream bit-exactly
+   (regression-proven) so era-pooling for seed-0 runs is clean.
+2. pair-dH was a LITERAL re-execution of nb (same seeds/config/demo dir +
+   shared demo RNG): wandb actor_q curves bit-identical. Struck from the
+   table; pooled dH-class = 3/9, not 4/12. The RLfD source contrast weakens
+   to nb-vs-pairdDP 1/3-vs-0/3, directional only.
+NOTE: clean-long s0-2 (running) are seeds 0-2 = REPLICAYS of cell-B
+trajectories extended to 300k (same code era, same demo stream) — they answer
+the BUDGET question, not new draws.
+OVERNIGHT CHAIN (detached setsid, chain.log in session scratchpad exp_wave/):
+gated on clean-long finals -> three 3-wide 100k batches, POST-FIX code, new
+seeds: dH s3-s7 (episodes_pick_phase_all) + dR2D-clean s3-s6
+(episodes_champion_pick). Run names {dH,dR2D}_RLPD-exp_s{k}. By morning:
+dH n 3->8ish distinct, clean n 3->7 — sweeps needed (key-safe aggregator),
+then recompute the contrast. E3-demo-rng pooling boundary: ledger line added.

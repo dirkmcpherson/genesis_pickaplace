@@ -41,3 +41,4 @@ state it ran under, across the three change boundaries of 08-13/14:
    time vs the E1/E2/T1 commit timestamps above.
 4. Eval logs record mode/repeat/horizon/checkpoint; invoking script kept.
 5. Fresh process per episode for paper numbers; matched horizons or stated.
+| RLPD expansion wave (exp, 08-17) | post E3-demo-rng fix (2fbed2a): per-seed demo streams | new seeds only (dH s3-7, clean s3-6) | do NOT pool blindly with pre-fix seeds; seed-0 era-equivalent |
