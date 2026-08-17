@@ -104,3 +104,23 @@ at 5x scale, the following counting rule is REGISTERED pre-data:
    AFTER this round: identity key incl. seed + demo fingerprint; refusal
    needs --duplicate-ok; git-only differences WARN (every confirmed duplicate
    crossed a doc-only commit).
+
+## AMENDMENT 2 (08-17 evening, registered BEFORE any SWEEP-RESULT was read)
+
+The normalization audit (AUDIT_normalization_2026-08-17.md, spot-corroborated
+by the main session: dH >cap ~0.058 on a 20-ep sample vs dR2D 0.000) found the
+n=8 contrast is NOT single-variable. The arms differ in:
+1. ACTION-LABEL FIDELITY: dH tapes are not representable in delta_joint space
+   (13.3% of frames carry label error >1e-3; 66/66 picked episodes break from
+   the demonstrated command BEFORE the grasp). dR2D tapes are exact (0.000%).
+2. Demo reward density (9.2x) and negatives (dH 33% no-pick tapes, dR2D 0%).
+RE-INTERPRETATION, registered pre-data: the wave measures "which demo SET
+works better in this trainer as-encoded" (the practical question), NOT the
+pure demo-source causal effect. Any separation must be reported with the
+fidelity/density asymmetry stated. The encoder/decoder mechanism itself is
+verified exact (1-ULP round-trip); the defect is a data property.
+TOP-UP GUIDANCE if arms separate: matched-fidelity human arm =
+episodes_delta_rerecord (closed-loop re-recorded, 2.6% err) and/or
+--delta-ref measured (cuts uid-232 err 10x). BC/DP rows unaffected (train on
+raw absolute commands). dH-vs-dDP RLfD comparisons unconfounded (both ~11-14%).
+M1 fixed: sacfd_delta_gate DemoData seed TypeError (gate can run at HEAD again).

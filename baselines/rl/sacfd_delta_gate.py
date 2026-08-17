@@ -198,7 +198,7 @@ def main():
     # ---- (1) tensor equality: DemoData actions == encoder output ----
     all_paths = _paths_for(gate_uids, args.demo_dir)
     trans = _encode(all_paths, env.pick_z, 'pick', env.delta_cap, repeat, args.delta_ref)
-    dd = DemoData(trans, action_transform=None, device=th.device('cpu'))
+    dd = DemoData(trans, action_transform=None, device=th.device('cpu'), seed=0)
     ref_act = np.stack([t[1] for t in trans]).astype(np.float32)
     ref_obs = np.stack([t[0] for t in trans]).astype(np.float32)
     assert np.array_equal(dd.actions.numpy(), ref_act), 'DemoData actions != encoder'
