@@ -1,0 +1,39 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "action_repeat": 8,
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 0,
+  "shard_n": 1
+ },
+ "records": [
+  {
+   "uid": 308,
+   "label": "success",
+   "src_stage": "contact",
+   "n_src_frames": 1354,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 508,
+   "dwell_stalls": 35,
+   "truncated": true,
+   "dilation": 0.37518463810930575,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.8165969848632812,
+   "wall_s": 74.4
+  }
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 8,
+  "shard_n": 12
+ },
+ "records": [
+  {
+   "uid": 240,
+   "label": "fail",
+   "src_stage": "picked",
+   "n_src_frames": 1543,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 254,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1613,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1740,
+   "dwell_stalls": 12,
+   "truncated": false,
+   "dilation": 1.078735275883447,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 46.2
+  },
+  {
+   "uid": 267,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1771,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 281,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1040,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1061,
+   "dwell_stalls": 3,
+   "truncated": false,
+   "dilation": 1.0201923076923076,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 30.8
+  },
+  {
+   "uid": 298,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1041,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 2669,
+   "dwell_stalls": 232,
+   "truncated": false,
+   "dilation": 2.56388088376561,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 2.9802322387695312e-08,
+   "wall_s": 70.6
+  },
+  {
+   "uid": 310,
+   "label": "fail",
+   "src_stage": "picked",
+   "n_src_frames": 1834,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 1849,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0081788440567065,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 9.5367431640625e-07,
+   "wall_s": 48.1
+  },
+  {
+   "uid": 324,
+   "label": "fail",
+   "src_stage": "no-pick",
+   "n_src_frames": 648,
+   "status": "UNRESETTABLE:KeyError"
+  }
+ ]
+}

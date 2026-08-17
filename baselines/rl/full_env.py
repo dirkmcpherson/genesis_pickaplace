@@ -578,7 +578,11 @@ class CartesianFullTaskEnv(gym.Env):
         obs, _env_done, info = self.cenv.step(a_phys)
         self._t += 1
         # same per-step nested proxy as FullTaskEnv (honest settled nested is eval-only)
-        if info.get('contact') and float(a_phys[4]) < 0.3 \
+        # grip column is mode-dependent (6th sighting of the grip-column bug:
+        # this proxy read a_phys[4] — a wrist ROTATION axis in 7-dim modes —
+        # while the tip rule below was already mode-aware)
+        _grip_p = float(a_phys[6] if len(a_phys) >= 7 else a_phys[4])
+        if info.get('contact') and _grip_p < 0.3 \
                 and 'nested' not in self._granted:
             w = self.genv.w
             if tilt_deg(np_(w['bottle'].get_quat())) < 20 \

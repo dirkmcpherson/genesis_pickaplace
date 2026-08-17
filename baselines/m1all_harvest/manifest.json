@@ -1,0 +1,46 @@
+{
+  "teacher_type": "dp",
+  "checkpoint": "ouroboros/ouro_dp_joint/gen0/dp/checkpoints/last/pretrained_model",
+  "ic_mode": "demo",
+  "scope": "pick",
+  "seed": 7,
+  "n_rollouts": 320,
+  "rollout_budget": 320,
+  "target_kept": 66,
+  "short_of_target": true,
+  "kept": 63,
+  "yield_frac": 0.1969,
+  "rejected_by_verify": 0,
+  "fails_kept": 30,
+  "ic_coverage": {
+    "bins": 4,
+    "grid": [
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        13,
+        5,
+        5,
+        4
+      ],
+      [
+        1,
+        13,
+        4,
+        18
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "occupied_cells": 8,
+    "total_cells": 16
+  }
+}

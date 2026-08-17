@@ -1,0 +1,191 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 0,
+  "shard_n": 12
+ },
+ "records": [
+  {
+   "uid": 232,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 918,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 918,
+   "dwell_stalls": 0,
+   "truncated": false,
+   "dilation": 1.0,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 483,
+   "tipped": true,
+   "roundtrip_err": 1.1175870895385742e-08,
+   "wall_s": 25.7
+  },
+  {
+   "uid": 245,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 3323,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 3323,
+   "dwell_stalls": 0,
+   "truncated": false,
+   "dilation": 1.0,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 2340,
+   "tipped": true,
+   "roundtrip_err": 2.9802322387695312e-08,
+   "wall_s": 86.1
+  },
+  {
+   "uid": 258,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1251,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1267,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0127897681854516,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 607,
+   "tipped": true,
+   "roundtrip_err": 9.5367431640625e-07,
+   "wall_s": 34.4
+  },
+  {
+   "uid": 273,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1468,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 1489,
+   "dwell_stalls": 3,
+   "truncated": false,
+   "dilation": 1.0143051771117166,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.0,
+   "wall_s": 43.3
+  },
+  {
+   "uid": 286,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 3751,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 3794,
+   "dwell_stalls": 5,
+   "truncated": false,
+   "dilation": 1.011463609704079,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 3422,
+   "tipped": true,
+   "roundtrip_err": 2.9802322387695312e-08,
+   "wall_s": 92.5
+  },
+  {
+   "uid": 302,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1163,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 1507,
+   "dwell_stalls": 49,
+   "truncated": false,
+   "dilation": 1.295786758383491,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 5.21540641784668e-08,
+   "wall_s": 37.4
+  },
+  {
+   "uid": 314,
+   "label": "fail",
+   "src_stage": "contact",
+   "n_src_frames": 1300,
+   "status": "OK",
+   "stage": "no-pick",
+   "n_rerecord_steps": 2368,
+   "dwell_stalls": 152,
+   "truncated": false,
+   "dilation": 1.8215384615384616,
+   "granted_proxy": [],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 9.5367431640625e-07,
+   "wall_s": 55.4
+  },
+  {
+   "uid": 328,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 2766,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 2780,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.005061460592914,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 2.9802322387695312e-08,
+   "wall_s": 60.7
+  }
+ ]
+}

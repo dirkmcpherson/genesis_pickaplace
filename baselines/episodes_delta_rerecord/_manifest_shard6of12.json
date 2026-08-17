@@ -1,0 +1,193 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 6,
+  "shard_n": 12
+ },
+ "records": [
+  {
+   "uid": 238,
+   "label": "fail",
+   "src_stage": "placed",
+   "n_src_frames": 2550,
+   "status": "OK",
+   "stage": "no-pick",
+   "n_rerecord_steps": 6197,
+   "dwell_stalls": 521,
+   "truncated": false,
+   "dilation": 2.4301960784313725,
+   "granted_proxy": [],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 160.2
+  },
+  {
+   "uid": 251,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1583,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 1604,
+   "dwell_stalls": 3,
+   "truncated": false,
+   "dilation": 1.0132659507264687,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 42.8
+  },
+  {
+   "uid": 265,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 2927,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 2941,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0047830543218312,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 71.8
+  },
+  {
+   "uid": 279,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1999,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 2013,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0070035017508754,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.4901161193847656e-08,
+   "wall_s": 50.6
+  },
+  {
+   "uid": 296,
+   "label": "fail",
+   "src_stage": "contact",
+   "n_src_frames": 2790,
+   "status": "OK",
+   "stage": "contact",
+   "n_rerecord_steps": 6784,
+   "dwell_stalls": 569,
+   "truncated": false,
+   "dilation": 2.4315412186379928,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 1.1920928955078125e-07,
+   "wall_s": 143.3
+  },
+  {
+   "uid": 308,
+   "label": "success",
+   "src_stage": "contact",
+   "n_src_frames": 1354,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 2593,
+   "dwell_stalls": 177,
+   "truncated": false,
+   "dilation": 1.91506646971935,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 7.450580596923828e-09,
+   "wall_s": 56.2
+  },
+  {
+   "uid": 320,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 2658,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 2672,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0052671181339352,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact",
+    "nested"
+   ],
+   "proxy_nested": true,
+   "settled_nested": true,
+   "term_step": 2035,
+   "tipped": false,
+   "roundtrip_err": 7.450580596923828e-09,
+   "wall_s": 54.1
+  },
+  {
+   "uid": 335,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1248,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1262,
+   "dwell_stalls": 2,
+   "truncated": false,
+   "dilation": 1.0112179487179487,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 644,
+   "tipped": true,
+   "roundtrip_err": 7.450580596923828e-09,
+   "wall_s": 27.1
+  }
+ ]
+}

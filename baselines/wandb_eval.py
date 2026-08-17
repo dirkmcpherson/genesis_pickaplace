@@ -86,6 +86,11 @@ ap.add_argument('--step', type=int, default=None, help='training step tag for th
 args = ap.parse_args()
 
 import numpy as np  # noqa: E402
+# Audit F4: --kind dp samples diffusion noise off the torch global; unseeded,
+# every invocation was a different draw. SAC path (deterministic) unaffected.
+import torch as _th  # noqa: E402
+_th.manual_seed(args.seed)
+np.random.seed(args.seed)
 import ic_sampling, eval_core  # noqa: E402
 from genesis_can_env import GenesisCanEnv  # noqa: E402
 
@@ -254,6 +259,11 @@ elif args.obs == 'ee':
         return _base_action(o)
 
 _ic_sets = {}
+# --uids is honored ONLY on the --random 0 path below; passing both silently
+# evaluated the wrong episodes (memory-documented trap). Crash, don't guess.
+assert not (args.uids and args.random), (
+    '--uids requires --random 0 (with --random N the uid list is IGNORED '
+    'and the first N demo ICs are evaluated instead)')
 if args.random:
     if args.ic_mode in ('demo', 'both'):
         _ic_sets['indist'] = ic_sampling.demo_ics(env, reps=1)[:args.random]

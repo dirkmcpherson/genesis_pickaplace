@@ -1,0 +1,155 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 5,
+  "shard_n": 12
+ },
+ "records": [
+  {
+   "uid": 237,
+   "label": "success",
+   "src_stage": "no-pick",
+   "n_src_frames": 802,
+   "status": "OK",
+   "stage": "no-pick",
+   "n_rerecord_steps": 805,
+   "dwell_stalls": 0,
+   "truncated": false,
+   "dilation": 1.0037406483790523,
+   "granted_proxy": [],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 9.5367431640625e-07,
+   "wall_s": 23.1
+  },
+  {
+   "uid": 250,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 3350,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 4051,
+   "dwell_stalls": 100,
+   "truncated": false,
+   "dilation": 1.2092537313432836,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 4.76837158203125e-07,
+   "wall_s": 105.0
+  },
+  {
+   "uid": 263,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1050,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1120,
+   "dwell_stalls": 10,
+   "truncated": false,
+   "dilation": 1.0666666666666667,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 2.384185791015625e-07,
+   "wall_s": 31.2
+  },
+  {
+   "uid": 278,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 668,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 295,
+   "label": "success",
+   "src_stage": "contact",
+   "n_src_frames": 6232,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 14213,
+   "dwell_stalls": 1137,
+   "truncated": false,
+   "dilation": 2.280648267008986,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 2.384185791015625e-07,
+   "wall_s": 330.6
+  },
+  {
+   "uid": 307,
+   "label": "fail",
+   "src_stage": "contact",
+   "n_src_frames": 1885,
+   "status": "OK",
+   "stage": "no-pick",
+   "n_rerecord_steps": 4708,
+   "dwell_stalls": 401,
+   "truncated": false,
+   "dilation": 2.4976127320954906,
+   "granted_proxy": [],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 2.9802322387695312e-08,
+   "wall_s": 97.0
+  },
+  {
+   "uid": 319,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 2681,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 334,
+   "label": "fail",
+   "src_stage": "placed",
+   "n_src_frames": 1143,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 1623,
+   "dwell_stalls": 68,
+   "truncated": false,
+   "dilation": 1.4199475065616798,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 9.5367431640625e-07,
+   "wall_s": 32.6
+  }
+ ]
+}

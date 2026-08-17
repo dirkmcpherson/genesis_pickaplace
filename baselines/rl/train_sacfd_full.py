@@ -46,7 +46,10 @@ def relabel_full(paths, pick_z):
     for p in paths:
         d = np.load(p, allow_pickle=True)
         s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
-        ep_stage = str(d['stage']) if 'stage' in d.files else 'contact'
+        ep_stage = str(d['stage']) if 'stage' in d.files else None
+        if ep_stage is None:
+            raise KeyError(f'{f}: npz has no stage field — refusing to guess '
+                           '(the old contact default granted rewards on failure tapes)')
         rank = STAGE_RANK.get(ep_stage, 0)
         n = len(s) - 1
         if n < 2:
@@ -155,7 +158,10 @@ def relabel_hold_region(paths, pick_z, hold_k):
     for p in paths:
         d = np.load(p, allow_pickle=True)
         s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
-        ep_stage = str(d['stage']) if 'stage' in d.files else 'contact'
+        ep_stage = str(d['stage']) if 'stage' in d.files else None
+        if ep_stage is None:
+            raise KeyError(f'{f}: npz has no stage field — refusing to guess '
+                           '(the old contact default granted rewards on failure tapes)')
         rank = STAGE_RANK.get(ep_stage, 0)
         n = len(s) - 1
         if n < 2:

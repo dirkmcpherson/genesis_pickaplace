@@ -92,6 +92,23 @@ def load_teacher(teacher_type, checkpoint, seed, rig_provider=None,
         from stable_baselines3 import SAC
         model = SAC.load(checkpoint)
         print('[teacher] SAC loaded', flush=True)
+        # This branch decodes ABSOLUTE joint actions only. A delta_joint/cartesian
+        # teacher harvested here runs in the wrong MDP, and --verify cannot catch
+        # it (it replays the same wrong actions deterministically). Refuse unless
+        # the checkpoint's authored sidecar says absolute.
+        import json as _json, pathlib as _pl
+        _sc = _pl.Path(ckpt_path).with_name(
+            _pl.Path(ckpt_path).stem + '.action_mode.json')
+        if not _sc.exists():
+            raise FileNotFoundError(
+                f'{_sc}: no authored action_mode sidecar — cannot prove this SAC '
+                'teacher is joint-absolute; refusing to harvest in a guessed MDP')
+        _mode = _json.loads(_sc.read_text()).get('action_mode')
+        if _mode not in (None, 'absolute'):
+            raise ValueError(
+                f'SAC teacher action_mode={_mode!r}: this harvest branch only '
+                'implements absolute decoding — harvesting would produce wrong-MDP '
+                'tapes that --verify cannot catch')
 
         def policy_action(obs):
             a_norm, _ = model.predict(obs['state'], deterministic=True)

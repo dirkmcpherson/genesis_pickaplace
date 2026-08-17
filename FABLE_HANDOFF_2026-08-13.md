@@ -1262,3 +1262,30 @@ seeds: dH s3-s7 (episodes_pick_phase_all) + dR2D-clean s3-s6
 (episodes_champion_pick). Run names {dH,dR2D}_RLPD-exp_s{k}. By morning:
 dH n 3->8ish distinct, clean n 3->7 — sweeps needed (key-safe aggregator),
 then recompute the contrast. E3-demo-rng pooling boundary: ledger line added.
+
+## 35. AUDIT ROUND 2 LANDINGS (08-17 afternoon) — fixes applied
+
+SILENT-DEFAULT AUDIT (report AUDIT_silent_defaults, 1133fca): 4 CRITICAL.
+FIXED NOW: C1 grip-column 6th sighting (CartesianFullTaskEnv nested proxy
+a_phys[4] -> mode-aware; candidate cause of abs6 degenerate episodes, with C1's
+tip-rule sibling); C4 wandb_eval --uids+--random now ASSERTS (was silent drop);
+C2 missing npz stage now RAISES (was default 'contact', reward-grantable on
+failure tapes); C3 harvest_ai_demos SAC branch now REFUSES non-absolute/
+sidecar-less teachers (was absolute-decode always; --verify blind to it).
+DEFERRED (M-class, doc has 8): M1 sacfd snapshot sidecars, M2 control-mode
+.get fallbacks, M3 grip_effort except->0.0, M6 eval_watcher crash.
+
+RNG AUDIT (report AUDIT_rng, 8c0a285): RLPD chain verified clean post-2fbed2a;
+r2dreamer FULLY CLEAN. TWO LIVE dv3 CRITICALS, both FIXED in dreamerv3-torch:
+F3 dreamer.py:395 OVERWROTE config.seed with OS entropy since Jan 16 -> every
+dv3 "seed N" label was fictional, no run re-runnable (effective seeds
+recoverable from run_config.json). Now: --seed honored; --seed -1 = old
+behavior. F2 sample_episodes(seed=0) default + caller passing nothing ->
+all dv3 runs shared one minibatch/demo curriculum stream; now takes
+config.seed explicitly (no default). F4 wandb_eval now seeds torch/np (dp
+diffusion sampling was unseeded; SAC evals unaffected).
+CLAIM IMPACT: dv3 msrecipe "3/3 seeds" = 3 independent random draws (labels
+fictional but independence HOLDS — if anything stronger than 3 chosen seeds);
+reproducibility of any specific dv3 run = dead pre-fix; matrix row now says
+so. The local dv3-MS-HEAD spot check (running) predates the fix — its result
+stands as an existence check, seed label meaningless.

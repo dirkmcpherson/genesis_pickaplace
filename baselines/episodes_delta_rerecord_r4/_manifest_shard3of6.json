@@ -1,0 +1,297 @@
+{
+ "config": {
+  "demo_dir": "baselines/episodes_all",
+  "action_repeat": 4,
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 100,
+  "delta_ref": "measured",
+  "delta_cap": 0.025,
+  "delta_leash": 0.125,
+  "shard_idx": 3,
+  "shard_n": 6
+ },
+ "records": [
+  {
+   "uid": 235,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 883,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 663,
+   "dwell_stalls": 72,
+   "truncated": true,
+   "dilation": 0.7508493771234428,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.4242286682128906,
+   "wall_s": 72.3
+  },
+  {
+   "uid": 242,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1030,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 773,
+   "dwell_stalls": 90,
+   "truncated": true,
+   "dilation": 0.7504854368932039,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.40913820266723633,
+   "wall_s": 83.4
+  },
+  {
+   "uid": 248,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 3062,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 1417,
+   "dwell_stalls": 92,
+   "truncated": false,
+   "dilation": 0.4627694317439582,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.38355112075805664,
+   "wall_s": 151.2
+  },
+  {
+   "uid": 255,
+   "label": "success",
+   "src_stage": "no-pick",
+   "n_src_frames": 1373,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 261,
+   "label": "success",
+   "src_stage": "no-pick",
+   "n_src_frames": 1411,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 1059,
+   "dwell_stalls": 131,
+   "truncated": true,
+   "dilation": 0.7505315379163714,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.4124908447265625,
+   "wall_s": 118.3
+  },
+  {
+   "uid": 268,
+   "label": "fail",
+   "src_stage": "no-pick",
+   "n_src_frames": 5076,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 276,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1459,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 1072,
+   "dwell_stalls": 101,
+   "truncated": false,
+   "dilation": 0.7347498286497601,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.4380197525024414,
+   "wall_s": 109.9
+  },
+  {
+   "uid": 282,
+   "label": "fail",
+   "src_stage": "no-pick",
+   "n_src_frames": 509,
+   "status": "UNRESETTABLE:KeyError"
+  },
+  {
+   "uid": 293,
+   "label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 6141,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 3545,
+   "dwell_stalls": 287,
+   "truncated": false,
+   "dilation": 0.5772675460022798,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.46245574951171875,
+   "wall_s": 372.4
+  },
+  {
+   "uid": 299,
+   "label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 2612,
+   "status": "OK",
+   "stage": "no-pick",
+   "n_rerecord_steps": 1959,
+   "dwell_stalls": 229,
+   "truncated": true,
+   "dilation": 0.75,
+   "granted_proxy": [],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.48567962646484375,
+   "wall_s": 198.4
+  },
+  {
+   "uid": 305,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1261,
+   "status": "OK",
+   "stage": "contact",
+   "n_rerecord_steps": 946,
+   "dwell_stalls": 90,
+   "truncated": true,
+   "dilation": 0.7501982553528945,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 804,
+   "tipped": true,
+   "roundtrip_err": 0.4398212432861328,
+   "wall_s": 84.2
+  },
+  {
+   "uid": 311,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1300,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 975,
+   "dwell_stalls": 104,
+   "truncated": true,
+   "dilation": 0.75,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.40741539001464844,
+   "wall_s": 93.3
+  },
+  {
+   "uid": 317,
+   "label": "success",
+   "src_stage": "placed",
+   "n_src_frames": 1446,
+   "status": "OK",
+   "stage": "nested",
+   "n_rerecord_steps": 887,
+   "dwell_stalls": 75,
+   "truncated": false,
+   "dilation": 0.6134163208852006,
+   "granted_proxy": [
+    "picked",
+    "placed",
+    "contact"
+   ],
+   "proxy_nested": false,
+   "settled_nested": true,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.4132661819458008,
+   "wall_s": 85.9
+  },
+  {
+   "uid": 325,
+   "label": "success",
+   "src_stage": "nested",
+   "n_src_frames": 1459,
+   "status": "OK",
+   "stage": "picked",
+   "n_rerecord_steps": 993,
+   "dwell_stalls": 88,
+   "truncated": false,
+   "dilation": 0.680603152844414,
+   "granted_proxy": [
+    "picked"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": 616,
+   "tipped": true,
+   "roundtrip_err": 0.4131755828857422,
+   "wall_s": 91.3
+  },
+  {
+   "uid": 331,
+   "label": "success",
+   "src_stage": "no-pick",
+   "n_src_frames": 2867,
+   "status": "OK",
+   "stage": "placed",
+   "n_rerecord_steps": 2151,
+   "dwell_stalls": 215,
+   "truncated": true,
+   "dilation": 0.7502615974886641,
+   "granted_proxy": [
+    "picked",
+    "placed"
+   ],
+   "proxy_nested": false,
+   "settled_nested": false,
+   "term_step": -1,
+   "tipped": false,
+   "roundtrip_err": 0.41524410247802734,
+   "wall_s": 204.7
+  }
+ ]
+}
