@@ -85,10 +85,10 @@ process demo-IC at the fixed checkpoint; r2dreamer: nonzero best-checkpoint eval
 | arm | config | ignited / seeds | rate | rough 95% CI |
 |---|---|---|---|---|
 | RLPD nb | fixed trainer, 100k | 1/3 | 0.33 | — |
-| RLPD pair-dH | same | 1/3 | 0.33 | — |
+| ~~RLPD pair-dH~~ | **STRUCK 08-17: proven literal re-execution of nb** (same seeds/config/demo-RNG; wandb actor_q curves bit-identical). Zero new information; was double-counted | — | — | — |
 | RLPD hold | +25x density | 1/3 | 0.33 | — |
 | RLPD mref | measured-ref demos | 1/3 | 0.33 | — |
-| **RLPD pooled (dH-class)** | 4 waves | **4/12** | **0.33** | [0.10, 0.65] |
+| **RLPD pooled (dH-class)** | 3 DISTINCT waves (corrected 08-17) | **3/9** | **0.33** | [0.07, 0.70] |
 | RLPD pair-dDP | model demos | 0/3 | 0.00 | [0, 0.71] |
 | **RLPD clean (dR2D champion demos)** | same trainer, short clean in-sim demos, 100k | **2/3** | **0.67** | [0.13, 0.98] |
 | r2dreamer dH local | delta recipe | 2/4 | 0.50 | — |
@@ -183,3 +183,19 @@ more draws at the same rate, and both forms reuse trained components.
    was the only behavioral delta. This is what the gate discipline buys.
 5. A null replicated across many code states (dv3-genesis, historical) is
    robust to this caveat. A positive measured at one old state (dv3-MS) is not.
+
+### Seed-accounting corrections (08-17, user-prompted audit)
+1. **Demo-RNG defect (fixed)**: the immutable demo buffer sampled with a
+   generator hard-seeded to 0 in EVERY run — all "independent" seeds shared
+   the identical demo-batch curriculum. Fixed: per-run seed (rlpd_sac.py);
+   seed=0 reproduces the old stream exactly (regression-proven), so
+   pre-08-17 runs = "patched code at their own seed" only for seed 0.
+   All pre-fix same-arm seeds are positively correlated through this channel;
+   their CIs are optimistic. Runs from tonight's expansion onward draw
+   independent demo streams. Pooling boundary recorded in the run ledger.
+2. **pair-dH struck as duplicate** (see table): dH-class pooled ignition is
+   3/9, not 4/12. The rate estimate is unchanged (0.33); the evidence is
+   one-quarter weaker than previously stated.
+3. The dH-vs-dDP RLfD contrast survives but weakens: the dDP pair arm ran
+   against a dH arm that was a re-execution; the contrast is nb-vs-pair-dDP
+   (3 vs 3 seeds, 1/3 vs 0/3) — directional only.

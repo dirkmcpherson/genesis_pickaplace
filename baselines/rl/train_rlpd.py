@@ -272,7 +272,7 @@ def main():
                            (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
         norm = pick_env.normalize_action
     import torch as th
-    demo = DemoData(transitions, norm, th.device(args.device))
+    demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
     model.set_demo_data(demo)
     print(f'[demos] {len(paths)} eps -> {demo.n} transitions in the IMMUTABLE demo '
           f'buffer (50% of every batch), {demo.n_rewarded} rewarded', flush=True)

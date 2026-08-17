@@ -155,7 +155,7 @@ class DemoData:
     from seed-once SACfD, where demos dilute/overwrite in the FIFO buffer). Tensors are
     built once, pinned when training on CUDA for a fast async host->device copy."""
 
-    def __init__(self, transitions, action_transform, device):
+    def __init__(self, transitions, action_transform, device, seed):
         obs = np.stack([t[0] for t in transitions]).astype(np.float32)
         act = np.stack([t[1] for t in transitions]).astype(np.float32)
         if action_transform is not None:
@@ -176,7 +176,10 @@ class DemoData:
         self.dones = _t(done)
         self.n = len(transitions)
         self.n_rewarded = int((rew > 0).sum())
-        self._g = th.Generator().manual_seed(0)
+        # Per-run demo-sampling stream. Hard-coded 0 until 2026-08-17: every seed
+        # consumed the IDENTICAL demo-batch sequence, correlating "independent"
+        # seeds through the demo curriculum. seed=0 reproduces the old stream.
+        self._g = th.Generator().manual_seed(int(seed))
 
     def sample(self, batch_size):
         idx = th.randint(0, self.n, (batch_size,), generator=self._g)
