@@ -38,11 +38,13 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 1. ~~MS positive control verdict~~ RESOLVED 08-15: FAILED 0/3 (see controls
    table). Implementation credibility is now the OPEN question, inverted:
    the burden moved from "is the dataset bad" to "is the trainer sound".
-2. ~~Cell B verdict~~ RESOLVED 08-16 (post-audit correction): **DATASET** —
-   2/3 seeds over the bar, s1 9/15 fresh demo-IC (project-best). The trainer
-   CAN work; the MS-control failure isolates toward its wrapper/task shaping,
-   and the human-demo signature (1/3 seeds, 5-7/45) now reads as a
-   demo-quality ceiling, not a trainer defect.
+2. ~~Cell B verdict~~ RESOLVED 08-16 (post-audit correction; strength
+   re-calibrated 08-17): the registered rule fired for **DATASET** (2/3 seeds
+   over bar, s1 9/15 fresh demo-IC, project-best). What this DOES establish:
+   the trainer can ignite and reach 0.60 fresh-process on this task — the
+   "trainer defective" reading is dead. What it does NOT establish: a
+   significant demo-source effect (2/3 vs 4/12 is p=0.34 at the seed level).
+   The dataset hypothesis is promoted to lead candidate, pending n=20.
 3. ~~msrecipe verdict~~ RESOLVED 08-15: NULL at budget. dv3 stays out of the
    matrix as a learner; the fingerprint-without-takeoff result joins the
    actor-side-lottery evidence. s0-resume option held for user.
@@ -117,9 +119,14 @@ random-IC 2/1/2 of 15.
    bistability (~1-in-7 checkpoints good on the champion run).
 3. WHICH demos a seed unlocks is seed-dependent (two 4-pick seeds share 1 of 8
    uids). The COUNT is what is stable. Ignition is a basin-entry event.
-4. REVISED 08-16 (cells A/B resolved): the lottery is NOT a fixed property of
-   the task — demo quality moves it. Same trainer, same task, same budget:
-   human demos 4/12 ignition, champion clean demos 2/3 with a 9/15 seed.
+4. REVISED 08-16, RE-CALIBRATED 08-17 (user push-back, correct): the clean-demo
+   result FIRED the pre-registered decision rule (2/3 seeds over bar) but is
+   NOT statistically significant at the seed level — 2/3 vs 4/12 is Fisher
+   p=0.34, and the 9/15 is a best-of-3-seeds selection. The registered rule
+   was a triage device, not a hypothesis test (its own registration says so).
+   Claim at the right strength: the point estimate moved in the dataset
+   direction by the largest margin any lever has produced; establishing it
+   needs the n=20 wave (0.67-vs-0.33 at n=20/20 gives ~70-80% power).
    The "MS always ignites" contrast is WITHDRAWN as evidence: the only MS
    positive is March dv3 on DENSE reward; both RLPD implementations fail
    sparse-MS identically (and dense buys grasping but not completion under
