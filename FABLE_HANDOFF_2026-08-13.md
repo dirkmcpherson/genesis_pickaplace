@@ -1203,3 +1203,16 @@ C4 AFFIRMED w/ caveat: 0-vs-0 cannot separate "both fine" from "both broken".
 C5: prior wave sweeps (nb/pair/hold/mref) used the same single-uid wandb_eval
 pattern — RE-AGGREGATE FROM RAW LOGS before the paper cites them (newbox_supp
 scratchpad 85fd3758.../pairfinal etc).
+
+## 32. Throughput correction + dense-ours final (08-16 ~22:15)
+
+GPU PACKING RULE (measured tonight): 3 concurrent SB3-RLPD trainers = sweet
+spot on the 3080Ti (100k/2.1h each). 5 concurrent -> ~6x per-seed slowdown
+(50k in 7.3h) at 99% SM util / 19% memory — SM time-sharing, not memory, is
+the binding resource. clean-long s3/s4 KILLED at ~50k (pids 3083673/4);
+relaunch AFTER s0-2 finish (~9h). Registered design unchanged, staggered.
+DENSE-OURS FINAL: 0/3 success, grasp ~0 (single 0.20 blip s1@300k) vs
+reference dense grasp 0.3-0.6. Descriptive only — UTD/arch/batch confounds
+(audit C2) block a trainer-vs-trainer claim; both consistent with the C1
+hover analysis. Dense pair CLOSED as "no completion either arm; ref grasps,
+ours barely".
