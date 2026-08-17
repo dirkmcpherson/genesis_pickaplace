@@ -83,3 +83,24 @@ grep -h SWEEP-RESULT rlpd_*.out | sort          # the whole wave, one line/seed
 ```
 Paste the SWEEP-RESULT block into the session; the contrast, CIs, and the
 top-up decision come back computed against the registered expectations above.
+
+## AMENDMENT (08-17, registered BEFORE any SWEEP-RESULT was read)
+
+The run-identity audit (AUDIT_run_identity_2026-08-17.md) found that the n=8
+wave's seeds 0-7 largely RE-EXECUTE seeds already run locally (dH s3-7 = exp
+wave; dR2D s3-6 = exp; s0 both arms = nb/clean; code unchanged between waves,
+curves track to cross-hardware noise). To prevent a pair-dH-style double count
+at 5x scale, the following counting rule is REGISTERED pre-data:
+
+1. THE CLUSTER n=8 WAVE IS THE PRIMARY MEASUREMENT for the RLPD demo-source
+   contrast: one machine class, one code state (post demo-RNG fix), in-job
+   sweeps, internally same-machine.
+2. All prior local RLPD waves (nb, hold, mref, exp, cell-B 100k) are hereby
+   SUPERSEDED for pooled-rate purposes: development-era corroboration only.
+   No pooled statistic may count a local seed and its cluster re-execution.
+3. Any top-up extends with seeds 8-19 (never 0-7 again).
+4. Tooling gap recorded: sidecars do not stamp the seed and nothing refuses
+   seed re-use. RUN_REGISTRY proposal (in the audit doc) is the next build,
+   AFTER this round: identity key incl. seed + demo fingerprint; refusal
+   needs --duplicate-ok; git-only differences WARN (every confirmed duplicate
+   crossed a doc-only commit).
