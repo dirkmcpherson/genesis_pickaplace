@@ -222,3 +222,6 @@ baselines/lerobot_x2x2_*/
 baselines/x2x2/
 ouroboros/
 baselines/demonstrations/
+
+# datasets never travel by git (rsync only) -- lerobot_dH_pick slipped in via git add -A on 080cb73
+baselines/lerobot_*/
