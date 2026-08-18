@@ -77,6 +77,14 @@ fi
 [ -d "$DEMO_DIR" ] || { echo "FATAL: demo dir missing: $DEMO_DIR (rsync from <devbox>:~/workspace/dreamerv3-torch/demonstrations/ -- gitignored, rsync ONLY)"; exit 1; }
 N_NPZ=$(ls "$DEMO_DIR"/*.npz 2>/dev/null | wc -l)
 [ "$N_NPZ" -gt 0 ] || { echo "FATAL: $DEMO_DIR has no *.npz"; exit 1; }
+# Provenance gate (08-18): a stale exported DEMO_DIR from a genesis/msrecipe shell
+# fed genesis_m1all_delta25 (7-dim actions) into this 4-dim MS run — caught only by
+# an act_dim assert deep in demo_prefill. Refuse anything that is not the MS set.
+case "$DEMO_DIR" in
+  *maniskill*) ;;
+  *) echo "FATAL: DEMO_DIR=$DEMO_DIR is not a ManiSkill demo set (name must contain 'maniskill')."
+     echo "       A stale 'export DEMO_DIR=...' from another submission is the usual cause: unset DEMO_DIR"; exit 1 ;;
+esac
 mkdir -p "$LOGDIR"
 
 # Double-submission guard (dDP_s4 dual-writer incident, 08-12).
