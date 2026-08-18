@@ -124,3 +124,31 @@ episodes_delta_rerecord (closed-loop re-recorded, 2.6% err) and/or
 --delta-ref measured (cuts uid-232 err 10x). BC/DP rows unaffected (train on
 raw absolute commands). dH-vs-dDP RLfD comparisons unconfounded (both ~11-14%).
 M1 fixed: sacfd_delta_gate DemoData seed TypeError (gate can run at HEAD again).
+
+## RESULTS (08-18)
+
+### RLPD n=16 x 2 arms (cluster, in-job fresh-process sweeps, seeds 0-15)
+| arm | ignited (>=3/15) | pooled demo-IC | mean picks/seed | random-IC |
+|---|---|---|---|---|
+| dH | 8/16 (0.50) | 53/240 = 0.221 | 3.3 | 41/240 = 0.171 |
+| dR2D-clean | 10/16 (0.62) | 48/240 = 0.200 | 3.0 | 32/240 = 0.133 |
+Contrast: ignition Fisher p=0.72; pooled p=0.65; seed-level MWU 0.51.
+VERDICT: clean null on the demo-SET question at n=16/arm — the fidelity/
+density confound (Amendment 2) is moot because nothing separates. Ignition
+DOUBLED vs the registered ~0.33 expectation in both arms (candidates: per-
+seed demo RNG now genuinely independent; cluster machine class). Best seeds
+0.60 (dH s2) / 0.53 (dR2D s8) at 100k; median 2.5-3/15; per-seed variance,
+not the ceiling, is the limitation. This wave is the PRIMARY RLPD measurement.
+
+### r2dreamer wave 3 (dH seeds 30-39, champion recipe, 3M steps — the recipe
+### is 3M not 1M; ETA in the jobs table was wrong)
+Ignitions: **2/10** — s31 (0.67/0.80/0.80/0.93 across 4 fresh evals @1.18M)
+and s36 (0.93/0.93/1.00/1.00 @982k). 8/10 zero at every eval. NOTE: the
+final 3M checkpoint reads 0 on BOTH igniting seeds — the same checkpoint
+bistability/collapse as the champion run and as RLPD clean-long; the
+best-checkpoint protocol stands. Pooled dH ignition 8/34 (0.24); direction
+vs dDP 0/20 unchanged (p~0.02). s36's 1.00 mode-eval ties the champion.
+
+### r2d-MS control: died at demo load (stale exported DEMO_DIR fed genesis
+7-dim demos into the 4-dim MS run; assert caught it). Gate added 8e5a4e2;
+resubmitted with unset DEMO_DIR.
