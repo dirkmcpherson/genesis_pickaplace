@@ -152,6 +152,12 @@ if [ -n "${DRYRUN:-}" ]; then
   exit 0
 fi
 
+# ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
+# Runs BEFORE conda/module so a refusal costs no GPU time; run_registry.py is
+# stdlib-only, so the login-node system python3 suffices here.
+python3 cluster/run_registry.py check --script sbatch_rlpd.sh --arm "$ARM" --seed "$SEED" \
+  --demo-dir "$ARM_DEMO" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+
 module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
 
@@ -161,10 +167,6 @@ python -c 'import stable_baselines3' 2>/dev/null || pip install --no-input 'stab
 # git gate: demo-RNG fix must be present
 git merge-base --is-ancestor 2fbed2a HEAD || {
   echo 'FATAL: checkout predates the demo-RNG fix (2fbed2a). git pull first.'; exit 1; }
-
-# ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
-python cluster/run_registry.py check --script sbatch_rlpd.sh --arm "$ARM" --seed "$SEED" \
-  --demo-dir "$ARM_DEMO" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
 
 python baselines/rl/train_rlpd.py \
   --steps "$STEPS" --scope pick --action-mode delta_joint --delta-ref target \
