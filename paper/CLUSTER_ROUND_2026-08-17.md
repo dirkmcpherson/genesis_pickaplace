@@ -152,3 +152,12 @@ vs dDP 0/20 unchanged (p~0.02). s36's 1.00 mode-eval ties the champion.
 ### r2d-MS control: died at demo load (stale exported DEMO_DIR fed genesis
 7-dim demos into the 4-dim MS run; assert caught it). Gate added 8e5a4e2;
 resubmitted with unset DEMO_DIR.
+
+### r2d-MS control (resubmitted 08-18 11:21) — PROVISIONAL, first decision point
+Prefill verified: 10 teleop eps, +100 terminals, negctl 0.0. At 50k: two seeds
+already >=0.8 eval_success (one reaches 1.0 by 61k). Reference dv3 takeoff on
+this setup: 110-137k. PROVISIONAL PASS pending the 100k/150k decision points
+(bar: >=2/3 seeds >=0.50 by 300k). eval_native_success stays ~0: our wrapper
+scores the relaxed cut (same predicate the March reference used); stated for
+the record. If confirmed: the fork is sound; bounded_normal off the suspect
+list; genesis lottery = task x recipe.
