@@ -376,13 +376,19 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
 ) & ARCH_PID=$!
 trap 'kill $SYNC_PID $ARCH_PID 2>/dev/null || true' EXIT
 
-# --- train ------------------------------------------------------------------------
-( cd "$R2D_DIR" && "${TRAIN_CMD[@]}" ) 2>&1 | tee -a "$LOGDIR/run.log"
-
-if [ -f "$REGISTRY_PY" ]; then
-  python "$REGISTRY_PY" register --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
+# --- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
+# Live wiring (08-18 review: the earlier build only echoed this in DRYRUN). Runs
+# after every filesystem preflight gate and before any GPU work; stdlib-only
+# helper, system python3. Skipped on preemption requeue (same logical run).
+if [ -f "$REGISTRY_PY" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
+  python3 "$REGISTRY_PY" check --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
+    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+  python3 "$REGISTRY_PY" register --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
     --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
 fi
+
+# --- train ------------------------------------------------------------------------
+( cd "$R2D_DIR" && "${TRAIN_CMD[@]}" ) 2>&1 | tee -a "$LOGDIR/run.log"
 
 kill $SYNC_PID 2>/dev/null || true
 ( cd "$R2D_DIR" && "$PY" sync_runs_to_wandb.py --runs-dir "$RUNS_DIR" --only "$RUN_NAME" ) \
