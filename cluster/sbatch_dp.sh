@@ -164,7 +164,7 @@ export PYTHONUNBUFFERED=1
 # one-line edit. Until filled in, the gate WARNS instead of refusing (so the
 # Wednesday smoke plan is not blocked by the chicken-and-egg problem of the
 # script not yet knowing its own commit hash at the moment it is first written).
-SBATCH_DP_ADD_COMMIT=${SBATCH_DP_ADD_COMMIT:-__FILL_IN_AFTER_FIRST_COMMIT__}
+SBATCH_DP_ADD_COMMIT=${SBATCH_DP_ADD_COMMIT:-8d3de587318d0d37def80bc16178c9b51af77ebf}
 
 ARM=${ARM:?set ARM=dHpruned, dH, dDP, or dR2D}
 SEED=${SEED:?set SEED}
