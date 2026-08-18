@@ -217,7 +217,9 @@ if [ -n "$ARM" ]; then
 else
   DEMO_DIR=${DEMO_DIR:-$DEMO_DEFAULT}
 fi
-LOGDIR=${LOGDIR:-$R2D_DIR/runs/${CONFIG#genesis_}_s$SEED}
+# ARM is part of the logdir/run name when set (08-18 smoke: dR2D s0 landed in the
+# same dir wave-3 dH s0 would use -- names must never collide across arms).
+LOGDIR=${LOGDIR:-$R2D_DIR/runs/${CONFIG#genesis_}${ARM:+_$ARM}_s$SEED}
 RUN_NAME=$(basename "$LOGDIR"); RUNS_DIR=$(dirname "$LOGDIR")
 
 # Warm restart on requeue only (see header): fresh submissions must NOT pick up
@@ -310,8 +312,13 @@ fi
 # RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat. Sibling-
 # agent tool (paper/AUDIT_run_identity_2026-08-17.md §5); if it is not on this
 # checkout yet, skip with a loud note rather than inventing a local substitute.
-if [ -f "$REGISTRY_PY" ]; then
-  python "$REGISTRY_PY" check --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
+if [ -f "$REGISTRY_PY" ] && [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ]; then
+  echo "NOTE: preemption requeue (restart ${SLURM_RESTART_COUNT}) -- registry check/register skipped, same logical run"
+elif [ -f "$REGISTRY_PY" ]; then
+  python3 "$REGISTRY_PY" check --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
+    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+  # register AT LAUNCH: a preempted/crashed 3M run must still leave its line
+  python3 "$REGISTRY_PY" register --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
     --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
 else
   echo "NOTE: cluster/run_registry.py not found -- run-identity duplicate check skipped (TODO hook)"
@@ -376,17 +383,6 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
 ) & ARCH_PID=$!
 trap 'kill $SYNC_PID $ARCH_PID 2>/dev/null || true' EXIT
 
-# --- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
-# Live wiring (08-18 review: the earlier build only echoed this in DRYRUN). Runs
-# after every filesystem preflight gate and before any GPU work; stdlib-only
-# helper, system python3. Skipped on preemption requeue (same logical run).
-if [ -f "$REGISTRY_PY" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
-  python3 "$REGISTRY_PY" check --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
-    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
-  python3 "$REGISTRY_PY" register --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
-    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
-fi
-
 # --- train ------------------------------------------------------------------------
 ( cd "$R2D_DIR" && "${TRAIN_CMD[@]}" ) 2>&1 | tee -a "$LOGDIR/run.log"
 
@@ -400,11 +396,16 @@ kill $ARCH_PID 2>/dev/null || true
 # Protocol (pre-registered): the in-run loop SELECTS the best checkpoint on its
 # seed-0 eval; the headline number is the mean of x3 CONFIRMATION evals on fresh
 # seeds 1-3 (+1 mode eval) -- selection and confirmation on independent draws.
+# 08-18 smoke (job 2588648): eval_genesis.py exited 2 AFTER printing its success
+# line, and set -eo pipefail killed the script there -- the job read FAILED with
+# every result already produced. Post-train diagnostics must never fail the job:
+# relax -e/pipefail for this block and report each stage's rc explicitly.
+set +e +o pipefail
 if [ -z "${NO_EVAL:-}" ]; then
   ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/latest.pt" \
       --episodes "${EVAL_EPS:-15}" --max-steps "${EVAL_MAX_STEPS:-400}" \
-      --mode sample --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee "$LOGDIR/eval.log" \
-    || echo "WARN: final eval FAILED"
+      --mode sample --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee "$LOGDIR/eval.log"
+  _erc=${PIPESTATUS[0]}; [ "$_erc" -eq 0 ] || echo "WARN: final eval exited rc=$_erc (metrics line may still be present -- check $LOGDIR/metrics.jsonl)"
   BEST=$(sort -k2 -rn "$LOGDIR/ckpt_scores.tsv" 2>/dev/null | head -1 | cut -f1)
   if [ -n "$BEST" ] && [ -f "$BEST" ]; then
     cp "$BEST" "$LOGDIR/BEST_selected.pt"
@@ -420,4 +421,10 @@ if [ -z "${NO_EVAL:-}" ]; then
     echo "WARN: no scored checkpoints -- lottery coverage produced nothing (see ckpt_scores.tsv)"
   fi
 fi
+# ONE greppable result line (mirrors SWEEP-RESULT / DP-RESULT / DV3-RESULT):
+# picked from the LAST eval/* line in metrics.jsonl (the latest.pt seed-0 eval;
+# BEST-checkpoint confirmations, when present, are the paper number -- see log).
+_pk=$(grep -h '"eval/picked"' "$LOGDIR/metrics.jsonl" 2>/dev/null | tail -1 | grep -oE '"eval/picked": *[0-9.]+' | grep -oE '[0-9.]+$')
+echo "R2D-RESULT arm=${ARM:-legacy} seed=$SEED config=$CONFIG picked=${_pk:-NA} logdir=$LOGDIR"
 echo "== r2dreamer $CONFIG seed $SEED done $(date)"
+exit 0
