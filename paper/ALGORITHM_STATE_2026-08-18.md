@@ -13,11 +13,19 @@ and the per-source panels. Style rule: shape = demo source, color = algorithm.
 ## 1. Training state per algorithm
 
 ### DP (diffusion policy, BC)
-- **State: DONE, publish-ready.** dH 0.62 in-dist (8/8 seeds 0.40-0.80); dDP
-  0.80 (8/8 seeds 0.67-0.93). Random-IC 0.23 both. P(model>human)=0.994 in-dist.
+- **State: DONE, publish-ready.** dHpruned 0.62 in-dist (8/8 seeds 0.40-0.80);
+  dDP 0.80 (8/8 seeds 0.67-0.93). Random-IC 0.23 both. P(model>human)=0.994.
+- NOTATION (user, 08-18): the functional human-DP arm is **dHpruned_DP** —
+  idle teleop frames collapsed (29.6% dropped). **dH_DP** = the UNPRUNED set
+  (the exact frames every RL/WM row consumes) = 0.27 / 0.13 (n=1 control):
+  DP does not function on raw human teleop. Only DP uses the pruned set;
+  model-demo sets have no idle frames, so dDP/dR2D are frame-identical
+  across all algorithms.
 - Seed audit: DP is CLEAN (lerobot seeds correctly; per-seed curves differ from
   step 1). Untouched by the RLPD/dv3 defects.
 - Not run: dR2D_DP (DP on champion clean demos). Trivial to add Thursday.
+- Optional Thursday adds: dH_DP unpruned at n=8 (so the control row stands
+  alone); RLPD on dHpruned (does idle-frame removal matter for RL as for BC?).
 - Ignition: **none — DP has no lottery.** Every seed lands in a 0.4-0.93 band.
 
 ### RLPD (SAC + immutable 50% demo batches, ensemble critics, UTD 10)

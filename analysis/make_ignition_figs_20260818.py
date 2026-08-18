@@ -46,7 +46,8 @@ def build(src):
         d = D["dp"][src]
         seeds = sorted(d, key=int)
         vals = [d[s]["record"]["indist"] for s in seeds]
-        S.append(dict(alg="DP", label=f"{src}_DP", n=len(seeds), wave="eval-of-record wave",
+        S.append(dict(alg="DP", label=(f"{src}pruned_DP" if src == "dH" else f"{src}_DP"),  # dH DP arm = PRUNED set (user notation 08-18)
+                      n=len(seeds), wave="eval-of-record wave" + (" (pruned dH set)" if src == "dH" else ""),
                       era="trained 08-01..08-09; evals 08-02..08-09 (hardened re-eval 08-10/11 agrees)",
                       proto="fresh eval process, demo-IC, 15 ep/seed, 1200-step horizon",
                       seed_ids=[int(s) for s in seeds], finals=vals,
@@ -295,7 +296,7 @@ def fig_overview(ALL):
         ig = sum(1 for q in vals if q >= BAR)
         ax.text(1.015, y, f"n={len(vals)}  ignited {ig}/{len(vals)}  mean {m:.2f}",
                 va="center", fontsize=8, color=c)
-        yt.append(y); yl.append(f'{src} | {s["alg"]} | {s["wave"]}')
+        yt.append(y); yl.append(f'{("dHpruned" if (src == "dH" and s["alg"] == "DP") else src)} | {s["alg"]} | {s["wave"]}')
     ax.axvline(BAR, color="k", ls="--", lw=1.2)
     ax.text(BAR + 0.008, len(rows) - 0.4, f"ignition bar {BAR:.2f}", fontsize=8.5)
     # shared legend key: shape = source (rows) x color = algorithm (columns); NOT-RUN greyed
