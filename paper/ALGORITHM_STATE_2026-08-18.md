@@ -73,6 +73,37 @@ and the per-source panels. Style rule: shape = demo source, color = algorithm.
   msrecipe-null reading; a clean 1.0 keeps dv3's genesis null as a task-x-
   recipe property.
 - Not run: dDP_DV3, dR2D_DV3. Both gated on the HEAD verdict.
+- **CLUSTER-READY (08-18 evening, prep for Thursday):** `sbatch_genesis_multi.sh`
+  hardened with an ARM={dH,dDP,dR2D}+SEED round-robin knob: fixed-code gate
+  (greps the DEPLOYED tree for the F2/F3 markers since it is rsync-deployed, not
+  necessarily a git checkout — refuses with the rsync command if absent), per-ARM
+  demo-dir provenance-by-filename-pattern gate, a RUN_REGISTRY check/register hook
+  (cluster/run_registry.py, built by a sibling effort this round — degrades to a
+  marked TODO if that file is not yet on the deployed tree), a post-launch
+  seed-honored assertion against the run's own `run_config.json` (kills the run
+  and fails the job loudly on a mismatch — an F3 regression must never repeat
+  silently), and one unconditional end-of-job `DV3-RESULT arm= seed= picked=X/N`
+  line per spec (decoupled from the periodic in-training eval's cadence, so a
+  short smoke always has something to grep). All three demo dirs now exist,
+  dreamer-format, stride-4/delta_joint/pick/+100-term stamped:
+  `genesis_pick_msr_delta25_r4` (dH, 67, the last msrecipe wave's set — reused),
+  `genesis_m1all_msr_delta25_r4` (dDP, 93 = 63 pick + 30 no-pick — NEW, converted
+  08-18 from `baselines/m1all_harvest` via `convert_genesis_demos_repeat.py`),
+  `genesis_champion_msr_delta25_r4` (dR2D, 52 — NEW; blocked most of the day
+  because `baselines/episodes_champion_pick` was recorded with NO images
+  (states/actions only), so it could not feed the pixel converter at all. Fixed
+  by adding an `--images` flag to `harvest_champion_demos.py` — CPU-only,
+  `FullTaskEnv(backend='cpu', camera_rig=True)` already renders off-GPU, verified
+  against the two live GPU trainers' `nvidia-smi` numbers before and after — and
+  re-harvesting to `baselines/episodes_champion_pick_img` (52/54 kept,
+  mode=mode/deterministic), then converting at stride 4 the same way as the
+  others). DEPENDENCY, restated from the header: the dv3-MS-at-HEAD spot check
+  (§ above) is the Thursday go/no-go — a clean ~1.0 on both local seeds means
+  launch the round robin on HEAD as planned; a degraded result means bisect the
+  regression first, not spend cluster budget on genesis. See
+  `sbatch_genesis_multi.sh`'s own header for the full Wednesday smoke plan
+  (DRYRUN per ARM, one real dH seed at 2e4 steps proving seed-honored + demos
+  loaded + the DV3-RESULT line).
 
 ---
 
