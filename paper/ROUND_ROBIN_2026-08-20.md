@@ -37,7 +37,10 @@ rsync -av $D/genesis_r2dchamp_delta25/      $LAB/dreamerv3-torch/demonstrations/
 rsync -av $D/genesis_m1all_delta25/         $LAB/dreamerv3-torch/demonstrations/genesis_m1all_delta25/
 #   (genesis_pick_pruned_delta25 = dH already on cluster from wave 3)
 # --- dv3 (dreamer-format, stride-4 stamped) + the seed-fixed code tree ---
-rsync -av --exclude logdir/ --exclude venv/ --exclude wandb/ ~/workspace/dreamerv3-torch/ $LAB/dreamerv3-torch/
+rsync -av --exclude 'logdir/' --exclude 'logs*/' --exclude 'test_logs*/' --exclude 'venv/' \
+  --exclude 'wandb/' --exclude 'demonstrations/' --exclude 'demo_videos/' --exclude 'random_episodes/' \
+  --exclude 'debug_frame_stack*/' --exclude '__pycache__/' --exclude '.git/' --exclude '*MagicMock*' \
+  ~/workspace/dreamerv3-torch/ $LAB/dreamerv3-torch/     # code only (~<100MB); tree is 37G otherwise
 rsync -av $D/genesis_m1all_msr_delta25_r4/     $LAB/dreamerv3-torch/demonstrations/genesis_m1all_msr_delta25_r4/
 rsync -av $D/genesis_champion_msr_delta25_r4/  $LAB/dreamerv3-torch/demonstrations/genesis_champion_msr_delta25_r4/
 #   (genesis_pick_msr_delta25_r4 = dH already on cluster from msrecipe)
