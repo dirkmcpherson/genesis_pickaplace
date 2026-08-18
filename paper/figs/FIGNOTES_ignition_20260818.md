@@ -421,3 +421,5 @@ $V analysis/pull_ignition_wandb_20260818.py  <scratchdir>   # ~10 min of wandb A
 $V analysis/assemble_ignition_20260818.py    <scratchdir>   # -> ignition_numbers_20260818.json
 $V analysis/make_ignition_figs_20260818.py                  # -> the ten PNGs
 ```
+
+Style: figures follow paper/figs/STYLE_RULE.md (shape = source, color = algorithm; user directive 2026-08-18).

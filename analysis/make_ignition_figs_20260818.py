@@ -23,6 +23,9 @@ D = json.load(open(os.path.join(FIG, "ignition_numbers_20260818.json")))
 BAR = 0.20                      # ignition bar (>=3/15 fresh demo-IC; rate form)
 
 ALG_COLOR = {"DP": "#1b7837", "RLPD": "#4878cf", "R2D": "#cb181d", "DV3": "#8e44ad"}
+# STANDING STYLE RULE (user, 2026-08-18; see paper/figs/STYLE_RULE.md):
+#   marker SHAPE encodes demo SOURCE, COLOR encodes ALGORITHM. Fixed forever.
+SRC_MARKER = {"dH": "o", "dDP": "s", "dR2D": "^"}
 R2D_SHADE = ["#67000d", "#cb181d", "#fb6a4a", "#e07b39", "#a3a3a3"]   # one per wave, in `order`
 DASH = {0: "-", 1: "--", 2: ":", 3: "-.", 4: (0, (5, 1, 1, 1, 1, 1))}
 
@@ -122,7 +125,7 @@ def fig_A(src):
         fb = [fb[k] for k, v in enumerate(s["finals"]) if v is not None]
         jit = rng.uniform(-0.16, 0.16, len(vals))
         va = np.array(vals); fba = np.array(fb, dtype=bool)
-        for mask, mk, lw in ((~fba, "o", 0.6), (fba, "^", 0.6)):
+        for mask, mk, lw in ((~fba, SRC_MARKER[src], 0.6), (fba, SRC_MARKER[src], 1.8)):  # thick edge = in-loop fallback
             z = (va == 0) & mask
             nz = (va != 0) & mask
             # zero-valued seeds get an open marker so a stack at y=0 stays countable
@@ -160,7 +163,7 @@ def fig_A(src):
     ax.set_xlim(-0.6, len(xt) - 0.4)
     ax.set_ylim(-0.20, 1.06)
     ax.set_yticks(np.arange(0, 1.01, 0.1))
-    ax.set_ylabel("per-seed final pick rate, demo ICs\n(open marker = exactly 0.00;  triangle = in-loop eval fallback)")
+    ax.set_ylabel("per-seed final pick rate, demo ICs\n(open marker = exactly 0.00;  thick edge = in-loop eval fallback;  shape = demo source)")
     ax.set_title(f"(A) Ignition distribution — {SRC_TITLE[src]}\n"
                  "one dot per seed; metrics are NOT protocol-matched across algorithms (see FIGNOTES)",
                  fontsize=10.5)
@@ -189,10 +192,10 @@ def fig_perf(src, S, ignited_only):
             ax.axhspan(m - se, m + se, color=c, alpha=0.13, zorder=0)
             ax.axhline(m, color=c, ls=DASH[s["dash"]], lw=2,
                        label=f'{s["label"]}  n={nlab}  [{s["wave"]}; final-ckpt eval only, no step curve]')
-            ax.errorbar([s["point_step"]], [m], yerr=[se], color=c, marker="D", ms=9,
+            ax.errorbar([s["point_step"]], [m], yerr=[se], color=c, marker=SRC_MARKER[src], ms=9,
                         capsize=5, lw=2, zorder=5)
             for v in vals:
-                ax.plot([s["point_step"]], [v], marker="o", ms=4.5, mfc="none", mec=c, zorder=4)
+                ax.plot([s["point_step"]], [v], marker=SRC_MARKER[src], ms=4.5, mfc="none", mec=c, zorder=4)
             used = True; continue
         keys = sorted(s["curves"])
         keys = [keys[i] for i in keep]
@@ -223,13 +226,13 @@ def fig_perf(src, S, ignited_only):
             ax.plot(xr, yr, color=c, alpha=0.20, lw=0.9, zorder=1)
         full = nb == len(keys)
         drop = None if full.all() else int(np.argmax(~full))
-        ax.plot(xs[full], m[full], color=c, ls=DASH[s["dash"]], lw=2.2, marker="o", ms=4,
+        ax.plot(xs[full], m[full], color=c, ls=DASH[s["dash"]], lw=2.2, marker=SRC_MARKER[src], ms=4,
                 zorder=3,
                 label=f'{s["label"]}  n={nlab}' + (f'/{s["n"]}' if ignited_only else '') +
                       f'  [{s["era"]}]')
         if drop is not None:
             ax.plot(xs[drop - 1:], m[drop - 1:], color=c, ls=DASH[s["dash"]], lw=1.2,
-                    alpha=0.65, marker="o", ms=3, zorder=3)
+                    alpha=0.65, marker=SRC_MARKER[src], ms=3, zorder=3)
             ax.plot(xs[drop:], m[drop:], ls="", marker="x", ms=5, color=c, zorder=4)
         ax.fill_between(xs, np.maximum(m - se, 0), m + se, color=c, alpha=0.18, zorder=2)
         if float(np.nanmax(m)) == 0.0:   # flat-zero series: make it legible, do not drop it
@@ -284,8 +287,9 @@ def fig_overview(ALL):
         c = s.get("color") or ALG_COLOR[s["alg"]]
         jit = rng.uniform(-0.19, 0.19, len(vals))
         v = np.array(vals); z = v == 0
-        ax.scatter(v[~z], y + jit[~z], s=52, color=c, edgecolor="k", lw=0.5, zorder=3)
-        ax.scatter(v[z], y + jit[z], s=52, facecolor="none", edgecolor=c, lw=1.3, zorder=3)
+        mk = SRC_MARKER[src]
+        ax.scatter(v[~z], y + jit[~z], s=58, color=c, marker=mk, edgecolor="k", lw=0.5, zorder=3)
+        ax.scatter(v[z], y + jit[z], s=58, facecolor="none", marker=mk, edgecolor=c, lw=1.3, zorder=3)
         m = float(np.mean(vals))
         ax.plot([m, m], [y - 0.33, y + 0.33], color=c, lw=3, zorder=4)
         ig = sum(1 for q in vals if q >= BAR)
@@ -294,6 +298,19 @@ def fig_overview(ALL):
         yt.append(y); yl.append(f'{src} | {s["alg"]} | {s["wave"]}')
     ax.axvline(BAR, color="k", ls="--", lw=1.2)
     ax.text(BAR + 0.008, len(rows) - 0.4, f"ignition bar {BAR:.2f}", fontsize=8.5)
+    # shared legend key: shape = source (rows) x color = algorithm (columns); NOT-RUN greyed
+    from matplotlib.lines import Line2D
+    have = {(src, s["alg"]) for src in ALL for s in ALL[src]}
+    handles = []
+    for src in ["dH", "dDP", "dR2D"]:
+        for alg in ["DP", "RLPD", "R2D", "DV3"]:
+            ok = (src, alg) in have
+            handles.append(Line2D([], [], ls="", marker=SRC_MARKER[src], ms=8,
+                                  color=ALG_COLOR[alg] if ok else "0.8",
+                                  markeredgecolor="k" if ok else "0.6",
+                                  label=f"{src}_{alg}" + ("" if ok else " (not run)")))
+    ax.legend(handles=handles, ncol=4, fontsize=7.5, loc="lower right", framealpha=0.95,
+              title="shape = demo source, color = algorithm", title_fontsize=8)
     ax.set_yticks(yt); ax.set_yticklabels(yl, fontsize=8)
     ax.set_xlim(-0.03, 1.52); ax.set_ylim(-0.7, len(rows) - 0.3)
     ax.set_xticks(np.arange(0, 1.01, 0.1))
