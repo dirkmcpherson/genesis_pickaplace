@@ -278,6 +278,15 @@ if [ -n "${DRYRUN:-}" ]; then
   exit 0
 fi
 
+REG_KNOBS=(steps="$STEPS" batch_size=64 policy=diffusion dataset_root="$DATASET")
+# ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
+# Runs BEFORE conda/module so a refusal costs no GPU time (stdlib-only helper,
+# system python3). Skipped on a preemption requeue -- same logical run continuing.
+if [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
+  python3 cluster/run_registry.py check --script sbatch_dp.sh --arm "$ARM" --seed "$SEED" \
+    --demo-dir "$RAW" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+fi
+
 module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
 export MUJOCO_GL=egl
@@ -328,14 +337,6 @@ if n != expect_n:
 print(f'PROVENANCE-OK dataset={ds} total_episodes={n} matches ARM={arm} raw count')
 PYEOF
 
-REG_KNOBS=(steps="$STEPS" batch_size=64 policy=diffusion dataset_root="$DATASET")
-
-# ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
-# (skip on a preemption requeue -- same logical run continuing, not a new one)
-if [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
-  python cluster/run_registry.py check --script sbatch_dp.sh --arm "$ARM" --seed "$SEED" \
-    --demo-dir "$RAW" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
-fi
 
 # --- train (reused verbatim from sbatch_ouro_train.sh: same conda env, same
 # lerobot-train flags, same preemption-safe resume contract) --------------------

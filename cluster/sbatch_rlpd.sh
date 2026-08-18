@@ -155,8 +155,10 @@ fi
 # ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
 # Runs BEFORE conda/module so a refusal costs no GPU time; run_registry.py is
 # stdlib-only, so the login-node system python3 suffices here.
-python3 cluster/run_registry.py check --script sbatch_rlpd.sh --arm "$ARM" --seed "$SEED" \
-  --demo-dir "$ARM_DEMO" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+if [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then   # skip on preemption requeue (same logical run)
+  python3 cluster/run_registry.py check --script sbatch_rlpd.sh --arm "$ARM" --seed "$SEED" \
+    --demo-dir "$ARM_DEMO" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+fi
 
 module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
