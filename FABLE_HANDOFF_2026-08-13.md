@@ -1289,3 +1289,20 @@ fictional but independence HOLDS — if anything stronger than 3 chosen seeds);
 reproducibility of any specific dv3 run = dead pre-fix; matrix row now says
 so. The local dv3-MS-HEAD spot check (running) predates the fix — its result
 stands as an existence check, seed label meaningless.
+
+## 36. dv3-MS-HEAD spot check: FIRST RUN INVALID (my launch error), relaunched (08-18 09:40)
+
+The 08-17 spot check (msHEAD_spot_s0, 3e5 steps) ended eval_success 0.1
+(peak 0.2, first nonzero ~150k). BEFORE reading that as a HEAD regression:
+the run used the bare `maniskill` config with NO DEMOS (log: "Prefill dataset
+(2500 steps)", no demo lines). The March ~1.0 positive was
+`--configs maniskill --demodir ./demonstrations/maniskill/teleop
+--force_sparse True` (MANISKILL_VS_GENESIS.md line 14). Different recipe;
+not a code-era comparison. RECORDED as: dv3-HEAD, no demos, sparse, 3e5 =
+0.1-0.2 (descriptive; a from-scratch sparse-PickCube number, consistent
+with the sparse-is-hard swap-test finding). Also note: this run predates the
+F3 seed fix (launched before 43dcc6c) so its seed label is meaningless.
+RELAUNCHED CORRECTLY: msHEAD_demo_s{0,1}, March recipe verbatim, 2e5 steps,
+post-F2/F3 code (seeds now real). Bar (registered): success >=0.8 by 2e5 on
+>=1/2 seeds reproduces March; <0.5 on both = HEAD regression suspect ->
+bisect the msrecipe/vec-facade commits. ETA ~10-14h.
