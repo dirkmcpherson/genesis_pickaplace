@@ -1,0 +1,8665 @@
+{
+ "rlpd": {
+  "dDP_pair": {
+   "0": {
+    "created": "2026-08-14T19:34:05",
+    "run_id": "1is2165m",
+    "state": "finished",
+    "demo_dir": "baselines/m1all_harvest",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "1": {
+    "created": "2026-08-14T19:34:07",
+    "run_id": "44m1gu7a",
+    "state": "finished",
+    "demo_dir": "baselines/m1all_harvest",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "2": {
+    "created": "2026-08-14T19:34:09",
+    "run_id": "ngbsxon2",
+    "state": "finished",
+    "demo_dir": "baselines/m1all_harvest",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0.1,
+    "eval_n": 10
+   }
+  },
+  "dH_n20": {
+   "4": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "0logn9iw",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0.2,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.3,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "7": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "a8v9y1h2",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "0": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "dthsjiw5",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.4,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.4,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "2": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "n56sy2gd",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.7,
+      "random": 0.5,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.7,
+    "final_random": 0.5,
+    "eval_n": 10
+   },
+   "5": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "nft6byg0",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "6": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "piic909h",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.4,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "1": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "s478dtyw",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0.2,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0.2,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0.2,
+    "eval_n": 10
+   },
+   "3": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "usgjz0bt",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.2,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "8": {
+    "created": "2026-08-17T18:37:07",
+    "run_id": "qph9igph",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.2,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "9": {
+    "created": "2026-08-17T18:37:44",
+    "run_id": "0duw4a2f",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.4,
+      "random": 0.2,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.4,
+    "final_random": 0.2,
+    "eval_n": 10
+   },
+   "10": {
+    "created": "2026-08-17T18:47:45",
+    "run_id": "2nrvbmat",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "11": {
+    "created": "2026-08-17T19:44:02",
+    "run_id": "0ewyrk26",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.3,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "12": {
+    "created": "2026-08-17T20:20:20",
+    "run_id": "4yqa6zo0",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.2,
+      "random": 0.2,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "13": {
+    "created": "2026-08-17T20:22:05",
+    "run_id": "06auag62",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.2,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "14": {
+    "created": "2026-08-17T20:22:05",
+    "run_id": "uhd72an0",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "15": {
+    "created": "2026-08-17T20:22:55",
+    "run_id": "q5avd340",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_pick_phase_all",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0.1,
+    "eval_n": 10
+   }
+  },
+  "dR2D_n20": {
+   "0": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "2lfv347l",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.5,
+      "random": 0.2,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "1": {
+    "created": "2026-08-17T16:30:20",
+    "run_id": "bua0ji1n",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.4,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.2,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.2,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "3": {
+    "created": "2026-08-17T16:30:42",
+    "run_id": "1s6an8ib",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.3,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "4": {
+    "created": "2026-08-17T16:30:42",
+    "run_id": "gnp6vhij",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0.2,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.4,
+      "random": 0.3,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.5,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0.2,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0.2,
+    "eval_n": 10
+   },
+   "5": {
+    "created": "2026-08-17T16:30:42",
+    "run_id": "z3m3uof1",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.2,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "2": {
+    "created": "2026-08-17T16:30:43",
+    "run_id": "i2bfwv7b",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0.4,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "6": {
+    "created": "2026-08-17T16:31:40",
+    "run_id": "j60o5w9j",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.4,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0.2,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0.2,
+    "eval_n": 10
+   },
+   "7": {
+    "created": "2026-08-17T16:31:49",
+    "run_id": "v56itmhf",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "8": {
+    "created": "2026-08-17T20:46:00",
+    "run_id": "c6vm9q6w",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0.1,
+      "random": 0.3,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0.5,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0.5,
+    "eval_n": 10
+   },
+   "9": {
+    "created": "2026-08-17T21:30:09",
+    "run_id": "mpy18xb4",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.7,
+      "random": 0.3,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.3,
+      "random": 0.3,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.3,
+    "final_random": 0.3,
+    "eval_n": 10
+   },
+   "11": {
+    "created": "2026-08-17T22:05:47",
+    "run_id": "nizjtvk3",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.3,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.4,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "10": {
+    "created": "2026-08-17T22:05:52",
+    "run_id": "lk4ztsde",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.7,
+      "random": 0.2,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "12": {
+    "created": "2026-08-17T22:06:23",
+    "run_id": "3ikqdxj5",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0,
+    "final_random": 0,
+    "eval_n": 10
+   },
+   "13": {
+    "created": "2026-08-17T22:12:23",
+    "run_id": "wlqgc2z7",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.2,
+      "random": 0.1,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.2,
+    "final_random": 0.1,
+    "eval_n": 10
+   },
+   "14": {
+    "created": "2026-08-17T22:23:53",
+    "run_id": "r178j80r",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0.2,
+      "random": 0.2,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0.1,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.4,
+      "random": 0.2,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.4,
+    "final_random": 0.2,
+    "eval_n": 10
+   },
+   "15": {
+    "created": "2026-08-17T22:32:54",
+    "run_id": "kc89mxct",
+    "state": "finished",
+    "demo_dir": "baselines/episodes_champion_pick",
+    "curve": {
+     "25000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "50000": {
+      "indist": 0.1,
+      "random": 0.1,
+      "n": 10
+     },
+     "75000": {
+      "indist": 0,
+      "random": 0,
+      "n": 10
+     },
+     "100000": {
+      "indist": 0.1,
+      "random": 0,
+      "n": 10
+     }
+    },
+    "final_step": 100000,
+    "final_indist": 0.1,
+    "final_random": 0,
+    "eval_n": 10
+   }
+  }
+ },
+ "dp": {
+  "dH": {
+   "0": {
+    "record": {
+     "created": "2026-08-02T03:17:53",
+     "id": "me1fp6bj",
+     "indist": 0.8,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-10T22:41:05",
+     "id": "tfo9djhf",
+     "indist": 0.8,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "1": {
+    "record": {
+     "created": "2026-08-02T07:24:21",
+     "id": "bgk54cqt",
+     "indist": 0.6,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-10T23:38:40",
+     "id": "otb5c2b4",
+     "indist": 0.6,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "2": {
+    "record": {
+     "created": "2026-08-02T11:33:02",
+     "id": "oifhp5pl",
+     "indist": 0.6,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T00:35:13",
+     "id": "lnm7dba6",
+     "indist": 0.6,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "3": {
+    "record": {
+     "created": "2026-08-08T18:33:29",
+     "id": "lur5duo0",
+     "indist": 0.6,
+     "random": 0.26666666666666666,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T01:32:54",
+     "id": "dt2veg21",
+     "indist": 0.8,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "4": {
+    "record": {
+     "created": "2026-08-08T21:25:42",
+     "id": "thljyf1l",
+     "indist": 0.4,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T02:29:48",
+     "id": "vt7gsgz2",
+     "indist": 0.4666666666666667,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "5": {
+    "record": {
+     "created": "2026-08-09T00:20:25",
+     "id": "2fd0a0mm",
+     "indist": 0.6,
+     "random": 0.4,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T03:26:44",
+     "id": "ck0jpju5",
+     "indist": 0.5333333333333333,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "6": {
+    "record": {
+     "created": "2026-08-09T03:15:03",
+     "id": "rgahz9uz",
+     "indist": 0.6666666666666666,
+     "random": 0.26666666666666666,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T04:24:54",
+     "id": "38we84v3",
+     "indist": 0.6666666666666666,
+     "random": 0.26666666666666666,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "7": {
+    "record": {
+     "created": "2026-08-09T06:12:08",
+     "id": "k16vf8tk",
+     "indist": 0.6666666666666666,
+     "random": 0.06666666666666667,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T05:21:40",
+     "id": "fy146rqt",
+     "indist": 0.6,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   }
+  },
+  "dDP": {
+   "0": {
+    "record": {
+     "created": "2026-08-02T23:42:45",
+     "id": "gwje7ebv",
+     "indist": 0.8666666666666667,
+     "random": 0.26666666666666666,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-10T22:41:45",
+     "id": "u8j7bwmt",
+     "indist": 0.7333333333333333,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "1": {
+    "record": {
+     "created": "2026-08-03T02:28:26",
+     "id": "nhnr9j52",
+     "indist": 0.7333333333333333,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-10T23:39:15",
+     "id": "nm653a4p",
+     "indist": 0.7333333333333333,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "2": {
+    "record": {
+     "created": "2026-08-03T05:13:32",
+     "id": "hteei2lw",
+     "indist": 0.6666666666666666,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T00:35:08",
+     "id": "8webu2cg",
+     "indist": 0.7333333333333333,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "3": {
+    "record": {
+     "created": "2026-08-08T18:09:23",
+     "id": "46f9hndz",
+     "indist": 0.8,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T01:31:45",
+     "id": "5tgr4duf",
+     "indist": 0.8,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "4": {
+    "record": {
+     "created": "2026-08-08T20:42:03",
+     "id": "fzv4fq0z",
+     "indist": 0.6666666666666666,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T02:28:56",
+     "id": "rinuqtah",
+     "indist": 0.6666666666666666,
+     "random": 0.13333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "5": {
+    "record": {
+     "created": "2026-08-08T23:16:08",
+     "id": "2baqwrwx",
+     "indist": 0.8,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T03:26:39",
+     "id": "p2a84ysp",
+     "indist": 0.8,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "6": {
+    "record": {
+     "created": "2026-08-09T01:50:17",
+     "id": "30nswx2i",
+     "indist": 0.9333333333333332,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T04:23:34",
+     "id": "1dw09y3l",
+     "indist": 0.9333333333333332,
+     "random": 0.2,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   },
+   "7": {
+    "record": {
+     "created": "2026-08-09T04:24:44",
+     "id": "t8lv2555",
+     "indist": 0.9333333333333332,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    },
+    "hardened_reeval": {
+     "created": "2026-08-11T05:20:13",
+     "id": "63yfprr2",
+     "indist": 0.9333333333333332,
+     "random": 0.3333333333333333,
+     "n_in": 15,
+     "n_rd": 15
+    }
+   }
+  }
+ },
+ "dv3": {
+  "0": {
+   "created": "2026-08-14T16:36:02",
+   "final_step": 328156,
+   "inloop": [
+    {
+     "step": 67100,
+     "picked": 0
+    },
+    {
+     "step": 176316,
+     "picked": 0
+    },
+    {
+     "step": 271716,
+     "picked": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 50000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T17:43:30"
+    },
+    {
+     "step": 157112,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T19:46:59"
+    },
+    {
+     "step": 260000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T21:50:23"
+    }
+   ]
+  },
+  "1": {
+   "created": "2026-08-14T16:36:38",
+   "final_step": 329640,
+   "inloop": [
+    {
+     "step": 68244,
+     "picked": 0
+    },
+    {
+     "step": 177192,
+     "picked": 0
+    },
+    {
+     "step": 272332,
+     "picked": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 60000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T17:51:22"
+    },
+    {
+     "step": 160000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T19:54:35"
+    },
+    {
+     "step": 260000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T21:57:05"
+    }
+   ]
+  },
+  "2": {
+   "created": "2026-08-14T16:37:23",
+   "final_step": 322160,
+   "inloop": [
+    {
+     "step": 85376,
+     "picked": 0
+    },
+    {
+     "step": 193048,
+     "picked": 0
+    },
+    {
+     "step": 284644,
+     "picked": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 67100,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T18:01:23"
+    },
+    {
+     "step": 170000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T20:04:23"
+    },
+    {
+     "step": 270000,
+     "picked": 0,
+     "n": 6,
+     "created": "2026-08-14T22:06:09"
+    }
+   ]
+  }
+ },
+ "r2d": {
+  "dDP_R2Dshort|10": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 10,
+   "created": "2026-08-12T22:34:12",
+   "env_step_final": 999770,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T00:35:28"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T00:44:16"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T00:51:25"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T00:59:39"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T00:27:47"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|11": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 11,
+   "created": "2026-08-12T22:46:19",
+   "env_step_final": 999931,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793816,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T00:56:09"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:06:57"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:17:46"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:28:30"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T00:46:02"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|12": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 12,
+   "created": "2026-08-12T23:21:11",
+   "env_step_final": 999765,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:32:42"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:42:49"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T01:52:56"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-13T02:03:00"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T01:23:10"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|13": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 13,
+   "created": "2026-08-12T23:30:47",
+   "env_step_final": 999399,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T02:17:42"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T02:31:21"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T02:45:04"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T03:00:09"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T02:04:35"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|14": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 14,
+   "created": "2026-08-12T23:57:41",
+   "env_step_final": 999830,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T02:13:46"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T02:25:11"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T02:36:43"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T02:48:18"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T02:02:47"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|15": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 15,
+   "created": "2026-08-13T00:00:41",
+   "env_step_final": 999815,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-13T02:44:46"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-13T02:58:44"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-13T03:12:32"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-13T03:26:28"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T02:31:40"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|16": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 16,
+   "created": "2026-08-13T00:56:48",
+   "env_step_final": 999881,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893820,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893820,
+     "picked": 0,
+     "created": "2026-08-13T03:46:51"
+    },
+    {
+     "step": 893820,
+     "picked": 0,
+     "created": "2026-08-13T04:19:34"
+    },
+    {
+     "step": 893820,
+     "picked": 0,
+     "created": "2026-08-13T04:55:50"
+    },
+    {
+     "step": 893820,
+     "picked": 0,
+     "created": "2026-08-13T05:31:23"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T03:24:47"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|17": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 17,
+   "created": "2026-08-13T01:30:12",
+   "env_step_final": 999023,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T04:11:51"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T04:24:38"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T04:37:30"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-13T04:50:14"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T03:59:08"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|18": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 18,
+   "created": "2026-08-13T01:57:23",
+   "env_step_final": 999793,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:04:19"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:14:50"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:25:19"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:36:46"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T03:54:25"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|19": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 19,
+   "created": "2026-08-13T01:58:55",
+   "env_step_final": 999787,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:06:14"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:16:47"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:27:22"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-13T04:37:48"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T03:56:23"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|20": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 20,
+   "created": "2026-08-14T18:51:02",
+   "env_step_final": 999814,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-14T20:56:15"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-14T21:06:51"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-14T21:17:35"
+    },
+    {
+     "step": 893800,
+     "picked": 0,
+     "created": "2026-08-14T21:28:20"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:46:12"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|21": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 21,
+   "created": "2026-08-14T19:31:11",
+   "env_step_final": 999739,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693816,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-14T21:41:16"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-14T21:52:04"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-14T22:02:51"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-14T22:13:28"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:31:05"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|22": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 22,
+   "created": "2026-08-14T21:14:18",
+   "env_step_final": 999641,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T00:51:12"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T01:01:45"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T01:12:09"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T01:22:52"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:41:19"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|23": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 23,
+   "created": "2026-08-14T21:15:37",
+   "env_step_final": 999356,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-15T00:57:37"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-15T01:08:59"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-15T01:20:19"
+    },
+    {
+     "step": 893812,
+     "picked": 0,
+     "created": "2026-08-15T01:31:37"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:47:01"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|24": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 24,
+   "created": "2026-08-14T21:33:04",
+   "env_step_final": 999864,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593816,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T02:03:27"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T02:17:02"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T02:30:47"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T02:45:27"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T01:50:16"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|25": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 25,
+   "created": "2026-08-14T21:58:28",
+   "env_step_final": 999957,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:11:42"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:23:05"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:34:32"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:47:14"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:00:59"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|26": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 26,
+   "created": "2026-08-14T22:06:14",
+   "env_step_final": 999554,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:39:56"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:51:48"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T01:03:48"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T01:15:46"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:28:14"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|27": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 27,
+   "created": "2026-08-14T22:20:10",
+   "env_step_final": 999820,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593820,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:30:26"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:41:09"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T00:51:54"
+    },
+    {
+     "step": 893808,
+     "picked": 0,
+     "created": "2026-08-15T01:03:29"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:20:21"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|28": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 28,
+   "created": "2026-08-14T22:35:52",
+   "env_step_final": 999739,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593816,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693808,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T00:29:46"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T00:40:26"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T00:51:01"
+    },
+    {
+     "step": 893816,
+     "picked": 0,
+     "created": "2026-08-15T01:01:29"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T00:19:49"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2Dshort|29": {
+   "family": "dDP_R2Dshort",
+   "source": "dDP",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 29,
+   "created": "2026-08-14T22:44:03",
+   "env_step_final": 999598,
+   "inloop": [
+    {
+     "step": 493800,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 593804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 693804,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 793812,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-15T01:28:43"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-15T01:41:43"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-15T01:54:38"
+    },
+    {
+     "step": 893804,
+     "picked": 0,
+     "created": "2026-08-15T02:07:42"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-15T01:15:54"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2D|0": {
+   "family": "dDP_R2D",
+   "source": "dDP",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; dDP prefill/reward-dilution defect",
+   "seed": 0,
+   "created": "2026-08-11T18:06:13",
+   "env_step_final": 2999744,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881840.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-12T08:01:27"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-12T08:13:22"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-12T08:25:19"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-12T08:37:16"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-12T07:50:16"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2D|1": {
+   "family": "dDP_R2D",
+   "source": "dDP",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; dDP prefill/reward-dilution defect",
+   "seed": 1,
+   "created": "2026-08-11T18:06:13",
+   "env_step_final": 2999936,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881852.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-12T07:25:40"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-12T07:37:16"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-12T07:48:53"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-12T08:00:38"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-12T07:14:48"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2D|2": {
+   "family": "dDP_R2D",
+   "source": "dDP",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; dDP prefill/reward-dilution defect",
+   "seed": 2,
+   "created": "2026-08-11T18:06:13",
+   "env_step_final": 2999640,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881836.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881836,
+     "picked": 0,
+     "created": "2026-08-12T06:03:48"
+    },
+    {
+     "step": 2881836,
+     "picked": 0,
+     "created": "2026-08-12T06:14:17"
+    },
+    {
+     "step": 2881836,
+     "picked": 0,
+     "created": "2026-08-12T06:24:48"
+    },
+    {
+     "step": 2881836,
+     "picked": 0,
+     "created": "2026-08-12T06:35:17"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-12T05:53:56"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dDP_R2D|3": {
+   "family": "dDP_R2D",
+   "source": "dDP",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; dDP prefill/reward-dilution defect",
+   "seed": 3,
+   "created": "2026-08-11T18:06:15",
+   "env_step_final": 2008016,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881844.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0
+  },
+  "dDP_R2D|4": {
+   "family": "dDP_R2D",
+   "source": "dDP",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; dDP prefill/reward-dilution defect",
+   "seed": 4,
+   "created": "2026-08-11T18:06:15",
+   "env_step_final": 1687960,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481832.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|10": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 10,
+   "created": "2026-08-12T18:01:47",
+   "env_step_final": 999855,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0.6666666666666666,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0.13333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0.4666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0.5333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 772428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 272420,
+     "picked": 0.4666666666666667,
+     "created": "2026-08-12T21:26:56"
+    },
+    {
+     "step": 272420,
+     "picked": 0.6666666666666666,
+     "created": "2026-08-12T21:32:00"
+    },
+    {
+     "step": 272420,
+     "picked": 0.6666666666666666,
+     "created": "2026-08-12T21:36:53"
+    },
+    {
+     "step": 272420,
+     "picked": 0.4666666666666667,
+     "created": "2026-08-12T21:42:31"
+    },
+    {
+     "step": 1000000,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T21:21:54"
+    }
+   ],
+   "fresh_best": 0.9333333333333332,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.6666666666666666
+  },
+  "dH_R2Dshort|11": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 11,
+   "created": "2026-08-12T18:01:52",
+   "env_step_final": 999625,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T22:50:51"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T23:03:48"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T23:16:39"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T23:30:13"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T22:38:44"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|12": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 12,
+   "created": "2026-08-12T18:01:52",
+   "env_step_final": 999417,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-12T22:48:33"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-12T23:01:29"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-12T23:14:27"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-12T23:27:07"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T22:36:19"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|13": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 13,
+   "created": "2026-08-12T18:03:11",
+   "env_step_final": 999972,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372428,
+     "picked": 0.26666666666666666,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 372428,
+     "picked": 0.2,
+     "created": "2026-08-12T22:35:43"
+    },
+    {
+     "step": 372428,
+     "picked": 0.26666666666666666,
+     "created": "2026-08-12T22:41:53"
+    },
+    {
+     "step": 372428,
+     "picked": 0.06666666666666667,
+     "created": "2026-08-12T22:50:52"
+    },
+    {
+     "step": 372428,
+     "picked": 0.2,
+     "created": "2026-08-12T23:00:32"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T22:27:22"
+    }
+   ],
+   "fresh_best": 0.26666666666666666,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.26666666666666666
+  },
+  "dH_R2Dshort|14": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 14,
+   "created": "2026-08-12T18:03:11",
+   "env_step_final": 999972,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T22:15:27"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T22:26:41"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T22:38:06"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-12T22:50:58"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T22:04:55"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|15": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 15,
+   "created": "2026-08-12T18:03:15",
+   "env_step_final": 999994,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272432,
+     "picked": 0.4,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0.2,
+     "mode": 0
+    },
+    {
+     "step": 472428,
+     "picked": 0.26666666666666666,
+     "mode": 0
+    },
+    {
+     "step": 572428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0.06666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 772416,
+     "picked": 0.13333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 272432,
+     "picked": 0.26666666666666666,
+     "created": "2026-08-12T23:08:48"
+    },
+    {
+     "step": 272432,
+     "picked": 0.4,
+     "created": "2026-08-12T23:39:38"
+    },
+    {
+     "step": 272432,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-13T00:02:00"
+    },
+    {
+     "step": 272432,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-13T00:26:16"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T22:38:57"
+    }
+   ],
+   "fresh_best": 0.5333333333333333,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.4
+  },
+  "dH_R2Dshort|16": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 16,
+   "created": "2026-08-12T18:03:09",
+   "env_step_final": 514380,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272416,
+     "picked": 0.06666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0.13333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0.13333333333333333
+  },
+  "dH_R2Dshort|17": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 17,
+   "created": "2026-08-12T18:03:09",
+   "env_step_final": 972424,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972424,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 972424,
+     "picked": 0,
+     "created": "2026-08-12T21:43:30"
+    },
+    {
+     "step": 972424,
+     "picked": 0,
+     "created": "2026-08-12T21:54:17"
+    },
+    {
+     "step": 972424,
+     "picked": 0,
+     "created": "2026-08-12T22:05:12"
+    },
+    {
+     "step": 972424,
+     "picked": 0,
+     "created": "2026-08-12T22:16:10"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T21:33:17"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|18": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 18,
+   "created": "2026-08-12T18:03:10",
+   "env_step_final": 999132,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-12T21:34:55"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-12T21:44:41"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-12T21:54:25"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-12T22:04:03"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-12T21:25:54"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|19": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 1",
+   "era": "pre-E1/E2 env; ~1M steps; 08-12/13",
+   "seed": 19,
+   "created": "2026-08-12T22:12:39",
+   "env_step_final": 999301,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-13T01:48:35"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-13T01:59:03"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-13T02:09:29"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-13T02:20:19"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-13T01:38:47"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|20": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 20,
+   "created": "2026-08-14T17:32:19",
+   "env_step_final": 999873,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972420,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 972420,
+     "picked": 0,
+     "created": "2026-08-14T20:36:09"
+    },
+    {
+     "step": 972420,
+     "picked": 0,
+     "created": "2026-08-14T20:44:54"
+    },
+    {
+     "step": 972420,
+     "picked": 0,
+     "created": "2026-08-14T20:53:44"
+    },
+    {
+     "step": 972420,
+     "picked": 0,
+     "created": "2026-08-14T21:02:56"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:27:57"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|21": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 21,
+   "created": "2026-08-14T17:32:19",
+   "env_step_final": 972432,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972432,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 972432,
+     "picked": 0,
+     "created": "2026-08-14T20:20:45"
+    },
+    {
+     "step": 972432,
+     "picked": 0,
+     "created": "2026-08-14T20:29:30"
+    },
+    {
+     "step": 972432,
+     "picked": 0,
+     "created": "2026-08-14T20:37:29"
+    },
+    {
+     "step": 972432,
+     "picked": 0,
+     "created": "2026-08-14T20:45:30"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:13:12"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|22": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 22,
+   "created": "2026-08-14T17:32:19",
+   "env_step_final": 999713,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772424,
+     "picked": 0.13333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972428,
+     "picked": 0.4,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 972428,
+     "picked": 0.13333333333333333,
+     "created": "2026-08-14T20:28:57"
+    },
+    {
+     "step": 972428,
+     "picked": 0.06666666666666667,
+     "created": "2026-08-14T20:35:29"
+    },
+    {
+     "step": 972428,
+     "picked": 0.13333333333333333,
+     "created": "2026-08-14T20:40:01"
+    },
+    {
+     "step": 972428,
+     "picked": 0.06666666666666667,
+     "created": "2026-08-14T20:44:09"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:23:22"
+    }
+   ],
+   "fresh_best": 0.13333333333333333,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.4
+  },
+  "dH_R2Dshort|23": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 23,
+   "created": "2026-08-14T17:32:24",
+   "env_step_final": 999681,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872436,
+     "picked": 0,
+     "created": "2026-08-14T21:55:54"
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "created": "2026-08-14T22:23:42"
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "created": "2026-08-14T22:53:07"
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "created": "2026-08-14T23:23:33"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:28:16"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|24": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 24,
+   "created": "2026-08-14T17:32:24",
+   "env_step_final": 999845,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T22:06:23"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T22:36:11"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T23:09:40"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T23:41:10"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:38:30"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|25": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 25,
+   "created": "2026-08-14T17:32:21",
+   "env_step_final": 999654,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T21:17:06"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T21:27:44"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T21:38:30"
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "created": "2026-08-14T21:50:01"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:07:06"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|26": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 26,
+   "created": "2026-08-14T17:32:21",
+   "env_step_final": 999669,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872420,
+     "picked": 0,
+     "created": "2026-08-14T21:06:55"
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "created": "2026-08-14T21:16:38"
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "created": "2026-08-14T21:26:23"
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "created": "2026-08-14T21:36:04"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:57:49"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|27": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 27,
+   "created": "2026-08-14T17:32:43",
+   "env_step_final": 999760,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-14T21:44:40"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-14T21:56:20"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-14T22:08:03"
+    },
+    {
+     "step": 872416,
+     "picked": 0,
+     "created": "2026-08-14T22:19:43"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:33:50"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|28": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 28,
+   "created": "2026-08-14T17:32:43",
+   "env_step_final": 998969,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872424,
+     "picked": 0,
+     "created": "2026-08-14T20:51:50"
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "created": "2026-08-14T21:02:27"
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "created": "2026-08-14T21:13:01"
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "created": "2026-08-14T21:23:50"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T20:41:54"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2Dshort|29": {
+   "family": "dH_R2Dshort",
+   "source": "dH",
+   "wave": "cluster wave 2 (firming)",
+   "era": "post-E1/E2 env; ~1M steps; 08-14/15",
+   "seed": 29,
+   "created": "2026-08-14T17:36:12",
+   "env_step_final": 999616,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-14T22:08:41"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-14T22:20:59"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-14T22:33:20"
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "created": "2026-08-14T22:45:50"
+    },
+    {
+     "step": 1000000,
+     "picked": 0,
+     "created": "2026-08-14T21:56:22"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2D|0": {
+   "family": "dH_R2D",
+   "source": "dH",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; superseded by the *short* waves",
+   "seed": 0,
+   "created": "2026-08-11T17:35:10",
+   "env_step_final": 2493299,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1072436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1172424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1272432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1372432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1072436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1172420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1272416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1372416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1472428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1572416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1672416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1772428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1872420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1972432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2072420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2172424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2272424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2372420.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0
+  },
+  "dH_R2D|1": {
+   "family": "dH_R2D",
+   "source": "dH",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; superseded by the *short* waves",
+   "seed": 1,
+   "created": "2026-08-11T17:35:10",
+   "env_step_final": 2999532,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1072424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1172436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1272420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1372432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1472420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1572432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1672428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1772416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1872432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1972424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2072420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2172436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2272424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2372416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2472420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2572432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2672424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2772436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2872416.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2872416,
+     "picked": 0,
+     "created": "2026-08-12T10:17:39"
+    },
+    {
+     "step": 2872416,
+     "picked": 0,
+     "created": "2026-08-12T10:30:36"
+    },
+    {
+     "step": 2872416,
+     "picked": 0,
+     "created": "2026-08-12T10:43:40"
+    },
+    {
+     "step": 2872416,
+     "picked": 0,
+     "created": "2026-08-12T10:56:39"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-12T10:05:34"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "dH_R2D|2": {
+   "family": "dH_R2D",
+   "source": "dH",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; superseded by the *short* waves",
+   "seed": 2,
+   "created": "2026-08-11T17:35:10",
+   "env_step_final": 2675048,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1072432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1172424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1272432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1372424.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1472428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1572432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1672436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1772420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1872436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1972420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2072416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2172420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2272416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2372436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2472436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2572432.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0
+  },
+  "dH_R2D|3": {
+   "family": "dH_R2D",
+   "source": "dH",
+   "wave": "cluster 3M wave (SUPERSEDED)",
+   "era": "08-11/12; superseded by the *short* waves",
+   "seed": 3,
+   "created": "2026-08-11T17:35:10",
+   "env_step_final": 2494055,
+   "inloop": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772436,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 172416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 272424,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 372420,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 472432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 872428,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 972416,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1072416.0,
+     "picked": 0.06666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 1172420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1272416.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1372428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1472432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1572420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1672420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1772420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1872428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1972420.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2072436.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2172432.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2272428.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2372428.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [],
+   "fresh_best": null,
+   "fresh_n_evals": 0,
+   "inloop_best": 0.06666666666666667
+  },
+  "pick_d4clamp|0": {
+   "family": "pick_d4clamp",
+   "source": "dH",
+   "wave": "local (delta recipe)",
+   "era": "pre-E1/E2; local box; 08-11/12 clamp ablation",
+   "seed": 0,
+   "created": null,
+   "env_step_final": null,
+   "inloop": [],
+   "fresh": [
+    {
+     "step": 1172436,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-11T20:32:11"
+    },
+    {
+     "step": 1272416,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-11T20:46:43"
+    },
+    {
+     "step": 1372420,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-11T21:10:43"
+    },
+    {
+     "step": 1472420,
+     "picked": 0,
+     "created": "2026-08-11T21:44:53"
+    },
+    {
+     "step": 1572428,
+     "picked": 0.7333333333333333,
+     "created": "2026-08-11T22:03:19"
+    },
+    {
+     "step": 1672420,
+     "picked": 0.6,
+     "created": "2026-08-11T22:29:13"
+    },
+    {
+     "step": 1772420,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-11T22:57:50"
+    },
+    {
+     "step": 1872432,
+     "picked": 1,
+     "created": "2026-08-11T23:19:20"
+    },
+    {
+     "step": 1872432,
+     "picked": 0.8,
+     "created": "2026-08-12T05:55:35"
+    },
+    {
+     "step": 1872432,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T05:57:24"
+    },
+    {
+     "step": 1872432,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T05:58:24"
+    },
+    {
+     "step": 1872432,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T06:00:17"
+    },
+    {
+     "step": 1972436,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-11T23:45:29"
+    },
+    {
+     "step": 2072424,
+     "picked": null,
+     "created": "2026-08-12T00:22:25"
+    },
+    {
+     "step": 2172420,
+     "picked": 0,
+     "created": "2026-08-12T00:47:48"
+    },
+    {
+     "step": 2272432,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T01:11:49"
+    },
+    {
+     "step": 2372420,
+     "picked": 0.3333333333333333,
+     "created": "2026-08-12T01:51:19"
+    },
+    {
+     "step": 2472420,
+     "picked": 0,
+     "created": "2026-08-12T02:30:36"
+    },
+    {
+     "step": 2572424,
+     "picked": 0.26666666666666666,
+     "created": "2026-08-12T03:01:15"
+    },
+    {
+     "step": 2672432,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-12T03:32:54"
+    },
+    {
+     "step": 2772420,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T04:06:27"
+    },
+    {
+     "step": 2872428,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-12T04:42:43"
+    },
+    {
+     "step": 2972424,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-12T05:16:53"
+    },
+    {
+     "step": 3000000,
+     "picked": 0.6666666666666666,
+     "created": "2026-08-12T05:26:26"
+    }
+   ],
+   "fresh_best": 1,
+   "fresh_n_evals": 23,
+   "inloop_best": null
+  },
+  "pick_delta25d4|0": {
+   "family": "pick_delta25d4",
+   "source": "dH",
+   "wave": "local (delta recipe)",
+   "era": "pre-E1/E2; local box; 08-11/12",
+   "seed": 0,
+   "created": "2026-08-11T02:12:08",
+   "env_step_final": 2999977,
+   "inloop": [],
+   "fresh": [
+    {
+     "step": 372436,
+     "picked": 0,
+     "created": "2026-08-11T02:57:46"
+    },
+    {
+     "step": 372436,
+     "picked": 0.06666666666666667,
+     "created": "2026-08-11T03:10:48"
+    },
+    {
+     "step": 472436,
+     "picked": 0.13333333333333333,
+     "created": "2026-08-11T03:26:30"
+    },
+    {
+     "step": 572432,
+     "picked": 0,
+     "created": "2026-08-11T03:49:38"
+    },
+    {
+     "step": 672424,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-11T04:15:01"
+    },
+    {
+     "step": 772424,
+     "picked": 0,
+     "created": "2026-08-11T04:47:16"
+    },
+    {
+     "step": 772424,
+     "picked": 0,
+     "created": "2026-08-11T05:20:02"
+    },
+    {
+     "step": 872428,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-11T05:05:33"
+    },
+    {
+     "step": 972436,
+     "picked": 0,
+     "created": "2026-08-11T05:46:20"
+    },
+    {
+     "step": 972436,
+     "picked": 0,
+     "created": "2026-08-11T06:15:14"
+    },
+    {
+     "step": 1172428,
+     "picked": 0,
+     "created": "2026-08-11T06:57:38"
+    },
+    {
+     "step": 1272416,
+     "picked": 0,
+     "created": "2026-08-11T07:32:34"
+    },
+    {
+     "step": 1372416,
+     "picked": 0,
+     "created": "2026-08-11T08:07:02"
+    },
+    {
+     "step": 1472432,
+     "picked": 0,
+     "created": "2026-08-11T08:43:23"
+    },
+    {
+     "step": 1572420,
+     "picked": 1,
+     "created": "2026-08-11T09:09:26"
+    },
+    {
+     "step": 1572420,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-11T09:12:04"
+    },
+    {
+     "step": 1572420,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-11T09:14:10"
+    },
+    {
+     "step": 1572420,
+     "picked": 1,
+     "created": "2026-08-11T09:16:00"
+    },
+    {
+     "step": 1672428,
+     "picked": 0.3333333333333333,
+     "created": "2026-08-11T09:45:07"
+    },
+    {
+     "step": 1772416,
+     "picked": 0,
+     "created": "2026-08-11T10:29:33"
+    },
+    {
+     "step": 1872436,
+     "picked": 0,
+     "created": "2026-08-11T11:05:59"
+    },
+    {
+     "step": 1972428,
+     "picked": 0.8666666666666667,
+     "created": "2026-08-11T11:31:07"
+    },
+    {
+     "step": 2072428,
+     "picked": 0,
+     "created": "2026-08-11T12:15:38"
+    },
+    {
+     "step": 2172428,
+     "picked": 0,
+     "created": "2026-08-11T12:50:00"
+    },
+    {
+     "step": 2272416,
+     "picked": 0,
+     "created": "2026-08-11T13:25:14"
+    },
+    {
+     "step": 2372416,
+     "picked": 0,
+     "created": "2026-08-11T14:01:37"
+    },
+    {
+     "step": 2472436,
+     "picked": 0,
+     "created": "2026-08-11T14:36:07"
+    },
+    {
+     "step": 2572416,
+     "picked": 0.2,
+     "created": "2026-08-11T15:10:06"
+    },
+    {
+     "step": 2672432,
+     "picked": 0,
+     "created": "2026-08-11T15:46:26"
+    },
+    {
+     "step": 2772428,
+     "picked": 0,
+     "created": "2026-08-11T16:22:49"
+    },
+    {
+     "step": 2872420,
+     "picked": 1,
+     "created": "2026-08-11T16:47:26"
+    },
+    {
+     "step": 2972436,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-11T17:24:38"
+    },
+    {
+     "step": 3000000,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-11T17:35:14"
+    },
+    {
+     "step": 3000000,
+     "picked": 0.5333333333333333,
+     "created": "2026-08-12T00:52:19"
+    }
+   ],
+   "fresh_best": 1,
+   "fresh_n_evals": 34,
+   "inloop_best": null
+  },
+  "pick_delta25d4|1": {
+   "family": "pick_delta25d4",
+   "source": "dH",
+   "wave": "local (delta recipe)",
+   "era": "pre-E1/E2; local box; 08-11/12",
+   "seed": 1,
+   "created": null,
+   "env_step_final": null,
+   "inloop": [],
+   "fresh": [
+    {
+     "step": 972424,
+     "picked": 0,
+     "created": "2026-08-11T10:04:47"
+    },
+    {
+     "step": 1072436,
+     "picked": 0,
+     "created": "2026-08-11T10:41:42"
+    },
+    {
+     "step": 1172428,
+     "picked": 0,
+     "created": "2026-08-11T11:15:42"
+    },
+    {
+     "step": 1272416,
+     "picked": 0,
+     "created": "2026-08-11T11:50:33"
+    },
+    {
+     "step": 1372428,
+     "picked": 0,
+     "created": "2026-08-11T12:27:31"
+    },
+    {
+     "step": 1472420,
+     "picked": 0,
+     "created": "2026-08-11T13:02:31"
+    },
+    {
+     "step": 1572420,
+     "picked": 0,
+     "created": "2026-08-11T13:37:32"
+    },
+    {
+     "step": 1672428,
+     "picked": 0,
+     "created": "2026-08-11T14:12:31"
+    },
+    {
+     "step": 1772428,
+     "picked": 0,
+     "created": "2026-08-11T14:47:29"
+    },
+    {
+     "step": 1872436,
+     "picked": 0,
+     "created": "2026-08-11T15:22:35"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 10,
+   "inloop_best": null
+  },
+  "pick_delta25d4|2": {
+   "family": "pick_delta25d4",
+   "source": "dH",
+   "wave": "local (delta recipe)",
+   "era": "pre-E1/E2; local box; 08-11/12",
+   "seed": 2,
+   "created": null,
+   "env_step_final": null,
+   "inloop": [],
+   "fresh": [
+    {
+     "step": 172416,
+     "picked": 0,
+     "created": "2026-08-12T00:51:35"
+    },
+    {
+     "step": 272432,
+     "picked": 0,
+     "created": "2026-08-12T01:27:50"
+    },
+    {
+     "step": 372424,
+     "picked": 0,
+     "created": "2026-08-12T02:04:21"
+    },
+    {
+     "step": 472436,
+     "picked": 0,
+     "created": "2026-08-12T02:33:33"
+    },
+    {
+     "step": 572436,
+     "picked": 0,
+     "created": "2026-08-12T03:13:52"
+    },
+    {
+     "step": 672428,
+     "picked": 0,
+     "created": "2026-08-12T03:48:08"
+    },
+    {
+     "step": 772432,
+     "picked": 0,
+     "created": "2026-08-12T04:22:23"
+    },
+    {
+     "step": 872424,
+     "picked": 0,
+     "created": "2026-08-12T04:58:34"
+    },
+    {
+     "step": 972416,
+     "picked": 0,
+     "created": "2026-08-12T05:31:48"
+    },
+    {
+     "step": 1072420,
+     "picked": 0,
+     "created": "2026-08-12T05:58:42"
+    },
+    {
+     "step": 1172436,
+     "picked": 0,
+     "created": "2026-08-12T06:25:28"
+    },
+    {
+     "step": 1272416,
+     "picked": 0,
+     "created": "2026-08-12T06:50:06"
+    },
+    {
+     "step": 1372428,
+     "picked": 0,
+     "created": "2026-08-12T07:16:54"
+    },
+    {
+     "step": 1472424,
+     "picked": 0,
+     "created": "2026-08-12T07:43:46"
+    },
+    {
+     "step": 1572428,
+     "picked": 0.06666666666666667,
+     "created": "2026-08-12T08:05:38"
+    },
+    {
+     "step": 1672428,
+     "picked": 0,
+     "created": "2026-08-12T08:34:25"
+    },
+    {
+     "step": 1772424,
+     "picked": 0,
+     "created": "2026-08-12T09:01:11"
+    },
+    {
+     "step": 1872428,
+     "picked": 0,
+     "created": "2026-08-12T09:28:04"
+    },
+    {
+     "step": 1972436,
+     "picked": 0,
+     "created": "2026-08-12T09:52:51"
+    },
+    {
+     "step": 2072432,
+     "picked": 0,
+     "created": "2026-08-12T10:19:32"
+    },
+    {
+     "step": 2172436,
+     "picked": 0,
+     "created": "2026-08-12T10:44:12"
+    },
+    {
+     "step": 2272420,
+     "picked": 0,
+     "created": "2026-08-12T11:10:52"
+    },
+    {
+     "step": 2372436,
+     "picked": 0,
+     "created": "2026-08-12T11:37:37"
+    },
+    {
+     "step": 2472420,
+     "picked": 0,
+     "created": "2026-08-12T12:02:17"
+    },
+    {
+     "step": 2572432,
+     "picked": 0,
+     "created": "2026-08-12T12:28:54"
+    },
+    {
+     "step": 2672432,
+     "picked": 0,
+     "created": "2026-08-12T12:55:37"
+    },
+    {
+     "step": 2772436,
+     "picked": 0,
+     "created": "2026-08-12T13:19:27"
+    },
+    {
+     "step": 2872420,
+     "picked": 0,
+     "created": "2026-08-12T13:46:36"
+    },
+    {
+     "step": 2972424,
+     "picked": 0,
+     "created": "2026-08-12T14:13:25"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-12T14:25:10"
+    }
+   ],
+   "fresh_best": 0.06666666666666667,
+   "fresh_n_evals": 30,
+   "inloop_best": null
+  },
+  "pick_delta|0": {
+   "family": "pick_delta",
+   "source": "dH",
+   "wave": "local pilot (VOID)",
+   "era": "evals before 2026-08-11T03:00 are VOID per the delta-eval cutoff",
+   "seed": 0,
+   "created": "2026-08-10T22:37:07",
+   "env_step_final": 324327,
+   "inloop": [],
+   "fresh": [
+    {
+     "step": 143660,
+     "picked": 0,
+     "created": "2026-08-10T22:43:58"
+    },
+    {
+     "step": 243660,
+     "picked": 0,
+     "created": "2026-08-10T23:14:11"
+    },
+    {
+     "step": 243660,
+     "picked": 0,
+     "created": "2026-08-11T03:36:32"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 3,
+   "inloop_best": null
+  },
+  "pick_v5d4c_delta|30": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 30,
+   "created": "2026-08-17T17:00:51",
+   "env_step_final": 2999837,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881848.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T05:39:39"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T05:50:33"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T06:01:17"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T06:12:05"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T05:29:31"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "pick_v5d4c_delta|31": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 31,
+   "created": "2026-08-17T17:00:51",
+   "env_step_final": 2999584,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181848.0,
+     "picked": 0.9333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 1281840.0,
+     "picked": 0.8666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 1381848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0.4666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881852.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 1181848,
+     "picked": 0.8,
+     "created": "2026-08-18T04:53:24"
+    },
+    {
+     "step": 1181848,
+     "picked": 0.6666666666666666,
+     "created": "2026-08-18T04:56:35"
+    },
+    {
+     "step": 1181848,
+     "picked": 0.8,
+     "created": "2026-08-18T04:59:54"
+    },
+    {
+     "step": 1181848,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-18T05:02:04"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T04:50:40"
+    }
+   ],
+   "fresh_best": 0.9333333333333332,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.9333333333333333
+  },
+  "pick_v5d4c_delta|32": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 32,
+   "created": "2026-08-17T17:01:21",
+   "env_step_final": 2999516,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881844.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881844,
+     "picked": 0,
+     "created": "2026-08-18T05:27:12"
+    },
+    {
+     "step": 2881844,
+     "picked": 0,
+     "created": "2026-08-18T05:37:41"
+    },
+    {
+     "step": 2881844,
+     "picked": 0,
+     "created": "2026-08-18T05:48:11"
+    },
+    {
+     "step": 2881844,
+     "picked": 0,
+     "created": "2026-08-18T05:58:29"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T05:17:20"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "pick_v5d4c_delta|33": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 33,
+   "created": "2026-08-17T17:01:53",
+   "env_step_final": 2999813,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881848.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T08:17:24"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T08:29:47"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T08:42:14"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T08:54:45"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T08:05:30"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "pick_v5d4c_delta|34": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 34,
+   "created": "2026-08-17T17:02:22",
+   "env_step_final": 2999970,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081836.0,
+     "picked": 0.06666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 1181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881832.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T12:00:15"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 1,
+   "inloop_best": 0.06666666666666667
+  },
+  "pick_v5d4c_delta|35": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 35,
+   "created": "2026-08-17T17:02:22",
+   "env_step_final": 2999823,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881848.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T06:33:03"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T06:45:30"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T06:57:56"
+    },
+    {
+     "step": 2881848,
+     "picked": 0,
+     "created": "2026-08-18T07:11:50"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T06:21:21"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "pick_v5d4c_delta|36": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 36,
+   "created": "2026-08-17T17:23:16",
+   "env_step_final": 2999843,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0.6666666666666666,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0.9333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 781852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881832,
+     "picked": 0.9333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 981836,
+     "picked": 0.9333333333333333,
+     "mode": 0
+    },
+    {
+     "step": 1081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181840.0,
+     "picked": 0.8666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 1281836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881836.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 981836,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-18T05:41:27"
+    },
+    {
+     "step": 981836,
+     "picked": 1,
+     "created": "2026-08-18T05:42:33"
+    },
+    {
+     "step": 981836,
+     "picked": 1,
+     "created": "2026-08-18T05:43:37"
+    },
+    {
+     "step": 981836,
+     "picked": 0.9333333333333332,
+     "created": "2026-08-18T05:45:17"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T05:40:25"
+    }
+   ],
+   "fresh_best": 1,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.9333333333333333
+  },
+  "pick_v5d4c_delta|37": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 37,
+   "created": "2026-08-17T17:34:32",
+   "env_step_final": 2999894,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0.06666666666666667,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981852,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881844.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "created": "2026-08-18T06:24:34"
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "created": "2026-08-18T06:34:39"
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "created": "2026-08-18T06:44:41"
+    },
+    {
+     "step": 281832,
+     "picked": 0,
+     "created": "2026-08-18T06:53:52"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T06:15:08"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0.06666666666666667
+  },
+  "pick_v5d4c_delta|38": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 38,
+   "created": "2026-08-17T19:02:42",
+   "env_step_final": 2999861,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881840.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-18T09:17:01"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-18T09:28:38"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-18T09:40:14"
+    },
+    {
+     "step": 2881840,
+     "picked": 0,
+     "created": "2026-08-18T09:51:45"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T09:06:04"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  },
+  "pick_v5d4c_delta|39": {
+   "family": "pick_v5d4c_delta",
+   "source": "dH",
+   "wave": "cluster wave 3",
+   "era": "post-E2; 3M steps; 08-17/18",
+   "seed": 39,
+   "created": "2026-08-17T19:03:41",
+   "env_step_final": 2999906,
+   "inloop": [
+    {
+     "step": 281832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 381832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 481848,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 581832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 681836,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 781840,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 881844,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 981832,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1081836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1181836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1281852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1381836.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1481840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1581840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1681848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1781840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1881848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 1981840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2081844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2181840.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2281844.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2381848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2481832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2581848.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2681852.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2781832.0,
+     "picked": 0,
+     "mode": 0
+    },
+    {
+     "step": 2881852.0,
+     "picked": 0,
+     "mode": 0
+    }
+   ],
+   "fresh": [
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-18T08:35:30"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-18T08:46:27"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-18T08:57:24"
+    },
+    {
+     "step": 2881852,
+     "picked": 0,
+     "created": "2026-08-18T09:08:10"
+    },
+    {
+     "step": 3000000,
+     "picked": 0,
+     "created": "2026-08-18T08:25:13"
+    }
+   ],
+   "fresh_best": 0,
+   "fresh_n_evals": 5,
+   "inloop_best": 0
+  }
+ }
+}
