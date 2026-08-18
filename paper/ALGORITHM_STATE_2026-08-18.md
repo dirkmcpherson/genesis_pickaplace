@@ -168,6 +168,16 @@ lottery lives in the actor. So the plan, gated on the dv3-MS-HEAD verdict:
    free version of "K draws per shared data." Also directly targets the
    9/15 -> 0/15 collapse.
 Cost: one WM training run + K imagination-only actor trainings ≈ 1.3x a
-single run for K lottery tickets. Build estimate: 1 day for r2dreamer (the
+single run for K lottery tickets.
+WM freezing (user note, 08-18): fully freezing the WM is the FIRST variant
+to try — it is much faster (no WM gradients, actor-only updates on
+imagination) and isolates the actor-lottery hypothesis cleanly. But a
+fully frozen WM can be a disadvantage: the re-drawn actor visits states
+the WM never fit, and a TINY WM learning rate (e.g. 1e-2 to 1e-1 of the
+training lr) lets it track those without re-opening the lottery. Registered
+order: (i) frozen WM, K draws; (ii) only if (i) ignites less than expected
+or actor returns diverge from imagined returns, repeat with tiny-lr WM.
+Never start with (ii): it is slower and confounds 'actor draw' with 'WM
+continued training'. Build estimate: 1 day for r2dreamer (the
 checkpoint/replay plumbing exists), then a 3-WM x K=6 local pilot before it
 goes on the cluster.
