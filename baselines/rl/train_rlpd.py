@@ -71,6 +71,12 @@ def main():
                          "bug 2: shared affine ties member scales, degrading the "
                          "min-of-Z pessimism; Q refluxed to 250-1600 in the nb wave "
                          "with backup off). 'off' = original shared-LN (old ckpts).")
+    ap.add_argument('--pick-shaping', choices=['on', 'off'], default='off',
+                    help="DENSE-REWARD lever (scope=pick only, 08-18): potential-based "
+                         "approach term -SCALE*||eef-can|| (Ng-invariant, gamma-matched "
+                         "0.998). TRAINING-ONLY: eval envs never see it. Demos are NOT "
+                         "relabeled (potential shaping needs no demo term). Recorded in "
+                         "the sidecar. Default off = byte-identical to every prior run.")
     ap.add_argument('--pick-hold-reward', choices=['on', 'off'], default='off',
                     help="REWARD DENSITY lever (scope=pick only). 'on': the env pays "
                          "+1 for EVERY step the honest hold condition holds (can above "
@@ -176,7 +182,8 @@ def main():
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
-                      pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k)
+                      pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k,
+                      pick_shaping=(args.pick_shaping == 'on'))
     # asserts: no silent defaults -- the env must be running the mode we asked for
     assert env.scope == args.scope, (env.scope, args.scope)
     assert env.action_mode == args.action_mode, (env.action_mode, args.action_mode)
@@ -216,7 +223,7 @@ def main():
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
           f'backup_entropy={args.backup_entropy} '
           f'per_member_ln={args.per_member_ln} '
-          f'pick_hold_reward={args.pick_hold_reward} pick_hold_k={args.pick_hold_k} '
+          f'pick_hold_reward={args.pick_hold_reward} pick_hold_k={args.pick_hold_k} pick_shaping={args.pick_shaping} '
           f'q_watchdog={q_watch:.2f} '
           f'scope={args.scope} action_mode={args.action_mode} '
           f'delta_ref={args.delta_ref} '
@@ -300,7 +307,7 @@ def main():
                # checkpoint's return curve was earned under. (Eval is unaffected: it
                # measures the pick, not the return -- wandb_eval ignores these keys.)
                'pick_hold_reward': args.pick_hold_reward,
-               'pick_hold_k': args.pick_hold_k}
+               'pick_hold_k': args.pick_hold_k, 'pick_shaping': args.pick_shaping}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.

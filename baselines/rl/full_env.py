@@ -114,13 +114,27 @@ class FullTaskEnv(gym.Env):
     PLACE_SHAPING_SCALE = 2.0
     PLACE_STEP_COST = 0.0     # v8: NO step cost -- it made quick-tip beat holding (v4/v5 collapse); hold~0 > tip ensures no termination farming
     PLACE_SHAPING_TARGET = (BOX_POS[0], BOX_POS[1])
+    # --- scope='pick' TRAINING-ONLY shaping (constructor pick_shaping=True, 08-18) ---
+    # Same potential-based form as place: r += GAMMA*phi(s') - phi(s), with
+    # phi = -SCALE * ||eef - can||. Policy-invariant under matched gamma (Ng 1999);
+    # exists to give exploration a gradient INTO the grasp basin (the ignition
+    # lottery is basin-entry, four waves + n=16 cluster). GAMMA matches the RLPD
+    # agent discount 0.998 (train_rlpd default) so a stationary agent's leak
+    # +(1-GAMMA)*SCALE*d = 0.002*SCALE*d/step is <= the sparse pick +1 over any
+    # 400-step episode only if SCALE*d < 1.25 -- at SCALE 2 and d <= 0.5m that
+    # is 1.0 <= 1.25: hover cannot out-earn completion (audit C1 hover math).
+    # No step cost (v8 lesson: step cost made quick-tip beat holding). Terminate-
+    # on-pick stays; the honest metric is the sparse picked terminal; eval envs
+    # never set pick_shaping.
+    PICK_SHAPING_GAMMA = 0.998
+    PICK_SHAPING_SCALE = 2.0
     metadata = {'render_modes': []}
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
-                 pick_hold_reward=False, pick_hold_k=25):
+                 pick_hold_reward=False, pick_hold_k=25, pick_shaping=False):
         super().__init__()
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
@@ -179,6 +193,9 @@ class FullTaskEnv(gym.Env):
         # constants). Default False so eval and every other caller are unchanged.
         assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
         self.shaping = bool(shaping)
+        assert not (pick_shaping and scope != 'pick'), 'pick_shaping is a scope=pick lever'
+        self.pick_shaping = bool(pick_shaping)
+        self._pick_phi_prev = 0.0
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
                                   workspace_limit=workspace_limit)
@@ -252,6 +269,12 @@ class FullTaskEnv(gym.Env):
         self._dj_target = q.copy()
         self._dj_qmeas = q.copy()
 
+    def _pick_phi(self):
+        """-SCALE * ||eef - can||, the pick-scope approach potential (training-only)."""
+        ee = np.asarray(self.genv.tool_pos(), dtype=np.float64)
+        bp = np_(self.genv.w['bottle'].get_pos())
+        return -self.PICK_SHAPING_SCALE * float(np.linalg.norm(ee[:3] - np.asarray(bp[:3], dtype=np.float64)))
+
     def _place_phi(self, bp):
         """Shaping potential: -SCALE * xy-distance(can center, shelf target)."""
         dx = float(bp[0]) - self.PLACE_SHAPING_TARGET[0]
@@ -307,6 +330,7 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._hold_run = 0
+        self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
@@ -356,6 +380,7 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._hold_run = 0
+        self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {}
 
@@ -421,6 +446,12 @@ class FullTaskEnv(gym.Env):
                     reward += r
                 self._granted.add(stage)
         if self.scope == 'pick':
+            if self.pick_shaping:
+                # TRAINING-ONLY approach potential (PICK_SHAPING_*); applied before
+                # the pick early-return so the terminal step is shaped too.
+                phi = self._pick_phi()
+                reward += self.PICK_SHAPING_GAMMA * phi - self._pick_phi_prev
+                self._pick_phi_prev = phi
             if self.pick_hold_reward:
                 # REWARD-DENSITY lever (ManiSkill/Adroit semantics; class docstring):
                 # +1 for EVERY step the honest hold condition holds, terminate after
