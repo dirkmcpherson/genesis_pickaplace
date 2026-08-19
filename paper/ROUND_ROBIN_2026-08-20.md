@@ -127,3 +127,15 @@ preemption. Aggregation afterwards: `grep -h SWEEP-RESULT rlpd_*.out`,
    dHpruned (see RESULTS_MATRIX notation).
 4. Cluster absolute rates carry the same-machine caveat vs local history; the
    within-round contrasts are clean.
+
+## §0 VERDICT UPDATE (08-19 16:40)
+1. **dv3-MS-at-HEAD: PASS, 2/2 seeds at eval_success 0.9** (wandb
+   dreamer_v3_maniskill, msHEAD_demo_s{0,1}-joint, finished 08-18 ~21:00,
+   before the dev-box power loss). Bar was >=0.8 on >=1 seed. Code-era caveat
+   CLOSED: HEAD reproduces the March positive; the msrecipe genesis null
+   stands as task-x-recipe. **dv3 is GO for Thursday.**
+2. RLPD dense: s1 completed 100k before the outage (checkpoint on disk);
+   its fresh-process sweep is running now; s0/s2 relaunched (dev-box power
+   loss killed them mid-run). Verdict expected late 08-19; if it slips past
+   Thursday submit time, dense is NOT submitted (the bar requires the data,
+   not the deadline).
