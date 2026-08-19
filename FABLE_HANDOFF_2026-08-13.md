@@ -1306,3 +1306,29 @@ RELAUNCHED CORRECTLY: msHEAD_demo_s{0,1}, March recipe verbatim, 2e5 steps,
 post-F2/F3 code (seeds now real). Bar (registered): success >=0.8 by 2e5 on
 >=1/2 seeds reproduces March; <0.5 on both = HEAD regression suspect ->
 bisect the msrecipe/vec-facade commits. ETA ~10-14h.
+
+## 37. POWER-LOSS-PROOFING + DENSE EXTENSION (08-19 evening)
+
+Context: user may be unavailable up to 10 days; cluster shuts off in ~6; the
+dev box lost power once already. Everything needed to review or continue is
+now in PUSHED git or wandb:
+- paper/REVIEW_GUIDE.md = the cold-start document (read order, wandb map,
+  aggregation rules, open bars, headline claims). START THERE.
+- Round robin final scope = training only, ~20 seeds core + optional dense
+  block (ROUND_ROBIN doc §3 + DENSE EXTENSION section). No cluster harvest
+  round (shutoff). My solo-work plan while user is away: local dense verdict,
+  multi-policy-per-WM pilot on local champion checkpoints, figures/docs from
+  wandb.
+- Dense lever now spans all three RL/WM trainers, gamma-matched per agent
+  (RLPD 0.998 flag; r2dreamer shaped config, 0.999; dv3 SHAPED=1 overlay,
+  0.997). full_env gained pick_shaping_gamma. Pushed: genesis_pickaplace
+  through daf3c23; dreamerv3-torch d645765 (pushed to fork); r2dreamer has NO
+  pushable remote -> its commit 4d98b56 is archived as
+  cluster/r2dreamer_dense_lever.patch (note: the patch swept in the full
+  staged-but-uncommitted port state from prior agent work, 12 files -- all
+  legitimate working-tree state the cluster rsync already carries).
+- Dense verdict state at write time: s1 5/15 fresh (PASS component); s0/s2
+  relaunched post-power-loss, sweeps tonight; bar in ROUND_ROBIN §0.
+- Wednesday smoke ledger: ALL scripts/arms proven on cluster (RLPD dH+dDP,
+  DP dR2D+dDP-inline-build, dv3 dH [dDP/dR2D tails pending], r2d dR2D x2);
+  registry REFUSE/WARN/bypass all demonstrated; wandb sweep push verified.
