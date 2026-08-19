@@ -134,7 +134,8 @@ class FullTaskEnv(gym.Env):
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
-                 pick_hold_reward=False, pick_hold_k=25, pick_shaping=False):
+                 pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
+                 pick_shaping_gamma=None):
         super().__init__()
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
@@ -195,6 +196,9 @@ class FullTaskEnv(gym.Env):
         self.shaping = bool(shaping)
         assert not (pick_shaping and scope != 'pick'), 'pick_shaping is a scope=pick lever'
         self.pick_shaping = bool(pick_shaping)
+        # gamma MUST match the consuming agent's discount for exact Ng-invariance
+        # (RLPD 0.998 default; r2dreamer passes 0.999, dv3 0.997).
+        self._pick_gamma = float(pick_shaping_gamma) if pick_shaping_gamma else self.PICK_SHAPING_GAMMA
         self._pick_phi_prev = 0.0
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
@@ -450,7 +454,7 @@ class FullTaskEnv(gym.Env):
                 # TRAINING-ONLY approach potential (PICK_SHAPING_*); applied before
                 # the pick early-return so the terminal step is shaped too.
                 phi = self._pick_phi()
-                reward += self.PICK_SHAPING_GAMMA * phi - self._pick_phi_prev
+                reward += self._pick_gamma * phi - self._pick_phi_prev
                 self._pick_phi_prev = phi
             if self.pick_hold_reward:
                 # REWARD-DENSITY lever (ManiSkill/Adroit semantics; class docstring):

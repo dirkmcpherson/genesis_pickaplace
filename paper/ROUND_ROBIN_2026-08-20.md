@@ -139,3 +139,29 @@ preemption. Aggregation afterwards: `grep -h SWEEP-RESULT rlpd_*.out`,
    loss killed them mid-run). Verdict expected late 08-19; if it slips past
    Thursday submit time, dense is NOT submitted (the bar requires the data,
    not the deadline).
+
+## DENSE EXTENSION (08-19, user directive: if dense passes, repeat for r2d + dv3)
+Plumbing landed (default-off, byte-identical; gamma matched per agent):
+- RLPD: PICK_SHAPING=on (sbatch_rlpd.sh), gamma 0.998.
+- r2dreamer: CONFIG=genesis_pick_v5d4c_delta_shaped (r2dreamer 4d98b56), gamma 0.999.
+- dv3: SHAPED=1 in the spec (dreamerv3-torch d645765; overlays
+  genesis_pick_msrecipe_shaped), gamma 0.997.
+Submit lines IF the RLPD dense bar passes (verdict in wandb + handoff):
+```bash
+for S in 0 1 2 3 4 5; do ARM=dH SEED=$S PICK_SHAPING=on sbatch cluster/sbatch_rlpd.sh; done
+for S in 50 51 52 53; do ARM=dH SEED=$S CONFIG=genesis_pick_v5d4c_delta_shaped \
+  VENV=/cluster/tufts/shortlab/jstale02/r2d_venv R2D_DIR=/cluster/tufts/shortlab/jstale02/r2dreamer \
+  sbatch cluster/sbatch_r2dreamer.sh; done
+cd ../dreamerv3-torch && for S in 0 1 2; do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+  RUNS="TAG=rr_dH_shaped_s$S ARM=dH SEED=$S SHAPED=1 STEPS=300000" sbatch sbatch_genesis_multi.sh; done; cd -
+```
+NOTE: requires ONE more rsync before submit (the dense plumbing edits):
+```bash
+rsync -av ~/workspace/dreamerv3-torch/sbatch_genesis_multi.sh ~/workspace/dreamerv3-torch/dreamer.py \
+  ~/workspace/dreamerv3-torch/configs.yaml ~/workspace/dreamerv3-torch/envs/genesis.py \
+  $LAB/dreamerv3-torch/ --relative 2>/dev/null || for f in sbatch_genesis_multi.sh dreamer.py configs.yaml envs/genesis.py; do \
+  rsync -av ~/workspace/dreamerv3-torch/$f $LAB/dreamerv3-torch/$f; done
+rsync -av ~/workspace/r2dreamer/envs/genesis.py ~/workspace/r2dreamer/envs/__init__.py $LAB/r2dreamer/envs/
+rsync -av ~/workspace/r2dreamer/configs/env/genesis_pick_v5d4c_delta_shaped.yaml $LAB/r2dreamer/configs/env/
+# + git pull in genesis_pickaplace (full_env pick_shaping_gamma)
+```
