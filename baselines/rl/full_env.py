@@ -400,6 +400,18 @@ class FullTaskEnv(gym.Env):
             total_reward += reward
             if terminated or truncated:
                 break
+        if self.pick_shaping:
+            # TRAINING-ONLY approach potential, applied ONCE per step() call --
+            # the boundary the agent's discount actually ticks at. Applying it
+            # inside _step_once under action_repeat>1 leaves a path-dependent
+            # -(1-gamma)*sum(phi_substeps) residual: a reward for staying FAR
+            # from the can, per episode the same order as the sparse terminal.
+            # For action_repeat=1 this is numerically identical to the old
+            # per-substep placement (same phi points, same formula). Terminal
+            # steps are still shaped (runs after the break).
+            phi = self._pick_phi()
+            total_reward += self._pick_gamma * phi - self._pick_phi_prev
+            self._pick_phi_prev = phi
         return obs, total_reward, terminated, truncated, info
 
     def _step_once(self, action):
@@ -450,12 +462,8 @@ class FullTaskEnv(gym.Env):
                     reward += r
                 self._granted.add(stage)
         if self.scope == 'pick':
-            if self.pick_shaping:
-                # TRAINING-ONLY approach potential (PICK_SHAPING_*); applied before
-                # the pick early-return so the terminal step is shaped too.
-                phi = self._pick_phi()
-                reward += self._pick_gamma * phi - self._pick_phi_prev
-                self._pick_phi_prev = phi
+            # pick_shaping is applied in step(), once per decision -- NOT here.
+            # Per-substep application under action_repeat>1 is a bug (see step()).
             if self.pick_hold_reward:
                 # REWARD-DENSITY lever (ManiSkill/Adroit semantics; class docstring):
                 # +1 for EVERY step the honest hold condition holds, terminate after

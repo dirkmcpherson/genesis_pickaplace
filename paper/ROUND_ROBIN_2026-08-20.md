@@ -225,3 +225,36 @@ Everything lands in wandb automatically (REVIEW_GUIDE.md has the map); no
 box or .out access is required to score the round. If anything refuses at
 submit, the registry/gate message says why — do NOT bypass with DUPLICATE_OK
 unless the reason is understood and recorded.
+
+## SHAPING TIMESCALE FIX (08-19 ~23:45 — supersedes the WM dense submit lines above)
+The whole block went up on 08-19 night. The post-submit live-fire parity
+check then caught a REAL bug in the shaped reward for the repeat-4 WM arms:
+full_env applied gamma*phi'-phi per SIM step while r2d/dv3 discount per
+AGENT step (4 sim steps). Residual = +(1-gamma)*2*dist per substep — a
+reward for staying FAR from the can, per-episode the same order as the
++100 terminal. RLPD (action_repeat=1) is EXACT and unaffected: the local
+dense verdict and the 6 running RLPD-shaped jobs stand.
+
+Fix (verified: FullTaskEnv repeat-4 parity max_err 0.00e+00 both gammas,
+dynamics bit-identical; repeat-1 numerics unchanged):
+- full_env.py: shaping applied once per step() call (covers dv3, env-side repeat).
+- r2dreamer envs/genesis.py: adapter-boundary shaping (its own repeat loop);
+  archived as cluster/r2dreamer_shaping_boundary_fix.patch (r2dreamer commit
+  6af0ec7 — no pushable remote).
+
+Recovery (7 shaped WM jobs were scancelled while still PD — zero GPU wasted):
+```bash
+# on the cluster:
+cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && git pull
+# from the dev box (ONE file):
+rsync -av ~/workspace/r2dreamer/envs/genesis.py $LAB/r2dreamer/envs/
+# resubmit the 7 (registry requires the recorded reason):
+export DUPLICATE_OK="shaping-timescale-fix-08-19"
+for S in 50 51 52 53; do ARM=dH SEED=$S CONFIG=genesis_pick_v5d4c_delta_shaped \
+  VENV=/cluster/tufts/shortlab/jstale02/r2d_venv R2D_DIR=/cluster/tufts/shortlab/jstale02/r2dreamer \
+  sbatch cluster/sbatch_r2dreamer.sh; done
+cd ../dreamerv3-torch && for S in 0 1 2; do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+  RUNS="TAG=rr_dH_shaped_s$S ARM=dH SEED=$S SHAPED=1 STEPS=300000" sbatch sbatch_genesis_multi.sh; done; cd -
+unset DUPLICATE_OK
+```
+No dv3-tree rsync needed: its fix rides in genesis_pickaplace (git pull).

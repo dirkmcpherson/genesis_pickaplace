@@ -1357,3 +1357,33 @@ now in PUSHED git or wandb:
 - Local wandb runs dH_RLPD-dense_s{0,2} show in-train summaries that differ
   from the fresh sweeps (e.g. s0 in-train random 0 vs sweep 3/15) — protocol
   unchanged: fresh-process sweep JSONs are the numbers of record.
+
+## §39 (08-19 ~23:50) — ROUND ROBIN LIVE (33 jobs); SHAPING TIMESCALE BUG caught post-submit, fixed
+- User submitted the FULL final block a day early (job IDs 2667157-2667192;
+  census verified: 12 rlpd + 3 dp + 8 r2d + 10 dv3 = 33, matching the plan
+  exactly). paper/ROUND_ROBIN_RUNNING_2026-08-19.md = what runs, incl.
+  obs/action spaces per algorithm.
+- **Live-fire caught a REAL shaped-reward bug** (the reason live-fire exists):
+  full_env applied gamma*phi'-phi per SIM step; r2d/dv3 discount per AGENT
+  step (repeat 4). Residual +(1-gamma)*2*dist per substep = reward for
+  staying FAR, per-episode ~ the +100 terminal (dv3 gamma 0.997 x scale 100:
+  ~0.4-0.5/decision at d=0.3, ~60-80/episode). RLPD repeat-1 EXACT ->
+  local dense verdict + 6 running RLPD-shaped jobs unaffected.
+- Fix: full_env.step() applies shaping once per call (covers dv3 env-side
+  repeat; repeat-1 numerics IDENTICAL — all _step_once returns come after
+  the old block, so no path skipped it); r2dreamer adapter applies at its
+  own boundary (FullTaskEnv pick_shaping=False there; adapter reads
+  _pick_phi(), gamma 0.999, scaled with reward_scale). r2dreamer commit
+  6af0ec7, archived as cluster/r2dreamer_shaping_boundary_fix.patch.
+- Verification: FullTaskEnv repeat-4 parity max_err 0.00e+00 at gamma
+  0.997 AND 0.999, dynamics bit-identical, shaping fires every step
+  (scratchpad harness, 3 harness bugs fixed en route: action dim, 5-tuple
+  step API, array obs). dv3 live-run (exact cluster config stack) PASSED
+  pre-fix already at the plumbing level: train_return 55-114 with
+  log_picked 0 = potential flowing. r2d live-run through the PATCHED
+  adapter: prefill 268 eps @ scale 100, online steps clean. r2d
+  adapter-boundary numeric parity: PASS (max_err 2.38e-07, 40/40 steps shaped, dynamics identical; artifacts paper/shaping_livefire_2026-08-19/).
+- User scancelled the 7 shaped WM jobs while still PD (zero GPU wasted);
+  recovery block (pull + one-file rsync + resubmit with
+  DUPLICATE_OK="shaping-timescale-fix-08-19") is in ROUND_ROBIN
+  "SHAPING TIMESCALE FIX" section.
