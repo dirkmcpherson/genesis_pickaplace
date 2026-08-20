@@ -1,0 +1,17 @@
+{
+ "metrics": {
+  "eval/picked": 0.0,
+  "eval/placed": 0.0,
+  "eval/contact": 0.0,
+  "eval/nested": 0.0,
+  "eval/n": 1
+ },
+ "videos": [
+  "/tmp/claude-1000/-home-j-workspace-genesis-pickaplace/8ea5848e-5db6-4a43-bc8e-7e682f9837fc/scratchpad/dense_sweep2/s0/v_d_251/sac:indist_0_fail.mp4"
+ ],
+ "tiled": null,
+ "checkpoint": "baselines/rl/checkpoints/rlpd_dense_dH_s0/rlpd_100000_steps.zip",
+ "seed": 0,
+ "max_steps": 400,
+ "delta_ref": "target"
+}

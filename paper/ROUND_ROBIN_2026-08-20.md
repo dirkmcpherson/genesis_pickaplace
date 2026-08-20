@@ -134,11 +134,20 @@ preemption. Aggregation afterwards: `grep -h SWEEP-RESULT rlpd_*.out`,
    before the dev-box power loss). Bar was >=0.8 on >=1 seed. Code-era caveat
    CLOSED: HEAD reproduces the March positive; the msrecipe genesis null
    stands as task-x-recipe. **dv3 is GO for Thursday.**
-2. RLPD dense: s1 completed 100k before the outage (checkpoint on disk);
-   its fresh-process sweep is running now; s0/s2 relaunched (dev-box power
-   loss killed them mid-run). Verdict expected late 08-19; if it slips past
-   Thursday submit time, dense is NOT submitted (the bar requires the data,
-   not the deadline).
+2. **RLPD dense: PASS (final, 08-19 ~20:10 EDT).** Fresh-process 100k sweeps,
+   15 demo-IC + 15 random-IC per seed (artifacts: paper/dense_verdict_2026-08-19/,
+   scored as ['metrics']['eval/picked']):
+   - s0 (retrained post power-loss): demo-IC 0/15, random 3/15
+   - s1 (surviving checkpoint, re-swept after /tmp loss): demo-IC 4/15,
+     random 2/15 (original pre-loss sweep read 5/15; both clear the component)
+   - s2 (retrained): demo-IC 5/15, random 5/15
+   Bar >=2/3 seeds >=3/15 demo-IC: MET (s1, s2). Pooled demo-IC 9/45 = 0.20
+   >= 0.16: MET. Matches the registered expectation (ALGORITHM_STATE §3):
+   dense raises ignition odds, not the ceiling. **Dense IS submitted Thursday
+   for all three RL/WM algos (see DENSE EXTENSION below).**
+   Caveat: wandb in-train summaries for these runs (dH_RLPD-dense_s{0,2})
+   disagree in detail with the fresh sweeps — per protocol the fresh-process
+   sweep JSONs are the numbers of record.
 
 ## DENSE EXTENSION (08-19, user directive: if dense passes, repeat for r2d + dv3)
 Plumbing landed (default-off, byte-identical; gamma matched per agent):
@@ -165,3 +174,54 @@ rsync -av ~/workspace/r2dreamer/envs/genesis.py ~/workspace/r2dreamer/envs/__ini
 rsync -av ~/workspace/r2dreamer/configs/env/genesis_pick_v5d4c_delta_shaped.yaml $LAB/r2dreamer/configs/env/
 # + git pull in genesis_pickaplace (full_env pick_shaping_gamma)
 ```
+
+## SMOKE VERIFICATION (08-19 evening — all four cluster smokes verified in wandb)
+- dDP_RLPD-n20_s0: finished; sweep/ summary fields pushed (plumbing proof).
+- dDP_DP_s0 (+ -eval): finished; in-job dDP lerobot build + eval worked
+  (smoke picked 0.5 in-dist / 0.5 random).
+- genesis_pixels_smoke_dDP-joint, genesis_pixels_smoke_dR2D-joint (dv3):
+  both finished. (dH smoke passed 08-18; r2d smokes passed earlier — §2.)
+Every script x every NEW arm is now proven end-to-end on the cluster.
+
+## FINAL THURSDAY SUBMIT BLOCK (08-19 night — supersedes §3 counts; paste-and-leave)
+Scope decision (user, 08-18): cluster shuts off in ~6 days; initial training
+only, ~20 core seeds, no harvest chaining. Dense PASSED (§0.2) so the dense
+blocks are IN. 33 jobs total; per-user cap ~10 concurrent, rest queue.
+
+Pre-data seed note: cluster shaped-RLPD uses FRESH seeds 3-8 (local dense
+verdict used 0-2; fresh seeds avoid any re-execution/pooling argument —
+amends the s0-5 line in DENSE EXTENSION above, before any data).
+
+```bash
+# 0) one rsync + pull first (dense plumbing; see DENSE EXTENSION note above)
+cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && git pull && cd -
+
+# 1) CORE (20 seeds)
+for S in 0 1 2 3 4 5; do ARM=dDP SEED=$S sbatch cluster/sbatch_rlpd.sh; done      # RLPD dDP x6
+for S in 0 1 2;       do ARM=dR2D SEED=$S sbatch cluster/sbatch_dp.sh; done       # DP dR2D x3
+for S in 40 41 42 43; do ARM=dR2D SEED=$S CONFIG=genesis_pick_v5d4c_delta \
+  VENV=/cluster/tufts/shortlab/jstale02/r2d_venv R2D_DIR=/cluster/tufts/shortlab/jstale02/r2dreamer \
+  sbatch cluster/sbatch_r2dreamer.sh; done                                        # r2d dR2D x4
+cd ../dreamerv3-torch \
+  && for S in 0 1 2; do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+       RUNS="TAG=rr_dH_s$S ARM=dH SEED=$S STEPS=300000" sbatch sbatch_genesis_multi.sh; done \
+  && for S in 0 1;   do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+       RUNS="TAG=rr_dDP_s$S ARM=dDP SEED=$S STEPS=300000" sbatch sbatch_genesis_multi.sh; done \
+  && for S in 0 1;   do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+       RUNS="TAG=rr_dR2D_s$S ARM=dR2D SEED=$S STEPS=300000" sbatch sbatch_genesis_multi.sh; done \
+  && cd -                                                                         # dv3 dHx3 dDPx2 dR2Dx2
+
+# 2) DENSE (13 seeds; gated PASS 08-19)
+for S in 3 4 5 6 7 8; do ARM=dH SEED=$S PICK_SHAPING=on sbatch cluster/sbatch_rlpd.sh; done  # RLPD shaped x6
+for S in 50 51 52 53; do ARM=dH SEED=$S CONFIG=genesis_pick_v5d4c_delta_shaped \
+  VENV=/cluster/tufts/shortlab/jstale02/r2d_venv R2D_DIR=/cluster/tufts/shortlab/jstale02/r2dreamer \
+  sbatch cluster/sbatch_r2dreamer.sh; done                                        # r2d shaped x4
+cd ../dreamerv3-torch \
+  && for S in 0 1 2; do REPO_DIR=$PWD CONDA_ENV=genesis WANDB=1 \
+       RUNS="TAG=rr_dH_shaped_s$S ARM=dH SEED=$S SHAPED=1 STEPS=300000" sbatch sbatch_genesis_multi.sh; done \
+  && cd -                                                                         # dv3 shaped x3
+```
+Everything lands in wandb automatically (REVIEW_GUIDE.md has the map); no
+box or .out access is required to score the round. If anything refuses at
+submit, the registry/gate message says why — do NOT bypass with DUPLICATE_OK
+unless the reason is understood and recorded.

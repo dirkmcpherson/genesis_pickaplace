@@ -1332,3 +1332,28 @@ now in PUSHED git or wandb:
 - Wednesday smoke ledger: ALL scripts/arms proven on cluster (RLPD dH+dDP,
   DP dR2D+dDP-inline-build, dv3 dH [dDP/dR2D tails pending], r2d dR2D x2);
   registry REFUSE/WARN/bypass all demonstrated; wandb sweep push verified.
+
+## §38 (08-19 night) — DENSE VERDICT: PASS; smokes verified; final submit block posted
+- **RLPD dense PASS (final).** Fresh-process 100k sweeps, 15 demo-IC + 15
+  random-IC per seed, scored as ['metrics']['eval/picked']: s0 0/15 demo
+  (3/15 random), s1 4/15 (2/15), s2 5/15 (5/15). Bar >=2/3 seeds >=3/15: met
+  (s1,s2). Pooled demo-IC 9/45 = 0.20 >= 0.16: met. Matches the registered
+  §3 expectation (ignition odds up, ceiling unchanged). s1's original
+  pre-power-loss sweep read 5/15; the re-sweep (after /tmp wiped the
+  artifacts) reads 4/15 — same checkpoint, fresh-process episode variance;
+  both clear the component. Verdict JSONs archived in
+  paper/dense_verdict_2026-08-19/ (30 files/seed).
+- **All four remaining cluster smokes verified directly in wandb** (no .out
+  needed): dDP_RLPD-n20_s0 (sweep/ fields pushed), dDP_DP_s0 + -eval
+  (in-job build + eval, 0.5/0.5), dv3 genesis_pixels_smoke_dDP-joint and
+  _dR2D-joint (finished). Smoke matrix complete: every script x arm proven.
+- **FINAL THURSDAY SUBMIT BLOCK appended to ROUND_ROBIN** (paste-and-leave):
+  core 20 seeds (RLPD dDP x6, DP dR2D x3, r2d dR2D s40-43, dv3 dH x3 /
+  dDP x2 / dR2D x2) + dense 13 (RLPD shaped s3-8 FRESH seeds — pre-data
+  amendment away from s0-5 to avoid local-seed re-execution; r2d shaped
+  s50-53; dv3 SHAPED=1 s0-2). 33 jobs. Rsync of dense plumbing + git pull
+  required first (lines in the doc).
+- REVIEW_GUIDE dense bar marked CLOSED/PASS.
+- Local wandb runs dH_RLPD-dense_s{0,2} show in-train summaries that differ
+  from the fresh sweeps (e.g. s0 in-train random 0 vs sweep 3/15) — protocol
+  unchanged: fresh-process sweep JSONs are the numbers of record.

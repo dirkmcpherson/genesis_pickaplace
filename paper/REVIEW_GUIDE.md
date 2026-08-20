@@ -57,9 +57,11 @@ champion harvests); algorithms DP, RLPD, r2dreamer (R2D), dv3 (DV3).
    for RL/WM, dHpruned for DP; cluster-vs-local same-machine rule).
 
 ## Registered bars still open at write time
-- RLPD dense (pick_shaping): >=2/3 seeds >=3/15 fresh AND pooled >= 0.16
-  (local dH reference). s1 = 5/15 PASS component; s0/s2 sweeps pending.
-  Expectations registered in ALGORITHM_STATE §3 (raise ignition, not ceiling).
+- RLPD dense (pick_shaping): CLOSED 08-19 — PASS. s0 0/15, s1 4/15, s2 5/15
+  demo-IC; pooled 9/45 = 0.20 >= 0.16; artifacts in
+  paper/dense_verdict_2026-08-19/. Dense blocks submitted for RLPD/r2d/dv3
+  (ROUND_ROBIN FINAL THURSDAY SUBMIT BLOCK). Expectation held (ALGORITHM_STATE
+  §3: raises ignition odds, not the ceiling).
 - r2d/dv3 dense variants (if submitted): same qualitative expectation; their
   shaped configs are genesis_pick_v5d4c_delta_shaped (r2dreamer, gamma 0.999)
   and genesis_pick_msrecipe_shaped overlay / SHAPED=1 (dv3, gamma 0.997).
