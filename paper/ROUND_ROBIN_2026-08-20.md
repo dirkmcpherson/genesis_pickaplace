@@ -258,3 +258,20 @@ cd ../dreamerv3-torch && for S in 0 1 2; do REPO_DIR=$PWD CONDA_ENV=genesis WAND
 unset DUPLICATE_OK
 ```
 No dv3-tree rsync needed: its fix rides in genesis_pickaplace (git pull).
+
+## NOTED FOLLOW-UP (user, 08-20): dHallpruned_DP — remove ALL zero-action frames
+Candidate extra DP cell: prune EVERY zero/idle-action frame from the human
+set (dHpruned only dropped the LEADING idle block). Motivation sharpened by
+today's dR2D_DP result (0.93-1.00 in-dist, 0.73-0.80 random): model demos
+contain no idle frames anywhere — a champion policy never pauses — so part
+of the model-beats-human BC gap could be action-density, not demonstration
+quality. dHallpruned is the control that equalizes idle content:
+- dHallpruned_DP ~ dR2D_DP  -> the gap is largely an idle-frame artifact.
+- dHallpruned_DP ~ dHpruned_DP -> the gap survives density-matching; the
+  quality claim strengthens.
+Caveat to design around: mid-episode pauses may carry information (settling
+before grasp); removing them changes the action-chunk temporal statistics,
+so note chunk-boundary effects in the writeup. Build = one converter pass
+over episodes_pick (threshold on commanded delta), train 100k, eval 15+15
+fresh-process, x3 seeds if the first read is interesting. Optional cell —
+does not displace anything registered.
