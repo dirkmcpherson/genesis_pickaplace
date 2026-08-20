@@ -121,3 +121,25 @@ wandb entity jambotime — genesis_paper (RLPD sweep summaries + DP evals),
 r2dreamer_genesis (-eval-step runs), dreamer_v3 (dv3 -joint runs). One
 greppable line per .out: SWEEP-RESULT / DP-RESULT / R2D-RESULT / DV3-RESULT.
 Aggregation rules: paper/REVIEW_GUIDE.md.
+
+## RESULTS AS OF 08-20 ~08:00 EDT (from wandb; sweep/eval fields are the record)
+- RLPD COMPLETE 12/12. dDP core (s0-5): demo-IC 1,0,1,0,?,0 /15 — 0 seeds
+  ignited (s4 pending read; max 1/15). Contrast: dH 8/16, dR2D 10/16 ignited.
+  dH-shaped (s3-8): 1,6,3,6,0,9 /15 — 4/6 ignited, pooled 25/90 = 0.278 vs
+  sparse-dH pooled 0.221 — the registered dense expectation (ignition up,
+  ceiling similar) holding directionally at n=6.
+- DP dR2D COMPLETE 3/3: in-dist 0.93 / 0.93 / 1.00; random 0.73 / 0.80 / 0.73.
+  Best DP cells recorded, and random-IC is ~3x the prior best (0.23 for both
+  dHpruned and dDP). Caveat: same-machine rule (cluster row vs cluster rows
+  is the clean comparison); 66 champion success tapes.
+- r2d core dR2D (s40-43): early checkpoints eval 0 (expected; training
+  continues to 3M). r2d SHAPED dH (s50-53): early evals already read
+  0.93 / 0.07 / 1.00 / 0.87 — checkpoint step NOT yet verified; if these are
+  <200k-step checkpoints, dense collapses the r2d ignition lottery. Verify
+  step before any claim.
+- dv3 core dH s0-2: FINISHED ~325k, log_picked 0 (task-x-recipe null again,
+  now on fixed seeds). dv3 dDP s0: FINISHED with log_picked 1 at end of
+  training — first dv3-genesis sign of life; fresh eval numbers pending.
+  dv3 dR2D s0 crashed at step 0 and was requeued (now 140k); s1 88k.
+  dv3 shaped dH s0-2 mid-run (170-200k): train_return nonzero with zero
+  picks = shaping term flowing as designed.
