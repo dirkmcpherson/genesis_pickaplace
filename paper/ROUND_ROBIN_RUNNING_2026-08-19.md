@@ -143,3 +143,8 @@ Aggregation rules: paper/REVIEW_GUIDE.md.
   dv3 dR2D s0 crashed at step 0 and was requeued (now 140k); s1 88k.
   dv3 shaped dH s0-2 mid-run (170-200k): train_return nonzero with zero
   picks = shaping term flowing as designed.
+
+## CORRECTION (08-22, impl audit F13): the DP eval-of-record is NOT fresh-process-per-episode
+`sbatch_dp.sh` runs `wandb_eval.py --kind dp --ic-mode both` with no `--max-steps` → default 1200, all 30
+episodes in one process; RLPD's sweep is 400 steps, one fresh process per episode. "Fresh process per
+episode" above applies to RLPD only. Cross-algorithm absolutes carry the horizon difference.

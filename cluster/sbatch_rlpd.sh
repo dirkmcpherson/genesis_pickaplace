@@ -29,6 +29,9 @@
 #   dH        baselines/episodes_pick_phase_all       human, full pick-phase set
 #   dR2D      baselines/episodes_champion_pick         r2dreamer-harvested (control)
 #   dDP       baselines/m1all_harvest                  DP-harvested model demos (rollout-index names)
+#   dDPsucc   baselines/m1all_harvest_succ             dDP SUCCESS tapes only (63) -- make_dDPsucc.py --mode succ
+#   dDPtiptrunc baselines/m1all_harvest_tiptrunc       dDP with FAIL tapes cut at the env's tip rule -- make_dDPsucc.py --mode tiptrunc
+#   dR2Dfails baselines/episodes_champion_pick_plus_dpfails  dR2D successes + the 30 DP FAIL tapes (sufficiency arm) -- make_dDPsucc.py --mode r2dfails
 #   dHpruned  baselines/episodes_pick_phase_dppruned    human, DP-pruned subset
 # All four confirmed to carry the layout train_rlpd.py's demo loader expects:
 # states (T,17) float32, actions (T,7) float32, a 'stage' field (see 08-18 audit
@@ -105,8 +108,31 @@ case "$ARM" in
   dR2D)     ARM_DEMO=baselines/episodes_champion_pick;        PAT='^1[0-9]{5}\.npz$' ;;
   dDP)      ARM_DEMO=baselines/m1all_harvest;                 PAT='^[0-9]{6}\.npz$' ;;
   dHpruned) ARM_DEMO=baselines/episodes_pick_phase_dppruned;  PAT='^[0-9]{3}\.npz$' ;;
-  *) echo "FATAL: ARM=$ARM (must be dH, dR2D, dDP, or dHpruned)"; exit 1 ;;
+  # 08-22 discriminators for the dDP_RLPD 0/6 result (paper/ROUND_ROBIN_RESULTS_2026-08-22.md
+  # "Why dDP_RLPD < dH_RLPD"): built from m1all_harvest by baselines/make_dDPsucc.py, which
+  # writes a manifest.json; the manifest gate below refuses a hand-made dir.
+  dDPsucc)     ARM_DEMO=baselines/m1all_harvest_succ;     PAT='^1[0-9]{5}\.npz$'; NEED_MANIFEST=succ ;;
+  dDPtiptrunc) ARM_DEMO=baselines/m1all_harvest_tiptrunc; PAT='^[0-9]{6}\.npz$';  NEED_MANIFEST=tiptrunc ;;
+  dR2Dfails)   ARM_DEMO=baselines/episodes_champion_pick_plus_dpfails; PAT='^[15][0-9]{5}\.npz$'; NEED_MANIFEST=r2dfails ;;
+  *) echo "FATAL: ARM=$ARM (must be dH, dR2D, dDP, dHpruned, dDPsucc, dDPtiptrunc, or dR2Dfails)"; exit 1 ;;
 esac
+if [ -n "${NEED_MANIFEST:-}" ]; then
+  # provenance: the set must have been built by make_dDPsucc.py in the matching mode
+  python3 - "$ARM_DEMO" "$NEED_MANIFEST" <<'PY' || exit 1
+import json, sys, os
+d, mode = sys.argv[1], sys.argv[2]
+m = os.path.join(d, 'manifest.json')
+if not os.path.exists(m):
+    print(f'FATAL: {d}/manifest.json missing -- build it with: python baselines/make_dDPsucc.py --mode {mode}'); sys.exit(1)
+j = json.load(open(m))
+ok = j.get('mode') == mode and j.get('source_name') == 'm1all_harvest' and j.get('builder') == 'baselines/make_dDPsucc.py'
+n = len([f for f in os.listdir(d) if f.endswith('.npz')])
+if not ok or n != j.get('n_kept'):
+    print(f'FATAL: {m} does not describe a make_dDPsucc.py --mode {mode} build of m1all_harvest '
+          f'(mode={j.get("mode")} source={j.get("source_name")} n_kept={j.get("n_kept")} vs {n} npz on disk)'); sys.exit(1)
+print(f'PROVENANCE-OK {d}: {mode} build of m1all_harvest, {n} npz, sha {j.get("content_sha256","")[:12]}')
+PY
+fi
 
 # stale-env case-guard (mirrors cluster/sbatch_r2d_ms.sh's DEMO_DIR guard, 08-18):
 # a stale exported DEMO_DIR/DEMO/DATASET from another submission or shell must not
