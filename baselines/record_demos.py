@@ -103,7 +103,13 @@ STATE_DIM, ACT_DIM = 17, 7
 
 REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
                               pl.Path(__file__).resolve().parents[1]))
-R2D_ROOT = pl.Path(os.environ.get('R2DREAMER_ROOT', os.path.expanduser('~/workspace/r2dreamer')))
+def _r2d_root():
+    # R2DREAMER_ROOT, else the repo's sibling checkout (cluster: $LAB/r2dreamer), else the devbox path
+    for c in (os.environ.get('R2DREAMER_ROOT'), str(REPO.parent / 'r2dreamer'), os.path.expanduser('~/workspace/r2dreamer')):
+        if c and (pl.Path(c) / 'tools.py').exists():
+            return pl.Path(c)
+    return pl.Path(os.environ.get('R2DREAMER_ROOT', os.path.expanduser('~/workspace/r2dreamer')))
+R2D_ROOT = _r2d_root()
 
 SCALARS = ('uid', 'ic_uid', 'label', 'stage', 'teacher', 'teacher_ckpt', 'act_mode',
            'action_repeat', 'delta_cap', 'delta_leash', 'delta_ref', 'pick_z', 'n',
