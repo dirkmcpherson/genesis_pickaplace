@@ -1,0 +1,2358 @@
+{
+ "set": "dDP",
+ "built": "2026-08-23T14:17:22",
+ "N": 56,
+ "n_success": 56,
+ "n_fail": 0,
+ "decisions_total": 6909,
+ "decisions_p50": 114.5,
+ "n_kept": 56,
+ "chosen": [
+  "100000.npz",
+  "100002.npz",
+  "100003.npz",
+  "100004.npz",
+  "100006.npz",
+  "100007.npz",
+  "100008.npz",
+  "100009.npz",
+  "100010.npz",
+  "101003.npz",
+  "101005.npz",
+  "101006.npz",
+  "101009.npz",
+  "101010.npz",
+  "101012.npz",
+  "101013.npz",
+  "101014.npz",
+  "102000.npz",
+  "102001.npz",
+  "102002.npz",
+  "102003.npz",
+  "102004.npz",
+  "102005.npz",
+  "102006.npz",
+  "102007.npz",
+  "102009.npz",
+  "102010.npz",
+  "102011.npz",
+  "103000.npz",
+  "103001.npz",
+  "103003.npz",
+  "103005.npz",
+  "103006.npz",
+  "103008.npz",
+  "103009.npz",
+  "103011.npz",
+  "103012.npz",
+  "103014.npz",
+  "103015.npz",
+  "104000.npz",
+  "104001.npz",
+  "104002.npz",
+  "104003.npz",
+  "104007.npz",
+  "104011.npz",
+  "104013.npz",
+  "104014.npz",
+  "105001.npz",
+  "105002.npz",
+  "105003.npz",
+  "105004.npz",
+  "105006.npz",
+  "105007.npz",
+  "105008.npz",
+  "105009.npz",
+  "105010.npz"
+ ],
+ "renamed_fail_tapes": {},
+ "ic_uid_histogram": {
+  "232": 1,
+  "233": 1,
+  "235": 1,
+  "242": 1,
+  "243": 1,
+  "247": 1,
+  "248": 1,
+  "250": 1,
+  "251": 1,
+  "252": 1,
+  "254": 1,
+  "257": 1,
+  "258": 1,
+  "259": 1,
+  "262": 1,
+  "263": 1,
+  "265": 1,
+  "266": 1,
+  "267": 1,
+  "269": 1,
+  "273": 1,
+  "274": 1,
+  "275": 1,
+  "276": 1,
+  "277": 1,
+  "278": 1,
+  "279": 1,
+  "280": 1,
+  "281": 1,
+  "283": 1,
+  "284": 1,
+  "287": 1,
+  "297": 1,
+  "298": 1,
+  "301": 1,
+  "302": 1,
+  "304": 1,
+  "305": 1,
+  "306": 1,
+  "308": 1,
+  "309": 1,
+  "311": 1,
+  "315": 1,
+  "316": 1,
+  "317": 1,
+  "319": 1,
+  "320": 1,
+  "321": 1,
+  "325": 1,
+  "326": 1,
+  "327": 1,
+  "328": 1,
+  "329": 1,
+  "330": 1,
+  "333": 1,
+  "335": 1
+ },
+ "content_sha256": "299825ad10296375d43fecb87182dd0874c4dfb8fea9506d1fc69b4cd182ca2e",
+ "sources": [
+  "baselines/demos_v1/dDP"
+ ],
+ "source_manifests": {
+  "baselines/demos_v1/dDP": {
+   "configs": [
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 0,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    },
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 1,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    },
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 2,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    },
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 3,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    },
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 4,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    },
+    {
+     "teacher": "dp",
+     "outdir": "baselines/demos_v1/dDP",
+     "fails_outdir": null,
+     "checkpoint": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "config": null,
+     "mode": "sample",
+     "src": "baselines/episodes_pick_phase_dppruned",
+     "ic_mode": "demo",
+     "uids_from": "baselines/episodes_pick_phase_dppruned",
+     "uids": null,
+     "ic_from_tape": true,
+     "attempts": 3,
+     "n": null,
+     "target_kept": null,
+     "verify": true,
+     "no_images": false,
+     "no_sim_tape": false,
+     "tol": 0.025,
+     "max_dwell": 8,
+     "dilation_cap": 3.0,
+     "settle": 25,
+     "n_action_steps": null,
+     "seed": 0,
+     "shard_idx": 5,
+     "shard_n": 6,
+     "rollout_base": 100000,
+     "merge": false,
+     "dry_run": false,
+     "torch_threads": 2,
+     "repeat": 4,
+     "delta_cap": 0.025,
+     "leash": 0.125,
+     "max_sim_steps": 1200,
+     "pick_z": 0.15050000000000002,
+     "git_sha": "1dcd268",
+     "teacher_ckpt": "baselines/outputs/dp_pilot/dH_DP_s0/checkpoints/020000/pretrained_model",
+     "contract": "v1",
+     "recorder": "record_demos.py v1"
+    }
+   ],
+   "n_rollouts": 80,
+   "n_kept": 64,
+   "n_kept_records": 64,
+   "files": 64,
+   "teacher_success_rate_first_attempt": 0.8181818181818182,
+   "rejected_by_verify": 2,
+   "yield_frac": 0.8,
+   "records_complete": true,
+   "tapes": [
+    {
+     "name": "100000.npz",
+     "ic_uid": 232,
+     "n": 123,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100001.npz",
+     "ic_uid": 246,
+     "n": 121,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100002.npz",
+     "ic_uid": 254,
+     "n": 124,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100003.npz",
+     "ic_uid": 269,
+     "n": 106,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100004.npz",
+     "ic_uid": 280,
+     "n": 89,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100005.npz",
+     "ic_uid": 293,
+     "n": 122,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100006.npz",
+     "ic_uid": 302,
+     "n": 91,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100007.npz",
+     "ic_uid": 311,
+     "n": 112,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100008.npz",
+     "ic_uid": 325,
+     "n": 116,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100009.npz",
+     "ic_uid": 233,
+     "n": 104,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "100010.npz",
+     "ic_uid": 278,
+     "n": 161,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101003.npz",
+     "ic_uid": 247,
+     "n": 112,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101004.npz",
+     "ic_uid": 256,
+     "n": 113,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101005.npz",
+     "ic_uid": 273,
+     "n": 106,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101006.npz",
+     "ic_uid": 281,
+     "n": 126,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101007.npz",
+     "ic_uid": 295,
+     "n": 138,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101009.npz",
+     "ic_uid": 304,
+     "n": 89,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101010.npz",
+     "ic_uid": 315,
+     "n": 146,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101012.npz",
+     "ic_uid": 326,
+     "n": 100,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101013.npz",
+     "ic_uid": 259,
+     "n": 102,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "101014.npz",
+     "ic_uid": 301,
+     "n": 100,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102000.npz",
+     "ic_uid": 235,
+     "n": 116,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102001.npz",
+     "ic_uid": 248,
+     "n": 216,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102002.npz",
+     "ic_uid": 257,
+     "n": 145,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102003.npz",
+     "ic_uid": 274,
+     "n": 96,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102004.npz",
+     "ic_uid": 283,
+     "n": 146,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102005.npz",
+     "ic_uid": 297,
+     "n": 120,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102006.npz",
+     "ic_uid": 305,
+     "n": 57,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102007.npz",
+     "ic_uid": 316,
+     "n": 184,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102009.npz",
+     "ic_uid": 327,
+     "n": 134,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102010.npz",
+     "ic_uid": 262,
+     "n": 79,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "102011.npz",
+     "ic_uid": 319,
+     "n": 97,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103000.npz",
+     "ic_uid": 242,
+     "n": 233,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103001.npz",
+     "ic_uid": 250,
+     "n": 119,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103003.npz",
+     "ic_uid": 258,
+     "n": 153,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103005.npz",
+     "ic_uid": 276,
+     "n": 103,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103006.npz",
+     "ic_uid": 284,
+     "n": 72,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103008.npz",
+     "ic_uid": 298,
+     "n": 135,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103009.npz",
+     "ic_uid": 306,
+     "n": 140,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103011.npz",
+     "ic_uid": 317,
+     "n": 99,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103012.npz",
+     "ic_uid": 328,
+     "n": 146,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103014.npz",
+     "ic_uid": 266,
+     "n": 113,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "103015.npz",
+     "ic_uid": 321,
+     "n": 142,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104000.npz",
+     "ic_uid": 243,
+     "n": 95,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104001.npz",
+     "ic_uid": 251,
+     "n": 152,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104002.npz",
+     "ic_uid": 263,
+     "n": 110,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104003.npz",
+     "ic_uid": 277,
+     "n": 99,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104004.npz",
+     "ic_uid": 286,
+     "n": 113,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104006.npz",
+     "ic_uid": 299,
+     "n": 152,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104007.npz",
+     "ic_uid": 308,
+     "n": 97,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104011.npz",
+     "ic_uid": 330,
+     "n": 152,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104013.npz",
+     "ic_uid": 267,
+     "n": 111,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "104014.npz",
+     "ic_uid": 329,
+     "n": 91,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105000.npz",
+     "ic_uid": 245,
+     "n": 232,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105001.npz",
+     "ic_uid": 252,
+     "n": 123,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105002.npz",
+     "ic_uid": 265,
+     "n": 162,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105003.npz",
+     "ic_uid": 279,
+     "n": 162,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105004.npz",
+     "ic_uid": 287,
+     "n": 88,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105005.npz",
+     "ic_uid": 300,
+     "n": 121,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105006.npz",
+     "ic_uid": 309,
+     "n": 194,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105007.npz",
+     "ic_uid": 320,
+     "n": 71,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105008.npz",
+     "ic_uid": 335,
+     "n": 209,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105009.npz",
+     "ic_uid": 275,
+     "n": 136,
+     "label": "success",
+     "end_reason": "terminated"
+    },
+    {
+     "name": "105010.npz",
+     "ic_uid": 333,
+     "n": 105,
+     "label": "success",
+     "end_reason": "terminated"
+    }
+   ],
+   "content_sha256": "c33a4e2e817aa14173d999b09bb236bdab3ceb2848dfc639fa8a0209a52c9351",
+   "contract": "v1",
+   "recorder": "record_demos.py v1",
+   "records": [
+    {
+     "ic_uid": 232,
+     "ic_can_xy": [
+      0.4776,
+      0.1056
+     ],
+     "outcome": "picked",
+     "decisions": 123,
+     "sim_steps": 490,
+     "seconds": 22.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100000,
+     "file": "baselines/demos_v1/dDP/100000.npz",
+     "label": "success",
+     "n": 123
+    },
+    {
+     "ic_uid": 233,
+     "ic_can_xy": [
+      0.4667,
+      -0.0295
+     ],
+     "outcome": "picked",
+     "decisions": 104,
+     "sim_steps": 413,
+     "seconds": 16.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100009,
+     "file": "baselines/demos_v1/dDP/100009.npz",
+     "label": "success",
+     "n": 104
+    },
+    {
+     "ic_uid": 234,
+     "ic_can_xy": [
+      0.4351,
+      -0.1741
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 2.3,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "rollout": 101000,
+     "file": "baselines/demos_v1/dDP_fails/101000.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 234,
+     "ic_can_xy": [
+      0.4351,
+      -0.1741
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 0.9,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "rollout": 101001,
+     "file": "baselines/demos_v1/dDP_fails/101001.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 234,
+     "ic_can_xy": [
+      0.4351,
+      -0.1741
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 0.9,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 2,
+     "rollout": 101002,
+     "file": "baselines/demos_v1/dDP_fails/101002.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 235,
+     "ic_can_xy": [
+      0.4575,
+      0.0783
+     ],
+     "outcome": "picked",
+     "decisions": 116,
+     "sim_steps": 461,
+     "seconds": 29.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102000,
+     "file": "baselines/demos_v1/dDP/102000.npz",
+     "label": "success",
+     "n": 116
+    },
+    {
+     "ic_uid": 242,
+     "ic_can_xy": [
+      0.4926,
+      0.1142
+     ],
+     "outcome": "picked",
+     "decisions": 233,
+     "sim_steps": 929,
+     "seconds": 36.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103000,
+     "file": "baselines/demos_v1/dDP/103000.npz",
+     "label": "success",
+     "n": 233
+    },
+    {
+     "ic_uid": 243,
+     "ic_can_xy": [
+      0.4524,
+      -0.037
+     ],
+     "outcome": "picked",
+     "decisions": 95,
+     "sim_steps": 378,
+     "seconds": 16.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104000,
+     "file": "baselines/demos_v1/dDP/104000.npz",
+     "label": "success",
+     "n": 95
+    },
+    {
+     "ic_uid": 245,
+     "ic_can_xy": [
+      0.4976,
+      0.1103
+     ],
+     "outcome": "picked",
+     "decisions": 232,
+     "sim_steps": 928,
+     "seconds": 37.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105000,
+     "file": "baselines/demos_v1/dDP/105000.npz",
+     "label": "success",
+     "n": 232
+    },
+    {
+     "ic_uid": 246,
+     "ic_can_xy": [
+      0.4381,
+      -0.05
+     ],
+     "outcome": "picked",
+     "decisions": 121,
+     "sim_steps": 483,
+     "seconds": 19.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100001,
+     "file": "baselines/demos_v1/dDP/100001.npz",
+     "label": "success",
+     "n": 121
+    },
+    {
+     "ic_uid": 247,
+     "ic_can_xy": [
+      0.4822,
+      -0.1827
+     ],
+     "outcome": "picked",
+     "decisions": 112,
+     "sim_steps": 446,
+     "seconds": 27.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101003,
+     "file": "baselines/demos_v1/dDP/101003.npz",
+     "label": "success",
+     "n": 112
+    },
+    {
+     "ic_uid": 248,
+     "ic_can_xy": [
+      0.4381,
+      0.1
+     ],
+     "outcome": "picked",
+     "decisions": 216,
+     "sim_steps": 864,
+     "seconds": 50.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102001,
+     "file": "baselines/demos_v1/dDP/102001.npz",
+     "label": "success",
+     "n": 216
+    },
+    {
+     "ic_uid": 250,
+     "ic_can_xy": [
+      0.4584,
+      -0.1691
+     ],
+     "outcome": "picked",
+     "decisions": 119,
+     "sim_steps": 476,
+     "seconds": 18.1,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103001,
+     "file": "baselines/demos_v1/dDP/103001.npz",
+     "label": "success",
+     "n": 119
+    },
+    {
+     "ic_uid": 251,
+     "ic_can_xy": [
+      0.4728,
+      0.1039
+     ],
+     "outcome": "picked",
+     "decisions": 152,
+     "sim_steps": 607,
+     "seconds": 24.5,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104001,
+     "file": "baselines/demos_v1/dDP/104001.npz",
+     "label": "success",
+     "n": 152
+    },
+    {
+     "ic_uid": 252,
+     "ic_can_xy": [
+      0.4865,
+      -0.0368
+     ],
+     "outcome": "picked",
+     "decisions": 123,
+     "sim_steps": 492,
+     "seconds": 19.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105001,
+     "file": "baselines/demos_v1/dDP/105001.npz",
+     "label": "success",
+     "n": 123
+    },
+    {
+     "ic_uid": 254,
+     "ic_can_xy": [
+      0.5134,
+      0.1181
+     ],
+     "outcome": "picked",
+     "decisions": 124,
+     "sim_steps": 494,
+     "seconds": 20.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100002,
+     "file": "baselines/demos_v1/dDP/100002.npz",
+     "label": "success",
+     "n": 124
+    },
+    {
+     "ic_uid": 256,
+     "ic_can_xy": [
+      0.4381,
+      -0.2
+     ],
+     "outcome": "picked",
+     "decisions": 113,
+     "sim_steps": 449,
+     "seconds": 28.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101004,
+     "file": "baselines/demos_v1/dDP/101004.npz",
+     "label": "success",
+     "n": 113
+    },
+    {
+     "ic_uid": 257,
+     "ic_can_xy": [
+      0.4796,
+      0.0963
+     ],
+     "outcome": "picked",
+     "decisions": 145,
+     "sim_steps": 580,
+     "seconds": 34.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102002,
+     "file": "baselines/demos_v1/dDP/102002.npz",
+     "label": "success",
+     "n": 145
+    },
+    {
+     "ic_uid": 258,
+     "ic_can_xy": [
+      0.4332,
+      -0.019
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 51.8,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 103002,
+     "file": "baselines/demos_v1/dDP_fails/103002.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 258,
+     "ic_can_xy": [
+      0.4332,
+      -0.019
+     ],
+     "outcome": "picked",
+     "decisions": 153,
+     "sim_steps": 610,
+     "seconds": 24.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 103003,
+     "file": "baselines/demos_v1/dDP/103003.npz",
+     "label": "success",
+     "n": 153
+    },
+    {
+     "ic_uid": 259,
+     "ic_can_xy": [
+      0.4664,
+      -0.1595
+     ],
+     "outcome": "picked",
+     "decisions": 102,
+     "sim_steps": 406,
+     "seconds": 25.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101013,
+     "file": "baselines/demos_v1/dDP/101013.npz",
+     "label": "success",
+     "n": 102
+    },
+    {
+     "ic_uid": 262,
+     "ic_can_xy": [
+      0.4575,
+      -0.0338
+     ],
+     "outcome": "picked",
+     "decisions": 79,
+     "sim_steps": 316,
+     "seconds": 18.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102010,
+     "file": "baselines/demos_v1/dDP/102010.npz",
+     "label": "success",
+     "n": 79
+    },
+    {
+     "ic_uid": 263,
+     "ic_can_xy": [
+      0.4396,
+      -0.1976
+     ],
+     "outcome": "picked",
+     "decisions": 110,
+     "sim_steps": 438,
+     "seconds": 17.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104002,
+     "file": "baselines/demos_v1/dDP/104002.npz",
+     "label": "success",
+     "n": 110
+    },
+    {
+     "ic_uid": 265,
+     "ic_can_xy": [
+      0.4676,
+      0.1173
+     ],
+     "outcome": "picked",
+     "decisions": 162,
+     "sim_steps": 646,
+     "seconds": 25.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105002,
+     "file": "baselines/demos_v1/dDP/105002.npz",
+     "label": "success",
+     "n": 162
+    },
+    {
+     "ic_uid": 266,
+     "ic_can_xy": [
+      0.4656,
+      -0.0156
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 46.6,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 103013,
+     "file": "baselines/demos_v1/dDP_fails/103013.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 266,
+     "ic_can_xy": [
+      0.4656,
+      -0.0156
+     ],
+     "outcome": "picked",
+     "decisions": 113,
+     "sim_steps": 451,
+     "seconds": 18.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 103014,
+     "file": "baselines/demos_v1/dDP/103014.npz",
+     "label": "success",
+     "n": 113
+    },
+    {
+     "ic_uid": 267,
+     "ic_can_xy": [
+      0.4431,
+      -0.1789
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 47.4,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 104012,
+     "file": "baselines/demos_v1/dDP_fails/104012.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 267,
+     "ic_can_xy": [
+      0.4431,
+      -0.1789
+     ],
+     "outcome": "picked",
+     "decisions": 111,
+     "sim_steps": 442,
+     "seconds": 17.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 104013,
+     "file": "baselines/demos_v1/dDP/104013.npz",
+     "label": "success",
+     "n": 111
+    },
+    {
+     "ic_uid": 269,
+     "ic_can_xy": [
+      0.4381,
+      0.1
+     ],
+     "outcome": "picked",
+     "decisions": 106,
+     "sim_steps": 424,
+     "seconds": 17.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100003,
+     "file": "baselines/demos_v1/dDP/100003.npz",
+     "label": "success",
+     "n": 106
+    },
+    {
+     "ic_uid": 273,
+     "ic_can_xy": [
+      0.4782,
+      0.0982
+     ],
+     "outcome": "picked",
+     "decisions": 106,
+     "sim_steps": 422,
+     "seconds": 27.5,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101005,
+     "file": "baselines/demos_v1/dDP/101005.npz",
+     "label": "success",
+     "n": 106
+    },
+    {
+     "ic_uid": 274,
+     "ic_can_xy": [
+      0.4696,
+      -0.0426
+     ],
+     "outcome": "picked",
+     "decisions": 96,
+     "sim_steps": 382,
+     "seconds": 22.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102003,
+     "file": "baselines/demos_v1/dDP/102003.npz",
+     "label": "success",
+     "n": 96
+    },
+    {
+     "ic_uid": 275,
+     "ic_can_xy": [
+      0.4498,
+      -0.1705
+     ],
+     "outcome": "picked",
+     "decisions": 136,
+     "sim_steps": 542,
+     "seconds": 20.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105009,
+     "file": "baselines/demos_v1/dDP/105009.npz",
+     "label": "success",
+     "n": 136
+    },
+    {
+     "ic_uid": 276,
+     "ic_can_xy": [
+      0.4684,
+      0.1412
+     ],
+     "outcome": "verify_failed",
+     "decisions": 126,
+     "sim_steps": 504,
+     "seconds": 19.9,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "fail",
+     "rollout": 103004,
+     "file": "baselines/demos_v1/dDP_fails/103004.npz",
+     "label": "success",
+     "n": 126
+    },
+    {
+     "ic_uid": 276,
+     "ic_can_xy": [
+      0.4684,
+      0.1412
+     ],
+     "outcome": "picked",
+     "decisions": 103,
+     "sim_steps": 409,
+     "seconds": 16.1,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 103005,
+     "file": "baselines/demos_v1/dDP/103005.npz",
+     "label": "success",
+     "n": 103
+    },
+    {
+     "ic_uid": 277,
+     "ic_can_xy": [
+      0.476,
+      0.0038
+     ],
+     "outcome": "picked",
+     "decisions": 99,
+     "sim_steps": 393,
+     "seconds": 16.1,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104003,
+     "file": "baselines/demos_v1/dDP/104003.npz",
+     "label": "success",
+     "n": 99
+    },
+    {
+     "ic_uid": 278,
+     "ic_can_xy": [
+      0.4455,
+      -0.1746
+     ],
+     "outcome": "picked",
+     "decisions": 161,
+     "sim_steps": 643,
+     "seconds": 25.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100010,
+     "file": "baselines/demos_v1/dDP/100010.npz",
+     "label": "success",
+     "n": 161
+    },
+    {
+     "ic_uid": 279,
+     "ic_can_xy": [
+      0.4753,
+      0.1273
+     ],
+     "outcome": "picked",
+     "decisions": 162,
+     "sim_steps": 645,
+     "seconds": 25.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105003,
+     "file": "baselines/demos_v1/dDP/105003.npz",
+     "label": "success",
+     "n": 162
+    },
+    {
+     "ic_uid": 280,
+     "ic_can_xy": [
+      0.4467,
+      -0.0241
+     ],
+     "outcome": "picked",
+     "decisions": 89,
+     "sim_steps": 355,
+     "seconds": 14.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100004,
+     "file": "baselines/demos_v1/dDP/100004.npz",
+     "label": "success",
+     "n": 89
+    },
+    {
+     "ic_uid": 281,
+     "ic_can_xy": [
+      0.4526,
+      -0.163
+     ],
+     "outcome": "picked",
+     "decisions": 126,
+     "sim_steps": 504,
+     "seconds": 31.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101006,
+     "file": "baselines/demos_v1/dDP/101006.npz",
+     "label": "success",
+     "n": 126
+    },
+    {
+     "ic_uid": 283,
+     "ic_can_xy": [
+      0.4564,
+      0.1237
+     ],
+     "outcome": "picked",
+     "decisions": 146,
+     "sim_steps": 582,
+     "seconds": 34.3,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102004,
+     "file": "baselines/demos_v1/dDP/102004.npz",
+     "label": "success",
+     "n": 146
+    },
+    {
+     "ic_uid": 284,
+     "ic_can_xy": [
+      0.4475,
+      -0.0086
+     ],
+     "outcome": "picked",
+     "decisions": 72,
+     "sim_steps": 285,
+     "seconds": 11.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103006,
+     "file": "baselines/demos_v1/dDP/103006.npz",
+     "label": "success",
+     "n": 72
+    },
+    {
+     "ic_uid": 286,
+     "ic_can_xy": [
+      0.4769,
+      -0.1013
+     ],
+     "outcome": "picked",
+     "decisions": 113,
+     "sim_steps": 452,
+     "seconds": 18.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104004,
+     "file": "baselines/demos_v1/dDP/104004.npz",
+     "label": "success",
+     "n": 113
+    },
+    {
+     "ic_uid": 287,
+     "ic_can_xy": [
+      0.494,
+      -0.0193
+     ],
+     "outcome": "picked",
+     "decisions": 88,
+     "sim_steps": 350,
+     "seconds": 13.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105004,
+     "file": "baselines/demos_v1/dDP/105004.npz",
+     "label": "success",
+     "n": 88
+    },
+    {
+     "ic_uid": 293,
+     "ic_can_xy": [
+      0.4576,
+      0.0861
+     ],
+     "outcome": "picked",
+     "decisions": 122,
+     "sim_steps": 485,
+     "seconds": 19.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100005,
+     "file": "baselines/demos_v1/dDP/100005.npz",
+     "label": "success",
+     "n": 122
+    },
+    {
+     "ic_uid": 295,
+     "ic_can_xy": [
+      0.4381,
+      -0.2
+     ],
+     "outcome": "picked",
+     "decisions": 138,
+     "sim_steps": 549,
+     "seconds": 33.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101007,
+     "file": "baselines/demos_v1/dDP/101007.npz",
+     "label": "success",
+     "n": 138
+    },
+    {
+     "ic_uid": 297,
+     "ic_can_xy": [
+      0.487,
+      0.0999
+     ],
+     "outcome": "picked",
+     "decisions": 120,
+     "sim_steps": 480,
+     "seconds": 27.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102005,
+     "file": "baselines/demos_v1/dDP/102005.npz",
+     "label": "success",
+     "n": 120
+    },
+    {
+     "ic_uid": 298,
+     "ic_can_xy": [
+      0.4761,
+      -0.0412
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 47.7,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 103007,
+     "file": "baselines/demos_v1/dDP_fails/103007.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 298,
+     "ic_can_xy": [
+      0.4761,
+      -0.0412
+     ],
+     "outcome": "picked",
+     "decisions": 135,
+     "sim_steps": 539,
+     "seconds": 21.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 103008,
+     "file": "baselines/demos_v1/dDP/103008.npz",
+     "label": "success",
+     "n": 135
+    },
+    {
+     "ic_uid": 299,
+     "ic_can_xy": [
+      0.4252,
+      -0.1985
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 47.6,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 104005,
+     "file": "baselines/demos_v1/dDP_fails/104005.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 299,
+     "ic_can_xy": [
+      0.4252,
+      -0.1985
+     ],
+     "outcome": "picked",
+     "decisions": 152,
+     "sim_steps": 606,
+     "seconds": 24.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 104006,
+     "file": "baselines/demos_v1/dDP/104006.npz",
+     "label": "success",
+     "n": 152
+    },
+    {
+     "ic_uid": 300,
+     "ic_can_xy": [
+      0.4332,
+      -0.1738
+     ],
+     "outcome": "picked",
+     "decisions": 121,
+     "sim_steps": 483,
+     "seconds": 19.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105005,
+     "file": "baselines/demos_v1/dDP/105005.npz",
+     "label": "success",
+     "n": 121
+    },
+    {
+     "ic_uid": 301,
+     "ic_can_xy": [
+      0.4835,
+      0.0796
+     ],
+     "outcome": "picked",
+     "decisions": 100,
+     "sim_steps": 400,
+     "seconds": 25.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101014,
+     "file": "baselines/demos_v1/dDP/101014.npz",
+     "label": "success",
+     "n": 100
+    },
+    {
+     "ic_uid": 302,
+     "ic_can_xy": [
+      0.4827,
+      -0.051
+     ],
+     "outcome": "picked",
+     "decisions": 91,
+     "sim_steps": 363,
+     "seconds": 14.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100006,
+     "file": "baselines/demos_v1/dDP/100006.npz",
+     "label": "success",
+     "n": 91
+    },
+    {
+     "ic_uid": 304,
+     "ic_can_xy": [
+      0.4658,
+      0.1336
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 75.2,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 101008,
+     "file": "baselines/demos_v1/dDP_fails/101008.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 304,
+     "ic_can_xy": [
+      0.4658,
+      0.1336
+     ],
+     "outcome": "picked",
+     "decisions": 89,
+     "sim_steps": 354,
+     "seconds": 23.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 101009,
+     "file": "baselines/demos_v1/dDP/101009.npz",
+     "label": "success",
+     "n": 89
+    },
+    {
+     "ic_uid": 305,
+     "ic_can_xy": [
+      0.452,
+      -0.0309
+     ],
+     "outcome": "picked",
+     "decisions": 57,
+     "sim_steps": 225,
+     "seconds": 13.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102006,
+     "file": "baselines/demos_v1/dDP/102006.npz",
+     "label": "success",
+     "n": 57
+    },
+    {
+     "ic_uid": 306,
+     "ic_can_xy": [
+      0.4327,
+      -0.1859
+     ],
+     "outcome": "picked",
+     "decisions": 140,
+     "sim_steps": 557,
+     "seconds": 21.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103009,
+     "file": "baselines/demos_v1/dDP/103009.npz",
+     "label": "success",
+     "n": 140
+    },
+    {
+     "ic_uid": 308,
+     "ic_can_xy": [
+      0.4841,
+      0.0833
+     ],
+     "outcome": "picked",
+     "decisions": 97,
+     "sim_steps": 385,
+     "seconds": 16.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104007,
+     "file": "baselines/demos_v1/dDP/104007.npz",
+     "label": "success",
+     "n": 97
+    },
+    {
+     "ic_uid": 309,
+     "ic_can_xy": [
+      0.4846,
+      -0.0305
+     ],
+     "outcome": "picked",
+     "decisions": 194,
+     "sim_steps": 773,
+     "seconds": 30.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105006,
+     "file": "baselines/demos_v1/dDP/105006.npz",
+     "label": "success",
+     "n": 194
+    },
+    {
+     "ic_uid": 311,
+     "ic_can_xy": [
+      0.445,
+      -0.1877
+     ],
+     "outcome": "picked",
+     "decisions": 112,
+     "sim_steps": 448,
+     "seconds": 17.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100007,
+     "file": "baselines/demos_v1/dDP/100007.npz",
+     "label": "success",
+     "n": 112
+    },
+    {
+     "ic_uid": 315,
+     "ic_can_xy": [
+      0.4997,
+      0.1272
+     ],
+     "outcome": "picked",
+     "decisions": 146,
+     "sim_steps": 582,
+     "seconds": 37.2,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 101010,
+     "file": "baselines/demos_v1/dDP/101010.npz",
+     "label": "success",
+     "n": 146
+    },
+    {
+     "ic_uid": 316,
+     "ic_can_xy": [
+      0.4588,
+      0.0622
+     ],
+     "outcome": "picked",
+     "decisions": 184,
+     "sim_steps": 736,
+     "seconds": 42.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102007,
+     "file": "baselines/demos_v1/dDP/102007.npz",
+     "label": "success",
+     "n": 184
+    },
+    {
+     "ic_uid": 317,
+     "ic_can_xy": [
+      0.4478,
+      -0.0308
+     ],
+     "outcome": "verify_failed",
+     "decisions": 85,
+     "sim_steps": 340,
+     "seconds": 13.2,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "fail",
+     "rollout": 103010,
+     "file": "baselines/demos_v1/dDP_fails/103010.npz",
+     "label": "success",
+     "n": 85
+    },
+    {
+     "ic_uid": 317,
+     "ic_can_xy": [
+      0.4478,
+      -0.0308
+     ],
+     "outcome": "picked",
+     "decisions": 99,
+     "sim_steps": 395,
+     "seconds": 15.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 103011,
+     "file": "baselines/demos_v1/dDP/103011.npz",
+     "label": "success",
+     "n": 99
+    },
+    {
+     "ic_uid": 318,
+     "ic_can_xy": [
+      0.4434,
+      -0.1801
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 0.5,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "rollout": 104008,
+     "file": "baselines/demos_v1/dDP_fails/104008.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 318,
+     "ic_can_xy": [
+      0.4434,
+      -0.1801
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 0.5,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "rollout": 104009,
+     "file": "baselines/demos_v1/dDP_fails/104009.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 318,
+     "ic_can_xy": [
+      0.4434,
+      -0.1801
+     ],
+     "outcome": "tipped",
+     "decisions": 1,
+     "sim_steps": 1,
+     "seconds": 0.5,
+     "kept": false,
+     "end_reason": "terminated",
+     "attempt": 2,
+     "rollout": 104010,
+     "file": "baselines/demos_v1/dDP_fails/104010.npz",
+     "label": "fail",
+     "n": 1
+    },
+    {
+     "ic_uid": 319,
+     "ic_can_xy": [
+      0.4836,
+      0.1067
+     ],
+     "outcome": "picked",
+     "decisions": 97,
+     "sim_steps": 388,
+     "seconds": 22.9,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 102011,
+     "file": "baselines/demos_v1/dDP/102011.npz",
+     "label": "success",
+     "n": 97
+    },
+    {
+     "ic_uid": 320,
+     "ic_can_xy": [
+      0.4592,
+      0.1005
+     ],
+     "outcome": "picked",
+     "decisions": 71,
+     "sim_steps": 281,
+     "seconds": 11.5,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105007,
+     "file": "baselines/demos_v1/dDP/105007.npz",
+     "label": "success",
+     "n": 71
+    },
+    {
+     "ic_uid": 321,
+     "ic_can_xy": [
+      0.4632,
+      -0.0239
+     ],
+     "outcome": "picked",
+     "decisions": 142,
+     "sim_steps": 566,
+     "seconds": 22.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103015,
+     "file": "baselines/demos_v1/dDP/103015.npz",
+     "label": "success",
+     "n": 142
+    },
+    {
+     "ic_uid": 325,
+     "ic_can_xy": [
+      0.4905,
+      0.1318
+     ],
+     "outcome": "picked",
+     "decisions": 116,
+     "sim_steps": 462,
+     "seconds": 18.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 100008,
+     "file": "baselines/demos_v1/dDP/100008.npz",
+     "label": "success",
+     "n": 116
+    },
+    {
+     "ic_uid": 326,
+     "ic_can_xy": [
+      0.4818,
+      -0.0309
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 77.3,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 101011,
+     "file": "baselines/demos_v1/dDP_fails/101011.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 326,
+     "ic_can_xy": [
+      0.4818,
+      -0.0309
+     ],
+     "outcome": "picked",
+     "decisions": 100,
+     "sim_steps": 400,
+     "seconds": 25.7,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 101012,
+     "file": "baselines/demos_v1/dDP/101012.npz",
+     "label": "success",
+     "n": 100
+    },
+    {
+     "ic_uid": 327,
+     "ic_can_xy": [
+      0.4349,
+      -0.1467
+     ],
+     "outcome": "env_truncated",
+     "decisions": 300,
+     "sim_steps": 1200,
+     "seconds": 70.1,
+     "kept": false,
+     "end_reason": "env_truncated",
+     "attempt": 0,
+     "rollout": 102008,
+     "file": "baselines/demos_v1/dDP_fails/102008.npz",
+     "label": "fail",
+     "n": 300
+    },
+    {
+     "ic_uid": 327,
+     "ic_can_xy": [
+      0.4349,
+      -0.1467
+     ],
+     "outcome": "picked",
+     "decisions": 134,
+     "sim_steps": 534,
+     "seconds": 30.6,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 1,
+     "verify": "pass",
+     "rollout": 102009,
+     "file": "baselines/demos_v1/dDP/102009.npz",
+     "label": "success",
+     "n": 134
+    },
+    {
+     "ic_uid": 328,
+     "ic_can_xy": [
+      0.454,
+      0.1227
+     ],
+     "outcome": "picked",
+     "decisions": 146,
+     "sim_steps": 581,
+     "seconds": 23.1,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 103012,
+     "file": "baselines/demos_v1/dDP/103012.npz",
+     "label": "success",
+     "n": 146
+    },
+    {
+     "ic_uid": 329,
+     "ic_can_xy": [
+      0.4578,
+      -0.022
+     ],
+     "outcome": "picked",
+     "decisions": 91,
+     "sim_steps": 363,
+     "seconds": 14.8,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104014,
+     "file": "baselines/demos_v1/dDP/104014.npz",
+     "label": "success",
+     "n": 91
+    },
+    {
+     "ic_uid": 330,
+     "ic_can_xy": [
+      0.4336,
+      -0.1867
+     ],
+     "outcome": "picked",
+     "decisions": 152,
+     "sim_steps": 607,
+     "seconds": 24.1,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 104011,
+     "file": "baselines/demos_v1/dDP/104011.npz",
+     "label": "success",
+     "n": 152
+    },
+    {
+     "ic_uid": 333,
+     "ic_can_xy": [
+      0.4585,
+      -0.1716
+     ],
+     "outcome": "picked",
+     "decisions": 105,
+     "sim_steps": 419,
+     "seconds": 16.4,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105010,
+     "file": "baselines/demos_v1/dDP/105010.npz",
+     "label": "success",
+     "n": 105
+    },
+    {
+     "ic_uid": 335,
+     "ic_can_xy": [
+      0.4524,
+      0.1313
+     ],
+     "outcome": "picked",
+     "decisions": 209,
+     "sim_steps": 834,
+     "seconds": 33.0,
+     "kept": true,
+     "end_reason": "terminated",
+     "attempt": 0,
+     "verify": "pass",
+     "rollout": 105008,
+     "file": "baselines/demos_v1/dDP/105008.npz",
+     "label": "success",
+     "n": 209
+    }
+   ]
+  }
+ },
+ "seed": 0,
+ "git": "ca05472698b29d72ca2cbd045a2f202fa49d74df",
+ "builder": "baselines/make_matched_sets.py",
+ "contract": "v1",
+ "matching": {
+  "common_capacity": 56,
+  "N": 56,
+  "uids_total": 64,
+  "unmatched": null,
+  "ic_multiset_identical": true
+ },
+ "role": "primary success-only"
+}
