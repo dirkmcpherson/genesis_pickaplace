@@ -354,9 +354,18 @@ class HumanFollower(Adapter):
     generalized to delta_ref=target / repeat 4 (see module docstring)."""
     name = 'human'
 
-    def __init__(self, tol=0.025, max_dwell=8, dilation_cap=3.0, settle=25):
+    def __init__(self, tol=0.025, max_dwell=8, dilation_cap=3.0, settle=25, arrival='meas'):
         self.tol = float(tol); self.max_dwell = int(max_dwell)
         self.dilation_cap = float(dilation_cap); self.settle = int(settle)
+        # arrival test for advancing waypoint k (paper/real2sim_follower_lab_2026-08-23.md §3):
+        #   'meas'   : ||q_meas - ref_k||_inf < tol            (the original test; ref_k = the pose the
+        #              human's tape ARRIVED at after cmd_k -- a sim arm that lags its command waits
+        #              for a pose it has already effectively passed -> dwell stall -> jump)
+        #   'either' : 'meas' OR ||target_env - cmd_k||_inf < tol (the env's integrated target has
+        #              reached the human's COMMAND) -- local lab: 49 -> 55/66 kept, zero dwell
+        #              stalls, same fidelity to the human path, lower dilation
+        assert arrival in ('meas', 'either'), arrival
+        self.arrival = arrival
         self.src = None
 
     def load(self, path):
@@ -396,9 +405,12 @@ class HumanFollower(Adapter):
         if self.j >= s['n']:
             return
         qn = np.asarray(obs[:6], np.float64)
+        tgt = np.asarray(env._dj_target, np.float64)
         adv = -1
         for k in range(self._jt, self.j - 1, -1):
             if float(np.max(np.abs(qn - s['ref'][k]))) < self.tol:
+                adv = k; break
+            if self.arrival == 'either' and float(np.max(np.abs(tgt - s['cmd'][k]))) < self.tol:
                 adv = k; break
         if adv >= 0:
             self.j = adv + 1; self.dwell = 0
@@ -411,7 +423,8 @@ class HumanFollower(Adapter):
         s = self.src
         return dict(src_uid=s['uid'], src_label=s['label'], src_stage=s['stage'], n_src_frames=int(s['n']),
                     waypoints_reached=int(min(self.j, s['n'])), dwell_stalls=int(self.stalls),
-                    dilation=round(self.decisions * REPEAT / max(1, s['n']), 3), settle_decisions=int(self.settling))
+                    dilation=round(self.decisions * REPEAT / max(1, s['n']), 3), settle_decisions=int(self.settling),
+                    arrival=self.arrival)
 
 
 class DPTeacher(Adapter):
@@ -595,6 +608,7 @@ def main():
     ap.add_argument('--verify', action='store_true', help='open-loop replay guard on every success')
     ap.add_argument('--no-images', action='store_true'); ap.add_argument('--no-sim-tape', action='store_true')
     ap.add_argument('--tol', type=float, default=0.025); ap.add_argument('--max-dwell', type=int, default=8)
+    ap.add_argument('--arrival', choices=['meas', 'either'], default='meas', help='human: waypoint arrival test (see HumanFollower); either = lab-recommended')
     ap.add_argument('--dilation-cap', type=float, default=3.0); ap.add_argument('--settle', type=int, default=25,
                     help='human: decisions to hold the last waypoint after exhaustion')
     ap.add_argument('--n-action-steps', type=int, default=None, help='dp: chunk replan interval override')
@@ -633,7 +647,7 @@ def main():
     if args.teacher == 'random':
         adapter = RandomTeacher(args.seed)
     elif args.teacher == 'human':
-        adapter = HumanFollower(args.tol, args.max_dwell, args.dilation_cap, args.settle)
+        adapter = HumanFollower(args.tol, args.max_dwell, args.dilation_cap, args.settle, arrival=args.arrival)
     elif args.teacher == 'dp':
         adapter = DPTeacher(args.checkpoint, args.mode, args.seed, args.n_action_steps,
                             rig_provider=(env.genv.rig_obs if not args.no_images else None))
