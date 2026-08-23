@@ -536,11 +536,26 @@ def merge(outdir):
             recs[(r.get('rollout'), r['ic_uid'], r.get('attempt', 0))] = r
     kept = [r for r in recs.values() if r['kept']]
     files = sorted(glob.glob(str(outdir / '*.npz')))
+    # n_kept is AUTHORITATIVE from disk (every npz in a success outdir is a kept tape; the
+    # sbatch manifest gate asserts n_kept == npz count); records may be incomplete if a
+    # shard manifest was lost -- say so rather than under-count
+    n_files = len(files)
+    records_complete = (len(kept) == n_files)
+    if not records_complete:
+        print(f'[merge] WARNING: {len(kept)} kept records in shard manifests vs {n_files} npz on disk '
+              f'-- records incomplete (lost shard manifest?); n_kept taken from disk')
+    # per-tape stamps from the npz themselves (always complete)
+    tapes = []
+    for f in files:
+        z = np.load(f, allow_pickle=True)
+        tapes.append(dict(name=pl.Path(f).name, ic_uid=int(z['ic_uid']), n=int(z['n']), label=str(z['label']),
+                          end_reason=str(z['end_reason']) if 'end_reason' in z.files else None))
     h = hashlib.sha256()
     for f in files:
         h.update(pl.Path(f).name.encode()); h.update(pl.Path(f).read_bytes())
     (outdir / 'manifest.json').write_text(json.dumps(dict(
-        configs=cfgs, n_rollouts=len(recs), n_kept=len(kept), files=len(files),
+        configs=cfgs, n_rollouts=len(recs), n_kept=n_files, n_kept_records=len(kept), files=n_files,
+        records_complete=records_complete, tapes=tapes,
         content_sha256=h.hexdigest(), contract=CONTRACT, recorder=RECORDER,
         records=sorted(recs.values(), key=lambda r: (r['ic_uid'], r.get('attempt', 0)))), indent=1))
     print(f'[merge] rollouts={len(recs)} kept={len(kept)} files={len(files)} sha={h.hexdigest()[:16]}')
@@ -711,7 +726,9 @@ def main():
                    yield_frac=round(n_kept / max(1, n_roll), 4), records=records,
                    content_sha256_success=_sha(out), content_sha256_fails=_sha(fails),
                    built=time.strftime('%Y-%m-%dT%H:%M:%S'))
-    name = 'manifest.json' if args.shard_n == 1 else f'manifest_shard{args.shard_idx}.json'
+    # shard manifests are named by shard AND rollout base so a second sharded run into the
+    # same outdir (e.g. the --ic-from-tape pass) cannot overwrite the first run's manifests
+    name = 'manifest.json' if args.shard_n == 1 else f'manifest_shard{args.shard_idx}_base{args.rollout_base}.json'
     (out / name).write_text(json.dumps(summary, indent=1, default=str))
     (fails / name).write_text(json.dumps(dict(summary, records=[r for r in records if not r.get('kept')]), indent=1, default=str))
     print(f'[done] rollouts={n_roll} kept={n_kept} fails={n_fail} verify_rejected={n_verify_rej} '
