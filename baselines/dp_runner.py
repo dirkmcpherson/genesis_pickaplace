@@ -42,8 +42,12 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None,
         policy.config.n_action_steps = int(n_action_steps)   # shorter replan interval
     policy.eval()
     policy.to(device)
+    # the saved processor pipeline pins the TRAINING device ('cuda'); override it with the
+    # runtime device exactly as lerobot_eval.py does, else a CPU-only process (recorder,
+    # fresh-process eval sweeps, harvests) dies in PolicyProcessorPipeline.from_pretrained
     pre, post = make_pre_post_processors(policy_cfg=policy.config,
-                                         pretrained_path=checkpoint)
+                                         pretrained_path=checkpoint,
+                                         preprocessor_overrides={'device_processor': {'device': str(device)}})
     proprio = policy.config.input_features['observation.state'].shape[0]
     cam_keys = sorted(k for k in policy.config.input_features
                       if k.startswith('observation.images.'))
