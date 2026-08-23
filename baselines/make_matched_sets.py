@@ -146,15 +146,27 @@ def write_set(name, tapes, out_root, extra, git, seed, source_paths):
     if os.path.exists(d):
         shutil.rmtree(d)
     os.makedirs(ep)
-    for t in sorted(tapes, key=lambda t: t['name']):
-        dst = os.path.join(ep, t['name'])
+    renamed = {}
+    for t in sorted(tapes, key=lambda t: (t['label'] != 'success', t['name'])):   # successes first keep their names
+        out_name = t['name']
+        if t['label'] != 'success':
+            # fail tapes in a fails arm: project convention = 5xxxxx stems (m1all_harvest); avoids the
+            # collision between two recorders that both number rollouts from 100000
+            base = 500000 + int(os.path.splitext(t['name'])[0]) % 100000
+            while os.path.exists(os.path.join(ep, f'{base:06d}.npz')):
+                base += 1
+            out_name = f'{base:06d}.npz'
+            if out_name != t['name']:
+                renamed[t['name']] = out_name
+        dst = os.path.join(ep, out_name)
         if os.path.exists(dst):
-            sys.exit(f'FATAL: filename collision in {name}: {t["name"]} (two sources share a rollout index?)')
+            sys.exit(f'FATAL: filename collision in {name}: {out_name} (two sources share a rollout index?)')
+        t = dict(t, name=out_name)
         try:
             os.link(t['path'], dst)
         except OSError:
             shutil.copy2(t['path'], dst)
-    names = sorted(t['name'] for t in tapes)
+    names = sorted(f for f in os.listdir(ep) if f.endswith('.npz'))
     open(os.path.join(d, 'episode_list.txt'), 'w').write('\n'.join(names) + '\n')
     sha = content_sha([os.path.join(ep, n) for n in names])
     hist = {}
@@ -169,7 +181,7 @@ def write_set(name, tapes, out_root, extra, git, seed, source_paths):
     man = dict(set=name, built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=len(tapes),
                n_success=sum(t['label'] == 'success' for t in tapes), n_fail=sum(t['label'] != 'success' for t in tapes),
                decisions_total=int(sum(t['n'] for t in tapes)), decisions_p50=float(np.median([t['n'] for t in tapes])),
-               n_kept=len(tapes), chosen=names, ic_uid_histogram=dict(sorted(hist.items())), content_sha256=sha,
+               n_kept=len(tapes), chosen=names, renamed_fail_tapes=renamed, ic_uid_histogram=dict(sorted(hist.items())), content_sha256=sha,
                sources=source_paths, source_manifests=srcman, seed=seed, git=git,
                builder='baselines/make_matched_sets.py', contract='v1', **extra)
     json.dump(man, open(os.path.join(d, 'manifest.json'), 'w'), indent=1)
