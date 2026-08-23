@@ -211,7 +211,13 @@ class Recorder:
         if ic.get('uid') is not None:
             obs, info = env.reset(options={'uid': int(ic['uid'])})
         else:
-            obs, info = env.reset_to({k: v for k, v in ic.items() if k != 'uid'})
+            kw = {k: ic[k] for k in ('can_pos', 'can_quat', 'goal_pos') if ic.get(k) is not None}
+            if kw.get('goal_pos') is None:
+                # the static goal every uid reset uses (genesis_can_env.reset, #27)
+                from replay_harness import STATIC_BOTTLE_POSITION
+                kw['goal_pos'] = (float(STATIC_BOTTLE_POSITION[0]), float(STATIC_BOTTLE_POSITION[1]),
+                                  float(env.genv.w['goal_start_z']))
+            obs, info = env.reset_to(kw)
         # tool offset is calibrated at the reset pose (HARDCODED_START) -- the pose
         # REF_TOOL_AT_START was measured at (genesis_can_env.reset does this only under
         # workspace_limit; FullTaskEnv._pick_phi relies on the lazy first call instead).
@@ -275,7 +281,7 @@ class Recorder:
             if truncated: end_reason = 'env_truncated'; break
             if t >= max_dec: end_reason = 'recorder_cap'; break
         if not T['states']:
-            return None, dict(ic_uid=int(ic.get('uid') or -1), outcome='empty', decisions=0, kept=False,
+            return None, dict(ic_uid=int(ic.get('ic_uid') or ic.get('uid') or -1), outcome='empty', decisions=0, kept=False,
                               seconds=round(time.time() - t0, 1))
         if end_reason != 'terminated':
             T['truncated'][-1] = True          # recorder-side end counts as truncation (bootstrap)
@@ -297,7 +303,7 @@ class Recorder:
         tape['label'] = 'success' if picked else 'fail'
         tape['stage'] = 'picked' if picked else 'none'
         outcome = 'picked' if picked else ('tipped' if tipped else end_reason)
-        rec = dict(ic_uid=int(ic.get('uid') if ic.get('uid') is not None else -1),
+        rec = dict(ic_uid=int(ic['ic_uid'] if ic.get('ic_uid') is not None else (ic.get('uid') if ic.get('uid') is not None else -1)),
                    ic_can_xy=[round(float(x), 4) for x in tape['states'][0, 8:10]],
                    outcome=outcome, decisions=int(tape['n']), sim_steps=int(env._t),
                    seconds=round(time.time() - t0, 1), kept=False, end_reason=end_reason)
@@ -555,6 +561,7 @@ def main():
     ap.add_argument('--uids-from', default='baselines/episodes_pick_phase_dppruned',
                     help='demo ICs: uid list from this dir (intersected with env.success_uids)')
     ap.add_argument('--uids', type=int, nargs='*', default=None)
+    ap.add_argument('--ic-from-tape', action='store_true', help='human: demos without a recovered placement are reset to the can pose recorded at frame 0 of their own tape (FK-seeded ICs); default = skip them')
     ap.add_argument('--attempts', type=int, default=1, help='rollouts per IC until a keep (>1 needs --mode sample)')
     ap.add_argument('--n', type=int, default=None, help='max rollouts total (default len(pool)*attempts)')
     ap.add_argument('--target-kept', type=int, default=None, help='stop after this many successes')
@@ -609,11 +616,25 @@ def main():
     # ---- IC plan
     if args.teacher == 'human':
         files = sorted(glob.glob(str(REPO / args.src / '*.npz')), key=lambda p: int(pl.Path(p).stem))
-        files = [f for f in files if int(pl.Path(f).stem) in set(env.success_uids)]
         if args.uids:
             want = set(int(u) for u in args.uids)
             files = [f for f in files if int(pl.Path(f).stem) in want]
-        plan = [dict(uid=int(pl.Path(f).stem), src=f) for f in files][args.shard_idx::args.shard_n]
+        solved = set(env.success_uids)
+        plan = []
+        for f in files:
+            u = int(pl.Path(f).stem)
+            if u in solved:
+                plan.append(dict(uid=u, src=f))
+            elif args.ic_from_tape:
+                # no recovered placement for this demo (FK-seeded at collection): reset to the
+                # IC the stride-1 tape itself was recorded from (can pose at frame 0, static goal)
+                s0 = np.load(f, allow_pickle=True)['states'][0]
+                plan.append(dict(uid=None, ic_uid=u, src=f,
+                                 can_pos=[float(v) for v in s0[8:11]], can_quat=[float(v) for v in s0[11:15]],
+                                 goal_pos=None))
+            else:
+                print(f'[ic] skip uid {u}: no placement (pass --ic-from-tape to reset to the tape\'s own frame-0 can pose)')
+        plan = plan[args.shard_idx::args.shard_n]
         attempts = 1
     elif args.ic_mode == 'demo':
         pool = uid_pool_from(args, env)[args.shard_idx::args.shard_n]
