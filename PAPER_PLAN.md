@@ -244,6 +244,27 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-23 (cluster session, assistant on pax020 via ssh; user decisions inline):
+  **FINAL-ROUND-ROBIN PREREQUISITES STARTED.** (1) dH re-recorded through the learners'
+  MDP with the contract-v1 recorder (`baselines/record_demos.py --teacher human`,
+  repeat 4, cap 0.025, tip rule, 1200 sim steps): **51/66 kept** (bar >=50). The 15
+  losses are deterministic (re-run byte-identical): 2 lying-can ICs (tip at decision 1),
+  1 knock-over, 5 human demos longer than the horizon (source tapes 1260-2530 frames),
+  7 where the human moved faster than the learners' cap (follower lags, dilation 1.1-3.0).
+  Kept dilation p50 1.04 (max 1.36) — the follower tracks the human in real time.
+  12 of the 66 have no recovered placement; `--ic-from-tape` resets to the tape's own
+  frame-0 can pose (10 of those 12 kept). (2) dR2D teacher: CHAMPION_1576820.pt is NOT on
+  the cluster; a PROVISIONAL dR2D set (64 tapes / 64 of 66 ICs) was recorded from the
+  round-robin dH-dense s51 BEST checkpoint (1.00 on sel at selection); becomes the teacher
+  of record (amendment) unless the champion is rsynced in time. (3) DP-r4 dH pilot (2
+  seeds) training on pax020 — its median seed becomes the dDP teacher per PREREG §3.1.
+  (4) USER PLAN: after this window, give a Fable an unlimited budget to improve the
+  real->sim translation of the human demos (the recorder's kept/dilation/frac-at-cap on
+  the pruned 66 is the scoreboard; baseline 51/66, 1.04, 5.5%); if fruitful, the whole
+  chain (recorder -> matched sets -> sbatch) reruns mechanically. Reading list for that
+  effort: paper/p1_delta_divergence_2026-08-13.md, paper/measured_ref_integration_2026-08-14.md,
+  baselines/rl/rerecord_delta_demos.py, CAN_STARTING_POSITION.md.
+
 - 2026-08-23 (user direction + assistant audit): **TIME-BASE STANDARDIZATION OF THE
   DEMO SETS — proposal, decision pending.** User: "we did action_repeat=4 to help the
   WM and RL algorithms, but it doesn't make sense to then give it DP demos that don't

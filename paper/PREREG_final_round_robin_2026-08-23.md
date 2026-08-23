@@ -235,3 +235,16 @@ dilation is reported; teacher circularity and competence; recipes tuned on dH; e
 has no tip termination; RLPD has no passing positive control; dv3 is last-in-queue and
 exploratory; single task, single simulator, N≈66; the 08-19 dDP_RLPD 0/6 is the
 motivation for the terminal guard and the recorder, not a result about model demos.
+
+---
+## Amendments (appended, dated; never edited in place)
+- **A1 (2026-08-23, pre-launch).** dH N = 51 of 66 (recorder: 15 human demos not executable inside
+  the MDP — 2 lying-can ICs, 1 knock-over, 5 over-horizon, 7 over-cap; deterministic). Reported as
+  a source property; no horizon stretch for the human adapter (§2 horizon held fixed).
+- **A2 (2026-08-23, pre-launch, conditional).** dR2D teacher = r2dreamer round-robin dH-dense s51
+  `BEST_selected.pt` (cluster) if CHAMPION_1576820.pt is not available before the matched sets are
+  built; same learner family, trained on the same human set, confirmed ~1.0 on sel. Logged in the
+  set manifest (teacher_ckpt) and in the census.
+- **A3 (2026-08-23).** `--ic-from-tape`: the 12 demos without a recovered placement reset to the can
+  pose recorded at frame 0 of their own tape; applied identically to all three sources so every
+  source records from the same 66 ICs.
