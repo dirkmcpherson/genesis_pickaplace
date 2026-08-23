@@ -244,6 +244,43 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-23 (user direction + assistant audit): **TIME-BASE STANDARDIZATION OF THE
+  DEMO SETS — proposal, decision pending.** User: "we did action_repeat=4 to help the
+  WM and RL algorithms, but it doesn't make sense to then give it DP demos that don't
+  have the action repeat." Audited state of record (round robin 08-19):
+  learners — RLPD action_repeat **1** (sbatch_rlpd.sh; the ar4/ar8 waves of 08-14 were
+  pre-T1 and are dead), DP stride 1 (30 Hz frames, 1200-step eval), r2dreamer **4**,
+  dv3 **4**. Tapes — dH: human 30 Hz joystick, stride 1; dDP: DP teacher acting at
+  stride 1 (m1all_harvest, 1200-step cap), stride-1 tape; dR2D: r2dreamer champion
+  acting at repeat 4, recorded per SIM step (stride-1 tape whose 4-frame windows are
+  the teacher's own decisions). Consumption — RLPD/DP take the stride-1 tapes as-is;
+  dv3 gets stride-4 windows via convert_genesis_demos_repeat.py (`*_msr_delta25_r4`);
+  r2dreamer downsamples the stride-1 `*_delta25` dirs at load by the same window rule.
+  So for the repeat-4 learners the stride-4 re-encoding is EXACT for dR2D by
+  construction, near-exact for dH, and lossy for dDP: census tool (new "Time-base"
+  table, analysis/characterize_demo_sets.py --stride 4, dev box 08-23): windows exactly
+  representable dDP 0.1% vs human-proxy 54%; command-vs-ramp deviation p50 0.25 cap
+  (6 mrad) vs 0.01 cap; windows with an intra-window direction reversal 94% vs 5%
+  (the DP teacher's absolute-target command flips sign on ~40% of consecutive frames
+  — diffusion jitter around a smooth measured path; the PD filters it, so the
+  measured-state consequence is small, but the (s, a_window, s') triples the WM learns
+  from are not the ramp the learner would execute). Conclusion: the model-demo arms
+  are NOT on a common time-base with their learners — dR2D is the only natively
+  repeat-4 model set; dDP is a stride-1 teacher's tape re-windowed. Options, cheapest
+  first: (A) re-harvest dDP with the SAME DP teacher held at repeat 4 (policy queried
+  once per 4 sim steps, target held) — needs a yield check first (the teacher was
+  trained on 30 Hz data; hold-4 changes its closed loop); (B) make DP a repeat-4
+  learner too (train on the stride-4 windowed human tapes, eval hold-4 at 300
+  decisions) and harvest dDP from THAT teacher — every learner and every tape on one
+  decision clock, dDP natively representable like dR2D; requires retraining the DP
+  rows and the dDP set; (C) keep the learners, report the time-base per (set, learner)
+  with the census table and treat dDP's re-windowing as a stated confound of the WM
+  human-vs-model contrast (on top of the fail-tape confound). Recommendation: B as
+  the paper's standard (one clock), with A as the immediate cluster test of whether
+  a hold-4 DP teacher still picks. RLPD stays stride 1 unless re-positively-controlled
+  at repeat 4. Numbers: scratchpad census_stride.md; to be re-run on the cluster
+  over all five sets (dR2D expected ~1.0 exact).
+
 - 2026-08-10 (night): ACTION-SPACE FIX STACK for the r2dreamer arm (user
   directive: "restrict the range of the env's diff_joint action space so it's
   not so different from the demonstrations"). Forensics on pick_delta_s0's

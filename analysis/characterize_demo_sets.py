@@ -125,6 +125,40 @@ def summarize_dreamer(name, eps, stamp):
                 stamp={k: stamp[k] for k in list(stamp)[:12]} if isinstance(stamp, dict) else None)
 
 
+def stride_stats(s, a, N, cap):
+    """Stride-N (action_repeat=N) re-encoding fidelity of a stride-1 tape.
+
+    Mirrors the window rules of train_sacfd_full.delta_encode_transitions_repeat /
+    dreamerv3-torch convert_genesis_demos_repeat.py: windows [k, k+N) aligned at frame 0;
+    prev = measured qpos at frame 0 for window 0, else the command before the window;
+    a_win = clip((C[end]-prev)/(N*cap)); grip = LAST frame's grip. A repeat-N learner that
+    executes a_win advances the target by a_win*cap on EVERY sim step, i.e. a LINEAR RAMP
+    prev -> prev + N*a_win*cap. 'dev' = max |recorded command - ramp| inside the window (rad):
+    0 = the tape IS a repeat-N tape (e.g. an r2dreamer-champion harvest); large = the
+    re-encoded (s, a_win, s') triple is not what the learner's MDP would produce from a_win.
+    """
+    C = a[:, J].astype(np.float64); G = a[:, GRIP]; n = len(C)
+    if n < 2: return None
+    n_tr = n - 1   # transitions (frame i -> i+1 under command C[i]); last frame's command has no successor
+    devs, overN, rev, gtog, exact = [], [], [], [], []
+    for k in range(0, n_tr, N):
+        end = min(k + N - 1, n_tr - 1); w = end - k + 1
+        prev = s[0, J].astype(np.float64) if k == 0 else C[k - 1]
+        net = C[end] - prev
+        a_win = np.clip(net / (w * cap), -1.0, 1.0)
+        ramp = prev[None, :] + (np.arange(1, w + 1)[:, None]) * a_win[None, :] * cap
+        dev = np.abs(C[k:end + 1] - ramp).max()
+        devs.append(dev); exact.append(dev < 1e-4)
+        overN.append(bool((np.abs(net) > w * cap + 1e-6).any()))
+        steps = np.diff(np.concatenate([prev[None, :], C[k:end + 1]]), axis=0)
+        rev.append(bool((((steps * net[None, :]) < 0) & (np.abs(steps) > 1e-4)).any()))   # a >0.1 mrad step against the window's net direction
+        gtog.append(bool((np.abs(G[k:end + 1] - G[end]) > 0.5).any()))
+    devs = np.asarray(devs)
+    return dict(n_win=len(devs), dev_p50=pct(devs, 50), dev_p99=pct(devs, 99), dev_max=float(devs.max()),
+                dev_cap_units_p50=pct(devs / cap, 50), exact=float(np.mean(exact)), over_cap_N=float(np.mean(overN)),
+                reversal=float(np.mean(rev)), grip_toggle=float(np.mean(gtog)))
+
+
 def per_tape(t, P):
     s, a = t['s'], t['a']; n = len(s)
     can = s[:, CAN]; tilt = tilt_deg(s[:, QUAT]); grip_cmd = a[:, GRIP]
@@ -157,7 +191,7 @@ def per_tape(t, P):
         ic=(round(float(can[0, 0]), 4), round(float(can[0, 1]), 4)), goal=(round(float(s[0, GOAL][0]), 3), round(float(s[0, GOAL][1]), 3)),
         grip_closed=float((grip_cmd < 0.5).mean()), grip_eff_mean=float(s[:, GRIP_EFF].mean()),
         path_len=path, mean_qdot=float(np.abs(np.diff(q, axis=0)).mean()) if n > 1 else 0.0,
-        images=t['images'])
+        images=t['images'], stride=stride_stats(s, a, P.stride, P.cap))
 
 
 def nn_dist(Q, R, scale, chunk=1500):
@@ -206,6 +240,19 @@ def summarize(name, tapes, rows, P, rng):
         path_len_succ_p50=pct([r['path_len'] for r in S], 50), mean_qdot=float(np.mean([r['mean_qdot'] for r in rows])),
         images=int(sum(r['images'] for r in rows)),
     )
+    # stride-N (action_repeat) re-encoding fidelity, window-weighted
+    st = [(r['stride'], r['pick'] >= 0) for r in rows if r.get('stride')]
+    if st:
+        def wavg(key, sel=None):
+            xs = [(d[key], d['n_win']) for d, ok in st if (sel is None or ok == sel)]
+            return float(np.average([x for x, _ in xs], weights=[w for _, w in xs])) if xs else float('nan')
+        out.update(stride_N=P.stride, stride_windows=int(sum(d['n_win'] for d, _ in st)),
+                   stride_exact=wavg('exact'), stride_exact_succ=wavg('exact', True), stride_exact_fail=wavg('exact', False),
+                   stride_dev_p50=pct([d['dev_p50'] for d, _ in st], 50), stride_dev_p99=pct([d['dev_p99'] for d, _ in st], 50),
+                   stride_dev_max=max(d['dev_max'] for d, _ in st), stride_dev_cap_p50=pct([d['dev_cap_units_p50'] for d, _ in st], 50),
+                   stride_over_cap=wavg('over_cap_N'), stride_over_cap_succ=wavg('over_cap_N', True), stride_over_cap_fail=wavg('over_cap_N', False),
+                   stride_reversal=wavg('reversal'), stride_reversal_succ=wavg('reversal', True), stride_reversal_fail=wavg('reversal', False),
+                   stride_grip_toggle=wavg('grip_toggle'))
     # within-set OOD-ness: fail frames vs success frames
     if S and F:
         succ = np.concatenate([t['s'][:, :15] for t, r in zip(tapes, rows) if r['pick'] >= 0])
@@ -254,6 +301,7 @@ def main():
     ap.add_argument('--cap', type=float, default=0.025); ap.add_argument('--leash', type=float, default=0.125)
     ap.add_argument('--tip-deg', dest='tip_deg', type=float, default=60.0); ap.add_argument('--grip-open', dest='grip_open', type=float, default=0.3)
     ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--stride', type=int, default=4, help='action_repeat N of the WM/repeat-N learners; the time-base table re-encodes every stride-1 tape at this stride (window rules of delta_encode_transitions_repeat / convert_genesis_demos_repeat.py)')
     P = ap.parse_args(); rng = np.random.default_rng(P.seed)
 
     sets = {}; skipped = {}; dsets = {}
@@ -329,6 +377,11 @@ def main():
     table('Fidelity under delta_joint encoding (cap/leash)', [('over_cap', 'frac frames over cap', 3), ('over_cap_succ', '  successes', 3), ('over_cap_fail', '  fails', 3),
                                                               ('lab_err_frac', 'frac frames one-step label err >1e-3', 3), ('lab_err_p99', 'label err p99 (rad, median tape)', 4), ('lab_err_max', 'label err max (rad)', 3),
                                                               ('dmax_p99', '|delta cmd| p99 (median tape)', 4), ('zero_delta', 'frac zero-delta frames', 3), ('over_leash', 'frac frames |cmd-qmeas|>leash', 3), ('lead_p99', 'lead p99 (median tape)', 3)])
+    table(f'Time-base: stride-{P.stride} (action_repeat={P.stride}) re-encoding fidelity of the stride-1 tape',
+          [('stride_windows', 'decision windows', 0), ('stride_exact', 'frac windows EXACTLY representable (dev<1e-4 rad)', 3), ('stride_exact_succ', '  successes', 3), ('stride_exact_fail', '  fails', 3),
+           ('stride_dev_p50', 'command-vs-ramp dev p50 (rad, median tape)', 4), ('stride_dev_p99', '  p99 (median tape)', 4), ('stride_dev_max', '  max', 3), ('stride_dev_cap_p50', '  p50 in cap units', 2),
+           ('stride_over_cap', 'frac windows over N*cap (clipped)', 3), ('stride_over_cap_succ', '  successes', 3), ('stride_over_cap_fail', '  fails', 3),
+           ('stride_reversal', 'frac windows with intra-window reversal', 3), ('stride_reversal_succ', '  successes', 3), ('stride_reversal_fail', '  fails', 3), ('stride_grip_toggle', 'frac windows with a grip toggle inside', 3)])
     table('Env-consistency (pick-scope termination) & can state', [('tipped_tapes', 'tapes where can tilts >tip_deg', 0), ('tipped_tapes_fail', '  of which fails', 0),
                                                                    ('post_term_share', 'POST-TERMINATION frames / buffer', 3), ('post_term_share_fail', '  / fail frames', 3), ('post_term_longest', 'longest post-term chain (frames)', 0),
                                                                    ('tipped_at_t0', 'tapes tipped at t0 (lying-can IC)', 0), ('tilt0_p50', 'tilt @t0 p50 (deg)', 1), ('tilt0_max', 'tilt @t0 max', 1),
@@ -349,6 +402,7 @@ def main():
     L.append('\n### How to read')
     L.append('- fail share / post-termination share / longest chain: what the RL critic bootstraps through that the online MDP never produces (ROUND_ROBIN_RESULTS_2026-08-22 "Why dDP_RLPD < dH_RLPD").')
     L.append('- over cap / label err: frames the delta_joint encoder cannot represent (AUDIT_normalization_2026-08-17 C1); leash: PD lead beyond the env leash.')
+    L.append(f'- time-base: a repeat-{P.stride} learner (r2dreamer/dv3; RLPD if run with --action-repeat {P.stride}) consumes stride-1 tapes through the window encoder; dev = how far the recorded command path departs from the linear ramp the learner would execute for the re-encoded action (0 = native repeat-N tape). Reversal = the teacher changed direction inside the window (averaged away by the encoder).')
     L.append('- NN distances: large = states nothing grounded covers; tipped-can frames land ~40 std away because success frames never vary in can orientation.')
     L.append('- reward density is informative but was shown NOT to move RLPD ignition (hold-reward arm, 25x density, FABLE_HANDOFF §20).')
     rep = '\n'.join(L)
