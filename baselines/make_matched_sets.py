@@ -126,11 +126,11 @@ def stratified_pick(sources, N, rng):
     chosen = {s: [] for s in sources}
     for s in sources:
         for u in uids:
-            chosen[s].extend(by_uid[s][u][:slots[u]])
+            chosen[s].extend(by_uid[s].get(u, [])[:slots[u]])
     unmatched = {}
     if take < N:
         for s in sources:
-            left = [t for u in uids for t in by_uid[s][u][slots[u]:]]
+            left = [t for u in uids for t in by_uid[s].get(u, [])[slots[u]:]]
             rng.shuffle(left)
             extra = left[:N - take]
             chosen[s].extend(extra)
