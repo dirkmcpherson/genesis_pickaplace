@@ -179,6 +179,10 @@ fi
 
 SHAPE_SUFFIX=""; RUN_SUFFIX=""; PICK_SHAPING_FLAG=()
 if [ "$REWARD" = dense ]; then SHAPE_SUFFIX="_dense"; RUN_SUFFIX="-dense"; PICK_SHAPING_FLAG=(--pick-shaping on); fi
+# no silent defaults (audit W2): demo shaping follows the reward condition (native tapes carry eef_pos),
+# phi(terminal)=0 explicit, terminal guard explicit
+DEMO_SHAPING=$([ "$REWARD" = dense ] && echo on || echo off)
+PICK_SHAPING_FLAG+=(--demo-shaping "$DEMO_SHAPING" --pick-shaping-terminal-zero on --demo-terminal-guard on)
 DEMO_FORMAT_FLAG=(); [ "$DEMO_FORMAT" = native ] && DEMO_FORMAT_FLAG=(--demo-format native)
 OUT=baselines/rl/checkpoints/rlpd_${WAVE}_${ARM}_s${SEED}${SHAPE_SUFFIX}
 RUN_NAME="${ARM}_RLPD-${WAVE}_s${SEED}${RUN_SUFFIX}"
@@ -196,7 +200,8 @@ REG_KNOBS=(steps="$STEPS" budget_unit="$BUDGET_UNIT" scope=pick action_mode=delt
            action_repeat="$ACTION_REPEAT" train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON"
            gamma=0.998 backup_entropy=off per_member_ln=off pick_hold_reward=off utd=10
            ensemble_size=10 subset_size=2 demo_batch=128 reward="$REWARD" pick_shaping="$PICK_SHAPING"
-           demo_format="$DEMO_FORMAT" demo_sha="$DEMO_SHA" wave="$WAVE")
+           demo_format="$DEMO_FORMAT" demo_sha="$DEMO_SHA" wave="$WAVE"
+           demo_shaping="$DEMO_SHAPING" pick_shaping_terminal_zero=on demo_terminal_guard=on)
 
 SWEEP_COMMON=(--ic-file "$IC_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" --seed "$SEED" --reward "$REWARD"
               --wandb-run "$RUN_NAME" --wandb-project genesis_paper)

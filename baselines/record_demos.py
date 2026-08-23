@@ -578,8 +578,12 @@ def merge(outdir):
     h = hashlib.sha256()
     for f in files:
         h.update(pl.Path(f).name.encode()); h.update(pl.Path(f).read_bytes())
+    first = [r for r in recs.values() if int(r.get('attempt', 0)) == 0]
+    stats = dict(teacher_success_rate_first_attempt=(sum(bool(r.get('kept')) for r in first) / len(first)) if first else None,
+                 rejected_by_verify=int(sum(str(r.get('outcome')) == 'verify_failed' for r in recs.values())),
+                 yield_frac=(len(kept) / len(recs)) if recs else None)
     (outdir / 'manifest.json').write_text(json.dumps(dict(
-        configs=cfgs, n_rollouts=len(recs), n_kept=n_files, n_kept_records=len(kept), files=n_files,
+        configs=cfgs, n_rollouts=len(recs), n_kept=n_files, n_kept_records=len(kept), files=n_files, **stats,
         records_complete=records_complete, tapes=tapes,
         content_sha256=h.hexdigest(), contract=CONTRACT, recorder=RECORDER,
         records=sorted(recs.values(), key=lambda r: (r['ic_uid'], r.get('attempt', 0)))), indent=1))

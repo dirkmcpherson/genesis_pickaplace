@@ -260,3 +260,20 @@ history; repo + docs only), read-only, must cite file:line, report archived unde
 | after any trainer/env/encoder change mid-block | **Change** (narrow): diff + tests | does it restart that learner's block (§2 "one commit hash")? what else reads the changed path? |
 | once, before submission | **Reproducibility**: a stranger reruns one cell from repo + rsynced sets | runbook, shas, registry, one cell re-executed from scratch |
 Next due: Pre-launch audit, 2026-08-24, after Phase 4 of the session runbook and before the DP/RLPD block.
+- **A4 (2026-08-23, pre-launch audit B2).** Policy device: the DP policy runs on the GPU when one is visible
+  (eval_sweep.sh dp path, recorder dp adapter, dDP recording jobs with GRES=gpu:1); the SIM is CPU always and
+  SAC policies stay CPU. §5's "CPU" wording referred to the sim.
+- **A5 (2026-08-23).** §8 pilots as actually run: random-teacher negctl n=3 (0 kept) not 30; the dp-adapter
+  yield pilot was skipped — the full dDP harvest's first-attempt rate (0.55-1.0 per shard, 64/66 ICs) stands
+  in; the RLPD-r4 dH dense pilot was NOT run separately — a 3k-step dense smoke (W1) plus the block's dH
+  dense seeds 10-13 double as it; if dense RLPD at repeat 4 fails its bar the RLPD block restarts at repeat 1.
+- **A6 (2026-08-23).** §4.2 human adapter arrival test: `--arrival either` (advance when the measured joints
+  reach the human's measured pose OR the env's integrated target reaches the human's command; lab result
+  paper/real2sim_follower_lab_2026-08-23.md §3: 49→55 local, zero dwell stalls, same path fidelity). If its
+  cluster confirmation keeps ≥55, the block's dH is the `either` set, built into a NEW root (matched_v2;
+  matched_v1 is never rebuilt in place). The dDP teacher (DP-r4 pilot s0 ckpt 020000) was trained on the 51
+  `meas`-arrival tapes (sha 58fd89bc) — a superset/variant relation to the block's dH, disclosed.
+- **A7 (2026-08-23).** Checkpoint selection ties → the LATER checkpoint (sbatch_rlpd.sh, dp_select_confirm.sh).
+- **A8 (2026-08-23, audit W8).** `hold` is a CONFIRMATION split of demo ICs (11/15 are training ICs for a
+  51-demo set; for RLPD every sel/hold uid is a training-reset IC), not a held-out set; only `rnd` (30 support
+  ICs) is novel. Report "sel / hold / rnd" by name; never call hold "held-out".

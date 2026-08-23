@@ -103,7 +103,10 @@ def load_set(path):
             dil = {}
             for r in recs:
                 if isinstance(r, dict) and r.get('dilation') is not None:
-                    key = r.get('name') or (f"{r.get('uid')}.npz" if r.get('uid') is not None else None)
+                    # recorder records carry rollout (int) / file (path); matched-set manifests name / uid
+                    key = r.get('name') or (os.path.basename(r['file']) if r.get('file') else None) \
+                        or (f"{int(r['rollout']):06d}.npz" if r.get('rollout') is not None else None) \
+                        or (f"{r.get('uid')}.npz" if r.get('uid') is not None else None)
                     if key: dil[str(key)] = float(r['dilation'])
             for t in tapes:
                 if t['name'] in dil: t['dilation'] = dil[t['name']]

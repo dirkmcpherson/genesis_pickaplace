@@ -191,6 +191,7 @@ def write_set(name, tapes, out_root, extra, git, seed, source_paths):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--dH', required=True); ap.add_argument('--dDP', required=True); ap.add_argument('--dR2D', required=True)
+    ap.add_argument('--keep-lying-fails', dest='keep_lying_fails', action='store_true', help='keep lying-can-IC 1-decision fail tapes in the fails arms (default: excluded, audit W5)')
     ap.add_argument('--fails-dDP', dest='fails_dDP', default=None, help='dDP fails dir (recorder <outdir>_fails) -> builds the two fails arms')
     ap.add_argument('--out-root', dest='out_root', required=True)
     ap.add_argument('--seed', type=int, default=0); ap.add_argument('--cap-n', dest='cap_n', type=int, default=66)
@@ -214,6 +215,12 @@ def main():
         for s, u in notes['unmatched'].items():
             print(f'  {s}: {u["n_filled_from_own_leftovers"]} tapes filled from own leftovers (uids {u["ic_uids"]})')
     fails = read_dir(args.fails_dDP, 'fail', args.validate) if args.fails_dDP else None
+    if fails is not None and not args.keep_lying_fails:
+        # audit W5: a fail tape of ONE decision whose last row is tipped = the lying-can IC (tip rule at
+        # decision 1) -- an IC artifact, not a teacher failure; excluded from the fails arms (disclosed)
+        lying = [t for t in fails if t['n'] <= 1 and t.get('tipped')]
+        fails = [t for t in fails if not (t['n'] <= 1 and t.get('tipped'))]
+        print(f'[matched] fails: excluded {len(lying)} lying-can-IC tapes (n<=1, tipped at t0); {len(fails)} teacher fails remain')
     n_f = 0
     if fails is not None:
         # fail share s = F/(N+F) <= fail_share  ->  F <= fail_share*N/(1-fail_share)
