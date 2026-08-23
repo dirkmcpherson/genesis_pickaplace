@@ -658,8 +658,21 @@ def main():
         plan = plan[args.shard_idx::args.shard_n]
         attempts = 1
     elif args.ic_mode == 'demo':
-        pool = uid_pool_from(args, env)[args.shard_idx::args.shard_n]
-        plan = [dict(uid=u) for u in pool]; attempts = args.attempts
+        pool = uid_pool_from(args, env)
+        plan = [dict(uid=u) for u in pool]
+        if args.ic_from_tape:
+            # demo ICs without a recovered placement: the can pose at frame 0 of the human tape
+            # (same ICs the human adapter records from -> every source covers the same 66 ICs)
+            have = set(pool)
+            for f in sorted(glob.glob(str(REPO / args.uids_from / '*.npz')), key=lambda q: int(pl.Path(q).stem)):
+                u = int(pl.Path(f).stem)
+                if u in have or (args.uids and u not in set(int(x) for x in args.uids)):
+                    continue
+                s0 = np.load(f, allow_pickle=True)['states'][0]
+                plan.append(dict(uid=None, ic_uid=u, can_pos=[float(v) for v in s0[8:11]],
+                                 can_quat=[float(v) for v in s0[11:15]], goal_pos=None))
+            print(f'[ic] +{len(plan) - len(pool)} tape-pose ICs (--ic-from-tape) -> {len(plan)} demo ICs total', flush=True)
+        plan = plan[args.shard_idx::args.shard_n]; attempts = args.attempts
     else:
         n = args.n or 30
         ics = ic_sampling.sample_support_ics(env.genv, n, seed=args.seed + 1000 * args.shard_idx)
