@@ -26,7 +26,8 @@ sys.path.insert(0, str(REPO / 'baselines'))
 sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 import demo_buffer  # noqa: E402
 import pick_env  # noqa: E402
-from full_env import FullTaskEnv, STAGE_REWARD, pick_hold_held  # noqa: E402
+from full_env import (FullTaskEnv, STAGE_REWARD, pick_hold_held,  # noqa: E402
+                      terminal_from_tape, pick_shaping_phi)
 
 STAGE_RANK = {'no-pick': 0, 'picked': 1, 'placed': 2, 'contact': 3, 'nested': 4}
 SHELF_LO, SHELF_HI = 0.12, 0.20    # can_z band for the placed proxy (BOX_TOP 0.11 + 1..7cm)
@@ -40,15 +41,32 @@ def tilt_from_quat(q):
     return np.degrees(np.arccos(np.clip(cz, -1.0, 1.0)))
 
 
-def relabel_full(paths, pick_z):
-    """-> list of (obs, action, reward, next_obs, done) with staged rewards."""
+def relabel_full(paths, pick_z, scope='full', terminal_guard=True):
+    """-> (list of (obs, action, reward, next_obs, done) with staged rewards, stats).
+
+    terminal_guard (DEFAULT ON, PREREG 2026-08-23 §4.3 / AUDIT_impl F1): the tape ends
+    where the env would have ended it -- full_env.terminal_from_tape decides:
+      * tip rule (grip commanded open & can tilt > TIP_DEG after the step) -> done=True
+        on that transition, TIP_PENALTY (0 in pick/full scope), EVERY LATER FRAME DROPPED;
+      * scope='pick': the pick transition (relabel_full's own j_pick) -> done=True,
+        later frames dropped (the env terminates on the pick; the post-pick tail of a
+        harvested tape is a state the online MDP never continues from);
+      * tape end without a terminal -> done=False on the last transition (truncation,
+        the critic bootstraps) -- unchanged.
+    scope='full' keeps the staged rewards and nested terminal; only the tip rule cuts.
+    terminal_guard=False reproduces the pre-2026-08-23 output byte for byte (scope is
+    then ignored: pick-scope done marking stays the caller's job, as before).
+    stats gains guard counters: guard_tip, guard_pick, guard_none, guard_frames_dropped.
+    """
     transitions, stats = [], {k: 0 for k in STAGE_REWARD}
+    stats.update(guard_tip=0, guard_pick=0, guard_none=0, guard_frames_dropped=0,
+                 guard_on=bool(terminal_guard), guard_scope=scope)
     for p in paths:
         d = np.load(p, allow_pickle=True)
         s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
         ep_stage = str(d['stage']) if 'stage' in d.files else None
         if ep_stage is None:
-            raise KeyError(f'{f}: npz has no stage field — refusing to guess '
+            raise KeyError(f'{p}: npz has no stage field — refusing to guess '
                            '(the old contact default granted rewards on failure tapes)')
         rank = STAGE_RANK.get(ep_stage, 0)
         n = len(s) - 1
@@ -87,6 +105,25 @@ def relabel_full(paths, pick_z):
                                     done[j_n] = True
                                     stats['nested'] += 1
         end = int(np.argmax(done)) + 1 if done.any() else n
+        if terminal_guard:
+            # ONE terminal definition (full_env.terminal_from_tape): env-consistent tip
+            # transition, relabel_full's j_pick in pick scope, earliest wins; nested
+            # (scope full) is already marked above. j_pick passed explicitly so the
+            # guard and the reward placement can never disagree.
+            tm = terminal_from_tape(d, pick_z=pick_z, scope=scope,
+                                    j_pick=(j_pick if scope == 'pick' else None))
+            if tm['t_term'] is not None and tm['t_term'] < end:
+                t = int(tm['t_term'])
+                if tm['kind'] == 'tip':
+                    rew[t] += float(tm['reward'])       # TIP_PENALTY (0.0 pick/full)
+                    stats['guard_tip'] += 1
+                elif tm['kind'] == 'pick':
+                    stats['guard_pick'] += 1
+                done[t] = True
+                stats['guard_frames_dropped'] += int(end - (t + 1))
+                end = t + 1
+            else:
+                stats['guard_none'] += 1                # truncation (or nested already cut it)
         for i in range(end):
             transitions.append((s[i], a[i], float(rew[i]), s[i + 1], bool(done[i])))
     return transitions, stats
@@ -116,7 +153,7 @@ def _delta_actions(trans, cap, delta_ref):
     return np.concatenate([dq, grip[:, None]], axis=1).astype(np.float32)
 
 
-def relabel_hold_region(paths, pick_z, hold_k):
+def relabel_hold_region(paths, pick_z, hold_k, terminal_guard=True):
     """REWARD-DENSITY relabel (2026-08-14): per-frame HOLD reward, raw actions.
 
     Offline mirror of FullTaskEnv(scope='pick', pick_hold_reward=True):
@@ -154,7 +191,7 @@ def relabel_hold_region(paths, pick_z, hold_k):
                   n_positive_zero_reward=0, n_frames=0, n_rewarded_frames=0,
                   total_reward=0.0, n_negative_rewarded_frames=0,
                   n_negative_proxy_frames=0, hold_lens=[], hold_starts=[],
-                  hold_k=hold_k, pick_z=float(pick_z))
+                  hold_k=hold_k, pick_z=float(pick_z), guard_tip=0, guard_frames_dropped=0)
     for p in paths:
         d = np.load(p, allow_pickle=True)
         s, a = d['states'].astype(np.float32), d['actions'].astype(np.float32)
@@ -193,6 +230,19 @@ def relabel_hold_region(paths, pick_z, hold_k):
         end = j_term + 1 if j_term >= 0 else n
         rew = held[:end].astype(np.float32)
         done = np.zeros(end, dtype=bool)
+        if terminal_guard:
+            # env tip rule (full_env.terminal_from_tape, scope 'full' = tip only): a
+            # tape that tips before its K-th held frame ends there, done=True, reward
+            # TIP_PENALTY (0), later frames dropped -- the env would have terminated.
+            tm = terminal_from_tape(d, pick_z=pick_z, scope='full')
+            if tm['t_term'] is not None and tm['kind'] == 'tip' and tm['t_term'] < end:
+                t = int(tm['t_term'])
+                census['guard_tip'] = census.get('guard_tip', 0) + 1
+                census['guard_frames_dropped'] = census.get('guard_frames_dropped', 0) + int(end - (t + 1))
+                end = t + 1
+                rew = held[:end].astype(np.float32); rew[t] += float(tm['reward'])
+                done = np.zeros(end, dtype=bool); done[t] = True
+                j_term = -1                      # the hold terminal (if any) is past the tip
         if j_term >= 0:
             done[j_term] = True
             census['n_terminal'] += 1
@@ -240,7 +290,8 @@ def print_hold_census(census, tag=''):
     assert census['n_negative_rewarded_frames'] == 0, census
 
 
-def hold_region_encode_transitions(paths, pick_z, cap, hold_k, delta_ref='target'):
+def hold_region_encode_transitions(paths, pick_z, cap, hold_k, delta_ref='target',
+                                   terminal_guard=True):
     """Delta-encoded sibling of relabel_hold_region (the RLPD demo path).
 
     Same per-episode delta math as delta_encode_transitions / ..._measured (shared
@@ -253,7 +304,7 @@ def hold_region_encode_transitions(paths, pick_z, cap, hold_k, delta_ref='target
     """
     out, census = [], None
     for p in paths:
-        trans, c = relabel_hold_region([p], pick_z, hold_k)
+        trans, c = relabel_hold_region([p], pick_z, hold_k, terminal_guard=terminal_guard)
         if census is None:
             census = c
         else:
@@ -270,17 +321,22 @@ def hold_region_encode_transitions(paths, pick_z, cap, hold_k, delta_ref='target
     return out, (census or dict(n_demos=0))
 
 
-def delta_encode_transitions(paths, pick_z, scope, cap):
+def delta_encode_transitions(paths, pick_z, scope, cap, terminal_guard=True):
     """relabel_full per episode, then replace each transition's RAW absolute
     action [6 rad, grip 0..1] with the delta-normalized action the delta_joint
     env expects: arm = clip((cmd_t - cmd_{t-1})/cap, -1, 1) (row 0 vs the
     measured start pose -- max |cmd_0 - q_0| over demos is 0.012 rad), grip =
     raw*2-1. Same encoding as to_dreamer_demos --action-encoding delta_joint;
     integrating these through FullTaskEnv(action_mode='delta_joint') reproduces
-    the validated commanded replay (gate: sacfd_delta_gate below)."""
+    the validated commanded replay (gate: sacfd_delta_gate below).
+
+    terminal_guard (DEFAULT ON, 2026-08-23): relabel_full ends the tape where the env
+    terminates (tip rule; the pick in scope='pick') -- see relabel_full. The pick-scope
+    done marking below is then already done and idempotent; with the guard OFF it is
+    the only terminal (pre-08-23 behaviour, fail tapes whole with done=False)."""
     out = []
     for p in paths:
-        trans, _ = relabel_full([p], pick_z)
+        trans, _ = relabel_full([p], pick_z, scope=scope, terminal_guard=terminal_guard)
         if not trans:
             continue
         if scope == 'pick':
@@ -292,7 +348,7 @@ def delta_encode_transitions(paths, pick_z, scope, cap):
     return out
 
 
-def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat):
+def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat, terminal_guard=True):
     """Action-repeat (decision-level) sibling of delta_encode_transitions.
 
     Re-encodes each demo at STRIDE = `repeat` so one decision matches exactly what
@@ -323,7 +379,7 @@ def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat):
     repeat = int(repeat)
     out = []
     for p in paths:
-        trans, _ = relabel_full([p], pick_z)
+        trans, _ = relabel_full([p], pick_z, scope=scope, terminal_guard=terminal_guard)
         if not trans:
             continue
         if scope == 'pick':
@@ -347,7 +403,7 @@ def delta_encode_transitions_repeat(paths, pick_z, scope, cap, repeat):
     return out
 
 
-def delta_encode_transitions_measured(paths, pick_z, scope, cap):
+def delta_encode_transitions_measured(paths, pick_z, scope, cap, terminal_guard=True):
     """Measured-referenced sibling of delta_encode_transitions (2026-08-14,
     user-directed after P1). Action = clip((cmd_t - qmeas_t)/cap, -1, 1) where
     qmeas_t = the demo's RECORDED measured qpos (states[t,:6]) -- the reference the
@@ -357,7 +413,7 @@ def delta_encode_transitions_measured(paths, pick_z, scope, cap):
     recorded command. Grip unchanged (raw*2-1)."""
     out = []
     for p in paths:
-        trans, _ = relabel_full([p], pick_z)
+        trans, _ = relabel_full([p], pick_z, scope=scope, terminal_guard=terminal_guard)
         if not trans:
             continue
         if scope == 'pick':
@@ -371,7 +427,7 @@ def delta_encode_transitions_measured(paths, pick_z, scope, cap):
     return out
 
 
-def delta_encode_transitions_measured_repeat(paths, pick_z, scope, cap, repeat):
+def delta_encode_transitions_measured_repeat(paths, pick_z, scope, cap, repeat, terminal_guard=True):
     """Measured-referenced decision-level (skip-N) encoder. Per window of `repeat`
     sim steps the decision action is a = clip((cmd_end - qmeas_start)/(repeat*cap),
     -1, 1): reach the window's final recorded command from the window-START recorded
@@ -382,7 +438,7 @@ def delta_encode_transitions_measured_repeat(paths, pick_z, scope, cap, repeat):
     repeat = int(repeat)
     out = []
     for p in paths:
-        trans, _ = relabel_full([p], pick_z)
+        trans, _ = relabel_full([p], pick_z, scope=scope, terminal_guard=terminal_guard)
         if not trans:
             continue
         if scope == 'pick':
@@ -403,6 +459,116 @@ def delta_encode_transitions_measured_repeat(paths, pick_z, scope, cap, repeat):
             done = bool(any(trans[i][4] for i in range(k, end + 1)))
             out.append((trans[k][0], act, rew, trans[end][3], done))
     return out
+
+
+# --- contract-v1 (record_demos.py) demo tapes: NO re-encoding ---------------------------
+# PREREG_final_round_robin_2026-08-23 §4.1: a contract-v1 tape is one ROW per decision
+# recorded through the learners' own MDP (FullTaskEnv delta_joint/target, repeat N, tip
+# rule): actions_delta IS the learner's action, terminated IS the env's terminal. The
+# loader below builds transitions verbatim -- no delta math, no relabel predicate, no
+# terminal guess -- and asserts the tape's stamps against the run's env so a repeat-4
+# tape can never feed a repeat-1 run silently (the silent-default rule).
+CONTRACT_V1_REQUIRED = ('states', 'final_state', 'actions_delta', 'actions', 'rewards',
+                        'terminated', 'truncated', 'picked', 'tipped', 'eef_pos',
+                        'action_repeat', 'delta_cap', 'delta_leash', 'delta_ref',
+                        'contract', 'label')
+
+
+def demo_dir_sha256(paths):
+    """sha256 over (basename + bytes) of the sorted npz list -- the SAME formula as
+    make_dDPsucc.py's manifest content_sha256 / record_demos.py's manifest, so a
+    sidecar/registry fingerprint can be compared to a set manifest directly."""
+    import hashlib
+    h = hashlib.sha256()
+    for p in sorted(paths, key=lambda x: os.path.basename(x)):
+        with open(p, 'rb') as fh:
+            h.update(os.path.basename(p).encode()); h.update(fh.read())
+    return h.hexdigest()
+
+
+def _scalar(v):
+    v = np.asarray(v)
+    return v.item() if v.ndim == 0 else v
+
+
+def native_demo_transitions(paths, expect, gamma=None, shaping=False, phi_scale=None):
+    """contract-v1 tapes -> (transitions [(obs, a, r, next_obs, done)], census).
+
+    expect: dict with action_repeat, delta_cap, delta_leash, delta_ref ('target') and
+            optionally scope ('pick'); every tape's stamps must equal them (assert).
+    shaping: add the pick-scope potential term to each transition from the RECORDED
+            eef_pos / can xyz via full_env.pick_shaping_phi (the env's own function):
+            r_t += gamma*phi(s_{t+1}) - phi(s_t), phi(terminal)=0 on terminated rows
+            (matches FullTaskEnv.step with pick_shaping_terminal_zero=True). gamma MUST
+            be the run's discount (the caller asserts it equals the env's shaping gamma).
+    Transitions: (states[t], actions_delta[t], rewards[t], states[t+1] | final_state,
+    terminated[t]); a truncated last row bootstraps (done=False).
+    """
+    if shaping:
+        assert gamma is not None and 0.0 < float(gamma) < 1.0, gamma
+    out = []
+    census = dict(n_tapes=0, n_transitions=0, n_rewarded=0, n_success=0, n_fail=0,
+                  n_tip=0, n_truncated=0, shaping_sum=0.0, first_lift=[], lens=[],
+                  shaping=bool(shaping), gamma=(float(gamma) if gamma is not None else None))
+    for p in paths:
+        d = np.load(p, allow_pickle=True)
+        missing = [k for k in CONTRACT_V1_REQUIRED if k not in d.files]
+        assert not missing, f'{p}: not a contract-v1 tape, missing {missing}'
+        assert str(_scalar(d['contract'])) == 'v1', (p, _scalar(d['contract']))
+        for k in ('action_repeat', 'delta_cap', 'delta_leash', 'delta_ref'):
+            if k in expect:
+                got, want = _scalar(d[k]), expect[k]
+                ok = (str(got) == str(want)) if k == 'delta_ref' else np.isclose(float(got), float(want))
+                assert ok, f'{p}: tape {k}={got} but this run expects {want} (silent-default rule)'
+        s = np.asarray(d['states'], dtype=np.float32)
+        fs = np.asarray(d['final_state'], dtype=np.float32)
+        a = np.asarray(d['actions_delta'], dtype=np.float32)
+        r = np.asarray(d['rewards'], dtype=np.float32).copy()
+        term = np.asarray(d['terminated'], dtype=bool)
+        trunc = np.asarray(d['truncated'], dtype=bool)
+        n = len(s)
+        assert n >= 1 and a.shape == (n, 7) and r.shape == (n,) and term.shape == (n,), p
+        assert s.shape[1] == fs.shape[0] == 17, (p, s.shape, fs.shape)
+        assert not term[:-1].any(), f'{p}: terminal before the last row (contract violation)'
+        assert np.all(np.abs(a) <= 1.0 + 1e-6), f'{p}: actions_delta outside [-1,1]'
+        nxt = np.concatenate([s[1:], fs[None, :]], axis=0)
+        if shaping:
+            eef = np.asarray(d['eef_pos'], dtype=np.float64)
+            assert eef.shape == (n + 1, 3), (p, eef.shape)
+            can = np.concatenate([s[:, 8:11], fs[None, 8:11]], axis=0).astype(np.float64)
+            phi = np.asarray([pick_shaping_phi(eef[t], can[t], scale=phi_scale) for t in range(n + 1)])
+            phi_next = phi[1:].copy()
+            phi_next[term] = 0.0                     # phi(terminal) = 0
+            F = float(gamma) * phi_next - phi[:-1]
+            r = (r + F.astype(np.float32)).astype(np.float32)
+            census['shaping_sum'] += float(F.sum())
+        for t in range(n):
+            out.append((s[t], a[t], float(r[t]), nxt[t], bool(term[t])))
+        census['n_tapes'] += 1; census['n_transitions'] += n; census['lens'].append(n)
+        census['n_rewarded'] += int((np.asarray(d['rewards']) > 0).sum())
+        picked = np.asarray(d['picked'], dtype=bool)
+        if picked.any():
+            census['n_success'] += 1; census['first_lift'].append(int(np.argmax(picked)))
+        else:
+            census['n_fail'] += 1
+        if term.any() and bool(np.asarray(d['tipped'], dtype=bool)[int(np.argmax(term))]):
+            census['n_tip'] += 1
+        if not term.any():
+            census['n_truncated'] += 1
+            assert trunc[-1], f'{p}: no terminal and no truncation on the last row'
+    return out, census
+
+
+def print_native_census(c, tag=''):
+    fl = np.asarray(c['first_lift'], dtype=float)
+    print(f'[native-demos]{" " + tag if tag else ""} tapes {c["n_tapes"]} = '
+          f'{c["n_success"]} success + {c["n_fail"]} fail (tip-terminated {c["n_tip"]}, '
+          f'truncated {c["n_truncated"]}) | transitions {c["n_transitions"]} '
+          f'(len p50 {np.median(c["lens"]) if c["lens"] else float("nan"):.0f}) | '
+          f'rewarded {c["n_rewarded"]} | first-lift p50 '
+          f'{np.median(fl) if fl.size else float("nan"):.0f} decisions | shaping '
+          f'{"on, sum %.2f, gamma %s" % (c["shaping_sum"], c["gamma"]) if c["shaping"] else "off"}',
+          flush=True)
 
 
 def main():
@@ -450,6 +616,11 @@ def main():
     ap.add_argument('--scope', choices=['full', 'pick'], default='full',
                     help='pick: +1 and terminate on the pick (phase-1 paper core)')
     ap.add_argument('--project', default='genesis_pickaplace', help='wandb project')
+    ap.add_argument('--demo-terminal-guard', choices=['on', 'off'], default='on',
+                    help='on (default, 2026-08-23): demo tapes end where the env would '
+                         'have terminated (tip rule; the pick in scope=pick) -- see '
+                         'relabel_full / full_env.terminal_from_tape. off = pre-08-23 '
+                         'tensors (fail tapes whole, done=False to the last frame).')
     args = ap.parse_args()
 
     t0 = time.time()
@@ -480,7 +651,8 @@ def main():
         from relabel_cartesian import relabel_cartesian
         transitions, stats = relabel_cartesian(paths, env.pick_z)
     else:
-        transitions, stats = relabel_full(paths, env.pick_z)
+        transitions, stats = relabel_full(paths, env.pick_z, scope=args.scope,
+                                          terminal_guard=(args.demo_terminal_guard == 'on'))
     if args.scope == 'pick':
         # demo termination must match the env's: the pick grant ENDS the episode,
         # so its transition is terminal (done=True) or the critic bootstraps
@@ -501,7 +673,8 @@ def main():
         # deltas, grip absolute [-1,1]). Transitions were built per-path in order
         # so episode boundaries are recoverable from the paths loop below.
         transitions = delta_encode_transitions(paths, env.pick_z, args.scope,
-                                               env.delta_cap)
+                                               env.delta_cap,
+                                               terminal_guard=(args.demo_terminal_guard == 'on'))
         _norm = None
     else:
         _norm = pick_env.normalize_action

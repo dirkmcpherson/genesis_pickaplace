@@ -75,13 +75,39 @@ def load_set(path):
         if s.ndim != 2 or s.shape[1] != STATE_DIM or a.ndim != 2 or a.shape[1] != 7:
             return None, f'{os.path.basename(f)}: states {s.shape} actions {a.shape} (expected (T,17),(T,7))'
         n = min(len(s), len(a))
-        tapes.append(dict(name=os.path.basename(f), s=s[:n], a=a[:n],
-                          label=str(z['label'].item()) if 'label' in z.files else '?',
-                          stage=str(z['stage'].item()) if 'stage' in z.files else '?',
-                          uid=int(z['uid'].item()) if 'uid' in z.files and z['uid'].shape == () else None,
-                          images=('images' in z.files)))
+        v1 = ('actions_delta' in z.files and 'terminated' in z.files)   # contract v1 (PREREG §4): one row per DECISION
+        t = dict(name=os.path.basename(f), s=s[:n], a=a[:n],
+                 label=str(z['label'].item()) if 'label' in z.files else '?',
+                 stage=str(z['stage'].item()) if 'stage' in z.files else '?',
+                 uid=int(z['uid'].item()) if 'uid' in z.files and z['uid'].shape == () else None,
+                 images=('images' in z.files), v1=v1)
+        if v1:
+            t.update(ad=np.asarray(z['actions_delta'], np.float32)[:n],
+                     term=np.asarray(z['terminated'], bool).reshape(-1)[:n],
+                     trunc=np.asarray(z['truncated'], bool).reshape(-1)[:n] if 'truncated' in z.files else None,
+                     picked=np.asarray(z['picked'], bool).reshape(-1)[:n] if 'picked' in z.files else None,
+                     tipped=np.asarray(z['tipped'], bool).reshape(-1)[:n] if 'tipped' in z.files else None,
+                     eef=(np.asarray(z['eef_pos'], np.float32) if 'eef_pos' in z.files else None),
+                     rep=int(z['action_repeat']) if 'action_repeat' in z.files else None,
+                     ic_uid=(z['ic_uid'].item() if 'ic_uid' in z.files else None))
+        tapes.append(t)
     if not tapes:
         return None, 'no npz'
+    # recorder / matched-set manifest (same dir or one level up): time-dilation of human re-records
+    for mp in (os.path.join(path, 'manifest.json'), os.path.join(os.path.dirname(os.path.normpath(path)), 'manifest.json')):
+        if os.path.exists(mp):
+            try: man = json.load(open(mp))
+            except Exception: break
+            mans = [man] + [m for m in (man.get('source_manifests') or {}).values() if isinstance(m, dict)]  # matched-set manifests nest the recorder's
+            recs = [r for m in mans for r in (m.get('records') or m.get('per_rollout') or m.get('rollouts') or m.get('per_tape') or [])]
+            dil = {}
+            for r in recs:
+                if isinstance(r, dict) and r.get('dilation') is not None:
+                    key = r.get('name') or (f"{r.get('uid')}.npz" if r.get('uid') is not None else None)
+                    if key: dil[str(key)] = float(r['dilation'])
+            for t in tapes:
+                if t['name'] in dil: t['dilation'] = dil[t['name']]
+            break
     return tapes, None
 
 
@@ -159,11 +185,31 @@ def stride_stats(s, a, N, cap):
                 reversal=float(np.mean(rev)), grip_toggle=float(np.mean(gtog)))
 
 
+def v1_stats(t):
+    """Contract-v1 (recorded-as-executed) per-tape stats; None for legacy tapes."""
+    if not t.get('v1'): return None
+    ad = t['ad']; arm = np.abs(ad[:, :6])
+    out = dict(rep=t.get('rep'), n_dec=int(len(ad)),
+               sat=float((arm >= 0.999).any(1).mean()),            # decision hit the cap on some arm dim (clipped intent)
+               mean_abs_a=float(arm.mean()),
+               term_last=bool(t['term'][-1]), trunc_last=bool(t['trunc'][-1]) if t.get('trunc') is not None else None,
+               tipped_last=bool(t['tipped'][-1]) if t.get('tipped') is not None else None,
+               term_early=bool(t['term'][:-1].any()),
+               eef=(t.get('eef') is not None), dilation=t.get('dilation'))
+    if t.get('eef') is not None and len(t['eef']) >= len(t['s']):
+        d = np.linalg.norm(t['eef'][:len(t['s'])] - t['s'][:, CAN], axis=1)
+        out.update(eef_can_d0=float(d[0]), eef_can_dmin=float(d.min()))
+    return out
+
+
 def per_tape(t, P):
     s, a = t['s'], t['a']; n = len(s)
     can = s[:, CAN]; tilt = tilt_deg(s[:, QUAT]); grip_cmd = a[:, GRIP]
     lifted = np.where(can[:, 2] > P.pick_z)[0]
     pick = int(lifted[0]) if len(lifted) else -1
+    if t.get('v1') and t.get('picked') is not None:
+        # contract v1: the env's own hardened-pick flag is the ground truth (recorded), not the z proxy
+        pk = np.where(t['picked'])[0]; pick = int(pk[0]) if len(pk) else -1
     d = np.diff(a[:, J], axis=0); dmax = np.abs(d).max(1) if len(d) else np.zeros(0)
     lab_err = (np.abs(d) - P.cap).clip(min=0).max(1) if len(d) else np.zeros(0)  # one-step unrepresentable part
     lead = np.abs(a[:, J] - s[:, J]).max(1)
@@ -191,7 +237,10 @@ def per_tape(t, P):
         ic=(round(float(can[0, 0]), 4), round(float(can[0, 1]), 4)), goal=(round(float(s[0, GOAL][0]), 3), round(float(s[0, GOAL][1]), 3)),
         grip_closed=float((grip_cmd < 0.5).mean()), grip_eff_mean=float(s[:, GRIP_EFF].mean()),
         path_len=path, mean_qdot=float(np.abs(np.diff(q, axis=0)).mean()) if n > 1 else 0.0,
-        images=t['images'], stride=stride_stats(s, a, P.stride, P.cap))
+        images=t['images'],
+        # stride table is for STRIDE-1 tapes; a contract-v1 tape is already one row per decision
+        stride=(None if t.get('v1') else stride_stats(s, a, P.stride, P.cap)),
+        v1=v1_stats(t))
 
 
 def nn_dist(Q, R, scale, chunk=1500):
@@ -240,6 +289,20 @@ def summarize(name, tapes, rows, P, rng):
         path_len_succ_p50=pct([r['path_len'] for r in S], 50), mean_qdot=float(np.mean([r['mean_qdot'] for r in rows])),
         images=int(sum(r['images'] for r in rows)),
     )
+    # contract-v1 (recorded-as-executed) aggregates
+    V = [(r['v1'], r['pick'] >= 0) for r in rows if r.get('v1')]
+    if V:
+        def wv(key, sel=None, w='n_dec'):
+            xs = [(d[key], d[w]) for d, ok in V if (sel is None or ok == sel) and d.get(key) is not None]
+            return float(np.average([x for x, _ in xs], weights=[q for _, q in xs])) if xs else float('nan')
+        dil = [d['dilation'] for d, _ in V if d.get('dilation') is not None]
+        out.update(v1_tapes=len(V), v1_rep=sorted(set(d['rep'] for d, _ in V)),
+                   v1_sat=wv('sat'), v1_sat_succ=wv('sat', True), v1_sat_fail=wv('sat', False), v1_mean_abs_a=wv('mean_abs_a'),
+                   v1_term_last=int(sum(d['term_last'] for d, _ in V)), v1_trunc_last=int(sum(bool(d['trunc_last']) for d, _ in V)),
+                   v1_tipped_last=int(sum(bool(d['tipped_last']) for d, _ in V)), v1_term_early=int(sum(d['term_early'] for d, _ in V)),
+                   v1_eef=int(sum(d['eef'] for d, _ in V)),
+                   v1_dilation_p50=(pct(dil, 50) if dil else None), v1_dilation_max=(max(dil) if dil else None), v1_dilation_n=len(dil),
+                   v1_eef_can_dmin_p50=pct([d['eef_can_dmin'] for d, _ in V if 'eef_can_dmin' in d], 50) if any('eef_can_dmin' in d for d, _ in V) else None)
     # stride-N (action_repeat) re-encoding fidelity, window-weighted
     st = [(r['stride'], r['pick'] >= 0) for r in rows if r.get('stride')]
     if st:
@@ -377,6 +440,10 @@ def main():
     table('Fidelity under delta_joint encoding (cap/leash)', [('over_cap', 'frac frames over cap', 3), ('over_cap_succ', '  successes', 3), ('over_cap_fail', '  fails', 3),
                                                               ('lab_err_frac', 'frac frames one-step label err >1e-3', 3), ('lab_err_p99', 'label err p99 (rad, median tape)', 4), ('lab_err_max', 'label err max (rad)', 3),
                                                               ('dmax_p99', '|delta cmd| p99 (median tape)', 4), ('zero_delta', 'frac zero-delta frames', 3), ('over_leash', 'frac frames |cmd-qmeas|>leash', 3), ('lead_p99', 'lead p99 (median tape)', 3)])
+    table('Contract v1 (recorded-as-executed at the decision clock; PREREG 2026-08-23 §4)',
+          [('v1_tapes', 'contract-v1 tapes', 0), ('v1_rep', 'action_repeat stamp', 0), ('v1_sat', 'frac decisions at the cap (|a_arm|>=0.999 any dim)', 3), ('v1_sat_succ', '  successes', 3), ('v1_sat_fail', '  fails', 3),
+           ('v1_mean_abs_a', 'mean |a_arm| (cap units)', 3), ('v1_term_last', 'tapes ending terminated', 0), ('v1_tipped_last', '  of which tipped', 0), ('v1_trunc_last', 'tapes ending truncated (cap)', 0), ('v1_term_early', 'tapes with terminal BEFORE last row (contract violation)', 0),
+           ('v1_eef', 'tapes with eef_pos', 0), ('v1_eef_can_dmin_p50', 'min eef-can distance p50 (m)', 3), ('v1_dilation_n', 'human re-record: tapes with dilation stat', 0), ('v1_dilation_p50', '  time dilation p50', 2), ('v1_dilation_max', '  max', 2)])
     table(f'Time-base: stride-{P.stride} (action_repeat={P.stride}) re-encoding fidelity of the stride-1 tape',
           [('stride_windows', 'decision windows', 0), ('stride_exact', 'frac windows EXACTLY representable (dev<1e-4 rad)', 3), ('stride_exact_succ', '  successes', 3), ('stride_exact_fail', '  fails', 3),
            ('stride_dev_p50', 'command-vs-ramp dev p50 (rad, median tape)', 4), ('stride_dev_p99', '  p99 (median tape)', 4), ('stride_dev_max', '  max', 3), ('stride_dev_cap_p50', '  p50 in cap units', 2),
@@ -402,6 +469,7 @@ def main():
     L.append('\n### How to read')
     L.append('- fail share / post-termination share / longest chain: what the RL critic bootstraps through that the online MDP never produces (ROUND_ROBIN_RESULTS_2026-08-22 "Why dDP_RLPD < dH_RLPD").')
     L.append('- over cap / label err: frames the delta_joint encoder cannot represent (AUDIT_normalization_2026-08-17 C1); leash: PD lead beyond the env leash.')
+    L.append('- contract v1: tapes from baselines/record_demos.py are one row per decision in the learners\' own action space; the stride table is left blank for them (exact by construction); at-cap = decisions where the teacher\'s intent was clipped by the env cap.')
     L.append(f'- time-base: a repeat-{P.stride} learner (r2dreamer/dv3; RLPD if run with --action-repeat {P.stride}) consumes stride-1 tapes through the window encoder; dev = how far the recorded command path departs from the linear ramp the learner would execute for the re-encoded action (0 = native repeat-N tape). Reversal = the teacher changed direction inside the window (averaged away by the encoder).')
     L.append('- NN distances: large = states nothing grounded covers; tipped-can frames land ~40 std away because success frames never vary in can orientation.')
     L.append('- reward density is informative but was shown NOT to move RLPD ignition (hold-reward arm, 25x density, FABLE_HANDOFF §20).')

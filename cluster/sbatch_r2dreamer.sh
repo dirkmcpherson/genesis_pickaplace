@@ -1,6 +1,26 @@
 #!/bin/bash
 # r2dreamer training on genesis: ONE run per GPU, env-var driven.
 #
+# 08-23 (final round robin, paper/PREREG_final_round_robin_2026-08-23.md §2/§5):
+#   * EVAL_MAX_STEPS default 1200 (was 400) and passed to EVERY eval_genesis.py call --
+#     the archive loop, the final eval, the x3 confirmations and the mode eval (the
+#     critique flagged the 371-373 / 414-418 omissions: selection and confirmation ran at
+#     eval_genesis's own default while the final eval ran at 400).
+#   * TIME_LIMIT (sim steps) -> hydra override env.time_limit=$TIME_LIMIT when SET (pilot-
+#     gated per PREREG §8; unset = the config's value, byte-identical to 08-19).
+#     API GUESS: the r2dreamer env config key is assumed to be `env.time_limit` (the
+#     genesis_pick_*.yaml files are cluster-only); verify before the pilot.
+#   * K=5 archive: every latest.pt write is still scored (15 eps, sample, seed 0), but the
+#     prune now KEEPS the checkpoints nearest 20/40/60/80/100% of STEPS (+ best 2 + newest)
+#     so selection coverage is identical across arms; ckpt_scores.tsv gains a step column.
+#   * R2D_EVAL_EXTRA: extra args appended to every eval_genesis.py call -- the hook for the
+#     cluster-side eval_genesis.py patch that must land for the block of record:
+#       --ic-file baselines/eval_ics.json --ic-set sel|hold|rnd [--ic-index k], fresh process
+#       per episode, --max-steps honoured. Until that patch lands eval_genesis.py draws its own
+#       ICs (logged as R2D-EVAL-PROTOCOL ic_file=none) -- NOT the protocol of record.
+#   * REG_KNOBS add action_repeat (config-baked 4), train_horizon, eval_horizon, budget_unit=
+#     sim_steps, reward (dense iff CONFIG matches *shaped*), demo_sha; node recorded.
+#
 # --- Submit (from the genesis_pickaplace checkout root) ---------------------------
 #   cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace
 #   CONFIG=genesis_pick_v3       SEED=0 sbatch cluster/sbatch_r2dreamer.sh   # msparity (abs joint)
@@ -32,7 +52,7 @@
 #   DUPLICATE_OK  <reason>  (unset by default; bypasses a RUN_REGISTRY refuse on an
 #             exact (script,ARM-or-CONFIG,seed,git,knobs,demo) repeat)
 #   ENV_NUM 6  BUFFER_MAX 450000  REINJECT 300000  PRETRAIN 1000  EXTRA (raw hydra
-#   overrides)  EVAL_EPS 15  EVAL_MAX_STEPS 400 (SIM steps; v3/v4 tl)  NO_EVAL
+#   overrides)  EVAL_EPS 15  EVAL_MAX_STEPS 1200 (SIM steps, protocol horizon; was 400)  TIME_LIMIT (unset)  R2D_EVAL_EXTRA ''  NO_EVAL
 #   DRYRUN=1 bash cluster/sbatch_r2dreamer.sh   # print the resolved plan, no submit
 #   -- exits BEFORE any module/conda/venv/python line; safe to run on any box.
 #
@@ -164,6 +184,10 @@ CONFIG=${CONFIG:-genesis_pick_v3}
 SEED=${SEED:-0}
 STEPS=${STEPS:-3e6}
 ARM=${ARM:-}
+EVAL_MAX_STEPS=${EVAL_MAX_STEPS:-1200}   # SIM steps, the protocol horizon (PREREG §5)
+TIME_LIMIT=${TIME_LIMIT:-}               # SIM steps; SET -> env.time_limit override (pilot-gated)
+R2D_EVAL_EXTRA=${R2D_EVAL_EXTRA:-}       # e.g. "--ic-file baselines/eval_ics.json --ic-set sel"
+case "$CONFIG" in *shaped*) REWARD=dense ;; *) REWARD=sparse ;; esac
 
 # --- ARM: explicit demo-source dir + provenance gate (M7 hardening, 08-18) --------
 # Validated up front (even under DRYRUN) so "wrong-ARM rejection" is a fast, always-
@@ -236,6 +260,7 @@ TRAIN_CMD=("$PY" train.py "env=$CONFIG" "seed=$SEED" "env.steps=$STEPS" \
   ${REINJECT:+"env.demo_reinject_every=$REINJECT"} \
   ${DUPLICATE:+"env.demo_duplicate=$DUPLICATE"} \
   ${SAVE_EVERY:+"trainer.save_every=$SAVE_EVERY"} \
+  ${TIME_LIMIT:+"env.time_limit=$TIME_LIMIT"} \
   "buffer.max_size=${BUFFER_MAX:-450000}" \
   "trainer.pretrain=${PRETRAIN:-1000}" "logdir=$LOGDIR" $RESUME ${EXTRA:-})
 # REINJECT/DUPLICATE are passed ONLY when set: genesis_pick_v5d4_delta BAKES the
@@ -246,19 +271,41 @@ TRAIN_CMD=("$PY" train.py "env=$CONFIG" "seed=$SEED" "env.steps=$STEPS" \
 # REG_ARM disambiguates a legacy (ARM-unset) launch by CONFIG, so two different
 # glob-selected demo dirs under the same blank ARM don't collide in the registry.
 REG_ARM=${ARM:-legacy-$CONFIG}
-REG_KNOBS=(config="$CONFIG" steps="$STEPS" env_num="${ENV_NUM:-6}" \
+# demo sha: sorted filename list of the dreamer-format demo dir (content sha if a
+# repeat.json/manifest.json records one); "absent" when the dir is not on this box (DRYRUN)
+DEMO_SHA=$(python3 - "$DEMO_DIR" <<'PY'
+import os, sys, json, hashlib
+d = sys.argv[1]
+if not os.path.isdir(d): print('absent'); sys.exit(0)
+files = sorted(f for f in os.listdir(d) if f.endswith('.npz'))
+sha = None
+for mf in ('manifest.json', 'repeat.json'):
+    p = os.path.join(d, mf)
+    if os.path.exists(p):
+        try: sha = json.load(open(p)).get('content_sha256')
+        except Exception: pass
+    if sha: break
+print((sha or hashlib.sha256('\n'.join(files).encode()).hexdigest())[:16])
+PY
+)
+NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
+REG_KNOBS=(config="$CONFIG" steps="$STEPS" budget_unit=sim_steps env_num="${ENV_NUM:-6}" \
            buffer_max="${BUFFER_MAX:-450000}" pretrain="${PRETRAIN:-1000}" \
-           reinject="${REINJECT:-baked}" duplicate="${DUPLICATE:-baked}")
+           reinject="${REINJECT:-baked}" duplicate="${DUPLICATE:-baked}" \
+           action_repeat=4 train_horizon="${TIME_LIMIT:-config}" eval_horizon="$EVAL_MAX_STEPS" \
+           reward="$REWARD" demo_sha="$DEMO_SHA")
 REGISTRY_PY="cluster/run_registry.py"
 
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] cd $R2D_DIR"
   echo "[dry] ${TRAIN_CMD[*]}"
-  echo "[dry] demo_dir=$DEMO_DIR logdir=$LOGDIR venv=$VENV wandb-run=$RUN_NAME"
+  echo "[dry] demo_dir=$DEMO_DIR (sha $DEMO_SHA) logdir=$LOGDIR venv=$VENV wandb-run=$RUN_NAME"
+  echo "[dry] protocol: reward=$REWARD eval_max_steps=$EVAL_MAX_STEPS time_limit=${TIME_LIMIT:-config} eval_extra='${R2D_EVAL_EXTRA}' node=$NODE_CLASS"
+  echo "[dry] archive: keep ckpts nearest 20/40/60/80/100% of $STEPS (+best2+newest); every eval_genesis.py call gets --max-steps $EVAL_MAX_STEPS $R2D_EVAL_EXTRA"
   [ -n "$ARM" ] && echo "[dry] ARM=$ARM ($ARM_NOTE) pattern=$ARM_PAT n-band=[$ARM_N_MIN,$ARM_N_MAX]"
   if [ -f "$REGISTRY_PY" ]; then
     echo "[dry] registry check:    python $REGISTRY_PY check    --script sbatch_r2dreamer.sh --arm $REG_ARM --seed $SEED --demo-dir $DEMO_DIR --registry cluster/RUN_REGISTRY.jsonl ${REG_KNOBS[*]}"
-    echo "[dry] registry register: python $REGISTRY_PY register --script sbatch_r2dreamer.sh --arm $REG_ARM --seed $SEED --demo-dir $DEMO_DIR --registry cluster/RUN_REGISTRY.jsonl ${REG_KNOBS[*]}"
+    echo "[dry] registry register: python $REGISTRY_PY register --script sbatch_r2dreamer.sh --arm $REG_ARM --seed $SEED --demo-dir $DEMO_DIR --registry cluster/RUN_REGISTRY.jsonl ${REG_KNOBS[*]} --stage start"
   else
     # TODO(run_registry): cluster/run_registry.py does not exist yet on this
     # checkout. Once the sibling build lands (paper/AUDIT_run_identity_2026-08-17.md
@@ -319,7 +366,7 @@ elif [ -f "$REGISTRY_PY" ]; then
     --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
   # register AT LAUNCH: a preempted/crashed 3M run must still leave its line
   python3 "$REGISTRY_PY" register --script sbatch_r2dreamer.sh --arm "$REG_ARM" --seed "$SEED" \
-    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+    --demo-dir "$DEMO_DIR" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}" --stage start
 else
   echo "NOTE: cluster/run_registry.py not found -- run-identity duplicate check skipped (TODO hook)"
 fi
@@ -338,7 +385,8 @@ if [ -f "$LOGDIR/.claim" ]; then
 fi
 echo "${SLURM_JOB_ID:-none}" > "$LOGDIR/.claim"
 
-echo "== r2dreamer $CONFIG seed $SEED start $(date) demo=$DEMO_DIR ($N_NPZ eps) logdir=$LOGDIR"
+echo "== r2dreamer $CONFIG seed $SEED start $(date) demo=$DEMO_DIR ($N_NPZ eps, sha $DEMO_SHA) logdir=$LOGDIR node=$NODE_CLASS host=$(hostname)"
+echo "R2D-EVAL-PROTOCOL reward=$REWARD eval_max_steps=$EVAL_MAX_STEPS time_limit=${TIME_LIMIT:-config} ic_file=$( [ -n "$R2D_EVAL_EXTRA" ] && echo "$R2D_EVAL_EXTRA" || echo none ) (none = eval_genesis.py draws its own ICs -- NOT the protocol of record; see header)"
 
 # --- background wandb sync (idempotent; safe on the live run) ---------------------
 (
@@ -361,7 +409,19 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
     T1=$(stat -c %Y "$LOGDIR/latest.pt" 2>/dev/null || echo 0)
     if [ "$T1" != "$T0" ] && [ "$T1" -gt 0 ]; then
       T0=$T1; sleep 15
-      CK="$LOGDIR/ckpt_$T1.pt"; cp "$LOGDIR/latest.pt" "$CK"
+      # step stamp: last env_step-like key in metrics.jsonl (falls back to the mtime)
+      STEP=$(python3 - "$LOGDIR/metrics.jsonl" <<'PY' 2>/dev/null
+import json, sys
+try:
+    last = [l for l in open(sys.argv[1]).read().splitlines() if l.strip()][-1]
+    d = json.loads(last)
+    for k in ('env_step', 'env_steps', 'step', 'total_steps'):
+        if k in d: print(int(float(d[k]))); break
+except Exception:
+    pass
+PY
+)
+      CK="$LOGDIR/ckpt_${STEP:-$T1}.pt"; cp "$LOGDIR/latest.pt" "$CK"
       # DEVICE CPU: precaution only -- keeps a second CUDA process off the
       # training GPU. (CORRECTION 2026-08-11: the "jobs died at 230k" alarm
       # that prompted this was a monitoring artifact -- sync_runs_to_wandb
@@ -369,14 +429,31 @@ trap 'kill $SYNC_PID 2>/dev/null || true' EXIT
       # lagged; the trainers were healthy throughout. wandb run state is NOT
       # a liveness signal for these runs; poll env_step growth instead.)
       P=$( (cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$CK" \
-            --episodes 15 --mode sample --seed 0 --device cpu --torch-threads 2 \
-            --append-metrics "$LOGDIR" 2>/dev/null) \
+            --episodes 15 --max-steps "$EVAL_MAX_STEPS" --mode sample --seed 0 --device cpu --torch-threads 2 \
+            --append-metrics "$LOGDIR" $R2D_EVAL_EXTRA 2>/dev/null) \
            | grep -oP 'picked \K[0-9.]+' | head -1 )
-      echo -e "$CK\t${P:-ERR}" >> "$LOGDIR/ckpt_scores.tsv"
-      echo "== ckpt eval: $CK picked=${P:-ERR}"
-      # prune: keep best 2 by score + the newest file
-      NEWEST=$(ls -t "$LOGDIR"/ckpt_*.pt | head -1)
-      KEEP=$( { sort -k2 -rn "$LOGDIR/ckpt_scores.tsv" | head -2 | cut -f1; echo "$NEWEST"; } | sort -u )
+      echo -e "$CK\t${P:-ERR}\t${STEP:-NA}" >> "$LOGDIR/ckpt_scores.tsv"
+      echo "== ckpt eval: $CK step=${STEP:-NA} picked=${P:-ERR}"
+      # prune: keep best 2 by score + the newest + the K=5 fraction checkpoints
+      # (nearest step to 20/40/60/80/100% of STEPS) -- identical coverage across arms
+      KEEP=$(python3 - "$LOGDIR/ckpt_scores.tsv" "$STEPS" <<'PY'
+import sys, os
+rows = []
+for l in open(sys.argv[1]):
+    p = l.rstrip('\n').split('\t')
+    if len(p) < 2 or not os.path.exists(p[0]): continue
+    try: sc = float(p[1])
+    except ValueError: sc = -1.0
+    st = int(p[2]) if len(p) > 2 and p[2].isdigit() else None
+    rows.append((p[0], sc, st))
+keep = set(r[0] for r in sorted(rows, key=lambda r: r[1], reverse=True)[:2])
+if rows: keep.add(max(rows, key=lambda r: os.path.getmtime(r[0]))[0])
+total = float(sys.argv[2]); withstep = [r for r in rows if r[2] is not None]
+for f in (0.2, 0.4, 0.6, 0.8, 1.0):
+    if withstep: keep.add(min(withstep, key=lambda r: abs(r[2] - f * total))[0])
+print('\n'.join(sorted(keep)))
+PY
+)
       for F in "$LOGDIR"/ckpt_*.pt; do echo "$KEEP" | grep -qxF "$F" || rm -f "$F"; done
     fi
   done
@@ -403,8 +480,8 @@ kill $ARCH_PID 2>/dev/null || true
 set +e +o pipefail
 if [ -z "${NO_EVAL:-}" ]; then
   ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/latest.pt" \
-      --episodes "${EVAL_EPS:-15}" --max-steps "${EVAL_MAX_STEPS:-400}" \
-      --mode sample --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee "$LOGDIR/eval.log"
+      --episodes "${EVAL_EPS:-15}" --max-steps "$EVAL_MAX_STEPS" \
+      --mode sample --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" $R2D_EVAL_EXTRA ) 2>&1 | tee "$LOGDIR/eval.log"
   _erc=${PIPESTATUS[0]}; [ "$_erc" -eq 0 ] || echo "WARN: final eval exited rc=$_erc (metrics line may still be present -- check $LOGDIR/metrics.jsonl)"
   BEST=$(sort -k2 -rn "$LOGDIR/ckpt_scores.tsv" 2>/dev/null | head -1 | cut -f1)
   if [ -n "$BEST" ] && [ -f "$BEST" ]; then
@@ -412,10 +489,10 @@ if [ -z "${NO_EVAL:-}" ]; then
     echo "== confirming best checkpoint $BEST (selected on seed-0 eval)"
     for ES in 1 2 3; do
       ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/BEST_selected.pt" \
-          --episodes 15 --mode sample --seed $ES --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee -a "$LOGDIR/confirm.log"
+          --episodes 15 --max-steps "$EVAL_MAX_STEPS" --mode sample --seed $ES --device cuda --wandb --append-metrics "$LOGDIR" $R2D_EVAL_EXTRA ) 2>&1 | tee -a "$LOGDIR/confirm.log"
     done
     ( cd "$R2D_DIR" && "$PY" eval_genesis.py --checkpoint "$LOGDIR/BEST_selected.pt" \
-        --episodes 15 --mode mode --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" ) 2>&1 | tee -a "$LOGDIR/confirm.log"
+        --episodes 15 --max-steps "$EVAL_MAX_STEPS" --mode mode --seed 0 --device cuda --wandb --append-metrics "$LOGDIR" $R2D_EVAL_EXTRA ) 2>&1 | tee -a "$LOGDIR/confirm.log"
     grep -h "15 episodes" "$LOGDIR/confirm.log" | tail -4
   else
     echo "WARN: no scored checkpoints -- lottery coverage produced nothing (see ckpt_scores.tsv)"
@@ -425,6 +502,6 @@ fi
 # picked from the LAST eval/* line in metrics.jsonl (the latest.pt seed-0 eval;
 # BEST-checkpoint confirmations, when present, are the paper number -- see log).
 _pk=$(grep -h '"eval/picked"' "$LOGDIR/metrics.jsonl" 2>/dev/null | tail -1 | grep -oE '"eval/picked": *[0-9.]+' | grep -oE '[0-9.]+$')
-echo "R2D-RESULT arm=${ARM:-legacy} seed=$SEED config=$CONFIG picked=${_pk:-NA} logdir=$LOGDIR"
+echo "R2D-RESULT arm=${ARM:-legacy} seed=$SEED config=$CONFIG reward=$REWARD eval_max_steps=$EVAL_MAX_STEPS picked=${_pk:-NA} best=$(basename "${BEST:-none}") logdir=$LOGDIR node=$NODE_CLASS"
 echo "== r2dreamer $CONFIG seed $SEED done $(date)"
 exit 0

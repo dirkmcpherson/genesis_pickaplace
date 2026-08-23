@@ -22,10 +22,11 @@ with grip open) at which FullTaskEnv(pick) would have TERMINATED online. The RLP
 All modes are plain copies of the source npz (same keys, same uids, same teacher), so every
 downstream gate (filename pattern ^1[0-9]{5}\\.npz$ for succ; ^[0-9]{6}\\.npz$ for tiptrunc;
 ^[15][0-9]{5}\\.npz$ for r2dfails; RUN_REGISTRY demo fingerprint) works unchanged; a manifest.json
-records provenance. KNOWN LIMITATION (impl audit 2026-08-22 F5): tiptrunc removes the post-
-termination chain but the encoder (delta_encode_transitions) still emits the cut tape's last
-transition with done=False, i.e. one dangling bootstrap per truncated tape remains; a proper
-env-terminal guard in the encoder is the real fix and is a trainer change (registered follow-up).
+records provenance. F5 (impl audit 2026-08-22) CLOSED 2026-08-23: truncated tapes now carry per-frame
+`terminated`/`tipped` flags on the cut frame and the encoders' default-on terminal guard
+(full_env.terminal_from_tape) emits done=True on the transition that reached it -- no
+dangling bootstrap. Under --demo-terminal-guard on the plain dDP set gets the same cut at
+encode time, so tiptrunc is now a data-side mirror of the guard (kept for the registered arm).
 
 Usage (cluster login node, repo root; m1all_harvest is already rsynced there):
   python baselines/make_dDPsucc.py --mode succ
@@ -168,6 +169,16 @@ def main():
                 d[k] = v
             if 'n' in d:
                 d['n'] = np.array(n_out)
+            # Recorded terminal (2026-08-23, AUDIT_impl F5 / PREREG §4.3): per-FRAME
+            # flags -- the LAST kept frame is the one the env tip rule fired on, so the
+            # transition that reached it is terminal. full_env.terminal_from_tape reads
+            # these (legacy frame layout: terminal transition = flagged frame - 1) and
+            # the default-on encoder guard emits done=True there instead of a dangling
+            # bootstrap. Consumers that ignore them still get the guard's own tip rule.
+            term = np.zeros(n_out, dtype=bool); term[-1] = True
+            d['terminated'] = term
+            d['tipped'] = term.copy()
+            d['terminal_kind'] = np.array('tip')
             np.savez_compressed(out, **d)
         with open(out, 'rb') as fh:
             h.update(name.encode()); h.update(fh.read())

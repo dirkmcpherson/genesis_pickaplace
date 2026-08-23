@@ -140,6 +140,38 @@ def main():
                          "(silent-default rule); it travels in the checkpoint "
                          "sidecar so wandb_eval --delta-ref auto integrates the "
                          "policy in the SAME space it trained in.")
+    # --- demo-set protections (PREREG_final_round_robin_2026-08-23 §4) ---
+    ap.add_argument('--demo-terminal-guard', choices=['on', 'off'], default='on',
+                    help="LEGACY tapes only (see --demo-format). on (DEFAULT since "
+                         "2026-08-23): every demo tape ends where the env would have "
+                         "terminated -- tip rule (grip commanded open & tilt>60) -> "
+                         "done=True, r=0, later frames dropped; scope=pick -> done=True at "
+                         "the pick and later frames dropped; cap -> bootstrap. One "
+                         "definition: full_env.terminal_from_tape. off = the pre-08-23 "
+                         "tensors (fail tapes whole with done=False -- the unanchored "
+                         "bootstrap chains behind dDP_RLPD 0/6, AUDIT_impl F1).")
+    ap.add_argument('--demo-format', choices=['legacy', 'native'], default='legacy',
+                    help="legacy (default): stride-1 state/command tapes re-encoded by "
+                         "train_sacfd_full's delta encoders. native: contract-v1 tapes "
+                         "from baselines/record_demos.py (one row per decision recorded "
+                         "through THIS env: actions_delta/rewards/terminated verbatim, no "
+                         "re-encoding, no relabel predicate); the tape's action_repeat / "
+                         "delta_cap / delta_leash / delta_ref stamps MUST equal the run's.")
+    ap.add_argument('--demo-shaping', choices=['auto', 'on', 'off'], default='auto',
+                    help="dense arms: relabel the DEMO half with the SAME potential the "
+                         "env pays online (full_env.pick_shaping_phi on the recorded "
+                         "eef_pos, gamma = --gamma, phi(terminal)=0). Needs --demo-format "
+                         "native (legacy tapes carry no eef). auto (default) = on for "
+                         "native tapes when --pick-shaping on, off otherwise; 'on' with "
+                         "legacy tapes is refused (no silent half-shaped buffer).")
+    ap.add_argument('--pick-shaping-terminal-zero', choices=['on', 'off'], default='on',
+                    help="phi(terminal)=0 in the env's shaping (Ng et al. episodic form; "
+                         "PREREG §2). off reproduces the 08-19 dense runs' phi(s_T)!=0.")
+    ap.add_argument('--ckpt-fracs', default='0.2,0.4,0.6,0.8,1.0',
+                    help='archive model+sidecar at these fractions of --steps into '
+                         '<out-dir>/ckpt_<pct>/ (PREREG §5: K=5 archived checkpoints per '
+                         'run; selection on the sel ICs, confirmation on hold+rnd). '
+                         'rlpd_final.zip is still written unchanged.')
     ap.add_argument('--no-wandb', action='store_true')
     ap.add_argument('--run-name', default=None)
     ap.add_argument('--project', default='genesis_paper', help='wandb project')
@@ -157,8 +189,29 @@ def main():
                                   delta_encode_transitions_repeat,
                                   delta_encode_transitions_measured,
                                   delta_encode_transitions_measured_repeat,
-                                  hold_region_encode_transitions, print_hold_census)
+                                  hold_region_encode_transitions, print_hold_census,
+                                  native_demo_transitions, print_native_census,
+                                  demo_dir_sha256)
     assert args.action_repeat >= 1, args.action_repeat
+    guard = (args.demo_terminal_guard == 'on')
+    native = (args.demo_format == 'native')
+    if native:
+        assert args.action_mode == 'delta_joint' and args.delta_ref == 'target', (
+            'contract-v1 tapes are recorded through FullTaskEnv(delta_joint, '
+            f'delta_ref=target); got action_mode={args.action_mode} delta_ref={args.delta_ref}')
+        assert args.pick_hold_reward == 'off', 'no hold-reward relabel for native tapes (not built)'
+        assert args.scope == 'pick', 'contract-v1 tapes are pick-scope recordings'
+    if args.demo_shaping == 'auto':
+        demo_shaping = native and args.pick_shaping == 'on'
+    else:
+        demo_shaping = (args.demo_shaping == 'on')
+    if demo_shaping:
+        assert native, ('--demo-shaping on needs --demo-format native (legacy tapes carry no '
+                        'eef_pos; a half-shaped buffer is the F10 asymmetry, refused)')
+        assert args.pick_shaping == 'on', '--demo-shaping on without --pick-shaping on makes no sense'
+    elif native and args.pick_shaping == 'on':
+        print('[demos] WARNING: --pick-shaping on with --demo-shaping off: the demo half '
+              'stays sparse while online transitions are shaped (F10 asymmetry).', flush=True)
     hold_reward = args.pick_hold_reward == 'on'
     if hold_reward:
         # every precondition stated up front, none silently defaulted
@@ -183,7 +236,11 @@ def main():
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
                       pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k,
-                      pick_shaping=(args.pick_shaping == 'on'))
+                      pick_shaping=(args.pick_shaping == 'on'),
+                      # shaping gamma = the AGENT's discount (Ng invariance needs them
+                      # equal; before 08-23 the env silently used 0.998 whatever --gamma was)
+                      pick_shaping_gamma=args.gamma,
+                      pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'))
     # asserts: no silent defaults -- the env must be running the mode we asked for
     assert env.scope == args.scope, (env.scope, args.scope)
     assert env.action_mode == args.action_mode, (env.action_mode, args.action_mode)
@@ -191,6 +248,8 @@ def main():
     assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
     assert env.pick_hold_reward is hold_reward, (env.pick_hold_reward, hold_reward)
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
+    assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
+    assert env.pick_shaping_terminal_zero == (args.pick_shaping_terminal_zero == 'on')
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
           f'delta_cap={env.delta_cap} delta_leash={env.delta_leash} '
@@ -227,19 +286,37 @@ def main():
           f'q_watchdog={q_watch:.2f} '
           f'scope={args.scope} action_mode={args.action_mode} '
           f'delta_ref={args.delta_ref} '
-          f'action_repeat={args.action_repeat} demo_dir={args.demo_dir}', flush=True)
+          f'action_repeat={args.action_repeat} demo_dir={args.demo_dir} '
+          f'demo_format={args.demo_format} demo_terminal_guard={args.demo_terminal_guard} '
+          f'demo_shaping={"on" if demo_shaping else "off"} '
+          f'pick_shaping_terminal_zero={args.pick_shaping_terminal_zero} '
+          f'train_max_steps={args.train_max_steps} ckpt_fracs={args.ckpt_fracs}', flush=True)
     print(model.critic, flush=True)
 
     # ---- demos: SAME encoder as train_sacfd_full (bit-identical tensors) ----
     paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
     assert paths, f'no npz in {args.demo_dir}'
-    if hold_reward:
+    demo_sha = demo_dir_sha256(paths)
+    print(f'[demos] {len(paths)} npz in {args.demo_dir} content_sha256={demo_sha[:16]}... '
+          f'format={args.demo_format} terminal_guard={args.demo_terminal_guard} '
+          f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
+    if native:
+        transitions, census = native_demo_transitions(
+            paths, expect=dict(action_repeat=args.action_repeat, delta_cap=env.delta_cap,
+                               delta_leash=env.delta_leash, delta_ref=args.delta_ref),
+            gamma=args.gamma, shaping=demo_shaping,
+            phi_scale=FullTaskEnv.PICK_SHAPING_SCALE)
+        print_native_census(census, tag=args.demo_dir)
+        assert census['n_transitions'] > 0, 'empty native demo set'
+        norm = None
+    elif hold_reward:
         # REWARD-DENSITY path: per-frame hold reward, tape cut at the demo's own K-th
         # consecutive held frame. Same pick_z INSTANCE the env runs on and the same
         # full_env.pick_hold_held predicate the env calls -- the demo reward stream and
         # the env reward stream are one definition, not two implementations.
         transitions, census = hold_region_encode_transitions(
-            paths, env.pick_z, env.delta_cap, args.pick_hold_k, args.delta_ref)
+            paths, env.pick_z, env.delta_cap, args.pick_hold_k, args.delta_ref,
+            terminal_guard=guard)
         print_hold_census(census, tag=f'{args.demo_dir} ref={args.delta_ref}')
         assert census['n_terminal'] > 0, (
             f'no demo in {args.demo_dir} shows {args.pick_hold_k} consecutive held '
@@ -266,14 +343,16 @@ def main():
                     if args.action_repeat > 1 else delta_encode_transitions)
         if args.action_repeat > 1:
             transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
-                               args.action_repeat)
+                               args.action_repeat, terminal_guard=guard)
         else:
-            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap)
+            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
+                               terminal_guard=guard)
         print(f'[demos] encoder={_enc.__name__} delta_ref={args.delta_ref} '
-              f'cap={env.delta_cap} leash={env.delta_leash}', flush=True)
+              f'cap={env.delta_cap} leash={env.delta_leash} terminal_guard={guard}', flush=True)
         norm = None                    # actions already in normalized delta space
     else:
-        transitions, _ = relabel_full(paths, env.pick_z)
+        transitions, _ = relabel_full(paths, env.pick_z, scope=args.scope,
+                                      terminal_guard=guard)
         if args.scope == 'pick':
             transitions = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
                            (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
@@ -281,8 +360,11 @@ def main():
     import torch as th
     demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
     model.set_demo_data(demo)
+    n_done = sum(1 for t in transitions if t[4])
+    n_done_r0 = sum(1 for t in transitions if t[4] and t[2] <= 0.0)
     print(f'[demos] {len(paths)} eps -> {demo.n} transitions in the IMMUTABLE demo '
-          f'buffer (50% of every batch), {demo.n_rewarded} rewarded', flush=True)
+          f'buffer (50% of every batch), {demo.n_rewarded} rewarded, {n_done} terminal '
+          f'({n_done_r0} zero-reward terminals = tip-guarded fails)', flush=True)
 
     # ---- output + action_mode sidecars (the silent-default-bug rule: control mode
     # travels WITH the artifact so wandb_eval --action-mode auto reads it) ----
@@ -307,7 +389,16 @@ def main():
                # checkpoint's return curve was earned under. (Eval is unaffected: it
                # measures the pick, not the return -- wandb_eval ignores these keys.)
                'pick_hold_reward': args.pick_hold_reward,
-               'pick_hold_k': args.pick_hold_k, 'pick_shaping': args.pick_shaping}
+               'pick_hold_k': args.pick_hold_k, 'pick_shaping': args.pick_shaping,
+               # 2026-08-23 demo-set protections + budget/horizon (PREREG §2, §4)
+               'demo_format': args.demo_format,
+               'demo_terminal_guard': args.demo_terminal_guard,
+               'demo_shaping': ('on' if demo_shaping else 'off'),
+               'pick_shaping_terminal_zero': args.pick_shaping_terminal_zero,
+               'pick_shaping_gamma': args.gamma, 'gamma': args.gamma,
+               'train_max_steps': args.train_max_steps, 'steps': args.steps,
+               'steps_unit': 'decisions', 'demo_sha256': demo_sha,
+               'demo_n_eps': len(paths), 'seed': args.seed}
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
@@ -339,10 +430,39 @@ def main():
                     self._sidecar_json)
             return ok
 
+    from stable_baselines3.common.callbacks import BaseCallback
+
+    class ArchiveCheckpointCallback(BaseCallback):
+        """PREREG 2026-08-23 §5: K archived checkpoints at fixed fractions of the
+        budget, each with its sidecar (+ step/frac), in <out>/ckpt_<pct>/rlpd_ckpt.zip
+        -- selection on the `sel` ICs, confirmation on `hold`+`rnd`. Fires on the
+        first step at or past each threshold; the 100% one is also written by the
+        final save below (kept for callers that read rlpd_final.zip)."""
+
+        def __init__(self, fracs, total, out_dir, sidecar):
+            super().__init__()
+            self._thr = sorted(set(max(1, int(round(float(f) * total))) for f in fracs))
+            self._done = set(); self._out = pl.Path(out_dir); self._side = dict(sidecar)
+
+        def _on_step(self):
+            for thr in self._thr:
+                if thr in self._done or self.num_timesteps < thr:
+                    continue
+                pct = int(round(100.0 * thr / max(1, self.model._total_timesteps)))
+                d = self._out / f'ckpt_{pct:03d}'; d.mkdir(parents=True, exist_ok=True)
+                self.model.save(str(d / 'rlpd_ckpt'))
+                side = dict(self._side, ckpt_step=int(self.num_timesteps), ckpt_frac=thr / max(1, self.model._total_timesteps))
+                (d / 'rlpd_ckpt.action_mode.json').write_text(json.dumps(side))
+                self._done.add(thr)
+                print(f'[ckpt] archived {d}/rlpd_ckpt.zip @ {self.num_timesteps} decisions', flush=True)
+            return True
+
     run = init_wandb(args, name=args.run_name or out.name, tags=('rlpd',),
                      project=args.project)
     cbs = [SidecarCheckpointCallback(json.dumps(sidecar), save_freq=50_000,
                                      save_path=str(out), name_prefix='rlpd'),
+           ArchiveCheckpointCallback([float(f) for f in args.ckpt_fracs.split(',') if f.strip()],
+                                     args.steps, out, sidecar),
            WandbScalarCallback(run)]
     if args.eval_freq:
         cbs.append(VideoEvalCallback(

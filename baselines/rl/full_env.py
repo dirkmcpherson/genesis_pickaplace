@@ -81,6 +81,135 @@ def pick_hold_held(can_z, grip_cmd, pick_z):
             & (np.asarray(grip_cmd) > GRIP_CLOSED_FRAC))
 
 
+# --- ONE definition of the pick-scope shaping potential (PREREG 2026-08-23 §2) --------
+# phi(s) = -SCALE * ||eef - can||. The ENV applies it once per decision in step(); the
+# DEMO encoder (train_sacfd_full.native_demo_transitions, --demo-shaping) applies the
+# same function to the recorded eef_pos / can xyz of contract-v1 tapes. Both sides CALL
+# THIS FUNCTION -- the two shaped reward streams must be one definition, not two
+# implementations (the grip-column / control-mode bug family lived in duplicated math).
+# phi(terminal) = 0 by Ng/Harada/Russell's episodic form (the absorbing state carries no
+# potential); callers pass terminal=True for a terminated transition's s' (see step()).
+def pick_shaping_phi(eef_xyz, can_xyz, scale=None, terminal=False):
+    """-SCALE * ||eef - can|| (training-only approach potential); 0.0 at a terminal."""
+    if terminal:
+        return 0.0
+    scale = FullTaskEnv.PICK_SHAPING_SCALE if scale is None else float(scale)
+    ee = np.asarray(eef_xyz, dtype=np.float64)[:3]
+    bp = np.asarray(can_xyz, dtype=np.float64)[:3]
+    return -scale * float(np.linalg.norm(ee - bp))
+
+
+# --- ONE definition of the env terminal, readable OFFLINE from a demo tape --------------
+# (PREREG_final_round_robin_2026-08-23 §4.3). The env terminates on (a) the hardened
+# pick (scope pick), (b) the tip rule: can tilt > TIP_DEG while the grip is COMMANDED
+# open (< GRIP_OPEN), evaluated AFTER the step; (c) nested (scope full); it truncates at
+# max_steps. Demo encoders used to emit fail tapes whole with done=False to the last
+# frame, so the critic bootstrapped through states the env would never continue from
+# (ROUND_ROBIN_RESULTS_2026-08-22 "Why dDP_RLPD < dH_RLPD"; AUDIT_impl F1). Every
+# consumer now asks THIS function where the tape ends.
+#
+# Two tape layouts:
+#   * contract-v1 (record_demos.py): one ROW per decision; `terminated[t]` says row t's
+#     transition terminated; `picked/tipped[t]` say why. Read verbatim.
+#   * legacy stride-1 (states (T,17) / actions (T,7), transitions i = 0..T-2 taking
+#     states[i] -> states[i+1] under actions[i]): env-consistent tip index is the FIRST
+#     transition i with actions[i,6] < GRIP_OPEN and tilt(states[i+1]) > TIP_DEG (the env
+#     checks the command just applied and the pose after the step). The pick index is
+#     relabel_full's j_pick (its proxy predicate at the window-start state): the
+#     hardened env pick (|eef-can| sustained PICK_SUSTAIN frames) is NOT computable
+#     without eef, so offline pick placement is approximate for legacy tapes -- one
+#     warning per process. A legacy tape that carries a per-FRAME `terminated` array
+#     (make_dDPsucc --mode tiptrunc) flags the frame the env rule fired on; the
+#     terminal TRANSITION is the one that reached it (index - 1, floored at 0).
+_TERMINAL_LEGACY_WARNED = [False]
+PICK_SUSTAIN_NOTE = 'sustained PICK_SUSTAIN=10 frames'
+
+
+def tape_tilt_deg(quats):
+    """Per-frame can tilt (deg) for an (n,4) wxyz quat array -- calls the env's own
+    replay_harness.tilt_deg per row (reuse, not re-implementation)."""
+    q = np.asarray(quats, dtype=np.float64)
+    return np.asarray([tilt_deg(row) for row in q], dtype=np.float64)
+
+
+def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
+                       tip_deg=None, grip_open=None):
+    """-> dict(t_term, kind, reward, layout). t_term = index of the terminal
+    TRANSITION (row for contract-v1, transition index for legacy) or None when the
+    tape ends by truncation/cap; kind in {'pick','tip','nested','other','none'}.
+
+    tape: np.load(...) NpzFile or dict. pick_z: required for legacy pick detection
+    (scope='pick') unless j_pick (relabel_full's pick transition) is given. scope
+    'pick' terminates on the pick; 'full' only on tip (and nested, which relabel_full
+    itself marks). tip_deg/grip_open default to FullTaskEnv's constants.
+    """
+    tip_deg = FullTaskEnv.TIP_DEG if tip_deg is None else float(tip_deg)
+    grip_open = FullTaskEnv.GRIP_OPEN if grip_open is None else float(grip_open)
+    keys = set(tape.files) if hasattr(tape, 'files') else set(tape.keys())
+    is_v1 = ('actions_delta' in keys) and ('terminated' in keys)
+    if is_v1:
+        term = np.asarray(tape['terminated'], dtype=bool)
+        if not term.any():
+            return dict(t_term=None, kind='none', reward=0.0, layout='v1')
+        t = int(np.argmax(term))
+        picked = np.asarray(tape['picked'], dtype=bool) if 'picked' in keys else None
+        tipped = np.asarray(tape['tipped'], dtype=bool) if 'tipped' in keys else None
+        if picked is not None and picked[t]:
+            kind = 'pick'
+        elif tipped is not None and tipped[t]:
+            kind = 'tip'
+        else:
+            kind = 'other'
+        rew = float(np.asarray(tape['rewards'])[t]) if 'rewards' in keys else (
+            1.0 if kind == 'pick' else 0.0)
+        return dict(t_term=t, kind=kind, reward=rew, layout='v1')
+    # ---- legacy stride-1 frame tape ----
+    s = np.asarray(tape['states'], dtype=np.float64)
+    a = np.asarray(tape['actions'], dtype=np.float64)
+    n = len(s) - 1                       # transitions
+    if n < 1:
+        return dict(t_term=None, kind='none', reward=0.0, layout='legacy')
+    cands = []
+    if 'terminated' in keys:             # per-FRAME flag (tiptrunc): transition that reached it
+        tf = np.asarray(tape['terminated'], dtype=bool)
+        if tf.any():
+            kind = 'tip'
+            if 'terminal_kind' in keys:
+                kind = str(tape['terminal_kind'].item() if hasattr(tape['terminal_kind'], 'item')
+                           else tape['terminal_kind'])
+            cands.append((max(int(np.argmax(tf)) - 1, 0), kind))
+    tilt_next = tape_tilt_deg(s[1:, 11:15])          # pose AFTER each transition
+    tip = (a[:n, 6] < grip_open) & (tilt_next > tip_deg)
+    if tip.any():
+        cands.append((int(np.argmax(tip)), 'tip'))
+    if scope == 'pick':
+        if j_pick is None:
+            if pick_z is None:
+                raise ValueError('terminal_from_tape(scope=pick) on a legacy tape needs '
+                                 'pick_z or j_pick (relabel_full\'s pick transition)')
+            if not _TERMINAL_LEGACY_WARNED[0]:
+                print('[terminal_from_tape] WARNING: legacy tape -- pick placement uses '
+                      'the relabeler proxy (can above pick_z & grip closed at the '
+                      'window-start state); the hardened env pick (eef distance, '
+                      f'{PICK_SUSTAIN_NOTE}) is not computable offline. Exact only for '
+                      'contract-v1 tapes.', flush=True)
+                _TERMINAL_LEGACY_WARNED[0] = True
+            pf = np.asarray(pick_hold_held(s[:n, 10], a[:n, 6], pick_z), dtype=bool)
+            j_pick = int(np.argmax(pf)) if pf.any() else -1
+        if j_pick is not None and j_pick > 0:
+            cands.append((int(j_pick), 'pick'))
+    if not cands:
+        return dict(t_term=None, kind='none', reward=0.0, layout='legacy')
+    t, kind = min(cands, key=lambda c: c[0])
+    rew = 0.0
+    if kind == 'pick':
+        rew = STAGE_REWARD['picked']
+    elif kind == 'tip':
+        rew = FullTaskEnv.TIP_PENALTY if scope != 'place' else FullTaskEnv.PLACE_TIP_PENALTY
+    return dict(t_term=int(t), kind=kind, reward=float(rew), layout='legacy')
+
+
+
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
@@ -135,7 +264,7 @@ class FullTaskEnv(gym.Env):
                  entry_bank=None, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
-                 pick_shaping_gamma=None):
+                 pick_shaping_gamma=None, pick_shaping_terminal_zero=True):
         super().__init__()
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
@@ -199,6 +328,12 @@ class FullTaskEnv(gym.Env):
         # gamma MUST match the consuming agent's discount for exact Ng-invariance
         # (RLPD 0.998 default; r2dreamer passes 0.999, dv3 0.997).
         self._pick_gamma = float(pick_shaping_gamma) if pick_shaping_gamma else self.PICK_SHAPING_GAMMA
+        # phi(terminal) = 0 (PREREG 2026-08-23 §2; AUDIT_sources §6): Ng et al.'s
+        # episodic form gives the absorbing state zero potential, so a terminated
+        # decision pays F = gamma*0 - phi(s) = -phi(s). The 08-19 dense round left
+        # phi(s_T) = -2*d_T (a bias against terminating, small at the pick, up to -1 at a
+        # tip); pass pick_shaping_terminal_zero=False ONLY to reproduce those runs.
+        self.pick_shaping_terminal_zero = bool(pick_shaping_terminal_zero)
         self._pick_phi_prev = 0.0
         self.genv = GenesisCanEnv(backend=backend, render_size=render_size,
                                   camera_rig=camera_rig,
@@ -274,10 +409,12 @@ class FullTaskEnv(gym.Env):
         self._dj_qmeas = q.copy()
 
     def _pick_phi(self):
-        """-SCALE * ||eef - can||, the pick-scope approach potential (training-only)."""
+        """-SCALE * ||eef - can||, the pick-scope approach potential (training-only).
+        Delegates to the module-level pick_shaping_phi -- the same function the demo
+        encoder applies to recorded eef_pos (one definition)."""
         ee = np.asarray(self.genv.tool_pos(), dtype=np.float64)
         bp = np_(self.genv.w['bottle'].get_pos())
-        return -self.PICK_SHAPING_SCALE * float(np.linalg.norm(ee[:3] - np.asarray(bp[:3], dtype=np.float64)))
+        return pick_shaping_phi(ee, bp, scale=self.PICK_SHAPING_SCALE)
 
     def _place_phi(self, bp):
         """Shaping potential: -SCALE * xy-distance(can center, shelf target)."""
@@ -409,7 +546,10 @@ class FullTaskEnv(gym.Env):
             # For action_repeat=1 this is numerically identical to the old
             # per-substep placement (same phi points, same formula). Terminal
             # steps are still shaped (runs after the break).
-            phi = self._pick_phi()
+            # phi(terminal) = 0: a TERMINATED decision's successor is the absorbing
+            # state (no potential). Truncation is not a terminal -- s' keeps its phi
+            # and the critic bootstraps there.
+            phi = 0.0 if (terminated and self.pick_shaping_terminal_zero) else self._pick_phi()
             total_reward += self._pick_gamma * phi - self._pick_phi_prev
             self._pick_phi_prev = phi
         return obs, total_reward, terminated, truncated, info

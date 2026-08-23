@@ -26,7 +26,10 @@ def run_eval(env, policy_action, episodes, policy_reset=None, verbose=True,
     """
     import cv2  # local import: BC/SAC paths may run without cv2 loaded
 
-    agg = dict(picked=0, placed=0, contact=0, nested=0, n=0)
+    # 'episodes': per-episode records (ic kwargs, steps, stage flags) -- added 08-23 for the
+    # one-harness protocol (PREREG §5: per-episode JSON, asserted denominators). Extra key
+    # only; every existing consumer reads picked/placed/contact/nested/n unchanged.
+    agg = dict(picked=0, placed=0, contact=0, nested=0, n=0, episodes=[])
     record = record_dir is not None and env.render_size is not None \
         and env.w.get('cam') is not None
     if record:
@@ -35,15 +38,20 @@ def run_eval(env, policy_action, episodes, policy_reset=None, verbose=True,
         obs = env.reset(**ep)
         if policy_reset is not None:
             policy_reset()
-        done, info, frames = False, {}, []
+        done, info, frames, n_steps = False, {}, [], 0
         while not done:
             action = policy_action(obs)
             obs, done, info = env.step(action)
+            n_steps += 1
             if record:
                 frames.append(np.asarray(env.w['cam'].render()[0])[:, :, ::-1])
         for k in STAGES:
             agg[k] += bool(info.get(k))
         agg['n'] += 1
+        agg['episodes'].append(dict(
+            index=i, ic={k: (list(v) if isinstance(v, (tuple, list, np.ndarray)) else v)
+                         for k, v in ep.items()},
+            n_steps=int(n_steps), **{k: bool(info.get(k)) for k in STAGES}))
         if verbose:
             print(f"{ep.get('uid')} ep{i}: picked={info.get('picked')} "
                   f"placed={info.get('placed')} contact={info.get('contact')} "

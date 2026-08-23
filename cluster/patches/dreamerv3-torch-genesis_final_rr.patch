@@ -1,0 +1,449 @@
+dreamerv3-torch-genesis — FINAL ROUND ROBIN patch (2026-08-23, genesis_pickaplace/cluster/patches/)
+===============================================================================================
+Companion to genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md (§4.1, §4.3, §5, §9 B4).
+Generated against the dev-box copy of dreamerv3-torch-genesis (the cluster tree is newer in
+places, e.g. sbatch_genesis_multi.sh carries the 08-18 ARM table there; that file is NOT touched
+here -- the new launcher is a separate file so nothing collides).
+
+Apply from the dreamerv3-torch root:
+    patch -p1 --dry-run < /path/to/genesis_pickaplace/cluster/patches/dreamerv3-torch-genesis_final_rr.patch
+    patch -p1           < /path/to/genesis_pickaplace/cluster/patches/dreamerv3-torch-genesis_final_rr.patch
+    chmod +x sbatch_genesis_final_rr.sh
+If a hunk fails (cluster file drifted), apply that hunk by hand -- every hunk is small and commented.
+
+What it changes
+  1. convert_genesis_demos_repeat.py
+       - REFUSES contract-v1 (decision-rate) demo dirs with a pointer to
+         genesis_pickaplace/baselines/rl/to_dreamer_native.py (the v1 path: no re-windowing, no relabel).
+       - --terminal-guard on|off (DEFAULT on): env-consistent terminals for LEGACY stride-1 tapes via
+         full_env.terminal_from_tape (B2): a no-pick tape that tips is cut at the tip decision with
+         is_terminal=True; the pick terminal sits at the grant (grant_slack forced 0). `off` reproduces
+         the 08-18 sets byte-for-byte. repeat.json gains terminal_guard.
+  2. genesis_eval.py
+       - --ic-file / --ic-set sel|hold|rnd / --ic-index k: the ONE shared IC file
+         (genesis_pickaplace/baselines/eval_ics.json); ints -> demo-uid reset, dicts -> explicit IC.
+       - --device (CPU evals with CUDA hidden); per-episode JSON line -> <out>/episodes.jsonl
+         (kind, ic_set, ic_index, picked, outcome, n_steps, max_steps, action_repeat, node) for the
+         fresh-process sweep; --max-steps help text says the sweep passes 1200 explicitly.
+  3. configs.yaml: NEW additive overlay `genesis_final_rr` (time_limit 1200, steps 1e6) stacked after
+     genesis_pick_msrecipe [genesis_pick_msrecipe_shaped]; the existing overlays are untouched.
+  4. NEW sbatch_genesis_final_rr.sh: one run per job, ARM x REWARD(sparse|dense) x SEED, provenance
+     gates (repeat.json stride 4 + contract v1 + demo sha), RUN_REGISTRY check/register at START,
+     K=5 checkpoint archive (ckpt_20..100 via a latest.pt watcher on metrics.jsonl step), eval = one
+     fresh CPU process per episode on sel (selection) then hold+rnd on the selected (+final) checkpoint,
+     asserted denominators, DV3-RESULT line, registry register at END. DRYRUN=1 prints and exits.
+
+Not in this patch (cluster-side, by hand): the genesis_pick_msrecipe_shaped overlay (exists on the
+cluster only) -- verify its shaping gamma == discount 0.997 and that it zeroes the potential at the
+terminal (PREREG §2) before the dense dv3 arms run.
+  (rev 2, after B2's note: the terminal cut lives in the ENCODERS train_sacfd_full.relabel_full /
+   delta_encode_transitions_repeat, default on; the converter keeps their done flags and forwards
+   --terminal-guard off as terminal_guard=False; it no longer re-derives a terminal itself.)
+===============================================================================================
+diff -ruN a/configs.yaml b/configs.yaml
+--- a/configs.yaml	2026-08-23 05:30:47.028069983 -0400
++++ b/configs.yaml	2026-08-23 05:30:47.050142688 -0400
+@@ -470,3 +470,16 @@
+   parallel: False
+   eval_episode_num: 0       # one world per process; eval stays out-of-process
+   train_ratio: 64           # trainer now binds, not collection; retune upward later
++
++genesis_final_rr:
++  # FINAL ROUND ROBIN overlay (genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md
++  # §1-2). Stack it AFTER genesis_pick_msrecipe [genesis_pick_msrecipe_shaped]:
++  #   --configs genesis_pixels genesis_pick_msrecipe [genesis_pick_msrecipe_shaped] genesis_final_rr
++  # Changes vs the 08-19 round robin, nothing else: one training horizon for every learner
++  # (1200 sim steps = 300 decisions at action_repeat 4; was 600) and the longer budget the
++  # source audit asked for (1e6 env steps = 250k decisions = 62.5k updates at train_ratio 256;
++  # the 3e5 budget was ~18.75k updates, below the project's own MS takeoff count). Demo dirs
++  # must be contract-v1 sets converted by to_dreamer_native.py (repeat.json action_repeat 4,
++  # terminal_reward 100 -- both asserted by dreamer.py as before).
++  time_limit: 1200
++  steps: 1e6
+diff -ruN a/convert_genesis_demos_repeat.py b/convert_genesis_demos_repeat.py
+--- a/convert_genesis_demos_repeat.py	2026-08-23 05:30:47.020637028 -0400
++++ b/convert_genesis_demos_repeat.py	2026-08-23 05:36:26.630657419 -0400
+@@ -1,5 +1,23 @@
+ """Stride-N (action-repeat) IMAGE demo converter for the genesis ManiSkill-recipe port.
+ 
++FINAL ROUND ROBIN (2026-08-23, genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md):
++  * CONTRACT-v1 demo dirs (recorded at the decision clock by genesis_pickaplace
++    baselines/record_demos.py; keys actions_delta/terminated/picked/...) are NOT converted
++    here -- they are already one row per decision; use
++    genesis_pickaplace/baselines/rl/to_dreamer_native.py (same output format, same
++    repeat.json stamp). This script REFUSES such a dir with a pointer.
++  * --terminal-guard on (DEFAULT): the encoders this script calls
++    (train_sacfd_full.relabel_full / delta_encode_transitions_repeat) now apply the env-
++    consistent terminal guard BY DEFAULT (genesis_pickaplace B2, 2026-08-23): a no-pick
++    tape that TIPS (tilt>60 deg with grip open) comes back with done=True at the tip window
++    and later frames dropped; scope=pick marks done at the pick and drops the tail. This
++    converter therefore (1) KEEPS the encoder's `dones` as is_terminal in the no-pick
++    branch (tip -> True, value 0; a cap-truncated tape stays False and bootstraps) instead
++    of zeroing it, and (2) places the pick terminal ON the pick row: --grant-slack defaults
++    to 0 and >0 is refused unless --terminal-guard off (the 48-frame slack mixed a late demo
++    terminal with an early online one). `off` passes demo_terminal_guard=False through to
++    the encoders and restores the 08-18 behaviour byte-for-byte.
++
+ WHY THIS EXISTS
+ ---------------
+ dv3 loads demos from FILES and never downsamples them. Its genesis pick demos
+@@ -61,7 +79,7 @@
+ PICK_Z = 0.1505
+ 
+ 
+-def encode_episode(path, repeat, cap, pick_z):
++def encode_episode(path, repeat, cap, pick_z, terminal_guard=True):
+     """One demo npz -> (obs_frame_idx, actions, rewards, dones, n_transitions).
+ 
+     obs_frame_idx[j] is the RAW frame index whose image/state is the observation the
+@@ -70,7 +88,7 @@
+     train_sacfd_full.delta_encode_transitions_repeat (asserted in main()).
+     """
+     from train_sacfd_full import relabel_full
+-    trans, _ = relabel_full([str(path)], pick_z)
++    trans, _ = relabel_full([str(path)], pick_z, terminal_guard=terminal_guard)
+     if not trans:
+         return None
+     n = len(trans)
+@@ -124,6 +142,10 @@
+                          'hardened predicate adds a 10-frame sustain, and open-loop '
+                          'delta replay lags the demo -- a tape cut at the grant frame '
+                          'ends before the replayed lift crosses pick_z.')
++    ap.add_argument('--terminal-guard', dest='terminal_guard', choices=['on', 'off'], default='on',
++                    help='on (default): env-consistent terminals from the guarded encoders (tip -> '
++                         'is_terminal at the cut, pick ON the pick row, grant_slack must be 0); off: '
++                         'the 08-18 behaviour (slack kept, no-pick tapes bootstrap to the cap)')
+     ap.add_argument('--check-encoder', dest='check_encoder', action='store_true',
+                     default=True,
+                     help='assert per-episode bitwise equality with '
+@@ -137,6 +159,21 @@
+     src = REPO / args.src
+     paths = sorted(glob.glob(str(src / '*.npz')), key=lambda p: int(pl.Path(p).stem))
+     assert paths, f'no npz in {src}'
++    _probe = np.load(paths[0], allow_pickle=True)
++    if 'actions_delta' in _probe.files and 'terminated' in _probe.files:
++        raise SystemExit(f'{src} is a CONTRACT-v1 (decision-rate) demo dir: it is already one row per '
++                         'decision. Convert it with genesis_pickaplace/baselines/rl/to_dreamer_native.py '
++                         f'--repeat {args.repeat} (no re-windowing, no relabel); this script is the '
++                         'stride-1 (30 Hz tape) path only.')
++    guard = (args.terminal_guard == 'on')
++    if guard and args.grant_slack != 0:
++        # the default in the argparser is 12 (08-18 sets); under the guard the pick terminal
++        # sits ON the pick row, so only an explicit --grant-slack 0 or --terminal-guard off is valid
++        if '--grant-slack' in sys.argv:
++            raise SystemExit(f'--grant-slack {args.grant_slack} is incompatible with --terminal-guard on '
++                             '(the pick terminal sits on the pick row); pass --grant-slack 0 or --terminal-guard off')
++        print('[terminal-guard] grant_slack default 12 -> 0 (pick terminal on the pick row)')
++        args.grant_slack = 0
+     dst = pl.Path(args.dst)
+     dst.mkdir(parents=True, exist_ok=True)
+     # Filenames encode length, so a re-run with a different stride would ORPHAN the old
+@@ -152,7 +189,7 @@
+         d = np.load(p, allow_pickle=True)
+         uid = int(d['uid'])
+         stage = str(d['stage']) if 'stage' in d.files else '?'
+-        enc = encode_episode(p, args.repeat, args.delta_cap, PICK_Z)
++        enc = encode_episode(p, args.repeat, args.delta_cap, PICK_Z, terminal_guard=guard)
+         if enc is None:
+             census['n_empty'] += 1
+             print(f'{uid}: {stage:<8} SKIPPED (relabel_full produced no transitions)')
+@@ -160,7 +197,7 @@
+         obs_idx, acts, rews, dones, n_trans = enc
+         if args.check_encoder:
+             ref = delta_encode_transitions_repeat([str(p)], PICK_Z, 'full',
+-                                                  args.delta_cap, args.repeat)
++                                                  args.delta_cap, args.repeat, terminal_guard=guard)
+             assert len(ref) == len(acts), (uid, len(ref), len(acts))
+             assert np.array_equal(np.stack([t[1] for t in ref]), acts), uid
+             assert np.array_equal(np.asarray([t[2] for t in ref], np.float32), rews), uid
+@@ -193,10 +230,20 @@
+             T = k + 1
+             census['n_pick'] += 1
+         else:
+-            # no-pick demo: full-length zero-reward dynamics data, is_terminal all False
+-            # so the value head BOOTSTRAPS at the cut instead of learning a 0 terminal.
+             rew = np.zeros(T, dtype=np.float32)
+-            is_terminal = np.zeros(T, dtype=bool)
++            if guard:
++                # env-consistent terminal for a no-pick tape: the GUARDED encoder already cut
++                # the tape at the env's tip rule and set done=True there (value 0); a
++                # cap-truncated tape carries no done and keeps bootstrapping. KEEP the
++                # encoder's flags -- the 08-18 code zeroed them, which is the bug.
++                is_terminal = np.concatenate([[False], dones]).astype(bool)
++                if is_terminal.any():
++                    assert is_terminal[-1] and not is_terminal[:-1].any(), (uid, 'guarded encoder must end the tape at its terminal')
++                    census['n_tip_terminal'] = census.get('n_tip_terminal', 0) + 1
++            else:
++                # 08-18 behaviour: full-length zero-reward dynamics data, is_terminal all False
++                # so the value head BOOTSTRAPS at the cut instead of learning a 0 terminal.
++                is_terminal = np.zeros(T, dtype=bool)
+             census['n_nopick'] += 1
+         is_first = np.zeros(T, dtype=bool); is_first[0] = True
+         is_last = np.zeros(T, dtype=bool); is_last[-1] = True
+@@ -219,6 +266,7 @@
+         scope=args.scope,
+         terminal_reward=float(args.terminal_reward),
+         grant_slack_decisions=int(args.grant_slack),
++        terminal_guard=args.terminal_guard,
+         pick_z=PICK_Z,
+         src=str(src),
+         generator='convert_genesis_demos_repeat.py',
+diff -ruN a/genesis_eval.py b/genesis_eval.py
+--- a/genesis_eval.py	2026-08-23 05:30:47.024091350 -0400
++++ b/genesis_eval.py	2026-08-23 05:32:37.081409714 -0400
+@@ -43,7 +43,21 @@
+                      "joint env is a 5-vs-7-dim action mismatch that crashed the "
+                      "periodic eval silently)")
+ ap.add_argument('--episodes', type=int, default=8)
+-ap.add_argument('--max-steps', type=int, default=900, help='env steps (action_repeat applied inside)')
++ap.add_argument('--max-steps', type=int, default=900, help='env steps (action_repeat applied inside). '
++                'FINAL ROUND ROBIN (PREREG 2026-08-23 §5): the sweep passes 1200 explicitly -- the '
++                'one eval horizon of every learner; never rely on this default there')
++# --- shared IC file (PREREG §5): one JSON for every learner/source/arm ------------------
++ap.add_argument('--ic-file', default=None,
++                help='genesis_pickaplace/baselines/eval_ics.json: {"sel": [uid,...], "hold": [uid,...], '
++                     '"rnd": [reset-kwarg dict,...]}. Overrides --ic-mode/--episodes: the episodes '
++                     'are the chosen set\'s entries (ints -> demo-uid reset, dicts -> explicit IC).')
++ap.add_argument('--ic-set', choices=['sel', 'hold', 'rnd'], default=None)
++ap.add_argument('--device', default=None,
++                help='override the run config device (the final-RR sweep evaluates on CPU: '
++                     '--device cpu with CUDA_VISIBLE_DEVICES="", one episode per process)')
++ap.add_argument('--ic-index', type=int, default=None,
++                help='run ONLY this entry of --ic-set (one episode per fresh process; the sweep '
++                     'driver aggregates the per-episode JSON lines)')
+ ap.add_argument('--seed', type=int, default=0)
+ ap.add_argument('--out', default=None)
+ ap.add_argument('--no-wandb', action='store_true')
+@@ -106,6 +120,8 @@
+     cfg['genesis_cartesian_control'] = args.control
+     print(f'[eval] no run_config.json; --control {args.control}', flush=True)
+ cfg['logdir'] = str(LOGDIR)
++if args.device:
++    cfg['device'] = args.device
+ cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
+ config = argparse.Namespace(**cfg)
+ config.traindir = LOGDIR / 'train_eps'
+@@ -133,7 +149,17 @@
+ vids = []
+ 
+ _ics = None
+-if args.ic_mode == 'random':
++_ic_entries = None           # (ic_set, index, entry) per episode when --ic-file is used
++if args.ic_file:
++    assert args.ic_set, '--ic-file needs --ic-set sel|hold|rnd'
++    _icf = json.loads(pl.Path(args.ic_file).read_text())
++    _ents = list(_icf[args.ic_set])
++    _idx = [args.ic_index] if args.ic_index is not None else list(range(len(_ents)))
++    _ic_entries = [(args.ic_set, i, _ents[i]) for i in _idx]
++    args.episodes = len(_ic_entries)
++    print(f'[eval] ic-file {args.ic_file} set {args.ic_set}: {args.episodes} episode(s) '
++          f'{"(index " + str(args.ic_index) + ")" if args.ic_index is not None else ""} max_steps {args.max_steps}', flush=True)
++elif args.ic_mode == 'random':
+     sys.path.insert(0, os.path.join(os.environ.get(
+         'GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'), 'baselines'))
+     import ic_sampling
+@@ -142,7 +168,14 @@
+ 
+ seqs = []       # dataset-convention sequences for the world-model recon video
+ for ep in range(args.episodes):
+-    obs = env.reset(ic=(_ics[ep] if _ics else None))
++    if _ic_entries is not None:
++        _set, _i, _ent = _ic_entries[ep]
++        if isinstance(_ent, dict) and _ent.get('uid') is None:
++            obs = env.reset(ic=_ent)                     # explicit support IC (rnd)
++        else:
++            obs = env.reset(uid=int(_ent['uid'] if isinstance(_ent, dict) else _ent))   # demo uid (sel/hold)
++    else:
++        obs = env.reset(ic=(_ics[ep] if _ics else None))
+     seq = (dict(image=[obs['image']], action=[np.zeros(config.num_actions, np.float32)])
+            if ep < 6 else None)
+     obs = {k: np.array([v]) for k, v in obs.items()}
+@@ -189,6 +222,16 @@
+     vw.release()
+     vids.append(str(p))
+     print(f'ep{ep}: {oc} ({t} steps)', flush=True)
++    if _ic_entries is not None:
++        # one JSON line per episode -- the sweep driver (genesis_pickaplace cluster/eval_sweep.sh)
++        # aggregates these with asserted denominators; missing lines are reported missing, never 0
++        import socket as _socket
++        _rec = dict(kind='dv3', logdir=str(LOGDIR), ic_set=_ic_entries[ep][0], ic_index=int(_ic_entries[ep][1]),
++                    picked=bool(stage_flags.get('picked')), outcome=oc, n_steps=int(t), max_steps=int(args.max_steps),
++                    action_repeat=int(getattr(config, 'action_repeat', 1)), act_selection='deterministic',
++                    node=_socket.gethostname(), slurm_job=os.environ.get('SLURM_JOB_ID'))
++        with open(OUT / 'episodes.jsonl', 'a') as _fh:
++            _fh.write(json.dumps(_rec) + '\n')
+ 
+ n = max(agg['n'], 1)
+ metrics = {f'policy_eval/{k}': agg[k] / n for k in STAGES}
+diff -ruN a/sbatch_genesis_final_rr.sh b/sbatch_genesis_final_rr.sh
+--- a/sbatch_genesis_final_rr.sh	1969-12-31 19:00:00.000000000 -0500
++++ b/sbatch_genesis_final_rr.sh	2026-08-23 05:33:01.448236251 -0400
+@@ -0,0 +1,168 @@
++#!/bin/bash
++# FINAL ROUND ROBIN dv3 launcher -- ONE run per job, ARM x REWARD x SEED.
++# (genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md §1, §2, §5; dv3 is
++#  QUEUED LAST in the block and runs the longer budget.)
++#
++# Submit (from the dreamerv3-torch root, the genesis env active as for sbatch_genesis_multi.sh):
++#   ARM=dH   REWARD=sparse SEED=0 sbatch sbatch_genesis_final_rr.sh
++#   ARM=dDP  REWARD=dense  SEED=1 sbatch sbatch_genesis_final_rr.sh
++#   DRYRUN=1 ARM=dR2D REWARD=sparse SEED=0 bash sbatch_genesis_final_rr.sh     # prints, runs nothing
++#
++# Knobs (env): ARM dH|dDP|dR2D (demo dir = demonstrations/genesis_final_${ARM}_r4, a
++#   to_dreamer_native.py output with repeat.json action_repeat 4 / terminal_reward 100;
++#   override with DEMODIR), REWARD sparse|dense (dense = + the genesis_pick_msrecipe_shaped
++#   overlay, exactly as the 08-19 round robin), SEED (required), STEPS (default from the
++#   genesis_final_rr overlay: 1e6), EVAL_IC_FILE (default
++#   $GENESIS_PICKAPLACE_ROOT/baselines/eval_ics.json), EVAL_MAX_STEPS (1200).
++#
++# What it does, in order:
++#   1. provenance gates: demo dir exists, repeat.json stride == 4, contract v1 stamp, sha of the
++#      episode list recorded; RUN_REGISTRY check/register at job START (genesis_pickaplace
++#      cluster/run_registry.py; refuses an exact repeat) with knobs incl. horizon/repeat/unit/sha
++#   2. train: dreamer.py --configs genesis_pixels genesis_pick_msrecipe [genesis_pick_msrecipe_shaped]
++#      genesis_final_rr --action_repeat 4 --seed $SEED --demodir ... --steps $STEPS
++#   3. CHECKPOINT ARCHIVE (K=5): a watcher copies latest.pt -> ckpt_{20,40,60,80,100}/latest.pt the
++#      first time metrics.jsonl's step crosses 20/40/60/80/100 % of STEPS (polling resolution:
++#      ~latest.pt write cadence; the archived step is recorded in ckpt_XX/step.txt). The final
++#      checkpoint is always archived as ckpt_100 after training exits.
++#   4. EVAL (PREREG §5): for each archived checkpoint, genesis_eval.py one episode per FRESH
++#      process on the `sel` set (15) -> selection; the selected checkpoint (+ the final one) on
++#      `hold` (15) + `rnd` (30); horizon EVAL_MAX_STEPS=1200; CPU-side genesis (CUDA hidden),
++#      <= 1 world per 2 cores. Per-episode JSON lines -> <run>/eval/<ckpt>/<set>/episodes.jsonl;
++#      aggregated with ASSERTED denominators into <run>/eval/sweep.json and one
++#      DV3-RESULT arm= reward= seed= ckpt= sel=a/15 hold=b/15 rnd=c/30 line (missing episodes
++#      are reported missing, never 0).
++#   5. registry register at END with the result (the START registration already claimed the cell).
++#
++#SBATCH -J dv3-final-rr
++#SBATCH -p gpu,preempt
++#SBATCH --requeue
++#SBATCH --gres=gpu:1
++#SBATCH --constraint="l40s|l40|h200|a100"
++#SBATCH -N 1
++#SBATCH -n 16
++#SBATCH --mem=64g
++#SBATCH -t 2-00:00:00
++set -u
++: "${ARM:?ARM=dH|dDP|dR2D}"; : "${SEED:?SEED required (paired seed index across sources)}"
++REWARD=${REWARD:-sparse}
++case "$REWARD" in sparse) SHAPED= ;; dense) SHAPED=genesis_pick_msrecipe_shaped ;; *) echo "FATAL: REWARD=$REWARD"; exit 1;; esac
++case "$ARM" in dH|dDP|dR2D) ;; *) echo "FATAL: ARM=$ARM"; exit 1;; esac
++PY=${PY:-python}
++GPR=${GENESIS_PICKAPLACE_ROOT:-$HOME/genesis_pickaplace}
++DEMOD=${DEMODIR:-demonstrations/genesis_final_${ARM}_r4}
++TAG="final_${ARM}_DV3${SHAPED:+-dense}_s${SEED}"
++RUNDIR="logs_cluster/genesis_final/${TAG}"
++STEPS=${STEPS:-1000000}
++EVAL_IC_FILE=${EVAL_IC_FILE:-$GPR/baselines/eval_ics.json}
++EVAL_MAX_STEPS=${EVAL_MAX_STEPS:-1200}
++ACTREP=4
++echo "== node $(hostname) job ${SLURM_JOB_ID:-local} $(date) | $TAG demo=$DEMOD steps=$STEPS"
++
++REG_PY="$GPR/cluster/run_registry.py"; REG="$GPR/cluster/RUN_REGISTRY.jsonl"
++REG_KNOBS=(learner=dv3 reward=$REWARD action_repeat=$ACTREP train_horizon=1200 eval_horizon=$EVAL_MAX_STEPS budget_unit=sim_steps budget=$STEPS contract=v1)
++if [ -n "${DRYRUN:-}" ]; then
++  echo "[dry] TAG=$TAG RUNDIR=$RUNDIR DEMOD=$DEMOD (gates skipped in dry-run) configs: genesis_pixels genesis_pick_msrecipe ${SHAPED:-} genesis_final_rr"
++  echo "[dry] registry: $PY $REG_PY check --script sbatch_genesis_final_rr.sh --arm ${ARM}${SHAPED:+-dense} --seed $SEED --demo-dir $DEMOD --registry $REG ${REG_KNOBS[*]}"
++  echo "[dry] train: $PY dreamer.py --configs genesis_pixels genesis_pick_msrecipe ${SHAPED:-} genesis_final_rr --action_repeat $ACTREP --seed $SEED --demodir $DEMOD --steps $STEPS --logdir $RUNDIR"
++  echo "[dry] eval: genesis_eval.py --ic-file $EVAL_IC_FILE --ic-set {sel,hold,rnd} --ic-index k --max-steps $EVAL_MAX_STEPS (one fresh process per episode, CPU)"
++  exit 0
++fi
++
++# --- 1. provenance gates ---------------------------------------------------------------
++[ -d "$DEMOD" ] || { echo "FATAL: demo dir missing: $DEMOD (to_dreamer_native.py output; rsync ONLY)"; exit 1; }
++[ -f "$DEMOD/repeat.json" ] || { echo "FATAL: $DEMOD has no repeat.json stamp (not a to_dreamer_native.py output)"; exit 1; }
++DSTRIDE=$("$PY" -c "import json;print(json.load(open('$DEMOD/repeat.json'))['action_repeat'])")
++DCONTRACT=$("$PY" -c "import json;print(json.load(open('$DEMOD/repeat.json')).get('contract','legacy'))")
++[ "$DSTRIDE" = "$ACTREP" ] || { echo "FATAL: demo stride $DSTRIDE != action_repeat $ACTREP"; exit 1; }
++[ "$DCONTRACT" = "v1" ] || { echo "FATAL: $DEMOD is not a contract-v1 set (stamp contract=$DCONTRACT); the final round robin trains on recorder output only"; exit 1; }
++NDEMO=$(ls "$DEMOD"/*.npz 2>/dev/null | wc -l); [ "$NDEMO" -ge 1 ] || { echo "FATAL: no npz in $DEMOD"; exit 1; }
++DEMO_SHA=$(cd "$DEMOD" && ls *.npz | sort | sha256sum | cut -c1-16)
++[ -f "$EVAL_IC_FILE" ] || { echo "FATAL: eval IC file missing: $EVAL_IC_FILE (baselines/make_eval_ics.py)"; exit 1; }
++GIT_DV3=$(git -C . rev-parse --short HEAD 2>/dev/null || echo nogit)
++REG_KNOBS+=(demo_sha=$DEMO_SHA demo_n=$NDEMO dv3_git=$GIT_DV3)
++if [ -f "$REG_PY" ]; then
++  "$PY" "$REG_PY" check --script sbatch_genesis_final_rr.sh --arm "${ARM}${SHAPED:+-dense}" --seed "$SEED" \
++     --demo-dir "$DEMOD" --registry "$REG" "${REG_KNOBS[@]}" || { echo "FATAL: registry refused this cell (exact repeat?)"; exit 1; }
++  "$PY" "$REG_PY" register --script sbatch_genesis_final_rr.sh --arm "${ARM}${SHAPED:+-dense}" --seed "$SEED" \
++     --demo-dir "$DEMOD" --registry "$REG" "${REG_KNOBS[@]}" stage=start || true
++else
++  echo "WARN: $REG_PY not found -- run NOT registered (TODO on the deployed tree)"
++fi
++
++# --- 2. train + 3. checkpoint archive watcher ---------------------------------------------
++mkdir -p "$RUNDIR"
++export TI_OFFLINE_CACHE_FILE_PATH="$PWD/$RUNDIR/ticache"; mkdir -p "$TI_OFFLINE_CACHE_FILE_PATH"
++"$PY" dreamer.py --configs genesis_pixels genesis_pick_msrecipe ${SHAPED:-} genesis_final_rr \
++  --action_repeat "$ACTREP" --seed "$SEED" --demodir "$DEMOD" --steps "$STEPS" \
++  --logdir "$RUNDIR" > "$RUNDIR/run.log" 2>&1 &
++TRAIN_PID=$!
++(
++  declare -A DONE
++  while kill -0 "$TRAIN_PID" 2>/dev/null; do
++    L=$(ls -d "$RUNDIR"/*/ 2>/dev/null | head -1)
++    if [ -n "$L" ] && [ -f "$L/latest.pt" ] && [ -f "$L/metrics.jsonl" ]; then
++      STEP=$(tail -1 "$L/metrics.jsonl" 2>/dev/null | grep -oE '"step": [0-9]+' | grep -oE '[0-9]+')
++      for PCT in 20 40 60 80; do
++        if [ -z "${DONE[$PCT]:-}" ] && [ -n "$STEP" ] && [ "$STEP" -ge $(( STEPS * PCT / 100 )) ]; then
++          mkdir -p "$L/ckpt_$PCT"; cp "$L/latest.pt" "$L/ckpt_$PCT/latest.pt"; echo "$STEP" > "$L/ckpt_$PCT/step.txt"
++          echo "== archived ckpt_$PCT at step $STEP $(date)"; DONE[$PCT]=1
++        fi
++      done
++    fi
++    sleep 300
++  done
++) &
++WATCH_PID=$!
++wait "$TRAIN_PID"; TRAIN_RC=$?
++kill "$WATCH_PID" 2>/dev/null || true
++L=$(ls -d "$RUNDIR"/*/ 2>/dev/null | head -1)
++[ -n "$L" ] && [ -f "$L/latest.pt" ] || { echo "FATAL: no checkpoint after training (rc=$TRAIN_RC)"; exit 1; }
++mkdir -p "$L/ckpt_100"; cp "$L/latest.pt" "$L/ckpt_100/latest.pt"
++tail -1 "$L/metrics.jsonl" 2>/dev/null | grep -oE '"step": [0-9]+' | grep -oE '[0-9]+' > "$L/ckpt_100/step.txt"
++echo "== training done rc=$TRAIN_RC $(date); archived: $(ls -d "$L"/ckpt_* | xargs -n1 basename | tr '\n' ' ')"
++
++# --- 4. eval: fresh process per episode, CPU, shared IC file ---------------------------------
++NCPU=${SLURM_CPUS_PER_TASK:-16}; PAR=$(( NCPU / 2 )); [ "$PAR" -ge 1 ] || PAR=1
++EVALROOT="$RUNDIR/eval"; mkdir -p "$EVALROOT"
++run_set() {  # $1 = ckpt dir (holds latest.pt)  $2 = set name  $3 = n episodes
++  local CK="$1" SET="$2" N="$3" OUT="$EVALROOT/$(basename "$CK")/$SET"; mkdir -p "$OUT"
++  # genesis_eval.py loads <logdir>/latest.pt and the run config from the run dir: point a
++  # symlinked logdir at the archived checkpoint so the rebuilt agent == the archived weights.
++  local LD="$OUT/logdir"; rm -rf "$LD"; mkdir -p "$LD"; ln -s "$(realpath "$CK/latest.pt")" "$LD/latest.pt"
++  for f in "$L"/*.json "$L"/*.yaml "$L"/config* ; do [ -e "$f" ] && ln -sf "$(realpath "$f")" "$LD/" ; done
++  rm -f "$OUT/episodes.jsonl"
++  for k in $(seq 0 $((N - 1))); do
++    ( CUDA_VISIBLE_DEVICES="" "$PY" genesis_eval.py --logdir "$LD" --configs genesis_pixels genesis_pick_msrecipe ${SHAPED:-} genesis_final_rr \
++        --ic-file "$EVAL_IC_FILE" --ic-set "$SET" --ic-index "$k" --max-steps "$EVAL_MAX_STEPS" --device cpu \
++        --out "$OUT/ep_$k" --no-wandb > "$OUT/ep_$k.log" 2>&1
++      cat "$OUT/ep_$k/episodes.jsonl" >> "$OUT/episodes.jsonl" 2>/dev/null ) &
++    while [ "$(jobs -rp | wc -l)" -ge "$PAR" ]; do sleep 5; done
++  done
++  wait
++  local GOT=$(wc -l < "$OUT/episodes.jsonl" 2>/dev/null || echo 0)
++  local PICKED=$(grep -c '"picked": true' "$OUT/episodes.jsonl" 2>/dev/null || echo 0)
++  echo "$(basename "$CK") $SET picked=$PICKED/$GOT expected=$N" | tee -a "$EVALROOT/sweep.txt"
++  [ "$GOT" -eq "$N" ] || echo "WARN: $(basename "$CK") $SET: $GOT/$N episodes returned (MISSING, not zero)" | tee -a "$EVALROOT/sweep.txt"
++}
++for CK in "$L"/ckpt_*; do run_set "$CK" sel 15; done
++BEST=$(grep ' sel picked=' "$EVALROOT/sweep.txt" | awk '{split($3,a,"[=/]"); print a[2], $1}' | sort -k1,1nr -k2,2 | head -1 | awk '{print $2}')
++echo "== selected checkpoint: $BEST"
++run_set "$L/$BEST" hold 15; run_set "$L/$BEST" rnd 30
++[ "$BEST" != "ckpt_100" ] && { run_set "$L/ckpt_100" hold 15; run_set "$L/ckpt_100" rnd 30; }
++SEL=$(grep "^$BEST sel " "$EVALROOT/sweep.txt" | head -1 | grep -oE 'picked=[0-9]+/[0-9]+' | cut -d= -f2)
++HOLD=$(grep "^$BEST hold " "$EVALROOT/sweep.txt" | head -1 | grep -oE 'picked=[0-9]+/[0-9]+' | cut -d= -f2)
++RND=$(grep "^$BEST rnd " "$EVALROOT/sweep.txt" | head -1 | grep -oE 'picked=[0-9]+/[0-9]+' | cut -d= -f2)
++"$PY" - "$EVALROOT/sweep.txt" "$EVALROOT/sweep.json" "$TAG" "$BEST" <<'PYEOF'
++import sys, json, re
++rows = [l.split() for l in open(sys.argv[1]) if ' picked=' in l and not l.startswith('WARN')]
++out = {}
++for ck, st, pk, ex in rows:
++    m = re.match(r'picked=(\d+)/(\d+)', pk); out.setdefault(ck, {})[st] = dict(picked=int(m.group(1)), n=int(m.group(2)), expected=int(ex.split('=')[1]))
++json.dump(dict(tag=sys.argv[3], selected=sys.argv[4], results=out), open(sys.argv[2], 'w'), indent=1)
++PYEOF
++echo "DV3-RESULT arm=$ARM reward=$REWARD seed=$SEED ckpt=$BEST sel=${SEL:-MISSING} hold=${HOLD:-MISSING} rnd=${RND:-MISSING} horizon=$EVAL_MAX_STEPS repeat=$ACTREP demo_sha=$DEMO_SHA"
++# --- 5. registry end ------------------------------------------------------------------------
++[ -f "$REG_PY" ] && "$PY" "$REG_PY" register --script sbatch_genesis_final_rr.sh --arm "${ARM}${SHAPED:+-dense}" --seed "$SEED" \
++     --demo-dir "$DEMOD" --registry "$REG" "${REG_KNOBS[@]}" stage=end "result_sel=${SEL:-MISSING}" "result_hold=${HOLD:-MISSING}" "result_rnd=${RND:-MISSING}" || true
++echo "== done $(date) rc=$TRAIN_RC"

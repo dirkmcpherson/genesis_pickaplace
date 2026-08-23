@@ -127,6 +127,11 @@ def common_args(ap):
                     help='short git hash; auto-detected via git rev-parse if omitted')
     ap.add_argument('--registry', default='cluster/RUN_REGISTRY.jsonl')
     ap.add_argument('--repo-root', default=os.environ.get('GENESIS_PICKAPLACE_ROOT', '.'))
+    ap.add_argument('--stage', choices=['start', 'end'], default=None,
+                    help='register only: when in the job this line was written (08-23: the '
+                         'launchers register at job START so a crashed/preempted run still '
+                         'leaves its identity line -- closes the check-then-register-after-'
+                         'training TOCTOU window). Recorded, NOT part of the identity key.')
     ap.add_argument('knobs', nargs='*', help='semantic knobs as KEY=VAL')
 
 
@@ -199,6 +204,8 @@ def cmd_register(args):
         'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
         'slurm_job_id': os.environ.get('SLURM_JOB_ID'),
         'duplicate_ok_reason': os.environ.get('DUPLICATE_OK', '').strip() or None,
+        'stage': getattr(args, 'stage', None),
+        'node': os.environ.get('SLURM_JOB_NODELIST') or os.environ.get('HOSTNAME'),
     })
     r['registry'].parent.mkdir(parents=True, exist_ok=True)
     with open(r['registry'], 'a') as f:

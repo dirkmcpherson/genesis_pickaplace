@@ -67,7 +67,21 @@ ap.add_argument('--delta-cap', type=float, default=0.04,
                      'global p99 0.0249, max per-dim p99 0.0307 (joint 4), 0.17%% of '
                      'values clip at 0.04 (max ever 0.059). Leash headroom: |cmd-q| '
                      'lead p99 0.126 ~ 3*0.04.')
+ap.add_argument('--demo-terminal-guard', choices=['on', 'off'], default='on',
+                help='on (DEFAULT, 2026-08-23, PREREG §4.3): relabel_full ends every tape '
+                     'where the env would have terminated -- the tip rule (grip commanded '
+                     'open & can tilt>60 after the step) cuts no-pick tapes with '
+                     'is_terminal=True there (the env would have terminated, value 0), and '
+                     'the scope=pick terminal sits on the pick frame itself (grant slack '
+                     'is refused: a slack window ends the tape AFTER the env would have). '
+                     'off = pre-08-23 output (no-pick tapes whole, is_terminal never set '
+                     'on a tip; --grant-slack honoured).')
 args = ap.parse_args()
+GUARD = (args.demo_terminal_guard == 'on')
+if GUARD and args.grant_slack:
+    raise SystemExit('--grant-slack > 0 contradicts --demo-terminal-guard on (the env '
+                     'terminates at the pick; slack frames are post-terminal). Pass '
+                     '--demo-terminal-guard off to restore the old slack behaviour.')
 if args.scope == 'pick' and args.dst.rstrip('/').endswith('/genesis'):
     args.dst = args.dst.rstrip('/') + '_pick'   # never mix scopes in one demo dir
 if args.action_encoding == 'delta_joint' and 'delta' not in pl.Path(args.dst).name:
@@ -95,10 +109,13 @@ for p in paths:
     if args.pick_only and stage == 'no-pick':
         continue
     # per-frame staged rewards, gated by the episode's env-measured stage
-    trans, _ = relabel_full([p], PICK_Z)
+    # scope='full' here on purpose: this script places the pick terminal itself
+    # (below, first rewarded frame); the guard still cuts tip-terminated tapes and
+    # marks done=True there (-> is_terminal).
+    trans, _ = relabel_full([p], PICK_Z, scope='full', terminal_guard=GUARD)
     if not trans:
         continue
-    T = len(trans)                       # transitions = frames - 1 (or up to nested)
+    T = len(trans)                       # transitions = frames - 1 (or up to nested/tip)
     img = d['images'][:T].astype(np.uint8)
     # NORMALIZE to the env's Box(-1,1) action convention. The stored npz actions are
     # RAW (joint radians + grip 0..1); dreamer's actor emits [-1,1]. Feeding raw actions
@@ -128,7 +145,7 @@ for p in paths:
     done = np.array([t[4] for t in trans], dtype=bool)
     is_first = np.zeros(T, dtype=bool); is_first[0] = True
     is_last = np.zeros(T, dtype=bool); is_last[-1] = True
-    is_terminal = done.copy()            # True only at a nested frame
+    is_terminal = done.copy()            # nested frame, or (guard on) the env tip terminal
     discount = (1.0 - is_terminal.astype(np.float32))
     # --- SHIFT into dreamer's convention -------------------------------------
     # tools.simulate stores: index 0 = (reset obs, action=ZEROS, reward=0), and for

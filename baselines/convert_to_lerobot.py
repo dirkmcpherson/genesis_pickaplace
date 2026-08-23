@@ -20,20 +20,45 @@ import numpy as np
 
 REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
                               pl.Path(__file__).resolve().parents[1]))
-# argv: <raw_episode_dir> <dataset_root> [proprio_dim] -- parametrized so version
+# argv: <raw_episode_dir> <dataset_root> [proprio_dim] [min_frames] [cameras] [img_dtype] [fps] -- parametrized so version
 # switches are explicit at the call site, not silent file edits (lesson: the v3 chain
 # once trained on stale v1 data because a path edit lived in a dead chain)
 RAW = REPO / (sys.argv[1] if len(sys.argv) > 1 else 'baselines/episodes_raw_v3')
 ROOT = REPO / (sys.argv[2] if len(sys.argv) > 2 else 'baselines/lerobot_dataset/genesis_pickaplace')
-FPS = 30
 TASK = 'pick the can and slide it against the can on the shelf'
+
+# --- contract-v1 (decision-rate) input, final round robin 2026-08-23 ------------------
+# paper/PREREG_final_round_robin_2026-08-23.md §4.1: tapes recorded by
+# baselines/record_demos.py carry one row per DECISION (action_repeat 4 -> 7.5 Hz) with
+# `states` (obs before each decision) and `actions` (absolute window-end command) -- the
+# same two keys this converter has always read, so the frame loop below is unchanged.
+# Detection is by the v1 keys; legacy 30 Hz dirs never carry them, so legacy behaviour
+# (FPS 30, MIN_FRAMES 100) is byte-identical. FPS override: 7th argv or LEROBOT_FPS
+# (explicit beats detection; a float like 7.5 is accepted -- if a lerobot version
+# insists on an int fps, pass 8 and say so in the run's notes).
+_first = sorted(RAW.glob('*.npz'))
+_probe0 = np.load(_first[0]) if _first else None
+CONTRACT_V1 = bool(_probe0 is not None and 'actions_delta' in _probe0.files and 'terminated' in _probe0.files)
+_fps_arg = (sys.argv[7] if len(sys.argv) > 7 else os.environ.get('LEROBOT_FPS'))
+if _fps_arg is not None:
+    FPS = float(_fps_arg); FPS = int(FPS) if float(FPS).is_integer() else FPS
+elif CONTRACT_V1:
+    _rep = int(_probe0['action_repeat']) if 'action_repeat' in _probe0.files else 4
+    FPS = 30 / _rep; FPS = int(FPS) if float(FPS).is_integer() else FPS
+else:
+    FPS = 30
+if CONTRACT_V1:
+    print(f'[convert] contract-v1 (decision-rate) input detected -> fps {FPS}; '
+          f'states/actions per decision; actions_delta/sim_*/eef_pos/terminated ignored here', flush=True)
 
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
 
 # drop degenerate episodes. Default 100 (a real full-task pick->place->slide is 300+
 # frames), but pick-SCOPE AI-harvest rollouts truncate shortly after the lift and can be
 # <100 frames -- pass a smaller 4th argv there so they aren't silently dropped.
-MIN_FRAMES = int(sys.argv[4]) if len(sys.argv) > 4 else 100
+# contract-v1 tapes are ~4x shorter (decisions, not frames): a champion pick is ~30
+# decisions, so the legacy 100 would silently drop every model tape -> default 4 for v1.
+MIN_FRAMES = int(sys.argv[4]) if len(sys.argv) > 4 else (4 if CONTRACT_V1 else 100)
 files = [f for f in sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
          if int(np.load(f)['n']) >= MIN_FRAMES]
 assert files, f'no episodes >= {MIN_FRAMES} frames in {RAW} - run collect_lerobot_dataset.py first'
@@ -107,4 +132,8 @@ _rows = sum(_pq.read_table(f).num_rows
 assert _rows == _info['total_episodes'], (
     f'CORRUPT DATASET: info.json says {_info["total_episodes"]} episodes but the '
     f'metadata table has {_rows} rows. Do not use it.')
-print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized, metadata verified)')
+_json.dump(dict(src=str(RAW), fps=FPS, contract=('v1' if CONTRACT_V1 else 'legacy'), episodes=[f.name for f in files],
+                min_frames=MIN_FRAMES, proprio=PROPRIO, cameras=CAMERAS if has_images else [], img_dtype=IMG_DTYPE),
+           open(ROOT / 'genesis_source.json', 'w'), indent=1)
+print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized, metadata verified; fps {FPS}, '
+      f'{"contract-v1" if CONTRACT_V1 else "legacy"} source; genesis_source.json written)')

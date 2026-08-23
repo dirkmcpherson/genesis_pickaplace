@@ -83,7 +83,22 @@ ap.add_argument('--project', default='genesis_pickaplace')
 ap.add_argument('--group', default=None)
 ap.add_argument('--name', default=None)
 ap.add_argument('--step', type=int, default=None, help='training step tag for the metrics')
+# --- one-harness protocol (PREREG_final_round_robin_2026-08-23 §5; 08-23) -------------
+ap.add_argument('--ic-file', default=None,
+                help='baselines/eval_ics.json: the SHARED IC file (sel/hold/rnd). When given, '
+                     '--ic-set selects the set and --ic-index k evaluates ONLY the k-th IC '
+                     '(one episode per fresh process = cluster/eval_sweep.sh). --random/--uids/'
+                     '--ic-mode are ignored with a printed note.')
+ap.add_argument('--ic-set', choices=['sel', 'hold', 'rnd'], default=None)
+ap.add_argument('--ic-index', type=int, default=None)
+ap.add_argument('--arm', default=None, help='recorded into the result JSON (provenance only)')
+ap.add_argument('--ckpt-step', default=None, help='recorded into the result JSON (provenance only)')
+ap.add_argument('--reward', default=None, help='sparse|dense tag, recorded only')
 args = ap.parse_args()
+assert (args.ic_file is None) == (args.ic_set is None), '--ic-file and --ic-set go together'
+assert args.ic_index is None or args.ic_file is not None, '--ic-index needs --ic-file'
+print(f'[eval] max_steps={args.max_steps} (SIM steps; the sweep of record passes 1200 explicitly '
+      f'-- PREREG §5; the default here is legacy)', flush=True)
 
 import numpy as np  # noqa: E402
 # Audit F4: --kind dp samples diffusion noise off the torch global; unseeded,
@@ -228,6 +243,62 @@ else:
     policy_action, policy_reset, _proprio = load_dp_runner(
         args.checkpoint, rig_provider=(env.rig_obs if _needs_rig else None),
         n_action_steps=args.n_action_steps)
+    # --- DP hold-N (08-23, PREREG §2/§4.1): the learners' clock is action_repeat N. A DP
+    # trained on decision-rate data (lerobot fps 30/N) is queried ONCE per N sim steps; its
+    # absolute joint target q* is turned into the normalized delta the learners' MDP would
+    # need to reach it in one decision, a_arm = clip((q* - target)/(N*cap)), and that SAME
+    # delta is integrated a*cap per sim step on the running PD target, leashed to the
+    # measured q -- a MIRROR of FullTaskEnv._step_once(delta_ref='target') and of the sac
+    # branch above (do not innovate: the two integrators have diverged once already).
+    # Resolution: --action-repeat, else the dp_sidecar.json next to the checkpoint, else 1.
+    # repeat==1 keeps the legacy absolute pass-through BYTE-IDENTICAL (every pre-08-23 DP
+    # eval); any N>1 uses the integrator. The grip is DP's own (0..1), held for the window.
+    _repeat = args.action_repeat
+    _dp_side = pl.Path(args.checkpoint).parent / 'dp_sidecar.json'
+    _dside = json.loads(_dp_side.read_text()) if _dp_side.exists() else {}
+    if _repeat is None:
+        if 'action_repeat' in _dside:
+            _repeat = int(_dside['action_repeat'])
+            print(f'[eval] dp action_repeat from sidecar: {_repeat} ({_dp_side})')
+        else:
+            _repeat = 1
+            print('[eval] dp: no --action-repeat and no action_repeat in dp_sidecar.json -> 1 '
+                  '(legacy absolute pass-through). A repeat-N DP MUST be evaluated at N.')
+    _repeat = max(1, int(_repeat))
+    if _dside.get('action_repeat') is not None and int(_dside['action_repeat']) != _repeat:
+        raise SystemExit(f'dp sidecar says action_repeat={_dside["action_repeat"]} but '
+                         f'--action-repeat {_repeat} requested: evaluating a repeat-N DP at a '
+                         f'different clock is a different MDP. Refusing. ({_dp_side})')
+    assert args.delta_ref in ('auto', 'target'), 'DP hold-N exists for target-ref only'
+    if _repeat > 1:
+        assert not args.cartesian, 'DP hold-N is the joint delta_joint MDP'
+        from pick_env import ARM_LO, ARM_HI
+        DJ_CAP, DJ_LEASH = 0.025, 5.0 * 0.025
+        _dref = 'target'
+        _dp = {'target': None, 'a': None, 'grip': None, 'k': 0}
+        _dp_base_action, _dp_base_reset = policy_action, policy_reset
+        print(f'[eval] dp hold-{_repeat}: 1 policy query per {_repeat} env steps; q* -> '
+              f'delta clip((q*-target)/({_repeat}*{DJ_CAP})), integrated {DJ_CAP}/step, '
+              f'leash {DJ_LEASH}')
+
+        def policy_action(obs):
+            q = np.asarray(obs['state'][:6], dtype=np.float64)
+            if _dp['target'] is None:
+                _dp['target'] = q.copy()
+            if _dp['k'] % _repeat == 0:
+                phys = np.asarray(_dp_base_action(obs), dtype=np.float64)   # [q*(6), grip 0..1]
+                _dp['a'] = np.clip((phys[:6] - _dp['target']) / (_repeat * DJ_CAP), -1.0, 1.0)
+                _dp['grip'] = float(np.clip(phys[6], 0.0, 1.0))
+            _dp['k'] += 1
+            sp = np.clip(_dp['target'] + _dp['a'] * DJ_CAP, ARM_LO, ARM_HI)
+            _dp['target'] = q + np.clip(sp - q, -DJ_LEASH, DJ_LEASH)
+            return np.concatenate([_dp['target'], [_dp['grip']]])
+
+        def policy_reset():
+            _dp['target'] = None; _dp['a'] = None; _dp['grip'] = None; _dp['k'] = 0
+            if _dp_base_reset is not None:
+                _dp_base_reset()
+    _mode = 'jact_absolute' if _repeat == 1 else 'jact_hold_delta_target'
 
 # --- mixed obs x action cells: swap the state the policy sees, leave execution alone.
 # Both adapters replicate collect_cartesian_dataset's constructions exactly, so the
@@ -264,7 +335,16 @@ _ic_sets = {}
 assert not (args.uids and args.random), (
     '--uids requires --random 0 (with --random N the uid list is IGNORED '
     'and the first N demo ICs are evaluated instead)')
-if args.random:
+if args.ic_file:
+    # the shared IC file: sel/hold = demo uids (env.reset(uid=)), rnd = explicit poses,
+    # deserialized by the SAME helper the generator uses (no second reader).
+    from make_eval_ics import episodes_from_file
+    if args.random or args.uids:
+        print('[eval] --ic-file given: --random/--uids/--ic-mode are IGNORED', flush=True)
+    _ic_sets[args.ic_set] = episodes_from_file(args.ic_file, args.ic_set, args.ic_index)
+    print(f'[eval] ICs from {args.ic_file} set={args.ic_set} index={args.ic_index} '
+          f'-> {len(_ic_sets[args.ic_set])} episode(s)', flush=True)
+elif args.random:
     if args.ic_mode in ('demo', 'both'):
         _ic_sets['indist'] = ic_sampling.demo_ics(env, reps=1)[:args.random]
     if args.ic_mode in ('random', 'both'):
@@ -317,8 +397,31 @@ if len(vids) > 1:
         print('tiling failed:', tc.stderr[-200:], flush=True)
         tiled = None
     vids = [v for v in vids if not v.endswith('tiled.mp4')]
+import socket as _socket, subprocess as _sp  # noqa: E402
+try:
+    _git = _sp.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=str(REPO), capture_output=True,
+                   text=True, timeout=5).stdout.strip() or 'unknown'
+except Exception:
+    _git = 'unknown'
+_node = dict(hostname=_socket.gethostname(),
+             slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
+             slurm_partition=os.environ.get('SLURM_JOB_PARTITION'),
+             slurm_job_id=os.environ.get('SLURM_JOB_ID'),
+             cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES'))
+_act_sel = ('deterministic' if args.kind == 'sac' else f'sampled(seed={args.seed})')
+_eps_all = [dict(ic_set=_name, **e) for _name, _a in _aggs.items() for e in _a.get('episodes', [])]
 result = dict(metrics=metrics, videos=vids, tiled=tiled, checkpoint=args.checkpoint,
-              seed=args.seed, max_steps=args.max_steps, delta_ref=_dref)
+              seed=args.seed, max_steps=args.max_steps, delta_ref=_dref,
+              # one-harness protocol fields (PREREG §5)
+              kind=args.kind, arm=args.arm, ckpt_step=args.ckpt_step, reward=args.reward,
+              ic_file=args.ic_file, ic_set=args.ic_set, ic_index=args.ic_index,
+              action_repeat=(int(_repeat) if '_repeat' in globals() else None),
+              action_mode=(_mode if '_mode' in globals() else None),
+              act_selection=_act_sel, node=_node, git=_git,
+              picked=int(sum(a['picked'] for a in _aggs.values())),
+              n=int(sum(a['n'] for a in _aggs.values())),
+              n_steps=([e['n_steps'] for e in _eps_all] if _eps_all else None),
+              episodes=_eps_all)
 
 if args.json_out:
     pl.Path(args.json_out).write_text(json.dumps(result, indent=1))

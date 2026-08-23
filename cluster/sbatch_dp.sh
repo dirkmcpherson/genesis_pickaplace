@@ -1,6 +1,22 @@
 #!/bin/bash
-# DP (Diffusion Policy, lerobot) Thursday round robin: one seed per GPU, env-var
-# driven. Mirrors cluster/sbatch_rlpd.sh's structure (case-ARM demo resolution,
+# DP (Diffusion Policy, lerobot) round-robin launcher: one seed per GPU, env-var driven.
+#
+# 08-23 REWRITE for the FINAL round robin (paper/PREREG_final_round_robin_2026-08-23.md):
+#   * ONE CLOCK: ACTION_REPEAT=4 -> the lerobot dataset MUST be decision-rate (fps = 30/4 =
+#     7.5; gated against meta/info.json) and the policy is EXECUTED hold-4 through the
+#     learners' delta_joint integrator at eval (wandb_eval --kind dp --action-repeat 4).
+#   * ONE HARNESS: cluster/eval_sweep.sh (fresh process per episode, CPU, shared
+#     baselines/eval_ics.json sel/hold/rnd, 1200 sim steps). K=5 checkpoints (lerobot
+#     --save_freq=STEPS/5) each scored on `sel`; best CONFIRMED on hold+rnd; final also on
+#     hold+rnd. Headline per seed = selected-on-hold+rnd. The 08-19 single-process 30-episode
+#     eval with the silent 1200 default is GONE.
+#   * DEMO_FORMAT=native: RAW=$DEMO_ROOT/<ARM> (contract-v1 tapes + manifest), DATASET=
+#     $DEMO_ROOT/<ARM>/lerobot (prebuilt by baselines/make_matched_sets.py at fps 7.5).
+#     DEMO_FORMAT=legacy keeps the 08-19 arms/datasets (stride 1; ACTION_REPEAT must be 1).
+#   * REG_KNOBS: action_repeat, eval_horizon, budget_unit=grad_steps, demo_sha, demo_format,
+#     dataset fps; registry check+register at job START; node recorded.
+#
+# (08-19 header follows, kept for the legacy arms.) Mirrors cluster/sbatch_rlpd.sh's structure (case-ARM demo resolution,
 # stale-env case-guard, provenance gate, RUN_REGISTRY, DRYRUN) and reuses
 # cluster/sbatch_ouro_train.sh's lerobot invocation + preemption-safe resume
 # verbatim (same conda env, same lerobot-train flags, same resume contract).
@@ -166,11 +182,24 @@ export PYTHONUNBUFFERED=1
 # script not yet knowing its own commit hash at the moment it is first written).
 SBATCH_DP_ADD_COMMIT=${SBATCH_DP_ADD_COMMIT:-8d3de587318d0d37def80bc16178c9b51af77ebf}
 
-ARM=${ARM:?set ARM=dHpruned, dH, dDP, or dR2D}
+ARM=${ARM:?set ARM (native: dH dDP dR2D dHunpruned; legacy: dHpruned dH dDP dR2D)}
 SEED=${SEED:?set SEED}
 STEPS=${STEPS:-100000}
-EVAL_EPS=${EVAL_EPS:-15}
+EVAL_EPS=${EVAL_EPS:-15}          # legacy knob, unused by the one-harness path (IC file sizes rule)
 PROJ=${PROJ:-genesis_paper}
+ACTION_REPEAT=${ACTION_REPEAT:-4}
+EVAL_HORIZON=${EVAL_HORIZON:-1200}
+DEMO_FORMAT=${DEMO_FORMAT:-native}
+DEMO_ROOT=${DEMO_ROOT:-baselines/matched_v1}
+WAVE=${WAVE:-final}
+IC_FILE=${IC_FILE:-baselines/eval_ics.json}
+BUDGET_UNIT=grad_steps
+case "$DEMO_FORMAT" in native|legacy) ;; *) echo "FATAL: DEMO_FORMAT must be native|legacy"; exit 1 ;; esac
+if [ "$DEMO_FORMAT" = legacy ] && [ "$ACTION_REPEAT" != 1 ]; then
+  echo "FATAL: legacy (stride-1, fps 30) datasets can only train/eval at ACTION_REPEAT=1 (got $ACTION_REPEAT)"; exit 1
+fi
+# lerobot checkpoints at 20/40/60/80/100% of the budget (K=5 archived, PREREG §5)
+SAVE_FREQ=$(( STEPS / 5 )); [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
 
 # capture any PRE-EXISTING exports of our own var names BEFORE the case block
 # below unconditionally reassigns them -- otherwise the stale-env guard would
@@ -182,6 +211,17 @@ PROJ=${PROJ:-genesis_paper}
 _PRE_RAW="${RAW:-}"
 _PRE_DATASET="${DATASET:-}"
 
+if [ "$DEMO_FORMAT" = native ]; then
+  case "$ARM" in
+    dH|dDP|dR2D|dHunpruned)
+      RAW=$DEMO_ROOT/$ARM
+      RAW_PAT='^[0-9]{6}\.npz$'          # contract v1: rollout indices for EVERY source
+      DATASET=$DEMO_ROOT/$ARM/lerobot    # built by make_matched_sets.py at fps 30/ACTION_REPEAT
+      SUCCESS_GLOB="$RAW"/*.npz          # native sets are success-only by construction
+      ;;
+    *) echo "FATAL: ARM=$ARM is not a native arm (dH dDP dR2D dHunpruned)"; exit 1 ;;
+  esac
+else
 case "$ARM" in
   dHpruned)
     RAW=baselines/episodes_pick_phase_dppruned
@@ -207,8 +247,9 @@ case "$ARM" in
     DATASET=baselines/lerobot_dR2D_pick/genesis_pickaplace
     SUCCESS_GLOB="$RAW"/*.npz
     ;;
-  *) echo "FATAL: ARM=$ARM (must be dHpruned, dH, dDP, or dR2D)"; exit 1 ;;
+  *) echo "FATAL: ARM=$ARM (legacy arms: dHpruned, dH, dDP, dR2D)"; exit 1 ;;
 esac
+fi
 
 # stale-env case-guard (mirrors sbatch_r2d_ms.sh's DEMO_DIR guard / sbatch_rlpd.sh's
 # DEMO/DATASET guard, 08-18): a stale exported RAW/DATASET/DEMO_DIR from another
@@ -233,11 +274,37 @@ fi
 
 # provenance gate #1 (naming-trap rule): RAW filename pattern must match the
 # claimed source (human 3-digit uid vs model 6-digit rollout index).
+if [ -n "${DRYRUN:-}" ] && [ ! -d "$RAW" ]; then
+  echo "[dry] NOTE: raw demo dir $RAW is absent on this box -- the dir/pattern/manifest/sha/fps gates would FATAL at a real run"
+  N_SUCCESS=0; DEMO_SHA=dry-missing
+else
 [ -d "$RAW" ] || { echo "FATAL: raw demo dir missing: $RAW (rsync it -- gitignored, see header)"; exit 1; }
 ls "$RAW" | grep -E '\.npz$' | head -5 | grep -qE "$RAW_PAT" || {
   echo "FATAL: $RAW contents do not match $ARM provenance pattern $RAW_PAT"; exit 1; }
 N_SUCCESS=$(ls $SUCCESS_GLOB 2>/dev/null | wc -l)
 [ "$N_SUCCESS" -gt 0 ] || { echo "FATAL: no success-stem npz in $RAW matching ${SUCCESS_GLOB}"; exit 1; }
+# native: contract-v1 manifest gate; demo sha = manifest content sha (else sorted filenames)
+DEMO_SHA=$(python3 - "$RAW" "$DEMO_FORMAT" "$ARM" <<'PY'
+import json, os, sys, hashlib
+d, fmt, arm = sys.argv[1:4]
+files = sorted(f for f in os.listdir(d) if f.endswith('.npz'))
+m = os.path.join(d, 'manifest.json'); j = json.load(open(m)) if os.path.exists(m) else {}
+if fmt == 'native':
+    if not j:
+        print(f'FATAL: {d}/manifest.json missing -- native arms are built by baselines/make_matched_sets.py', file=sys.stderr); sys.exit(1)
+    c = str(j.get('contract') or j.get('tape_contract') or '')
+    if c != 'v1':
+        print(f'FATAL: {m} contract={c!r} != v1', file=sys.stderr); sys.exit(1)
+    if j.get('n_kept') is not None and int(j['n_kept']) != len(files):
+        print(f'FATAL: {m} n_kept={j["n_kept"]} != {len(files)} npz on disk', file=sys.stderr); sys.exit(1)
+sha = j.get('content_sha256') or j.get('sha256'); src = 'manifest' if sha else 'filenames'
+if not sha:
+    sha = hashlib.sha256('\n'.join(files).encode()).hexdigest()
+print(f'DEMO-SHA {arm} {fmt} n={len(files)} sha={sha[:16]} ({src})', file=sys.stderr)
+print(sha[:16])
+PY
+) || exit 1
+fi
 
 # provenance gate #2: if DATASET already exists, its meta/info.json episode
 # count must match the RAW success-stem count exactly (catches a stale/
@@ -245,46 +312,68 @@ N_SUCCESS=$(ls $SUCCESS_GLOB 2>/dev/null | wc -l)
 # class of bug the normalization audit found, but for the dataset root instead
 # of the raw npz).
 if [ -d "$DATASET" ]; then
-  python3 - "$DATASET" "$N_SUCCESS" "$ARM" <<'PYEOF'
+  python3 - "$DATASET" "$N_SUCCESS" "$ARM" "$ACTION_REPEAT" <<'PYEOF'
 import json, sys, pathlib as pl
-ds, expect_n, arm = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+ds, expect_n, arm, rep = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys.argv[4])
 info = json.loads((pl.Path(ds) / 'meta' / 'info.json').read_text())
 n = info['total_episodes']
 if n != expect_n:
     print(f'FATAL: {ds} meta/info.json total_episodes={n} != {expect_n} raw '
           f'success-stem npz for ARM={arm} -- refusing (dataset provenance gate)')
     sys.exit(1)
-print(f'PROVENANCE-OK dataset={ds} total_episodes={n} matches ARM={arm} raw count')
+# TIME-BASE GATE (08-23): the dataset's fps must be the decision rate 30/ACTION_REPEAT --
+# a stride-1 (fps 30) dataset trained and then executed hold-4 is a different MDP.
+fps = float(info.get('fps', 0)); want = 30.0 / rep
+if abs(fps - want) > 1e-6:
+    print(f'FATAL: {ds} fps={fps} but ACTION_REPEAT={rep} needs fps={want} (decision-rate dataset); '
+          f'rebuild with make_matched_sets.py / convert at 30/{rep} fps, or set ACTION_REPEAT to match')
+    sys.exit(1)
+print(f'PROVENANCE-OK dataset={ds} total_episodes={n} fps={fps} (action_repeat {rep}) matches ARM={arm}')
 PYEOF
 else
-  echo "PROVENANCE-DEFERRED dataset=$DATASET does not exist yet -- will be built "
-  echo "  inline from $RAW ($N_SUCCESS success npz) before training; checked post-build."
+  if [ "$DEMO_FORMAT" = native ]; then
+    [ -z "${DRYRUN:-}" ] && { echo "FATAL: native dataset $DATASET missing -- build it with baselines/make_matched_sets.py (lerobot at fps 30/$ACTION_REPEAT); no inline build for native sets"; exit 1; }
+    echo "[dry] NOTE: native dataset $DATASET absent -- a real run FATALs (make_matched_sets.py builds it at fps 30/$ACTION_REPEAT; no inline build)"
+  else
+    echo "PROVENANCE-DEFERRED dataset=$DATASET does not exist yet -- will be built "
+    echo "  inline from $RAW ($N_SUCCESS success npz) before training; checked post-build."
+  fi
 fi
 
-OUT=baselines/outputs/dp_thu/${ARM}_DP_s${SEED}
-RUN_NAME="${ARM}_DP_s${SEED}"
+OUT=baselines/outputs/dp_${WAVE}/${ARM}_DP_s${SEED}
+RUN_NAME="${ARM}_DP-${WAVE}_s${SEED}"
+NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
+REG_KNOBS=(steps="$STEPS" budget_unit="$BUDGET_UNIT" batch_size=64 policy=diffusion dataset_root="$DATASET"
+           action_repeat="$ACTION_REPEAT" eval_horizon="$EVAL_HORIZON" demo_format="$DEMO_FORMAT"
+           demo_sha="$DEMO_SHA" save_freq="$SAVE_FREQ" wave="$WAVE")
+SWEEP_COMMON=(--ic-file "$IC_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" --seed "$SEED"
+              --wandb-run "$RUN_NAME" --wandb-project "$PROJ")
 
 if [ -n "${DRYRUN:-}" ]; then
-  echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS EVAL_EPS=$EVAL_EPS PROJ=$PROJ"
-  echo "[dry] RAW=$RAW (N_SUCCESS=$N_SUCCESS) DATASET=$DATASET OUT=$OUT RUN_NAME=$RUN_NAME"
+  echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS($BUDGET_UNIT) ACTION_REPEAT=$ACTION_REPEAT EVAL_HORIZON=$EVAL_HORIZON DEMO_FORMAT=$DEMO_FORMAT WAVE=$WAVE PROJ=$PROJ SAVE_FREQ=$SAVE_FREQ"
+  echo "[dry] RAW=$RAW (N_SUCCESS=$N_SUCCESS) DEMO_SHA=$DEMO_SHA DATASET=$DATASET (fps must be $(python3 -c "print(30/$ACTION_REPEAT)")) OUT=$OUT RUN_NAME=$RUN_NAME NODE=$NODE_CLASS"
   echo "[dry] git-ancestor gate: SBATCH_DP_ADD_COMMIT=$SBATCH_DP_ADD_COMMIT"
-  echo "[dry] registry check: python cluster/run_registry.py check --script sbatch_dp.sh --arm $ARM --seed $SEED --demo-dir $RAW --registry cluster/RUN_REGISTRY.jsonl steps=$STEPS batch_size=64 policy=diffusion dataset_root=$DATASET"
-  if [ ! -d "$DATASET" ]; then
-    echo "[dry] build dataset (dDP-style inline build, if missing): T=\$(mktemp -d); cp $SUCCESS_GLOB \$T/; python baselines/convert_to_lerobot.py \$T $DATASET 8 4 none; rm -rf \$T"
+  echo "[dry] registry check:    python cluster/run_registry.py check    --script sbatch_dp.sh --arm $ARM --seed $SEED --demo-dir $RAW --registry cluster/RUN_REGISTRY.jsonl ${REG_KNOBS[*]}"
+  echo "[dry] registry register: python cluster/run_registry.py register --script sbatch_dp.sh --arm $ARM --seed $SEED --demo-dir $RAW --registry cluster/RUN_REGISTRY.jsonl ${REG_KNOBS[*]} --stage start"
+  if [ ! -d "$DATASET" ] && [ "$DEMO_FORMAT" = legacy ]; then
+    echo "[dry] build dataset (legacy inline build, if missing): T=\$(mktemp -d); cp $SUCCESS_GLOB \$T/; python baselines/convert_to_lerobot.py \$T $DATASET 8 4 none; rm -rf \$T"
   fi
-  echo "[dry] train: lerobot-train --dataset.repo_id=local/${RUN_NAME} --dataset.root=$DATASET --policy.type=diffusion --policy.push_to_hub=false --seed=$SEED --output_dir=$OUT --batch_size=64 --steps=$STEPS --job_name=$RUN_NAME --wandb.enable=true --wandb.project=$PROJ --wandb.disable_artifact=true"
-  echo "[dry] eval: python baselines/wandb_eval.py --kind dp --ic-mode both --checkpoint $OUT/checkpoints/last/pretrained_model --random $EVAL_EPS --seed 0 --project $PROJ --group ${ARM}_DP --name ${RUN_NAME}-eval --json $OUT/eval_result.json"
-  echo "[dry] registry register: python cluster/run_registry.py register --script sbatch_dp.sh --arm $ARM --seed $SEED --demo-dir $RAW --registry cluster/RUN_REGISTRY.jsonl steps=$STEPS batch_size=64 policy=diffusion dataset_root=$DATASET"
+  echo "[dry] train: lerobot-train --dataset.repo_id=local/${RUN_NAME} --dataset.root=$DATASET --policy.type=diffusion --policy.push_to_hub=false --seed=$SEED --output_dir=$OUT --batch_size=64 --steps=$STEPS --save_freq=$SAVE_FREQ --job_name=$RUN_NAME --wandb.enable=true --wandb.project=$PROJ --wandb.disable_artifact=true"
+  echo "[dry] sidecar: write dp_sidecar.json {action_repeat=$ACTION_REPEAT, ...} into every $OUT/checkpoints/<step>/"
+  echo "[dry] selection: for C in $OUT/checkpoints/<step>/pretrained_model (5): bash cluster/eval_sweep.sh dp <C> $OUT/sweep/<step> --sets sel --ckpt-step <step> --tag ckpt_<step> ${SWEEP_COMMON[*]}"
+  echo "[dry] confirmation: bash cluster/eval_sweep.sh dp <SELECTED> $OUT/sweep/selected --sets hold,rnd --tag selected ${SWEEP_COMMON[*]}; same for <FINAL> --tag final"
+  echo "[dry] headline: DP-HEADLINE arm=$ARM seed=$SEED repeat=$ACTION_REPEAT selected=<step> sel=a/15 hold=b/15 rnd=c/30 final_hold=d/15 final_rnd=e/30"
   exit 0
 fi
-
-REG_KNOBS=(steps="$STEPS" batch_size=64 policy=diffusion dataset_root="$DATASET")
+echo "== DP $RUN_NAME start $(date) node=$NODE_CLASS host=$(hostname) raw=$RAW sha=$DEMO_SHA dataset=$DATASET"
 # ---- RUN_REGISTRY: refuse an exact repeat, warn on a git-only-diff repeat --------
 # Runs BEFORE conda/module so a refusal costs no GPU time (stdlib-only helper,
 # system python3). Skipped on a preemption requeue -- same logical run continuing.
 if [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
   python3 cluster/run_registry.py check --script sbatch_dp.sh --arm "$ARM" --seed "$SEED" \
     --demo-dir "$RAW" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
+  python3 cluster/run_registry.py register --script sbatch_dp.sh --arm "$ARM" --seed "$SEED" \
+    --demo-dir "$RAW" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}" --stage start
 fi
 
 module load anaconda/2025.06.0
@@ -318,23 +407,27 @@ fi
 # --- build the dataset inline if it doesn't exist yet (dDP's normal path; the
 # other three arms ship prebuilt via rsync, so this is a no-op for them) --------
 if [ ! -d "$DATASET" ]; then
+  [ "$DEMO_FORMAT" = legacy ] || { echo "FATAL: native dataset $DATASET missing (make_matched_sets.py builds it)"; exit 1; }
   echo "== $DATASET missing -- building inline from $RAW ($N_SUCCESS success npz)"
   T=$(mktemp -d)
   cp $SUCCESS_GLOB "$T"/
   python baselines/convert_to_lerobot.py "$T" "$DATASET" 8 4 none
   rm -rf "$T"
 fi
-# re-run provenance gate #2 now that the dataset is guaranteed to exist
-python3 - "$DATASET" "$N_SUCCESS" "$ARM" <<'PYEOF'
+# re-run provenance gate #2 (count + fps) now that the dataset is guaranteed to exist
+python3 - "$DATASET" "$N_SUCCESS" "$ARM" "$ACTION_REPEAT" <<'PYEOF'
 import json, sys, pathlib as pl
-ds, expect_n, arm = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+ds, expect_n, arm, rep = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys.argv[4])
 info = json.loads((pl.Path(ds) / 'meta' / 'info.json').read_text())
 n = info['total_episodes']
 if n != expect_n:
     print(f'FATAL: {ds} meta/info.json total_episodes={n} != {expect_n} raw '
           f'success-stem npz for ARM={arm} -- refusing (dataset provenance gate)')
     sys.exit(1)
-print(f'PROVENANCE-OK dataset={ds} total_episodes={n} matches ARM={arm} raw count')
+fps = float(info.get('fps', 0)); want = 30.0 / rep
+if abs(fps - want) > 1e-6:
+    print(f'FATAL: {ds} fps={fps} but ACTION_REPEAT={rep} needs fps={want}'); sys.exit(1)
+print(f'PROVENANCE-OK dataset={ds} total_episodes={n} fps={fps} matches ARM={arm}')
 PYEOF
 
 
@@ -350,53 +443,80 @@ else
     --dataset.repo_id="local/${RUN_NAME}" \
     --dataset.root="$DATASET" \
     --policy.type=diffusion --policy.push_to_hub=false \
-    --seed="$SEED" --output_dir="$OUT" --batch_size=64 --steps="$STEPS" \
+    --seed="$SEED" --output_dir="$OUT" --batch_size=64 --steps="$STEPS" --save_freq="$SAVE_FREQ" \
     --job_name="$RUN_NAME" \
     --wandb.enable=true --wandb.project="$PROJ" --wandb.disable_artifact=true
 fi
 CKPT=$OUT/checkpoints/last/pretrained_model
 [ -d "$CKPT" ] || { echo "FATAL: no checkpoint at $CKPT"; exit 1; }
 
-if [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then
-  python cluster/run_registry.py register --script sbatch_dp.sh --arm "$ARM" --seed "$SEED" \
-    --demo-dir "$RAW" --registry cluster/RUN_REGISTRY.jsonl "${REG_KNOBS[@]}"
-fi
-
-# --- sidecar: arm/seed/dataset/git/config, next to the checkpoint --------------
+# --- sidecar (action_repeat travels with EVERY checkpoint -- wandb_eval/eval_sweep read it
+# and REFUSE a mismatched clock) -----------------------------------------------------------
 GIT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
-python3 - "$CKPT" "$ARM" "$SEED" "$RAW" "$DATASET" "$GIT_HASH" "$STEPS" "$PROJ" <<'PYEOF'
+mapfile -t CK_DIRS < <(ls -d "$OUT"/checkpoints/[0-9]*/ 2>/dev/null | sort -V)
+if [ "${#CK_DIRS[@]}" -eq 0 ]; then
+  echo "WARN: no numbered checkpoints under $OUT/checkpoints (save_freq not honoured?) -- falling back to last/ only"
+  CK_DIRS=("$OUT/checkpoints/last/")
+fi
+for D in "${CK_DIRS[@]}"; do
+  python3 - "$D" "$ARM" "$SEED" "$RAW" "$DATASET" "$GIT_HASH" "$STEPS" "$PROJ" "$ACTION_REPEAT" "$DEMO_SHA" "$DEMO_FORMAT" "$NODE_CLASS" <<'PYEOF'
 import json, sys, pathlib as pl, datetime
-ckpt, arm, seed, raw, dataset, git, steps, proj = sys.argv[1:9]
-sidecar = pl.Path(ckpt).parent / 'dp_sidecar.json'
+d, arm, seed, raw, dataset, git, steps, proj, rep, sha, fmt, node = sys.argv[1:13]
+sidecar = pl.Path(d) / 'dp_sidecar.json'
 sidecar.write_text(json.dumps({
     'script': 'sbatch_dp.sh', 'arm': arm, 'seed': int(seed),
     'raw_demo_dir': raw, 'dataset_root': dataset, 'git': git,
-    'config': {'policy': 'diffusion', 'batch_size': 64, 'steps': int(steps),
-               'project': proj},
+    'action_repeat': int(rep), 'demo_sha': sha, 'demo_format': fmt, 'node': node,
+    'ckpt_step': pl.Path(d).name,
+    'config': {'policy': 'diffusion', 'batch_size': 64, 'steps': int(steps), 'project': proj},
     'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
 }, indent=1))
 print(f'sidecar -> {sidecar}')
 PYEOF
+done
 
-# --- honest in-job eval: the SAME protocol dH_DP/dDP_DP's n=8 verdict rows used
-# (baselines/wandb_eval.py --kind dp --ic-mode both, launch_paper_week.sh) -------
-EVAL_JSON=$OUT/eval_result.json
-python baselines/wandb_eval.py --kind dp --ic-mode both \
-  --checkpoint "$CKPT" --random "$EVAL_EPS" --seed 0 \
-  --project "$PROJ" --group "${ARM}_DP" --name "${RUN_NAME}-eval" \
-  --json "$EVAL_JSON"
-
-python3 - "$EVAL_JSON" "$ARM" "$SEED" <<'PYEOF'
+# --- one-harness eval: K checkpoints scored on sel, best confirmed on hold+rnd, final too ---
+SW=$OUT/sweep; mkdir -p "$SW"
+set +e   # evals must never fail an already-trained job
+BEST_TAG=""; BEST_CK=""; BEST_N=-1
+for D in "${CK_DIRS[@]}"; do
+  STEP=$(basename "$D"); TAG="ckpt_$STEP"; C="$D/pretrained_model"
+  [ -d "$C" ] || { echo "WARN: $C missing, skipping"; continue; }
+  bash cluster/eval_sweep.sh dp "$C" "$SW/$STEP" --sets sel --ckpt-step "$STEP" --tag "$TAG" "${SWEEP_COMMON[@]}" 2>&1 | tee "$SW/$STEP.log"
+  N=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); s=d["sets"]["sel"]; print(s["picked"] if s["n_present"]==s["n_expected"] else -1)' "$SW/$STEP/sweep.json" 2>/dev/null || echo -1)
+  echo "SELECT-RESULT arm=$ARM seed=$SEED ckpt=$STEP sel=$N/15"
+  if [ "$N" -ge "$BEST_N" ]; then BEST_N=$N; BEST_TAG=$STEP; BEST_CK=$C; fi   # ties -> later checkpoint
+done
+FINAL_D=${CK_DIRS[-1]}; FINAL_TAG=$(basename "$FINAL_D"); FINAL_CK="$FINAL_D/pretrained_model"
+echo "== selected $BEST_TAG (sel=$BEST_N/15); final=$FINAL_TAG"
+bash cluster/eval_sweep.sh dp "$BEST_CK" "$SW/selected" --sets hold,rnd --ckpt-step "$BEST_TAG" --tag selected "${SWEEP_COMMON[@]}" 2>&1 | tee "$SW/selected.log"
+if [ "$BEST_CK" = "$FINAL_CK" ]; then FINAL_SWEEP="$SW/selected/sweep.json"
+else
+  bash cluster/eval_sweep.sh dp "$FINAL_CK" "$SW/final" --sets hold,rnd --ckpt-step "$FINAL_TAG" --tag final "${SWEEP_COMMON[@]}" 2>&1 | tee "$SW/final.log"
+  FINAL_SWEEP="$SW/final/sweep.json"
+fi
+python3 - "$SW/selected/sweep.json" "$FINAL_SWEEP" "$ARM" "$SEED" "$ACTION_REPEAT" "$BEST_TAG" "$BEST_N" "$FINAL_TAG" "$RUN_NAME" "$PROJ" "$NODE_CLASS" <<'PY'
 import json, sys
-path, arm, seed = sys.argv[1], sys.argv[2], sys.argv[3]
-m = json.load(open(path))['metrics']
-def counts(prefix):
-    n = m.get(f'{prefix}/n', 0)
-    p = m.get(f'{prefix}/picked', 0.0)
-    return round(p * n), n
-ix, iN = counts('eval_indist')
-rx, rN = counts('eval_random')
-print(f'DP-RESULT arm={arm} seed={seed} indist={ix}/{iN} random={rx}/{rN}')
-PYEOF
-
+sel_j, fin_j, arm, seed, rep, best, best_n, final_tag, run_name, proj, node = sys.argv[1:12]
+def rd(p, s):
+    try:
+        r = json.load(open(p))['sets'][s]; return f"{r['picked']}/{r['n_present']}" + ('' if r['n_present'] == r['n_expected'] else f"(exp{r['n_expected']})")
+    except Exception:
+        return 'MISSING'
+line = (f'DP-HEADLINE arm={arm} seed={seed} repeat={rep} selected={best} sel={best_n}/15 hold={rd(sel_j,"hold")} '
+        f'rnd={rd(sel_j,"rnd")} final={final_tag} final_hold={rd(fin_j,"hold")} final_rnd={rd(fin_j,"rnd")} node={node}')
+print(line)
+try:
+    import wandb
+    api = wandb.Api(timeout=60)
+    runs = list(api.runs(f'jambotime/{proj}', filters={'display_name': run_name}))
+    if runs:
+        run = sorted(runs, key=lambda x: x.created_at)[-1]
+        run.summary['sweep/headline'] = line; run.summary['sweep/selected_ckpt'] = best; run.summary['sweep/node'] = node
+        run.summary.update(); print(f'wandb: pushed sweep/headline to {run.id}')
+    else:
+        print(f'WARN: wandb headline push skipped -- no run named {run_name!r}')
+except Exception as e:
+    print(f'WARN: wandb headline push failed ({type(e).__name__}: {e}) -- DP-HEADLINE line is authoritative')
+PY
 echo "JOB DONE $(date)"
