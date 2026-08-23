@@ -20,7 +20,8 @@
 #     GENESIS_PICKAPLACE_ROOT   repo root (default: cwd)
 #
 # RULES (the confound protections this script exists for -- CRITIQUE R6/E1-E5):
-#   * ONE FRESH PROCESS PER EPISODE, CPU only (CUDA_VISIBLE_DEVICES=""), <= 1 world per 2 cores.
+#   * ONE FRESH PROCESS PER EPISODE; the SIM is CPU; the POLICY is CPU for sac and GPU (if visible)
+#     for dp (POLICY_CUDA=0 forces CPU); <= 1 world per 2 cores.
 #   * ONE horizon for every learner (1200 sim steps), ONE IC file for every learner.
 #   * repeat / action mode / delta ref come from the checkpoint SIDECAR -- never a default.
 #   * denominators asserted against the IC file; a missing episode is reported MISSING, never 0.
@@ -112,7 +113,12 @@ for S in "${SETLIST[@]}"; do
     while [ "$(jobs -rp | wc -l)" -ge "$MAXJ" ]; do sleep 2; done
     # per-episode seed = k: deterministic policies ignore it; sampled ones (DP) get a distinct,
     # reproducible draw per IC (act_selection is recorded in the json)
-    ( CUDA_VISIBLE_DEVICES="" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
+    # POLICY device: the SIM is always CPU (wandb_eval builds GenesisCanEnv(backend='cpu')); the
+    # POLICY runs on the GPU when one is visible and KIND=dp (a 100-step DDPM query is ~6 s on
+    # CPU vs ~0.1 s on GPU -- CPU DP evals would take hours per checkpoint). sac stays CPU.
+    # POLICY_CUDA=0 forces CPU for everything (the 08-19 behaviour).
+    _CVD=""; if [ "$KIND" = "dp" ] && [ "${POLICY_CUDA:-1}" = "1" ]; then _CVD="${CUDA_VISIBLE_DEVICES-}"; fi
+    ( CUDA_VISIBLE_DEVICES="$_CVD" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
         --ic-file "$ICF" --ic-set "$S" --ic-index "$k" --max-steps "$MAXS" --seed "$k" \
         "${MODE_FLAGS[@]}" "${PROV[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
         --json "$J" --no-wandb > "$OUTDIR/${S}_${k}.log" 2>&1 ) &
