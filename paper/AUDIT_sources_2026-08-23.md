@@ -384,3 +384,78 @@ target entropy −dim/2, τ 0.005, backup_entropy off, truncation bootstrapping 
 `ikostrikov/rlpd`. DP horizon/obs/action-steps/scheduler/normalisation match the fork and the paper.
 dv3 core hyperparameters (γ, λ, imag horizon, unimix, free nats, KL scales, entropy, lrs, symlog heads)
 match NM512; cont = 1 − is_terminal; shaping cadence once per decision is exact (live-fire 0.0e0).
+
+
+---
+
+# Addendum: how common is clamping the TD target to the true return range?
+
+Question (user): "I usually don't see that done." Short answer: it is **niche in the SAC/TD3/REDQ/RLPD lineage
+(none of them do it), but it is standard in the HER lineage, built-in by construction in QT-Opt/MT-Opt, and
+implicit in every categorical/distributional critic (C51/Rainbow, MuZero/EfficientZero, DreamerV3 twohot).**
+It is a principled, not a hacky, device *when the clamp equals the true return range*; its main limitation is
+that it bounds the regression targets, not what the actor can exploit at off-data actions.
+
+## Where it is used (verified)
+- **HER (Andrychowicz et al. 2017), appendix A (training details), verbatim:** "we clip the targets used to
+  train the critic to the range of possible values, i.e. [−1/(1−γ), 0]" (reward −1/0 per step, γ=0.98).
+  Implemented in OpenAI baselines `her/ddpg.py`: `clip_range = (-self.clip_return, 0. if self.clip_pos_returns
+  else np.inf); target_tf = tf.clip_by_value(batch_tf['r'] + self.gamma * target_Q_pi_tf, *clip_range)` with
+  `clip_return = 1/(1−γ)`. Inherited by the HER descendants (Nair et al. 2018 "Overcoming exploration … with
+  demonstrations", most goal-conditioned-RL codebases that fork baselines/HER). https://arxiv.org/abs/1707.01495 ,
+  https://github.com/openai/baselines/blob/master/baselines/her/ddpg.py
+- **QT-Opt (Kalashnikov et al. 2018), §3:** "We use the cross-entropy function for D, since total returns are
+  bounded in [0, 1], which we found to be more stable than the standard squared difference" — i.e. the Q-head is a
+  sigmoid trained with cross-entropy, so Q is bounded to the return range by architecture (their −0.05 step penalty
+  "may in principle result in target values outside of [0,1], though we found empirically that this does not
+  happen"). MT-Opt keeps the same bounded head. https://arxiv.org/abs/1806.10293
+- **Distributional / categorical critics:** C51/Rainbow project the Bellman target onto a fixed support,
+  `T̂z_j ← [r + γ z_j]_{V_MIN}^{V_MAX}` — an explicit clip of every target to [V_MIN, V_MAX] (Bellemare et al.
+  2017, Alg. 1). MuZero/EfficientZero (categorical value with ±300 support after the h(x) transform) and
+  DreamerV3's symlog-twohot value head (fixed bins) bound targets the same way. R2D2/Agent57 use the h(x)
+  rescaling, **not** a clip.
+- **In-project precedent:** the r2dreamer champion config already runs `return_clamp 100` (paper/
+  r2d_ms_control_2026-08-15.md §5B), i.e. the project already accepted the device for the WM arm.
+
+## Where it is NOT used (verified)
+- SAC (Haarnoja 2018), TD3, REDQ, DroQ, **RLPD** (`ikostrikov/rlpd sac_learner.py`: `target_q = rewards +
+  discount * masks * next_q`, no clip), **SERL/HIL-SERL** (`serl_launcher/agents/continuous/sac.py`: same line,
+  "no calls to clip/clamp/jnp.minimum/jnp.maximum"), IBRL, SB3. These rely on clipped double-Q / ensembles /
+  LayerNorm for overestimation control and accept unbounded Q. HIL-SERL's +1 classifier reward with
+  terminate-on-success makes its true Q ∈ [0,1] exactly as ours, and it does not clamp — so "not standard in this
+  family" is accurate.
+- Offline-RL conservatism (CQL, IQL, TD3+BC) attacks the same failure (extrapolation at OOD actions) but with
+  penalties/expectiles/BC terms, not range clipping; Cal-QL is the closest relative (it lower-bounds learned Q by
+  the data's Monte-Carlo return, a data-derived range constraint).
+
+## Does it change the fixed point?
+State it carefully: let T be the (soft-free) Bellman evaluation/optimality operator and C the clamp onto
+[lo, hi]. C is non-expansive in sup-norm, so C∘T is still a γ-contraction with a unique fixed point. If the true
+Q* lies in [lo, hi] then T Q* = Q* = C T Q*, so **Q* is that unique fixed point: in the exact/tabular sense the
+clamp changes nothing at convergence and only alters iterates that have already left the feasible range.** For
+our pick scope the premise holds exactly: the only reward is one +1 at a terminal transition, episodes end there,
+γ<1, entropy backup is off ⇒ every return, hence every Q*(s,a) and every Bellman target built from a correct Q, is
+in [0,1]. The premise FAILS, and the clamp must be widened or dropped, whenever the reward semantics change:
+entropy backup on (range +γαH/(1−γ)), hold reward (Σγ^i, ≈24.4 at K=25), potential shaping (Q−Φ, range
+[0, 1+2·d_max] plus the terminal-Φ bias), place scope (−0.25 tip penalty, −0.1 near-miss ⇒ lower bound <0).
+With function approximation there is no fixed-point guarantee either way; what the clamp guarantees is that no
+regression target exceeds hi, so the Q=12,900 trajectories seen in dDP_RLPD cannot be *taught* — they can only
+arise from the critic's own extrapolation between targets.
+
+## Known downsides / why people skip it
+1. **It bounds targets, not the actor's query.** SAC's actor maximizes the live critic at its own actions; the
+   critic may still over-extrapolate there (that is exactly the OOD-action failure CQL/IQL address), and min-of-Z
+   + LN remain the only guards. So the clamp caps the *magnitude* of divergence, it does not remove its cause.
+2. **Wrong range ⇒ bias.** A clamp tighter than the true range biases Q (QT-Opt's own caveat); any later reward
+   change that is not mirrored in the clamp silently breaks it — the repo's "silent default" failure family.
+3. **It masks a diagnostic.** Runaway Q is the cheapest symptom of a bad buffer/target (it is how the entropy
+   backup bug and the dDP pathology were found); with a clamp that symptom disappears while the underlying
+   extrapolation may persist, so pair it with the watchdog on the *unclamped* target.
+4. Squared-error on a clamped target is fine; a sigmoid/cross-entropy head (QT-Opt) or a categorical head
+   (C51/DreamerV3) is the more principled way to get the same bound and is what the large-scale works chose.
+
+## Bottom line for the paper
+Not standard in the SAC/RLPD family, so it should be reported as an explicit, cheap stabilizer with the HER/
+QT-Opt/distributional precedents cited, used *only* on the sparse +1 terminal scope where the range [0,1] is exact,
+and with the caveat in (1). It is a legitimate thing to try before concluding "RLPD diverges on model demos"; it is
+not a substitute for the terminal guard on fail tapes (the actual source of the unanchored chains).
