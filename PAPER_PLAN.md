@@ -244,6 +244,11 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-23 (user): **Independent-audit schedule LOCKED** — milestone-gated (pre-launch /
+  results readout / claim / change / reproducibility), fresh-context read-only auditors citing
+  file:line; table in PREREG_final_round_robin_2026-08-23.md §11. First due: pre-launch audit
+  2026-08-24 before the DP/RLPD block.
+
 - 2026-08-23 (cluster session, assistant on pax020 via ssh; user decisions inline):
   **FINAL-ROUND-ROBIN PREREQUISITES STARTED.** (1) dH re-recorded through the learners'
   MDP with the contract-v1 recorder (`baselines/record_demos.py --teacher human`,

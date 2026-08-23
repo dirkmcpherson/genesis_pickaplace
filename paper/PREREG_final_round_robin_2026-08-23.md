@@ -248,3 +248,15 @@ motivation for the terminal guard and the recorder, not a result about model dem
 - **A3 (2026-08-23).** `--ic-from-tape`: the 12 demos without a recovered placement reset to the can
   pose recorded at frame 0 of their own tape; applied identically to all three sources so every
   source records from the same 66 ICs.
+
+## 11. Independent-audit schedule (locked by user 2026-08-23)
+Milestone-gated, not calendar-driven. Each audit = one fresh-context agent (no conversation
+history; repo + docs only), read-only, must cite file:line, report archived under paper/AUDIT_*.
+| gate | audit | must answer |
+|---|---|---|
+| before any block launches (after sets + census exist) | **Pre-launch**: PREREG vs code vs manifests | every sbatch implements §2/§5 (clock, horizon, harness, registry knobs); set shas/census match §3.2; no silent default reappeared |
+| first results readout of each learner family | **Results**: numbers vs logs vs protocol | headline = selected-on-hold+rnd; denominators, missing cells, node classes, seeds disjoint; no cross-learner sentence without its caveat |
+| before a claim enters the paper text | **Claim** (adversarial): the claim, its evidence, its falsifier | what a reviewer rejects it on; cheapest experiment that would kill it |
+| after any trainer/env/encoder change mid-block | **Change** (narrow): diff + tests | does it restart that learner's block (§2 "one commit hash")? what else reads the changed path? |
+| once, before submission | **Reproducibility**: a stranger reruns one cell from repo + rsynced sets | runbook, shas, registry, one cell re-executed from scratch |
+Next due: Pre-launch audit, 2026-08-24, after Phase 4 of the session runbook and before the DP/RLPD block.
