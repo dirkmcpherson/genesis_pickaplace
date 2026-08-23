@@ -30,7 +30,9 @@ esac
 SET=$(basename "$OUTDIR"); LOGDIR=$(dirname "$OUTDIR")/logs; mkdir -p "$LOGDIR"
 echo "[record] teacher=$TEACHER set=$SET shards=$SHARD_N partition=$PARTITION extra='$EXTRA' py=${VENV_PY:-conda:$CONDA_ENV}"
 for K in $(seq 0 $((SHARD_N - 1))); do
-  CMD="cd $ROOT && export CUDA_VISIBLE_DEVICES='' GENESIS_PICKAPLACE_ROOT=$ROOT"
+  # sim is CPU regardless (FullTaskEnv backend='cpu'); only blank CUDA when no GPU was requested,
+  # so a GRES=gpu:1 dp job keeps its GPU for the policy
+  if [ -n "$GRES" ]; then CMD="cd $ROOT && export GENESIS_PICKAPLACE_ROOT=$ROOT"; else CMD="cd $ROOT && export CUDA_VISIBLE_DEVICES='' GENESIS_PICKAPLACE_ROOT=$ROOT"; fi
   if [ -z "$VENV_PY" ]; then
     CMD="$CMD && source ~/.bashrc >/dev/null 2>&1; conda activate $CONDA_ENV && PY=python"
   else
