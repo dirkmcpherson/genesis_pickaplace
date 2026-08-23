@@ -29,6 +29,7 @@
 # Output: OUTDIR/<set>_<k>.json (wandb_eval result), OUTDIR/sweep.json, and exactly one line
 #   SWEEP-RESULT kind=.. arm=.. seed=.. ckpt=.. tag=.. sel=a/15 hold=b/15 rnd=c/30 missing=..
 set -eo pipefail
+trap 'rc=$?; [ $rc -ne 0 ] && echo "[sweep] EXIT rc=$rc at line $LINENO (cmd: $BASH_COMMAND)"' EXIT
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1
 
@@ -57,9 +58,12 @@ if [ "$KIND" = sac ]; then [ -f "$CKPT" ] || { echo "FATAL: checkpoint $CKPT mis
 else [ -d "$CKPT" ] || { echo "FATAL: DP checkpoint dir $CKPT missing"; exit 1; }; fi
 mkdir -p "$OUTDIR"
 if [ -z "$MAXJ" ]; then
-  _CPUS=${SLURM_CPUS_PER_TASK:-$(nproc 2>/dev/null || echo 2)}
+  # allocated CPUs: SLURM_CPUS_ON_NODE covers both -c N and -n N submissions (sbatch_rlpd uses -n 8,
+  # which leaves SLURM_CPUS_PER_TASK unset -> the old fallback gave max_jobs=1 in the 08-23 smoke)
+  _CPUS=${SLURM_CPUS_ON_NODE:-${SLURM_CPUS_PER_TASK:-$(nproc 2>/dev/null || echo 2)}}
   MAXJ=$(( _CPUS / 2 )); [ "$MAXJ" -ge 1 ] || MAXJ=1
 fi
+echo "[sweep] cpus=$_CPUS -> max_jobs=$MAXJ (SLURM_CPUS_ON_NODE=${SLURM_CPUS_ON_NODE:-unset} SLURM_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK:-unset})"
 
 # ---- sidecar -> execution flags (no silent defaults) -----------------------------------
 MODE_FLAGS=()
@@ -124,10 +128,13 @@ for S in "${SETLIST[@]}"; do
         --json "$J" --no-wandb > "$OUTDIR/${S}_${k}.log" 2>&1 ) &
   done
 done
-wait
+wait || true
+set +e   # from here on nothing may silently abort the aggregation (08-23 smoke: the parent moved on
+         # with no SWEEP-RESULT and no sweep.json -> selection read -1 for a complete sweep)
+echo "[sweep] episodes done ($(ls "$OUTDIR"/*.json 2>/dev/null | wc -l) result files); aggregating"
 
 # ---- aggregate: asserted denominators, missing never 0 ---------------------------------
-python3 - "$OUTDIR" "$ICF" "$SETS" "$KIND" "$ARM" "$SEED" "$CSTEP" "$TAG" "$WRUN" "$WPROJ" "$CKPT" "$MAXS" <<'PY'
+python3 -u - "$OUTDIR" "$ICF" "$SETS" "$KIND" "$ARM" "$SEED" "$CSTEP" "$TAG" "$WRUN" "$WPROJ" "$CKPT" "$MAXS" <<'PY'
 import json, os, sys, glob
 out, icf, sets, kind, arm, seed, cstep, tag, wrun, wproj, ckpt, maxs = sys.argv[1:13]
 ic = json.load(open(icf)); res = {}; parts = []; missing_all = {}
