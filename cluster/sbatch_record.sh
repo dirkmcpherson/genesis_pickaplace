@@ -1,7 +1,7 @@
 #!/bin/bash
 # Record contract-v1 demo tapes as CPU batch jobs (one shard per job).
 #
-#   TEACHER=dp|r2d|human|random  CKPT=<path>  OUTDIR=baselines/demos_v1/<set>  SHARD_N=16 \
+#   TEACHER=dp|r2d|human|random  CKPT=<path>  OUTDIR=baselines/demos_v1/<set>  SHARD_N=16 [GRES=gpu:1 PARTITION=gpu] \
 #     EXTRA="--ic-mode demo --ic-from-tape --attempts 3 --mode sample --verify --target-kept 5" \
 #     bash cluster/sbatch_record.sh            # submits SHARD_N jobs (array)
 #
@@ -17,6 +17,8 @@ CONDA_ENV=${CONDA_ENV:-$LAB/condaenv/genesis}
 : "${TEACHER:?TEACHER required}"; : "${OUTDIR:?OUTDIR required}"
 SHARD_N=${SHARD_N:-8}; SEED=${SEED:-0}; ROLLOUT_BASE=${ROLLOUT_BASE:-100000}
 PARTITION=${PARTITION:-batch}; TIME=${TIME:-2:00:00}; CPUS=${CPUS:-2}; MEM=${MEM:-8g}
+GRES=${GRES:-}   # e.g. GRES=gpu:1 PARTITION=gpu for the dp adapter (policy on GPU, sim on CPU)
+GRES_FLAG=(); [ -n "$GRES" ] && GRES_FLAG=(--gres "$GRES")
 EXTRA=${EXTRA:-}
 case "$TEACHER" in
   r2d) VENV_PY=${VENV_PY:-$LAB/r2d_venv/bin/python}; ARGS="--checkpoint ${CKPT:?CKPT required for r2d}" ;;
@@ -35,7 +37,7 @@ for K in $(seq 0 $((SHARD_N - 1))); do
     CMD="$CMD && PY=$VENV_PY"
   fi
   CMD="$CMD && \$PY baselines/record_demos.py --teacher $TEACHER $ARGS --outdir $OUTDIR --seed $SEED --shard-idx $K --shard-n $SHARD_N --rollout-base $ROLLOUT_BASE $EXTRA"
-  if [ "${DRYRUN:-0}" = "1" ]; then echo "[dry] sbatch -p $PARTITION -c $CPUS --mem $MEM --time $TIME -J rec_${SET}_$K --wrap \"$CMD\""; continue; fi
-  sbatch -p "$PARTITION" -c "$CPUS" --mem "$MEM" --time "$TIME" -J "rec_${SET}_$K" \
+  if [ "${DRYRUN:-0}" = "1" ]; then echo "[dry] sbatch -p $PARTITION ${GRES_FLAG[*]} -c $CPUS --mem $MEM --time $TIME -J rec_${SET}_$K --wrap \"$CMD\""; continue; fi
+  sbatch -p "$PARTITION" "${GRES_FLAG[@]}" -c "$CPUS" --mem "$MEM" --time "$TIME" -J "rec_${SET}_$K" \
          --output "$LOGDIR/${SET}_shard${K}_%j.log" --wrap "$CMD"
 done
