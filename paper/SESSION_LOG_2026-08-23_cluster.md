@@ -38,3 +38,8 @@ All recording/eval used `CUDA_VISIBLE_DEVICES=""` unless stated (sim on CPU). Ti
 | 27 | 08:45 | local→LOGIN | commits 58bbd5e (sbatch_record GRES), pull; `DRYRUN=1 ... bash cluster/sbatch_record.sh` | dry only |
 
 (continued below, appended live)
+
+## Live log (appended automatically by ~/bin/ccmd on the assistant's box: time EDT | host | REPO git sha at run time | exact command | exit code | first output line). Outcome/meaning notes are added as separate bullet lines beneath the relevant row. Scope: every command that creates, runs, submits, cancels or deletes anything on the cluster goes through ccmd; read-only polls by background waiters (`squeue -j`, `grep` on logs, `pgrep`) are not individually logged. Cross-references: sbatch jobs -> cluster/RUN_REGISTRY.jsonl (key, git, knobs, demo sha, node) and <script>_<jobid>.out; recordings -> <outdir>/manifest.json (config, records, content_sha256, git_sha).
+| time | host | sha | command | rc | first line |
+|---|---|---|---|---|---|
+| 09:54:02 | pax020 | 58bbd5e | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace; for S in 0 1; do grep -o "step:[0-9]*[kK]\? " baselines/outputs/logs/dp_pilot_dH_s$S.log \| tail -1; done; date +%H:%M` | rc=0 | step:99K  |
