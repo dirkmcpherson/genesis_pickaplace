@@ -13,14 +13,14 @@ Frames are NOT matched (intrinsic: humans are slow); the census reports them.
 Inputs: three dirs of contract-v1 npz (successes, as the recorder writes them) and
 optionally the dDP fails dir. Outputs under --out-root:
 
-  <out-root>/dH/episodes/*.npz        chosen tapes (hard links when possible, else copies)
+  <out-root>/dH/*.npz                 chosen tapes (hard links when possible, else copies)
   <out-root>/dH/episode_list.txt      sorted filenames
   <out-root>/dH/manifest.json         {source, N, chosen, ic_uid histogram, content_sha256,
                                        source manifest, seed, git, unmatched notes}
   ... same for dDP, dR2D
-  <out-root>/dDP_plus_fails/...       (when --fails-dDP) the N dDP successes + dDP fails,
+  <out-root>/dDPfails/...                 (when --fails-dDP) the N dDP successes + dDP fails,
                                        fail share <= --fail-share of episodes (PREREG §3.3)
-  <out-root>/dR2D_plus_DPfails/...    the N dR2D successes + the same dDP fails
+  <out-root>/dR2DDPfails/...           the N dR2D successes + the same dDP fails
   <out-root>/MATCHED_SETS.json        shas of every set + the census command + stats
 
 Matching rule (deterministic, rng(--seed)):
@@ -142,7 +142,7 @@ def stratified_pick(sources, N, rng):
 
 
 def write_set(name, tapes, out_root, extra, git, seed, source_paths):
-    d = os.path.join(out_root, name); ep = os.path.join(d, 'episodes')
+    d = os.path.join(out_root, name); ep = d   # FLAT: npz directly under <out-root>/<set>/ (sbatch_rlpd/sbatch_dp read $DEMO_ROOT/<ARM>/*.npz + manifest.json)
     if os.path.exists(d):
         shutil.rmtree(d)
     os.makedirs(ep)
@@ -169,7 +169,7 @@ def write_set(name, tapes, out_root, extra, git, seed, source_paths):
     man = dict(set=name, built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=len(tapes),
                n_success=sum(t['label'] == 'success' for t in tapes), n_fail=sum(t['label'] != 'success' for t in tapes),
                decisions_total=int(sum(t['n'] for t in tapes)), decisions_p50=float(np.median([t['n'] for t in tapes])),
-               chosen=names, ic_uid_histogram=dict(sorted(hist.items())), content_sha256=sha,
+               n_kept=len(tapes), chosen=names, ic_uid_histogram=dict(sorted(hist.items())), content_sha256=sha,
                sources=source_paths, source_manifests=srcman, seed=seed, git=git,
                builder='baselines/make_matched_sets.py', contract='v1', **extra)
     json.dump(man, open(os.path.join(d, 'manifest.json'), 'w'), indent=1)
@@ -219,16 +219,16 @@ def main():
         shas[s], mans[s] = write_set(s, chosen[s], args.out_root, dict(matching=notes, role='primary success-only'), git, args.seed, [path])
         print(f'  wrote {s}: N={len(chosen[s])} sha {shas[s][:16]}')
     if fails is not None and n_f:
-        for s, base in (('dDP_plus_fails', 'dDP'), ('dR2D_plus_DPfails', 'dR2D')):
+        for s, base in (('dDPfails', 'dDP'), ('dR2DDPfails', 'dR2D')):
             shas[s], mans[s] = write_set(s, chosen[base] + fails_use, args.out_root,
                                          dict(role=f'secondary: {base} successes + {n_f} dDP fails (share {n_f/(N+n_f):.3f})', matching=notes),
                                          git, args.seed, [args.dDP if base == 'dDP' else args.dR2D, args.fails_dDP])
             print(f'  wrote {s}: N={len(chosen[base]) + n_f} sha {shas[s][:16]}')
-    census_cmd = ['python', 'analysis/characterize_demo_sets.py'] + [f'{s}={os.path.join(args.out_root, s, "episodes")}' for s in shas] + \
+    census_cmd = ['python', 'analysis/characterize_demo_sets.py'] + [f'{s}={os.path.join(args.out_root, s)}' for s in shas] + \
                  ['--out', os.path.join(args.out_root, 'census.md'), '--json', os.path.join(args.out_root, 'census.json')]
     top = dict(built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=N, cap_n=args.cap_n, seed=args.seed, git=git,
                source_counts=counts, matching=notes, fails_arm_n_fails=n_f,
-               sets={s: dict(dir=os.path.join(args.out_root, s, 'episodes'), content_sha256=shas[s], N=mans[s]['N']) for s in shas},
+               sets={s: dict(dir=os.path.join(args.out_root, s), content_sha256=shas[s], N=mans[s]['N']) for s in shas},
                census_command=' '.join(census_cmd))
     json.dump(top, open(os.path.join(args.out_root, 'MATCHED_SETS.json'), 'w'), indent=1)
     print(f'wrote {args.out_root}/MATCHED_SETS.json')
