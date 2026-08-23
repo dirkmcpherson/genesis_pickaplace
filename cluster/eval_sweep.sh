@@ -60,7 +60,7 @@ mkdir -p "$OUTDIR"
 if [ -z "$MAXJ" ]; then
   # allocated CPUs: SLURM_CPUS_ON_NODE covers both -c N and -n N submissions (sbatch_rlpd uses -n 8,
   # which leaves SLURM_CPUS_PER_TASK unset -> the old fallback gave max_jobs=1 in the 08-23 smoke)
-  _CPUS=${SLURM_CPUS_ON_NODE:-${SLURM_CPUS_PER_TASK:-$(nproc 2>/dev/null || echo 2)}}
+  _CPUS=${SLURM_CPUS_ON_NODE:-${SLURM_CPUS_PER_TASK:-${EVAL_CPUS:-$(nproc 2>/dev/null || echo 2)}}}   # EVAL_CPUS: explicit override for non-slurm shells
   MAXJ=$(( _CPUS / 2 )); [ "$MAXJ" -ge 1 ] || MAXJ=1
 fi
 echo "[sweep] cpus=$_CPUS -> max_jobs=$MAXJ (SLURM_CPUS_ON_NODE=${SLURM_CPUS_ON_NODE:-unset} SLURM_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK:-unset})"
@@ -121,8 +121,10 @@ for S in "${SETLIST[@]}"; do
     # POLICY runs on the GPU when one is visible and KIND=dp (a 100-step DDPM query is ~6 s on
     # CPU vs ~0.1 s on GPU -- CPU DP evals would take hours per checkpoint). sac stays CPU.
     # POLICY_CUDA=0 forces CPU for everything (the 08-19 behaviour).
-    _CVD=""; if [ "$KIND" = "dp" ] && [ "${POLICY_CUDA:-1}" = "1" ]; then _CVD="${CUDA_VISIBLE_DEVICES-}"; fi
-    ( CUDA_VISIBLE_DEVICES="$_CVD" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
+    # dp + POLICY_CUDA=1: leave CUDA_VISIBLE_DEVICES exactly as inherited (unset stays unset -- setting
+    # it to "" HIDES the GPU, the 08-23 pilot-sweep bug); sac or POLICY_CUDA=0: hide the GPU explicitly.
+    _ENV=(env); if [ "$KIND" != "dp" ] || [ "${POLICY_CUDA:-1}" != "1" ]; then _ENV=(env CUDA_VISIBLE_DEVICES=""); fi
+    ( "${_ENV[@]}" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
         --ic-file "$ICF" --ic-set "$S" --ic-index "$k" --max-steps "$MAXS" --seed "$k" \
         "${MODE_FLAGS[@]}" "${PROV[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
         --json "$J" --no-wandb > "$OUTDIR/${S}_${k}.log" 2>&1 ) &
