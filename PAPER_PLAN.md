@@ -244,6 +244,19 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-23 14:50 EDT (assistant, cluster session): **FINAL-RR WINDOW BLOCK LAUNCHED** on
+  `baselines/matched_v2` (dH = recorder `--arrival either` 56/66; dDP 56 of 64 from the
+  DP-r4 pilot s0 ckpt 020000; dR2D 56 of 64 from r2dreamer dH-dense s51 BEST (A2); identical
+  IC multiset; fails arms 8 teacher fails). DP 3×5 seeds (10-14), RLPD 3×{sparse,dense}×4
+  seeds (10-13) = 39 sbatch jobs; pre-launch audit passed with amendments A4-A8
+  (paper/AUDIT_prelaunch_2026-08-23.md); dense smoke clean. DP-r4 pilots: hold 11-13/15,
+  rnd 15/30 (vs stride-1 dHpruned_DP 0.62/0.23). Follower lab (paper/real2sim_follower_lab_
+  2026-08-23.md): tier 1 (arrival test) adopted; tier 2 = SIMULATOR defects (no gravity comp,
+  soft PD, robot mounted >=3 cm too low, gripper driven ~10 N·m into the can -> 7-8 mm
+  penetration) with a real-data-justified fix (gravity comp + kp×4 + 3 cm riser: sim-vs-real
+  joint error 0.047 -> 0.004 rad) DEFERRED to the full rerun (every teacher must be retrained
+  in the new world). Session log: paper/SESSION_LOG_2026-08-23_cluster.md.
+
 - 2026-08-23 (user): **Independent-audit schedule LOCKED** — milestone-gated (pre-launch /
   results readout / claim / change / reproducibility), fresh-context read-only auditors citing
   file:line; table in PREREG_final_round_robin_2026-08-23.md §11. First due: pre-launch audit
