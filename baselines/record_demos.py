@@ -424,8 +424,14 @@ class DPTeacher(Adapter):
         from dp_runner import load_dp_runner
         self.torch = torch; self.mode = mode; self.seed = seed; self.ep = 0
         self.ckpt = str(checkpoint)
+        # POLICY device: GPU if visible (a 100-step DDPM query is ~6 s on CPU vs ~0.1 s on GPU);
+        # the SIM is CPU regardless (FullTaskEnv backend='cpu'). RECORD_POLICY_DEVICE=cpu forces CPU.
+        import torch
+        dev = os.environ.get('RECORD_POLICY_DEVICE') or ('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = dev
         self.policy_action, self.policy_reset, self.proprio = load_dp_runner(
-            str(checkpoint), rig_provider=rig_provider, n_action_steps=n_action_steps, device='cpu')
+            str(checkpoint), rig_provider=rig_provider, n_action_steps=n_action_steps, device=dev)
+        print(f'[dp] policy device={dev} n_action_steps={n_action_steps}', flush=True)
 
     def reset(self, obs, env):
         # 'mode' = reproducible diffusion draw per episode; 'sample' = continuing RNG
