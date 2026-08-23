@@ -243,7 +243,9 @@ class Recorder:
             if self.images: T['images'].append(self._img())
             T['eef_pos'].append(self._eef())
             a = adapter.act(obs, env, t)
-            if a is None:                     # adapter exhausted (human follower)
+            if a is None:                     # adapter exhausted (human follower): no decision
+                if self.images: T['images'].pop()   # this obs IS the final observation -> appended once below
+                T['eef_pos'].pop()
                 end_reason = 'adapter_exhausted'; break
             a = np.clip(np.asarray(a, np.float32), -1.0, 1.0)
             assert a.shape == (ACT_DIM,), a.shape
@@ -608,6 +610,9 @@ def main():
     if args.teacher == 'human':
         files = sorted(glob.glob(str(REPO / args.src / '*.npz')), key=lambda p: int(pl.Path(p).stem))
         files = [f for f in files if int(pl.Path(f).stem) in set(env.success_uids)]
+        if args.uids:
+            want = set(int(u) for u in args.uids)
+            files = [f for f in files if int(pl.Path(f).stem) in want]
         plan = [dict(uid=int(pl.Path(f).stem), src=f) for f in files][args.shard_idx::args.shard_n]
         attempts = 1
     elif args.ic_mode == 'demo':
