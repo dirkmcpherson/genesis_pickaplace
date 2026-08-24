@@ -111,7 +111,7 @@ def _r2d_root():
     return pl.Path(os.environ.get('R2DREAMER_ROOT', os.path.expanduser('~/workspace/r2dreamer')))
 R2D_ROOT = _r2d_root()
 
-SCALARS = ('uid', 'ic_uid', 'label', 'stage', 'teacher', 'teacher_ckpt', 'act_mode',
+SCALARS = ('uid', 'ic_uid', 'label', 'stage', 'teacher', 'teacher_ckpt', 'act_mode', 'sim_variant',
            'action_repeat', 'delta_cap', 'delta_leash', 'delta_ref', 'pick_z', 'n',
            'git_sha', 'env_class', 'recorder', 'contract', 'end_reason')
 
@@ -127,7 +127,7 @@ def validate_tape(d, require_images=False, require_sim=False):
         v = d[k]
         return v.item() if (hasattr(v, 'ndim') and v.ndim == 0) else v
     for k in ('states', 'final_state', 'actions_delta', 'actions', 'rewards', 'terminated',
-              'truncated', 'picked', 'tipped', 'eef_pos') + SCALARS:
+              'truncated', 'picked', 'tipped', 'eef_pos') + tuple(k for k in SCALARS if k != 'sim_variant'):
         if k not in keys:
             errs.append(f'missing key {k}')
     if errs:
@@ -189,7 +189,9 @@ def build_env(args):
     sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
     sys.path.insert(0, str(REPO / 'can_pos_recovery'))
     from full_env import FullTaskEnv
+    from sim_variant_hook import apply_pre, apply_post
     t0 = time.time()
+    apply_pre(getattr(args, 'sim_variant', 'base'))
     env = FullTaskEnv(backend='cpu', max_steps=MAX_SIM_STEPS, scope='pick',
                       action_mode='delta_joint', delta_cap=DELTA_CAP,
                       delta_leash_mult=LEASH_MULT, action_repeat=REPEAT, delta_ref='target',
@@ -199,6 +201,7 @@ def build_env(args):
     assert abs(env.delta_leash - LEASH_MULT * DELTA_CAP) < 1e-12, env.delta_leash
     assert env.max_steps == MAX_SIM_STEPS and not env.pick_shaping and not env.pick_hold_reward
     assert env.genv.max_steps >= 10 ** 8, 'inner env must never truncate (#26)'
+    apply_post(env, getattr(args, 'sim_variant', 'base'))
     print(f'[env] FullTaskEnv built in {time.time()-t0:.1f}s | pick_z={env.pick_z:.4f} '
           f'repeat={env.action_repeat} cap={env.delta_cap} leash={env.delta_leash} '
           f'max_sim={env.max_steps} rig={not args.no_images}', flush=True)
@@ -612,6 +615,7 @@ def main():
     ap.add_argument('--verify', action='store_true', help='open-loop replay guard on every success')
     ap.add_argument('--no-images', action='store_true'); ap.add_argument('--no-sim-tape', action='store_true')
     ap.add_argument('--tol', type=float, default=0.025); ap.add_argument('--max-dwell', type=int, default=8)
+    ap.add_argument('--sim-variant', default='base', help='Genesis world variant (baselines/sim_variants.py); base = unpatched. Stamped into every tape/manifest; consumers assert it.')
     ap.add_argument('--arrival', choices=['meas', 'either'], default='meas', help='human: waypoint arrival test (see HumanFollower); either = lab-recommended')
     ap.add_argument('--dilation-cap', type=float, default=3.0); ap.add_argument('--settle', type=int, default=25,
                     help='human: decisions to hold the last waypoint after exhaustion')
@@ -716,7 +720,7 @@ def main():
     GIT = git_sha(REPO)
     stamp = dict(teacher=args.teacher, teacher_ckpt=str(getattr(adapter, 'ckpt', '') or ''),
                  act_mode=args.mode, action_repeat=REPEAT, delta_cap=DELTA_CAP,
-                 delta_leash=LEASH_MULT * DELTA_CAP, delta_ref='target', pick_z=float(env.pick_z),
+                 delta_leash=LEASH_MULT * DELTA_CAP, delta_ref='target', sim_variant=str(getattr(args, 'sim_variant', 'base')), pick_z=float(env.pick_z),
                  git_sha=GIT, env_class='FullTaskEnv', recorder=RECORDER, contract=CONTRACT)
     records = []; n_kept = 0; n_fail = 0; n_verify_rej = 0; n_roll = 0
     for i, ic in enumerate(plan):

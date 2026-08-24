@@ -28,6 +28,7 @@ ap.add_argument('--uids', type=int, nargs='*', default=None)
 ap.add_argument('--reps', type=int, default=1)
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200)
+ap.add_argument('--sim-variant', default=None, help='Genesis world variant; default: the checkpoint sidecar value, else base. Mismatch with an explicit flag refuses.')
 ap.add_argument('--cartesian', action='store_true',
                 help='eval a cartesian-action policy through CartesianCanEnv')
 ap.add_argument('--ic-mode', choices=['random', 'demo', 'both'], default='both',
@@ -118,6 +119,29 @@ if args.kind == 'dp':
     _cfgd = _json.loads((pl.Path(args.checkpoint) / 'config.json').read_text())
     _needs_rig = any(k.startswith('observation.images.')
                      for k in _cfgd.get('input_features', {}))
+# sim variant (world realization): CLI > sidecar > 'base' -- must match training/recording
+def _resolve_sim_variant():
+    sv_side = None
+    try:
+        import json as _json, pathlib as _pl
+        c = _pl.Path(args.checkpoint)
+        cands = ([c.with_name(c.stem + '.action_mode.json')] if c.suffix == '.zip' else [])
+        cands += [(c / 'dp_sidecar.json') if c.is_dir() else None, c.parent / 'dp_sidecar.json']
+        for cand in cands:
+            if cand and cand.exists():
+                sv_side = _json.loads(cand.read_text()).get('sim_variant')
+                break
+    except Exception:
+        pass
+    sv = args.sim_variant if args.sim_variant is not None else (sv_side or 'base')
+    if args.sim_variant is not None and sv_side is not None and args.sim_variant != sv_side:
+        raise SystemExit(f'FATAL: --sim-variant {args.sim_variant} != sidecar {sv_side}')
+    return sv
+_SIM_VARIANT = _resolve_sim_variant()
+import sys as _sys, pathlib as _pl2
+_sys.path.insert(0, str(_pl2.Path(__file__).resolve().parent))
+from sim_variant_hook import apply_pre as _sv_pre, apply_post as _sv_post
+_sv_pre(_SIM_VARIANT)
 if args.cartesian:
     from cartesian_env import CartesianCanEnv
     env = CartesianCanEnv(backend='cpu', render_size=(480, 640),
@@ -126,6 +150,7 @@ if args.cartesian:
 else:
     env = GenesisCanEnv(backend='cpu', render_size=(480, 640), max_steps=args.max_steps,
                         camera_rig=_needs_rig)
+_sv_post(env, _SIM_VARIANT)
 
 _dref = None            # resolved delta reference frame (sac/delta_joint only)
 if args.kind == 'sac':
@@ -407,7 +432,7 @@ _node = dict(hostname=_socket.gethostname(),
              slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
              slurm_partition=os.environ.get('SLURM_JOB_PARTITION'),
              slurm_job_id=os.environ.get('SLURM_JOB_ID'),
-             cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES'))
+             cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES'), sim_variant=_SIM_VARIANT)
 _act_sel = ('deterministic' if args.kind == 'sac' else f'sampled(seed={args.seed})')
 _eps_all = [dict(ic_set=_name, **e) for _name, _a in _aggs.items() for e in _a.get('episodes', [])]
 result = dict(metrics=metrics, videos=vids, tiled=tiled, checkpoint=args.checkpoint,

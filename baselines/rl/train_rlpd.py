@@ -141,6 +141,7 @@ def main():
                          "sidecar so wandb_eval --delta-ref auto integrates the "
                          "policy in the SAME space it trained in.")
     # --- demo-set protections (PREREG_final_round_robin_2026-08-23 §4) ---
+    ap.add_argument('--sim-variant', default='base', help='Genesis world variant (baselines/sim_variants.py); MUST match the demo tapes\' stamp; sidecar + registry carry it')
     ap.add_argument('--demo-terminal-guard', choices=['on', 'off'], default='on',
                     help="LEGACY tapes only (see --demo-format). on (DEFAULT since "
                          "2026-08-23): every demo tape ends where the env would have "
@@ -232,6 +233,8 @@ def main():
         assert args.action_mode == 'delta_joint', (
             'delta_ref=measured is a delta_joint concept (it changes what the delta '
             f'is applied to); got action_mode={args.action_mode}')
+    from sim_variant_hook import apply_pre, apply_post
+    apply_pre(args.sim_variant)
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
@@ -248,6 +251,7 @@ def main():
     assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
     assert env.pick_hold_reward is hold_reward, (env.pick_hold_reward, hold_reward)
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
+    apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
     assert env.pick_shaping_terminal_zero == (args.pick_shaping_terminal_zero == 'on')
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
@@ -302,7 +306,7 @@ def main():
           f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
     if native:
         transitions, census = native_demo_transitions(
-            paths, expect=dict(action_repeat=args.action_repeat, delta_cap=env.delta_cap,
+            paths, expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat, delta_cap=env.delta_cap,
                                delta_leash=env.delta_leash, delta_ref=args.delta_ref),
             gamma=args.gamma, shaping=demo_shaping,
             phi_scale=FullTaskEnv.PICK_SHAPING_SCALE)
@@ -392,6 +396,7 @@ def main():
                'pick_hold_k': args.pick_hold_k, 'pick_shaping': args.pick_shaping,
                # 2026-08-23 demo-set protections + budget/horizon (PREREG §2, §4)
                'demo_format': args.demo_format,
+               'sim_variant': args.sim_variant,
                'demo_terminal_guard': args.demo_terminal_guard,
                'demo_shaping': ('on' if demo_shaping else 'off'),
                'pick_shaping_terminal_zero': args.pick_shaping_terminal_zero,

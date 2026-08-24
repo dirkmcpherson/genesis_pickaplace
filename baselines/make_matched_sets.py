@@ -77,7 +77,8 @@ def read_dir(path, want_label=None, validate=True):
         if not (term[-1] or trunc[-1]):
             sys.exit(f'FATAL: {f}: last row is neither terminated nor truncated')
         ic = z['ic_uid'].item() if 'ic_uid' in z.files else None
-        out.append(dict(name=os.path.basename(f), path=f, label=label,
+        sv = str(z['sim_variant'].item()) if 'sim_variant' in z.files else 'base'
+        out.append(dict(name=os.path.basename(f), path=f, label=label, sim_variant=sv,
                         ic_uid=(int(ic) if ic is not None and str(ic) not in ('None', '') else None),
                         n=int(len(picked)), tipped=bool(np.asarray(z['tipped'], bool).reshape(-1)[-1]) if 'tipped' in z.files else None))
     if want_label:
@@ -178,7 +179,10 @@ def write_set(name, tapes, out_root, extra, git, seed, source_paths):
         if os.path.exists(mp):
             try: srcman[sp] = json.load(open(mp))
             except Exception as e: srcman[sp] = f'unreadable: {e}'
-    man = dict(set=name, built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=len(tapes),
+    svs = sorted(set(t.get('sim_variant', 'base') for t in tapes))
+    if len(svs) > 1:
+        sys.exit(f'FATAL: {name}: mixed sim_variants {svs} in one set')
+    man = dict(set=name, built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=len(tapes), sim_variant=svs[0],
                n_success=sum(t['label'] == 'success' for t in tapes), n_fail=sum(t['label'] != 'success' for t in tapes),
                decisions_total=int(sum(t['n'] for t in tapes)), decisions_p50=float(np.median([t['n'] for t in tapes])),
                n_kept=len(tapes), chosen=names, renamed_fail_tapes=renamed, ic_uid_histogram=dict(sorted(hist.items())), content_sha256=sha,

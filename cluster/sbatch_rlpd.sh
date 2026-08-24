@@ -84,6 +84,7 @@ EVAL_HORIZON=${EVAL_HORIZON:-1200}
 DEMO_FORMAT=${DEMO_FORMAT:-native}
 DEMO_ROOT=${DEMO_ROOT:-baselines/matched_v1}
 WAVE=${WAVE:-final}
+SIM_VARIANT=${SIM_VARIANT:-base}
 IC_FILE=${IC_FILE:-baselines/eval_ics.json}
 BUDGET_UNIT=decisions
 # REWARD (sparse|dense); PICK_SHAPING=on|off kept as an alias for back-compat
@@ -165,6 +166,10 @@ if fmt == 'native':
     c = str(j.get('contract') or j.get('tape_contract') or '')
     if c != 'v1':
         print(f'FATAL: {m} contract={c!r} != v1 (not a record_demos.py / make_matched_sets.py product)', file=sys.stderr); sys.exit(1)
+    msv = str(j.get('sim_variant') or 'base')
+    import os as _os
+    if msv != _os.environ.get('SIM_VARIANT', 'base'):
+        print(f'FATAL: {m} sim_variant={msv} but this run has SIM_VARIANT={_os.environ.get("SIM_VARIANT", "base")} (world mismatch)', file=sys.stderr); sys.exit(1)
     if j.get('n_kept') is not None and int(j['n_kept']) != len(files):
         print(f'FATAL: {m} n_kept={j["n_kept"]} != {len(files)} npz on disk', file=sys.stderr); sys.exit(1)
 sha = j.get('content_sha256') or j.get('sha256')
@@ -182,7 +187,7 @@ if [ "$REWARD" = dense ]; then SHAPE_SUFFIX="_dense"; RUN_SUFFIX="-dense"; PICK_
 # no silent defaults (audit W2): demo shaping follows the reward condition (native tapes carry eef_pos),
 # phi(terminal)=0 explicit, terminal guard explicit
 DEMO_SHAPING=$([ "$REWARD" = dense ] && echo on || echo off)
-PICK_SHAPING_FLAG+=(--demo-shaping "$DEMO_SHAPING" --pick-shaping-terminal-zero on --demo-terminal-guard on)
+PICK_SHAPING_FLAG+=(--demo-shaping "$DEMO_SHAPING" --pick-shaping-terminal-zero on --demo-terminal-guard on --sim-variant "$SIM_VARIANT")
 DEMO_FORMAT_FLAG=(); [ "$DEMO_FORMAT" = native ] && DEMO_FORMAT_FLAG=(--demo-format native)
 OUT=baselines/rl/checkpoints/rlpd_${WAVE}_${ARM}_s${SEED}${SHAPE_SUFFIX}
 RUN_NAME="${ARM}_RLPD-${WAVE}_s${SEED}${RUN_SUFFIX}"
@@ -201,7 +206,7 @@ REG_KNOBS=(steps="$STEPS" budget_unit="$BUDGET_UNIT" scope=pick action_mode=delt
            gamma=0.998 backup_entropy=off per_member_ln=off pick_hold_reward=off utd=10
            ensemble_size=10 subset_size=2 demo_batch=128 reward="$REWARD" pick_shaping="$PICK_SHAPING"
            demo_format="$DEMO_FORMAT" demo_sha="$DEMO_SHA" wave="$WAVE"
-           demo_shaping="$DEMO_SHAPING" pick_shaping_terminal_zero=on demo_terminal_guard=on)
+           demo_shaping="$DEMO_SHAPING" pick_shaping_terminal_zero=on demo_terminal_guard=on sim_variant="$SIM_VARIANT")
 
 SWEEP_COMMON=(--ic-file "$IC_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" --seed "$SEED" --reward "$REWARD"
               --wandb-run "$RUN_NAME" --wandb-project genesis_paper)

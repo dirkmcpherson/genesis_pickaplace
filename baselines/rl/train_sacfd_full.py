@@ -515,6 +515,9 @@ def native_demo_transitions(paths, expect, gamma=None, shaping=False, phi_scale=
         missing = [k for k in CONTRACT_V1_REQUIRED if k not in d.files]
         assert not missing, f'{p}: not a contract-v1 tape, missing {missing}'
         assert str(_scalar(d['contract'])) == 'v1', (p, _scalar(d['contract']))
+        sv = str(_scalar(d['sim_variant'])) if 'sim_variant' in d.files else 'base'
+        want_sv = str(expect.get('sim_variant', 'base'))
+        assert sv == want_sv, f'{p}: tape sim_variant={sv} but this run expects {want_sv} (world mismatch)'
         for k in ('action_repeat', 'delta_cap', 'delta_leash', 'delta_ref'):
             if k in expect:
                 got, want = _scalar(d[k]), expect[k]

@@ -192,6 +192,8 @@ EVAL_HORIZON=${EVAL_HORIZON:-1200}
 DEMO_FORMAT=${DEMO_FORMAT:-native}
 DEMO_ROOT=${DEMO_ROOT:-baselines/matched_v1}
 WAVE=${WAVE:-final}
+SIM_VARIANT=${SIM_VARIANT:-base}
+export SIM_VARIANT_FOR_SIDECAR=$SIM_VARIANT
 IC_FILE=${IC_FILE:-baselines/eval_ics.json}
 BUDGET_UNIT=grad_steps
 case "$DEMO_FORMAT" in native|legacy) ;; *) echo "FATAL: DEMO_FORMAT must be native|legacy"; exit 1 ;; esac
@@ -295,6 +297,10 @@ if fmt == 'native':
     c = str(j.get('contract') or j.get('tape_contract') or '')
     if c != 'v1':
         print(f'FATAL: {m} contract={c!r} != v1', file=sys.stderr); sys.exit(1)
+    msv = str(j.get('sim_variant') or 'base')
+    import os as _os
+    if msv != _os.environ.get('SIM_VARIANT', 'base'):
+        print(f'FATAL: {m} sim_variant={msv} but this run has SIM_VARIANT={_os.environ.get("SIM_VARIANT", "base")} (world mismatch)', file=sys.stderr); sys.exit(1)
     if j.get('n_kept') is not None and int(j['n_kept']) != len(files):
         print(f'FATAL: {m} n_kept={j["n_kept"]} != {len(files)} npz on disk', file=sys.stderr); sys.exit(1)
 sha = j.get('content_sha256') or j.get('sha256'); src = 'manifest' if sha else 'filenames'
@@ -466,7 +472,7 @@ sidecar = pl.Path(d) / 'dp_sidecar.json'
 sidecar.write_text(json.dumps({
     'script': 'sbatch_dp.sh', 'arm': arm, 'seed': int(seed),
     'raw_demo_dir': raw, 'dataset_root': dataset, 'git': git,
-    'action_repeat': int(rep), 'demo_sha': sha, 'demo_format': fmt, 'node': node,
+    'action_repeat': int(rep), 'demo_sha': sha, 'demo_format': fmt, 'node': node, 'sim_variant': __import__('os').environ.get('SIM_VARIANT_FOR_SIDECAR', 'base'),
     'ckpt_step': pl.Path(d).name,
     'config': {'policy': 'diffusion', 'batch_size': 64, 'steps': int(steps), 'project': proj},
     'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
