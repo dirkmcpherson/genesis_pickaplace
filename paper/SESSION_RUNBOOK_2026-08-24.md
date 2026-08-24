@@ -207,6 +207,11 @@ $LAB/dreamerv3-torch (patch -p1 --dry-run first), build its stride-4 sets with t
 --terminal-reward 100 (dv3 convention; dirs baselines/matched_v2/dv3/<ARM>), one 2e4 smoke, then
 the sbatch_genesis_final_rr.sh block (3 sources x sparse+dense x 4 seeds, 1M steps).
 
+dR2D TEACHER NOTE (corrected world): the old champion/s51-BEST are OLD-WORLD policies; the
+new-world dR2D teacher = the BEST checkpoint of the 08-24 corrected-world pilot (jobs 2830979/80)
+if it ignites, else a post-maintenance retrain. Rebuild r2d demo dirs from the new-world matched
+sets with to_dreamer_native --terminal-reward 1 (r2d) / --terminal-reward 100 (dv3).
+
 DECISION GATE before any WM launch: tier-2 world (arm + shelf fix, paper/real2sim_follower_lab_2026-08-23.md
 §7/§9). If adopted, teachers retrain first and ALL demo sets re-record in the new world -- do not run the WM
 block twice. The user's real-rig shelf-height measurement decides shelf6 vs shelf10.
