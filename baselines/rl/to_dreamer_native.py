@@ -139,7 +139,12 @@ def main():
         np.savez_compressed(os.path.join(args.dst, f'genesis-{uid:06d}-{T}.npz'), **ep)
         census['n_written'] += 1
     src_manifest = os.path.join(args.src, 'manifest.json')
+    try:
+        src_sv = str(json.load(open(os.path.join(args.src, 'manifest.json'))).get('sim_variant') or 'base')
+    except Exception:
+        src_sv = 'base'
     meta = dict(
+        sim_variant=(sorted(svs)[0] if 'svs' in dir() and svs else src_sv),
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=args.scope,
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
