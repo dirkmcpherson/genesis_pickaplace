@@ -360,6 +360,17 @@ localized per stage rather than inferred through the funnel.
 
 ## Deferred maintenance (not urgent, tracked so it isn't lost)
 
+- **Full-task recording is code-ready, deferred until the program expands past pick** (user 08-24:
+  pick phase only for now). `record_demos.py --scope full` (contract v1 + additive scope/max_sim_steps
+  scalars, stage flags, partial dir, scope-aware validator; commit 90c6024; smoke 3/3 clean on the
+  cluster: uid 242 nested, 233 contact-partial, 251 picked-partial, corrected world, job 2830915).
+  Source gap: `baselines/episodes_all` (91 full tapes) is NOT on the cluster -- rsync it (or use
+  `episodes_fulltask_pruned`, 26 tapes = 20 nested + 6 contact, cluster-resident). Deferred command:
+  `TEACHER=human SRC=baselines/episodes_fulltask_pruned OUTDIR=baselines/demos_v1/dHfull_w2 SHARD_N=8
+  PARTITION=batch CPUS=4 MEM=12g TIME=3:00:00 EXTRA="--scope full --ic-from-tape --arrival either
+  --sim-variant gc_kp4_riser3_shelf6 --max-sim-steps 2400" bash cluster/sbatch_record.sh` then
+  `--teacher human --scope full --merge --outdir` on the three dirs.
+
 - Git history carries ~862MB of accidentally-committed datasets (2026-07-31).
   Cosmetic: fresh clones are slow. Fix = `git filter-repo` + coordinated
   force-push across all checkouts, some quiet day between runs. (user: "fine for now")
