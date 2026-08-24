@@ -175,3 +175,30 @@ amendment and say so in WAVE (e.g. WAVE=final-stride1).
 3. DP-r4 pilot <0.5 → DP stride 1 + gen-0 teacher (Phase 3a).
 4. dR2D smoke <4/5 → integrator investigation (Phase 3c).
 5. N < 40 → accept or re-harvest (Phase 4).
+
+---
+# POST-MAINTENANCE WM LAUNCHES (r2dreamer; prepared 2026-08-24, fork session)
+
+Prereqs already in place on the cluster: r2dreamer patched (cluster/patches/r2dreamer_final_rr.patch:
+shaping gamma = 1-1/horizon = 0.997 + phi(terminal)=0; demo_prefill native-stride stamp support;
+eval_genesis --ic-file/--ic-set/--ic-index); native stride-4 demo dirs `baselines/matched_v2/r2d/{dH,dDP,dR2D}`
+(56 each, terminal reward 1.0, repeat.json-stamped, gated by sbatch DEMOSET=v2). NOTE: 8 dR2D tapes pay +2
+(picked+placed grant in the terminal window -- recorded from the env, consistent with online; footnote in captions).
+
+Pilot gate first (if the 08-24 pilot did not run or failed):
+    for S in 60 61; do CONFIG=genesis_pick_v5d4c_delta_shaped ARM=dH SEED=$S DEMOSET=v2 STEPS=2e6 sbatch cluster/sbatch_r2dreamer.sh; done
+    # bar (PREREG §8 + amendment): >=1 seed ignites with best-ckpt >=0.5; 2e6 not 3M (time-boxed; ignition window was 0.7-1M)
+
+Main r2d block (after the pilot passes; seeds 60-65, sparse+dense, ~14-18 h/job at 3M or ~10-12 h at 2e6):
+    for A in dH dDP dR2D; do for R in "" _shaped; do for S in 60 61 62 63 64 65; do
+      CONFIG=genesis_pick_v5d4c_delta$R ARM=$A SEED=$S DEMOSET=v2 STEPS=3e6 sbatch cluster/sbatch_r2dreamer.sh
+    done; done; done          # 36 jobs; REWARD auto from CONFIG (*_shaped -> dense)
+
+dv3 (queued LAST per PREREG): apply cluster/patches/dreamerv3-torch-genesis_final_rr.patch to
+$LAB/dreamerv3-torch (patch -p1 --dry-run first), build its stride-4 sets with to_dreamer_native
+--terminal-reward 100 (dv3 convention; dirs baselines/matched_v2/dv3/<ARM>), one 2e4 smoke, then
+the sbatch_genesis_final_rr.sh block (3 sources x sparse+dense x 4 seeds, 1M steps).
+
+DECISION GATE before any WM launch: tier-2 world (arm + shelf fix, paper/real2sim_follower_lab_2026-08-23.md
+§7/§9). If adopted, teachers retrain first and ALL demo sets re-record in the new world -- do not run the WM
+block twice. The user's real-rig shelf-height measurement decides shelf6 vs shelf10.
