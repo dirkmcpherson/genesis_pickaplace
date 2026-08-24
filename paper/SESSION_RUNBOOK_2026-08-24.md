@@ -215,3 +215,15 @@ sets with to_dreamer_native --terminal-reward 1 (r2d) / --terminal-reward 100 (d
 DECISION GATE before any WM launch: tier-2 world (arm + shelf fix, paper/real2sim_follower_lab_2026-08-23.md
 §7/§9). If adopted, teachers retrain first and ALL demo sets re-record in the new world -- do not run the WM
 block twice. The user's real-rig shelf-height measurement decides shelf6 vs shelf10.
+
+---
+## POST-MAINTENANCE LAUNCH LIST (final; written 08-24 ~23:00, cluster down 08-25 06:00)
+Priority order; every command assumes REPO=$LAB/genesis_pickaplace at branch HEAD, sets already on
+disk (matched_w3 = the corrected-world sets of record; matched_v2 = old-world, kept for reference).
+1. r2d disentangle: corrected world at its NATIVE time_limit -- `CONFIG=genesis_pick_v5d4c_delta_shaped SEED=70 TIME_LIMIT=400 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 DEMO_DIR=baselines/demos_v1/r2d_dH_w2 sbatch cluster/sbatch_r2dreamer.sh` (x2 seeds; if it ignites, horizon was the variable and the BEST ckpt = the new-world dR2D teacher).
+2. dR2D_w3 source: record from that teacher (`sbatch_record.sh TEACHER=r2d ... --sim-variant gc_kp4_riser3_shelf6`), rebuild matched sets at N=min incl. dR2D, then the missing dR2D DP/RLPD cells + remaining seeds (PREREG counts).
+3. WM block on the w3 sets (the N5 decision cells first: dR2DDPfails/dDPfails dreamer dirs via to_dreamer_native + sbatch_genesis_final_rr.sh ARM x REWARD x 4 seeds; r2d arms via the patched sbatch_r2dreamer DEMOSET=w3 once its teacher exists).
+4. RLPD share-matched fails arm (N5 follow-up) + per-episode demo-sampling variant (trainer flag, small change, pre-register first).
+5. RLPD corrected-world retune probe (N6): 3-4 single-knob runs (gamma/UTD/train-horizon) before any RLPD w3 claim is called final.
+6. dHunpruned_either DP control x3 (set recorded, lerobot build needed).
+Artifacts pulled to the laptop: ~/workspace/final_rr_artifacts_2026-08-24/ (sets v2/w3, all HEADLINE/sweep jsons, RLPD ckpt zips, DP teachers + sample selected models, RUN_REGISTRY, .outs, r2d s51 teacher, fail videos). Session log: paper/SESSION_LOG_2026-08-23_cluster.md.
