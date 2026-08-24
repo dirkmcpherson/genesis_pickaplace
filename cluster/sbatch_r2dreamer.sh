@@ -198,6 +198,11 @@ if [ -n "$ARM" ]; then
     *) echo "FATAL: ARM=$ARM (must be dH, dDP, or dR2D)"; exit 1 ;;
   esac
 fi
+# DEMOSET=v2 (final-RR 2026-08-24): native contract-v1 stride-4 demo dirs built by
+# to_dreamer_native.py --terminal-reward 1 from baselines/matched_v2 (repeat.json-
+# stamped; demo_prefill refuses a mismatched stride/downsample/terminal-reward).
+# Implies env.demo_downsample=1 + TIME_LIMIT default 1200 + IC-file eval.
+DEMOSET=${DEMOSET:-legacy}
 
 # --- $HOME-default lesson: prefer the lab path, fall back to $HOME ONLY if the lab
 # path is genuinely absent (see header). This is the PRIMARY fix; the explicit guard
@@ -219,7 +224,30 @@ case "$CONFIG" in
   *)       DEMO_DEFAULT=$DV3_DIR/demonstrations/genesis_pick_pruned ;;
 esac
 _DEMO_DIR_ENV="${DEMO_DIR:-}"   # captured BEFORE any default -- for the stale-env guard
-if [ -n "$ARM" ]; then
+if [ -n "$ARM" ] && [ "$DEMOSET" = "v2" ]; then
+  GPP=/cluster/tufts/shortlab/$USER/genesis_pickaplace
+  ARM_DEMO=$GPP/baselines/matched_v2/r2d/$ARM
+  ARM_PAT='genesis-[0-9]+-[0-9]+\.npz$'; ARM_N_MIN=50; ARM_N_MAX=66
+  ARM_NOTE="final-RR v2 native stride-4 set ($ARM, matched_v2, terminal reward 1.0)"
+  TIME_LIMIT=${TIME_LIMIT:-1200}
+  R2D_EVAL_EXTRA=${R2D_EVAL_EXTRA:---ic-file $GPP/baselines/eval_ics.json --ic-set sel}
+  DEMO_DOWNSAMPLE_OVERRIDE="env.demo_downsample=1"
+  # provenance: repeat.json stamp + source sha (real-run-only, like the legacy gates:
+  # DRYRUN must print the plan on any box)
+  [ "${DRYRUN:-0}" = "1" ] || python3 - "$ARM_DEMO" <<'PY' || exit 1
+import json, os, sys
+d = sys.argv[1]; st = os.path.join(d, 'repeat.json')
+assert os.path.exists(st), f'FATAL: {st} missing (build with to_dreamer_native.py)'
+j = json.load(open(st))
+assert int(j.get('action_repeat', 0)) == 4, f'FATAL: stamp action_repeat {j.get("action_repeat")} != 4'
+assert abs(float(j.get('terminal_reward', 0)) - 1.0) < 1e-9, f'FATAL: terminal_reward {j.get("terminal_reward")} != 1.0 (r2d prefill scales by reward_scale)'
+print(f"R2D-DEMOSET-V2-OK {d} contract={j.get('contract')} src_sha={str(j.get('src_sha'))[:16]}")
+PY
+  if [ -n "$_DEMO_DIR_ENV" ] && [ "$_DEMO_DIR_ENV" != "$ARM_DEMO" ]; then
+    echo "FATAL: ARM=$ARM DEMOSET=v2 implies DEMO_DIR=$ARM_DEMO but env DEMO_DIR=$_DEMO_DIR_ENV is exported (stale-env guard)"; exit 1
+  fi
+  DEMO_DIR=$ARM_DEMO
+elif [ -n "$ARM" ]; then
   case "$ARM" in
     dH)   ARM_DEMO=$DV3_DIR/demonstrations/genesis_pick_pruned_delta25
           ARM_PAT='genesis-0[0-9][0-9][0-9]-[0-9]+\.npz$'; ARM_N_MIN=60; ARM_N_MAX=72
@@ -261,6 +289,7 @@ TRAIN_CMD=("$PY" train.py "env=$CONFIG" "seed=$SEED" "env.steps=$STEPS" \
   ${DUPLICATE:+"env.demo_duplicate=$DUPLICATE"} \
   ${SAVE_EVERY:+"trainer.save_every=$SAVE_EVERY"} \
   ${TIME_LIMIT:+"env.time_limit=$TIME_LIMIT"} \
+  ${DEMO_DOWNSAMPLE_OVERRIDE:+"$DEMO_DOWNSAMPLE_OVERRIDE"} \
   "buffer.max_size=${BUFFER_MAX:-450000}" \
   "trainer.pretrain=${PRETRAIN:-1000}" "logdir=$LOGDIR" $RESUME ${EXTRA:-})
 # REINJECT/DUPLICATE are passed ONLY when set: genesis_pick_v5d4_delta BAKES the
@@ -292,7 +321,7 @@ NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
 REG_KNOBS=(config="$CONFIG" steps="$STEPS" budget_unit=sim_steps env_num="${ENV_NUM:-6}" \
            buffer_max="${BUFFER_MAX:-450000}" pretrain="${PRETRAIN:-1000}" \
            reinject="${REINJECT:-baked}" duplicate="${DUPLICATE:-baked}" \
-           action_repeat=4 train_horizon="${TIME_LIMIT:-config}" eval_horizon="$EVAL_MAX_STEPS" \
+           action_repeat=4 train_horizon="${TIME_LIMIT:-config}" eval_horizon="$EVAL_MAX_STEPS" demoset="${DEMOSET:-legacy}" \
            reward="$REWARD" demo_sha="$DEMO_SHA")
 REGISTRY_PY="cluster/run_registry.py"
 
