@@ -62,8 +62,14 @@ def convert_one(z, terminal_reward):
         raise ValueError('last row must be terminated or truncated (tape ends where the env ended)')
     if term[:-1].any() or trunc[:-1].any():
         raise ValueError('terminated/truncated set before the last row -- the tape continues past the env terminal')
-    if not np.all(np.isin(np.round(rew, 6), [0.0, 1.0])):
-        raise ValueError(f'rewards must be sparse {{0,1}} (shaping is never baked into tapes); seen {np.unique(rew)[:6]}')
+    # sparse stage rewards only (shaping is never baked into tapes). A FAST pick can land the
+    # stage grant AND the hardened-pick terminal inside ONE repeat-4 window -> reward 2.0 on the
+    # terminal row (seen on r2d-teacher tapes, ~68-step picks); the dreamer tape still carries a
+    # single terminal_reward there. Positive reward anywhere BEFORE the terminal row is refused.
+    if not np.all(np.isin(np.round(rew, 6), [0.0, 1.0, 2.0])):
+        raise ValueError(f'rewards must be sparse {{0,1,2}} (shaping is never baked into tapes); seen {np.unique(rew)[:6]}')
+    if (rew[:-1] > 0).any():
+        raise ValueError('positive reward before the terminal row -- pick scope pays only at the terminal decision')
     if np.abs(act).max() > 1.0 + 1e-6:
         raise ValueError('actions_delta outside [-1,1]')
     T = n + 1
