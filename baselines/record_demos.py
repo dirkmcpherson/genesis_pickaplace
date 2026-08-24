@@ -613,11 +613,13 @@ def merge(outdir):
         print(f'[merge] WARNING: {len(kept)} kept records in shard manifests vs {n_files} npz on disk '
               f'-- records incomplete (lost shard manifest?); n_kept taken from disk')
     # per-tape stamps from the npz themselves (always complete)
-    tapes = []
+    tapes = []; svs = set()
     for f in files:
         z = np.load(f, allow_pickle=True)
+        svs.add(str(z['sim_variant'].item()) if 'sim_variant' in z.files else 'base')
         tapes.append(dict(name=pl.Path(f).name, ic_uid=int(z['ic_uid']), n=int(z['n']), label=str(z['label']),
                           end_reason=str(z['end_reason']) if 'end_reason' in z.files else None))
+    assert len(svs) <= 1, f'mixed sim_variants in {outdir}: {sorted(svs)}'
     h = hashlib.sha256()
     for f in files:
         h.update(pl.Path(f).name.encode()); h.update(pl.Path(f).read_bytes())
@@ -627,7 +629,7 @@ def merge(outdir):
                  yield_frac=(len(kept) / len(recs)) if recs else None)
     (outdir / 'manifest.json').write_text(json.dumps(dict(
         configs=cfgs, n_rollouts=len(recs), n_kept=n_files, n_kept_records=len(kept), files=n_files, **stats,
-        records_complete=records_complete, tapes=tapes,
+        records_complete=records_complete, tapes=tapes, sim_variant=(sorted(svs)[0] if svs else 'base'),
         content_sha256=h.hexdigest(), contract=CONTRACT, recorder=RECORDER,
         records=sorted(recs.values(), key=lambda r: (r['ic_uid'], r.get('attempt', 0)))), indent=1))
     print(f'[merge] rollouts={len(recs)} kept={len(kept)} files={len(files)} sha={h.hexdigest()[:16]}')
