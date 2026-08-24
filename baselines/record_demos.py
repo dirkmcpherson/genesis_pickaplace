@@ -97,6 +97,7 @@ REPEAT = 4
 DELTA_CAP = 0.025
 LEASH_MULT = 5.0
 MAX_SIM_STEPS = 1200
+FULL_MAX_SIM_STEPS = 2400   # full-task default horizon: 600 decisions (human place+slide extends well past the pick)
 ROLLOUT_BASE = 100000
 IMG_SHAPE = (64, 64, 6)
 STATE_DIM, ACT_DIM = 17, 7
@@ -113,7 +114,11 @@ R2D_ROOT = _r2d_root()
 
 SCALARS = ('uid', 'ic_uid', 'label', 'stage', 'teacher', 'teacher_ckpt', 'act_mode', 'sim_variant',
            'action_repeat', 'delta_cap', 'delta_leash', 'delta_ref', 'pick_z', 'n',
-           'git_sha', 'env_class', 'recorder', 'contract', 'end_reason')
+           'git_sha', 'env_class', 'recorder', 'contract', 'end_reason', 'scope', 'max_sim_steps')
+# scalars added after the first recordings; absent on older tapes -> validator defaults
+# (sim_variant 'base', scope 'pick', max_sim_steps 1200) instead of requiring them
+OPTIONAL_SCALARS = ('sim_variant', 'scope', 'max_sim_steps')
+STAGES = ('picked', 'placed', 'contact', 'nested')   # full-task ledger order (shallow -> deep)
 
 
 # ============================================================================ contract
@@ -127,7 +132,7 @@ def validate_tape(d, require_images=False, require_sim=False):
         v = d[k]
         return v.item() if (hasattr(v, 'ndim') and v.ndim == 0) else v
     for k in ('states', 'final_state', 'actions_delta', 'actions', 'rewards', 'terminated',
-              'truncated', 'picked', 'tipped', 'eef_pos') + tuple(k for k in SCALARS if k != 'sim_variant'):
+              'truncated', 'picked', 'tipped', 'eef_pos') + tuple(k for k in SCALARS if k not in OPTIONAL_SCALARS):
         if k not in keys:
             errs.append(f'missing key {k}')
     if errs:
@@ -150,12 +155,32 @@ def validate_tape(d, require_images=False, require_sim=False):
     if trunc[:-1].any(): errs.append('truncated=True before the last row')
     if not (term[-1] ^ trunc[-1]): errs.append('last row must be exactly one of terminated/truncated')
     picked = np.asarray(d['picked'], bool); tipped = np.asarray(d['tipped'], bool)
+    scope = str(g('scope')) if 'scope' in keys else 'pick'
+    if scope not in ('pick', 'full'): errs.append(f'scope {scope!r}')
+    ms = int(g('max_sim_steps')) if 'max_sim_steps' in keys else 1200
+    if n > ms // REPEAT + 1: errs.append(f'n={n} exceeds max_sim_steps {ms} // {REPEAT} + 1')
     lab = str(g('label'))
     if lab not in ('success', 'fail'): errs.append(f'label {lab!r}')
-    if (lab == 'success') != bool(picked[-1]): errs.append('label/picked[-1] mismatch')
-    if picked[-1] and not term[-1]: errs.append('picked on last row but not terminated')
     if tipped[-1] and not term[-1]: errs.append('tipped on last row but not terminated')
-    if picked[:-1].any(): errs.append('picked=True before the last row (env terminates on the pick)')
+    if scope == 'pick':
+        if (lab == 'success') != bool(picked[-1]): errs.append('label/picked[-1] mismatch')
+        if picked[-1] and not term[-1]: errs.append('picked on last row but not terminated')
+        if picked[:-1].any(): errs.append('picked=True before the last row (env terminates on the pick)')
+    else:
+        # full task: stage flags are STICKY per-decision grant indicators; the env terminates
+        # on the (proxy) nested or the tip rule, truncates at max_sim_steps.
+        for k in ('placed', 'contact', 'nested'):
+            if k not in keys:
+                errs.append(f'full-scope tape missing stage flags {k}'); continue
+            f = np.asarray(d[k], bool)
+            if f.shape != (n,): errs.append(f'{k} shape {f.shape} != ({n},)')
+            elif f.any() and not f[int(np.argmax(f)):].all(): errs.append(f'{k} not sticky (grant flags never un-set)')
+        if not errs:
+            nested = np.asarray(d['nested'], bool)
+            if (lab == 'success') != bool(nested[-1]): errs.append('full scope: label/nested[-1] mismatch')
+            if nested[-1] and not term[-1]: errs.append('nested on last row but not terminated')
+            deepest = next((st for st in reversed(STAGES) if np.asarray(d[st], bool)[-1]), None)
+            if str(g('stage')) != (deepest or 'none'): errs.append(f'stage {g("stage")!r} != deepest granted {deepest!r}')
     if str(g('contract')) != CONTRACT: errs.append(f'contract {g("contract")!r} != {CONTRACT!r}')
     if int(g('action_repeat')) != REPEAT: errs.append(f'action_repeat {g("action_repeat")} != {REPEAT}')
     if abs(float(g('delta_cap')) - DELTA_CAP) > 1e-9: errs.append('delta_cap stamp')
@@ -191,20 +216,22 @@ def build_env(args):
     from full_env import FullTaskEnv
     from sim_variant_hook import apply_pre, apply_post
     t0 = time.time()
+    scope = getattr(args, 'scope', 'pick')
+    max_sim = int(getattr(args, 'max_sim_steps', None) or (FULL_MAX_SIM_STEPS if scope == 'full' else MAX_SIM_STEPS))
     apply_pre(getattr(args, 'sim_variant', 'base'))
-    env = FullTaskEnv(backend='cpu', max_steps=MAX_SIM_STEPS, scope='pick',
+    env = FullTaskEnv(backend='cpu', max_steps=max_sim, scope=scope,
                       action_mode='delta_joint', delta_cap=DELTA_CAP,
                       delta_leash_mult=LEASH_MULT, action_repeat=REPEAT, delta_ref='target',
                       camera_rig=not args.no_images, pick_shaping=False)
-    assert env.scope == 'pick' and env.action_mode == 'delta_joint' and env.delta_ref == 'target'
+    assert env.scope == scope and env.action_mode == 'delta_joint' and env.delta_ref == 'target'
     assert env.action_repeat == REPEAT and abs(env.delta_cap - DELTA_CAP) < 1e-12
     assert abs(env.delta_leash - LEASH_MULT * DELTA_CAP) < 1e-12, env.delta_leash
-    assert env.max_steps == MAX_SIM_STEPS and not env.pick_shaping and not env.pick_hold_reward
+    assert env.max_steps == max_sim and not env.pick_shaping and not env.pick_hold_reward
     assert env.genv.max_steps >= 10 ** 8, 'inner env must never truncate (#26)'
     apply_post(env, getattr(args, 'sim_variant', 'base'))
     print(f'[env] FullTaskEnv built in {time.time()-t0:.1f}s | pick_z={env.pick_z:.4f} '
           f'repeat={env.action_repeat} cap={env.delta_cap} leash={env.delta_leash} '
-          f'max_sim={env.max_steps} rig={not args.no_images}', flush=True)
+          f'max_sim={env.max_steps} scope={env.scope} rig={not args.no_images}', flush=True)
     return env
 
 
@@ -251,9 +278,10 @@ class Recorder:
         obs = self._reset(ic)
         adapter.reset(obs, env)
         T = dict(states=[], actions_delta=[], actions=[], rewards=[], terminated=[], truncated=[],
-                 picked=[], tipped=[], eef_pos=[], images=[], sim_states=[], sim_actions=[])
+                 picked=[], placed=[], contact=[], nested=[], tipped=[], eef_pos=[],
+                 images=[], sim_states=[], sim_actions=[])
         t0 = time.time(); t = 0; info = {}; end_reason = None
-        max_dec = int(max_decisions or (MAX_SIM_STEPS // REPEAT + 1))
+        max_dec = int(max_decisions or (int(env.max_steps) // REPEAT + 1))
         while True:
             if self.images: T['images'].append(self._img())
             T['eef_pos'].append(self._eef())
@@ -282,7 +310,8 @@ class Recorder:
             T['actions'].append(self._abs_cmd(a))
             T['rewards'].append(total_r)
             T['terminated'].append(bool(terminated)); T['truncated'].append(bool(truncated))
-            T['picked'].append(bool(info.get('picked')) or ('picked' in env._granted))
+            for st in STAGES:   # sticky grant indicators (env._granted accumulates)
+                T[st].append(bool(info.get(st)) or (st in env._granted))
             T['tipped'].append(bool(info.get('tipped')))
             adapter.observe(obs, env, float(total_r), bool(terminated or truncated))
             t += 1
@@ -301,7 +330,9 @@ class Recorder:
                     actions_delta=np.stack(T['actions_delta']), actions=np.stack(T['actions']),
                     rewards=np.asarray(T['rewards'], np.float32),
                     terminated=np.asarray(T['terminated'], bool), truncated=np.asarray(T['truncated'], bool),
-                    picked=np.asarray(T['picked'], bool), tipped=np.asarray(T['tipped'], bool),
+                    picked=np.asarray(T['picked'], bool), placed=np.asarray(T['placed'], bool),
+                    contact=np.asarray(T['contact'], bool), nested=np.asarray(T['nested'], bool),
+                    tipped=np.asarray(T['tipped'], bool),
                     eef_pos=np.stack(T['eef_pos']).astype(np.float32), end_reason=end_reason,
                     n=len(T['states']))
         if self.images: tape['images'] = np.stack(T['images']).astype(np.uint8)
@@ -309,13 +340,22 @@ class Recorder:
             tape['sim_states'] = np.stack(T['sim_states']).astype(np.float32)
             tape['sim_actions'] = np.stack(T['sim_actions']).astype(np.float32)
         picked = bool(tape['picked'][-1]); tipped = bool(tape['tipped'][-1])
-        tape['label'] = 'success' if picked else 'fail'
-        tape['stage'] = 'picked' if picked else 'none'
-        outcome = 'picked' if picked else ('tipped' if tipped else end_reason)
+        scope = str(getattr(env, 'scope', 'pick'))
+        deepest = next((st for st in reversed(STAGES) if bool(tape[st][-1])), None)
+        if scope == 'full':
+            # ledger rule: stage = deepest grant, success = nested (the task's end state)
+            tape['label'] = 'success' if bool(tape['nested'][-1]) else 'fail'
+            tape['stage'] = deepest or 'none'
+        else:
+            tape['label'] = 'success' if picked else 'fail'
+            tape['stage'] = 'picked' if picked else 'none'
+        outcome = tape['stage'] if deepest else ('tipped' if tipped else end_reason)
+        grant_decisions = {st: int(np.argmax(tape[st])) for st in STAGES if bool(tape[st].any())}
         rec = dict(ic_uid=int(ic['ic_uid'] if ic.get('ic_uid') is not None else (ic.get('uid') if ic.get('uid') is not None else -1)),
                    ic_can_xy=[round(float(x), 4) for x in tape['states'][0, 8:10]],
                    outcome=outcome, decisions=int(tape['n']), sim_steps=int(env._t),
-                   seconds=round(time.time() - t0, 1), kept=False, end_reason=end_reason)
+                   seconds=round(time.time() - t0, 1), kept=False, end_reason=end_reason,
+                   grant_decisions=grant_decisions)
         rec.update(adapter.stats())
         return tape, rec
 
@@ -598,6 +638,15 @@ def main():
     ap.add_argument('--teacher', choices=['human', 'dp', 'r2d', 'random'], required=True)
     ap.add_argument('--outdir', required=True, help='success tapes + manifest')
     ap.add_argument('--fails-outdir', default=None, help='default <outdir>_fails')
+    ap.add_argument('--partial-outdir', default=None,
+                    help='full scope only: tapes that PICK but do not nest (default <outdir>_partial); '
+                         'fails = never picked')
+    ap.add_argument('--scope', choices=['pick', 'full'], default='pick',
+                    help='full = the whole pick/place/slide task: FullTaskEnv(scope=full) terminal '
+                         'semantics (nested proxy terminal, tip rule, staged grants), per-decision '
+                         'stage flags on the tape, label=success iff nested, stage=deepest grant')
+    ap.add_argument('--max-sim-steps', type=int, default=None,
+                    help=f'episode horizon in SIM steps (default: pick {MAX_SIM_STEPS}, full {FULL_MAX_SIM_STEPS})')
     ap.add_argument('--checkpoint', default=None, help='dp: lerobot ckpt dir; r2d: CHAMPION .pt')
     ap.add_argument('--config', default=None, help='r2d: hydra config.yaml (default <ckpt>/.hydra/config.yaml)')
     ap.add_argument('--mode', choices=['mode', 'sample'], default='sample',
@@ -630,6 +679,10 @@ def main():
 
     out = REPO / args.outdir
     fails = REPO / (args.fails_outdir or (args.outdir.rstrip('/') + '_fails'))
+    part = REPO / (args.partial_outdir or (args.outdir.rstrip('/') + '_partial')) if args.scope == 'full' else None
+    if args.scope == 'full' and args.verify:
+        sys.exit('FATAL: --verify is pick-scope only (its open-loop predicate is the hardened pick); '
+                 'full-scope tapes are validated by the census + downstream gates instead')
     if args.merge:
         merge(out); merge(fails) if fails.exists() else None; return
     if args.teacher in ('dp', 'r2d') and not args.checkpoint:
@@ -714,15 +767,19 @@ def main():
     print(f'[plan] {len(plan)} ICs x <= {attempts} attempts', flush=True)
 
     out.mkdir(parents=True, exist_ok=True); fails.mkdir(parents=True, exist_ok=True)
+    if part is not None:
+        part.mkdir(parents=True, exist_ok=True)
     base = args.rollout_base + 1000 * args.shard_idx
-    existing = [int(pl.Path(p).stem) for d in (out, fails) for p in glob.glob(str(d / '*.npz')) if pl.Path(p).stem.isdigit()]
+    existing = [int(pl.Path(p).stem) for d in ((out, fails) + ((part,) if part is not None else ()))
+                for p in glob.glob(str(d / '*.npz')) if pl.Path(p).stem.isdigit()]
     next_id = max([base - 1] + [e for e in existing if base <= e < base + 1000]) + 1
     GIT = git_sha(REPO)
     stamp = dict(teacher=args.teacher, teacher_ckpt=str(getattr(adapter, 'ckpt', '') or ''),
                  act_mode=args.mode, action_repeat=REPEAT, delta_cap=DELTA_CAP,
                  delta_leash=LEASH_MULT * DELTA_CAP, delta_ref='target', sim_variant=str(getattr(args, 'sim_variant', 'base')), pick_z=float(env.pick_z),
-                 git_sha=GIT, env_class='FullTaskEnv', recorder=RECORDER, contract=CONTRACT)
-    records = []; n_kept = 0; n_fail = 0; n_verify_rej = 0; n_roll = 0
+                 git_sha=GIT, env_class='FullTaskEnv', recorder=RECORDER, contract=CONTRACT,
+                 scope=str(env.scope), max_sim_steps=int(env.max_steps))
+    records = []; n_kept = 0; n_fail = 0; n_partial = 0; n_verify_rej = 0; n_roll = 0
     for i, ic in enumerate(plan):
         if args.target_kept and n_kept >= args.target_kept:
             break
@@ -747,12 +804,14 @@ def main():
             errs = validate_tape(d, require_images=not args.no_images, require_sim=not args.no_sim_tape)
             if errs:
                 sys.exit(f'FATAL: contract violation on rollout {rid}: {errs}')
-            dest = (out if ok else fails) / f'{rid}.npz'
+            partial = (not ok) and part is not None and bool(tape['picked'][-1])
+            dest = (out if ok else (part if partial else fails)) / f'{rid}.npz'
             np.savez_compressed(dest, **d)
-            r.update(rollout=int(rid), kept=bool(ok), file=str(dest.relative_to(REPO)), label=tape['label'],
+            r.update(rollout=int(rid), kept=bool(ok), partial=bool(partial),
+                     file=str(dest.relative_to(REPO)), label=tape['label'], stage=tape['stage'],
                      n=int(tape['n']))
             records.append(r)
-            n_kept += int(ok); n_fail += int(not ok)
+            n_kept += int(ok); n_partial += int(partial); n_fail += int(not ok and not partial)
             print(f"[roll {n_roll}] ic_uid={r['ic_uid']} attempt={attempt} {r['outcome']} decisions={r['decisions']} "
                   f"sim_steps={r['sim_steps']} kept={ok} ({r['seconds']}s)" + (f" dil={r['dilation']}" if 'dilation' in r else ''), flush=True)
             if ok:
@@ -764,21 +823,26 @@ def main():
             h.update(pl.Path(f).name.encode()); h.update(pl.Path(f).read_bytes())
         return h.hexdigest()
     first_attempt = [r for r in records if r.get('attempt', 0) == 0 and 'outcome' in r]
-    teacher_rate = (sum(r['outcome'] == 'picked' for r in first_attempt) / len(first_attempt)) if first_attempt else None
+    _succ_outcomes = set(STAGES)
+    teacher_rate = (sum(r['outcome'] in _succ_outcomes for r in first_attempt) / len(first_attempt)) if first_attempt else None
     cfg = dict(vars(args)) | dict(repeat=REPEAT, delta_cap=DELTA_CAP, leash=LEASH_MULT * DELTA_CAP,
-                                  max_sim_steps=MAX_SIM_STEPS, pick_z=float(env.pick_z), git_sha=GIT,
+                                  max_sim_steps=int(env.max_steps), scope=str(env.scope), pick_z=float(env.pick_z), git_sha=GIT,
                                   teacher_ckpt=stamp['teacher_ckpt'], contract=CONTRACT, recorder=RECORDER)
-    summary = dict(config=cfg, n_rollouts=n_roll, n_kept=n_kept, n_fail=n_fail, rejected_by_verify=n_verify_rej,
+    summary = dict(config=cfg, n_rollouts=n_roll, n_kept=n_kept, n_fail=n_fail, n_partial=n_partial,
+                   rejected_by_verify=n_verify_rej,
                    teacher_success_rate_first_attempt=teacher_rate,
                    yield_frac=round(n_kept / max(1, n_roll), 4), records=records,
                    content_sha256_success=_sha(out), content_sha256_fails=_sha(fails),
+                   content_sha256_partial=(_sha(part) if part is not None else None),
                    built=time.strftime('%Y-%m-%dT%H:%M:%S'))
     # shard manifests are named by shard AND rollout base so a second sharded run into the
     # same outdir (e.g. the --ic-from-tape pass) cannot overwrite the first run's manifests
     name = 'manifest.json' if args.shard_n == 1 else f'manifest_shard{args.shard_idx}_base{args.rollout_base}.json'
     (out / name).write_text(json.dumps(summary, indent=1, default=str))
     (fails / name).write_text(json.dumps(dict(summary, records=[r for r in records if not r.get('kept')]), indent=1, default=str))
-    print(f'[done] rollouts={n_roll} kept={n_kept} fails={n_fail} verify_rejected={n_verify_rej} '
+    if part is not None:
+        (part / name).write_text(json.dumps(dict(summary, records=[r for r in records if r.get('partial')]), indent=1, default=str))
+    print(f'[done] rollouts={n_roll} kept={n_kept} partial={n_partial} fails={n_fail} verify_rejected={n_verify_rej} '
           f'teacher_rate(first attempt)={teacher_rate} -> {out} / {fails}', flush=True)
     if args.teacher == 'random' and n_kept > max(1, n_roll // 30):
         print(f'WARNING: random teacher kept {n_kept}/{n_roll} -- the keep predicate is broken, not the teacher', flush=True)

@@ -42,6 +42,82 @@ def synth(n=12, picked=True, tipped=False, truncated=False, images=True, sim=Tru
     return d
 
 
+def synth_full(n=20, nested_at=None, picked_at=3, tipped=False, truncated=False, uid=100021):
+    """A well-formed FULL-SCOPE contract tape: sticky stage flags, label=success iff nested."""
+    d = synth(n=n, picked=False, tipped=tipped, truncated=(nested_at is None and not tipped) or truncated,
+              images=False, sim=False, uid=uid)
+    for k, at in (('picked', picked_at), ('placed', picked_at + 4 if (nested_at or n > picked_at + 8) else None),
+                  ('contact', nested_at - 1 if nested_at else None), ('nested', nested_at)):
+        f = np.zeros(n, bool)
+        if at is not None and at < n:
+            f[at:] = True
+        d[k] = f
+    if nested_at is not None:
+        d['terminated'] = np.zeros(n, bool); d['terminated'][-1] = True
+        d['truncated'] = np.zeros(n, bool)
+        assert d['nested'][-1]
+    d['scope'] = 'full'; d['max_sim_steps'] = 2400
+    deepest = next((st for st in ('nested', 'contact', 'placed', 'picked') if d[st][-1]), None)
+    d['label'] = 'success' if d['nested'][-1] else 'fail'
+    d['stage'] = deepest or 'none'
+    d['end_reason'] = 'terminated' if d['terminated'][-1] else 'env_truncated'
+    return d
+
+
+def test_full_scope_validator():
+    from record_demos import validate_tape
+    ok = synth_full(nested_at=18)
+    assert validate_tape(npz_roundtrip(ok)) == [], validate_tape(npz_roundtrip(ok))
+    # partial: picked, never nested, truncated -> label fail, stage placed
+    part = synth_full(nested_at=None)
+    assert part['label'] == 'fail' and part['stage'] in ('picked', 'placed')
+    assert validate_tape(npz_roundtrip(part)) == [], validate_tape(npz_roundtrip(part))
+    # picked BEFORE the last row is legal in full scope (illegal in pick scope)
+    assert part['picked'][:-1].any()
+    # violations
+    bad = synth_full(nested_at=18); bad['label'] = 'fail'
+    assert any('label/nested' in e for e in validate_tape(npz_roundtrip(bad)))
+    bad = synth_full(nested_at=18); bad['stage'] = 'picked'
+    assert any('deepest' in e for e in validate_tape(npz_roundtrip(bad)))
+    bad = synth_full(nested_at=None)
+    if bad['placed'].any():
+        f = bad['placed'].copy(); f[int(np.argmax(f)) + 1] = False; bad['placed'] = f
+        assert any('sticky' in e for e in validate_tape(npz_roundtrip(bad)))
+    bad = dict(synth_full(nested_at=None)); bad['n'] = 700  # > 2400//4+1
+    assert any('max_sim_steps' in e for e in validate_tape(npz_roundtrip(bad)))
+    print('checked full-scope validator paths')
+
+
+def test_recorder_full_scope():
+    from record_demos import Recorder, RandomTeacher
+    env = _FakeEnv(pick_at=3)
+    env.scope = 'full'
+    def _step_once(a, _env=env):
+        _env._dj_target = _env._dj_target + np.clip(a[:6], -1, 1) * 0.025
+        _env.genv.q = 0.5 * _env.genv.q + 0.5 * _env._dj_target
+        _env._t += 1
+        info = {}; term = False; r = 0.0
+        if _env._t >= 13:
+            info['picked'] = True
+            if 'picked' not in _env._granted: r += 1.0; _env._granted.add('picked')
+        if _env._t >= 21:
+            info['placed'] = True
+            if 'placed' not in _env._granted: r += 1.0; _env._granted.add('placed')
+        if _env._t >= 33:
+            info['nested'] = True
+            if 'nested' not in _env._granted: r += 4.0; _env._granted.add('nested')
+            term = True
+        trunc = (not term) and _env._t >= _env.max_steps
+        return _env.genv.state(), r, term, trunc, info
+    env._step_once = _step_once
+    tape, r = Recorder(env, images=False, sim_tape=False).run(RandomTeacher(0), dict(uid=232))
+    assert tape['label'] == 'success' and tape['stage'] == 'nested', (tape['label'], tape['stage'])
+    assert tape['picked'][3] and not tape['picked'][2] and tape['nested'][-1] and tape['terminated'][-1]
+    assert r['grant_decisions']['picked'] == 3 and r['grant_decisions']['nested'] == len(tape['picked']) - 1
+    assert r['outcome'] == 'nested'
+    print('checked full-scope recorder path')
+
+
 def npz_roundtrip(d):
     import io
     buf = io.BytesIO(); np.savez(buf, **d); buf.seek(0)
