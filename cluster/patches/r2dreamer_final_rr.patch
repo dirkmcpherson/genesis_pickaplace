@@ -15,7 +15,30 @@
          self._task = task
          self._size = tuple(size)
          self._seed = seed
-@@ -236,8 +242,10 @@
+@@ -121,6 +127,14 @@
+         for p in (f"{REPO}/baselines", f"{REPO}/baselines/rl", f"{REPO}/can_pos_recovery"):
+             if p not in sys.path:
+                 sys.path.insert(0, p)
++        # SIM VARIANT (final-RR 2026-08-24, corrected-world program): the same MDP
++        # realized in a patched Genesis world (gc_kp4_riser3_shelf6 = the program's
++        # world; genesis_pickaplace baselines/sim_variant_hook.py). R2D_SIM_VARIANT
++        # env var selects it; 'base' (default) is byte-identical to before.
++        import os as _os
++        self._sim_variant = _os.environ.get("R2D_SIM_VARIANT", "base") or "base"
++        import sim_variant_hook as _svh
++        _svh.apply_pre(self._sim_variant)
+         from full_env import FullTaskEnv
+         import pick_env as _pe
+ 
+@@ -143,6 +157,7 @@
+             # getattr: instances pickled before this attr existed must still build
+             entry_bank=getattr(self, "_place_entry_bank", None),
+         )
++        _svh.apply_post(self._env, self._sim_variant)
+         self._env.reset(seed=self._seed)
+ 
+     def _image(self):
+@@ -236,8 +251,10 @@
              # r2dreamer discount (Ng-invariance holds only at the timescale the
              # agent discounts at). Scaled by reward_scale below with everything
              # else (uniform scaling preserves the invariance).

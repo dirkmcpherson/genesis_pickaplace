@@ -1,0 +1,101 @@
+{
+ "config_name": "arr_either",
+ "config": {
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 25,
+  "arrival": "either",
+  "tol_t": 0.025,
+  "pass_tol": 0.075,
+  "aim": "window",
+  "L": 0,
+  "skip_tol": null,
+  "skip_grip": 0.02,
+  "skip_ref": 0.025,
+  "max_skip": 64,
+  "grip_settle": 0.01,
+  "effort_settle": null,
+  "skip_guard": 0,
+  "skip_dq": null,
+  "skip_lag": null,
+  "stall_hold": "jump",
+  "stat_eps": null
+ },
+ "sim": "base",
+ "sim_applied": null,
+ "git_sha": "3cbe909",
+ "shard": [
+  0,
+  1
+ ],
+ "built": "2026-08-23T13:24:56",
+ "records": [
+  {
+   "ic_uid": 335,
+   "ic_can_xy": [
+    0.4524,
+    0.1313
+   ],
+   "outcome": "picked",
+   "decisions": 75,
+   "sim_steps": 297,
+   "seconds": 9.9,
+   "kept": true,
+   "end_reason": "terminated",
+   "src_uid": 335,
+   "src_label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 288,
+   "waypoints_reached": 288,
+   "dwell_stalls": 0,
+   "dilation": 1.042,
+   "settle_decisions": 2,
+   "n_cap": 5,
+   "frac_cap": 0.0685,
+   "skipped": 0,
+   "dil_active": 1.014,
+   "exhaust_simstep": 292,
+   "fast_stalls": 0,
+   "config": "arr_either",
+   "src_diag": {
+    "n": 288,
+    "idle_frac": 0.303,
+    "T_cap": 293,
+    "T_path": 92,
+    "frac_win_over_cap": 0.049,
+    "peak_win": 0.157,
+    "frac_qwin_over_cap": 0.032,
+    "lead_p99": 0.095,
+    "lead_max": 0.109,
+    "frac_lead_over_leash": 0.0,
+    "first_lift": 286,
+    "grip_close": 202,
+    "tilt0": 0.0,
+    "can_xy0": [
+     0.4524,
+     0.1313
+    ]
+   },
+   "fid": {
+    "path_ratio": 0.943,
+    "dev_max": 0.0313,
+    "path_ratio_cmd": 0.855,
+    "dev_cmd_max": 0.0712,
+    "dev_cmd_p50": 0.0342,
+    "dev_cmd_p95": 0.0644,
+    "dev_p95": 0.0205,
+    "dev_mean": 0.0039,
+    "cov_max": 0.1205,
+    "dev_at_close": 0.0007,
+    "grip_close_simstep": 204,
+    "grip_close_human": 202,
+    "can_move_before_close": 0.0436
+   },
+   "rollout": 101350,
+   "file": "baselines/demos_v1/_lab/FRESH_arr_either/101350.npz",
+   "label": "success",
+   "n": 75
+  }
+ ]
+}

@@ -1,0 +1,101 @@
+{
+ "config_name": "arr_either",
+ "config": {
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 25,
+  "arrival": "either",
+  "tol_t": 0.025,
+  "pass_tol": 0.075,
+  "aim": "window",
+  "L": 0,
+  "skip_tol": null,
+  "skip_grip": 0.02,
+  "skip_ref": 0.025,
+  "max_skip": 64,
+  "grip_settle": 0.01,
+  "effort_settle": null,
+  "skip_guard": 0,
+  "skip_dq": null,
+  "skip_lag": null,
+  "stall_hold": "jump",
+  "stat_eps": null
+ },
+ "sim": "base",
+ "sim_applied": null,
+ "git_sha": "3cbe909",
+ "shard": [
+  0,
+  1
+ ],
+ "built": "2026-08-23T13:13:07",
+ "records": [
+  {
+   "ic_uid": 269,
+   "ic_can_xy": [
+    0.4381,
+    0.1
+   ],
+   "outcome": "picked",
+   "decisions": 117,
+   "sim_steps": 466,
+   "seconds": 17.6,
+   "kept": true,
+   "end_reason": "terminated",
+   "src_uid": 269,
+   "src_label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 459,
+   "waypoints_reached": 459,
+   "dwell_stalls": 0,
+   "dilation": 1.02,
+   "settle_decisions": 2,
+   "n_cap": 1,
+   "frac_cap": 0.0087,
+   "skipped": 0,
+   "dil_active": 1.002,
+   "exhaust_simstep": 460,
+   "fast_stalls": 0,
+   "config": "arr_either",
+   "src_diag": {
+    "n": 459,
+    "idle_frac": 0.544,
+    "T_cap": 462,
+    "T_path": 103,
+    "frac_win_over_cap": 0.007,
+    "peak_win": 0.105,
+    "frac_qwin_over_cap": 0.0,
+    "lead_p99": 0.087,
+    "lead_max": 0.106,
+    "frac_lead_over_leash": 0.0,
+    "first_lift": 457,
+    "grip_close": 265,
+    "tilt0": 0.0,
+    "can_xy0": [
+     0.4381,
+     0.1
+    ]
+   },
+   "fid": {
+    "path_ratio": 0.944,
+    "dev_max": 0.0165,
+    "path_ratio_cmd": 0.893,
+    "dev_cmd_max": 0.0535,
+    "dev_cmd_p50": 0.0146,
+    "dev_cmd_p95": 0.0361,
+    "dev_p95": 0.0068,
+    "dev_mean": 0.0016,
+    "cov_max": 0.1139,
+    "dev_at_close": 0.0006,
+    "grip_close_simstep": 264,
+    "grip_close_human": 265,
+    "can_move_before_close": 0.0258
+   },
+   "rollout": 100690,
+   "file": "baselines/demos_v1/_lab/FRESH_arr_either/100690.npz",
+   "label": "success",
+   "n": 117
+  }
+ ]
+}

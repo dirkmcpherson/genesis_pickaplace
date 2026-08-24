@@ -1,0 +1,101 @@
+{
+ "config_name": "arr_either",
+ "config": {
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 25,
+  "arrival": "either",
+  "tol_t": 0.025,
+  "pass_tol": 0.075,
+  "aim": "window",
+  "L": 0,
+  "skip_tol": null,
+  "skip_grip": 0.02,
+  "skip_ref": 0.025,
+  "max_skip": 64,
+  "grip_settle": 0.01,
+  "effort_settle": null,
+  "skip_guard": 0,
+  "skip_dq": null,
+  "skip_lag": null,
+  "stall_hold": "jump",
+  "stat_eps": null
+ },
+ "sim": "base",
+ "sim_applied": null,
+ "git_sha": "3cbe909",
+ "shard": [
+  0,
+  1
+ ],
+ "built": "2026-08-23T13:19:04",
+ "records": [
+  {
+   "ic_uid": 300,
+   "ic_can_xy": [
+    0.4332,
+    -0.1738
+   ],
+   "outcome": "env_truncated",
+   "decisions": 300,
+   "sim_steps": 1200,
+   "seconds": 43.7,
+   "kept": false,
+   "end_reason": "env_truncated",
+   "src_uid": 300,
+   "src_label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 1300,
+   "waypoints_reached": 1171,
+   "dwell_stalls": 0,
+   "dilation": 0.923,
+   "settle_decisions": 0,
+   "n_cap": 26,
+   "frac_cap": 0.0867,
+   "skipped": 0,
+   "dil_active": 0.923,
+   "exhaust_simstep": null,
+   "fast_stalls": 0,
+   "config": "arr_either",
+   "src_diag": {
+    "n": 1300,
+    "idle_frac": 0.48,
+    "T_cap": 1332,
+    "T_path": 335,
+    "frac_win_over_cap": 0.069,
+    "peak_win": 0.157,
+    "frac_qwin_over_cap": 0.056,
+    "lead_p99": 0.13,
+    "lead_max": 0.153,
+    "frac_lead_over_leash": 0.018,
+    "first_lift": 1298,
+    "grip_close": 1018,
+    "tilt0": 0.0,
+    "can_xy0": [
+     0.4332,
+     -0.1738
+    ]
+   },
+   "fid": {
+    "path_ratio": 0.967,
+    "dev_max": 0.0457,
+    "path_ratio_cmd": 0.927,
+    "dev_cmd_max": 0.127,
+    "dev_cmd_p50": 0.0316,
+    "dev_cmd_p95": 0.0486,
+    "dev_p95": 0.0221,
+    "dev_mean": 0.0044,
+    "cov_max": 0.0431,
+    "dev_at_close": 0.0005,
+    "grip_close_simstep": 1044,
+    "grip_close_human": 1018,
+    "can_move_before_close": 0.0247
+   },
+   "rollout": 101000,
+   "file": "baselines/demos_v1/_lab/FRESH_arr_either_fails/101000.npz",
+   "label": "fail",
+   "n": 300
+  }
+ ]
+}

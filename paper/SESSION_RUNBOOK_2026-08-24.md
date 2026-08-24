@@ -185,13 +185,21 @@ eval_genesis --ic-file/--ic-set/--ic-index); native stride-4 demo dirs `baseline
 (56 each, terminal reward 1.0, repeat.json-stamped, gated by sbatch DEMOSET=v2). NOTE: 8 dR2D tapes pay +2
 (picked+placed grant in the terminal window -- recorded from the env, consistent with online; footnote in captions).
 
+CORRECTED-WORLD NOTE (user decision 08-24): the program's world is now sim variant
+`gc_kp4_riser3_shelf6`; every launch below MUST set R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 and use
+demo dirs recorded in that world (the manifest/gate enforces the match; the old-world matched_v2
+r2d dirs will FAIL the gate once R2D_SIM_VARIANT is set -- that is intended). Rebuild the r2d dirs
+from the new-world sets with to_dreamer_native --terminal-reward 1 when the main session announces
+them. NOTE for the set builder: to_dreamer_native does not yet propagate sim_variant into
+repeat.json -- the gate falls back to the SOURCE manifest, which carries it.
+
 Pilot gate first (if the 08-24 pilot did not run or failed):
-    for S in 60 61; do CONFIG=genesis_pick_v5d4c_delta_shaped ARM=dH SEED=$S DEMOSET=v2 STEPS=2e6 sbatch cluster/sbatch_r2dreamer.sh; done
+    for S in 60 61; do CONFIG=genesis_pick_v5d4c_delta_shaped ARM=dH SEED=$S DEMOSET=v2 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 STEPS=2e6 sbatch cluster/sbatch_r2dreamer.sh; done
     # bar (PREREG §8 + amendment): >=1 seed ignites with best-ckpt >=0.5; 2e6 not 3M (time-boxed; ignition window was 0.7-1M)
 
 Main r2d block (after the pilot passes; seeds 60-65, sparse+dense, ~14-18 h/job at 3M or ~10-12 h at 2e6):
     for A in dH dDP dR2D; do for R in "" _shaped; do for S in 60 61 62 63 64 65; do
-      CONFIG=genesis_pick_v5d4c_delta$R ARM=$A SEED=$S DEMOSET=v2 STEPS=3e6 sbatch cluster/sbatch_r2dreamer.sh
+      CONFIG=genesis_pick_v5d4c_delta$R ARM=$A SEED=$S DEMOSET=v2 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 STEPS=3e6 sbatch cluster/sbatch_r2dreamer.sh
     done; done; done          # 36 jobs; REWARD auto from CONFIG (*_shaped -> dense)
 
 dv3 (queued LAST per PREREG): apply cluster/patches/dreamerv3-torch-genesis_final_rr.patch to

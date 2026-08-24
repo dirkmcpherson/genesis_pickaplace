@@ -203,6 +203,10 @@ fi
 # stamped; demo_prefill refuses a mismatched stride/downsample/terminal-reward).
 # Implies env.demo_downsample=1 + TIME_LIMIT default 1200 + IC-file eval.
 DEMOSET=${DEMOSET:-legacy}
+# R2D_SIM_VARIANT (corrected-world program, 2026-08-24): Genesis world variant applied by the
+# patched r2dreamer adapter (envs/genesis.py reads this env var; sim_variant_hook). 'base' =
+# unpatched world. Exported to the job; demo-dir variant must MATCH (gate below); in REG_KNOBS.
+export R2D_SIM_VARIANT=${R2D_SIM_VARIANT:-base}
 
 # --- $HOME-default lesson: prefer the lab path, fall back to $HOME ONLY if the lab
 # path is genuinely absent (see header). This is the PRIMARY fix; the explicit guard
@@ -241,7 +245,13 @@ assert os.path.exists(st), f'FATAL: {st} missing (build with to_dreamer_native.p
 j = json.load(open(st))
 assert int(j.get('action_repeat', 0)) == 4, f'FATAL: stamp action_repeat {j.get("action_repeat")} != 4'
 assert abs(float(j.get('terminal_reward', 0)) - 1.0) < 1e-9, f'FATAL: terminal_reward {j.get("terminal_reward")} != 1.0 (r2d prefill scales by reward_scale)'
-print(f"R2D-DEMOSET-V2-OK {d} contract={j.get('contract')} src_sha={str(j.get('src_sha'))[:16]}")
+want = os.environ.get('R2D_SIM_VARIANT', 'base') or 'base'
+have = j.get('sim_variant')
+if have is None:
+    srcman = os.path.join(str(j.get('src', '')), 'manifest.json')
+    have = (json.load(open(srcman)).get('sim_variant') if os.path.exists(srcman) else None) or 'base'
+assert have == want, f'FATAL: demo dir sim_variant={have} but R2D_SIM_VARIANT={want} (world mismatch)'
+print(f"R2D-DEMOSET-V2-OK {d} contract={j.get('contract')} sim_variant={have} src_sha={str(j.get('src_sha'))[:16]}")
 PY
   if [ -n "$_DEMO_DIR_ENV" ] && [ "$_DEMO_DIR_ENV" != "$ARM_DEMO" ]; then
     echo "FATAL: ARM=$ARM DEMOSET=v2 implies DEMO_DIR=$ARM_DEMO but env DEMO_DIR=$_DEMO_DIR_ENV is exported (stale-env guard)"; exit 1
@@ -321,7 +331,7 @@ NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
 REG_KNOBS=(config="$CONFIG" steps="$STEPS" budget_unit=sim_steps env_num="${ENV_NUM:-6}" \
            buffer_max="${BUFFER_MAX:-450000}" pretrain="${PRETRAIN:-1000}" \
            reinject="${REINJECT:-baked}" duplicate="${DUPLICATE:-baked}" \
-           action_repeat=4 train_horizon="${TIME_LIMIT:-config}" eval_horizon="$EVAL_MAX_STEPS" demoset="${DEMOSET:-legacy}" \
+           action_repeat=4 train_horizon="${TIME_LIMIT:-config}" eval_horizon="$EVAL_MAX_STEPS" demoset="${DEMOSET:-legacy}" sim_variant="$R2D_SIM_VARIANT" \
            reward="$REWARD" demo_sha="$DEMO_SHA")
 REGISTRY_PY="cluster/run_registry.py"
 
