@@ -91,3 +91,15 @@ run with checkpoint archiving before any claim.
 - N3: DP evals run 1200 steps in one process; RLPD 400 fresh-process. State horizons per row; no
   cross-algorithm "best cell" language without it.
 - Global: per REVIEW_GUIDE claim 4, "every implementation positively controlled" is false for RLPD — drop.
+
+## N5 (2026-08-24). PINNED (user): the fails-arm question rides on the WM cells
+P-MECH (corrected sets, sparse RLPD): dR2D+DPfails 0.55->0.15 on hold; dDP+fails == dDP
+success-only (0.25). Mediator identified: 8 cap-truncated 300-decision fail tapes vs ~17-decision
+dR2D successes -> fails = 74% of the demo buffer under per-transition sampling (vs 28% in the dDP
+arm, no harm); no critic divergence (terminals labelled). PINNED per user: do not litigate
+"fairness of fails" further on the RL side. The decisive cell is the WM arms on the SAME
+fails-included sets (post-maintenance): if the WMs are flat-or-better where RLPD drops, the thesis
+is learner-specific demo-property effects on one matched dataset. Registered follow-ups if needed
+AFTER that readout: share-matched fails arm (subsample fail transitions to ~28%); per-episode
+demo sampling as the practical RLPD fix. Fairness condition: identical fail tapes to every
+fail-consuming learner; share arithmetic disclosed in any claim.
