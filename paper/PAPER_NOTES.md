@@ -103,3 +103,19 @@ is learner-specific demo-property effects on one matched dataset. Registered fol
 AFTER that readout: share-matched fails arm (subsample fail transitions to ~28%); per-episode
 demo sampling as the practical RLPD fix. Fairness condition: identical fail tapes to every
 fail-consuming learner; share arithmetic disclosed in any claim.
+
+## N6 (2026-08-24, end of window). Corrected-world pick block + pilots
+World = gc_kp4_riser3_shelf6 (sim tracks the real arm 15x better; adopted by user; shelf6 pending
+the real shelf-height measurement). Sets matched_w3: dH_w2 58/66, dDP_w2 58 (teacher = new-world
+DP pilot dH s0@100k, hold 14/15), identical IC multisets. Results (selected-on-hold means):
+- DP: dH 0.90 (13,13,14,14,14 /15), dDP ~0.87 -- source parity holds; the corrected-world DP is
+  the strongest policy of the program (rnd up to 19/30).
+- RLPD: dH sparse 0.18 / dense 0.22 (one 10/15 seed); dDP sparse 0.20 / dense 0.08. WORSE than
+  the old world (0.42/0.25 sparse) at the same budget: RLPD's recipe (gamma, caps, UTD, horizons)
+  was tuned under old-world dynamics -- the R8 disclosure cuts both ways. Source parity again.
+- r2dreamer corrected-world pilot: 0/2 seeds at 2e6 dense -- but conflated world + time_limit
+  400->1200 + the gamma fix; disentangling run (new world, native time_limit 400) is first in the
+  post-maintenance list. No new-world dR2D teacher yet.
+Emerging paper shape: with translation artifacts removed, DEMO SOURCE effects vanish for BC and
+stay absent for RLPD; what remains are LEARNER x WORLD/RECIPE effects (DP robust, RL recipes
+brittle to dynamics changes) and the pinned N5 fails question, decided by the WM cells.
