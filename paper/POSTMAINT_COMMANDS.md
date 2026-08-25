@@ -1,42 +1,94 @@
-# REVISED LAUNCH PLAN 2026-08-25 (supersedes the wave order below; source:
-# paper/CRITIQUE_launch_plan_2026-08-25.md, accepted in full except where noted)
-# R7 FIRST, ZERO GPU -- each prevents a job that would FATAL or train the wrong cell:
-#   (a) DONE on the laptop copy, REDO ON THE CLUSTER: purge the placeholder dR2D row from
-#       baselines/matched_w3/MATCHED_SETS.json and its column from matched_w3/census.md (BL-7:
-#       the dir was deleted at build time but the provenance row survived carrying dDP's sha),
-#       and make item 3's dR2D loop conditional on matched_w4 existing.
-#   (b) DONE in git: ARM tables extended -- sbatch_dp.sh (+dHallpruned_1e3/1e2, dDPallpruned_1e3/1e2),
-#       sbatch_r2dreamer.sh (+dDPfails, dR2DDPfails). DRYRUN passed for both new paths.
-#   (c) TODO on the cluster: build baselines/matched_v2/r2d/{dDPfails,dR2DDPfails} with
-#       to_dreamer_native.py --terminal-reward 1 (the r2d prefill gates on the DIR stamp, and
-#       zero-reward fail tapes themselves load fine -- verified by the critique).
-#   (d) TODO: build the N7 pruned sets + their lerobot datasets (make_pruned_bc_set.py, then
-#       convert_to_lerobot.py) -- sbatch_dp has no inline build for native arms.
-# THEN, in submission order:
-#   R1  r2d disentangle, corrected world, NATIVE TIME_LIMIT=400, seeds 70,71 ......... 2 jobs
-#       (moved to FIRST: it gates the corrected-world dR2D teacher AND tells R4 which horizon to
-#        use; PREREG §8's amendment already prescribes falling back to 400.)
-#   R2  RLPD corrected-world seed top-ups, dH/dDP x sparse/dense x seeds 24-29 ...... 24 jobs
-#       (NEW, highest value/GPU-h: takes the N6 source-parity NULL from n=4 to n=10 seeds.)
-#   R3  N7 density control, 4 variants x seeds 20,21,22 -- PRIMARY READOUT = rnd, not hold
-#       (hold is ceilinged at 13-14/15 so N7's falsifier is untestable there; seeds 20-22
-#        pair with the baseline for PREREG §7's paired analysis) ..................... 12 jobs
-#   R4  N5 WM cells: r2dreamer, dense, matched_v2 (OLD world, R2D_SIM_VARIANT UNSET),
-#       arms dR2D vs dR2DDPfails ONLY, 4 seeds (80-83), TIME_LIMIT per R1 ............ 8 jobs
-#       GATE: read the fails contrast ONLY if the success-only arm ignites in >=2/4 seeds.
-#       REPORT WITH IT: demo exposure is ~3% of the r2d ring vs ~36% of every RLPD batch (17x),
-#       and adding fails cuts reward density 3.4x -- a null is uninformative without both numbers.
-#       Consider BUFFER_MAX=40000 to exposure-match (prefill assert still holds at 13.7k < 20k).
-#   R5  N5 share-matched fails arm (subsample fail TRANSITIONS to ~26%), 4 seeds, only if R4 reads
-#   R6  N8 DEFERRED -- not buildable tonight: stride-1 PIXEL demos do not exist (contract-v1 tapes
-#       carry images per DECISION only; verified) so B/C need a CPU re-record at action_repeat=1
-#       with the rig; sbatch_genesis_final_rr.sh hard-codes ACTREP and has no EXTRA_ARGS, so the
-#       arms would silently be three copies of A sharing one RUNDIR, and B/C would collide in the
-#       registry (discount is not in REG_KNOBS). Spend ~1 GPU-h calibrating dv3_interrogate.py on
-#       an existing checkpoint BEFORE committing ~100 GPU-h. NOTE: the stride-1 STATE set for the
-#       DP control IS still free from sim_states/sim_actions -- that half stands.
-# NOT TONIGHT: gripper-model changes; corrected-world dR2D cells (no teacher until R1); full-task.
-
+# ============================================================================
+# TONIGHT'S LAUNCH PLAN (final, 2026-08-25). Supersedes everything below.
+# Sources: paper/CRITIQUE_launch_plan_2026-08-25.md (accepted), PAPER_NOTES N5/N7/N8/N9/N10/N11.
+# 56 GPU jobs, ~275 GPU-h, ~21 h wall at ~13 concurrent.
+# SUBMIT LONG JOBS FIRST (they set the critical path), shorts backfill.
+# ============================================================================
+#
+# STEP 0 -- ZERO GPU, DO ALL OF IT BEFORE SUBMITTING ANYTHING
+LAB=/cluster/tufts/shortlab/jstale02; cd $LAB/genesis_pickaplace
+git pull --ff-only origin 4dof-cartesian && git log --oneline -1
+source ~/.bashrc; conda activate $LAB/condaenv/genesis
+python baselines/make_eval_ics.py --check && python baselines/tests/test_record_demos_contract.py && python baselines/tests/test_terminal_guard.py
+# 0a. purge the placeholder dR2D provenance row (the DIR was deleted at build time, the ROW survived
+#     carrying dDP's sha -- BL-7). Already fixed on the laptop copy; redo here:
+python - <<'EOF'
+import json
+p='baselines/matched_w3/MATCHED_SETS.json'; j=json.load(open(p))
+j['sets'].pop('dR2D', None)
+j['NOTE_2026-08-25']='placeholder dR2D row purged (was a duplicate of dDP); matched_w3 = dH + dDP only'
+json.dump(j, open(p,'w'), indent=1); print('purged'); 
+EOF
+# 0b. r2d-format demo dirs for the N5 fails arm (dR2D exists already; dR2DDPfails does not):
+python baselines/rl/to_dreamer_native.py --src baselines/matched_v2/dR2DDPfails \
+  --dst baselines/matched_v2/r2d/dR2DDPfails --repeat 4 --scope pick --terminal-reward 1 --force
+ls baselines/matched_v2/r2d/   # expect: dH dDP dR2D dR2DDPfails
+# 0c. N7 pruned BC sets + their lerobot datasets (sbatch_dp has no inline build for native arms):
+for E in 1e-3 1e-2; do T=$(echo $E | tr -d '.-'); \
+  python baselines/make_pruned_bc_set.py --src baselines/matched_w3/dH  --dst baselines/matched_w3/dHallpruned_$T  --eps $E; \
+  python baselines/make_pruned_bc_set.py --src baselines/matched_w3/dDP --dst baselines/matched_w3/dDPallpruned_$T --eps $E; done
+for A in dHallpruned_1e3 dHallpruned_1e2 dDPallpruned_1e3 dDPallpruned_1e2; do \
+  python baselines/convert_to_lerobot.py baselines/matched_w3/$A baselines/matched_w3/$A/lerobot 8 4 none image; done
+# 0d. DRYRUN every new arm before any real submission:
+for A in dHallpruned_1e3 dDPallpruned_1e3; do DRYRUN=1 ARM=$A SEED=20 WAVE=density DEMO_ROOT=baselines/matched_w3 \
+  SIM_VARIANT=gc_kp4_riser3_shelf6 GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_dp.sh | grep -E "FATAL|PROVENANCE|DEMO-SHA"; done
+DRYRUN=1 ARM=dR2DDPfails SEED=80 DEMOSET=v2 CONFIG=genesis_pick_v5d4c_delta_shaped TIME_LIMIT=400 \
+  GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_r2dreamer.sh | grep -E "FATAL|dry\] demo"
+#
+# STEP 1 -- LONG JOBS (submit first; they define the critical path)
+# 1a. N5 WM decision cells: does a world model care about the 8 DP fail tapes that took RLPD
+#     0.55 -> 0.15? OLD-world matched_v2 (the same tapes the RLPD numbers were measured on), dense,
+#     TIME_LIMIT=400 (the ONLY horizon at which r2d has ever ignited here), R2D_SIM_VARIANT UNSET.
+for A in dR2D dR2DDPfails; do for S in 80 81 82 83; do \
+  ARM=$A SEED=$S DEMOSET=v2 CONFIG=genesis_pick_v5d4c_delta_shaped TIME_LIMIT=400 \
+  GENESIS_PICKAPLACE_ROOT=$PWD sbatch --time=24:00:00 cluster/sbatch_r2dreamer.sh; done; done      # 8 jobs
+#     READ-GATE: if dR2D ignites in <2/4 seeds, the fails contrast is a floor effect -- do not read it.
+#     REPORT WITH IT: demos are ~3% of the r2d replay ring vs ~36% of every RLPD batch (17x less
+#     exposure to the mediator), and adding fails cuts reward density 3.4x. A null without those two
+#     numbers is uninterpretable.
+# 1b. r2d disentangle: was the 08-24 corrected-world failure (0/2) the WORLD, or the horizon?
+for S in 70 71; do CONFIG=genesis_pick_v5d4c_delta_shaped SEED=$S TIME_LIMIT=400 \
+  R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 DEMO_DIR=baselines/demos_v1/r2d_dH_w2 \
+  GENESIS_PICKAPLACE_ROOT=$PWD sbatch --time=24:00:00 cluster/sbatch_r2dreamer.sh; done            # 2 jobs
+#     If it ignites -> the recipe survives the world change AND its BEST ckpt is the corrected-world
+#     dR2D teacher (unblocks the whole dR2D column). If not -> the world change broke r2dreamer.
+#
+# STEP 2 -- SHORT JOBS (backfill; ~3 h each)
+# 2a. RLPD seed top-ups: N6's source-parity NULL and N10's vanished spread are BOTH n=4 with
+#     per-seed values spanning 0.07-0.73. This takes them to n=10 -- the cheapest claim-strength
+#     gain available, and the direct test of N10 explanation (1) (floor compression).
+for A in dH dDP; do for R in sparse dense; do for S in 24 25 26 27 28 29; do \
+  ARM=$A SEED=$S REWARD=$R WAVE=w2final DEMO_ROOT=baselines/matched_w3 \
+  SIM_VARIANT=gc_kp4_riser3_shelf6 GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/sbatch_rlpd.sh; done; done; done   # 24 jobs
+# 2b. DP seed top-ups (N11): the BC source claim now rests on `rnd`, where the gap is 0.05 at n=5.
+for A in dH dDP; do for S in 25 26 27 28 29; do \
+  ARM=$A SEED=$S WAVE=w2final DEMO_ROOT=baselines/matched_w3 SIM_VARIANT=gc_kp4_riser3_shelf6 \
+  GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/sbatch_dp.sh; done; done                                            # 10 jobs
+# 2c. N7 action-density control -- PRIMARY READOUT IS `rnd`, NOT `hold` (hold is ceilinged at 14/15,
+#     N11). Seeds 20-22 pair one-to-one with the baseline for PREREG §7's paired analysis.
+for A in dHallpruned_1e3 dHallpruned_1e2 dDPallpruned_1e3 dDPallpruned_1e2; do for S in 20 21 22; do \
+  ARM=$A SEED=$S WAVE=density DEMO_ROOT=baselines/matched_w3 SIM_VARIANT=gc_kp4_riser3_shelf6 \
+  GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/sbatch_dp.sh; done; done                                            # 12 jobs
+#
+# STEP 3 -- ~1 GPU-HOUR, decides whether N8 is worth ~100 more
+#     dv3_interrogate.py has never run against a real checkpoint (5 API-GUESS sites) and its
+#     value_reach returns None on a flat/untrained value head -- the modal N8 outcome. Calibrate on
+#     an existing checkpoint FIRST:
+python analysis/dv3_interrogate.py --checkpoint <an existing dv3 ckpt, e.g. rr_dH_s2 latest.pt> \
+  --logdir <its logdir> --configs genesis_pixels genesis_pick_msrecipe \
+  --demodir $LAB/dreamerv3-torch/demonstrations/genesis_pick_msr_delta25_r4 --n-episodes 8 \
+  --device cuda --dreamer-root $LAB/dreamerv3-torch --out /tmp/interrogate_calib.json
+#     Then grep API-GUESS in the tool and check each against what it printed.
+#
+# NOT TONIGHT, and why:
+#   N8 (repeat-1 vs repeat-4): needs a CPU re-record of dH at action_repeat=1 WITH the camera rig
+#     (contract-v1 tapes carry images per DECISION only -- verified), and sbatch_genesis_final_rr.sh
+#     hard-codes ACTREP with no EXTRA_ARGS, so the arms would silently be 3 copies of A sharing one
+#     RUNDIR, and B/C would collide in the registry (discount is not in REG_KNOBS).
+#   Gripper-model changes: would invalidate every recorded set.
+#   Corrected-world dR2D cells: no teacher until STEP 1b reports.
+#   Full-task / place-scope: user scoped the program to pick phase for now.
+#
 # POST-MAINTENANCE COMMANDS (literal; written 2026-08-25 for a low-context operator)
 # Context docs if anything is unclear: paper/SESSION_RUNBOOK_2026-08-24.md (final section),
 # paper/PREREG_final_round_robin_2026-08-23.md, paper/SESSION_LOG_2026-08-23_cluster.md,
