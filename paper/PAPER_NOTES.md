@@ -125,3 +125,22 @@ attributable to translation, not to provenance. The contribution is the DIAGNOSI
 null is a consequence. What remains: LEARNER x WORLD/RECIPE effects (DP held 0.81->0.90 across a
 world change; RLPD's tuned recipe lost half its ignition) and the pinned N5 fails question,
 decided by the WM cells.
+
+## N7 (2026-08-25, PRE-REGISTERED, not yet run). Naive action-density pruning should HURT dH_DP
+The action-density control the 08-20 note and N3 registered, finally specified. "Prune all zeros"
+is a no-op on contract-v1 tapes (closed-loop follower -> ~0% exact zeros), so the rule is a
+threshold on |a_arm|inf, applied IDENTICALLY to every source (baselines/make_pruned_bc_set.py).
+Measured on matched_w3: eps=1e-3 removes 20.0% of dH decisions and 0.0% of dDP; eps=1e-2 removes
+36.6% / 4.7%. Of the dH decisions removed at 1e-3, 764/1384 (55%) have the grip commanded CLOSED
+vs 31% of decisions overall -- most "idle" is the hold that seats the grasp, and the hardened pick
+predicate requires a sustained hold.
+PREDICTIONS (BC only; deleting decisions breaks the (s,a,s') chain -- invalid for RLPD/WM):
+  (1) dHallpruned_e3_DP hold < dH_DP (0.90) by >= 0.10, i.e. naive pruning HURTS;
+  (2) dose-response: e2 (36.6% removed) worse than e3 (20%);
+  (3) dDPallpruned_e3_DP == dDP_DP within seed noise (null control: the RULE is harmless, the
+      REMOVED CONTENT is what matters);
+  (4) failure mode is picks, not placement -- the hold frames are grasp-seating.
+FALSIFIER: dHallpruned >= dH would mean idle density was a handicap and the leading-idle rule was
+too conservative -- which would revive "density" as the explanation for the 08-19 dR2D_DP > dH_DP
+gap that N6 attributes to translation. Either way this cell must run before the paper claims
+"demo quality" over "idle-frame density". Cost: 4 variants x 3 seeds = 12 DP jobs (~3 h each).

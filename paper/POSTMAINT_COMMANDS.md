@@ -81,6 +81,20 @@ TEACHER=human SRC=baselines/episodes_pick_phase_all OUTDIR=baselines/demos_v1/dH
 for K in "GAMMA=0.99" "UTD=5" "TRAIN_HORIZON=900" "STEPS=200000"; do echo "STOP-AND-ASK: $K needs a
   full-capability session to wire the knob into sbatch_rlpd cleanly -- do not hand-edit"; done
 
+# 5d. ACTION-DENSITY CONTROL (N7, pre-registered; BC ONLY -- never point an RLPD/WM arm at these)
+cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace
+for E in 1e-3 1e-2; do T=$(echo $E | tr -d '.-'); \
+  python baselines/make_pruned_bc_set.py --src baselines/matched_w3/dH  --dst baselines/matched_w3/dHallpruned_$T  --eps $E; \
+  python baselines/make_pruned_bc_set.py --src baselines/matched_w3/dDP --dst baselines/matched_w3/dDPallpruned_$T --eps $E; done
+for A in dHallpruned_1e3 dHallpruned_1e2 dDPallpruned_1e3 dDPallpruned_1e2; do \
+  python baselines/convert_to_lerobot.py baselines/matched_w3/$A baselines/matched_w3/$A/lerobot 8 4 none image; done
+for A in dHallpruned_1e3 dHallpruned_1e2 dDPallpruned_1e3 dDPallpruned_1e2; do for S in 30 31 32; do \
+  ARM=$A SEED=$S WAVE=density DEMO_ROOT=baselines/matched_w3 SIM_VARIANT=gc_kp4_riser3_shelf6 \
+  GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/sbatch_dp.sh; done; done
+# NOTE: sbatch_dp's ARM table may not know these names -- if it prints FATAL on the ARM case,
+# STOP-AND-ASK (a full-capability session adds the arms; do not hand-edit the gate).
+# READ: cat baselines/outputs/dp_density/*/sweep/HEADLINE.txt ; compare hold vs dH_DP 0.90 (N7).
+
 # 6. WHEN RESULTS ARE IN: pull artifacts to the laptop (from the laptop):
 #   bash -c 'R=tufts:/cluster/tufts/shortlab/jstale02/genesis_pickaplace; rsync -a --bwlimit=4000 \
 #     $R/baselines/matched_w4 ~/workspace/final_rr_artifacts_2026-08-24/; ...' (mirror pull.log phases)
