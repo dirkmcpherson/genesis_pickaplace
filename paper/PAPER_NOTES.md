@@ -127,20 +127,26 @@ world change; RLPD's tuned recipe lost half its ignition) and the pinned N5 fail
 decided by the WM cells.
 
 ## N7 (2026-08-25, PRE-REGISTERED, not yet run). Naive action-density pruning should HURT dH_DP
-The action-density control the 08-20 note and N3 registered, finally specified. "Prune all zeros"
-is a no-op on contract-v1 tapes (closed-loop follower -> ~0% exact zeros), so the rule is a
-threshold on |a_arm|inf, applied IDENTICALLY to every source (baselines/make_pruned_bc_set.py).
-Measured on matched_w3: eps=1e-3 removes 20.0% of dH decisions and 0.0% of dDP; eps=1e-2 removes
-36.6% / 4.7%. Of the dH decisions removed at 1e-3, 764/1384 (55%) have the grip commanded CLOSED
-vs 31% of decisions overall -- most "idle" is the hold that seats the grasp, and the hardened pick
-predicate requires a sustained hold.
+The action-density control registered on 08-20 (N3), finally specified. Two corrections during
+specification, the second from the user:
+ (a) "prune all zeros" is a NO-OP on contract-v1 tapes (closed-loop follower -> ~0% exact zeros),
+     so the rule must be a threshold on |a_arm|inf;
+ (b) the rule must NOT ignore the gripper column. a_grip is an ABSOLUTE command in [-1,1], so
+     |a_grip|~0 means "half open", not "no change": an arm-still decision during grasp CLOSURE
+     would have been pruned, manufacturing the predicted result. Corrected rule: prune only if
+     |a_arm|inf < eps AND |delta a_grip| <= grip_eps. |delta a_grip| is bimodal (p50 1.6e-5,
+     p75 2.1e-3, p90 0.066) -> grip_eps = 5e-3 sits in the gap (noise pruned, closure protected).
+Measured on matched_w3 (eps 1e-3, grip_eps 5e-3): 11.7% of dH decisions prunable (811/6927) vs
+~0% of dDP; 51% of the prunable dH decisions hold a CLOSED grip (vs 31% of all decisions); idle
+runs median 2 decisions, p90 10, max 33 (4.4 s). So most genuine idle is the hold that seats the
+grasp -- which the hardened pick predicate requires.
 PREDICTIONS (BC only; deleting decisions breaks the (s,a,s') chain -- invalid for RLPD/WM):
-  (1) dHallpruned_e3_DP hold < dH_DP (0.90) by >= 0.10, i.e. naive pruning HURTS;
-  (2) dose-response: e2 (36.6% removed) worse than e3 (20%);
-  (3) dDPallpruned_e3_DP == dDP_DP within seed noise (null control: the RULE is harmless, the
-      REMOVED CONTENT is what matters);
-  (4) failure mode is picks, not placement -- the hold frames are grasp-seating.
+  (1) dHallpruned_DP hold < dH_DP (0.90): direction predicted, effect >= 0.05;
+  (2) dose-response: larger eps (more removed) monotonically worse;
+  (3) dDPallpruned_DP == dDP_DP within seed noise (null control: the RULE is harmless; the
+      REMOVED CONTENT is what matters -- the same rule removes ~nothing from a model teacher);
+  (4) failure mode is picks, not placement -- the removed frames are grasp-seating holds.
 FALSIFIER: dHallpruned >= dH would mean idle density was a handicap and the leading-idle rule was
-too conservative -- which would revive "density" as the explanation for the 08-19 dR2D_DP > dH_DP
-gap that N6 attributes to translation. Either way this cell must run before the paper claims
-"demo quality" over "idle-frame density". Cost: 4 variants x 3 seeds = 12 DP jobs (~3 h each).
+too conservative -- reviving "density" as the explanation for the 08-19 dR2D_DP > dH_DP gap that
+N6 attributes to translation. Either way this cell must run before the paper claims "demo quality"
+over "idle-frame density". Cost: 4 variants x 3 seeds = 12 DP jobs (~3 h each).

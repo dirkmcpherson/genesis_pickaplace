@@ -27,6 +27,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--src', required=True); ap.add_argument('--dst', required=True)
     ap.add_argument('--eps', type=float, default=1e-3, help='prune decisions with max|a_arm| < eps (normalized units; 1e-3 = 2.5e-5 rad/sim-step)')
+    ap.add_argument('--grip-eps', type=float, default=5e-3, help='a decision whose grip command moved by more than this is NEVER pruned (the closure itself)')
     ap.add_argument('--keep-terminal', action='store_true', default=True, help='never prune the terminal decision (the pick)')
     ap.add_argument('--dry-run', action='store_true'); ap.add_argument('--force', action='store_true')
     a = ap.parse_args()
@@ -38,10 +39,16 @@ def main():
     for f in files:
         z = dict(np.load(f, allow_pickle=True))
         ad = z['actions_delta']; n = len(ad)
-        keep = np.abs(ad[:, :6]).max(1) >= a.eps
+        # The grip column is an ABSOLUTE command in [-1,1], not a delta: |a_grip| ~ 0 means
+        # "half open", NOT "no change". A decision where the arm holds still while the gripper is
+        # CLOSING is the grasp itself and must never be pruned -- so a decision is idle only if the
+        # arm delta is below eps AND the grip command is unchanged from the previous decision.
+        grip = ad[:, 6]
+        grip_changed = np.concatenate([[True], np.abs(np.diff(grip)) > a.grip_eps])
+        keep = (np.abs(ad[:, :6]).max(1) >= a.eps) | grip_changed
         keep[-1] = True                      # the terminal decision always survives
         n_in += n; n_out += int(keep.sum()); rows += 1
-        n_grip += int(((~keep) & (ad[:, 6] > 0)).sum())
+        n_grip += int(((~keep) & (ad[:, 6] > 0)).sum())   # pruned decisions holding a CLOSED grip
         plan.append((f, z, keep))
     print(f'[prune] {a.src} eps={a.eps}: {rows} tapes, {n_in} -> {n_out} decisions ({1-n_out/n_in:.1%} removed; '
           f'{n_grip} of the removed had grip commanded closed)')
@@ -63,7 +70,7 @@ def main():
     src_man = os.path.join(a.src, 'manifest.json')
     man = dict(set=os.path.basename(a.dst), built=time.strftime('%Y-%m-%dT%H:%M:%S'), N=rows,
                n_kept=rows, contract='v1', bc_only=True, prune_eps=a.eps,
-               decisions_in=n_in, decisions_out=n_out, removed_frac=round(1 - n_out / n_in, 4),
+               prune_grip_eps=a.grip_eps, decisions_in=n_in, decisions_out=n_out, removed_frac=round(1 - n_out / n_in, 4),
                removed_with_grip_closed=n_grip, source=os.path.normpath(a.src),
                sim_variant=(json.load(open(src_man)).get('sim_variant') if os.path.exists(src_man) else None),
                content_sha256=h.hexdigest(), builder='baselines/make_pruned_bc_set.py',
