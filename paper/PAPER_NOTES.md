@@ -229,3 +229,23 @@ CANDIDATE EXPLANATIONS, untested:
      every corrected-world cell may be noise-dominated. TEST: the single-knob retune probe.
 UNTIL ONE OF THESE IS MEASURED, the paper must not present either the old-world gap or its
 disappearance as a finding -- both are n=4 observations in an unexplained regime change.
+
+## N11 (2026-08-25). The BC "source parity" claim rests on a CEILINGED readout; use `rnd`
+User question: did the corrected world introduce a DP performance ceiling? NO -- the cap predates
+it. Across 22 DP runs (both worlds, three sources) no run has EVER exceeded 14/15 on `sel` or
+`hold`. Verified from per-episode sweep.json records:
+  - `sel` ceiling is STRUCTURAL: index 1 = uid 234, a lying-can IC where the tip rule fires at
+    decision 1 -- picked 0 times in 430 policy-evals. 15/15 is unreachable by construction.
+  - `hold` has NO structural wall (every one of its 15 ICs is picked by some policy) but no policy
+    has swept it; DP at 13.6/15 sits at ~97% of anything ever achieved -> ~1 count of headroom.
+CONSEQUENCE: on `hold` the dH-vs-dDP ordering FLIPS between worlds (old dDP 13.4 > dH 12.2;
+corrected dH 13.6 > dDP 12.8) -- the signature of ceiling-compressed noise, not a source effect.
+On `rnd` (30 ICs, observed 14.8-18.2, real headroom) the ordering is small but CONSISTENT:
+  old:       dR2D 0.61 > dH 0.57 > dDP 0.55
+  corrected: dH 0.55 > dDP 0.49            (no dR2D arm exists in the corrected world yet)
+i.e. dDP is lowest in BOTH worlds and dR2D best where it exists (n=5/cell, gaps 0.02-0.06).
+RULES ADOPTED: (a) BC source claims are made on `rnd`, with `hold`/`sel` reported as
+ceiling-limited; (b) any "parity" statement must name the readout and its headroom; (c) this is
+the SAME defect flagged for N7 (whose falsifier was untestable on a ceilinged hold) -- N7's primary
+readout is already `rnd`. (d) The 14/15 sel cap should be stated once in the methods: one of the 15
+selection ICs is unachievable under the tip rule, so 0.93 is the effective maximum.
