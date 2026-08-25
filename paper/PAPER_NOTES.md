@@ -150,3 +150,32 @@ FALSIFIER: dHallpruned >= dH would mean idle density was a handicap and the lead
 too conservative -- reviving "density" as the explanation for the 08-19 dR2D_DP > dH_DP gap that
 N6 attributes to translation. Either way this cell must run before the paper claims "demo quality"
 over "idle-frame density". Cost: 4 variants x 3 seeds = 12 DP jobs (~3 h each).
+
+## N8 (2026-08-25, PRE-REGISTERED, not yet run). Does the WM arm need action_repeat 4?
+USER CHALLENGE: repeat 4 was adopted because 1200-decision episodes "broke credit assignment", but
+a world model trains on fixed-length subsequences (16x64) -- its DYNAMICS learning is indifferent
+to episode length, so the WM should still learn what it needs. That is correct as stated; the
+assistant's original framing was loose. What actually degrades at repeat 1, with gamma held fixed:
+  - decisions-to-pick (dH median) 113 -> ~452; discount weight at episode start 0.997^113 = 0.70
+    -> 0.997^452 = 0.24 (terminal reward mostly discounted away before value reaches the start);
+  - rewarded frames per 1024-frame batch ~8.8 -> ~2.2 (the density lever METHODOLOGY §6.5 calls
+    load-bearing for this arm).
+Both are properties of the CRITIC's credit propagation, not of the model, and both are retunable.
+DESIGN (dv3, dH only, 2 seeds each, 250k decisions = update-matched to a 1M-step repeat-4 run):
+  A repeat 4, gamma 0.997      (current recipe, baseline)
+  B repeat 1, gamma 0.99925    (= 0.997^(1/4): discount horizon matched in PHYSICAL TIME)
+  C repeat 1, gamma 0.997      (unmatched: separates clock from horizon)
+CAVEAT THAT SHAPES THE READOUT: dv3 has NEVER confirmed ignition (N4), so binary ignite/not may be
+0/0/0 and uninformative. PRIMARY readout is therefore the graded diagnostic from the new tool
+analysis/dv3_interrogate.py: reward-head error on demo frames, value-head profile vs
+decisions-to-terminal, `value_reach` (largest decisions-to-terminal at which value > 10% of its
+terminal value) REPORTED IN SIM STEPS so clocks are comparable, imagined-return decomposition, and
+observed rewarded-frames-per-batch.
+PREDICTIONS: (1) value_reach in SIM STEPS is comparable for A and B and shorter for C -- i.e. the
+horizon, not the temporal resolution, is what governs propagation; (2) B nonetheless trails A on
+any ignition/pick metric, because rewarded frames per batch are ~4x lower; (3) if (1) and (2) both
+hold, the barrier at native resolution is REWARD DENSITY, which is cheaply fixable (demo
+duplication / reinjection at repeat 1) -- register that as the follow-up arm rather than concluding
+"WMs need repeat 4". FALSIFIER for the whole premise: B matches or beats A, in which case the WM
+arms should move to native 30 Hz and the human demos stop being windowed at all (the design the
+user prefers on validity grounds).
