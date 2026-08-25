@@ -116,6 +116,12 @@ DP pilot dH s0@100k, hold 14/15), identical IC multisets. Results (selected-on-h
 - r2dreamer corrected-world pilot: 0/2 seeds at 2e6 dense -- but conflated world + time_limit
   400->1200 + the gamma fix; disentangling run (new world, native time_limit 400) is first in the
   post-maintenance list. No new-world dR2D teacher yet.
-Emerging paper shape: with translation artifacts removed, DEMO SOURCE effects vanish for BC and
-stay absent for RLPD; what remains are LEARNER x WORLD/RECIPE effects (DP robust, RL recipes
-brittle to dynamics changes) and the pinned N5 fails question, decided by the WM cells.
+Emerging paper shape: the apparent demo-source effect for BC was an artifact of how HUMAN demos
+were translated into the learners' action space (re-encoding a 30 Hz absolute-command teleop tape
+into decision-rate deltas); recorded through one pipeline, the source contrast vanishes for BC and
+stays absent for RLPD. STATE IT CONDITIONALLY: DP is not source-agnostic by nature -- badly
+translated human demos DO make it worse (0.62 vs 0.96, 08-19); the claim is that the effect is
+attributable to translation, not to provenance. The contribution is the DIAGNOSIS, of which the
+null is a consequence. What remains: LEARNER x WORLD/RECIPE effects (DP held 0.81->0.90 across a
+world change; RLPD's tuned recipe lost half its ignition) and the pinned N5 fails question,
+decided by the WM cells.
