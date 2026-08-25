@@ -64,6 +64,28 @@ for A in dR2D dR2DDPfails dDP dDPfails dH; do for R in sparse dense; do for S in
 # its header (r2d demo dirs for w4 must be built by the same converter path the r2d agent wired;
 # see cluster/patches/r2dreamer_final_rr.patch header notes).
 
+# 4b. WM CLOCK/HORIZON INVESTIGATION (N8; run alongside item 4 -- dv3, dH only, 2 seeds each)
+#     A = current recipe; B = native 30 Hz with the discount horizon matched in physical time;
+#     C = native 30 Hz with gamma unchanged (separates clock from horizon).
+cd /cluster/tufts/shortlab/jstale02/dreamerv3-torch
+for S in 40 41; do GENESIS_PICKAPLACE_ROOT=/cluster/tufts/shortlab/jstale02/genesis_pickaplace \
+  ARM=dH SEED=$S REWARD=sparse STEPS=1000000 WAVE=n8A sbatch sbatch_genesis_final_rr.sh; done          # A
+for S in 40 41; do GENESIS_PICKAPLACE_ROOT=/cluster/tufts/shortlab/jstale02/genesis_pickaplace \
+  ARM=dH SEED=$S REWARD=sparse STEPS=250000 ACTREP=1 EXTRA_ARGS="--discount 0.99925" WAVE=n8B sbatch sbatch_genesis_final_rr.sh; done  # B
+for S in 40 41; do GENESIS_PICKAPLACE_ROOT=/cluster/tufts/shortlab/jstale02/genesis_pickaplace \
+  ARM=dH SEED=$S REWARD=sparse STEPS=250000 ACTREP=1 WAVE=n8C sbatch sbatch_genesis_final_rr.sh; done   # C
+# CHECK FIRST: does sbatch_genesis_final_rr.sh expose ACTREP and EXTRA_ARGS? grep its header. If not,
+# STOP-AND-ASK -- do not hand-edit. Arms B/C also need a STRIDE-1 demo dir: the recorder tapes carry a
+# per-sim-step sub-tape (sim_states/sim_actions), so it is derivable without re-recording -- that
+# builder does not exist yet: STOP-AND-ASK.
+# PRIMARY READOUT is NOT ignition (dv3 ignition is marginal, N4) but the diagnostic:
+for D in <each n8 logdir>; do python /cluster/tufts/shortlab/jstale02/genesis_pickaplace/analysis/dv3_interrogate.py \
+  --checkpoint $D/latest.pt --logdir $D --configs genesis_pixels genesis_pick_msrecipe genesis_final_rr \
+  --demodir <the demo dir that run used> --n-episodes 8 --device cuda \
+  --dreamer-root /cluster/tufts/shortlab/jstale02/dreamerv3-torch --out $D/interrogate.json; done
+# COMPARE value_head.value_reach_sim_steps across A/B/C -> answers N8. On FIRST use, verify the five
+# `API-GUESS` comments in dv3_interrogate.py (grep API-GUESS); the tool warns rather than guessing wrong.
+
 # 5. SMALL REGISTERED FOLLOW-UPS (run after 3-4 are queued; cheap)
 # 5a. RLPD share-matched fails arm: STOP-AND-ASK a full-capability session to build it (it needs a
 #     new subsampling flag in make_matched_sets; pre-registered in PAPER_NOTES N5 -- do not improvise).
