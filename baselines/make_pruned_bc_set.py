@@ -64,6 +64,11 @@ def main():
                 out[k] = v[keep]
             elif v.ndim >= 1 and v.shape[0] == n + 1:      # per-decision + terminal (images, eef_pos)
                 out[k] = v[np.concatenate([keep, [True]])]
+            elif k in ('sim_states', 'sim_actions'):
+                # the per-sim-step sub-tape indexes DECISIONS x repeat; carrying it through unpruned
+                # would leave a tape whose sub-tape disagrees with its decisions (a trap for any later
+                # stride-1 derivation) -- drop it, this set is BC-only anyway (audit W-3)
+                out.pop(k, None)
         out['n'] = np.array(int(keep.sum()))
         name = os.path.basename(f); np.savez_compressed(os.path.join(a.dst, name), **out)
         with open(os.path.join(a.dst, name), 'rb') as fh: h.update(name.encode()); h.update(fh.read())

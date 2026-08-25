@@ -194,7 +194,7 @@ case "$CONFIG" in *shaped*) REWARD=dense ;; *) REWARD=sparse ;; esac
 # reachable failure -- see WEDNESDAY SMOKE PLAN step 2.
 if [ -n "$ARM" ]; then
   case "$ARM" in
-    dH|dDP|dR2D) ;;
+    dH|dDP|dR2D|dDPfails|dR2DDPfails) ;;
     *) echo "FATAL: ARM=$ARM (must be dH, dDP, or dR2D)"; exit 1 ;;
   esac
 fi

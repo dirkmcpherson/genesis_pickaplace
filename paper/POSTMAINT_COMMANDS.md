@@ -1,3 +1,42 @@
+# REVISED LAUNCH PLAN 2026-08-25 (supersedes the wave order below; source:
+# paper/CRITIQUE_launch_plan_2026-08-25.md, accepted in full except where noted)
+# R7 FIRST, ZERO GPU -- each prevents a job that would FATAL or train the wrong cell:
+#   (a) DONE on the laptop copy, REDO ON THE CLUSTER: purge the placeholder dR2D row from
+#       baselines/matched_w3/MATCHED_SETS.json and its column from matched_w3/census.md (BL-7:
+#       the dir was deleted at build time but the provenance row survived carrying dDP's sha),
+#       and make item 3's dR2D loop conditional on matched_w4 existing.
+#   (b) DONE in git: ARM tables extended -- sbatch_dp.sh (+dHallpruned_1e3/1e2, dDPallpruned_1e3/1e2),
+#       sbatch_r2dreamer.sh (+dDPfails, dR2DDPfails). DRYRUN passed for both new paths.
+#   (c) TODO on the cluster: build baselines/matched_v2/r2d/{dDPfails,dR2DDPfails} with
+#       to_dreamer_native.py --terminal-reward 1 (the r2d prefill gates on the DIR stamp, and
+#       zero-reward fail tapes themselves load fine -- verified by the critique).
+#   (d) TODO: build the N7 pruned sets + their lerobot datasets (make_pruned_bc_set.py, then
+#       convert_to_lerobot.py) -- sbatch_dp has no inline build for native arms.
+# THEN, in submission order:
+#   R1  r2d disentangle, corrected world, NATIVE TIME_LIMIT=400, seeds 70,71 ......... 2 jobs
+#       (moved to FIRST: it gates the corrected-world dR2D teacher AND tells R4 which horizon to
+#        use; PREREG §8's amendment already prescribes falling back to 400.)
+#   R2  RLPD corrected-world seed top-ups, dH/dDP x sparse/dense x seeds 24-29 ...... 24 jobs
+#       (NEW, highest value/GPU-h: takes the N6 source-parity NULL from n=4 to n=10 seeds.)
+#   R3  N7 density control, 4 variants x seeds 20,21,22 -- PRIMARY READOUT = rnd, not hold
+#       (hold is ceilinged at 13-14/15 so N7's falsifier is untestable there; seeds 20-22
+#        pair with the baseline for PREREG §7's paired analysis) ..................... 12 jobs
+#   R4  N5 WM cells: r2dreamer, dense, matched_v2 (OLD world, R2D_SIM_VARIANT UNSET),
+#       arms dR2D vs dR2DDPfails ONLY, 4 seeds (80-83), TIME_LIMIT per R1 ............ 8 jobs
+#       GATE: read the fails contrast ONLY if the success-only arm ignites in >=2/4 seeds.
+#       REPORT WITH IT: demo exposure is ~3% of the r2d ring vs ~36% of every RLPD batch (17x),
+#       and adding fails cuts reward density 3.4x -- a null is uninformative without both numbers.
+#       Consider BUFFER_MAX=40000 to exposure-match (prefill assert still holds at 13.7k < 20k).
+#   R5  N5 share-matched fails arm (subsample fail TRANSITIONS to ~26%), 4 seeds, only if R4 reads
+#   R6  N8 DEFERRED -- not buildable tonight: stride-1 PIXEL demos do not exist (contract-v1 tapes
+#       carry images per DECISION only; verified) so B/C need a CPU re-record at action_repeat=1
+#       with the rig; sbatch_genesis_final_rr.sh hard-codes ACTREP and has no EXTRA_ARGS, so the
+#       arms would silently be three copies of A sharing one RUNDIR, and B/C would collide in the
+#       registry (discount is not in REG_KNOBS). Spend ~1 GPU-h calibrating dv3_interrogate.py on
+#       an existing checkpoint BEFORE committing ~100 GPU-h. NOTE: the stride-1 STATE set for the
+#       DP control IS still free from sim_states/sim_actions -- that half stands.
+# NOT TONIGHT: gripper-model changes; corrected-world dR2D cells (no teacher until R1); full-task.
+
 # POST-MAINTENANCE COMMANDS (literal; written 2026-08-25 for a low-context operator)
 # Context docs if anything is unclear: paper/SESSION_RUNBOOK_2026-08-24.md (final section),
 # paper/PREREG_final_round_robin_2026-08-23.md, paper/SESSION_LOG_2026-08-23_cluster.md,

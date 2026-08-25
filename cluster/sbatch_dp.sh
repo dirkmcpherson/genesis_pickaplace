@@ -215,7 +215,7 @@ _PRE_DATASET="${DATASET:-}"
 
 if [ "$DEMO_FORMAT" = native ]; then
   case "$ARM" in
-    dH|dDP|dR2D|dHunpruned)
+    dH|dDP|dR2D|dHunpruned|dHallpruned_1e3|dHallpruned_1e2|dDPallpruned_1e3|dDPallpruned_1e2)
       RAW=$DEMO_ROOT/$ARM
       RAW_PAT='^[0-9]{6}\.npz$'          # contract v1: rollout indices for EVERY source
       DATASET=$DEMO_ROOT/$ARM/lerobot    # built by make_matched_sets.py at fps 30/ACTION_REPEAT
