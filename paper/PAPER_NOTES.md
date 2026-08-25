@@ -192,10 +192,11 @@ which contradicts how the assistant had been summarizing. Re-derived from artifa
 CORRECT STATEMENT: BC shows source parity at high performance (n=5/cell, corrected world). RLPD
 shows a source spread in exactly one condition (old world, sparse), n=4 with per-seed values
 0.13-0.93, which vanishes under dense reward and cannot be tested in the corrected world because
-every cell sits near the floor. The spread is ALSO confounded with the same mediator as the fails
-result: dR2D episodes are ~18 decisions vs ~115 for dH/dDP, so dR2D's reward density is ~7x higher
-(5.5% vs 0.80% of rows rewarded). For RLPD, "demo source" and "reward density / episode length"
-are not separable in the current design.
+every cell sits near the floor. The spread is ALSO PARTLY confounded with the same mediator as the
+fails result -- but only for dR2D: its episodes are ~17 decisions vs ~115 for dH/dDP, so its reward
+density is ~7x higher (5.5% vs 0.80% of rows rewarded). The dH-vs-dDP half of the spread is NOT
+density-confounded: those sets are N-matched (56/56), IC-matched, and length-matched (median 115.0
+vs 114.5 decisions). See N10.
 CONSEQUENCE: do not write "demo source does not matter" anywhere. The defensible claims are
 (a) BC: no source effect once translation is matched (N6, conditionally stated);
 (b) RLPD: an apparent source effect exists but is confounded with reward density and is
@@ -203,3 +204,28 @@ CONSEQUENCE: do not write "demo source does not matter" anywhere. The defensible
     control N5 already registered for the fails question. Register it once, use it for both.
 PROCESS NOTE: results are henceforth quoted only from analysis/results_table.py output
 (paper/RESULTS_TABLE_2026-08-25.md), never from recollection.
+
+## N10 (2026-08-25, OPEN QUESTION -- no measurement yet). Why did the RLPD source spread vanish in the corrected world?
+Nothing in N6/N9 explains this; N9 said "both near floor" parenthetically and that is an assertion,
+not a measurement. The fact needing explanation, from paper/RESULTS_TABLE_2026-08-25.md:
+  old world, sparse:        dH 0.42  vs dDP 0.25   (gap 0.17, favouring HUMAN demos)
+  corrected world, sparse:  dH 0.18  vs dDP 0.20   (gap gone; every cell near floor)
+This contrast is NOT explained by the density mediator: the two sets are N-matched (56/56 old,
+58/58 corrected), IC-matched, and length-matched (old 115.0 vs 114.5 decisions p50; corrected 109.5
+vs 119.5). So the old-world gap is close to a clean source effect -- and it favours human demos,
+which is the OPPOSITE of the 08-19 BC story and of H4's framing.
+CANDIDATE EXPLANATIONS, untested:
+ (1) FLOOR COMPRESSION. Corrected-world per-seed maxima are 0.33; old-world dH had seeds at 0.73
+     and 0.53. A 0.17 gap may be unresolvable once the achievable range collapses. DIRECT TEST:
+     the registered seed top-ups (n=4 -> 10, revised plan R2). If the gap is real but compressed,
+     more seeds should recover a smaller version of it.
+ (2) THE COMPARISONS USE DIFFERENT DATASETS. dH_w2 was recorded with the `arrival=either` rule
+     (58 tapes, incl. 7 demos the old rule dropped -- the dwell-stall hard cases), and dDP_w2 comes
+     from a DIFFERENT teacher retrained in the corrected world. Both arms changed identity when the
+     world changed. STRUCTURALLY HARD TO REMOVE: changing the world necessarily changes the demos
+     (old-world tapes cannot be fed to a corrected-world env -- the sim_variant gate refuses, and
+     correctly so). This is a stated limitation, not a fixable confound.
+ (3) RECIPE MISTUNING (N6): RLPD's gamma/caps/UTD/horizons were tuned under old-world dynamics, so
+     every corrected-world cell may be noise-dominated. TEST: the single-knob retune probe.
+UNTIL ONE OF THESE IS MEASURED, the paper must not present either the old-world gap or its
+disappearance as a finding -- both are n=4 observations in an unexplained regime change.
