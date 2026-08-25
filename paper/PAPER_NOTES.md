@@ -179,3 +179,27 @@ duplication / reinjection at repeat 1) -- register that as the follow-up arm rat
 "WMs need repeat 4". FALSIFIER for the whole premise: B matches or beats A, in which case the WM
 arms should move to native 30 Hz and the human demos stop being windowed at all (the design the
 user prefers on validity grounds).
+
+## N9 (2026-08-25, CORRECTION to N6). "Source parity" is a BC result, NOT an RLPD result
+User challenge on the P-MECH table: it shows dR2D 0.55 vs dDP 0.25 -- i.e. source DOES matter --
+which contradicts how the assistant had been summarizing. Re-derived from artifacts
+(analysis/results_table.py; the first hand re-derivation was itself wrong, having swept in the
+3k-step seed-0 SMOKE runs as real seeds -- hence the tool):
+  RLPD old world SPARSE:    dR2D 0.55 > dH 0.42 > dDP 0.25   <- a real spread
+  RLPD old world DENSE:     dR2D 0.18 ~ dH 0.15 ~ dDP 0.17   <- no spread
+  RLPD corrected SPARSE:    dH 0.18 ~ dDP 0.20               <- no spread (both near floor)
+  DP corrected:             dH 0.91 ~ dDP 0.85               <- parity, high absolute
+CORRECT STATEMENT: BC shows source parity at high performance (n=5/cell, corrected world). RLPD
+shows a source spread in exactly one condition (old world, sparse), n=4 with per-seed values
+0.13-0.93, which vanishes under dense reward and cannot be tested in the corrected world because
+every cell sits near the floor. The spread is ALSO confounded with the same mediator as the fails
+result: dR2D episodes are ~18 decisions vs ~115 for dH/dDP, so dR2D's reward density is ~7x higher
+(5.5% vs 0.80% of rows rewarded). For RLPD, "demo source" and "reward density / episode length"
+are not separable in the current design.
+CONSEQUENCE: do not write "demo source does not matter" anywhere. The defensible claims are
+(a) BC: no source effect once translation is matched (N6, conditionally stated);
+(b) RLPD: an apparent source effect exists but is confounded with reward density and is
+    condition-fragile -- separating them needs a length/density-matched arm, which is the SAME
+    control N5 already registered for the fails question. Register it once, use it for both.
+PROCESS NOTE: results are henceforth quoted only from analysis/results_table.py output
+(paper/RESULTS_TABLE_2026-08-25.md), never from recollection.
