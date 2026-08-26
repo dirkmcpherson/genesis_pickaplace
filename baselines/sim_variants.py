@@ -65,6 +65,17 @@ VARIANTS = {
     # is >= 0.09 base-frame, i.e. >= 12 cm above the real table. Predicate constants that reference
     # the shelf (BOX_TOP_Z, SHELF_REST_Z, goal_start_z, the placed z-band) MUST move with it.
     'gc_kp4_riser3_shelf6': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0, effort='base', riser=0.03, shelf_dz=0.06),
+    # WORLD OF RECORD from 2026-08-26 (user decision): shelf6 + the CONTACT-SOLVER fix.
+    # Every geom is built with MuJoCo's default sol_params timeconst 0.02 s = 8x this engine's own
+    # stability floor (2*substep_dt = 0.0025 s at substeps 8); penetration scales as timeconst^2,
+    # which is where 10 mm of gripper-into-can clipping came from. Setting the FINGER geoms AND the
+    # CAN to 0.005 s (Genesis averages a contact pair's params, so both sides must move) gives:
+    # carry penetration 9.9 -> 1.5 mm, free tip-overs 20 -> 12, nested 17 -> 20, pick recreation
+    # 57 -> 58/66 (cluster-confirmed), arm-tracking fidelity unchanged, random-teacher control 0/30.
+    # Cost, stated: grip force rises 147 -> 245 N (fingers stall at the surface holding full PD
+    # error). paper/gripper_lab_2026-08-25.md.
+    'gc_kp4_riser3_shelf6_ts5': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0, effort='base',
+                                     riser=0.03, shelf_dz=0.06, grasp_timeconst=0.005),
     'shelf6':               dict(kp_mult=1.0, kv_mult=1.0, gravity_comp=0.0, effort='base', shelf_dz=0.06),
     # data-fit alternative: real release tool z p50 0.177 (base) - grasp offset (0.020 + 0.03) = can
     # bottom 0.127 base-frame at release -> shelf top ~0.13 base = 0.21 world (= BOX_TOP_Z + 0.10)
@@ -124,11 +135,31 @@ def post_build(w, name):
     if v.get('finger_force') is not None:
         ff = float(v['finger_force']); fd = np.asarray(kdofs[-4:])
         kin.set_dofs_force_range(lower=-np.full(4, ff), upper=np.full(4, ff), dofs_idx_local=fd)
+    if v.get('grasp_timeconst') is not None:
+        # contact softness of the finger<->can pair. Genesis AVERAGES the two geoms' sol_params, so
+        # the finger geoms and the can must both be set or the pair only moves halfway. The solver
+        # clamps timeconst >= 2*substep_dt; we clamp too so a bad value fails loudly rather than
+        # silently reverting. set_global_sol_params() is broken in this build (1-D array into
+        # _sanitize_sol_params) -> write the geoms directly. paper/gripper_lab_2026-08-25.md §6.
+        solver = w['scene'].sim.rigid_solver
+        tmin = 2.0 * float(solver._substep_dt)
+        tc = max(float(v['grasp_timeconst']), tmin)
+        base = list(solver.geoms_info.sol_params[0])
+        vec = [tc] + list(base[1:])
+        n_set = 0
+        for lk in kin.links:
+            if 'finger' in lk.name:
+                for gg in lk.geoms:
+                    solver.geoms_info.sol_params[gg.idx] = vec; n_set += 1
+        for i in range(w['bottle'].geom_start, w['bottle'].geom_end):
+            solver.geoms_info.sol_params[i] = vec; n_set += 1
+        print(f'[sim-variant] grasp_timeconst {tc} s on {n_set} geoms (floor {tmin})', flush=True)
     if v.get('shelf_dz'):
         # the goal can rests on the shelf: its spawn height follows the shelf (read at every reset)
         w['goal_start_z'] = float(w['goal_start_z']) + float(v['shelf_dz'])
     return dict(name=name, kp=kp.tolist(), kv=kv.tolist(), effort=eff.tolist(), gravity_comp=v['gravity_comp'],
                 riser=float(v.get('riser', 0.0)), finger_force=v.get('finger_force'), finger_map=v.get('finger_map'),
+                grasp_timeconst=v.get('grasp_timeconst'),
                 shelf_dz=float(v.get('shelf_dz', 0.0)), shelf_top=shelf_top(name))
 
 
