@@ -7,6 +7,12 @@ this file is the prose-ready layer.) Notation: d{demo_source}_{algorithm}, e.g. 
 
 ## N1 (2026-08-22). Under RLPD the "demo-set effect" is about the FAIL tapes' relation to the training MDP, not human-vs-model origin
 
+> **SUPERSEDED IN PART (2026-08-26).** The mechanism (missing env-terminal guard -> unanchored
+> bootstrapping) is CONFIRMED and stands. The framing sentence — "that IS a human-vs-model
+> demonstration property — of the failures" — does NOT: with terminals labelled, dDP ignites 4/4
+> (UPDATE_2026-08-25 §3c), so the 0/6 catastrophe was an ENCODING BUG, not a property of model
+> demos. Read N12/N12a for what failure tapes actually do, and N9/N10 for the source question.
+
 **Claim (current strength: mechanism shown, causal test pending).** dDP_RLPD ignites 0/6 (max 1/15
 demo-IC; pooled 0.02) while dH_RLPD 8/16 and dR2D_RLPD 10/16 (Fisher vs dH p=0.05, vs dR2D p=0.015).
 The dDP stream drives RLPD's critic into overestimation from ~25k steps — before any online pick —
@@ -52,6 +58,11 @@ Evidence: paper/ROUND_ROBIN_RESULTS_2026-08-22.md (§ Why dDP_RLPD < dH_RLPD + f
 census tool analysis/characterize_demo_sets.py.
 
 ## N2 (2026-08-22). Potential-shaped reward collapses the r2dreamer ignition lottery on human demos; raises RLPD ignition modestly; does not touch post-ignition collapse
+
+> **SUPERSEDED (2026-08-26).** These numbers were measured under a shaping implementation that no
+> longer exists: the r2dreamer adapter hard-coded gamma 0.999 against a config discount of 0.997,
+> patched out on 08-24 (AUDIT_sources_2026-08-23 §5). The 4/4 dense result may have depended on the
+> distance-proportional bonus the fix removed. Do not cite the ignition counts without that caveat.
 dH_R2D dense 4/4 seeds ignite (best-ckpt confirmations 0.76-0.98, mode 1.0 x4; first training pick
 209-430k env steps) vs sparse dH 8/34 (p=0.007; vs same-era wave 3 2/10, p=0.015); ceiling
 unchanged (0.91-1.00 = champion). Two of four collapse by 3M (final-ckpt 0.00), one drifts, one
@@ -62,6 +73,12 @@ STATE §3.5) is still open; shaping is training-only, all headlines are sparse f
 the r2d result rests on BEST_selected.pt files on the cluster (shutdown ~08-24).
 
 ## N3 (2026-08-22). dR2D_DP is the best BC cell; model demos beat human in BC by another step
+
+> **SUPERSEDED (2026-08-26).** "Model demos beat human in BC by another step" is the exact claim
+> N6/N9/N11 attribute to a TRANSLATION ARTIFACT in how human demos were encoded. Recorded through
+> one recorder the gap vanishes; and the readout used here (hold/in-dist) carries a structural
+> 14/15 ceiling (N11). Superseded by N9 (source parity is BC-only, stated conditionally) and N11
+> (BC claims move to `rnd`).
 dR2D_DP in-dist 0.93/0.93/1.00 (0.96), random-IC 0.73/0.80/0.73 (0.76) vs dDP_DP 0.80/0.23 and
 dHpruned_DP 0.62/0.23. Caveats: n=3; 66 champion tapes vs 63/8-seed arms; same-machine rule;
 the action-density control dHallpruned_DP (all-zero-frame pruning) is still the registered
