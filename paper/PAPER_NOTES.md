@@ -276,3 +276,22 @@ and/or the share-matched fails arm (subsample fail transitions to ~26%); N5 alre
 latter. Until one runs, report the exposure arithmetic in the same breath as the result.
 ALSO NOTED: dR2D s83's best checkpoint is at 421k steps while every other arm peaked at 2.4-2.9M --
 the bistability the BEST-checkpoint protocol exists to catch (N2).
+
+## N13 (2026-08-26, LAUNCHED). The human-vs-model WM comparison has never actually been run
+User framing check: N12 is NOT a human-vs-model result -- both its arms are model demos (dR2D with
+and without 8 DP FAIL tapes). The belief that "human demos help world models" traces to 08-19
+(WM dH 8/34 ignited vs WM dDP 0/20), which was confounded: the WM dH set was pruned success-only
+(67) while the WM dDP set carried 30 fail tapes. N12 makes that WORSE, not better -- if fail tapes
+are free to a world model, they cannot explain the 0/20 either. That old result is now UNEXPLAINED,
+and must not be cited as evidence for a source effect in world models.
+State of the human-vs-model question by learner, before this run:
+  RLPD (old, sparse): dH 0.42 > dDP 0.25  -- human better, n=4, unexplained (N10)
+  DP / BC:            dH ~ dDP, dDP lower on rnd -- underpowered at n=5 (N11)
+  World model:        NO CLEAN COMPARISON EXISTS
+LAUNCHED to close it: r2dreamer, dense, matched_v2 (N-matched 56, IC-matched, success-only, same
+tapes the other learners used), TIME_LIMIT=400, arms dH / dDP / dR2D x seeds 100-103 = 12 jobs.
+This is the first time the three sources are compared on a world model with matched sets and no
+fail-tape confound. PREDICTION (registered before results): given N12 (fail tapes free to the WM)
+and N11 (BC source effects vanish once translation is matched), the WM source spread should be
+SMALL -- if instead dH >> dDP reappears, the 08-19 result was real and something other than fail
+tapes drives it, which would be a genuine finding and would need its own mechanism.
