@@ -295,3 +295,15 @@ fail-tape confound. PREDICTION (registered before results): given N12 (fail tape
 and N11 (BC source effects vanish once translation is matched), the WM source spread should be
 SMALL -- if instead dH >> dDP reappears, the 08-19 result was real and something other than fail
 tapes drives it, which would be a genuine finding and would need its own mechanism.
+
+## N12a (2026-08-26). Power on the N12 null -- it is thinner than the headline suggests
+Computed on the 3v3 seeds in hand: dR2D 0.822 (sd 0.192) vs +fails 0.778 (sd 0.039); difference
++0.044, se 0.113, 95% CI [-0.270, +0.359]. The RLPD effect on the SAME tapes is -0.400, so the CI
+upper bound (0.359) excludes an RLPD-sized effect BY 0.04 -- a razor's-edge exclusion. Exact
+permutation p = 1.00, but the MINIMUM attainable p at 3v3 is 0.10: the design cannot reach
+significance even under perfect separation.
+DEFENSIBLE CLAIM AS OF NOW: "the world model does not suffer the effect that costs RLPD 73% of its
+performance" -- NOT "failure demos are harmless to world models".
+Variance is lopsided (dR2D sd 0.192, driven by one 0.60 seed; +fails sd 0.039), so seeds buy a lot:
++4 seeds/arm (84-87, LAUNCHED) should bring the CI upper bound from ~0.36 to ~0.20, i.e. clear of
+the comparison effect rather than touching it. Report the CI, not just the means.
