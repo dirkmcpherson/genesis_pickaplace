@@ -297,13 +297,20 @@ SMALL -- if instead dH >> dDP reappears, the 08-19 result was real and something
 tapes drives it, which would be a genuine finding and would need its own mechanism.
 
 ## N12a (2026-08-26). Power on the N12 null -- it is thinner than the headline suggests
-Computed on the 3v3 seeds in hand: dR2D 0.822 (sd 0.192) vs +fails 0.778 (sd 0.039); difference
-+0.044, se 0.113, 95% CI [-0.270, +0.359]. The RLPD effect on the SAME tapes is -0.400, so the CI
-upper bound (0.359) excludes an RLPD-sized effect BY 0.04 -- a razor's-edge exclusion. Exact
+**CORRECTED 2026-08-26 (assistant's own error, caught on re-check).** The first version of this note
+used t=2.776 (the df=4 critical value) when Welch's df here is 2.16, which requires t=4.303. The
+CORRECT interval is:
+  dR2D 0.822 (sd 0.192) vs +fails 0.778 (sd 0.039); difference +0.044, se 0.113,
+  95% CI [-0.443, +0.532]  <-- does NOT exclude an RLPD-sized effect (-0.400).
+At 3v3 the interval spans from a large benefit to a harm larger than RLPD's: the data support the
+POINT ESTIMATE of no difference and nothing else quantitative. The earlier claim ("excludes an
+RLPD-sized effect by 0.04") was wrong and must not be repeated. Exact
 permutation p = 1.00, but the MINIMUM attainable p at 3v3 is 0.10: the design cannot reach
 significance even under perfect separation.
-DEFENSIBLE CLAIM AS OF NOW: "the world model does not suffer the effect that costs RLPD 73% of its
-performance" -- NOT "failure demos are harmless to world models".
+DEFENSIBLE CLAIM AS OF NOW: only the direction -- "the point estimate shows no harm to the world
+model from the tapes that cost RLPD 73%". NOT "the effect is excluded", NOT "failure demos are
+harmless to world models". Any interval statement must wait for the added seeds.
 Variance is lopsided (dR2D sd 0.192, driven by one 0.60 seed; +fails sd 0.039), so seeds buy a lot:
-+4 seeds/arm (84-87, LAUNCHED) should bring the CI upper bound from ~0.36 to ~0.20, i.e. clear of
-the comparison effect rather than touching it. Report the CI, not just the means.
++4 seeds/arm (84-87, LAUNCHED) are now NECESSARY, not merely strengthening: at n=7-8/arm and the
+observed spreads the CI half-width should fall to ~0.20, which would finally let the interval
+speak. Report the CI, not just the means -- and use the RIGHT critical value for the Welch df.
