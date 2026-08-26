@@ -314,3 +314,23 @@ Variance is lopsided (dR2D sd 0.192, driven by one 0.60 seed; +fails sd 0.039), 
 +4 seeds/arm (84-87, LAUNCHED) are now NECESSARY, not merely strengthening: at n=7-8/arm and the
 observed spreads the CI half-width should fall to ~0.20, which would finally let the interval
 speak. Report the CI, not just the means -- and use the RIGHT critical value for the Welch df.
+
+## N14 (2026-08-26, LAUNCHED). Is the result robust to WHICH human demos we drew?
+USER (the sharpest framing of the week): "all that matters is the result is robust to the human demo
+version. Otherwise this is bad science."
+Existing evidence, across a version change that altered the follower rule (meas -> either), the tape
+count (51 -> 58) AND the world:
+  DP rnd:       0.57 -> 0.55   STABLE
+  DP hold:      0.81 -> 0.91   ceilinged (N11), uninformative
+  RLPD sparse:  0.42 -> 0.18   NOT stable -- and N10 records that world and version cannot be
+                               separated by re-recording, because demos ARE recordings made in a world.
+THE TEST THAT DOES SEPARATE THEM: split-half. Same world, same recorder, same follower rule, same
+teacher; only WHICH tapes you hold differs. baselines/make_split_halves.py cuts an IC-stratified
+disjoint pair (whole tapes, so both halves stay valid for RL as well as BC).
+LAUNCHED: matched_w3 dH and dDP each split 29/29 (58 ICs, alternating whole ICs); DP on
+dH_A/dH_B/dDP_A/dDP_B x seeds 40-42 = 12 jobs.
+READOUT: NOT absolute performance (29 demos will underperform 58) but whether the dH-vs-dDP
+ORDERING is the same in half A as in half B. Same ordering in both -> the finding is not an artifact
+of the particular draw. Ordering flips -> it is draw-specific and must be reported that way.
+PREDICTION (registered): ordering preserved and small in both halves, consistent with N11's reading
+that BC source effects are below the resolution of this design.
