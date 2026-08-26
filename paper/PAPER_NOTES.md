@@ -249,3 +249,30 @@ ceiling-limited; (b) any "parity" statement must name the readout and its headro
 the SAME defect flagged for N7 (whose falsifier was untestable on a ceilinged hold) -- N7's primary
 readout is already `rnd`. (d) The 14/15 sel cap should be stated once in the methods: one of the 15
 selection ICs is unachievable under the tip rule, so 0.93 is the effective maximum.
+
+## N12 (2026-08-26, PRIMARY RESULT, 6/8 seeds in). The WM is unmoved by the fail tapes that broke RLPD
+The pinned N5 decision cell (PAPER_NOTES N5, launched per the revised plan) has reported. Same
+tapes, same world (old-world matched_v2), two learners:
+
+  learner              dR2D (success-only)        dR2D + the 8 DP fail tapes     effect
+  RLPD  (sparse)       0.55  (8,14,4,7 /15)       0.15  (3,1,5,0 /15)            -0.40, -73%
+  r2dreamer (dense)    0.82  (0.93,0.60,0.93)     0.78  (0.80,0.73,0.80)         -0.04, within noise
+
+n=3/4 per WM arm (dR2D s81 and dR2DDPfails s82 still running); RLPD n=4. WM numbers are
+best-checkpoint evals at time_limit 400, the horizon the launch critique insisted on -- and it
+matters: r2dreamer ignited 6/6 across both arms here, vs 8/34 sparse and 4/4 dense historically.
+The pre-registered read-gate (success-only arm must ignite in >=2/4) passed 3/3.
+CLAIM THIS SUPPORTS: demonstration-set defects are LEARNER-SPECIFIC. The same 8 no-pick tapes are
+near-fatal to an off-policy actor-critic that trains its actor and critic directly on demo
+transitions, and are ~free to a world model that consumes them as dynamics data and trains its
+actor in imagination.
+CAVEAT THAT MUST TRAVEL WITH IT (pre-registered, not discovered after the fact): the two learners
+do not see the fail tapes equally. Demos are ~3% of r2dreamer's 450k replay ring once it fills,
+vs ~36% of every RLPD gradient batch (demo_batch 128 of 256) -- a ~17x difference in exposure to
+the mediator. Adding the fails also cuts dR2D's reward density 3.4x (5.5% -> 1.6% of rows). So the
+null is "a WM at 3% demo exposure is unharmed", NOT "world models are intrinsically robust". The
+registered disambiguation is the exposure-matched arm (BUFFER_MAX=40000 -> demos ~34% of the ring)
+and/or the share-matched fails arm (subsample fail transitions to ~26%); N5 already registered the
+latter. Until one runs, report the exposure arithmetic in the same breath as the result.
+ALSO NOTED: dR2D s83's best checkpoint is at 421k steps while every other arm peaked at 2.4-2.9M --
+the bistability the BEST-checkpoint protocol exists to catch (N2).
