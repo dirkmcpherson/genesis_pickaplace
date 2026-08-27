@@ -15,6 +15,7 @@ never from recollection. If a number in prose is not in `paper/RESULTS_TABLE_*.m
 | # | file | what it is |
 |---|---|---|
 | 1 | `PREREG_final_round_robin_2026-08-23.md` | the frozen spec + amendments A1–A8. §5 eval protocol and §11 audit gates are the rules the project is meant to obey |
+| 1b | `NOTES_IN_PLAIN_ENGLISH.md` | the same findings without jargon — start here if you are not already deep in the project |
 | 2 | `PAPER_NOTES.md` | **N1–N14**: every claim, at the strength its evidence supports. Three carry SUPERSEDED banners. This is the primary target for review |
 | 3 | `RESULTS_TABLE_2026-08-25.md` | the canonical numbers, generated from artifacts (`analysis/results_table.py`) |
 | 4 | `UPDATE_2026-08-25.md` | narrative status: what changed and why, with caveats attached |
