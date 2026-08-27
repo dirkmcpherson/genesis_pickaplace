@@ -267,7 +267,14 @@ the SAME defect flagged for N7 (whose falsifier was untestable on a ceilinged ho
 readout is already `rnd`. (d) The 14/15 sel cap should be stated once in the methods: one of the 15
 selection ICs is unachievable under the tip rule, so 0.93 is the effective maximum.
 
-## N12 (2026-08-26, PRIMARY RESULT, 6/8 seeds in). The WM is unmoved by the fail tapes that broke RLPD
+## N12 (2026-08-26) — **OVERTURNED 2026-08-27 by its own re-score. See N15.**
+
+> The numbers below were measured on `sel`, which (a) is not the readout the RLPD rows use, and
+> (b) carries a structural 14/15 ceiling (N11). Re-scored on `hold`/`rnd` per PREREG §5, the
+> "unmoved" finding does not survive: the world model loses 30% relative. Read N15 instead; this
+> note is retained only as the record of the error.
+
+### (original N12 text, superseded) The WM is unmoved by the fail tapes that broke RLPD
 The pinned N5 decision cell (PAPER_NOTES N5, launched per the revised plan) has reported. Same
 tapes, same world (old-world matched_v2), two learners:
 
@@ -351,3 +358,35 @@ ORDERING is the same in half A as in half B. Same ordering in both -> the findin
 of the particular draw. Ordering flips -> it is draw-specific and must be reported that way.
 PREDICTION (registered): ordering preserved and small in both halves, consistent with N11's reading
 that BC source effects are below the resolution of this design.
+
+## N15 (2026-08-27, SUPERSEDES N12). Failure tapes DO hurt the world model — about half as much as RLPD
+The E1 re-score (CRITIQUE_decisions_2026-08-26; `cluster/r2d_rescore.sh`, fresh process per episode,
+PREREG §5 readouts) changes the primary result. Same tapes, same world (old-world matched_v2):
+
+  readout   dR2D (success-only)      dR2D + 8 DP fail tapes    diff      95% CI            perm p
+  hold      0.767 (n=4)              0.533 (n=3)               +0.233    [-0.244,+0.710]   0.286
+  rnd       0.642 (n=4)              0.478 (n=3)               +0.164    [-0.234,+0.562]   0.286
+  (RLPD, hold, same tapes: 0.550 -> 0.150, diff -0.400)
+
+WHAT CHANGED AND WHY: N12 reported `sel` — 0.822 vs 0.778, "within noise". `sel` contains uid 234,
+unachievable by construction (N11: picked 0/430), so its ceiling is 14/15, and the r2dreamer runs
+both SELECTED and REPORTED on it. Moving to the protocol readouts multiplies the measured gap by 5x.
+A ceilinged, selection-contaminated readout hid a real effect. This is the most consequential
+methodological error of the project so far, and it was caught by an adversarial review of the
+assistant's own decisions, not by the assistant.
+CORRECTED CLAIM: failure tapes hurt BOTH learners; the world model loses ~30% relative where RLPD
+loses ~73%. The learner-specificity is a MATTER OF DEGREE, not a presence/absence dichotomy. Neither
+difference is significant at these n (perm p = 0.286 for both readouts, and the CIs span zero) --
+the DIRECTION is consistent across two independent readouts and the point estimates differ by ~2x,
+which is suggestive and nothing more. Seeds 84-87 and 100-103 are running and must be pooled before
+any interval statement.
+DEAD CLAIMS: "the WM is unmoved"; "demonstration-set defects are learner-specific" in the
+presence/absence form; the framing given to the user that this was a publishable dichotomy.
+STILL LIVE: the mechanism asymmetry is real in direction and plausibly explains a 2x difference --
+but the mechanism SENTENCE in N12 was also false (E2: demo states ARE imagination roots and DO take
+actor/critic gradient; models.py:412, :384-393). The defensible version: at a demo state RLPD backs
+up a recorded off-policy action through a bootstrapped target network, while a Dreamer critic backs
+up an on-policy imagined rollout scored by a supervised reward head that predicts ~0 there -- no
+max over an off-distribution recorded action, hence a weaker inflation channel, not no channel.
+ALSO: the exposure caveat still applies (demos ~1-3% of the r2d ring vs ~36% of every RLPD batch),
+and now cuts the other way -- the WM shows a 30% drop at 1/17th the exposure.
