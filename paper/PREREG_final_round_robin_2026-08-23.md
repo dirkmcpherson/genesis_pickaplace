@@ -277,3 +277,15 @@ Next due: Pre-launch audit, 2026-08-24, after Phase 4 of the session runbook and
 - **A8 (2026-08-23, audit W8).** `hold` is a CONFIRMATION split of demo ICs (11/15 are training ICs for a
   51-demo set; for RLPD every sel/hold uid is a training-reset IC), not a held-out set; only `rnd` (30 support
   ICs) is novel. Report "sel / hold / rnd" by name; never call hold "held-out".
+
+### A9 (2026-08-28, from AUDIT_results_2026-08-28 §2) — run identity
+A seed id names exactly one training run. A relaunch of an (arm, seed) that has already produced a
+readout REPLACES it: the earlier readouts are dropped from every pooled statistic and listed as lost.
+Relaunches must therefore use fresh seed ids; in-place reruns of completed seeds are forbidden.
+Retroactive: dR2DDPfails s83 (completed 08-26, sel 0.80) was overwritten 08-27 and is lost; dH s102's
+in-place relaunch was cancelled 08-28 and resubmitted as s108; dDP s101's relaunch never ran.
+`analysis/results_table.py` dedups on (arm, seed). Registry rows must carry a `warn` field when a
+semantic duplicate is accepted.
+### A10 (2026-08-28) — N15 controls (N16)
+Two success-content controls bound (do not remove) the length/volume confound of the fails arm:
+dR2Ddup13 (share-matched) and dR2DDPsucc (8 longest dDP successes). Predictions in PAPER_NOTES N16.

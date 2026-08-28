@@ -415,3 +415,28 @@ The body above is left as written on 08-27. The audit found:
 SUPPORTABLE NOW: direction only — fail tapes lowered the WM's protocol readouts ~25-30% relative (CIs
 span zero) vs ~73% for RLPD on the same 8 tapes. Re-scores for dR2D s86,87 / fails s84-86 and N13's
 seeds are in flight (08-28); pool ONLY after applying the run-identity rule (a seed id = one run).
+
+## N16 (2026-08-28, PRE-REGISTERED, launched). N15's confound is BOUNDED, not removed
+USER (on the audit's "three-way confound"): fails are longer than successes BY NATURE in an episodic
+task, so "adding fail tapes" cannot be separated from "adding long tapes" -- a success tape as long
+as a fail tape does not exist. Correct. The whole-treatment observation in N15 ("adding these 8 fail
+tapes lowered the WM ~25-30% relative, RLPD ~73%") stands as stated; what is at stake is the READING:
+fail content vs. long/voluminous same-teacher data. Two controls, old world, matched_v2, dense,
+TIME_LIMIT 400, 4 seeds each, launched 08-28 (jobs after n15ctl_build 2981314):
+  dR2Ddup13   = dR2D tapes at demo_duplicate 13 -> demo row share of the 450k ring ~27% (= fails arm)
+                with short success content only. Tests "row volume".           seeds 200-203
+  dR2DDPsucc  = dR2D + the 8 LONGEST dDP success tapes (161-233 rows, 1521 rows total = 63% of the
+                fails' 2400; success-terminated). Tests "long same-teacher tapes". seeds 300-303
+                (baselines/make_succ_control_set.py; manifest records the 63% length match)
+Readout: RESCORE hold+rnd (protocol), pooled with dR2D 80-91 and dR2DDPfails 80-91 under the
+run-identity rule. Compare each control to dR2D (control-of-controls) and to dR2DDPfails.
+PREDICTIONS (registered before any control result):
+  (a) dR2Ddup13 ~ dR2D (within seed noise): row volume alone does not move the WM.
+  (b) dR2DDPsucc <= dR2D by less than half the fails-arm drop: long success tapes cost something
+      (imagination roots far from the policy's own distribution; replay critic on 200-row tapes) but
+      less than fails.
+  (c) If (a) and (b) hold, the fails-arm drop is attributable to fail content up to the untestable
+      residual (length beyond ~233 rows, truncation vs termination). If EITHER control drops as much
+      as the fails arm, "fail tapes hurt the WM" is NOT separable from "long/voluminous tapes hurt the
+      WM" and must be reported in that form.
+NOTHING here changes the RLPD side: its 73% was measured with the same intrinsically-long fails.
