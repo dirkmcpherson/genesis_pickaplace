@@ -15,6 +15,7 @@ never from recollection. If a number in prose is not in `paper/RESULTS_TABLE_*.m
 | # | file | what it is |
 |---|---|---|
 | 0 | **`AUDIT_results_2026-08-28.md`** | **the PREREG §11 gate-2/3 audit: verdict table, corrected N15 numbers, the two-critic-loss mechanism, the 27 %/10 % exposure correction, the run-identity rule, ranked change list. Read before trusting any N-note** |
+| 0b | `DV3_DIAGNOSIS_2026-08-28.md` | why dv3 fails where r2dreamer works (critic runaway, update budget, horizon, late demo terminal); the flag-gated fix and the 6 diagnostic jobs |
 | 1 | `PREREG_final_round_robin_2026-08-23.md` | the frozen spec + amendments A1–A8. §5 eval protocol and §11 audit gates are the rules the project is meant to obey |
 | 1b | `NOTES_IN_PLAIN_ENGLISH.md` | the same findings without jargon — start here if you are not already deep in the project |
 | 2 | `PAPER_NOTES.md` | **N1–N15**: every claim, at the strength its evidence supports. N2, N3, N12, N12a are SUPERSEDED; N15 carries an 08-28 audit addendum that its body does not yet reflect. This is the primary target for review |
@@ -66,6 +67,10 @@ never from recollection. If a number in prose is not in `paper/RESULTS_TABLE_*.m
 2b. **E6 (new) — exposure arithmetic wrong everywhere.** `demo_reinject_every 150000` keeps demos at
    ~27 % (fails arm) / ~10 % (control) of the 450k ring all run; the "evicted by 450k" log line is a
    stale prefill-only computation. Every "~1–3 %" / "1/17th" figure is retired.
+2d. **E8 (new, 08-28) — the WM arm trains with a return-target clamp.** r2dreamer uses `return_clamp: 100`
+   plus a replay critic loss; RLPD and dv3 have neither. The 08-23 "no TD-target clamp in the matrix"
+   decision covered RLPD only. Disclose in every cross-learner mechanism sentence. See
+   `DV3_DIAGNOSIS_2026-08-28.md` (why dv3 never ignites: unclamped critic runs to 4-5x the max return).
 2c. **E7 (new) — run-identity.** The 08-27 relaunch reused seed ids of completed runs in place
    (fails s83 destroyed; dH s102, dDP s101 pending). Rule: a seed id names one run; reruns replace.
 3. **E3 — the exposure-matched arm was flawed and was cancelled.** It put the arms at 10.1% vs

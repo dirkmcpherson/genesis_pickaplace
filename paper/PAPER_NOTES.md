@@ -466,3 +466,15 @@ ordering, smaller magnitudes (N15 direction). (c) Sparse vs dense for r2dreamer:
 collapse (0.55 -> 0.18) -- the shaping enters a supervised reward head, not a bootstrapped Q. If dense
 collapses r2dreamer too, question 2 has a learner-independent answer and N2's retraction was premature in
 the other direction.
+
+### N4 — ADDENDUM 2026-08-28 (dv3 diagnosis; full text DV3_DIAGNOSIS_2026-08-28.md)
+dv3's non-ignition has a signature in every log: the critic runs away (value_mean 415-515 vs a maximum
+attainable return of 100) with zero realized reward, actor entropy collapses, and no run ever exceeded
+~62k gradient updates (r2dreamer runs 373k). r2dreamer ignites WITH a return-target clamp (100) and a
+replay critic loss -- neither of which dv3 or RLPD has (disclosure E8). Launched: dH dense x 3 seeds x
+{clamp only, clamp+train_ratio 512+time_limit 400} at 1e6 env steps, plus the 3 untouched baselines.
+PREDICTION: clamp alone stops the runaway (value <= 100) and produces transient picks; the full fix is
+needed for sustained picks. If neither ignites, suspect 3 (demo terminal placement) is next and the
+paper reports dv3 as a documented negative with this diagnosis attached. ALSO: r2dreamer SPARSE never
+learned (s40/s41 0.00 at every checkpoint) -- the 12 sparse r2d jobs launched today are expected negatives
+that settle question 2 for the WM honestly.

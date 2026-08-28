@@ -213,6 +213,13 @@ def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
+    # --- scope='reach' (2026-08-28, dv3 learnability probe): +1 and TERMINATE when the tool
+    # frame comes within REACH_DIST of the can centre. A HELD can sits ~0.146 m from the tool
+    # frame (genesis_can_env PICK_EEF_DIST), so 0.17 m = "the gripper is at the can" -- a
+    # strict subset of the motion a pick needs, no grasp required. Same obs/action/repeat/tip
+    # rule as pick; the only change is the terminal predicate. Used to test whether a learner
+    # that cannot pick can at least reach (user, 08-28: "make the task even simpler").
+    REACH_DIST = 0.17
     GRIP_OPEN = 0.3          # grip command below this = not holding
     # --- scope='place' (PLACED_V2, release-based -- PAPER_PLAN stage-wise matrix) ---
     PLACE_TIP_PENALTY = -0.25  # v8: off-shelf drop; on-shelf near-miss stays -0.1  # scope='place' ONLY: penalty on the tip termination
@@ -323,7 +330,7 @@ class FullTaskEnv(gym.Env):
         # constants). Default False so eval and every other caller are unchanged.
         assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
         self.shaping = bool(shaping)
-        assert not (pick_shaping and scope != 'pick'), 'pick_shaping is a scope=pick lever'
+        assert not (pick_shaping and scope not in ('pick', 'reach')), 'pick_shaping is a scope=pick/reach lever'
         self.pick_shaping = bool(pick_shaping)
         # gamma MUST match the consuming agent's discount for exact Ng-invariance
         # (RLPD 0.998 default; r2dreamer passes 0.999, dv3 0.997).
@@ -601,6 +608,13 @@ class FullTaskEnv(gym.Env):
                 if self.scope != 'place' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
+        if self.scope == 'reach':
+            ee = np.asarray(self.genv.tool_pos(), dtype=np.float64)
+            bp = np_(self.genv.w['bottle'].get_pos())
+            d = float(np.linalg.norm(ee - bp)); info['reach_dist'] = d
+            if d < self.REACH_DIST:
+                info['reached'] = True; reward += 1.0
+                return (obs['state'].astype(np.float32), reward, True, False, info)
         if self.scope == 'pick':
             # pick_shaping is applied in step(), once per decision -- NOT here.
             # Per-substep application under action_repeat>1 is a bug (see step()).
