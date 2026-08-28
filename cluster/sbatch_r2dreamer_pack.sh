@@ -26,11 +26,12 @@
 #SBATCH --output=r2d_pack_%j.out
 #SBATCH --error=r2d_pack_%j.out
 set -uo pipefail
-: "${PACK_SEEDS:?PACK_SEEDS required, e.g. \"202 203\"}"; : "${ARM:?ARM required}"
+: "${PACK_SEEDS:?PACK_SEEDS required, e.g. \"202 203\"}"
+LABEL=${ARM:-${CONFIG:-r2d}}   # ARM is optional (no-demo probes such as touchgoal have none)
 GPR=${GENESIS_PICKAPLACE_ROOT:-/cluster/tufts/shortlab/jstale02/genesis_pickaplace}
 cd "$GPR"
 N=$(wc -w <<<"$PACK_SEEDS"); THR=$(( ${SLURM_CPUS_ON_NODE:-16} / N )); [ "$THR" -ge 2 ] || THR=2
-echo "== r2d-pack job=$SLURM_JOB_ID node=$(hostname) arm=$ARM seeds=[$PACK_SEEDS] threads/run=$THR gpu=${CUDA_VISIBLE_DEVICES:-?} start=$(date)"
+echo "== r2d-pack job=$SLURM_JOB_ID node=$(hostname) arm=$LABEL seeds=[$PACK_SEEDS] threads/run=$THR gpu=${CUDA_VISIBLE_DEVICES:-?} start=$(date)"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null | head -1
 PIDS=(); OUTS=()
 for s in $PACK_SEEDS; do
