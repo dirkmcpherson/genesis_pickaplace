@@ -527,6 +527,9 @@ def native_demo_transitions(paths, expect, gamma=None, shaping=False, phi_scale=
         fs = np.asarray(d['final_state'], dtype=np.float32)
         a = np.asarray(d['actions_delta'], dtype=np.float32)
         r = np.asarray(d['rewards'], dtype=np.float32).copy()
+        # 2026-08-28: normalise the env's double-grant rows (+2 on a fast pick) to the single
+        # +1 terminal of a single-stage task (full_env.py fixed the same day); counted in census.
+        census['n_double_grant'] = census.get('n_double_grant', 0) + int((r > 1.0).sum()); r = np.minimum(r, 1.0)
         term = np.asarray(d['terminated'], dtype=bool)
         trunc = np.asarray(d['truncated'], dtype=bool)
         n = len(s)

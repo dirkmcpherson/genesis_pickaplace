@@ -609,7 +609,14 @@ class FullTaskEnv(gym.Env):
                 # pick_hold_reward likewise pays ONLY the per-step hold reward below:
                 # keeping the one-shot 'picked' grant too would double-pay the lift
                 # and re-import the terminal-only signal the lever exists to replace.
-                if self.scope != 'place' and not self.pick_hold_reward:
+                # 2026-08-28 (r2dreamer health audit): a SINGLE-STAGE scope pays exactly its own
+                # terminal. Before this, pick scope also paid any other stage that flipped in the
+                # same step (e.g. 'placed' when the lifted can crossed the shelf plane), giving
+                # +2 on 8/56 dR2D demos and up to 31% of online episodes -- the max return was
+                # 2, not 1, and every learner saw it. scope='full' keeps the staged ladder.
+                if self.scope == 'full' and not self.pick_hold_reward:
+                    reward += r
+                elif self.scope == 'pick' and stage == 'picked' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
         if self.scope == 'touchgoal':

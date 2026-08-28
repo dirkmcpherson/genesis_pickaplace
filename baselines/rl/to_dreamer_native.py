@@ -74,11 +74,15 @@ def convert_one(z, terminal_reward):
         raise ValueError('actions_delta outside [-1,1]')
     T = n + 1
     action = np.concatenate([np.zeros((1, act.shape[1]), np.float32), act])
+    # 2026-08-28: single-stage pick pays exactly ONE terminal. The 2.0 rows above were the env's
+    # double-grant bug (full_env.py, fixed 08-28); tapes recorded before the fix are normalised here
+    # and the count is reported by main() so it appears in repeat.json.
+    n_double = int((rew > 1.0).sum()); rew = np.minimum(rew, 1.0)
     reward = np.concatenate([[0.0], rew * float(terminal_reward)]).astype(np.float32)
     is_terminal = np.zeros(T, bool); is_terminal[-1] = bool(term[-1])
     is_first = np.zeros(T, bool); is_first[0] = True
     is_last = np.zeros(T, bool); is_last[-1] = True
-    return dict(image=img.astype(np.uint8), action=action, reward=reward,
+    return dict(image=img.astype(np.uint8), action=action, reward=reward, n_double_grant=n_double,
                 discount=(1.0 - is_terminal.astype(np.float32)), is_first=is_first, is_last=is_last,
                 is_terminal=is_terminal, logprob=np.zeros(T, np.float32))
 
@@ -114,6 +118,7 @@ def main():
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
         try:
             ep = convert_one(z, args.terminal_reward)
+            census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
         except ValueError as e:
             errors.append(f'{os.path.basename(f)}: {e}'); continue
         uid = int(z['uid']) if 'uid' in z.files else int(os.path.splitext(os.path.basename(f))[0])
