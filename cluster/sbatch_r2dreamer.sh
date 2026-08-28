@@ -195,7 +195,10 @@ case "$CONFIG" in *shaped*) REWARD=dense ;; *) REWARD=sparse ;; esac
 if [ -n "$ARM" ]; then
   case "$ARM" in
     dH|dDP|dR2D|dDPfails|dR2DDPfails) ;;
-    *) echo "FATAL: ARM=$ARM (must be dH, dDP, or dR2D)"; exit 1 ;;
+    dR2DDPsucc) ;;                                   # N15 success-content control (make_succ_control_set.py)
+    dR2Ddup13)  DUPLICATE=${DUPLICATE:-13} ;;         # N15 share-matched control: dR2D tapes at demo_duplicate 13
+                                                     # (13*1023 rows ~= fails arm's 4*3418/... see AUDIT_results_2026-08-28 §1)
+    *) echo "FATAL: ARM=$ARM (must be dH, dDP, dR2D, dDPfails, dR2DDPfails, dR2DDPsucc, dR2Ddup13)"; exit 1 ;;
   esac
 fi
 # DEMOSET=v2 (final-RR 2026-08-24): native contract-v1 stride-4 demo dirs built by
@@ -230,7 +233,8 @@ esac
 _DEMO_DIR_ENV="${DEMO_DIR:-}"   # captured BEFORE any default -- for the stale-env guard
 if [ -n "$ARM" ] && [ "$DEMOSET" = "v2" ]; then
   GPP=/cluster/tufts/shortlab/$USER/genesis_pickaplace
-  ARM_DEMO=$GPP/baselines/matched_v2/r2d/$ARM
+  case "$ARM" in dR2Ddup13) ARM_SRC=dR2D ;; *) ARM_SRC=$ARM ;; esac   # control arms that reuse another arm's tapes
+  ARM_DEMO=$GPP/baselines/matched_v2/r2d/$ARM_SRC
   ARM_PAT='genesis-[0-9]+-[0-9]+\.npz$'; ARM_N_MIN=50; ARM_N_MAX=66
   ARM_NOTE="final-RR v2 native stride-4 set ($ARM, matched_v2, terminal reward 1.0)"
   TIME_LIMIT=${TIME_LIMIT:-1200}
