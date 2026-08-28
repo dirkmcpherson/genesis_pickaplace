@@ -104,7 +104,7 @@ case "$DEMO_FORMAT" in native|legacy) ;; *) echo "FATAL: DEMO_FORMAT must be nat
 NEED_MANIFEST=""
 if [ "$DEMO_FORMAT" = native ]; then
   case "$ARM" in
-    dH|dDP|dR2D|dDPfails|dR2DDPfails) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;
+    dH|dDP|dR2D|dDPfails|dR2DDPfails|dHHfails|dR2DR2Dfails) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;   # dHHfails/dR2DR2Dfails: same-source fails arms (make_samesource_fails_arm.py)
     *) echo "FATAL: ARM=$ARM is not a native (contract v1) arm: dH dDP dR2D dDPfails dR2DDPfails"; exit 1 ;;
   esac
 else

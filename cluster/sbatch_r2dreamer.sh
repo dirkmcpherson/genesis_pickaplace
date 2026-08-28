@@ -195,7 +195,8 @@ case "$CONFIG" in *shaped*) REWARD=dense ;; *) REWARD=sparse ;; esac
 if [ -n "$ARM" ]; then
   case "$ARM" in
     dH|dDP|dR2D|dDPfails|dR2DDPfails) ;;
-    dR2DDPsucc) ;;                                   # N15 success-content control (make_succ_control_set.py)
+    dHHfails|dR2DR2Dfails) ;;                         # same-source fails arms (user rule 08-28: never mix sources)
+    dR2DDPsucc) ;;                                   # MIXED-SOURCE; cancelled 08-28, kept for the record                                   # N15 success-content control (make_succ_control_set.py)
     dR2Ddup13)  DUPLICATE=${DUPLICATE:-13} ;;         # N15 share-matched control: dR2D tapes at demo_duplicate 13
                                                      # (13*1023 rows ~= fails arm's 4*3418/... see AUDIT_results_2026-08-28 §1)
     *) echo "FATAL: ARM=$ARM (must be dH, dDP, dR2D, dDPfails, dR2DDPfails, dR2DDPsucc, dR2Ddup13)"; exit 1 ;;
