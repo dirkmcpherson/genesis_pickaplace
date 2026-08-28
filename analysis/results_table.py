@@ -13,23 +13,48 @@ under world='?' rather than guessed.
 """
 import argparse, collections, glob, os, re, statistics as st
 
+def world_of(seed, path=''):
+    """World = demo-set world. Seed blocks: 10-14 old (matched_v2), 20-29 corrected (matched_w3),
+    40-42 split halves (matched_w3), 80-93/100-107 r2d old-world matched_v2. The wave directory
+    overrides the seed block where it is unambiguous (dp_pilotw4 = ts5 world)."""
+    if 'pilotw4' in path or '_w4' in path: return 'corrected+ts5'
+    if 10 <= seed <= 14: return 'old'
+    if 20 <= seed <= 29 or 40 <= seed <= 42: return 'corrected'
+    if 80 <= seed <= 93 or 100 <= seed <= 107: return 'old'
+    return '?'
+
 def collect(root):
-    rows = collections.defaultdict(list)
-    def world(seed): return 'old' if 10 <= seed <= 14 else ('corrected' if 20 <= seed <= 29 else '?')
-    for f in glob.glob(os.path.join(root, 'outs', '*.out')):
+    rows = collections.defaultdict(dict)          # key -> {seed: (seed, hold, rnd)}; dedup by seed
+    def put(key, seed, h, r):
+        if seed == 0: return                        # smoke
+        rows[key].setdefault(seed, (seed, h, r))    # first sighting wins (mirror copies are identical)
+    for f in sorted(glob.glob(os.path.join(root, '**', '*.out'), recursive=True)):
         for line in open(f, errors='ignore'):
             m = re.search(r'SWEEP-HEADLINE arm=(\S+) seed=(\d+) reward=(\S+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', line)
-            if not m: continue
-            arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
-            if seed == 0: continue                      # smoke
-            rows[('RLPD', world(seed), rw, arm)].append((seed, int(h)/int(hn), int(r)/int(rn)))
-    for f in glob.glob(os.path.join(root, '**', 'HEADLINE.txt'), recursive=True):
+            if m:
+                arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
+                put(('RLPD', world_of(seed, f), rw, arm), seed, int(h)/int(hn), int(r)/int(rn)); continue
+            m = re.search(r'R2D-RESULT arm=(\S+) seed=(\d+) .*?picked=([0-9.]+)', line)
+            if m:                                   # sel readout only: selection set, 14/15 ceiling
+                arm, seed, p = m.groups(); seed = int(seed)
+                put(('r2d(SEL-ONLY, not a headline)', world_of(seed, f), 'dense', arm), seed, float(p), float('nan'))
+    for f in sorted(glob.glob(os.path.join(root, '**', 'HEADLINE.txt'), recursive=True)):
         m = re.search(r'arm=(\S+) seed=(\d+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', open(f).read())
         if not m: continue
         arm, seed, h, hn, r, rn = m.groups(); seed = int(seed)
-        if seed == 0: continue
-        rows[('DP', world(seed), '-', arm)].append((seed, int(h)/int(hn), int(r)/int(rn)))
-    return rows
+        put(('DP', world_of(seed, f), '-', arm), seed, int(h)/int(hn), int(r)/int(rn))
+    resc = collections.defaultdict(dict)          # (arm, seed) -> {set: frac}
+    for f in sorted(glob.glob(os.path.join(root, '**', '*.log'), recursive=True)):
+        for line in open(f, errors='ignore'):
+            m = re.search(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP)_s(\d+) set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)', line)
+            if not m: continue
+            arm, seed, st_, k, n, exp = m.groups()
+            if int(n) != int(exp): continue          # asserted denominator failed
+            resc[(arm, int(seed))][st_] = int(k)/int(n)
+    for (arm, seed), d in resc.items():
+        if 'hold' in d and 'rnd' in d:
+            put(('r2dreamer', world_of(seed), 'dense', arm), seed, d['hold'], d['rnd'])
+    return {k: list(v.values()) for k, v in rows.items()}
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--artifacts', required=True); ap.add_argument('--md')
@@ -37,14 +62,16 @@ def main():
     L = ['| learner | world | reward | arm | n | hold | rnd | per-seed hold |', '|---|---|---|---|---|---|---|---|']
     for k in sorted(rows):
         v = sorted(rows[k]); h = [x[1] for x in v]
-        L.append(f'| {k[0]} | {k[1]} | {k[2]} | {k[3]} | {len(v)} | {st.mean(h):.2f} | '
-                 f'{st.mean([x[2] for x in v]):.2f} | ' + ' '.join(f'{x:.2f}' for x in h) + ' |')
+        rnd = f'{st.mean([x[2] for x in v]):.2f}' if v[0][2] == v[0][2] else 'n/a'
+        L.append(f'| {k[0]} | {k[1]} | {k[2]} | {k[3]} | {len(v)} | {st.mean(h):.2f} | {rnd} | '
+                 + ' '.join(f'{x:.2f}' for x in h) + ' |')
     out = '\n'.join(L)
     print(out)
     if a.md:
         open(a.md, 'w').write('# Canonical results table (regenerate: analysis/results_table.py)\n\n'
                               'Smoke runs (seed 0) excluded. World from the seed block: 10-14 old (matched_v2), '
-                              '20-29 corrected (matched_w3).\n\n' + out + '\n')
+                              '20-29 corrected (matched_w3), 40-42 split halves; r2dreamer rows are RESCORE (hold/rnd) readouts; '
+                              'r2d(SEL-ONLY) rows are the selection-set readout and are NOT headlines. Dedup by (arm, seed).\n\n' + out + '\n')
 
 if __name__ == '__main__':
     main()
