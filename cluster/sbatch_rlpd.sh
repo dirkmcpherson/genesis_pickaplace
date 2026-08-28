@@ -195,15 +195,15 @@ NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
 
 TRAIN_ARGS=(--steps "$STEPS" --scope pick --action-mode delta_joint --delta-ref target
   --action-repeat "$ACTION_REPEAT" --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON"
-  --gamma 0.998 --backup-entropy off --per-member-ln off --pick-hold-reward off
-  --utd 10 --ensemble-size 10 --subset-size 2 --demo-batch 128
+  --gamma "${GAMMA:-0.998}" --backup-entropy off --per-member-ln off --pick-hold-reward off
+  --utd "${UTD:-10}" --ensemble-size 10 --subset-size 2 --demo-batch 128   # GAMMA/UTD knobs: N18 critic-divergence fix factorial (08-28)
   --demo-dir "$ARM_DEMO" --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper
   --seed "$SEED" --device cuda "${PICK_SHAPING_FLAG[@]}" "${DEMO_FORMAT_FLAG[@]}")
 
 # semantic knobs for the RUN_REGISTRY identity key
 REG_KNOBS=(steps="$STEPS" budget_unit="$BUDGET_UNIT" scope=pick action_mode=delta_joint delta_ref=target
            action_repeat="$ACTION_REPEAT" train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON"
-           gamma=0.998 backup_entropy=off per_member_ln=off pick_hold_reward=off utd=10
+           gamma="${GAMMA:-0.998}" backup_entropy=off per_member_ln=off pick_hold_reward=off utd="${UTD:-10}"
            ensemble_size=10 subset_size=2 demo_batch=128 reward="$REWARD" pick_shaping="$PICK_SHAPING"
            demo_format="$DEMO_FORMAT" demo_sha="$DEMO_SHA" wave="$WAVE"
            demo_shaping="$DEMO_SHAPING" pick_shaping_terminal_zero=on demo_terminal_guard=on sim_variant="$SIM_VARIANT")

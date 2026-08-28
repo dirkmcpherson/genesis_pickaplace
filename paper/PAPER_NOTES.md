@@ -478,3 +478,26 @@ needed for sustained picks. If neither ignites, suspect 3 (demo terminal placeme
 paper reports dv3 as a documented negative with this diagnosis attached. ALSO: r2dreamer SPARSE never
 learned (s40/s41 0.00 at every checkpoint) -- the 12 sparse r2d jobs launched today are expected negatives
 that settle question 2 for the WM honestly.
+
+## N18 (2026-08-28, PRE-REGISTERED, launching). RLPD's low ceiling is critic divergence, not task difficulty
+USER: "I'm pretty concerned that RLPD has such a low ceiling here, that seems like it must indicate some
+kind of problem." It does. From the SB3 logger tables of all 74 RLPD runs (SESSION_LOG 08-28 11:10):
+  * 69/74 runs have critic_loss > 1 at some point, 61 > 100 (dH s11 sparse: 0.02 -> 551 -> 9880).
+  * The Q watchdog (mean actor-state Q > 2 = twice the max return) trips in essentially every run by
+    10-30k steps and re-trips every 10k until the end: overestimation begins early and is never reined in.
+  * Training-time success reaches 0.85-0.97 in the runs that later collapse (dDP s24: 0.97 at 75k, 0.30
+    at 98k); the eval numbers in the tables are "best checkpoint before the blow-up" (final < selected in
+    47/74 runs). RLPD CAN do the task; its critic cannot hold it.
+  * Not entropy (ent_coef decays to ~4e-4 by 30k; auto-alpha target -3.5). LayerNorm IS in the critic.
+  * Not the world: random-policy exploration stats are the same in both worlds (tip 1/20 vs 3/20).
+SUSPECT: gamma 0.998 (a 500-decision credit horizon on 100-300-decision episodes, chosen for the shaping
+potential's visibility; RLPD's paper uses 0.99) x UTD 10 (1M gradient steps on a 100k-transition buffer
++ ~1-7k demo rows sampled at 50% of every batch).
+FIX FACTORIAL (old world, matched_v2, sparse, dH and dDP, seeds 30-32, WAVE=rlpdfix; 18 jobs x ~5 h):
+  (a) gamma 0.99, UTD 10   (b) gamma 0.99, UTD 5   (c) gamma 0.998, UTD 5
+PREDICTIONS: (a) removes the divergence in >= 5/6 runs (max critic_loss < 1, watchdog silent after 30k)
+and lifts selected hold to >= 0.5 with final ~ selected; (c) alone does not; (b) ~ (a). Dense shaping is
+gamma-matched by construction (pick_shaping_gamma = --gamma), so a gamma change is legal in both arms.
+IF (a) HOLDS: the RLPD matrix is re-run with gamma 0.99 (2 sources x {succ, +own fails} x 2 worlds x
+n=10 = 80 jobs ~ 1.7 days of the cap) and every RLPD number quoted so far is superseded. This is a
+recipe hyperparameter, not a target clamp (user 08-23: no TD-target clamp in the matrix).
