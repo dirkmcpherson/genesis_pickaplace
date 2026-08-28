@@ -1,7 +1,7 @@
 # The findings, in plain English
 
 A readable companion to `paper/PAPER_NOTES.md`, which is written densely for reviewers and agents.
-Same content, same status labels, no jargon. Updated 2026-08-27.
+Same content, same status labels, no jargon. Updated 2026-08-28 after the gate-2/3 audit (`AUDIT_results_2026-08-28.md`).
 
 ## The cast
 
@@ -27,8 +27,14 @@ Same content, same status labels, no jargon. Updated 2026-08-27.
 We took the best demonstration set and deliberately added 8 recordings of the robot *failing*. RLPD
 lost about 73% of its performance. The world model lost about 30%. So failure recordings are not
 harmless to world models, as we briefly believed — but they hurt considerably less. **Confidence:
-moderate on the direction, low on the size.** The gap is measured on 4 and 3 random seeds, and a
-proper statistical test can't distinguish it from chance yet (p = 0.29). More seeds are running.
+moderate on the direction, none on the size (audit 2026-08-28).** The gap is measured on 4 and 3
+random seeds; with that few seeds no outcome could have reached p < 0.05 (the floor is 0.057; we got
+0.29). Three things the audit corrected: the "world models were unharmed" reading did not change
+because we re-measured properly — it changed because one seed landed low and one high seed was
+accidentally destroyed by a relaunch; the world model sees the demonstrations far more than we said
+(about a quarter of its replay buffer in this arm, not 1–3 %); and adding the failure recordings also
+tripled the amount of demonstration data and made the tapes 12× longer, so "failure content" is not
+the only thing that differs between the arms. More seeds and a volume-matched control are needed.
 
 **N9 / N11 — "Which demonstration source you use doesn't matter" is true for imitation learning
 only, and only on the test set that can actually measure it.**
@@ -57,10 +63,13 @@ question, deliberately not reported as a finding.**
 
 **N7 — Trimming the "dead time" out of human demonstrations changes nothing.** Humans pause and
 dither; machine demonstrators don't. A standing theory was that this padding is why human data
-looked worse. We cut out the still moments (12% of decisions, then 22%) and imitation-learning
-performance didn't move — 0.55 before, 0.58 after. **I had predicted this would hurt, and it didn't.**
-The useful consequence: if the pauses weren't hurting, "human data is padded" can't explain the
-original gap, which supports the translation explanation instead. **Confidence: moderate**, 3 seeds.
+looked worse. We cut out the still moments (12% of decisions at the first threshold) and imitation-learning
+performance didn't move — 0.55 before, 0.58 after (3 seeds vs 10). **I had predicted this would hurt,
+and it didn't**: predictions (1) and (2) of the pre-registration failed, prediction (3) is half run.
+The pre-registered reading of this outcome was "idle density is back on the table as an explanation",
+not "translation is confirmed" — an earlier version of this paragraph said the latter, which was a
+post-hoc reversal (audit 2026-08-28). Honest version: no effect resolvable at this n; density is
+neither confirmed nor excluded. **Confidence: low.**
 
 **N4 — One of the two world-model implementations (dv3) has never reliably learned this task.**
 Occasional flashes, nothing sustained. We report it as a documented negative, not as a comparison.
@@ -106,6 +115,7 @@ control language, of a saturated scoreboard, and of a simulator with three genui
 times softer than the engine's own stability limit, which let the gripper sink a centimetre into the
 can). Once those are removed, the demonstration *source* mostly stops mattering. What does still
 matter is the **learner**: the same 8 bad recordings cost reinforcement learning about 73% of its
-performance and a world model about 30%, and we can explain why in terms of where the demonstrations
-enter each algorithm's update. That asymmetry, not the human-versus-machine question, is the result
-most likely to survive review.
+performance and a world model about 25–30% — but at seed counts that cannot reach significance, with
+arms that also differ in demonstration volume, and with a mechanism story that the 2026-08-28 audit
+found incomplete (the world model's critic also trains directly on the recorded failure tapes). The
+direction of that asymmetry is the result most likely to survive review; its size is not yet a result.

@@ -112,7 +112,7 @@ run with checkpoint archiving before any claim.
 ## N5 (2026-08-24). PINNED (user): the fails-arm question rides on the WM cells
 P-MECH (corrected sets, sparse RLPD): dR2D+DPfails 0.55->0.15 on hold; dDP+fails == dDP
 success-only (0.25). Mediator identified: 8 cap-truncated 300-decision fail tapes vs ~17-decision
-dR2D successes -> fails = 74% of the demo buffer under per-transition sampling (vs 28% in the dDP
+dR2D successes -> fails = 72% of the demo buffer (71.6% by tape rows; audit 08-28) under per-transition sampling (vs 26% in the dDP (25.8%)
 arm, no harm); no critic divergence (terminals labelled). PINNED per user: do not litigate
 "fairness of fails" further on the RL side. The decisive cell is the WM arms on the SAME
 fails-included sets (post-maintenance): if the WMs are flat-or-better where RLPD drops, the thesis
@@ -320,7 +320,8 @@ and N11 (BC source effects vanish once translation is matched), the WM source sp
 SMALL -- if instead dH >> dDP reappears, the 08-19 result was real and something other than fail
 tapes drives it, which would be a genuine finding and would need its own mechanism.
 
-## N12a (2026-08-26). Power on the N12 null -- it is thinner than the headline suggests
+## N12a (2026-08-26). **SUPERSEDED 2026-08-28** — its seed sets no longer exist (fails s83 destroyed) and its corrected critical value is still wrong (t(0.975, df 2.16) = 4.012, not 4.303 → CI [-0.410, +0.499]). Kept for the record.
+## N12a (original). Power on the N12 null -- it is thinner than the headline suggests
 **CORRECTED 2026-08-26 (assistant's own error, caught on re-check).** The first version of this note
 used t=2.776 (the df=4 critical value) when Welch's df here is 2.16, which requires t=4.303. The
 CORRECT interval is:
@@ -390,3 +391,27 @@ up an on-policy imagined rollout scored by a supervised reward head that predict
 max over an off-distribution recorded action, hence a weaker inflation channel, not no channel.
 ALSO: the exposure caveat still applies (demos ~1-3% of the r2d ring vs ~36% of every RLPD batch),
 and now cuts the other way -- the WM shows a 30% drop at 1/17th the exposure.
+
+### N15 — AUDIT ADDENDUM 2026-08-28 (gate 2/3; full text `AUDIT_results_2026-08-28.md`)
+The body above is left as written on 08-27. The audit found:
+ (1) Point estimates reproduce. CIs used the wrong critical values; correct Welch: hold [-0.259, +0.726]
+     (df 4.52), rnd [-0.228, +0.556] (df 4.17). rnd relative loss is 25.5%, not "~30%". Minimum
+     attainable perm p at 4v3 is 0.057 — this design cannot reach 0.05. Episode-pooled tests are invalid.
+ (2) "A ceilinged readout hid a 5x effect" is FALSE. On these seed sets `sel` already shows +0.211 vs
+     hold +0.233. N12's 0.822/0.778 were on seed sets {80,82,83}/{80,81,83}; the change is that fails
+     s82 (sel 0.13) landed and fails s83 (sel 0.80, COMPLETED) was overwritten in place by the 08-27
+     relaunch and can never be re-scored. Attribution: seed bookkeeping, not the readout.
+ (3) The mechanism paragraph is still false. r2dreamer (not dreamerv3-torch; `models.py` citations are
+     the wrong tree) has TWO critic losses: imagined (`dreamer.py:514-522`, on-policy, supervised reward
+     head `:470`, no max) AND a replay loss (`dreamer.py:539-563`, weight 0.3) that backs up a lambda-return
+     along the RECORDED trajectory, fail tapes included. Recorded rewards/next-states DO enter a critic
+     target at demo states. There is no argmax channel; there is a direct one.
+ (4) Exposure is wrong by ~10x. `demo_reinject_every 150000` x `demo_duplicate 4` re-injects 19 times per
+     run; ring share at steady state is ~9.8% (dR2D) and ~26.7% (fails arm; fail rows ~18.8%) versus
+     RLPD 50%/35.8% per batch. Ratio ~2x, not 17x. The "evicted by 450k" log line is prefill-only.
+ (5) Design confound: the fails arm differs from the control in fail content, total demo share (2.7x)
+     and tape length (301 vs <=25 rows, 70% of that arm's demo rows). "~30% vs ~73%" cannot be attributed
+     to fail content or to a mechanism until the share-matched control (N5) runs.
+SUPPORTABLE NOW: direction only — fail tapes lowered the WM's protocol readouts ~25-30% relative (CIs
+span zero) vs ~73% for RLPD on the same 8 tapes. Re-scores for dR2D s86,87 / fails s84-86 and N13's
+seeds are in flight (08-28); pool ONLY after applying the run-identity rule (a seed id = one run).
