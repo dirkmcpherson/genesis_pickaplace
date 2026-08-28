@@ -325,3 +325,12 @@ PRIMARY world for the matrix on validity grounds and the WM fails arms are run t
 becomes the replicate. If it does not ignite, that is reported as a result and A11 stands. Known cost
 either way: RLPD sits near the floor (~0.2) in the corrected world, so the old world remains the
 sensitive readout for RLPD's source contrast.
+
+### A14 (2026-08-28) — learner health before source comparisons
+USER: "the top priority is ensuring RLPD and WM runs are behaving appropriately before we worry about human
+vs machine demos." Queue reprioritised: all human-vs-machine power jobs HELD (35 DP top-ups/halves/N7,
+29 r2d seed top-ups/sparse/fails arms, 24 old-recipe RLPD); runnable = the diagnostics only (18 RLPD fix
+factorial N18, 9 dv3 baseline+clamp/fix, 4 dv3 touchgoal, 2 r2dreamer touchgoal, 8 corrected-world WM
+gate, 1 packing pilot). A health audit of r2dreamer (critic pinned at the clamp? checkpoint bistability?
+selection bias?) runs in parallel. Held jobs are released only after each learner's recipe is judged
+healthy; if a recipe changes, the held jobs are cancelled and resubmitted under the new recipe.
