@@ -440,3 +440,29 @@ PREDICTIONS (registered before any control result):
       as the fails arm, "fail tapes hurt the WM" is NOT separable from "long/voluminous tapes hurt the
       WM" and must be reported in that form.
 NOTHING here changes the RLPD side: its 73% was measured with the same intrinsically-long fails.
+
+## N17 (2026-08-28, PRE-REGISTERED, launched). Same-source fails arms — the 1b question asked properly
+USER RULE: never mix demo sources within an arm. So 1b ("does the learner x source picture change when
+the source's OWN failures are included?") is dH vs dH+Hfails, dDP vs dDP+DPfails, dR2D vs dR2D+R2Dfails.
+N15/N16 (dR2D + DP fails, and its mixed control) are demoted to mechanism cells.
+SETS (old world, matched_v2; baselines/make_samesource_fails_arm.py; W5 lying-can exclusion; share 0.125 all three):
+  dHHfails      = dH 56 + 8 human fails (dH_either_fails; 2 lying-can excluded)   sha 0dd7300e46fd927d
+                  fail rows 2145 (mean 268; 7 cap-truncated no-picks, 1 tip)
+  dDPfails      = dDP 56 + 8 DP fails (existing)                                    fail rows 2400 (8 x 300 cap-truncated)
+  dR2DR2Dfails  = dR2D 56 + 8 r2d fails (dR2Dprov_fails; 1 success-labelled tape dropped)  sha 248d0ade864424de
+                  fail rows 108 (mean 14; ALL 8 tip-terminated)
+FINDING BEFORE ANY TRAINING (disclose in the paper): "failure" is not one thing across sources. Human and
+DP failures are long no-picks that run to the cap; r2dreamer failures are fast knock-overs ended by the tip
+rule at ~14 decisions. A same-source fails contrast therefore also varies fail LENGTH and fail TYPE with the
+source. This is a property of the sources, not a confound to remove (user, 08-28: fails are long by nature).
+LAUNCHED 08-28: RLPD sparse dHHfails/dR2DR2Dfails x seeds 10-13 (8; pairs with the existing dDPfails and the
+old-world success rows); r2dreamer dense dHHfails/dR2DR2Dfails x seeds 80-83 (8); r2dreamer SPARSE dH/dDP/dR2D
+x seeds 80-83 (12) for question 2 (dense vs sparse has NO world-model contrast so far). dv3 dense block (9)
+queued; dv3 fails/sparse arms wait on ignition. dDP+DPfails for r2dreamer still to launch (4).
+PREDICTIONS (registered): (a) RLPD: dH+Hfails and dDP+DPfails both drop from their success-only cells
+(long unterminated-by-success tapes dominate the buffer, N1/N5 mechanism); dR2D+R2Dfails drops little or not
+at all (108 rows cannot move a buffer; tip-terminated tapes carry a true terminal). (b) r2dreamer: same
+ordering, smaller magnitudes (N15 direction). (c) Sparse vs dense for r2dreamer: dense does NOT show RLPD's
+collapse (0.55 -> 0.18) -- the shaping enters a supervised reward head, not a bootstrapped Q. If dense
+collapses r2dreamer too, question 2 has a learner-independent answer and N2's retraction was premature in
+the other direction.
