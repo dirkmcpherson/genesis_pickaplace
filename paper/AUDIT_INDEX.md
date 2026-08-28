@@ -67,6 +67,11 @@ never from recollection. If a number in prose is not in `paper/RESULTS_TABLE_*.m
 2b. **E6 (new) — exposure arithmetic wrong everywhere.** `demo_reinject_every 150000` keeps demos at
    ~27 % (fails arm) / ~10 % (control) of the 450k ring all run; the "evicted by 450k" log line is a
    stale prefill-only computation. Every "~1–3 %" / "1/17th" figure is retired.
+2e. **E9 (new, 08-28) — RLPD's critic diverges in 69/74 runs.** Every RLPD number in the tables is the
+   best checkpoint before a critic blow-up (Q watchdog trips by 10-30k steps in nearly every run; critic
+   loss reaches 10^2-10^4; training success peaks at 0.85-0.97 in runs whose final checkpoint scores 0).
+   The RLPD row of the matrix is therefore provisional until N18's fix factorial (gamma 0.99 / UTD 5)
+   reads out; if it holds, the RLPD matrix is re-run and every RLPD number so far is superseded.
 2d. **E8 (new, 08-28) — the WM arm trains with a return-target clamp.** r2dreamer uses `return_clamp: 100`
    plus a replay critic loss; RLPD and dv3 have neither. The 08-23 "no TD-target clamp in the matrix"
    decision covered RLPD only. Disclose in every cross-learner mechanism sentence. See
