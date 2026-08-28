@@ -302,3 +302,14 @@ dH/dDP/dR2D _A/_B x seeds 50-52 (N14 in the primary world; the matched_w3 halves
 replicate). Disclosure: the old world carries the three physics defects (no arm gravity compensation,
 buried shelf, soft contact) -- identical for every learner and source, and inert for the shelf in pick
 scope.
+
+### A12 (2026-08-28) — matrix simplified to human vs DP demonstrations
+USER: "If DP does well, we can simplify to human vs DP demos until we're satisfied that everything is
+working correctly." DP does (rnd 0.5-0.6, hold ~0.9, stable across worlds). PRIMARY DESIGN from here:
+{dH, dDP} x {success-only, + the source's OWN fails} x {DP, RLPD, r2dreamer, dv3}, old world (A11).
+dR2D arms are RETAINED where already paid (old-world DP n=5, RLPD n=4, r2dreamer 80-91, N15/N16
+mechanism cells) and reported as a secondary lineage note, not a matrix row. Cancelled 08-28 before
+start: DP dR2D top-ups 15-19 and dR2D split halves; RLPD dR2D top-up 14-19 and dR2DR2Dfails; r2dreamer
+sparse dR2D 80-83, dR2DR2Dfails 80-83, dR2Ddup13 200/201 (the packed pilot 202/203 kept as the packing
+test). Launched: r2dreamer dDPfails 80-83 (the WM 2x2 was missing its dDP+DPfails cell). The
+`dR2DR2Dfails` set (built, sha 248d0ade) is kept on disk for a later lineage appendix.
