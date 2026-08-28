@@ -335,10 +335,10 @@ index bcbde41..5df8071 100644
  n = max(agg['n'], 1)
  metrics = {f'policy_eval/{k}': agg[k] / n for k in STAGES}
 diff --git a/models.py b/models.py
-index c1ac2b4..12b0b5d 100644
+index c1ac2b4..fb24c1f 100644
 --- a/models.py
 +++ b/models.py
-@@ -473,6 +473,13 @@ class ImagBehavior(nn.Module):
+@@ -473,6 +473,17 @@ class ImagBehavior(nn.Module):
              lambda_=self._config.discount_lambda,
              axis=0,
          )
@@ -348,7 +348,11 @@ index c1ac2b4..12b0b5d 100644
 +        # default so existing configs are unchanged; set return_clamp > 0 to enable.
 +        _rc = float(getattr(self._config, "return_clamp", 0.0) or 0.0)
 +        if _rc > 0:
-+            target = torch.clamp(target, max=_rc)
++            # lambda_return returns the per-step list on axis 0 (stacked later in _train).
++            if isinstance(target, (list, tuple)):
++                target = type(target)(torch.clamp(t, max=_rc) for t in target)
++            else:
++                target = torch.clamp(target, max=_rc)
          weights = torch.cumprod(
              torch.cat([torch.ones_like(discount[:1]), discount[:-1]], 0), 0
          ).detach()

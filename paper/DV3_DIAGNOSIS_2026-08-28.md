@@ -18,7 +18,7 @@ reward_loss→0.002).
 | critic target | imagined λ-return **clamped at 100** (`return_clamp: 100`, `dreamer.py:502-503,552-553`) **+ replay λ-return loss** (`repval` 0.3) | imagined λ-return only, **no clamp, no replay anchor** (`models.py:449-479`) |
 | gradient updates per run | 1 update / 2 decisions → **373.5k @3M sim** | 1 / 4 decisions (train_ratio 256) → **19.5k @300k, 62.5k @1e6**; 5M runs 58k |
 | training horizon | **400 sim = 100 decisions** (TL-1200 pilot went 0/2) | 600 sim (08-19); final-RR overlay **1200 = 300 decisions** |
-| demo terminal | on the pick row | **12 decisions (48 sim steps) late** (`grant_slack_decisions: 12`) in every run that exists; fixed in the final-RR converter, which has never run |
+| demo terminal | on the pick row | **12 decisions (48 sim steps) late** (`grant_slack_decisions: 12`) in every run that exists; fixed in the final-RR converter (`demonstrations/genesis_final_dH_r4`, grant_slack 0, exists — first used by the 08-28 19:00 resubmission; the 09:40 batch died at the launcher's demo-dir gate, see SESSION_LOG) |
 | demo exposure | prefill ×4 dup + re-inject every 150k (≈10 % of ring, constant) | loaded once, sampled ∝ length: ~12 % → ~4 % share, no dup, no re-injection |
 | actor gradient / entropy | REINFORCE, entropy 3e-5 | dynamics backprop, entropy 3e-4 |
 | model | deter 2048, hidden 256, depth 16, lr 4e-5 | deter 512, hidden 512, depth 32, lr 1e-4/3e-5 |
@@ -37,7 +37,7 @@ reward_loss→0.002).
    updates and are just as transient (0.20 → 0.00 → 0.33 across checkpoints). dv3's "transients" (N4)
    are the same phenomenon cut off. Experiment: train_ratio 512.
 3. **Demo terminal 48 sim steps late** in all existing runs → the rewarded demo state is one the online
-   agent can never visit. Experiment: the patched (grant-slack 0) sets — first use is the block queued today.
+   agent can never visit. Experiment: the patched (grant-slack 0) sets — first use is the 08-28 19:00 block.
 4. **Training horizon.** 24/67 dH demos exceed 150 decisions; r2dreamer needed 100. Experiment: TL 400.
 5. Demo density decay (no dup/reinject). 6. Entropy 3e-4. 7. Actor-gradient style / model shape /
    shift-aug / 1 env. 8. Eval mislabel (measurement only).
@@ -66,3 +66,12 @@ frame is already 0.09–0.18 m from the can and a random policy triggers it in 1
 *contact* is reached by a random policy in 4/6 episodes. The arm starts adjacent to the can: grasp + lift
 IS the task, there is no easier sub-goal with the same structure. The scope stays in the code, documented
 as trivially satisfied.
+
+## 6. Update 19:00 — touchgoal result, two launch bugs
+- touchgoal (no demos): s0 learns (train success 0.82–0.96 from ~230k, value_mean ≤ 88 < 100 max);
+  s1 never finds the reward (0.00, value 0). dv3 trains fine when reward is reachable → the pick
+  failure is exploration/credit, not a broken trainer. tg_clamp crashed in my patch (clamp on a
+  list) — fixed, resubmitted s2/s3.
+- The 09:40 dense diagnostics never trained (relative demo dir vs run_registry root). Resubmitted
+  19:00 with absolute dirs: std ×3 (the only arm eligible for the matrix, A15), 5M baseline ×3,
+  clamp ×3, fix ×3. Readout ≥ 10 h after start.
