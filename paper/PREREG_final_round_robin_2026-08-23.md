@@ -334,3 +334,12 @@ factorial N18, 9 dv3 baseline+clamp/fix, 4 dv3 touchgoal, 2 r2dreamer touchgoal,
 gate, 1 packing pilot). A health audit of r2dreamer (critic pinned at the clamp? checkpoint bistability?
 selection bias?) runs in parallel. Held jobs are released only after each learner's recipe is judged
 healthy; if a recipe changes, the held jobs are cancelled and resubmitted under the new recipe.
+
+### A15 (2026-08-28) — validity rule
+USER: "Don't do anything that would cause our implementations to diverge significantly from the standard
+versions (we want validity most of all)." Applied: (i) RLPD fixes may only move the recipe TOWARD Ball et
+al. 2023 (gamma 0.99 is the paper's value; our 0.998 was the deviation); (ii) r2dreamer's return clamp and
+replay-critic loss are DEVIATIONS from DreamerV3 -- if the health audit finds them load-bearing, a
+standard arm (clamp off, repval off) is run and reported, not hidden; (iii) the dv3 `return_clamp` overlay
+is diagnostic only; the by-the-book dv3 arm is `genesis_dv3std` (reward_scale 1 with symlog/two-hot heads,
+no clamp, stock train_ratio) on terminal-reward-1 native demos -- launched dH dense x seeds 20-22.

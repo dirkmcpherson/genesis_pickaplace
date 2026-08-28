@@ -1,5 +1,5 @@
 diff --git a/configs.yaml b/configs.yaml
-index c508c32..6d00de7 100644
+index c508c32..a2089bc 100644
 --- a/configs.yaml
 +++ b/configs.yaml
 @@ -35,6 +35,7 @@ defaults:
@@ -10,7 +10,7 @@ index c508c32..6d00de7 100644
    grayscale: False
    prefill: 2500
    reward_EMA: True
-@@ -470,3 +471,40 @@ genesis_pixels_vec:
+@@ -470,3 +471,50 @@ genesis_pixels_vec:
    parallel: False
    eval_episode_num: 0       # one world per process; eval stays out-of-process
    train_ratio: 64           # trainer now binds, not collection; retune upward later
@@ -51,6 +51,16 @@ index c508c32..6d00de7 100644
 +  genesis_scope: 'touchgoal'
 +  time_limit: 400
 +  steps: 5e5
++
++genesis_dv3std:
++  # 2026-08-28 (user: validity over performance): the STANDARD DreamerV3 handling of reward scale --
++  # symlog/two-hot heads, no clamp, reward_scale 1 -- instead of the ManiSkill-parity +100 terminal.
++  # Demos must be terminal-reward-1 native sets (genesis_pickaplace/baselines/matched_v2/r2d/<arm>).
++  genesis_reward_scale: 1.0
++  force_sparse: False
++  return_clamp: 0
++  train_ratio: 512
++  time_limit: 400
 diff --git a/convert_genesis_demos_repeat.py b/convert_genesis_demos_repeat.py
 index da35046..c35781f 100644
 --- a/convert_genesis_demos_repeat.py
