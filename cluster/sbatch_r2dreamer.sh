@@ -232,12 +232,12 @@ case "$CONFIG" in
   *)       DEMO_DEFAULT=$DV3_DIR/demonstrations/genesis_pick_pruned ;;
 esac
 _DEMO_DIR_ENV="${DEMO_DIR:-}"   # captured BEFORE any default -- for the stale-env guard
-if [ -n "$ARM" ] && [ "$DEMOSET" = "v2" ]; then
+if [ -n "$ARM" ] && { [ "$DEMOSET" = "v2" ] || [ "$DEMOSET" = "w3" ]; }; then   # v2 = old world (base); w3 = corrected world (gc_kp4_riser3_shelf6; set R2D_SIM_VARIANT)
   GPP=/cluster/tufts/shortlab/$USER/genesis_pickaplace
   case "$ARM" in dR2Ddup13) ARM_SRC=dR2D ;; *) ARM_SRC=$ARM ;; esac   # control arms that reuse another arm's tapes
-  ARM_DEMO=$GPP/baselines/matched_v2/r2d/$ARM_SRC
+  ARM_DEMO=$GPP/baselines/matched_${DEMOSET}/r2d/$ARM_SRC
   ARM_PAT='genesis-[0-9]+-[0-9]+\.npz$'; ARM_N_MIN=50; ARM_N_MAX=66
-  ARM_NOTE="final-RR v2 native stride-4 set ($ARM, matched_v2, terminal reward 1.0)"
+  ARM_NOTE="final-RR native stride-4 set ($ARM, matched_$DEMOSET, terminal reward 1.0)"
   TIME_LIMIT=${TIME_LIMIT:-1200}
   R2D_EVAL_EXTRA=${R2D_EVAL_EXTRA:---ic-file $GPP/baselines/eval_ics.json --ic-set sel}
   DEMO_DOWNSAMPLE_OVERRIDE="env.demo_downsample=1"
