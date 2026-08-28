@@ -1,5 +1,5 @@
 diff --git a/configs.yaml b/configs.yaml
-index c508c32..1c0d57c 100644
+index c508c32..6d00de7 100644
 --- a/configs.yaml
 +++ b/configs.yaml
 @@ -35,6 +35,7 @@ defaults:
@@ -10,7 +10,7 @@ index c508c32..1c0d57c 100644
    grayscale: False
    prefill: 2500
    reward_EMA: True
-@@ -470,3 +471,33 @@ genesis_pixels_vec:
+@@ -470,3 +471,40 @@ genesis_pixels_vec:
    parallel: False
    eval_episode_num: 0       # one world per process; eval stays out-of-process
    train_ratio: 64           # trainer now binds, not collection; retune upward later
@@ -44,6 +44,13 @@ index c508c32..1c0d57c 100644
 +  return_clamp: 100
 +  train_ratio: 512
 +  time_limit: 400
++
++genesis_touchgoal:
++  # 2026-08-28 learnability probe (user): touch the GOAL can across the workspace, no grasp, NO demos.
++  # Same obs/action/repeat as pick; +100 on first robot-link contact with the goal can (FullTaskEnv scope=touchgoal).
++  genesis_scope: 'touchgoal'
++  time_limit: 400
++  steps: 5e5
 diff --git a/convert_genesis_demos_repeat.py b/convert_genesis_demos_repeat.py
 index da35046..c35781f 100644
 --- a/convert_genesis_demos_repeat.py
@@ -186,7 +193,7 @@ index 7add8c6..1f58234 100644
          env = wrappers.NormalizeActions(env)
      elif suite == 'pinpad':
 diff --git a/envs/genesis.py b/envs/genesis.py
-index 3c042ba..c995030 100644
+index 3c042ba..04a9eca 100644
 --- a/envs/genesis.py
 +++ b/envs/genesis.py
 @@ -28,8 +28,11 @@ class GenesisPickPlace:
@@ -202,6 +209,15 @@ index 3c042ba..c995030 100644
          # task 'cartesian' -> 4-DOF ee-velocity actions ([-1,1]^5, the demos' native
          # teleop modality) via CartesianFullTaskEnv; else 7-dim joint actions.
          self._cartesian = (task == 'cartesian')
+@@ -64,7 +67,7 @@ class GenesisPickPlace:
+         # which is what the demo converter writes into the demo tapes as well. Scaling is
+         # ILLEGAL outside pick scope: the staged full-task ladder (1/1/2/4) rescaled by
+         # 100 is exactly the v7 bug (a completed task became 100 while a pick stayed 1).
+-        assert float(reward_scale) == 1.0 or scope == 'pick', (
++        assert float(reward_scale) == 1.0 or scope in ('pick', 'touchgoal'), (
+             f'reward_scale {reward_scale} is only valid with scope=pick (staged scopes '
+             f'must keep their native scale -- the v7 rescale-on-staged bug)')
+         self._reward_scale = float(reward_scale)
 @@ -100,6 +103,8 @@ class GenesisPickPlace:
              from full_env import FullTaskEnv
              self._env = FullTaskEnv(backend='cpu', max_steps=10 ** 9,
@@ -211,6 +227,15 @@ index 3c042ba..c995030 100644
                                      render_size=self._size if self._render else None,
                                      camera_rig=self._pixels,
                                      workspace_limit=self._workspace_limit,
+@@ -208,7 +213,7 @@ class GenesisPickPlace:
+         # pick), so keying success off 'nested' logged a flat 0 for the whole run and
+         # train_success_rate was unreadable exactly where it matters. Explicit map, no
+         # fallback -- an unknown scope raises rather than silently reporting 0.
+-        _success_key = {'full': 'nested', 'pick': 'picked', 'place': 'placed_v2'}[self._scope]
++        _success_key = {'full': 'nested', 'pick': 'picked', 'place': 'placed_v2', 'touchgoal': 'touched_goal'}[self._scope]
+         obs['log_task_success'] = float(bool(info.get(_success_key, False)))
+         return obs, float(reward), done, info
+ 
 diff --git a/genesis_eval.py b/genesis_eval.py
 index bcbde41..5df8071 100644
 --- a/genesis_eval.py
