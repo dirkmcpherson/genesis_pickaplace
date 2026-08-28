@@ -19,6 +19,7 @@ def world_of(seed, path=''):
     overrides the seed block where it is unambiguous (dp_pilotw4 = ts5 world)."""
     if 'pilotw4' in path or '_w4' in path: return 'corrected+ts5'
     if 10 <= seed <= 19: return 'old'      # 14-19 = 08-28 RLPD old-world top-up
+    if 50 <= seed <= 59: return 'old'      # old-world split halves (08-28)
     if 20 <= seed <= 29 or 40 <= seed <= 42: return 'corrected'
     if 80 <= seed <= 93 or 100 <= seed <= 107: return 'old'
     return '?'

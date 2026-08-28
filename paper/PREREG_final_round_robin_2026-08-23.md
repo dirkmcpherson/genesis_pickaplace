@@ -289,3 +289,16 @@ semantic duplicate is accepted.
 ### A10 (2026-08-28) — N15 controls (N16)
 Two success-content controls bound (do not remove) the length/volume confound of the fails arm:
 dR2Ddup13 (share-matched) and dR2DDPsucc (8 longest dDP successes). Predictions in PAPER_NOTES N16.
+
+### A11 (2026-08-28) — ONE primary world for the learner x source matrix
+The learner x source question (1a/1b) is answered in the OLD world (`base`, `matched_v2`): it is the only
+world in which all three sources exist for every learner, and every fails arm and every world-model run
+lives there. The corrected world (`gc_kp4_riser3_shelf6`, `matched_w3`) is a robustness replicate for
+dH/dDP under DP and RLPD, and the sim-fidelity work is reported as its own contribution. Re-teachering
+dR2D in the corrected world and re-running the matrix (~1 week of the 10-GPU cap) is out of scope for the
+deadline; the corrected-world sets are kept. Consequences applied 08-28: DP old-world top-up seeds 15-19
+(n=5 -> 10 per source); RLPD old-world sparse top-up seeds 14-19 (n=4 -> 10); old-world split halves
+dH/dDP/dR2D _A/_B x seeds 50-52 (N14 in the primary world; the matched_w3 halves keep running as the
+replicate). Disclosure: the old world carries the three physics defects (no arm gravity compensation,
+buried shelf, soft contact) -- identical for every learner and source, and inert for the shelf in pick
+scope.
