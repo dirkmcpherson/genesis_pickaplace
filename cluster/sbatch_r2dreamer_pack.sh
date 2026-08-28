@@ -36,7 +36,8 @@ PIDS=(); OUTS=()
 for s in $PACK_SEEDS; do
   out="r2d_train_${SLURM_JOB_ID}_s${s}.out"; OUTS+=("$out")
   ( export SEED=$s OMP_NUM_THREADS=$THR MKL_NUM_THREADS=$THR OPENBLAS_NUM_THREADS=$THR
-    unset PACK_SEEDS
+    [ -n "${LOGDIR_BASE:-}" ] && export LOGDIR="${LOGDIR_BASE}_s${s}"   # per-seed logdir for arms that need a custom name
+    unset PACK_SEEDS LOGDIR_BASE
     bash cluster/sbatch_r2dreamer.sh ) > "$out" 2>&1 &
   PIDS+=($!); echo "   launched seed $s pid $! -> $out"
   sleep 20      # stagger Genesis/Taichi init and the registry write
