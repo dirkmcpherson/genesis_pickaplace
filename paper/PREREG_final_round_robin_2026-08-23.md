@@ -313,3 +313,15 @@ start: DP dR2D top-ups 15-19 and dR2D split halves; RLPD dR2D top-up 14-19 and d
 sparse dR2D 80-83, dR2DR2Dfails 80-83, dR2Ddup13 200/201 (the packed pilot 202/203 kept as the packing
 test). Launched: r2dreamer dDPfails 80-83 (the WM 2x2 was missing its dDP+DPfails cell). The
 `dR2DR2Dfails` set (built, sha 248d0ade) is kept on disk for a later lineage appendix.
+
+### A13 (2026-08-28) — old vs corrected world: decide by the WM ignition gate, not in the abstract
+USER: the ecological-validity question is old sim vs corrected sim. With dR2D dropped (A12) the corrected
+world (gc_kp4_riser3_shelf6, matched_w3) can carry the full 2x2x4: DP and RLPD dH/dDP success-only cells
+are already n=10 there. Missing and now queued: corrected same-source fails arms (matched_w3/dHHfails from
+dH_w2_fails, matched_w3/dDPfails from dDP_w2_fails) for RLPD sparse x seeds 20-23 (8), and the WM
+IGNITION GATE r2dreamer dense dH/dDP x seeds 80-83 on matched_w3 native tapes, TL 400 (8). RULE: if the
+gate ignites (>= 2/4 seeds per arm above 0.3 on the protocol readouts), the corrected world becomes the
+PRIMARY world for the matrix on validity grounds and the WM fails arms are run there too; the old world
+becomes the replicate. If it does not ignite, that is reported as a result and A11 stands. Known cost
+either way: RLPD sits near the floor (~0.2) in the corrected world, so the old world remains the
+sensitive readout for RLPD's source contrast.
