@@ -19,7 +19,9 @@ LAB=${LAB:-/cluster/tufts/shortlab/jstale02}
 GPR=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace}
 R2D=${R2D_ROOT:-$LAB/r2dreamer}; PY=${VENV_PY:-$LAB/r2d_venv/bin/python}
 MAXS=${MAXS:-1200}; PAR=${PAR:-4}; ICF=${ICF:-$GPR/baselines/eval_ics.json}
-TAG=$(basename "$RUNDIR"); CK="$RUNDIR/BEST_selected.pt"; CFG="$RUNDIR/.hydra/config.yaml"
+# CK override (08-28, LEARNER_HEALTH §2): re-score the LAST checkpoint too, so BEST-vs-last on hold
+# measures the cost of the checkpoint instability. TAGSUF keeps the outputs apart.
+CK=${CK:-$RUNDIR/BEST_selected.pt}; TAG="$(basename "$RUNDIR")${TAGSUF:-}"; CFG="$RUNDIR/.hydra/config.yaml"
 [ -f "$CK" ]  || { echo "FATAL: no BEST_selected.pt in $RUNDIR"; exit 1; }
 [ -f "$CFG" ] || { echo "FATAL: no .hydra/config.yaml in $RUNDIR"; exit 1; }
 NEP=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))[sys.argv[2]]))" "$ICF" "$SET")
