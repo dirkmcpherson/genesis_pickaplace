@@ -343,3 +343,32 @@ replay-critic loss are DEVIATIONS from DreamerV3 -- if the health audit finds th
 standard arm (clamp off, repval off) is run and reported, not hidden; (iii) the dv3 `return_clamp` overlay
 is diagnostic only; the by-the-book dv3 arm is `genesis_dv3std` (reward_scale 1 with symlog/two-hot heads,
 no clamp, stock train_ratio) on terminal-reward-1 native demos -- launched dH dense x seeds 20-22.
+
+### A16 (2026-08-29 06:30, BEFORE any g99 s33-37 readout) — RLPD source statistic
+The RLPD human-vs-DP contrast is scored on (i) **divergence rate** per arm (a run diverges if max critic_loss ≥ 1 or
+mean actor-state Q exceeds the attainable return on a sparse arm at any logged step after 30k; Fisher exact, two-sided)
+and (ii) **rnd-30 success of the LAST checkpoint** (not the selected one; Welch + exact permutation as in analysis/stats.py).
+hold is reported but is not the statistic: dH sits at its ceiling (14/15 in 6/6 runs) and hold ICs overlap training ICs (A8).
+The Q-watchdog trip count is NOT a health criterion on dense arms (potential shaping legitimately lifts Q above 2.0;
+train_rlpd.py:274-276 rescales the threshold only for hold reward); dense arms use max critic_loss and final≈selected only.
+Predictions: divergence dH 0-1/8 vs dDP ≥3/8; LAST-ckpt rnd dH > dDP by ≥0.10.
+
+### A17 (2026-08-29) — RLPD block restarted at γ = 0.99
+PREREG §2 listed γ 0.998 (a deviation from Ball et al. 2023). Every γ 0.998 run (seeds 10-19, 24-29, waves final/w2final)
+is superseded and diagnostic-only (E9). The block is re-run at γ 0.99, UTD 10, seeds 30-37 (fresh ids, A9).
+Dense arms relabel demo rows with the run's γ at load (train_rlpd.py:311), so γ 0.998 and γ 0.99 dense runs may never share a table.
+Same-source row-matched controls added: dHsucc_dup / dDPsucc_dup (56 successes + the 8 longest own successes duplicated,
+6xxxxx stems; added rows 1755 / 1521 vs the fails arms' 2145 fail rows), RLPD sparse seeds 30-33. Reading rule for (1b):
+the fails effect is claimed only if +fails differs from +succ_dup in the same direction on both sources.
+
+### A18 (2026-08-29) — world-model fallback
+If neither dv3 (standard recipe: genesis_dv3std) nor r2dreamer NOCLAMP (return clamp off, replay critic loss kept — the
+official DreamerV3 v2 component) shows a sustained pick with a bounded value estimate by ~1M sim steps, the WM arm becomes
+MoDem as published (via the DEMO3 codebase), including its BC-initialised actor; the actor-BC confound is disclosed and
+H4 is reworded to "world-model learners that back up value through demonstration trajectories". First dv3-std picks were
+logged at 284k (s20) on 08-29 05:40 — before this amendment; the 1M/3M readouts decide.
+
+### A19 (2026-08-29) — one world per learner table
+A13's corrected-world WM gate is not load-bearing: the WM arm reports in whichever world it is healthy in (old world,
+where every WM run to date lives), stated in the table header; no table mixes worlds. The DP corrected-world result and
+the RLPD/WM old-world results are separate tables with the world named.
