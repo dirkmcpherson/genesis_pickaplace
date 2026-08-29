@@ -46,16 +46,30 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
   at each check). Early: dH s33 2 mild trips (CL 0.16), s36 CL 2.9 (crosses the A16 threshold) — dH is not immune.
 - Watchdog trip count is NOT valid on dense arms (shaping lifts Q); use max critic loss + final≈selected there.
 
-### 2.1 g99 matrix readouts (appended as they land)
+### 2.1 g99 matrix readouts (appended as they land; sparse, old world)
 | arm | seed | max CL | trips | selected hold / rnd | final hold / rnd |
 |---|---|---|---|---|---|
+| dH | 30 | 0.018 | 0 | 14/15 / 20/30 | (12 h limit hit during final eval) |
+| dH | 31 | 0.016 | 0 | 14/15 / 21/30 | 14/15 / 21/30 |
+| dH | 32 | 0.027 | 0 | 14/15 / 19/30 | 11/15 / 19/30 |
 | dH | 33 | 0.157 | 2 | 11/15 / 19/30 | 14/15 / 21/30 |
-| dH | 34 | 0.138 | 2 | (eval) | |
-| dH | 35 | 0.017 | 0 | (eval) | |
-| dH | 36 | **4.42** | 4 | (eval) — crosses the A16 divergence threshold | |
-| dH | 37 | 0.019 | 1 | (eval) | |
-| dDP | 33 | 37.2 @42k | 3 | running | |
-Divergence tally (A16 rule, max CL ≥ 1): dH 1/8 so far (s30–37: s36), dDP 3/4 so far (s30, s31, s33; s32 clean).
+| dH | 34 | 0.138 | 2 | 15/15 / 17/30 | 15/15 / 17/30 |
+| dH | 35 | 0.017 | 0 | 14/15 / 20/30 | 14/15 / 20/30 |
+| dH | 36 | **4.42** | 4 | 14/15 / 25/30 | 14/15 / 25/30 |
+| dH | 37 | 0.019 | 1 | 14/15 / 24/30 | 14/15 / 24/30 |
+| dDP | 30 | 22.1 | 4 | 10/15 / 14/30 | 10/15 / 14/30 |
+| dDP | 31 | 83.6 | 5 | 13/15 / 12/30 | 13/15 / 12/30 |
+| dDP | 32 | 0.043 | 0 | 14/15 / 20/30 | 10/15 / — |
+| dDP | 33 | 39.2 | 6 | (eval) | |
+| dDP | 34 | 0.03 @62k | 0 | running | |
+| dDP | 35 | 5.28 @35k | 2 | running | |
+| dDP | 36 | 3.39 @26k | 2 | running | |
+| dDP | 37 | 0.027 @21k | 0 | running | |
+**dH complete (n=8):** selected hold 14,14,14,11,15,14,14,14 (mean 0.933); rnd 20,21,19,19,17,20,25,24 (mean 0.688);
+LAST rnd (where final ran) 21,19,21,17,20,25,24 (mean 0.695). Divergence by the A16 rule (max CL ≥ 1): dH 1/8 (s36 — which
+nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), dDP 5/7 so far (s30,31,33,35,36;
+s32,34 clean; s37 too early). Note for the writing: the dDP divergence is real and reproducible but its performance cost is
+partial (dDP selected hold 10–14/15, rnd 12–20/30 on completed seeds) — the LAST-checkpoint rnd statistic is the one to quote.
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -102,7 +116,9 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 - Disclosures: dv3 jobs before 08-28 21:30 ran without overlays (launcher bug); 5M baselines unaffected.
 
 ### 4.1 dv3 std @1M (appended)
-13:20: std s20 @670k — 4 nonzero success samples total (all ≤ 0.22, none after 303k), value 28 bounded; s21 @310k 5 nonzero
+15:50: std s20 @780k (4 nonzero, none since 303k, value 30); s21 @410k 8 nonzero incl. 0.22 @~350k and 0.12 @366k then 0,
+value 21; s22 @418k 1 nonzero; clamp s20 @847k 7 nonzero, value 97; fix s20 @572k 10 nonzero, value 99. Still no sustained
+learning; s21 is the most active. Earlier (13:20): std s20 @670k — 4 nonzero success samples total (all ≤ 0.22, none after 303k), value 28 bounded; s21 @310k 5 nonzero
 (≤ 0.04); s22 @310k 1; clamp s20 @710k 6 nonzero (≤ 0.25), value 97; fix s20 @476k 10 nonzero (≤ 0.18), value 98.
 No sustained learning under any dv3 recipe yet.
 
@@ -122,4 +138,4 @@ if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 13:30 (cluster clock) — W3 protocol numbers, first g99 rows_
+_version: 2026-08-29 15:55 (cluster clock) — dH g99 complete (n=8)_
