@@ -60,15 +60,15 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 | dDP | 30 | 22.1 | 4 | 10/15 / 14/30 | 10/15 / 14/30 |
 | dDP | 31 | 83.6 | 5 | 13/15 / 12/30 | 13/15 / 12/30 |
 | dDP | 32 | 0.043 | 0 | 14/15 / 20/30 | 10/15 / — |
-| dDP | 33 | 39.2 | 6 | (eval) | |
-| dDP | 34 | 0.03 @62k | 0 | running | |
-| dDP | 35 | 5.28 @35k | 2 | running | |
-| dDP | 36 | 3.39 @26k | 2 | running | |
-| dDP | 37 | 0.027 @21k | 0 | running | |
+| dDP | 33 | 39.2 | 6 | 12/15 / 17/30 | 12/15 / 17/30 |
+| dDP | 34 | 0.03 | 0 | 12/15 / 16/30 | 12/15 / 16/30 |
+| dDP | 35 | 5.28 | 4 | (eval) | |
+| dDP | 36 | 18.5 | 7 | (eval) | |
+| dDP | 37 | 4.56 @87k | 4 | running | |
 **dH complete (n=8):** selected hold 14,14,14,11,15,14,14,14 (mean 0.933); rnd 20,21,19,19,17,20,25,24 (mean 0.688);
 LAST rnd (where final ran) 21,19,21,17,20,25,24 (mean 0.695). Divergence by the A16 rule (max CL ≥ 1): dH 1/8 (s36 — which
-nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), dDP 5/7 so far (s30,31,33,35,36;
-s32,34 clean; s37 too early). Note for the writing: the dDP divergence is real and reproducible but its performance cost is
+nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), **dDP 6/8 (s30,31,33,35,36,37; s32,34 clean)** → Fisher 1/8 vs 6/8 ≈ p 0.026 (two-sided; compute exactly).
+dDP selected rnd so far 14,12,20,17,16 (mean 0.53) vs dH 0.688. Note for the writing: the dDP divergence is real and reproducible but its performance cost is
 partial (dDP selected hold 10–14/15, rnd 12–20/30 on completed seeds) — the LAST-checkpoint rnd statistic is the one to quote.
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
@@ -116,6 +116,9 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 - Disclosures: dv3 jobs before 08-28 21:30 ran without overlays (launcher bug); 5M baselines unaffected.
 
 ### 4.1 dv3 std @1M (appended)
+18:30: std s20 @890k — no success since 303k, value now DECREASING (30 → 19); s21 @505k 9 nonzero samples (max 0.22), value 8;
+s22 @510k 1 nonzero, value 8. Verdict at 1M for s20: NEGATIVE (transient picks, no learning). 3M pack (s23–25) started 18:00 and
+runs through the blackout with its resume chain. DEMO3/MoDem cluster smoke attempt launched 18:40 (A18 trigger).
 15:50: std s20 @780k (4 nonzero, none since 303k, value 30); s21 @410k 8 nonzero incl. 0.22 @~350k and 0.12 @366k then 0,
 value 21; s22 @418k 1 nonzero; clamp s20 @847k 7 nonzero, value 97; fix s20 @572k 10 nonzero, value 99. Still no sustained
 learning; s21 is the most active. Earlier (13:20): std s20 @670k — 4 nonzero success samples total (all ≤ 0.22, none after 303k), value 28 bounded; s21 @310k 5 nonzero
@@ -138,4 +141,4 @@ if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 15:55 (cluster clock) — dH g99 complete (n=8)_
+_version: 2026-08-29 18:40 (cluster clock) — dDP g99 6/8 diverged; dv3 std s20 at 890k negative_
