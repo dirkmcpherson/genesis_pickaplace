@@ -387,7 +387,8 @@ LAST-checkpoint hold re-scores (21 runs, `baselines/outputs/n12_rescore/*_LAST_h
 final policies are bistable; BEST-of-K selection on `sel` (training ICs) does the work and must be disclosed as such.
 dup13 pilot (s202/203, sel-only): 0.93 / 0.00. Corrected-world gate pairs dH/dDP s80–83 (`DEMOSET=w3`, `gc_kp4_riser3_shelf6`, dense, 3M): **ignites** — sel max per seed
 dH 0.40/0.93/0.93/0.93, dDP 0.00/0.87/0.13/0.93, bistable across adjacent checkpoints as in the old world; protocol
-re-scores (BEST hold/rnd, LAST hold; tags `_W3`) queued 08-29 11:00. Under A19 the WM arm reports in one named world per
+re-scores (BEST hold/rnd, LAST hold; tags `_W3`): dH BEST hold 10/15/11/10, rnd 20/25/22/16; dDP 1/2/2/15, 1/2/3/28
+(n 4 v 4, direction human > DP, perm p 0.143); seeds 84–87 per source added 08-29 (4-seed packs, `-n 32`). Under A19 the WM arm reports in one named world per
 table; the w3 run dirs carry no world in their name (seeds 80–83 of dH/dDP = corrected world only).
 Packing: `cluster/sbatch_r2dreamer_pack.sh` (2 runs/GPU, 8 threads each, 16 CPUs, 96 GB; >2× per-GPU throughput, same
 launcher/config per run; 4/GPU with `-n 32` on 64-core nodes from 08-29). Touchgoal probe (no demos, `DEMO_DIR=null`
