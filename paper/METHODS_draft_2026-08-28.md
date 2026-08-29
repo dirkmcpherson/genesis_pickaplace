@@ -15,6 +15,10 @@ teacher), dR2D (r2dreamer teacher); learners DP, RLPD, r2dreamer (r2d), dv3.
 
 ---
 
+> **LIVING UPDATES (2026-08-29, kept current by the agent during the cluster block).** Sections carry an
+> `UPDATE 08-29` block wherever the recipe, seeds, or rules changed after this draft. Precedence: PREREG amendments
+> A16–A19 > these blocks > the 08-28 text. Stable material the user is writing lives outside this file.
+
 ## 1. Real robot and demonstration data
 
 ### 1.1 Platform and teleoperation
@@ -274,6 +278,17 @@ Group tapes by `ic_uid`, shuffle uid list with `default_rng(seed=0)`, alternate 
 - N16 controls (`make_succ_control_set.py`, PREREG A10): `dR2DDPsucc` = dR2D + the 8 longest dDP success tapes (6xxxxx stems; 1521 added rows vs the fails' 2400 → `length_match_fraction 0.634`; N 64) (`M/matched_v2/dR2DDPsucc/manifest.json`); `dR2Ddup13` = dR2D at `demo_duplicate 13` (ring share ≈27 % = fails arm) via `sbatch_r2dreamer.sh:199,236`. Predictions registered in `PAPER_NOTES.md` N16 (`:419-441`).
 - Exposure arithmetic of record (supersedes every "1–3 %" / "1/17th" figure): with `demo_reinject_every 150000 × demo_duplicate 4` over a 3e6-step budget → 19 re-injections; steady-state ring share dR2D ≈ 9.8 %, fails arm ≈ 26.7 % (fail rows 18.8 %); RLPD 50 % demo per batch, fail rows 35.8 % → exposure ratio ≈ 2× (`AUDIT_results §1`).
 
+**UPDATE 08-29.** Same-source fails arms only (user rule 08-28: never mix sources): `dHHfails` = 56 dH successes + 8 dH
+fail tapes; `dDPfails` = 56 dDP successes + 8 dDP fail tapes (`baselines/make_samesource_fails_arm.py`; fail share 0.30 by
+tape was requested but only 8 fail tapes per source survive the lying-can/success-label filters → share 0.125 by tape,
+fail rows 2145 / ~2300 = 23–25 % of rows; 7 truncated + 1 tip-terminated (dH), 8 truncated (dDP)). Row-matched
+same-source controls `dHsucc_dup` / `dDPsucc_dup` = the 56 successes + the 8 LONGEST own successes duplicated (6xxxxx
+stems; `baselines/make_succ_control_set.py --donor <same arm>`; added rows 1755 / 1521). Reading rule (A17): a fails effect
+is claimed only if +fails differs from +succ_dup in the same direction on both sources. Census per source in
+`paper/tape_census_2026-08-29.txt` (`baselines/diagnostics/tape_census.py`): dH vs dDP identical on N, rows, terminal
+rows, saturation (≤6 % on any joint), state ranges; dDP tapes carry `verify=pass` (open-loop replay at record time),
+dH `verify=n/a`. The mixed-source `dR2DDPfails` / `dR2DDPsucc` arms are mechanism cells only (N15, A12).
+
 ### 4.7 Dreamer-native conversion (`baselines/rl/to_dreamer_native.py`)
 `action[t] = actions_delta[t−1]` (zeros at 0); `reward[t] = rewards[t−1] × terminal_reward` (zeros at 0); `is_terminal[-1] = terminated[-1]` (cap-truncated → False → bootstraps); `discount = 1 − is_terminal`; `is_first/is_last`; images T = n+1; refuses shaping, rewards ∉ {0,1,2}, positive reward before the terminal, repeat-stamp mismatch, mixed cap; writes `repeat.json` (action_repeat, contract, delta_cap, scope, terminal_reward, src_sha, src_manifest_sha, census) (`:49-83,111-131,146-156`). r2dreamer dirs built with `--terminal-reward 1` (prefill multiplies by reward_scale 100, asserted); dv3 dirs with `--terminal-reward 100` — same effect, different file (`SESSION_LOG:100,111`; `r2dreamer_final_rr.patch` hunk 3).
 
@@ -320,6 +335,22 @@ Group tapes by `ic_uid`, shuffle uid list with `default_rng(seed=0)`, alternate 
 | Resources | `-p gpu,preempt --requeue --gres=gpu:1 --constraint="l40s\|a100\|l40\|h200" -n 8 --mem 48g --time 12h` | `sbatch_rlpd.sh:62-72` |
 | Positive control | none passing (PREREG §10 disclosure); recipe tuned under old-world dynamics (N6/N10) | PREREG §10; `PAPER_NOTES.md` N6 |
 
+**UPDATE 08-29 — recipe restart (PREREG A17).** All γ = 0.998 runs (seeds 10–19, 24–29; waves `final`, `w2final`) are
+superseded, diagnostic-only (E9): 69/74 diverged (critic loss 10²–10⁵, Q-watchdog trips, hold ≤ 3/15). Fix factorial
+(seeds 30–32, old world, sparse): γ 0.99/UTD 10 (**g99**) — dH 3/3 stable (max critic loss 0.016–0.027, 0 trips, hold
+14/14/14, rnd 20/21/19); dDP hold 10/13/14, rnd 14/12/20 with 2/3 seeds diverging (max critic loss 22, 84). γ 0.99/UTD 5
+same picture; γ 0.998/UTD 5 diverges → γ is the cause. **Matrix recipe = γ 0.99, UTD 10, E 10, Z 2, 50/50 demo batches,
+LayerNorm critics, `ent_coef auto`, target entropy −3.5** (Ball et al. 2023 values except UTD 10 vs 20). Seeds (fresh ids,
+A9): dH/dDP sparse 30–37; dHHfails/dDPfails sparse 30–37; dH/dDP dense 30–35; dHsucc_dup/dDPsucc_dup sparse 30–33.
+Launcher knobs `GAMMA`, `UTD` (`cluster/sbatch_rlpd.sh`, registry keys). Dense arms relabel demo rows with the run's γ at
+load (`train_rlpd.py:311`) — γ 0.998 and 0.99 dense runs never share a table. Q-watchdog is warn-only (`rlpd_sac.py:318-324`)
+and its 2.0 threshold is invalid on dense arms (potential shaping lifts Q); health on dense arms = max critic loss +
+final ≈ selected. Statistic (A16, pre-registered before any s33–37 readout): divergence rate (Fisher) + LAST-checkpoint
+rnd-30 success (Welch + exact permutation, `analysis/stats.py`); hold is reported, not the statistic (dH at ceiling
+14/15; hold ⊂ training ICs, A8). Time limit 18 h (one 12 h job lost its final-ckpt eval on a slow node). Env fix
+timing: jobs started before 08-28 13:25 carried the +2 double pick grant (`full_env.py`, `n_double_grant` normalised in
+the native loaders) — g99 runs are all post-fix.
+
 ### 5.3 r2dreamer (world model, pixels)
 What it is: R2-Dreamer (Morihira et al., ICLR 2026) — a decoder-free, augmentation-free DreamerV3-family world model with a Barlow-Twins-style redundancy-reduction representation loss, shipped with its own PyTorch DreamerV3 reproduction (`model.rep_loss ∈ {r2dreamer, dreamer, infonce, dreamerpro}`); vs DreamerV3: no decoder, BlockGRU (8 blocks), barlow loss 0.05 (`lambd 5e-4`), and a **second, replay-based critic loss** (`repval`, weight 0.3) that backs up a λ-return along the recorded trajectory (demo/fail tapes included) bootstrapped with the imagined return (`C/r2dreamer/README.md`; `_base_.yaml:23,36,45,51,76`; `dreamer.py:539-563`, disc `:549`, clamp `:552-553`; `AUDIT_results §1`). Port: cluster tree at commit `c25eb3b` + working-tree edits captured in `cluster/patches/r2dreamer_final_rr.patch` and `cluster/r2dreamer_port.tar.gz` (`AUDIT_sources_2026-08-23.md:248-287`).
 
@@ -347,8 +378,36 @@ Patch (`cluster/patches/r2dreamer_final_rr.patch`): (1) `envs/genesis.py`: shapi
 | Not run | PREREG §1 sparse arm and 6 seeds per source at TL 1200 (dense only, TL 400 ran) **[CHECK 21]** | `PREREG:35` |
 | Resources | `-p gpu,preempt --requeue --gres=gpu:1 --constraint="l40s\|a100\|l40\|h200" -n 8 --mem 48g --time 2d` (relaunches with `--time 24:00:00`); separate py3.11 venv | `sbatch_r2dreamer.sh:162-177` |
 
+**UPDATE 08-29 — what is standard.** The replay-buffer critic loss (`loss_scales.repval 0.3`, `dreamer.py:539-563`)
+matches the official DreamerV3 v2 recipe (`beta_repval 0.3`, danijar/dreamerv3; `paper/WM_CANDIDATES_2026-08-29.md`);
+only the imagined-return clamp (`return_clamp 100`, `dreamer.py:502-503, 552-553`) is a deviation (E8 corrected).
+**Standard arm = `env.return_clamp=0`, repval kept** (runs `pick_v5d4c_delta_shaped_NOCLAMP_{dH,dDP}_s12{2,3}`, packed).
+The earlier "STD" attempt (clamp off + repval off, s120/121) died at launch on a non-existent hydra key and is void.
+LAST-checkpoint hold re-scores (21 runs, `baselines/outputs/n12_rescore/*_LAST_hold_*`): 0/15 or ≥10/15 in 16/21 —
+final policies are bistable; BEST-of-K selection on `sel` (training ICs) does the work and must be disclosed as such.
+dup13 pilot (s202/203, sel-only): 0.93 / 0.00. Corrected-world gate pairs dH/dDP s80–83 (`DEMOSET=w3`,
+`gc_kp4_riser3_shelf6`) read out 08-29 ~10:00; under A19 the WM arm reports in one named world per table.
+Packing: `cluster/sbatch_r2dreamer_pack.sh` (2 runs/GPU, 8 threads each, 16 CPUs, 96 GB; >2× per-GPU throughput, same
+launcher/config per run; 4/GPU with `-n 32` on 64-core nodes from 08-29). Touchgoal probe (no demos, `DEMO_DIR=null`
+now accepted by the launcher) s0/1 packed.
+
 ### 5.4 dv3 — DreamerV3 (dreamerv3-torch-genesis) — documented negative
 Patch `cluster/patches/dreamerv3-torch-genesis_final_rr.patch`: converter refuses contract-v1 dirs / `--terminal-guard on`; `genesis_eval.py` gains `--ic-file/--ic-set/--ic-index/--device` and records `act_selection='deterministic'`; overlay `genesis_final_rr: time_limit 1200, steps 1e6`; new `sbatch_genesis_final_rr.sh` (K=5 archive, fresh-process eval sel → hold+rnd, `DV3-RESULT`). Config: action_repeat 4; time_limit 1200; steps 1e6 sim (250k decisions = 62.5k updates); train_ratio **256**; batch 16 × 64; prefill 2500 / pretrain 100; reward_scale 100; discount 0.997, λ 0.95, imag_horizon 15; RSSM deter 512, hidden 512, stoch 32×32, GRU blocks 8, units 512; model_lr 1e-4; dense variant `genesis_pick_shaping: True` γ 0.997 (`C/dreamerv3-torch/configs.yaml:40-58,94,101-104,384-492`). **Status: the final-RR dv3 block never ran** (registry: 0 rows of `sbatch_genesis_final_rr.sh`; one 2e4 smoke). The dv3 negative (N4: transient takeoffs at 140–320k, no sustained ignition) rests on the 08-19 `sbatch_genesis_multi.sh` 300k runs (dH s0–2, dDP s0–1, dR2D s0–1), whose harness is outside this repo **[CHECK 23]** (`PAPER_NOTES.md:87-92`; `CRITIQUE_launch_plan_2026-08-25.md:415`; `PREREG:37`). Earlier history: unnormalised demo actions poisoned runs v6–v13 (`METHODOLOGY.md §6.3`).
+
+**UPDATE 08-29 — no longer "documented negative"; mechanism + standard arm.** Diagnosis (`paper/DV3_DIAGNOSIS_2026-08-28.md`):
+on every unclamped run `value_mean` runs past the attainable return (dense ×100: 263–390 by 300k on 3/3 5M baselines;
+touchgoal-from-scratch s0 learned to 0.82–0.96 success at 230–440k then collapsed as value crossed 100) — critic runaway
+via bootstrapped reward-head leak; the torch port (NM512, pre-v2) lacks the official replay critic loss / EMA regulariser.
+Arms (dH dense, seeds 20–22 at 1M; launcher `EXTRA_CONFIGS`/`TAGSUF`): **`genesis_dv3std`** = `genesis_reward_scale 1`
+(symlog/two-hot as published), `return_clamp 0`, `train_ratio 512`, `time_limit 400`, demos = `matched_v2/r2d/dH`
+(terminal 1.0, grant_slack 0) — the ONLY arm eligible for the matrix (A15); `genesis_dv3clamp` (clamp 100, diagnostic);
+`genesis_dv3fix` (clamp + train_ratio 512 + TL 400, diagnostic). std s20: first picks ever (train success 0.22 @284k) with
+value bounded (~29); clamp s20: 0.25 with value pinned at 98. 3M std pack (s23–25, `cluster/sbatch_dv3_pack.sh`, 3 runs/GPU,
+375k updates ≈ r2dreamer's 373k) with an `afterany` resume chain (dreamer.py re-enters `latest.pt`). Disclosures: (i) every
+dv3 job before 08-28 21:30 ran WITHOUT its overlay (launcher omitted `${EXTRA_CONFIGS}` on the real train/eval lines) — the
+5M baselines were unaffected; (ii) two other launcher defects (env python, relative demo dir) killed the 08-28 morning
+batch at start; (iii) `models.py` clamp is flag-gated (`return_clamp`, default 0). Eval uses `actor.sample()` labelled
+deterministic (mislabel, measurement only). Speed: ~47k sim steps/h (train_ratio 512) unpacked.
 
 ### 5.5 SACfD (legacy)
 `baselines/rl/train_sacfd_full.py` — demo-seeded SB3 SAC (no PER, no n-step, FIFO eviction, staged reward, 400k steps). Superseded by RLPD; retained only as history (absolute-action fling artefact; hardened predicate) (`train_rlpd.py:1-22`; `AUDIT_sources_2026-08-23.md:374`; `METHODOLOGY.md §6.2`).
@@ -400,6 +459,10 @@ K=5 checkpoints at 20/40/60/80/100 % of budget; selection = best `sel` (ties →
 
 ---
 
+**UPDATE 08-29.** `analysis/stats.py` (Welch with Welch–Satterthwaite df and the correct critical value, exact permutation
+p under both conventions, minimum attainable p; self-test reproduces the corrected N15 CIs) resolves **[CHECK 26]**. RLPD
+statistic per A16; WM tables per A19 (one world per table); fails effect per A17 reading rule.
+
 ## 7. Compute, provenance, incidents
 
 | item | value | pointer |
@@ -425,6 +488,13 @@ Incidents affecting data (all logged; report in the paper's limitations):
 7. Earlier instrument failures that shaped the protocol (fling exploit, env-vs-replay #26 horizon bug, unnormalised dv3 demos, eval action-mode default, six silent-default bugs): `paper/METHODOLOGY.md §8.4`; `CLAUDE.md`.
 
 ---
+
+**UPDATE 08-29.** GPU packing (CPU-bound Genesis, 0 % GPU util): r2dreamer 2–4 runs/GPU, dv3 3 runs/GPU, RLPD unpacked
+(GPU-bound at UTD 10). QOS cap 10 GPUs; `gpu` MaxTime 2 d; `scontrol top` denied → queue order via `scontrol hold` +
+`--begin` release jobs. Unattended readouts: `cluster/harvest_readout.sh` on the batch partition at +3/+20/+44/+62 h →
+`paper/harvest_<ts>.md`. Incidents 08-28/29: three silent pack deaths (40 s, found ~8 h later) → rule: check every pack
+`.out` for `rc=1` within the first hour. Fallback WM (A18): DEMO3 codebase (TD-MPC2-based; MoDem / TD-MPC2 by flags) prepared
+locally (`~/workspace/demo3_prep`, converter round-trip verified); `policy_pretraining=false` flag set is actor-BC-free.
 
 ## 8. [CHECK] list (every uncertain or conflicting value)
 
