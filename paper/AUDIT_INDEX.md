@@ -111,3 +111,5 @@ semantic knobs, demo sha, node) at job START. Demo sets carry `manifest.json` wi
 the recorder version, the sim variant and per-tape provenance. `paper/final_rr_sets_2026-08-23/`
 holds the committed set manifests and censuses. Artifacts (sets incl. `r2d/dR2DDPfails` since 08-28, checkpoints, all `.out`
 files, re-score logs, registry) are mirrored off-cluster at `~/workspace/final_rr_artifacts_2026-08-24/`.
+
+- **E8 update 08-29:** the replay critic loss (`repval 0.3`) matches the official DreamerV3 v2 recipe (beta_repval 0.3, danijar/dreamerv3); repval is a published component. Only the return clamp (100) is a deviation. Standard r2dreamer arm = `env.return_clamp=0` with repval kept (runs NOCLAMP s122/123). See paper/WM_CANDIDATES_2026-08-29.md.
