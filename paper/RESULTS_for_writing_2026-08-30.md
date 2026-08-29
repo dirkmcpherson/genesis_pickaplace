@@ -1,0 +1,100 @@
+# RESULTS — for the plane writing session (living; final version stamped before the 08-30 blackout)
+
+**Read with:** `METHODS_draft_2026-08-28.md` (UPDATE 08-29 blocks), `PREREG_final_round_robin_2026-08-23.md` A9–A19,
+`ADVERSARIAL_AUDIT_2026-08-29.md` (what a reviewer will say), `WM_CANDIDATES_2026-08-29.md`.
+Statistics: `analysis/stats.py` (seed is the unit; Welch + exact permutation; min attainable p quoted).
+Readouts: **sel** = 15 selection ICs (ceiling 14/15, training ICs) — selection only, never a headline; **hold** = 15 ICs
+(⊂ training ICs, A8); **rnd** = 30 random ICs. Headline = selected checkpoint on hold+rnd (PREREG §5/A7).
+Worlds: **old** = matched_v2 (RLPD, r2dreamer, dv3 to date); **corrected** = matched_w3 `gc_kp4_riser3_shelf6` (DP n=10;
+r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom.
+
+---
+## 1. DP (lerobot Diffusion Policy, state-only) — HEALTHY, the one settled learner
+
+| world | arm | n | hold | rnd |
+|---|---|---|---|---|
+| corrected (seeds 20–29) | dH | 10 | 0.887 | **0.547** |
+| corrected | dDP | 10 | 0.873 | **0.487** |
+
+- (1a) at matched N=56: hold flat (+0.013); rnd human edge +0.06, Welch CI [+0.006, +0.114], exact-perm p 0.041 —
+  ONE unadjusted comparison, top-up not pre-registered as this test (AUDIT_results §4). Old world n=5 replicate: no spread.
+- (1b) not applicable to DP by design (no IL on failures, PAPER_PLAN §3). (2) not applicable (no reward).
+- 35 further DP jobs are user-held (replicates); not needed for the claim above.
+
+## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
+
+**Recipe restart (A17):** every γ = 0.998 run is diagnostic-only — 69/74 diverged (critic loss 10²–10⁵). At the published
+γ = 0.99 the learner is healthy on human demos. All numbers below are γ 0.99, old world, sparse unless stated, seeds ≥ 30.
+
+| arm | seed | max critic loss | watchdog trips | selected: hold / rnd | final: hold / rnd |
+|---|---|---|---|---|---|
+| dH | 30 | 0.018 | 0 | 14/15 / 20/30 | (12 h limit hit during final eval) |
+| dH | 31 | 0.016 | 0 | 14/15 / 21/30 | 14/15 / 21/30 |
+| dH | 32 | 0.027 | 0 | 14/15 / 19/30 | 11/15 / 19/30 |
+| dDP | 30 | 22.1 | 4 | 10/15 / 14/30 | 10/15 / 14/30 |
+| dDP | 31 | 83.6 | 5 | 13/15 / 12/30 | 13/15 / 12/30 |
+| dDP | 32 | 0.043 | 0 | 14/15 / 20/30 | 10/15 / — |
+| dH (UTD 5) | 30–32 | ≤0.045 | 0 | 14/15 / 20, 26, 21 | final hold 14, 8, 14 |
+| dDP (UTD 5) | 30–32 | 530 / 65 / 0.037 | 8 / 6 / 0 | 8/15 14/30; 8/15 7/30; 13/15 14/30 | |
+| γ 0.998 UTD 5 (control) | dH 30,31; dDP 30 | 292–1.5e5 | 6–9 | hold 0–2/15 | |
+
+- Reading so far (n=3, NOT a claim): human demos → stable critic 3/3; DP demos → 2/3 diverge with partial performance.
+  Demo sets are indistinguishable on every tape statistic (`tape_census_2026-08-29.txt`), so this is not a format artefact.
+- **Pre-registered statistic (A16):** divergence rate (Fisher) + LAST-checkpoint rnd-30 (Welch/perm). Predictions: dH 0–1/8
+  vs dDP ≥ 3/8; LAST rnd dH > dDP by ≥ 0.10. Matrix in flight: dH/dDP sparse s33–37, dHHfails/dDPfails s30–37,
+  dH/dDP dense s30–35, dHsucc_dup/dDPsucc_dup s30–33 (row-matched controls). First s33–37 headlines: see §2.1 (updated
+  at each check). Early: dH s33 2 mild trips (CL 0.16), s36 CL 2.9 (crosses the A16 threshold) — dH is not immune.
+- Watchdog trip count is NOT valid on dense arms (shaping lifts Q); use max critic loss + final≈selected there.
+
+### 2.1 g99 matrix readouts (appended as they land)
+_(none complete yet at 11:30 08-29)_
+
+## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
+
+- **Old world, dense, 3M (historic block, seeds 50–53, 100–103, 80–87 dR2D):** selected checkpoints reach 13–15/15 hold on
+  dH and dR2D; **sparse never learns** (0/7,700 episodes). LAST-checkpoint hold re-scores: dH s50–53 = 0, 15, 0, 7;
+  dH s101/103 = 0, 0; dDP s100/102/103 = 1, 10, 14; dR2D s80–83/86/87 = 15, 0, 13, 0, 13, 11; dR2DDPfails = 5, 5, 0, 1, 15, 4
+  → final policies are **bistable** (0 or ≥ 10 of 15 in 16/21); BEST-of-K on sel does the work. Disclose.
+- **Corrected world gate (dH/dDP s80–83, dense, 3M, packed, 08-29): IGNITES.** In-job sel max per seed: dH 0.40, 0.93, 0.93,
+  0.93 (nonzero ckpts 3/17/13/14 of 28); dDP 0.00, 0.87, 0.13, 0.93 (0/17/4/8). Same adjacent-checkpoint bistability.
+  Protocol re-scores (BEST hold/rnd, LAST hold; `n12_rescore/*_W3_*`) → §3.1.
+- **Standard arm (clamp off, repval kept) NOCLAMP dH/dDP s122/123:** submitted 08-29; finishes during the blackout
+  (+44/+62 h harvest files).
+- N15 (dR2D + DP-fails, mixed source): direction-only (n 4 v 3, CI spans 0, min p 0.057); mechanism cell, not a matrix cell.
+
+### 3.1 W3 protocol re-scores (appended)
+_(24 CPU jobs queued 11:00)_
+
+## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
+
+- **Failure mechanism:** on every unclamped ×100-terminal run `value_mean` runs past the attainable return (263–390 vs 100 by
+  300k, 3/3 5M baselines, zero success); touchgoal-from-scratch s0 learned to 0.82–0.96 (230–440k) then collapsed as value
+  crossed 100 (132, 140). Critic runaway via bootstrapped reward-head leak; the port lacks the official replay critic loss /
+  EMA regulariser (`WM_CANDIDATES` §1). Old runs' "transients" (N4) are this phenomenon.
+- **Standard arm `genesis_dv3std`** (reward_scale 1 symlog/two-hot, no clamp, train_ratio 512, TL 400, demos terminal 1):
+  s20 first picks 0.22 @284k (0.06, then 0 × 8 samples to 550k), value bounded ~33; s21 0.04 @191k, s22 0.02 @177k,
+  values 30–36. clamp s20: 0.25 @~290k then 0, value pinned 98; fix s20: 0.18 max, sporadic 0.02, value 97.
+  → transient picks under every recipe, none sustained yet (r2dreamer's phenotype before its 1–2M ignition).
+  1M verdict → §4.1; 3M std pack (s23–25) with resume chain runs through the blackout.
+- Disclosures: dv3 jobs before 08-28 21:30 ran without overlays (launcher bug); 5M baselines unaffected.
+
+### 4.1 dv3 std @1M (appended)
+_(pending; s20 reaches 1M ≈ 08-29 evening)_
+
+## 5. Fallback WM (A18)
+DEMO3 codebase (TD-MPC2 backbone; MoDem/TD-MPC2 by flag; MIT) prepared locally: converter round-trip verified on dH,
+env wrapper import-checked; `policy_pretraining=false` flag set is actor-BC-free. ~4–6 h to a cluster smoke. Triggered only
+if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
+
+## 6. What can be written now (claims with evidence) — see ADVERSARIAL_AUDIT §7
+1. Methods/provenance contribution (one recorder, tape contract, registry, six silent-default bugs caught, run-identity rule).
+2. DP: DP-teacher demos ≈ human at matched N; small human edge on random ICs (p 0.041, unadjusted).
+3. RLPD: recipe sensitivity (γ 0.998 vs 0.99) dominates; under the published recipe human demos stable 3/3, DP demos 2/3
+   diverge — n=3, A16 statistic pending.
+4. WM: r2dreamer learns pick with dense reward + demos in BOTH worlds, checkpoint-bistable; sparse never ignites; dv3-torch
+   critic runaway characterised; standard-recipe arms pending.
+5. Fails-tape effect: confounded (share × 2.7, length × 12) until the row-matched controls read out.
+Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
+
+---
+_version: 2026-08-29 11:30 (cluster clock) — first draft_
