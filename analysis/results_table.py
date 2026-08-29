@@ -52,14 +52,14 @@ def collect(root):
     resc = collections.defaultdict(dict)          # (arm, seed) -> {set: frac}
     for f in sorted(glob.glob(os.path.join(root, '**', '*.log'), recursive=True)):
         for line in open(f, errors='ignore'):
-            m = re.search(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP)_s(\d+) set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)', line)
+            m = re.search(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP)_s(\d+)(_W3)? set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)', line)
             if not m: continue
-            arm, seed, st_, k, n, exp = m.groups()
+            arm, seed, w3, st_, k, n, exp = m.groups()
             if int(n) != int(exp): continue          # asserted denominator failed
-            resc[(arm, int(seed))][st_] = int(k)/int(n)
-    for (arm, seed), d in resc.items():
+            resc[(arm, int(seed), w3 or '')][st_] = int(k)/int(n)
+    for (arm, seed, w3), d in resc.items():
         if 'hold' in d and 'rnd' in d:
-            put(('r2dreamer', world_of(seed), 'dense', arm), seed, d['hold'], d['rnd'])
+            put(('r2dreamer', world_of(seed, w3, arm, 'r2d'), 'dense', arm), seed, d['hold'], d['rnd'])
     return {k: list(v.values()) for k, v in rows.items()}
 
 def main():
