@@ -385,8 +385,10 @@ only the imagined-return clamp (`return_clamp 100`, `dreamer.py:502-503, 552-553
 The earlier "STD" attempt (clamp off + repval off, s120/121) died at launch on a non-existent hydra key and is void.
 LAST-checkpoint hold re-scores (21 runs, `baselines/outputs/n12_rescore/*_LAST_hold_*`): 0/15 or ≥10/15 in 16/21 —
 final policies are bistable; BEST-of-K selection on `sel` (training ICs) does the work and must be disclosed as such.
-dup13 pilot (s202/203, sel-only): 0.93 / 0.00. Corrected-world gate pairs dH/dDP s80–83 (`DEMOSET=w3`,
-`gc_kp4_riser3_shelf6`) read out 08-29 ~10:00; under A19 the WM arm reports in one named world per table.
+dup13 pilot (s202/203, sel-only): 0.93 / 0.00. Corrected-world gate pairs dH/dDP s80–83 (`DEMOSET=w3`, `gc_kp4_riser3_shelf6`, dense, 3M): **ignites** — sel max per seed
+dH 0.40/0.93/0.93/0.93, dDP 0.00/0.87/0.13/0.93, bistable across adjacent checkpoints as in the old world; protocol
+re-scores (BEST hold/rnd, LAST hold; tags `_W3`) queued 08-29 11:00. Under A19 the WM arm reports in one named world per
+table; the w3 run dirs carry no world in their name (seeds 80–83 of dH/dDP = corrected world only).
 Packing: `cluster/sbatch_r2dreamer_pack.sh` (2 runs/GPU, 8 threads each, 16 CPUs, 96 GB; >2× per-GPU throughput, same
 launcher/config per run; 4/GPU with `-n 32` on 64-core nodes from 08-29). Touchgoal probe (no demos, `DEMO_DIR=null`
 now accepted by the launcher) s0/1 packed.
