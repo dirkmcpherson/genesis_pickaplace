@@ -47,7 +47,15 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 - Watchdog trip count is NOT valid on dense arms (shaping lifts Q); use max critic loss + final≈selected there.
 
 ### 2.1 g99 matrix readouts (appended as they land)
-_(none complete yet at 11:30 08-29)_
+| arm | seed | max CL | trips | selected hold / rnd | final hold / rnd |
+|---|---|---|---|---|---|
+| dH | 33 | 0.157 | 2 | 11/15 / 19/30 | 14/15 / 21/30 |
+| dH | 34 | 0.138 | 2 | (eval) | |
+| dH | 35 | 0.017 | 0 | (eval) | |
+| dH | 36 | **4.42** | 4 | (eval) — crosses the A16 divergence threshold | |
+| dH | 37 | 0.019 | 1 | (eval) | |
+| dDP | 33 | 37.2 @42k | 3 | running | |
+Divergence tally (A16 rule, max CL ≥ 1): dH 1/8 so far (s30–37: s36), dDP 3/4 so far (s30, s31, s33; s32 clean).
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -62,8 +70,23 @@ _(none complete yet at 11:30 08-29)_
   (+44/+62 h harvest files).
 - N15 (dR2D + DP-fails, mixed source): direction-only (n 4 v 3, CI spans 0, min p 0.057); mechanism cell, not a matrix cell.
 
-### 3.1 W3 protocol re-scores (appended)
-_(24 CPU jobs queued 11:00)_
+### 3.1 W3 protocol re-scores (corrected world, dense, 3M; BEST = highest in-job sel among archived ckpts)
+| arm | seed | sel max | BEST hold | BEST rnd | LAST hold |
+|---|---|---|---|---|---|
+| dH | 80 | 0.40 | 10/15 | 20/30 | 4/15 |
+| dH | 81 | 0.93 | 15/15 | 25/30 | 13/15 |
+| dH | 82 | 0.93 | 11/15 | 22/30 | 15/15 |
+| dH | 83 | 0.93 | 10/15 | 16/30 | 0/15 |
+| dDP | 80 | 0.00 | 1/15 | 1/30 | 1/15 |
+| dDP | 81 | 0.87 | 2/15 | 2/30 | 5/15 |
+| dDP | 82 | 0.13 | 2/15 | 3/30 | 1/15 |
+| dDP | 83 | 0.93 | 15/15 | 28/30 | 13/15 |
+Seed-level (analysis/stats.py, n=4 v 4): BEST hold dH 0.767 vs dDP 0.333, diff +0.43, CI [−0.24, +1.11], perm p 0.143
+(min attainable 0.029); BEST rnd 0.692 vs 0.283, diff +0.41, CI [−0.26, +1.07], p 0.143; LAST hold 0.533 vs 0.333, p 0.63.
+Reading: in the corrected world r2dreamer learns from human demos on 4/4 seeds (hold ≥ 10/15) and from DP demos on 1/4;
+dDP s81's sel 0.87 collapsed to 2/15 on hold (sel-selected checkpoint was a fluke — another reason sel is never a headline).
+Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029). Seeds 84–87 per source submitted 08-29
+13:30 (finish during the blackout) → n=8 gives min p 0.0002 and ~80 % power at the observed gap.
 
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 
@@ -79,7 +102,9 @@ _(24 CPU jobs queued 11:00)_
 - Disclosures: dv3 jobs before 08-28 21:30 ran without overlays (launcher bug); 5M baselines unaffected.
 
 ### 4.1 dv3 std @1M (appended)
-_(pending; s20 reaches 1M ≈ 08-29 evening)_
+13:20: std s20 @670k — 4 nonzero success samples total (all ≤ 0.22, none after 303k), value 28 bounded; s21 @310k 5 nonzero
+(≤ 0.04); s22 @310k 1; clamp s20 @710k 6 nonzero (≤ 0.25), value 97; fix s20 @476k 10 nonzero (≤ 0.18), value 98.
+No sustained learning under any dv3 recipe yet.
 
 ## 5. Fallback WM (A18)
 DEMO3 codebase (TD-MPC2 backbone; MoDem/TD-MPC2 by flag; MIT) prepared locally: converter round-trip verified on dH,
@@ -97,4 +122,4 @@ if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 11:30 (cluster clock) — first draft_
+_version: 2026-08-29 13:30 (cluster clock) — W3 protocol numbers, first g99 rows_
