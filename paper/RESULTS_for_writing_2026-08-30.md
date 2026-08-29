@@ -67,7 +67,7 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 | dDP | 37 | 4.56 @87k | 4 | running | |
 **dH complete (n=8):** selected hold 14,14,14,11,15,14,14,14 (mean 0.933); rnd 20,21,19,19,17,20,25,24 (mean 0.688);
 LAST rnd (where final ran) 21,19,21,17,20,25,24 (mean 0.695). Divergence by the A16 rule (max CL ≥ 1): dH 1/8 (s36 — which
-nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), **dDP 6/8 (s30,31,33,35,36,37; s32,34 clean)** → Fisher 1/8 vs 6/8 ≈ p 0.026 (two-sided; compute exactly).
+nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), **dDP 6/8 (s30,31,33,35,36,37; s32,34 clean)** → Fisher exact 1/8 vs 6/8: **p = 0.041** (two-sided; A16 prediction "dH 0–1/8 vs dDP ≥ 3/8" met).
 dDP selected rnd so far 14,12,20,17,16 (mean 0.53) vs dH 0.688. Note for the writing: the dDP divergence is real and reproducible but its performance cost is
 partial (dDP selected hold 10–14/15, rnd 12–20/30 on completed seeds) — the LAST-checkpoint rnd statistic is the one to quote.
 
