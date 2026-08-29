@@ -346,7 +346,8 @@ Launcher knobs `GAMMA`, `UTD` (`cluster/sbatch_rlpd.sh`, registry keys). Dense a
 load (`train_rlpd.py:311`) — γ 0.998 and 0.99 dense runs never share a table. Q-watchdog is warn-only (`rlpd_sac.py:318-324`)
 and its 2.0 threshold is invalid on dense arms (potential shaping lifts Q); health on dense arms = max critic loss +
 final ≈ selected. Statistic (A16, pre-registered before any s33–37 readout): divergence rate (Fisher) + LAST-checkpoint
-rnd-30 success (Welch + exact permutation, `analysis/stats.py`); hold is reported, not the statistic (dH at ceiling
+rnd-30 success (Welch + exact permutation, `analysis/stats.py`) — result 08-29 20:00: LAST rnd dH 0.700 vs dDP 0.494
+(+0.206, CI [+0.105, +0.306], p 0.001), divergence 1/8 vs 6/8 (Fisher 0.041), see RESULTS_for_writing §2; hold is reported, not the statistic (dH at ceiling
 14/15; hold ⊂ training ICs, A8). Time limit 18 h (one 12 h job lost its final-ckpt eval on a slow node). Env fix
 timing: jobs started before 08-28 13:25 carried the +2 double pick grant (`full_env.py`, `n_double_grant` normalised in
 the native loaders) — g99 runs are all post-fix.

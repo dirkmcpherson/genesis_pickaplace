@@ -62,14 +62,24 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 | dDP | 32 | 0.043 | 0 | 14/15 / 20/30 | 10/15 / — |
 | dDP | 33 | 39.2 | 6 | 12/15 / 17/30 | 12/15 / 17/30 |
 | dDP | 34 | 0.03 | 0 | 12/15 / 16/30 | 12/15 / 16/30 |
-| dDP | 35 | 5.28 | 4 | (eval) | |
-| dDP | 36 | 18.5 | 7 | (eval) | |
-| dDP | 37 | 4.56 @87k | 4 | running | |
-**dH complete (n=8):** selected hold 14,14,14,11,15,14,14,14 (mean 0.933); rnd 20,21,19,19,17,20,25,24 (mean 0.688);
-LAST rnd (where final ran) 21,19,21,17,20,25,24 (mean 0.695). Divergence by the A16 rule (max CL ≥ 1): dH 1/8 (s36 — which
-nevertheless scored 14/15, 25/30: a critic-loss excursion is not a performance failure), **dDP 6/8 (s30,31,33,35,36,37; s32,34 clean)** → Fisher exact 1/8 vs 6/8: **p = 0.041** (two-sided; A16 prediction "dH 0–1/8 vs dDP ≥ 3/8" met).
-dDP selected rnd so far 14,12,20,17,16 (mean 0.53) vs dH 0.688. Note for the writing: the dDP divergence is real and reproducible but its performance cost is
-partial (dDP selected hold 10–14/15, rnd 12–20/30 on completed seeds) — the LAST-checkpoint rnd statistic is the one to quote.
+| dDP | 35 | 5.28 | 4 | 12/15 / 13/30 | 12/15 / 13/30 |
+| dDP | 36 | 18.5 | 7 | 11/15 / 17/30 | 11/15 / 17/30 |
+| dDP | 37 | 4.56 | 4 | (eval at 19:50) | |
+**HEADLINE (1a) for RLPD — pre-registered A16, old world, sparse, γ 0.99, seeds 30–37 (dDP s37 still evaluating):**
+| statistic | dH | dDP | diff | 95 % CI | Welch p | exact perm p |
+|---|---|---|---|---|---|---|
+| selected ckpt, rnd-30 | 0.688 (n=8) | 0.519 (n=7) | +0.168 | [+0.067, +0.270] | 0.003 | 0.004 |
+| **LAST ckpt, rnd-30 (A16 statistic)** | 0.700 (n=7) | 0.494 (n=6) | **+0.206** | [+0.105, +0.306] | 0.001 | 0.002 |
+| selected ckpt, hold-15 | 0.917 (n=8) | 0.800 (n=7) | +0.117 | [+0.024, +0.209] | 0.018 | 0.022 |
+| divergence (max critic loss ≥ 1) | 1/8 | 6/8 | — | — | Fisher **0.041** | |
+A16 predictions ("dH 0–1/8 vs dDP ≥ 3/8"; "LAST rnd dH > dDP by ≥ 0.10") both met. Relative loss on random ICs 25–29 %.
+Tape census rules out format artefacts (§2 of METHODS UPDATE); the remaining mechanism candidate is demo-state coverage
+(DP-teacher trajectories are narrower in state space than human ones — the same argument as the exposure/coverage story).
+Per-seed: dH selected hold 14,14,14,11,15,14,14,14 / rnd 20,21,19,19,17,20,25,24; dDP hold 10,13,14,12,12,12,11 / rnd
+14,12,20,17,16,13,17. LAST rnd where a final readout exists: dH 21,19,21,17,20,25,24; dDP 14,12,17,16,13,17.
+One dH seed (s36) crossed the critic-loss threshold yet scored 14/15, 25/30 — a divergence event is not a performance
+failure; the performance statistic is the one to lead with, the divergence rate is the mechanism.
+Still to come (during the blackout): dense arms (question 2), fails arms + row-matched dup controls (1b).
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -133,12 +143,13 @@ if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
 ## 6. What can be written now (claims with evidence) — see ADVERSARIAL_AUDIT §7
 1. Methods/provenance contribution (one recorder, tape contract, registry, six silent-default bugs caught, run-identity rule).
 2. DP: DP-teacher demos ≈ human at matched N; small human edge on random ICs (p 0.041, unadjusted).
-3. RLPD: recipe sensitivity (γ 0.998 vs 0.99) dominates; under the published recipe human demos stable 3/3, DP demos 2/3
-   diverge — n=3, A16 statistic pending.
+3. **RLPD (1a): under the published recipe, human demos beat DP-teacher demos on random ICs by +0.21 (LAST ckpt, p 0.001,
+   n 7 v 6; pre-registered A16) and diverge less (1/8 vs 6/8, Fisher p 0.041); recipe (γ) sensitivity dominates everything
+   at γ 0.998.**
 4. WM: r2dreamer learns pick with dense reward + demos in BOTH worlds, checkpoint-bistable; sparse never ignites; dv3-torch
    critic runaway characterised; standard-recipe arms pending.
 5. Fails-tape effect: confounded (share × 2.7, length × 12) until the row-matched controls read out.
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 18:40 (cluster clock) — dDP g99 6/8 diverged; dv3 std s20 at 890k negative_
+_version: 2026-08-29 20:00 (cluster clock) — RLPD (1a) headline with stats_
