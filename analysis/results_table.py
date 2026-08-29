@@ -13,15 +13,20 @@ under world='?' rather than guessed.
 """
 import argparse, collections, glob, os, re, statistics as st
 
-def world_of(seed, path=''):
-    """World = demo-set world. Seed blocks: 10-14 old (matched_v2), 20-29 corrected (matched_w3),
-    40-42 split halves (matched_w3), 80-93/100-107 r2d old-world matched_v2. The wave directory
-    overrides the seed block where it is unambiguous (dp_pilotw4 = ts5 world)."""
+def world_of(seed, path='', arm=None, learner=None):
+    """World = demo-set world. Seed blocks: 10-19 old (matched_v2), 20-29 corrected (matched_w3),
+    40-42 split halves (matched_w3), 50-59 old halves, 30-37 RLPD gamma-0.99 block (old, matched_v2),
+    100-107 r2d old-world, 120-125 r2d NOCLAMP old-world. r2d 80-93 are old-world EXCEPT dH/dDP 80-83,
+    which exist only as the 08-28 corrected-world gate (DEMOSET=w3; logdir names carry no world).
+    Path/tag overrides: pilotw4/_w4 = ts5 world; _W3 re-score tags = corrected."""
     if 'pilotw4' in path or '_w4' in path: return 'corrected+ts5'
+    if '_W3' in path: return 'corrected'
     if 10 <= seed <= 19: return 'old'      # 14-19 = 08-28 RLPD old-world top-up
+    if 30 <= seed <= 37: return 'old'      # RLPD gamma 0.99 block (A17) incl. dup/fails arms
     if 50 <= seed <= 59: return 'old'      # old-world split halves (08-28)
     if 20 <= seed <= 29 or 40 <= seed <= 42: return 'corrected'
-    if 80 <= seed <= 93 or 100 <= seed <= 107: return 'old'
+    if learner == 'r2d' and arm in ('dH', 'dDP') and 80 <= seed <= 83: return 'corrected'
+    if 80 <= seed <= 93 or 100 <= seed <= 107 or 120 <= seed <= 125: return 'old'
     return '?'
 
 def collect(root):
@@ -38,7 +43,7 @@ def collect(root):
             m = re.search(r'R2D-RESULT arm=(\S+) seed=(\d+) .*?picked=([0-9.]+)', line)
             if m:                                   # sel readout only: selection set, 14/15 ceiling
                 arm, seed, p = m.groups(); seed = int(seed)
-                put(('r2d(SEL-ONLY, not a headline)', world_of(seed, f), 'dense', arm), seed, float(p), float('nan'))
+                put(('r2d(SEL-ONLY, not a headline)', world_of(seed, f, arm, 'r2d'), 'dense', arm), seed, float(p), float('nan'))
     for f in sorted(glob.glob(os.path.join(root, '**', 'HEADLINE.txt'), recursive=True)):
         m = re.search(r'arm=(\S+) seed=(\d+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', open(f).read())
         if not m: continue
