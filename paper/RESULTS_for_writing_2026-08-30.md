@@ -79,7 +79,10 @@ Per-seed: dH selected hold 14,14,14,11,15,14,14,14 / rnd 20,21,19,19,17,20,25,24
 14,12,20,17,16,13,17,18. LAST rnd where a final readout exists: dH 21,19,21,17,20,25,24; dDP 14,12,17,16,13,17,15.
 One dH seed (s36) crossed the critic-loss threshold yet scored 14/15, 25/30 — a divergence event is not a performance
 failure; the performance statistic is the one to lead with, the divergence rate is the mechanism.
-Still to come (during the blackout): dense arms (question 2), fails arms + row-matched dup controls (1b).
+Row-matched control dHsucc_dup (56 successes + 8 longest own successes duplicated), sparse, first 3 seeds (01:50 08-30):
+s30 hold 13 rnd 17, s31 15/23, s32 14/23 — all clean (max CL ≤ 0.08); i.e. adding ~1.7k rows of duplicated human successes
+leaves dH at its level (rnd 0.70 vs 0.69). Still to come (during the blackout): dHsucc_dup s33, dDPsucc_dup s30–33, dense
+arms (question 2), fails arms (1b).
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -166,5 +169,5 @@ RLPD dHsucc_dup s30–32. Pending in order: 33 RLPD (dup, fails ×16, dense ×12
 35 DP replicates as filler from 08-31 00:23. Harvest files: `paper/harvest_2026-08-3{0,1}_*.md` on the cluster (+20/+44/+62 h).
 Post-blackout list: `paper/NEXT_2026-08-28.md` (bottom).
 
-_version: 2026-08-29 23:25 (cluster clock) — FINAL pre-blackout stamp. Numbers above are complete for: DP (n=10), RLPD (1a)
+_version: 2026-08-30 01:55 (cluster clock) — FINAL pre-blackout stamp (dHsucc_dup s30–32 added). Numbers above are complete for: DP (n=10), RLPD (1a)
 sparse (n=8 v 8), r2dreamer corrected-world (n=4 v 4). Pending: RLPD dense/fails/dup, r2d n=8 and NOCLAMP finals, dv3 3M, DEMO3._
