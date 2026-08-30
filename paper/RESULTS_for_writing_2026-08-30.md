@@ -160,4 +160,11 @@ job 3034689 pending → result in `paper/DEMO3_SMOKE_2026-08-29.md` / the harves
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 22:10 (cluster clock) — RLPD n=8 v 8 final; r2d NOCLAMP runaway_
+## 7. State of the queue at the blackout (08-29 23:25 cluster time)
+Running: dv3 std s21/s22 (1M) + std-3M pack (s23–25, resume chain 3017793) + tg_clamp s2; r2d NOCLAMP dH/dDP s122/123;
+RLPD dHsucc_dup s30–32. Pending in order: 33 RLPD (dup, fails ×16, dense ×12), r2d w3 s84–87 ×2 packs, DEMO3 smoke, then
+35 DP replicates as filler from 08-31 00:23. Harvest files: `paper/harvest_2026-08-3{0,1}_*.md` on the cluster (+20/+44/+62 h).
+Post-blackout list: `paper/NEXT_2026-08-28.md` (bottom).
+
+_version: 2026-08-29 23:25 (cluster clock) — FINAL pre-blackout stamp. Numbers above are complete for: DP (n=10), RLPD (1a)
+sparse (n=8 v 8), r2dreamer corrected-world (n=4 v 4). Pending: RLPD dense/fails/dup, r2d n=8 and NOCLAMP finals, dv3 3M, DEMO3._
