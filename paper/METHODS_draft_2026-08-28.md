@@ -382,7 +382,8 @@ Patch (`cluster/patches/r2dreamer_final_rr.patch`): (1) `envs/genesis.py`: shapi
 **UPDATE 08-29 — what is standard.** The replay-buffer critic loss (`loss_scales.repval 0.3`, `dreamer.py:539-563`)
 matches the official DreamerV3 v2 recipe (`beta_repval 0.3`, danijar/dreamerv3; `paper/WM_CANDIDATES_2026-08-29.md`);
 only the imagined-return clamp (`return_clamp 100`, `dreamer.py:502-503, 552-553`) is a deviation (E8 corrected).
-**Standard arm = `env.return_clamp=0`, repval kept** (runs `pick_v5d4c_delta_shaped_NOCLAMP_{dH,dDP}_s12{2,3}`, packed).
+**Standard arm = `env.return_clamp=0`, repval kept** (runs `pick_v5d4c_delta_shaped_NOCLAMP_{dH,dDP}_s12{2,3}`, packed) —
+result 08-29 22:00: value runaway (train/val 115–825 vs max 100 at ~0.7M); the clamp is load-bearing.
 The earlier "STD" attempt (clamp off + repval off, s120/121) died at launch on a non-existent hydra key and is void.
 LAST-checkpoint hold re-scores (21 runs, `baselines/outputs/n12_rescore/*_LAST_hold_*`): 0/15 or ≥10/15 in 16/21 —
 final policies are bistable; BEST-of-K selection on `sel` (training ICs) does the work and must be disclosed as such.

@@ -64,19 +64,19 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 | dDP | 34 | 0.03 | 0 | 12/15 / 16/30 | 12/15 / 16/30 |
 | dDP | 35 | 5.28 | 4 | 12/15 / 13/30 | 12/15 / 13/30 |
 | dDP | 36 | 18.5 | 7 | 11/15 / 17/30 | 11/15 / 17/30 |
-| dDP | 37 | 4.56 | 4 | (eval at 19:50) | |
-**HEADLINE (1a) for RLPD — pre-registered A16, old world, sparse, γ 0.99, seeds 30–37 (dDP s37 still evaluating):**
+| dDP | 37 | 4.56 | 4 | 13/15 / 18/30 | 13/15 / 15/30 |
+**HEADLINE (1a) for RLPD — pre-registered A16, old world, sparse, γ 0.99, seeds 30–37 (COMPLETE n=8 v 8; dH s30 has no final-ckpt readout, dDP s32 none → LAST n=7 v 7):**
 | statistic | dH | dDP | diff | 95 % CI | Welch p | exact perm p |
 |---|---|---|---|---|---|---|
-| selected ckpt, rnd-30 | 0.688 (n=8) | 0.519 (n=7) | +0.168 | [+0.067, +0.270] | 0.003 | 0.004 |
-| **LAST ckpt, rnd-30 (A16 statistic)** | 0.700 (n=7) | 0.494 (n=6) | **+0.206** | [+0.105, +0.306] | 0.001 | 0.002 |
-| selected ckpt, hold-15 | 0.917 (n=8) | 0.800 (n=7) | +0.117 | [+0.024, +0.209] | 0.018 | 0.022 |
+| selected ckpt, rnd-30 | 0.688 (n=8) | 0.529 (n=8) | +0.158 | [+0.062, +0.254] | 0.003 | 0.004 |
+| **LAST ckpt, rnd-30 (A16 statistic)** | 0.700 (n=7) | 0.495 (n=7) | **+0.205** | [+0.111, +0.299] | 0.001 | 0.002 |
+| selected ckpt, hold-15 | 0.917 (n=8) | 0.808 (n=8) | +0.108 | [+0.022, +0.195] | 0.018 | 0.032 |
 | divergence (max critic loss ≥ 1) | 1/8 | 6/8 | — | — | Fisher **0.041** | |
 A16 predictions ("dH 0–1/8 vs dDP ≥ 3/8"; "LAST rnd dH > dDP by ≥ 0.10") both met. Relative loss on random ICs 25–29 %.
 Tape census rules out format artefacts (§2 of METHODS UPDATE); the remaining mechanism candidate is demo-state coverage
 (DP-teacher trajectories are narrower in state space than human ones — the same argument as the exposure/coverage story).
-Per-seed: dH selected hold 14,14,14,11,15,14,14,14 / rnd 20,21,19,19,17,20,25,24; dDP hold 10,13,14,12,12,12,11 / rnd
-14,12,20,17,16,13,17. LAST rnd where a final readout exists: dH 21,19,21,17,20,25,24; dDP 14,12,17,16,13,17.
+Per-seed: dH selected hold 14,14,14,11,15,14,14,14 / rnd 20,21,19,19,17,20,25,24; dDP hold 10,13,14,12,12,12,11,13 / rnd
+14,12,20,17,16,13,17,18. LAST rnd where a final readout exists: dH 21,19,21,17,20,25,24; dDP 14,12,17,16,13,17,15.
 One dH seed (s36) crossed the critic-loss threshold yet scored 14/15, 25/30 — a divergence event is not a performance
 failure; the performance statistic is the one to lead with, the divergence rate is the mechanism.
 Still to come (during the blackout): dense arms (question 2), fails arms + row-matched dup controls (1b).
@@ -90,8 +90,11 @@ Still to come (during the blackout): dense arms (question 2), fails arms + row-m
 - **Corrected world gate (dH/dDP s80–83, dense, 3M, packed, 08-29): IGNITES.** In-job sel max per seed: dH 0.40, 0.93, 0.93,
   0.93 (nonzero ckpts 3/17/13/14 of 28); dDP 0.00, 0.87, 0.13, 0.93 (0/17/4/8). Same adjacent-checkpoint bistability.
   Protocol re-scores (BEST hold/rnd, LAST hold; `n12_rescore/*_W3_*`) → §3.1.
-- **Standard arm (clamp off, repval kept) NOCLAMP dH/dDP s122/123:** submitted 08-29; finishes during the blackout
-  (+44/+62 h harvest files).
+- **Standard arm (clamp off, repval kept) NOCLAMP dH/dDP s122/123 — RUNS AWAY.** At ~0.7M sim steps `train/val` = 825, 343
+  (dH), 226, 115 (dDP) against a 100 maximum — the same critic runaway as dv3, now in r2dreamer with the official replay
+  critic loss present. So the clamp is what makes r2dreamer learn; neither torch port is stable under the published recipe on
+  this task. Write-up: the WM arm = DreamerV3-with-return-clamp, disclosed; the standard-recipe negatives (dv3-std ×3,
+  r2d-NOCLAMP ×4) are reported as such. Final numbers land in the +44/+62 h harvests.
 - N15 (dR2D + DP-fails, mixed source): direction-only (n 4 v 3, CI spans 0, min p 0.057); mechanism cell, not a matrix cell.
 
 ### 3.1 W3 protocol re-scores (corrected world, dense, 3M; BEST = highest in-job sel among archived ckpts)
@@ -127,7 +130,9 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 
 ### 4.1 dv3 std @1M (appended)
 18:30: std s20 @890k — no success since 303k, value now DECREASING (30 → 19); s21 @505k 9 nonzero samples (max 0.22), value 8;
-s22 @510k 1 nonzero, value 8. Verdict at 1M for s20: NEGATIVE (transient picks, no learning). 3M pack (s23–25) started 18:00 and
+s22 @510k 1 nonzero, value 8. Verdict at 1M for s20: NEGATIVE (transient picks, no learning; value 12 and falling at 950k). The launcher's post-training
+eval failed on s20 (stale timestamp dir from a cancelled job; fixed in the launcher 22:00, but s21 inherits the bug — its
+protocol eval must be run by hand after the blackout; s22 is clean). 3M pack (s23–25) started 18:00 and
 runs through the blackout with its resume chain. DEMO3/MoDem cluster smoke attempt launched 18:40 (A18 trigger).
 15:50: std s20 @780k (4 nonzero, none since 303k, value 30); s21 @410k 8 nonzero incl. 0.22 @~350k and 0.12 @366k then 0,
 value 21; s22 @418k 1 nonzero; clamp s20 @847k 7 nonzero, value 97; fix s20 @572k 10 nonzero, value 99. Still no sustained
@@ -137,8 +142,9 @@ No sustained learning under any dv3 recipe yet.
 
 ## 5. Fallback WM (A18)
 DEMO3 codebase (TD-MPC2 backbone; MoDem/TD-MPC2 by flag; MIT) prepared locally: converter round-trip verified on dH,
-env wrapper import-checked; `policy_pretraining=false` flag set is actor-BC-free. ~4–6 h to a cluster smoke. Triggered only
-if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
+env wrapper import-checked; `policy_pretraining=false` flag set is actor-BC-free. ~4–6 h to a cluster smoke. Triggered 08-29 (both
+standard arms negative): venv installed on the cluster (torch 2.7.0+cu126 kept; torchrl 0.8.1, tensordict 0.8.3), smoke
+job 3034689 pending → result in `paper/DEMO3_SMOKE_2026-08-29.md` / the harvest files.
 
 ## 6. What can be written now (claims with evidence) — see ADVERSARIAL_AUDIT §7
 1. Methods/provenance contribution (one recorder, tape contract, registry, six silent-default bugs caught, run-identity rule).
@@ -146,10 +152,12 @@ if neither dv3-std nor r2d-NOCLAMP sustains a pick with bounded value by ~1M.
 3. **RLPD (1a): under the published recipe, human demos beat DP-teacher demos on random ICs by +0.21 (LAST ckpt, p 0.001,
    n 7 v 6; pre-registered A16) and diverge less (1/8 vs 6/8, Fisher p 0.041); recipe (γ) sensitivity dominates everything
    at γ 0.998.**
-4. WM: r2dreamer learns pick with dense reward + demos in BOTH worlds, checkpoint-bistable; sparse never ignites; dv3-torch
-   critic runaway characterised; standard-recipe arms pending.
+4. WM: r2dreamer (return-clamped DreamerV3) learns pick with dense reward + demos in BOTH worlds, checkpoint-bistable,
+   human > DP in the corrected world (0.77 vs 0.33 hold, n=4, p 0.14; n=8 pending); sparse never ignites. Under the published
+   recipe (no clamp) BOTH torch ports run away (dv3-std ×3 no learning; r2d-NOCLAMP values 115–825 vs max 100) — a
+   characterised negative, not a missing experiment.
 5. Fails-tape effect: confounded (share × 2.7, length × 12) until the row-matched controls read out.
 Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
 
 ---
-_version: 2026-08-29 20:00 (cluster clock) — RLPD (1a) headline with stats_
+_version: 2026-08-29 22:10 (cluster clock) — RLPD n=8 v 8 final; r2d NOCLAMP runaway_
