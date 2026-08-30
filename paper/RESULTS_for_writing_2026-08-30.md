@@ -20,6 +20,10 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
   ONE unadjusted comparison, top-up not pre-registered as this test (AUDIT_results §4). Old world n=5 replicate: no spread.
 - (1b) not applicable to DP by design (no IL on failures, PAPER_PLAN §3). (2) not applicable (no reward).
 - 35 further DP jobs are user-held (replicates); not needed for the claim above.
+- **Unpruned-human control (user 08-30):** base dH is leading-idle-pruned (29.6 % of frames); density controls removing ALL idle
+  decisions (dHallpruned_1e3/1e2) had no effect; the fully UNPRUNED human set (`dHunpruned`, N=52 — 9 dH ICs lack an unpruned
+  success — rows 8005 vs 7002) is training now (DP seeds 30–32, old world). If DP drops on it, "DP is indifferent to source"
+  becomes "DP is indifferent once the human data is cleaned" — the caveat for the (1a) DP paragraph.
 
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
