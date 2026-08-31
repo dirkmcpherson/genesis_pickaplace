@@ -48,8 +48,8 @@ rlpd_maxcl = {
 dp_w3 = dict(
     dH_hold=[13, 13, 14, 14, 14, 13, 14, 13, 11, 14], dH_rnd=[18, 19, 18, 14, 13, 15, 16, 16, 18, 17],
     dDP_hold=[13, 14, 12, 14, 11, 13, 13, 14, 14, 13], dDP_rnd=[15, 14, 14, 15, 16, 15, 11, 15, 16, 15])
-# DP old world, seeds 10-14, selected ckpt rnd; dHunpruned s32 (old world)
-dp_old = dict(dH_rnd=[17, 16, 18, 15, 19], dDP_rnd=[16, 18, 16, 17, 16], dHunpruned_rnd=[13])
+# DP old world, seeds 10-14, selected ckpt rnd; dHunpruned s32-34 (old world; -0.056 vs dH, perm p 0.36)
+dp_old = dict(dH_rnd=[17, 16, 18, 15, 19], dDP_rnd=[16, 18, 16, 17, 16], dHunpruned_rnd=[13, 17, 16])
 # r2dreamer corrected world (W3), dense, 3M, BEST = highest in-job sel among archived ckpts; s80-83
 r2d_w3 = dict(dH_hold=[10, 15, 11, 10], dH_rnd=[20, 25, 22, 16],
               dDP_hold=[1, 2, 2, 15], dDP_rnd=[1, 2, 3, 28])
@@ -144,12 +144,14 @@ a.set_title('corrected world, n=10 v 10 (seeds 20-29)', fontsize=10)
 for i, k in enumerate(['dH_rnd', 'dDP_rnd']):
     src = 'human' if i == 0 else 'machine'
     seeds_pts(b, i, dp_old[k], C['DP'], src, 30)
-b.scatter([2], np.asarray(dp_old['dHunpruned_rnd']) / 30, marker='*', s=170,
+up = np.asarray(dp_old['dHunpruned_rnd']) / 30
+b.scatter([2] * len(up) + rng.uniform(-0.06, 0.06, len(up)), up, marker='*', s=150,
           facecolor='white', edgecolor=C['DP'], linewidth=1.5)
-b.set_xticks([0, 1, 2]); b.set_xticklabels(['human\n(n=5)', 'DP\n(n=5)', 'human\nUNPRUNED\n(n=1, +2 running)'], fontsize=8)
+b.hlines(up.mean(), 1.78, 2.22, color=C['DP'], linewidth=2.4)
+b.set_xticks([0, 1, 2]); b.set_xticklabels(['human\n(n=5)', 'DP\n(n=5)', 'human\nUNPRUNED\n(n=3)'], fontsize=8)
 b.set_ylim(0, 1); b.set_title('old world, random ICs', fontsize=10)
-fig.suptitle('Diffusion Policy is nearly source-indifferent — but the raw (unpruned) human tapes\n'
-             'may cost it: first unpruned seed lands below the human band', y=1.06, fontsize=10)
+fig.suptitle('Diffusion Policy is nearly source-indifferent — and the control holds on RAW human tapes:\n'
+             'unpruned demos cost nothing detectable (−0.06, perm p 0.36, n=3 v 5)', y=1.06, fontsize=10)
 fig.savefig(f'{OUT}/fig3_dp_violin.png'); fig.savefig(f'{OUT}/fig3_dp_violin.pdf')
 
 # ---------------------------------------------------------------- fig 4: r2dreamer W3

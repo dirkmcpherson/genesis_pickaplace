@@ -22,12 +22,12 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 - 35 further DP jobs are user-held (replicates); not needed for the claim above.
 - **Unpruned-human control (user 08-30):** base dH is leading-idle-pruned (29.6 % of frames); density controls removing ALL idle
   decisions (dHallpruned_1e3/1e2) had no effect; the fully UNPRUNED human set (`dHunpruned`, N=52 — 9 dH ICs lack an unpruned
-  success — rows 8005 vs 7002) trains in the old world. **First readout (s32, 08-31):** selected hold 13/15, **rnd 13/30
-  (0.43)** — below the old-world dH band (s10–14 selected rnd 15–19/30, mean 0.567, hold 0.813); final 11/15 / 16/30.
-  n=1, no claim yet; s30/s31 died on a bad GPU (pax007, CUDA device unavailable) and were relaunched as fresh seeds s33/s34
-  (running 08-31, ~3 h each + eval). If the drop holds at n=3, the (1a) DP sentence gains the caveat: "DP is indifferent to
-  source once the human data is trimmed of leading idle frames — raw human tapes cost it ~0.1 on random ICs, and trimming
-  won't always be as trivial as it was here."
+  success — rows 8005 vs 7002) trains in the old world. **COMPLETE n=3 (08-31): NO detectable penalty.** Selected rnd 13, 17, 16/30
+  (s32/33/34; hold 13, 12, 13/15) vs pruned dH s10-14 rnd 15-19/30: diff -0.056, CI [-0.194, +0.083], Welch p 0.31 /
+  perm 0.36. The first seed (13/30) had suggested a drop; seeds 33/34 land inside the pruned band. Honest statement for
+  the paper: raw (unpruned) human tapes cost DP nothing detectable at this n — the pruning step is a training-efficiency
+  choice (29.6 % fewer frames), not a load-bearing data-cleaning step, and "DP reacts the same to both sources" survives
+  the control. (s30/s31 died on a bad GPU and were replaced by fresh seeds s33/s34 per A9.)
 
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
@@ -110,11 +110,13 @@ Per-seed LAST rnd: dHHfails 23,23,20,21,21,25,22,24; dDPfails 19,15,3,18,15,20,2
 - Dup controls complete n=4 v 4 (LAST rnd): dHsucc_dup 17,23,23,18 (0.675; max CL ≤ 0.08, 0/4 diverged);
   dDPsucc_dup 19,13,5,9 (0.383; s31 CL 4.6, s32 1.65 → 2/4 diverged). The source gap replicates inside the dup
   controls (+0.29) — it is not a row-count artefact.
-- **(2) dense arms — partial** (transient CUDA failures on one node killed 4 of 12; refills s36–38 running 08-31).
-  Done: dH-dense s30/31/32/34/35 selected rnd 8,6,17,14,17 (max CL ≤ 0.76, 0/5 ≥ 1); dDP-dense s31/33/35 selected rnd
-  9,7,12 (max CL 1.26, 428, 19.7 → 3/3 ≥ 1). Early read: dense shaping does NOT lift either source above its sparse
-  level (dH-dense mean rnd 0.41 vs sparse 0.69), and dDP still diverges. Diagnostic only until refills land; per A16
-  the trip-count watchdog is invalid on dense — max CL and final≈selected are the health reads there.
+- **(2) dense arms — COMPLETE n=6 v 6** (4 of the original 12 died on one node's bad GPU; refills = fresh seeds per A9).
+  dH-dense selected rnd 8,6,17,14,17,6 (mean 0.378); dDP-dense 9,7,12,4,11,11 (mean 0.300). Read: potential-shaped
+  dense reward HURTS both sources relative to sparse (dH 0.38 vs 0.69; dDP 0.30 vs 0.50) and does not close the source
+  gap. dDP-dense still shows critic instability (orig s33 max CL 428; refill s36 final 0/15, s38 selected ckpt_020 with
+  final 3/30 — final≠selected, the dense-arm health read). Diagnostic answer to question (2): reward density does not
+  rescue machine demos; if anything sparse is the better recipe for both. Per A16 the trip-count watchdog is invalid on
+  dense — max CL and final≈selected are the health reads there.
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -129,10 +131,12 @@ Per-seed LAST rnd: dHHfails 23,23,20,21,21,25,22,24; dDPfails 19,15,3,18,15,20,2
   oscillate far past the 100 maximum across snapshots (dH s122: 806 → 190; dDP s123: 417 → 75 — vs clamped runs pinned
   96–98). Finals (in-job sel eval of the BEST-of-K ckpt): dH s122 picked 0.87 (best ≈ 0.52M), s123 0.47; dDP s122 0.60,
   s123 0.13 (best ckpt very early). Honest statement: without the clamp the world model still reaches transient
-  competence that BEST-of-K can catch, but the value function is unbounded and the endpoint unreliable — LAST-ckpt
-  hold/rnd re-scores queued 08-31 (`n12_rescore/*NOCLAMP*`) to quantify the endpoint. The clamp remains the load-bearing
-  deviation; neither torch port is stable under the published recipe on this task. Write-up: the WM arm =
-  DreamerV3-with-return-clamp, disclosed; the standard-recipe negatives (dv3-std ×3, r2d-NOCLAMP ×4) reported as such.
+  competence that BEST-of-K can catch, but the value function is unbounded and the endpoint unreliable. **Re-scores
+  (08-31, protocol ICs) confirm: LAST ckpt is DEAD on all four runs** (hold 0,0,1,0 of 15; rnd 0,0,1,0 of 30) **and even
+  BEST is weak** (hold 7,0,7,1 of 15; rnd 9,3,10,2 of 30 — vs clamped W3 dH BEST hold 10–15). So "runs away" cashes out
+  as: transient competence, unbounded values, endpoint zero. The clamp remains the load-bearing deviation; neither torch
+  port is stable under the published recipe on this task. Write-up: the WM arm = DreamerV3-with-return-clamp, disclosed;
+  the standard-recipe negatives (dv3-std ×3, r2d-NOCLAMP ×4) reported as such.
 - N15 (dR2D + DP-fails, mixed source): direction-only (n 4 v 3, CI spans 0, min p 0.057); mechanism cell, not a matrix cell.
 
 ### 3.1 W3 protocol re-scores (corrected world, dense, 3M; BEST = highest in-job sel among archived ckpts)
@@ -150,9 +154,11 @@ Seed-level (analysis/stats.py, n=4 v 4): BEST hold dH 0.767 vs dDP 0.333, diff +
 (min attainable 0.029); BEST rnd 0.692 vs 0.283, diff +0.41, CI [−0.26, +1.07], p 0.143; LAST hold 0.533 vs 0.333, p 0.63.
 Reading: in the corrected world r2dreamer learns from human demos on 4/4 seeds (hold ≥ 10/15) and from DP demos on 1/4;
 dDP s81's sel 0.87 collapsed to 2/15 on hold (sel-selected checkpoint was a fluke — another reason sel is never a headline).
-Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029). Seeds 84–87 per source (packs
-3025535/36) are at ~0.9–1.2M of 3M on 08-31 (values pinned 96–98, healthy) — done ~09-01, then the same BEST pinning +
-re-score protocol takes the table to n=8 v 8 (min p 0.0002, ~80 % power at the observed gap).
+Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029). Seeds 84–87 per source: the dH pack
+(3025535) hit OUT_OF_MEMORY at ~12 h / ~1M steps (4 packed runs × ~33 GB > 120 GB) and was resubmitted 08-31 as two
+2-seed packs at 90 GB (3085547/48; logdirs resume from latest.pt, DUPLICATE_OK reason logged); the dDP pack (3025536)
+is past 13 h and healthy. Done ~09-01, then the same BEST pinning + re-score protocol takes the table to n=8 v 8
+(min p 0.0002, ~80 % power at the observed gap).
 
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 
@@ -211,9 +217,14 @@ the r2d n=8 gate disappoints; decision rests with the user.
    n 8 v 8), and adding own-failure tapes cures the DP arm's divergence (6/8 → 1/8). The fails-vs-dup effect is
    directionally positive on both sources (A17 rule met) but within noise of the row-count control — claim the
    de-divergence, not a score lift.** The source gap also replicates inside the dup controls (+0.29, n 4 v 4).
-6. DP unpruned-human control: first seed lands below the pruned-dH band on random ICs (0.43 vs 0.567 mean) — n=1,
-   two more seeds land 08-31.
-Still open: (2) dense (refills running), r2d corrected-world n=8 (~09-01), dv3 3M (~09-01).
+6. DP unpruned-human control COMPLETE n=3: no detectable penalty (−0.056, CI [−0.19, +0.08], perm p 0.36) — the
+   "DP reacts the same to both sources" claim survives; pruning was efficiency, not load-bearing cleaning.
+7. RLPD (2) dense COMPLETE n=6v6: dense shaping hurts both sources (dH 0.38 / dDP 0.30 vs sparse 0.69 / 0.50) and
+   does not close the gap — reward density does not rescue machine demos.
+8. r2d NOCLAMP fully quantified: endpoint dead on protocol ICs (LAST hold ≤1/15 ×4); BEST weak. The clamp is
+   load-bearing, with numbers.
+Still open: r2d corrected-world n=8 (~09-01; dH pack resumed after OOM), dv3 3M (~09-01), RLPD corrected-world
+g99w3 s40-47 (A20, running 08-31), dup n=8 top-up (running).
 
 ---
 ## 7. State of the queue (08-31 00:30, post-blackout)
@@ -225,6 +236,11 @@ silent-default sighting); DEMO3 smoke resubmitted after the hydra config_path fi
 (BeginTime fillers). Blackout casualties (all transient CUDA on one node, all refilled with fresh seeds per A9):
 DP dHunpruned s30/31, RLPD dense ×4. Two scheduled harvests (3017796/97) still pending — will self-append.
 
-_version: 2026-08-31 00:30 — post-blackout update. Complete: DP (n=10), RLPD (1a) sparse n=8v8, RLPD (1b) fails n=8v8 +
-dup n=4v4, dv3-std 1M ×3 negative. Pending: RLPD dense refills, DP dHunpruned s33/34, r2d W3 n=8 (~09-01), r2d NOCLAMP
-LAST re-scores, dv3 3M + hand evals, touchgoal r2d._
+**08:30 update:** A20 corrected-world RLPD block (g99w3 s40-47 ×2 arms, 16 jobs) running — submitted by the staged
+VPN-wait loop, all past the world/demo gates; dup n=8 top-up running; touchgoal r2d pack training (~790 metric lines);
+DEMO3 smoke now dies at env creation depth (gymnasium API fix in, resubmitted 3085524); dH w3 pack OOM → resumed as
+2×2-seed packs (3085547/48).
+
+_version: 2026-08-31 08:40 — morning update. Complete: DP (n=10) + unpruned control (n=3, no penalty), RLPD (1a) sparse
+n=8v8, (1b) fails n=8v8 + dup n=4v4, (2) dense n=6v6, dv3-std 1M ×3 protocol-grade negative, r2d NOCLAMP BEST+LAST
+re-scores. Pending: r2d W3 n=8 (~09-01), RLPD g99w3 (A20) + dup n=8 (today), dv3 3M, touchgoal, DEMO3 smoke._
