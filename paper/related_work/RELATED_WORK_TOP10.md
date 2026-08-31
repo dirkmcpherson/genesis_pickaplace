@@ -345,3 +345,14 @@ distinction. What protects a self-consuming pipeline is not that its data is
 *(Numbers as of 08-31: RLPD sparse n=8v8 LAST-ckpt rnd; fails n=8v8; dup n=4v4
 with n=8 running; DP corrected-world n=10v10; r2d W3 n=4v4 with n=8 due ~09-01;
 sources: RESULTS_for_writing_2026-08-30.md §§1–4.)*
+
+> **ADDENDUM 08-31 ~17:00 (A20 scored — read before lifting paragraph (1)).** The corrected-world RLPD
+> replication (pre-registered A20) came back NULL: −0.02, perm p 0.98, n=8v8, divergence 3/8 v 3/8. The
+> old-world +0.21 stands (pre-registered, met); the like-to-like replication stands (pre-registered,
+> failed). Paragraph (1)'s reversal-of-robomimic claim must therefore be stated as WORLD-CONDITIONED:
+> the source effect appears where the machine demos are narrow (old world, −21 % EEF coverage vs human)
+> and vanishes where the higher-fidelity world makes them human-broad (−5 %; fig6/fig7). This *sharpens*
+> rather than weakens the coverage thesis — the same mechanism now explains robomimic's direction, our
+> old-world reversal, AND our corrected-world null with one variable. The DP calibration (unchanged
+> across worlds) rules out "harder world." r2dreamer n=8 in the same corrected world (~09-01) tests
+> whether the WM's human-advantage survives where RLPD's does not — paragraph (4) is unaffected until then.

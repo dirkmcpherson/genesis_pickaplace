@@ -118,6 +118,28 @@ Per-seed LAST rnd: dHHfails 23,23,20,21,21,25,22,24; dDPfails 19,15,3,18,15,20,2
   rescue machine demos; if anything sparse is the better recipe for both. Per A16 the trip-count watchdog is invalid on
   dense — max CL and final≈selected are the health reads there.
 
+### 2.3 A20 corrected-world replication (scored 08-31 ~17:00; γ 0.99 sparse, matched_w3, seeds 40–47) — **REGISTERED PREDICTIONS FAIL; the RLPD source effect is WORLD-DEPENDENT**
+| statistic | dH | dDP | diff | 95 % CI | Welch p | exact perm p |
+|---|---|---|---|---|---|---|
+| **LAST ckpt, rnd-30 (A20 statistic)** | 0.496 (n=8) | 0.517 (n=8) | −0.021 | [−0.301, +0.259] | 0.875 | 0.983 |
+| selected ckpt, rnd-30 | 0.565 (n=8) | 0.521 (n=8) | +0.044 | [−0.157, +0.245] | 0.640 | 0.665 |
+| divergence (max CL ≥ 1) | 3/8 (117, 20, 50) | 3/8 (15, 1.04, 29) | — | — | Fisher 1.0 | |
+Per-seed LAST rnd: dH 19,1,19,19,1,21,20,19 (s41/s44 selected EARLY ckpts then collapsed to 0–1 by ckpt_100);
+dDP 18,19,17,19,20,0,20,11 (s45 dead throughout). dH s42 diverged by CL (20) yet scored 19/30 — the
+divergence↔performance decoupling seen in the old world (s36) repeats. A20's registered predictions
+("dH > dDP by ≥ 0.10"; "divergence dH ≤ 2/8 vs dDP ≥ 3/8") BOTH FAIL: the corrected world shows **no source
+effect on any statistic** (dH ≈ dDP ≈ 0.50–0.52, symmetric 3/8 divergence). The old-world (1a) result stands
+as pre-registered and met; this replication stands as pre-registered and failed; the claim that survives both
+is: **the RLPD demo-source effect is world-dependent.** The mechanism is not mysterious — it was measured on
+the tapes (fig6/fig7, committed after the 9/16 interim but before this full-n scoring): the corrected world's
+stiff, gravity-compensated arm produces machine demos that are nearly human-broad (EEF coverage deficit −21 %
+old → −5 % corrected; the w3 teacher's tapes sit 2× closer to the human tapes), and the corrected world
+retains ~20 % more of the real command signal — where machine-demo coverage matches human, the value learner
+stops caring which source it came from. DP calibrates the worlds (unchanged across them, §1), so this is an
+RLPD × world × source interaction, not a harder world. Cross-check in flight: r2dreamer n=8 in the SAME
+corrected world (~09-01) — its n=4 direction (human >> DP) is the opposite pattern in the same world, so the
+WM readout decides whether world-dependence is learner-general or RLPD-specific.
+
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
 - **Old world, dense, 3M (historic block, seeds 50–53, 100–103, 80–87 dR2D):** selected checkpoints reach 13–15/15 hold on
@@ -206,9 +228,13 @@ the r2d n=8 gate disappoints; decision rests with the user.
 ## 6. What can be written now (claims with evidence) — see ADVERSARIAL_AUDIT §7
 1. Methods/provenance contribution (one recorder, tape contract, registry, six silent-default bugs caught, run-identity rule).
 2. DP: DP-teacher demos ≈ human at matched N; small human edge on random ICs (p 0.041, unadjusted).
-3. **RLPD (1a): under the published recipe, human demos beat DP-teacher demos on random ICs by +0.21 (LAST ckpt, p 0.001,
-   n 7 v 6; pre-registered A16) and diverge less (1/8 vs 6/8, Fisher p 0.041); recipe (γ) sensitivity dominates everything
-   at γ 0.998.**
+3. **RLPD (1a), REVISED after A20 (08-31 ~17:00): the source effect is WORLD-DEPENDENT. Old world: human beats DP-teacher
+   demos by +0.21 on random ICs (LAST ckpt, p 0.001, n 7v7, A16 predictions met) and diverges less (1/8 vs 6/8, Fisher
+   0.041). Corrected world: NO effect on any statistic (−0.02, perm p 0.98, n 8v8; divergence 3/8 v 3/8; A20 predictions
+   failed). Both blocks pre-registered; both reported. The mechanism carries the pair: the source effect appears exactly
+   where machine-demo coverage is narrow (old-world dDP −21 % EEF coverage vs human; corrected world −5 %, fig6) — the
+   claim is coverage-of-the-generating-process, with demo SOURCE as its old-world proxy.** Recipe (γ) sensitivity still
+   dominates everything at γ 0.998.
 4. WM: r2dreamer (return-clamped DreamerV3) learns pick with dense reward + demos in BOTH worlds, checkpoint-bistable,
    human > DP in the corrected world (0.77 vs 0.33 hold, n=4, p 0.14; n=8 pending); sparse never ignites. Under the published
    recipe (no clamp) BOTH torch ports run away (dv3-std ×3 no learning; r2d-NOCLAMP values 115–825 vs max 100) — a
@@ -223,8 +249,11 @@ the r2d n=8 gate disappoints; decision rests with the user.
    does not close the gap — reward density does not rescue machine demos.
 8. r2d NOCLAMP fully quantified: endpoint dead on protocol ICs (LAST hold ≤1/15 ×4); BEST weak. The clamp is
    load-bearing, with numbers.
-Still open: r2d corrected-world n=8 (~09-01; dH pack resumed after OOM), dv3 3M (~09-01), RLPD corrected-world
-g99w3 s40-47 (A20, running 08-31), dup n=8 top-up (running).
+9. **A20 scored (08-31 ~17:00): corrected-world RLPD n=8v8 shows no source effect (§2.3) — registered predictions
+   failed, reported as such.** With §1 (DP unchanged across worlds) this is an RLPD × world × source interaction;
+   fig6/fig7 carry the coverage mechanism that predicts it.
+Still open: r2d corrected-world n=8 (~09-01; dH pack resumed after OOM) — now DECISIVE for whether world-dependence
+is learner-general or RLPD-specific; dv3 3M (~09-01); dup n=8 top-up (running).
 
 ---
 ## 7. State of the queue (08-31 00:30, post-blackout)

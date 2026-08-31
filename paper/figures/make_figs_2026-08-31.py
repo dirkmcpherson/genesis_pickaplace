@@ -57,9 +57,10 @@ r2d_w3 = dict(dH_hold=[10, 15, 11, 10], dH_rnd=[20, 25, 22, 16],
 # human-minus-DP gaps for the summary forest (analysis/stats.py, Welch 95% CI, perm p)
 forest = [  # (label, diff, lo, hi, p_perm, colour, note)
     ('DP  (corrected world, selected rnd, n=10 v 10)', 0.060, 0.006, 0.114, 0.041, C['DP'], 'unadjusted'),
-    ('RLPD sparse  (LAST rnd, n=7 v 7)', 0.205, 0.111, 0.299, 0.002, C['RLPD'], 'A16 prereg'),
-    ('RLPD +fails  (LAST rnd, n=8 v 8)', 0.208, 0.048, 0.368, 0.0009, C['RLPD'], ''),  # perm 2x1s < 0.001
-    ('RLPD +succ_dup  (LAST rnd, n=4 v 4)', 0.292, -0.007, 0.590, 0.086, C['RLPD'], 'n=8 queued'),
+    ('RLPD sparse, OLD world  (LAST rnd, n=7 v 7)', 0.205, 0.111, 0.299, 0.002, C['RLPD'], 'A16 prereg, met'),
+    ('RLPD +fails, OLD world  (LAST rnd, n=8 v 8)', 0.208, 0.048, 0.368, 0.0009, C['RLPD'], ''),  # perm 2x1s < 0.001
+    ('RLPD +succ_dup, OLD world  (LAST rnd, n=4 v 4)', 0.292, -0.007, 0.590, 0.086, C['RLPD'], 'n=8 queued'),
+    ('RLPD sparse, CORRECTED world  (LAST rnd, n=8 v 8)', -0.021, -0.301, 0.259, 0.983, C['RLPD'], 'A20 prereg, FAILED'),
     ('r2dreamer  (corrected world, BEST rnd, n=4 v 4)', 0.408, -0.256, 1.073, 0.143, C['R2D'], 'n=8 ~09-01'),
 ]
 
@@ -186,7 +187,7 @@ ax.set_xlabel('human − DP-teacher demo advantage, pick success on random ICs (
 ax.set_xlim(-0.5, 1.2)
 fig.text(0.5, -0.05, 'dv3 (unmodified DreamerV3 torch port): no learner to compare — both sources 0 success at 1M ×3 seeds',
          ha='center', fontsize=8, color=C['DV3'])
-ax.set_title('The human-demo advantage grows with how hard the learner uses the data\n'
-             '(IL → RL-with-demos → world model)', fontsize=10)
+ax.set_title('Human−DP demo gap by learner and preparation: the RLPD effect is world-dependent —\n'
+             'present where machine-demo coverage is narrow (old world), absent where it is human-broad (corrected)', fontsize=10)
 fig.savefig(f'{OUT}/fig5_gap_forest.png'); fig.savefig(f'{OUT}/fig5_gap_forest.pdf')
 print('wrote 5 figures to', OUT)
