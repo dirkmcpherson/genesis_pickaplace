@@ -92,8 +92,8 @@ s30 hold 13 rnd 17, s31 15/23, s32 14/23 — all clean (max CL ≤ 0.08); i.e. a
 leaves dH at its level (rnd 0.70 vs 0.69). Fails arms (1b), dup controls, dense arms → §2.2 (landed during the blackout).
 
 ### 2.2 Fails arms (1b), dup controls, dense (landed 08-30/31; γ 0.99, old world)
-**(1b) fails arms — COMPLETE n=8 v 8** (dHHfails = 56 human successes + 16 human fails; dDPfails = 56 DP successes + DP
-fails; both add ~2.1k fail rows):
+**(1b) fails arms — COMPLETE n=8 v 8** (dHHfails = 56 human successes + 8 human fail tapes; dDPfails = 56 DP successes +
+8 DP fail tapes; fail rows 2145 ≈ 23–25 % of rows — METHODS §4.6; an earlier draft of this line said 16, corrected 08-31):
 | statistic | dHHfails | dDPfails | diff | 95 % CI | Welch p | exact perm p |
 |---|---|---|---|---|---|---|
 | **LAST ckpt, rnd-30 (A16 statistic)** | **0.746** (n=8) | 0.537 (n=8) | **+0.208** | [+0.048, +0.368] | 0.017 | <0.001 |
