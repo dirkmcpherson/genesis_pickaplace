@@ -382,7 +382,12 @@ esac
 [ -f "$R2D_DIR/envs/genesis.py" ] || { echo "FATAL: $R2D_DIR lacks the genesis port (UNCOMMITTED -- rsync the dev-box working tree, not a clone)"; exit 1; }
 [ -f "$R2D_DIR/configs/env/$CONFIG.yaml" ] || { echo "FATAL: no configs/env/$CONFIG.yaml in $R2D_DIR"; exit 1; }
 [ "$DEMO_DIR" = null ] || [ -d "$DEMO_DIR" ] || { echo "FATAL: demo dir missing: $DEMO_DIR (rsync from <devbox>:~/workspace/dreamerv3-torch/demonstrations/ -- gitignored, rsync ONLY)"; exit 1; }   # DEMO_DIR=null = no-demo probe (touchgoal, 08-29)
-N_NPZ=$(ls "$DEMO_DIR"/*.npz 2>/dev/null | wc -l)
+# the bare `N_NPZ=$(ls ... | wc -l)` form dies SILENTLY under set -eo pipefail when the
+# glob matches nothing (ls rc=2 -> pipeline rc=2 -> exit 2 with stderr eaten) — this was
+# the empty-log rc=2 on every DEMO_DIR=null touchgoal attempt (packs 3015869, 3078114)
+if [ "$DEMO_DIR" = null ]; then N_NPZ=0
+else N_NPZ=$(ls "$DEMO_DIR"/*.npz 2>/dev/null | wc -l) || N_NPZ=0
+fi
 [ "$DEMO_DIR" = null ] || [ "$N_NPZ" -gt 0 ] || { echo "FATAL: $DEMO_DIR has no *.npz"; exit 1; }
 
 # provenance gate (naming-trap rule + M7 fix, ARM-set launches only): filename
