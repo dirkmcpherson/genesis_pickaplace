@@ -171,8 +171,10 @@ re-score protocol takes the table to n=8 v 8 (min p 0.0002, ~80 % power at the o
 **08-31 (post-blackout, all three 1M runs finished): NEGATIVE ×3.** s20 ended 1.02M (max 0.22, zero since 303k);
 s21 ended 1.03M (max 0.38 @~730k, last-4 samples 0.12/0.02/0.06/0.00 — the most active seed, still no sustained pick);
 s22 1.04M (max 0.02). 3M pack s23–25 at ~1.07M: max 0.14/0.32/0.04, last-4 ≈ 0 — same phenotype at 1M; resume chain
-(3017793) carries them to 3M (~09-01). Protocol evals for s20/s21 (eaten by the stale-dir launcher bug) running by hand
-08-31 on CPU (`sbatch_dv3_handeval.sh`, LAST ckpt, hold+rnd) — expect ≈ 0 given train-time success. Touchgoal probes:
+(3017793) carries them to 3M (~09-01). Protocol evals for s20/s21 (eaten by the stale-dir launcher bug) re-run by hand
+08-31 (`sbatch_dv3_handeval.sh`, LAST ckpt, hold+rnd, all denominators complete): **s20 hold 0/15, rnd 2/30;
+s21 hold 0/15, rnd 1/30** — the dv3-std negative is now protocol-grade, not just train-time (s22's in-launcher
+protocol eval was already clean). Touchgoal probes:
 tg_none s0 hit 0.96 @~500k then collapsed with value 143 > 100 (the mechanism, again); tg_none s1 flat; tg_clamp
 s2 flat at 529k (n=1 — s0/s1 died pre-fix on the clamp TypeError).
 18:30: std s20 @890k — no success since 303k, value now DECREASING (30 → 19); s21 @505k 9 nonzero samples (max 0.22), value 8;
