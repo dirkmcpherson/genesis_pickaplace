@@ -372,3 +372,15 @@ logged at 284k (s20) on 08-29 05:40 — before this amendment; the 1M/3M readout
 A13's corrected-world WM gate is not load-bearing: the WM arm reports in whichever world it is healthy in (old world,
 where every WM run to date lives), stated in the table header; no table mixes worlds. The DP corrected-world result and
 the RLPD/WM old-world results are separate tables with the world named.
+
+### A20 (2026-08-31, BEFORE any readout of these runs) — RLPD corrected-world replication (user request)
+User (08-31): the cross-learner story needs like-to-like worlds — "run RLPD on the corrected world (or DP on the old
+world)". DP already has both worlds (corrected n=10, old n=5); RLPD is the only headline learner without a
+corrected-world cell at the valid recipe (the w2final corrected-world block, seeds 20-29, ran at γ 0.998 and is
+diagnostic-only per A17 — it never enters a table). New block: RLPD sparse, γ 0.99, UTD 10, corrected world
+(SIM_VARIANT=gc_kp4_riser3_shelf6, DEMO_ROOT=baselines/matched_w3, N=58 per arm, matched ICs), arms dH vs dDP,
+fresh seeds 40-47 (A9), wave g99w3. Statistic identical to A16: LAST-checkpoint rnd-30 (Welch + exact permutation)
+plus divergence rate (max critic loss ≥ 1, Fisher exact). Predictions (registered before submission): the old-world
+result replicates in direction — LAST rnd dH > dDP by ≥ 0.10; divergence dH ≤ 2/8, dDP ≥ 3/8. Note the demo sets
+differ from the old-world block in world and N (58 vs 56) by construction; the comparison is within-world per A19,
+and this block exists to let the cross-learner figure cite two learners in the SAME world, not to pool worlds.
