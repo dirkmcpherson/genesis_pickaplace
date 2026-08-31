@@ -1,4 +1,4 @@
-# RESULTS — for the plane writing session (living; final version stamped before the 08-30 blackout)
+# RESULTS — for the plane writing session (living; post-blackout update 2026-08-31)
 
 **Read with:** `METHODS_draft_2026-08-28.md` (UPDATE 08-29 blocks), `PREREG_final_round_robin_2026-08-23.md` A9–A19,
 `ADVERSARIAL_AUDIT_2026-08-29.md` (what a reviewer will say), `WM_CANDIDATES_2026-08-29.md`.
@@ -22,8 +22,12 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
 - 35 further DP jobs are user-held (replicates); not needed for the claim above.
 - **Unpruned-human control (user 08-30):** base dH is leading-idle-pruned (29.6 % of frames); density controls removing ALL idle
   decisions (dHallpruned_1e3/1e2) had no effect; the fully UNPRUNED human set (`dHunpruned`, N=52 — 9 dH ICs lack an unpruned
-  success — rows 8005 vs 7002) is training now (DP seeds 30–32, old world). If DP drops on it, "DP is indifferent to source"
-  becomes "DP is indifferent once the human data is cleaned" — the caveat for the (1a) DP paragraph.
+  success — rows 8005 vs 7002) trains in the old world. **First readout (s32, 08-31):** selected hold 13/15, **rnd 13/30
+  (0.43)** — below the old-world dH band (s10–14 selected rnd 15–19/30, mean 0.567, hold 0.813); final 11/15 / 16/30.
+  n=1, no claim yet; s30/s31 died on a bad GPU (pax007, CUDA device unavailable) and were relaunched as fresh seeds s33/s34
+  (running 08-31, ~3 h each + eval). If the drop holds at n=3, the (1a) DP sentence gains the caveat: "DP is indifferent to
+  source once the human data is trimmed of leading idle frames — raw human tapes cost it ~0.1 on random ICs, and trimming
+  won't always be as trivial as it was here."
 
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
@@ -85,8 +89,32 @@ One dH seed (s36) crossed the critic-loss threshold yet scored 14/15, 25/30 — 
 failure; the performance statistic is the one to lead with, the divergence rate is the mechanism.
 Row-matched control dHsucc_dup (56 successes + 8 longest own successes duplicated), sparse, first 3 seeds (01:50 08-30):
 s30 hold 13 rnd 17, s31 15/23, s32 14/23 — all clean (max CL ≤ 0.08); i.e. adding ~1.7k rows of duplicated human successes
-leaves dH at its level (rnd 0.70 vs 0.69). Still to come (during the blackout): dHsucc_dup s33, dDPsucc_dup s30–33, dense
-arms (question 2), fails arms (1b).
+leaves dH at its level (rnd 0.70 vs 0.69). Fails arms (1b), dup controls, dense arms → §2.2 (landed during the blackout).
+
+### 2.2 Fails arms (1b), dup controls, dense (landed 08-30/31; γ 0.99, old world)
+**(1b) fails arms — COMPLETE n=8 v 8** (dHHfails = 56 human successes + 16 human fails; dDPfails = 56 DP successes + DP
+fails; both add ~2.1k fail rows):
+| statistic | dHHfails | dDPfails | diff | 95 % CI | Welch p | exact perm p |
+|---|---|---|---|---|---|---|
+| **LAST ckpt, rnd-30 (A16 statistic)** | **0.746** (n=8) | 0.537 (n=8) | **+0.208** | [+0.048, +0.368] | 0.017 | <0.001 |
+| divergence (max CL ≥ 1) | 1/8 (s35, 50.5) | 1/8 (s32, 83.3) | | | | |
+Per-seed LAST rnd: dHHfails 23,23,20,21,21,25,22,24; dDPfails 19,15,3,18,15,20,20,19.
+- **The human>DP gap survives adding failure data** — same size as the success-only gap (+0.21 both).
+- **Adding own-failure tapes largely CURES dDP's divergence** (6/8 diverged on successes alone → 1/8 with fails;
+  max CL drops to ≤ 0.1 on 7/8 seeds). Mechanism-consistent: fails widen state coverage where the critic extrapolated.
+- **Fails effect vs row-matched dup controls (A17 reading rule — same direction on both sources: MET, both positive):**
+  dH: +fails 0.746 vs +succ_dup 0.675 (n 8 v 4, +0.07, perm p 0.20 — ns); dDP: +fails 0.537 vs +succ_dup 0.383
+  (n 8 v 4, +0.15, perm p 0.26 — ns). Directionally consistent, individually not significant — write as "failure tapes
+  help RLPD if anything, and specifically de-diverge the DP-demo arm; the effect on final score is within noise of a
+  row-count control."
+- Dup controls complete n=4 v 4 (LAST rnd): dHsucc_dup 17,23,23,18 (0.675; max CL ≤ 0.08, 0/4 diverged);
+  dDPsucc_dup 19,13,5,9 (0.383; s31 CL 4.6, s32 1.65 → 2/4 diverged). The source gap replicates inside the dup
+  controls (+0.29) — it is not a row-count artefact.
+- **(2) dense arms — partial** (transient CUDA failures on one node killed 4 of 12; refills s36–38 running 08-31).
+  Done: dH-dense s30/31/32/34/35 selected rnd 8,6,17,14,17 (max CL ≤ 0.76, 0/5 ≥ 1); dDP-dense s31/33/35 selected rnd
+  9,7,12 (max CL 1.26, 428, 19.7 → 3/3 ≥ 1). Early read: dense shaping does NOT lift either source above its sparse
+  level (dH-dense mean rnd 0.41 vs sparse 0.69), and dDP still diverges. Diagnostic only until refills land; per A16
+  the trip-count watchdog is invalid on dense — max CL and final≈selected are the health reads there.
 
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
@@ -97,11 +125,14 @@ arms (question 2), fails arms (1b).
 - **Corrected world gate (dH/dDP s80–83, dense, 3M, packed, 08-29): IGNITES.** In-job sel max per seed: dH 0.40, 0.93, 0.93,
   0.93 (nonzero ckpts 3/17/13/14 of 28); dDP 0.00, 0.87, 0.13, 0.93 (0/17/4/8). Same adjacent-checkpoint bistability.
   Protocol re-scores (BEST hold/rnd, LAST hold; `n12_rescore/*_W3_*`) → §3.1.
-- **Standard arm (clamp off, repval kept) NOCLAMP dH/dDP s122/123 — RUNS AWAY.** At ~0.7M sim steps `train/val` = 825, 343
-  (dH), 226, 115 (dDP) against a 100 maximum — the same critic runaway as dv3, now in r2dreamer with the official replay
-  critic loss present. So the clamp is what makes r2dreamer learn; neither torch port is stable under the published recipe on
-  this task. Write-up: the WM arm = DreamerV3-with-return-clamp, disclosed; the standard-recipe negatives (dv3-std ×3,
-  r2d-NOCLAMP ×4) are reported as such. Final numbers land in the +44/+62 h harvests.
+- **Standard arm (clamp off, repval kept) NOCLAMP dH/dDP s122/123 — VALUES RUN AWAY; competence is transient.** Values
+  oscillate far past the 100 maximum across snapshots (dH s122: 806 → 190; dDP s123: 417 → 75 — vs clamped runs pinned
+  96–98). Finals (in-job sel eval of the BEST-of-K ckpt): dH s122 picked 0.87 (best ≈ 0.52M), s123 0.47; dDP s122 0.60,
+  s123 0.13 (best ckpt very early). Honest statement: without the clamp the world model still reaches transient
+  competence that BEST-of-K can catch, but the value function is unbounded and the endpoint unreliable — LAST-ckpt
+  hold/rnd re-scores queued 08-31 (`n12_rescore/*NOCLAMP*`) to quantify the endpoint. The clamp remains the load-bearing
+  deviation; neither torch port is stable under the published recipe on this task. Write-up: the WM arm =
+  DreamerV3-with-return-clamp, disclosed; the standard-recipe negatives (dv3-std ×3, r2d-NOCLAMP ×4) reported as such.
 - N15 (dR2D + DP-fails, mixed source): direction-only (n 4 v 3, CI spans 0, min p 0.057); mechanism cell, not a matrix cell.
 
 ### 3.1 W3 protocol re-scores (corrected world, dense, 3M; BEST = highest in-job sel among archived ckpts)
@@ -119,8 +150,9 @@ Seed-level (analysis/stats.py, n=4 v 4): BEST hold dH 0.767 vs dDP 0.333, diff +
 (min attainable 0.029); BEST rnd 0.692 vs 0.283, diff +0.41, CI [−0.26, +1.07], p 0.143; LAST hold 0.533 vs 0.333, p 0.63.
 Reading: in the corrected world r2dreamer learns from human demos on 4/4 seeds (hold ≥ 10/15) and from DP demos on 1/4;
 dDP s81's sel 0.87 collapsed to 2/15 on hold (sel-selected checkpoint was a fluke — another reason sel is never a headline).
-Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029). Seeds 84–87 per source submitted 08-29
-13:30 (finish during the blackout) → n=8 gives min p 0.0002 and ~80 % power at the observed gap.
+Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029). Seeds 84–87 per source (packs
+3025535/36) are at ~0.9–1.2M of 3M on 08-31 (values pinned 96–98, healthy) — done ~09-01, then the same BEST pinning +
+re-score protocol takes the table to n=8 v 8 (min p 0.0002, ~80 % power at the observed gap).
 
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 
@@ -136,6 +168,13 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 - Disclosures: dv3 jobs before 08-28 21:30 ran without overlays (launcher bug); 5M baselines unaffected.
 
 ### 4.1 dv3 std @1M (appended)
+**08-31 (post-blackout, all three 1M runs finished): NEGATIVE ×3.** s20 ended 1.02M (max 0.22, zero since 303k);
+s21 ended 1.03M (max 0.38 @~730k, last-4 samples 0.12/0.02/0.06/0.00 — the most active seed, still no sustained pick);
+s22 1.04M (max 0.02). 3M pack s23–25 at ~1.07M: max 0.14/0.32/0.04, last-4 ≈ 0 — same phenotype at 1M; resume chain
+(3017793) carries them to 3M (~09-01). Protocol evals for s20/s21 (eaten by the stale-dir launcher bug) running by hand
+08-31 on CPU (`sbatch_dv3_handeval.sh`, LAST ckpt, hold+rnd) — expect ≈ 0 given train-time success. Touchgoal probes:
+tg_none s0 hit 0.96 @~500k then collapsed with value 143 > 100 (the mechanism, again); tg_none s1 flat; tg_clamp
+s2 flat at 529k (n=1 — s0/s1 died pre-fix on the clamp TypeError).
 18:30: std s20 @890k — no success since 303k, value now DECREASING (30 → 19); s21 @505k 9 nonzero samples (max 0.22), value 8;
 s22 @510k 1 nonzero, value 8. Verdict at 1M for s20: NEGATIVE (transient picks, no learning; value 12 and falling at 950k). The launcher's post-training
 eval failed on s20 (stale timestamp dir from a cancelled job; fixed in the launcher 22:00, but s21 inherits the bug — its
@@ -149,9 +188,12 @@ No sustained learning under any dv3 recipe yet.
 
 ## 5. Fallback WM (A18)
 DEMO3 codebase (TD-MPC2 backbone; MoDem/TD-MPC2 by flag; MIT) prepared locally: converter round-trip verified on dH,
-env wrapper import-checked; `policy_pretraining=false` flag set is actor-BC-free. ~4–6 h to a cluster smoke. Triggered 08-29 (both
-standard arms negative): venv installed on the cluster (torch 2.7.0+cu126 kept; torchrl 0.8.1, tensordict 0.8.3), smoke
-job 3034689 pending → result in `paper/DEMO3_SMOKE_2026-08-29.md` / the harvest files.
+env wrapper import-checked; `policy_pretraining=false` flag set is actor-BC-free. Cluster smoke 3034689 **FAILED in 26 s**
+(hydra: "Primary config module '..config' not found" — a config-path packaging bug in the prep, not a GPU/env issue;
+torch 2.7.0+cu126 verified on the node first). **Deprioritized 08-31:** A18's trigger did fire (dv3-std ×3 negative at 1M,
+NOCLAMP values unbounded), but the clamped r2dreamer — the disclosed WM arm since 08-29 — is healthy and igniting in the
+corrected world, so "everything else fails" (the user's bar for MoDem) has not been met. The fix is known and cheap if
+the r2d n=8 gate disappoints; decision rests with the user.
 
 ## 6. What can be written now (claims with evidence) — see ADVERSARIAL_AUDIT §7
 1. Methods/provenance contribution (one recorder, tape contract, registry, six silent-default bugs caught, run-identity rule).
@@ -163,15 +205,22 @@ job 3034689 pending → result in `paper/DEMO3_SMOKE_2026-08-29.md` / the harves
    human > DP in the corrected world (0.77 vs 0.33 hold, n=4, p 0.14; n=8 pending); sparse never ignites. Under the published
    recipe (no clamp) BOTH torch ports run away (dv3-std ×3 no learning; r2d-NOCLAMP values 115–825 vs max 100) — a
    characterised negative, not a missing experiment.
-5. Fails-tape effect: confounded (share × 2.7, length × 12) until the row-matched controls read out.
-Nothing yet on (1a)/(1b) for RLPD or WMs beyond the above; nothing on (2) beyond "sparse WM never ignites".
+5. **RLPD (1b), controlled (NEW 08-31): the human>DP gap survives failure data at the same size (+0.21, p 0.017/<0.001,
+   n 8 v 8), and adding own-failure tapes cures the DP arm's divergence (6/8 → 1/8). The fails-vs-dup effect is
+   directionally positive on both sources (A17 rule met) but within noise of the row-count control — claim the
+   de-divergence, not a score lift.** The source gap also replicates inside the dup controls (+0.29, n 4 v 4).
+6. DP unpruned-human control: first seed lands below the pruned-dH band on random ICs (0.43 vs 0.567 mean) — n=1,
+   two more seeds land 08-31.
+Still open: (2) dense (refills running), r2d corrected-world n=8 (~09-01), dv3 3M (~09-01).
 
 ---
-## 7. State of the queue at the blackout (08-29 23:25 cluster time)
-Running: dv3 std s21/s22 (1M) + std-3M pack (s23–25, resume chain 3017793) + tg_clamp s2; r2d NOCLAMP dH/dDP s122/123;
-RLPD dHsucc_dup s30–32. Pending in order: 33 RLPD (dup, fails ×16, dense ×12), r2d w3 s84–87 ×2 packs, DEMO3 smoke, then
-35 DP replicates as filler from 08-31 00:23. Harvest files: `paper/harvest_2026-08-3{0,1}_*.md` on the cluster (+20/+44/+62 h).
-Post-blackout list: `paper/NEXT_2026-08-28.md` (bottom).
+## 7. State of the queue (08-31 00:30, post-blackout)
+Running: r2d w3 s84–87 packs (~1M of 3M each); dv3-3M pack (resume chain 3017793 next); DP dHunpruned s33/s34; RLPD
+dense refills (dH s36, dDP s36–38); dv3 hand-eval (CPU); r2d touchgoal pack (resubmitted after the registry null-demo fix,
+138a3b5); 16 NOCLAMP re-scores (CPU). Still user-held: 29 r2d-train singles (superseded by packs), 35 DP replicates
+(BeginTime fillers). Blackout casualties (all transient CUDA on one node, all refilled with fresh seeds per A9):
+DP dHunpruned s30/31, RLPD dense ×4. Two scheduled harvests (3017796/97) still pending — will self-append.
 
-_version: 2026-08-30 01:55 (cluster clock) — FINAL pre-blackout stamp (dHsucc_dup s30–32 added). Numbers above are complete for: DP (n=10), RLPD (1a)
-sparse (n=8 v 8), r2dreamer corrected-world (n=4 v 4). Pending: RLPD dense/fails/dup, r2d n=8 and NOCLAMP finals, dv3 3M, DEMO3._
+_version: 2026-08-31 00:30 — post-blackout update. Complete: DP (n=10), RLPD (1a) sparse n=8v8, RLPD (1b) fails n=8v8 +
+dup n=4v4, dv3-std 1M ×3 negative. Pending: RLPD dense refills, DP dHunpruned s33/34, r2d W3 n=8 (~09-01), r2d NOCLAMP
+LAST re-scores, dv3 3M + hand evals, touchgoal r2d._

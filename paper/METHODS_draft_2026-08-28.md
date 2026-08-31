@@ -501,6 +501,20 @@ Incidents affecting data (all logged; report in the paper's limitations):
 `.out` for `rc=1` within the first hour. Fallback WM (A18): DEMO3 codebase (TD-MPC2-based; MoDem / TD-MPC2 by flags) prepared
 locally (`~/workspace/demo3_prep`, converter round-trip verified); `policy_pretraining=false` flag set is actor-BC-free.
 
+**UPDATE 08-31 (post-blackout).** (a) Blackout casualties: DP dHunpruned s30/31 and RLPD dense dH s33 / dDP s30/32/34 died
+in < 1 min on one node's unavailable GPU (pax007-family "CUDA-capable device busy or unavailable"); all refilled with FRESH
+seed ids per A9 (DP s33/34; dense dH s36, dDP s36–38) and `--exclude` on the bad node. (b) `dHunpruned` DP control ran:
+set = `matched_v2/dHunpruned` (N=52, matched per-IC to dH where an unpruned success exists; 9 ICs short; rows 8005 vs 7002;
+sha 3ac2d87b), lerobot conversion job-chained before training (native sets take no inline build). (c) dv3-std s20/s21
+protocol evals (eaten by the pre-fix stale-dir bug) re-run by hand: `dreamerv3-torch/sbatch_dv3_handeval.sh`, CPU partition,
+LAST ckpt (latest.pt of the newest run dir), hold+rnd, identical `genesis_eval.py` invocation/config stack as the launcher's
+stage 4. (d) r2d NOCLAMP endpoint quantified by the standard re-score path (`cluster/r2d_rescore.sh`, BEST + CK=latest.pt
+TAGSUF=_LAST, hold+rnd ×4 runs). (e) `cluster/run_registry.py` now accepts `--demo-dir null|none` (demo-free arms, e.g.
+touchgoal probes; fingerprint = literal `no-demos`) — the touchgoal r2d pack had been dying at the registry gate (rc=2,
+empty seed logs) because the registry resolved `null` against the repo root; fix 138a3b5, pack resubmitted. (f) DEMO3 smoke
+failed on a hydra config path ("Primary config module '..config' not found") — packaging bug in the prep, fix pending a
+decision on whether the fallback is still needed (clamped r2dreamer is healthy; see RESULTS §5).
+
 ## 8. [CHECK] list (every uncertain or conflicting value)
 
 1. **Recording rate**: "30 Hz" (docs) vs ~31.6 Hz (uid 232 `_episodes.npy`, 919 frames/29.06 s) vs ~40 Hz `joint_states` / 1159 frames in `_cartesian.npy` for the same trial; timestamps not saved (`example.py:276`; `CAN_STARTING_POSITION.md:188`).
