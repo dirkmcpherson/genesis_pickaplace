@@ -137,15 +137,17 @@ def common_args(ap):
 
 def resolve(args):
     repo = pl.Path(args.repo_root).resolve()
+    # 'null'/'none' = demo-free arm (e.g. touchgoal probes); fingerprint is the literal sentinel
+    no_demos = str(args.demo_dir).lower() in ('null', 'none', '')
     demo_dir = pl.Path(args.demo_dir)
-    if not demo_dir.is_absolute():
+    if not no_demos and not demo_dir.is_absolute():
         demo_dir = repo / demo_dir
     registry = pl.Path(args.registry)
     if not registry.is_absolute():
         registry = repo / registry
     git = args.git or git_short_hash(repo)
     knobs = parse_knobs(args.knobs)
-    dfp = demo_fingerprint(demo_dir)
+    dfp = 'no-demos' if no_demos else demo_fingerprint(demo_dir)
     semantic_key, full_key, semantic_cfg, full_cfg = build_keys(
         args.script, args.arm, args.seed, git, knobs, dfp)
     return dict(repo=repo, demo_dir=demo_dir, registry=registry, git=git,
