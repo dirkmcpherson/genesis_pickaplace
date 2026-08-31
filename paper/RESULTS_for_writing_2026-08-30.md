@@ -216,8 +216,10 @@ Still open: (2) dense (refills running), r2d corrected-world n=8 (~09-01), dv3 3
 ---
 ## 7. State of the queue (08-31 00:30, post-blackout)
 Running: r2d w3 s84–87 packs (~1M of 3M each); dv3-3M pack (resume chain 3017793 next); DP dHunpruned s33/s34; RLPD
-dense refills (dH s36, dDP s36–38); dv3 hand-eval (CPU); r2d touchgoal pack (resubmitted after the registry null-demo fix,
-138a3b5); 16 NOCLAMP re-scores (CPU). Still user-held: 29 r2d-train singles (superseded by packs), 35 DP replicates
+dense refills (dH s36, dDP s36–38); dv3 hand-eval (CPU); RLPD dup top-up s34–37 ×2 sources (n=8 for §2.2's dup rows);
+r2d touchgoal pack (took TWO fixes: registry null-demo 138a3b5 + a silent `ls|wc` rc=2 under pipefail, a43bf39 — 8th
+silent-default sighting); DEMO3 smoke resubmitted after the hydra config_path fix (RESULTS §5 stays deprioritized);
+16 NOCLAMP re-scores (CPU). Still user-held: 29 r2d-train singles (superseded by packs), 35 DP replicates
 (BeginTime fillers). Blackout casualties (all transient CUDA on one node, all refilled with fresh seeds per A9):
 DP dHunpruned s30/31, RLPD dense ×4. Two scheduled harvests (3017796/97) still pending — will self-append.
 
