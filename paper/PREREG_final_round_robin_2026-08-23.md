@@ -420,3 +420,14 @@ checkpoint selection on a fixed 15-IC training subset (as the frozen blocks); fi
 (the headline statistic, unchanged, comparable to A16/A20). RLPD LAST-ckpt rule and divergence statistic unchanged.
 A21's registered predictions stand with "hold" read as "full training-IC in-distribution score". No v2 data was
 collected, split, trained, or read under A22 between its registration and this withdrawal.
+
+### A24 (2026-09-01, amends A21/A23 BEFORE any v2 learner run) — per-learner human-set variant (user decision)
+The frozen blocks fed the leading-idle-PRUNED dH base to EVERY learner (a DP accommodation applied globally —
+disclosed here as an inconsistency with the "idle is a source property" framing). v2 corrects it: **dHv2raw**
+(unpruned command source) is the human arm for RLPD (and any WM v2 runs, if later scoped); **dHv2** (pruned
+source, as the frozen sets) is the human arm for DP and for training the dDPv2 teacher. Both variants are
+collected at the same validated placements over the same ICs; dDPv2 is unchanged (closed-loop teachers emit no
+idle — the machine arm is naturally idle-free, so the dH-raw vs dDP row-density difference is a SOURCE PROPERTY,
+reported, not matched away). Note of record: the dHunpruned DP control (n=3, −0.056, perm p 0.36) found no
+detectable DP penalty from raw tapes, so the pruned-DP leg is continuity with the frozen DP block, not a
+performance necessity. Predictions unchanged from A21/A23.
