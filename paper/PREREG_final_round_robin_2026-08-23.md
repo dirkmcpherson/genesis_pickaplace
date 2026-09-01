@@ -410,3 +410,13 @@ divergence rate unchanged. Teacher note (disclosed, not hidden): one DP teacher 
 pool, so the machine-demo GENERATOR has seen all ICs — symmetric with the human demonstrator, who performed every
 trial; students in both arms see train-IC tapes only. A21's registered predictions carry over with "hold" read as
 "per-seed held-out demo ICs".
+
+### A23 (2026-09-01, ~1 h after A22, BEFORE any v2 readout) — A22 WITHDRAWN; v2 trains on ALL ICs (user decision)
+A22's per-seed demo-IC holdouts are withdrawn before any use: the generalization claim rides on the FIXED rnd-30
+(random ICs, off-demo-support), so holding out demo ICs bought rigor on an axis the paper does not claim, at the
+cost of shrinking exactly the coverage the v2 pool exists to add. v2 protocol of record: train on ALL ~72 demo ICs;
+checkpoint selection on a fixed 15-IC training subset (as the frozen blocks); final checkpoint scored ONCE on
+(a) ALL training ICs — reported strictly as IN-DISTRIBUTION, never as generalization — and (b) the fixed rnd-30
+(the headline statistic, unchanged, comparable to A16/A20). RLPD LAST-ckpt rule and divergence statistic unchanged.
+A21's registered predictions stand with "hold" read as "full training-IC in-distribution score". No v2 data was
+collected, split, trained, or read under A22 between its registration and this withdrawal.
