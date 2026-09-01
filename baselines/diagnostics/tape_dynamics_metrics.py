@@ -97,6 +97,13 @@ def hf_frac(x):
     return float(p[len(p) // 2:].sum() / p.sum()) if p.sum() > 1e-12 else np.nan
 
 
+def hf_frac_w32(x, w=32):
+    """Length-robust variant (2026-09-01): mean hf_frac over non-overlapping w-sample
+    windows -- the spectral estimate no longer depends on tape length."""
+    vals = [hf_frac(x[i:i + w]) for i in range(0, len(x) - w + 1, w)]
+    return float(np.nanmean(vals)) if vals else np.nan
+
+
 def perm_entropy(x, order=3):
     """Normalized permutation entropy of a 1-D signal."""
     if len(x) < order + 1:
@@ -149,11 +156,22 @@ def tape_metrics(z):
     m['jerk_mean'] = float(np.linalg.norm(jrk, axis=1).mean())
     m['jerk_per_len'] = float(np.linalg.norm(jrk, axis=1).sum() / path_len) if path_len > 1e-9 else np.nan
     m['pause_frac'] = float((speed < 0.2 * np.median(speed)).mean())
+    # 2026-09-01 correction (coordinator recon): pause_frac's RELATIVE threshold is fragile --
+    # with ~half the frames near zero the tape median sits at the dwell/move boundary. The
+    # robust operationalization is an ABSOLUTE full-stop threshold; the sweep shows where
+    # separation lives (strict stops separate, loose thresholds do not: stops vs creep).
+    m['strict_stop_frac'] = float((speed < 0.0005).mean())          # 0.5 mm/decision
+    m['stop_frac_02mm'] = float((speed < 0.0002).mean())
+    m['stop_frac_1mm'] = float((speed < 0.001).mean())
+    m['stop_frac_2mm'] = float((speed < 0.002).mean())
+    mov = speed[speed >= 0.0005]
+    m['moving_speed_mean'] = float(mov.mean()) if len(mov) else np.nan
     m['joint_speed_mean'] = float(np.linalg.norm(dq, axis=1).mean())
     m['joint_jerk_mean'] = float(np.linalg.norm(np.diff(dq, 2, axis=0), axis=1).mean()) if T > 3 else np.nan
     # (e) temporal structure of the ACTION stream (6 arm dims)
     m['act_autocorr1'] = float(np.nanmean([autocorr1(act[:, i]) for i in range(6)]))
     m['act_hf_frac'] = float(np.nanmean([hf_frac(act[:, i]) for i in range(6)]))
+    m['act_hf_frac_w32'] = float(np.nanmean([hf_frac_w32(act[:, i]) for i in range(6)]))
     sd = act[:, :6].std(axis=0)
     flips = [float((np.diff(np.sign(np.where(np.abs(act[:, i]) < 0.05 * sd[i], 0, act[:, i]))) != 0).mean())
              for i in range(6) if sd[i] > 1e-9]
