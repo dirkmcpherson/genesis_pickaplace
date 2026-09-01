@@ -452,3 +452,16 @@ real cans genuinely started lying (07-06 video validation; camera census), and t
 scope (tip rule + upright pick definition), disclosed as such. Target N: ~69-70/72 old, ~66-68/72 corrected.
 The A25 55/52-tape launches (learners + teachers) are cancelled before any readout; the matrix relaunches on the
 completed sets with the same seeds/waves (fresh wave tags v2full/g99v2full{,w3} to keep the registry clean).
+
+### A27 (2026-09-01, BEFORE the dDPv2 harvest readout) — WM v2 block, corrected world (user request)
+Repeat the r2dreamer corrected-world source comparison on the final demo pool: **dHv2raw (N=66) vs dDPv2**
+(per-IC matched harvest, pending), corrected world ONLY (identical sim variant to the frozen W3 block — the v2
+sets change demos/ICs, never the world; fixed rnd-30 file shared with A20/A23). **n=12 per arm** (fresh seeds
+90-101 per A9; 3M steps, dense reward — sparse never ignites, established), 2-seed packs at 90g (OOM lesson).
+Protocol as the frozen block: BEST = highest in-job sel among archived ckpts, scored once on hold+rnd; LAST
+reported for the bistability disclosure. **Primary statistic: BEST-ckpt rnd-30 (Welch + exact permutation).
+Co-primary: ignition rate, Fisher exact, with ignition PRE-DEFINED as BEST hold ≥ 8/15** — threshold chosen
+before this block runs, informed by (and disclosed as informed by) the frozen n=8v8 where it splits 7/8 vs 3/8.
+Registered predictions: dHv2raw > dDPv2 on BEST rnd by ≥ 0.15; ignition difference ≥ 3/12; and the frozen-block
+direction (human > machine for the WM) replicates on the full pool. Power note: at the frozen block's observed
+effect (≈1 sd), n=12v12 gives ~80 % power; min attainable perm p 7.4e-7.
