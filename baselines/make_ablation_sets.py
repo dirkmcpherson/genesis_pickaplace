@@ -63,7 +63,7 @@ REPEAT, DELTA_CAP = 4, 0.025          # contract v1 (record_demos.py asserts the
 GRIP_CLOSED = 0.5                     # absolute grip command threshold (range 0..1)
 EPS_MOVE = 2e-3                       # rad: "arm holds still" per-decision displacement
 NOISE_CLIP = 0.05                     # rad: per-joint bound on waypoint jitter
-SIGMA_GRID = (0.002, 0.004, 0.006, 0.008, 0.010, 0.014, 0.020)
+SIGMA_GRID = (0.002, 0.003, 0.004, 0.005, 0.006, 0.008, 0.010, 0.014, 0.020)
 
 
 def load_tape(f):
@@ -149,8 +149,13 @@ def make_smoothed(h):
 
 
 def make_noised(dp, rng, sigma):
-    """dDP schedule + bounded i.i.d. waypoint jitter (arm only; closure seg untouched)."""
+    """dDP schedule + bounded i.i.d. waypoint jitter. Arm joints only; the closure
+    segment AND the source's pause decisions are untouched -- jittering a still
+    waypoint would DESTROY the tape's pauses (pre-flight: pause_frac 0.20 -> 0.07)
+    and the control arm must change bandwidth alone, not stop-go structure."""
     eta = np.clip(rng.normal(0.0, sigma, dp['P'].shape), -NOISE_CLIP, NOISE_CLIP)
+    d = np.diff(arc(dp)[0])
+    eta[d <= max(EPS_MOVE, 0.2 * float(np.median(d)))] = 0.0   # pause rule of the metric screen
     cs = closure_seg(dp)
     if cs is not None:
         eta[cs[0]:cs[1] + 1] = 0.0
