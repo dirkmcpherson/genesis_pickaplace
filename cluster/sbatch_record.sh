@@ -24,6 +24,7 @@ case "$TEACHER" in
   r2d) VENV_PY=${VENV_PY:-$LAB/r2d_venv/bin/python}; ARGS="--checkpoint ${CKPT:?CKPT required for r2d}" ;;
   dp)  VENV_PY=${VENV_PY:-}; ARGS="--checkpoint ${CKPT:?CKPT required for dp}" ;;
   human) VENV_PY=${VENV_PY:-}; ARGS="--src ${SRC:-baselines/episodes_pick_phase_dppruned}" ;;
+  sched) VENV_PY=${VENV_PY:-}; ARGS="--src ${SRC:?SRC required for sched (make_ablation_sets.py schedule dir)}" ;;
   random) VENV_PY=${VENV_PY:-}; ARGS="" ;;
   *) echo "FATAL: TEACHER=$TEACHER"; exit 1 ;;
 esac

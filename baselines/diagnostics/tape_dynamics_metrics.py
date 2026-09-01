@@ -29,22 +29,43 @@ metrics on one dataset: the winner is hypothesis-generating, not confirmatory.
 Run (cluster login node, CPU, ~1 min):
   nice -n 19 python baselines/diagnostics/tape_dynamics_metrics.py <out_dir>
 Outputs: tape_dyn_metrics.csv (per-tape), set_level_metrics.csv, ranking.md.
+
+A28 MANIPULATION-CHECK MODE (2026-09-01): pass extra/replacement sets as
+  --sets world/arm=path ...   (e.g. w3/dDPretimed=matched_w3/dDPretimed)
+Per-tape metrics + a per-set summary are computed for EVERY set given; the d/ranking
+table still compares only world x {dH,dDP} and is emitted only when that 2x2 is
+present. --nboot 0 skips the set-level bootstrap (means still reported).
 """
-import csv, math, sys
+import argparse, csv, math, sys
 import numpy as np
 import pathlib as pl
 from collections import Counter, defaultdict
 
 ROOT = pl.Path('/cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines')
-SETS = [('old', 'dH', ROOT / 'matched_v2' / 'dH'), ('old', 'dDP', ROOT / 'matched_v2' / 'dDP'),
-        ('w3', 'dH', ROOT / 'matched_w3' / 'dH'), ('w3', 'dDP', ROOT / 'matched_w3' / 'dDP')]
+DEFAULT_SETS = [('old', 'dH', ROOT / 'matched_v2' / 'dH'), ('old', 'dDP', ROOT / 'matched_v2' / 'dDP'),
+                ('w3', 'dH', ROOT / 'matched_w3' / 'dH'), ('w3', 'dDP', ROOT / 'matched_w3' / 'dDP')]
+ap = argparse.ArgumentParser()
+ap.add_argument('out_dir', nargs='?', default='/tmp')
+ap.add_argument('--sets', nargs='*', default=None,
+                help='world/arm=path (path relative to the baselines root or absolute); '
+                     'default = the four frozen matched sets of the screen')
+ap.add_argument('--nboot', type=int, default=1000, help='set-level bootstrap resamples (0 = skip)')
+ARGS = ap.parse_args()
+if ARGS.sets:
+    SETS = []
+    for spec in ARGS.sets:
+        wa, p = spec.split('=', 1)
+        w, a = wa.split('/', 1)
+        SETS.append((w, a, pl.Path(p) if pl.Path(p).is_absolute() else ROOT / p))
+else:
+    SETS = DEFAULT_SETS
 VOX = 0.02          # m, EEF voxel (same bin as fig6)
 DEAD_V = 5e-4       # m/step deadband for Delta-eef direction octants
 SPEED_EDGES = np.array([0.0, 0.002, 0.005, 0.010, np.inf])  # m/step
 CAN_EPS = 1e-3      # m/step: "can is moving"
 GRIP_CLOSED = 0.3   # states[:,6] threshold (range 0..~0.6)
 RNG = np.random.default_rng(0)
-NPERM, NBOOT = 10000, 1000
+NPERM, NBOOT = 10000, ARGS.nboot
 
 
 def octant(v):
@@ -247,6 +268,9 @@ set_vals, set_boot = {}, {}
 for world, arm, _ in SETS:
     keys = [k for k in cache if k[0] == world and k[1] == arm]
     set_vals[(world, arm)] = set_level(keys)
+    if NBOOT == 0:
+        set_boot[(world, arm)] = {mk: float('nan') for mk in SET_METRICS}
+        continue
     boots = {mk: [] for mk in SET_METRICS}
     for _ in range(NBOOT):
         bk = [keys[i] for i in RNG.integers(0, len(keys), len(keys))]
@@ -279,8 +303,10 @@ def perm_p(x, y):
     return hits / NPERM
 
 
+HAVE_2X2 = all((w, a) in {(s[0], s[1]) for s in SETS}
+               for w in ('old', 'w3') for a in ('dH', 'dDP'))
 rank = []
-for mk in METRICS:
+for mk in (METRICS if HAVE_2X2 else []):
     row = dict(metric=mk)
     for w in ('old', 'w3'):
         h, dp = col(w, 'dH', mk), col(w, 'dDP', mk)
@@ -293,31 +319,43 @@ for mk in METRICS:
 rank.sort(key=lambda r: -r['criterion'])
 
 set_rank = []
-for mk in SET_METRICS:
+for mk in (SET_METRICS if HAVE_2X2 else []):
     row = dict(metric=mk)
     for w in ('old', 'w3'):
         vh, vd = set_vals[(w, 'dH')][mk], set_vals[(w, 'dDP')][mk]
         se = math.sqrt(set_boot[(w, 'dH')][mk] ** 2 + set_boot[(w, 'dDP')][mk] ** 2)
         row[f'dH_{w}'], row[f'dDP_{w}'] = vh, vd
-        row[f'z_{w}'] = (vh - vd) / se if se > 1e-12 else 0.0
+        row[f'z_{w}'] = (vh - vd) / se if se > 1e-12 and not math.isnan(se) else 0.0
     row['criterion_z'] = row['z_w3'] - row['z_old']
     set_rank.append(row)
 set_rank.sort(key=lambda r: -r['criterion_z'])
 
 # ---------------------------------------------------------------- write outputs
-out = pl.Path(sys.argv[1] if len(sys.argv) > 1 else '/tmp')
+out = pl.Path(ARGS.out_dir)
 out.mkdir(parents=True, exist_ok=True)
 fields = ['world', 'arm', 'uid', 'ic_uid', 'stage'] + METRICS
 with open(out / 'tape_dyn_metrics.csv', 'w', newline='') as fh:
     w = csv.DictWriter(fh, fieldnames=fields); w.writeheader()
     for r in all_rows:
         w.writerow({k: r.get(k, '') for k in fields})
-with open(out / 'set_level_metrics.csv', 'w', newline='') as fh:
-    w = csv.DictWriter(fh, fieldnames=list(set_rank[0].keys())); w.writeheader(); w.writerows(set_rank)
+if set_rank:
+    with open(out / 'set_level_metrics.csv', 'w', newline='') as fh:
+        w = csv.DictWriter(fh, fieldnames=list(set_rank[0].keys())); w.writeheader(); w.writerows(set_rank)
 
 with open(out / 'ranking.md', 'w') as fh:
     def emit(s):
         print(s); fh.write(s + '\n')
+    # per-set summary (always; the A28 manipulation check reads this table)
+    emit('## Per-set means (all per-tape metrics + set-level values)')
+    hdr = ['set', 'n_tapes'] + METRICS + SET_METRICS
+    emit('| ' + ' | '.join(hdr) + ' |')
+    emit('|' + '---|' * len(hdr))
+    for wld, arm, _ in SETS:
+        vals = [f'{col(wld, arm, mk).mean():.4g}' if len(col(wld, arm, mk)) else 'nan' for mk in METRICS]
+        svals = [f'{set_vals[(wld, arm)][mk]:.4g}' for mk in SET_METRICS]
+        n = sum(1 for r in all_rows if r['world'] == wld and r['arm'] == arm)
+        emit('| ' + ' | '.join([f'{wld}/{arm}', str(n)] + vals + svals) + ' |')
+    emit('')
     emit('## Per-tape metrics, ranked by pre-declared criterion C = d_w3 - d_old (Cohen\'s d, dH-dDP)')
     emit('| metric | dH_w3 | dDP_w3 | d_w3 | p_w3 | dH_old | dDP_old | d_old | C |')
     emit('|---|---|---|---|---|---|---|---|---|')

@@ -470,6 +470,63 @@ class HumanFollower(Adapter):
                     arrival=self.arrival)
 
 
+class SchedFollower(Adapter):
+    """OPEN-LOOP scheduled-target follower for the A28 burstiness-ablation sets
+    (PREREG A28; schedules built by baselines/make_ablation_sets.py from the frozen
+    matched_w3 tapes' absolute command streams). One waypoint (q_target6, grip01) per
+    decision; NO arrival test -- the schedule's clock IS the intervention. Delta
+    conversion is the standard adapter pattern (closed-loop against the env's running
+    target, so a clipped burst carries its residual into the next decision instead of
+    losing path). After the schedule is exhausted the last waypoint is held for
+    --settle decisions (as HumanFollower), then the adapter exhausts."""
+    name = 'sched'
+
+    def __init__(self, settle=25):
+        self.settle = int(settle)
+        self.src = None
+
+    def load(self, path):
+        d = np.load(path, allow_pickle=True)
+        q = np.asarray(d['target_q'], np.float64)
+        g = np.asarray(d['grip'], np.float64)
+        assert q.ndim == 2 and q.shape[1] == 6 and g.shape == (len(q),), (q.shape, g.shape)
+        assert -1e-9 <= g.min() and g.max() <= 1.0 + 1e-9, (g.min(), g.max())
+        self.src = dict(ic_uid=int(d['ic_uid']), q=q, grip=np.clip(g, 0.0, 1.0), n=len(q),
+                        transform=str(d['transform']), src_uid=int(d['src_uid']),
+                        src_set=str(d['src_set']), can_pos=np.asarray(d['can_pos'], np.float64))
+        return self.src
+
+    def reset(self, obs, env):
+        assert self.src is not None, 'call load(path) first'
+        self.j = 0; self.settling = 0; self.clips = 0
+        # the IC must reproduce the frozen tape's frame-0 can pose (uid reset or pose reset)
+        self._ic_dev = float(np.linalg.norm(np.asarray(obs[8:11], np.float64) - self.src['can_pos']))
+        if self._ic_dev > 0.005:
+            print(f"[sched] WARNING ic_uid={self.src['ic_uid']}: reset can pose deviates "
+                  f"{self._ic_dev * 1000:.1f}mm from the frozen tape's frame-0 pose", flush=True)
+
+    def act(self, obs, env, t):
+        s = self.src
+        if self.j >= s['n']:
+            if self.settling >= self.settle:
+                return None
+            self.settling += 1
+            jt = s['n'] - 1
+        else:
+            jt = self.j; self.j += 1
+        tgt = np.asarray(env._dj_target, np.float64)
+        raw = (s['q'][jt] - tgt) / (REPEAT * DELTA_CAP)
+        self.clips += int(np.any(np.abs(raw) > 1.0 + 1e-9))
+        return np.concatenate([np.clip(raw, -1.0, 1.0),
+                               [s['grip'][jt] * 2.0 - 1.0]]).astype(np.float32)
+
+    def stats(self):
+        s = self.src
+        return dict(src_uid=s['src_uid'], src_set=s['src_set'], transform=s['transform'],
+                    n_sched=int(s['n']), clip_decisions=int(self.clips),
+                    settle_decisions=int(self.settling), ic_dev_mm=round(self._ic_dev * 1000, 2))
+
+
 class DPTeacher(Adapter):
     """lerobot DP/ACT via dp_runner, hold-4: one query per decision, absolute target ->
     delta against the env's running target."""
@@ -637,7 +694,7 @@ def merge(outdir):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--teacher', choices=['human', 'dp', 'r2d', 'random'], required=True)
+    ap.add_argument('--teacher', choices=['human', 'dp', 'r2d', 'random', 'sched'], required=True)
     ap.add_argument('--outdir', required=True, help='success tapes + manifest')
     ap.add_argument('--fails-outdir', default=None, help='default <outdir>_fails')
     ap.add_argument('--partial-outdir', default=None,
@@ -691,10 +748,13 @@ def main():
         sys.exit(f'FATAL: --teacher {args.teacher} needs --checkpoint')
     if args.attempts > 1 and args.mode != 'sample':
         sys.exit('FATAL: --attempts > 1 repeats a deterministic rollout; use --mode sample')
-    if args.teacher == 'human' and args.ic_mode != 'demo':
-        sys.exit('FATAL: the human follower is tied to its source demo IC (--ic-mode demo)')
-    if args.teacher == 'human' and not (REPO / args.src).is_dir():
+    if args.teacher in ('human', 'sched') and args.ic_mode != 'demo':
+        sys.exit('FATAL: the human/sched follower is tied to its source demo IC (--ic-mode demo)')
+    if args.teacher in ('human', 'sched') and not (REPO / args.src).is_dir():
         sys.exit(f'FATAL: --src {args.src} not found')
+    if args.teacher == 'sched' and args.attempts != 1:
+        sys.exit('FATAL: --teacher sched is deterministic open-loop; retries need a fresh '
+                 'schedule (rebuild make_ablation_sets.py with another seed), not --attempts')
     print(f'[args] teacher={args.teacher} mode={args.mode} ic_mode={args.ic_mode} attempts={args.attempts} '
           f'verify={args.verify} images={not args.no_images} sim_tape={not args.no_sim_tape} '
           f'out={out} fails={fails} shard={args.shard_idx}/{args.shard_n}', flush=True)
@@ -711,6 +771,8 @@ def main():
         adapter = RandomTeacher(args.seed)
     elif args.teacher == 'human':
         adapter = HumanFollower(args.tol, args.max_dwell, args.dilation_cap, args.settle, arrival=args.arrival)
+    elif args.teacher == 'sched':
+        adapter = SchedFollower(settle=args.settle)
     elif args.teacher == 'dp':
         adapter = DPTeacher(args.checkpoint, args.mode, args.seed, args.n_action_steps,
                             rig_provider=(env.genv.rig_obs if not args.no_images else None))
@@ -738,6 +800,27 @@ def main():
                                  goal_pos=None))
             else:
                 print(f'[ic] skip uid {u}: no placement (pass --ic-from-tape to reset to the tape\'s own frame-0 can pose)')
+        plan = plan[args.shard_idx::args.shard_n]
+        attempts = 1
+    elif args.teacher == 'sched':
+        # A28 ablation: one schedule per ic_uid; the IC must reproduce the FROZEN tape's IC,
+        # so resettable uids use reset(uid) (as the frozen recordings did) and the rest use
+        # the frame-0 can pose stored in the schedule (the frozen tapes' --ic-from-tape path).
+        files = sorted(glob.glob(str(REPO / args.src / '*.npz')), key=lambda p: int(pl.Path(p).stem))
+        if args.uids:
+            want = set(int(u) for u in args.uids)
+            files = [f for f in files if int(pl.Path(f).stem) in want]
+        solved = set(env.success_uids)
+        plan = []
+        for f in files:
+            d = np.load(f, allow_pickle=True)
+            u = int(d['ic_uid'])
+            if u in solved:
+                plan.append(dict(uid=u, src=f))
+            else:
+                plan.append(dict(uid=None, ic_uid=u, src=f,
+                                 can_pos=[float(v) for v in d['can_pos']],
+                                 can_quat=[float(v) for v in d['can_quat']], goal_pos=None))
         plan = plan[args.shard_idx::args.shard_n]
         attempts = 1
     elif args.ic_mode == 'demo':
@@ -785,7 +868,7 @@ def main():
     for i, ic in enumerate(plan):
         if args.target_kept and n_kept >= args.target_kept:
             break
-        if args.teacher == 'human':
+        if args.teacher in ('human', 'sched'):
             adapter.load(ic['src'])
         for attempt in range(attempts):
             env_ic = {k: v for k, v in ic.items() if k != 'src'}
