@@ -263,7 +263,12 @@ the r2d n=8 gate disappoints; decision rests with the user.
    the camera-free consistency stat (|close-xy − placement| median 2.9 cm, 14/15 ≤ 5 cm) already answers the
    07-08 panel's "search fits" criticism with a measurement. Frozen matched sets UNTOUCHED — v2 tape pool
    (36 tapes) and any audit scoring are PREREG-gated. Docs: DEMO_RECOVERY_RESULTS / CAMERA_GATE /
-   CRITIQUE_demo_recovery (all 2026-08-31).
+   CRITIQUE_demo_recovery (all 2026-08-31). **Training-IC drift audit (09-01, state[0] of the frozen dH
+   tapes vs the newly validated positions):** 19/56 old-world (21/58 w3) training ICs were later re-validated;
+   median shift 2.0 cm, 5 exceed 3 cm, max 13.2 cm (uid 319, the drag demo, arm-base edge cluster). Within the
+   camera instrument's own error for all but a handful; NO reruns required (both arms share every IC by
+   construction, so any offset is common-mode). Disclose as: training ICs for re-validated trials sit a
+   median 2 cm from ground truth.
 Still open: r2d corrected-world n=8 (~09-01; dH pack resumed after OOM) — now DECISIVE for whether world-dependence
 is learner-general or RLPD-specific; dv3 3M (~09-01); dup n=8 top-up (running).
 
