@@ -257,6 +257,13 @@ the r2d n=8 gate disappoints; decision rests with the user.
 9. **A20 scored (08-31 ~17:00): corrected-world RLPD n=8v8 shows no source effect (§2.3) — registered predictions
    failed, reported as such.** With §1 (DP unchanged across worlds) this is an RLPD × world × source interaction;
    fig6/fig7 carry the coverage mechanism that predicts it.
+10. **Demo recovery + camera audit (other-machine session, 08-31 evening; a478d95): solved successes 61 → 74/75**
+   (only 303 remains, no video; funnel picked 0.67→0.96, nested 0.21→0.33, single-collection), all six real
+   nested demos re-nest; camera instrument calibrated to ~1.5–3.5 cm with the close-time protocol correction, and
+   the camera-free consistency stat (|close-xy − placement| median 2.9 cm, 14/15 ≤ 5 cm) already answers the
+   07-08 panel's "search fits" criticism with a measurement. Frozen matched sets UNTOUCHED — v2 tape pool
+   (36 tapes) and any audit scoring are PREREG-gated. Docs: DEMO_RECOVERY_RESULTS / CAMERA_GATE /
+   CRITIQUE_demo_recovery (all 2026-08-31).
 Still open: r2d corrected-world n=8 (~09-01; dH pack resumed after OOM) — now DECISIVE for whether world-dependence
 is learner-general or RLPD-specific; dv3 3M (~09-01); dup n=8 top-up (running).
 
