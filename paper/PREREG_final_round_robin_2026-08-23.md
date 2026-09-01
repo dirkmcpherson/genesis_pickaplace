@@ -431,3 +431,13 @@ idle — the machine arm is naturally idle-free, so the dH-raw vs dDP row-densit
 reported, not matched away). Note of record: the dHunpruned DP control (n=3, −0.056, perm p 0.36) found no
 detectable DP penalty from raw tapes, so the pruned-DP leg is continuity with the frozen DP block, not a
 performance necessity. Predictions unchanged from A21/A23.
+
+### A25 (2026-09-01, supersedes A24's split BEFORE any v2 learner run) — RAW human set for ALL learners (user decision)
+Since the dHunpruned DP control found no penalty, the two-variant design is dropped: **dHv2raw (unpruned command
+source, full recovered pool, both worlds) is THE human arm for every v2 learner — DP and RLPD — and the dDPv2
+teacher trains on dHv2raw too** (machine demos distilled from the same raw human data the human arm uses; full
+symmetry of treatment). The pruned dHv2 collection is retained as an artifact (optional continuity leg, not
+launched by default). Seeds: **equal n, DP 50-57 and RLPD 50-57, per arm per world** (A21's DP n=5 raised to 8).
+Human arms (dHv2raw × {DP, RLPD} × {old, corrected}) launch as soon as the sets exist — machine arms follow the
+teacher→harvest chain. Eval per A23 (train on all ICs; sel on fixed 15-IC training subset; final scored on full
+training set as IN-DIST + fixed rnd-30). Statistics and predictions unchanged from A21/A23.
