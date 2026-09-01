@@ -19,9 +19,10 @@ C = dict(old='#7f7f7f', w3='#2ca02c')      # colour = world (fig6 exception, kep
 MK = dict(dH='o', dDP='^')                 # shape = source (convention)
 SETS = [('old', 'dH'), ('old', 'dDP'), ('w3', 'dH'), ('w3', 'dDP')]
 LBL = ['old\nhuman', 'old\nDP', 'corrected\nhuman', 'corrected\nDP']
-TEMPORAL = {'pause_frac', 'act_hf_frac', 'jerk_per_len', 'jerk_mean', 'joint_jerk_mean',
-            'speed_cv', 'accel_mean', 'act_autocorr1', 'act_signflip_rate',
-            'speed_perm_entropy', 'speed_std', 'speed_mean'}
+TEMPORAL = {'pause_frac', 'act_hf_frac', 'act_hf_frac_w32', 'jerk_per_len', 'jerk_mean',
+            'joint_jerk_mean', 'speed_cv', 'accel_mean', 'act_autocorr1', 'act_signflip_rate',
+            'speed_perm_entropy', 'speed_std', 'speed_mean', 'strict_stop_frac',
+            'stop_frac_02mm', 'stop_frac_1mm', 'stop_frac_2mm', 'moving_speed_mean'}
 
 rows = list(csv.DictReader(open(f'{SRC}/tape_dyn_metrics.csv')))
 METRICS = [k for k in rows[0] if k not in ('world', 'arm', 'uid', 'ic_uid', 'stage')]
@@ -61,7 +62,7 @@ a_.barh(range(len(names)), vals, color=cols, alpha=0.85, height=0.7)
 a_.set_yticks(range(len(names))); a_.set_yticklabels(names, fontsize=6.5)
 a_.axvline(0, color='k', lw=0.7)
 a_.set_xlabel("criterion C = Cohen's d (dH−dDP) in corrected − in old world")
-a_.set_title('(a) all 33 per-tape metrics screened\n(red = temporal/burstiness family)', fontsize=9)
+a_.set_title(f'(a) all {len(METRICS)} per-tape metrics screened\n(red = temporal/burstiness family)', fontsize=9)
 # set-level coverage family, annotated (bootstrap z, different scale -- listed not barred)
 txt = 'set-level (bootstrap z, not d):\n' + '\n'.join(
     f"  {r['metric']}: C_z {float(r['criterion_z']):+.1f}" for r in setr)
@@ -69,9 +70,11 @@ a_.text(0.02, 0.02, txt, transform=a_.transAxes, fontsize=6.5, va='bottom',
         bbox=dict(fc='white', ec='#cccccc'))
 
 # (b)-(e) per-set distributions of the headline metrics, every tape drawn
-panels = [('pause_frac', '(b) pause fraction\n(steps < 0.2x median speed)'),
-          ('act_hf_frac', '(c) action high-freq power frac\n(upper half of spectrum, arm dims)'),
-          ('jerk_per_len', '(d) EEF jerk per unit path (1/m)'),
+# panels revised 09-01 (WM_METRIC Addendum 2): absolute full-stop fraction replaces the
+# fragile relative pause_frac; act_hf_frac demoted (windowed variant kills its w3 signal)
+panels = [('strict_stop_frac', '(b) full-stop fraction\n(EEF speed < 0.5 mm/decision)'),
+          ('moving_speed_mean', '(c) moving speed (m/decision)\n(mean over non-stopped steps)'),
+          ('jerk_mean', '(d) EEF jerk per decision (m)'),
           ('act_signflip_rate', '(e) action sign-flip rate\n(dither; old-world DP artifact)')]
 for pi, (m, title) in enumerate(panels):
     a_ = fig.add_subplot(gs[pi // 2, 1 + pi % 2])
@@ -87,7 +90,8 @@ for pi, (m, title) in enumerate(panels):
     a_.set_title(title, fontsize=8.5)
 
 fig.suptitle('fig8: demo-tape properties that still separate human from machine in the CORRECTED world (228 tapes)\n'
-             'colour = world (grey old / green corrected), marker = source (circle human / triangle DP); '
-             'screening study — hypothesis-generating, see WM_METRIC_2026-09-01.md', fontsize=10)
+             'colour = world (grey old / green corrected), marker = source (circle human / triangle DP); screening study —\n'
+             'see WM_METRIC_2026-09-01.md +A2: stops-vs-creep is the robust headline, act_hf_frac demoted (w32 kills it)',
+             fontsize=9.5, y=1.02)
 fig.savefig(f'{OUT}/fig8_wm_metric.png'); fig.savefig(f'{OUT}/fig8_wm_metric.pdf')
 print('wrote fig8')
