@@ -396,3 +396,17 @@ make_matched_sets tooling). Learners: DP (n=5/arm/world, headline = selected ckp
 **Registered predictions:** (i) old-world RLPD gap replicates at v2, dHv2 > dDPv2 by ≥ 0.10; (ii) corrected-world
 RLPD stays null, |diff| < 0.10; (iii) DP indifferent in both worlds (|diff| ≤ 0.06 band). The frozen-set results
 (A16/A20) remain the results of record for the 56-IC sets; v2 is an additive robustness block, not a correction.
+
+### A22 (2026-09-01, amends A21 BEFORE any v2 readout) — per-seed train/test splits (user request)
+v2 evaluation replaces the static hold-15 (⊂ training ICs, the A8 weakness) with SEED-SPECIFIC demo-IC holdouts:
+for seed k, a deterministic split (fixed RNG on k; tooling committed) reserves ~15 of the ~72 demo ICs as that
+seed's test set; the learner trains on the remaining ~57 ICs' tapes only. Rules that make this a blocking factor,
+not a confound: (i) split-k is IDENTICAL across arms (dHv2/dDPv2), learners (DP/RLPD), and worlds — every contrast
+at seed k is on the same train and test ICs; (ii) checkpoint selection uses train-IC episodes only — each seed's
+test ICs are scored exactly once, by the selected (DP) / LAST (RLPD, per A16) checkpoint; (iii) the FIXED rnd-30
+remains the common generalization statistic across all seeds and the axis comparable to the frozen-set blocks.
+Statistics: paired-by-seed differences (arm A − arm B at the same split), Welch + exact permutation as before;
+divergence rate unchanged. Teacher note (disclosed, not hidden): one DP teacher per world trains on the FULL dHv2
+pool, so the machine-demo GENERATOR has seen all ICs — symmetric with the human demonstrator, who performed every
+trial; students in both arms see train-IC tapes only. A21's registered predictions carry over with "hold" read as
+"per-seed held-out demo ICs".
