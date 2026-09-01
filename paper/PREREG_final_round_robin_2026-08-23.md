@@ -441,3 +441,14 @@ launched by default). Seeds: **equal n, DP 50-57 and RLPD 50-57, per arm per wor
 Human arms (dHv2raw × {DP, RLPD} × {old, corrected}) launch as soon as the sets exist — machine arms follow the
 teacher→harvest chain. Eval per A23 (train on all ICs; sel on fixed 15-IC training subset; final scored on full
 training set as IN-DIST + fixed rnd-30). Statistics and predictions unchanged from A21/A23.
+
+### A26 (2026-09-01, BEFORE any v2 readout; supersedes the A25 sets) — no horizon cap, expanded retries (user decision)
+User directive: every demonstration enters the v2 sets. (i) The 14/world over-horizon raw tapes are re-collected
+with the recording cap raised (max_sim_steps large enough that no tape truncates; recorded per-tape in metadata;
+EVAL horizon stays 1200 per protocol — training tapes may exceed it, disclosed). (ii) The adapter retry budget is
+expanded (attempts 3 → 8) to recover the adapter_exhausted trials (233 old; 261/278/301/319 corrected).
+(iii) Lying-start trials 234/318 remain EXCLUDED: the user challenged this as a setup error; the record shows the
+real cans genuinely started lying (07-06 video validation; camera census), and the exclusion reason is metric
+scope (tip rule + upright pick definition), disclosed as such. Target N: ~69-70/72 old, ~66-68/72 corrected.
+The A25 55/52-tape launches (learners + teachers) are cancelled before any readout; the matrix relaunches on the
+completed sets with the same seeds/waves (fresh wave tags v2full/g99v2full{,w3} to keep the registry clean).
