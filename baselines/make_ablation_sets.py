@@ -70,8 +70,10 @@ def load_tape(f):
     z = np.load(f, allow_pickle=True)
     A = np.asarray(z['actions'], np.float64)
     S = np.asarray(z['states'], np.float64)
+    E = np.asarray(z['eef_pos'], np.float64)
     return dict(uid=int(z['uid']), ic_uid=int(z['ic_uid']), P=A[:, :6],
                 g=np.clip(A[:, 6], 0.0, 1.0), q0=S[0, :6],
+                eef_speed=np.linalg.norm(np.diff(E, axis=0), axis=1),  # measured, per decision
                 can_pos=S[0, 8:11].copy(), can_quat=S[0, 11:15].copy())
 
 
@@ -150,16 +152,25 @@ def make_smoothed(h):
 
 def make_noised(dp, rng, sigma):
     """dDP schedule + bounded i.i.d. waypoint jitter. Arm joints only; the closure
-    segment AND the source's pause decisions are untouched -- jittering a still
-    waypoint would DESTROY the tape's pauses (pre-flight: pause_frac 0.20 -> 0.07)
-    and the control arm must change bandwidth alone, not stop-go structure."""
+    segment AND the source's stop/pause decisions are untouched -- jittering a still
+    waypoint would DESTROY the tape's pauses (pre-flight v1: pause_frac 0.20 -> 0.07)
+    and the control arm must change bandwidth alone, not stop-go structure.
+    v2 (manipulation-check regression fix, 2026-09-01): the v1 commanded-arc pause rule
+    did NOT protect MEASURED stops -- the recorded v1 arm's strict_stop_frac fell
+    0.221 -> 0.127 (jitter settling bleeds into stills; sub-rule creep segments got
+    noised). v2 protects decisions where the FROZEN tape's measured EEF speed is below
+    2x the strict-stop threshold, unions the commanded rule, and dilates the mask by
+    +/-1 decision so the arm enters/leaves stops unjittered."""
     eta = np.clip(rng.normal(0.0, sigma, dp['P'].shape), -NOISE_CLIP, NOISE_CLIP)
     d = np.diff(arc(dp)[0])
-    eta[d <= max(EPS_MOVE, 0.2 * float(np.median(d)))] = 0.0   # pause rule of the metric screen
+    still = (d <= max(EPS_MOVE, 0.2 * float(np.median(d)))) | (dp['eef_speed'] < 0.001)
+    still = still | np.roll(still, 1) | np.roll(still, -1)     # +/-1 dilation
+    eta[still] = 0.0
     cs = closure_seg(dp)
     if cs is not None:
         eta[cs[0]:cs[1] + 1] = 0.0
-    return dp['P'] + eta, dp['g'].copy(), dict(sigma=float(sigma))
+    return dp['P'] + eta, dp['g'].copy(), dict(sigma=float(sigma),
+                                               noised_frac=round(float(1 - still.mean()), 3))
 
 
 # ---- predicted (perfect-tracking) metrics: definitions mirror
@@ -203,6 +214,8 @@ def main():
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--sigma', type=float, default=None,
                     help='noised: skip calibration, use this waypoint sigma (rad)')
+    ap.add_argument('--only', choices=['dDPretimed', 'dHsmoothed', 'dDPnoised'], default=None,
+                    help='rebuild just this schedule set (others untouched on disk)')
     ap.add_argument('--force', action='store_true')
     args = ap.parse_args()
 
@@ -235,6 +248,8 @@ def main():
 
     out = REPO / args.out_root
     sets = {'dDPretimed': [], 'dHsmoothed': [], 'dDPnoised': []}
+    if args.only:
+        sets = {args.only: []}
     per_ic = []
     for name in sets:
         d = out / f'sched_{name}'
@@ -249,6 +264,7 @@ def main():
         built = {'dDPretimed': (dp, *make_retimed(dp, h)),
                  'dHsmoothed': (h, *make_smoothed(h)),
                  'dDPnoised': (dp, *make_noised(dp, rng, sigma))}
+        built = {k: v for k, v in built.items() if k in sets}
         row = dict(ic_uid=ic, src_dp_uid=dp['uid'], src_dh_uid=h['uid'],
                    n_dp=len(dp['g']), n_dh=len(h['g']))
         for name, (src, wp, g, meta) in built.items():
@@ -271,8 +287,10 @@ def main():
             for k in ('pause_frac', 'act_hf_frac', 'clip_frac', 'joint_jerk_mean', 'n')}
     man = dict(built=time.strftime('%Y-%m-%dT%H:%M:%S'), seed=args.seed, sigma=sigma,
                sigma_calibration=cal, dh=args.dh, ddp=args.ddp, n_ics=len(ics),
-               unpaired_ics=only, prereg='A28', predicted_set_means=summary, per_ic=per_ic)
-    (out / 'transform_manifest.json').write_text(json.dumps(man, indent=1))
+               unpaired_ics=only, prereg='A28', only=args.only,
+               predicted_set_means=summary, per_ic=per_ic)
+    man_name = f'transform_manifest_{args.only}.json' if args.only else 'transform_manifest.json'
+    (out / man_name).write_text(json.dumps(man, indent=1))
     print('[abl] predicted set means (perfect tracking):')
     for k, v in summary.items():
         print(f'   {k}: {v}')
