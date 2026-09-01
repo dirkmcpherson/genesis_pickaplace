@@ -40,7 +40,12 @@ for uid in uids:
     solved = r['status'] in ('ok', 'ok_batch')
     can_quat = tuple(r.get('can_quat') or (1, 0, 0, 0)) if solved else (1, 0, 0, 0)
     if solved:
-        can_pos, goal_pos = tuple(r['can_pos']), tuple(r['goal_pos'])
+        can_pos = tuple(r['can_pos'])
+        # recovery-era entries (cpu_research_recovery_0831) carry no per-trial goal:
+        # the static goal is authoritative (2026-07-17 decision)
+        goal_pos = (tuple(r['goal_pos']) if r.get('goal_pos') else
+                    (STATIC_BOTTLE_POSITION[0], STATIC_BOTTLE_POSITION[1],
+                     w['goal_start_z']))
     else:
         seed = fk.get('close_xy') or (fk['can_xy'] if fk['conf'] in ('HIGH', 'MED')
                                       else BUCKET[fk['pos']])
@@ -82,12 +87,14 @@ for uid in uids:
     for _ in range(100):
         scene.step()
     rgb = cam.render()[0]; frames.append(np.asarray(rgb)[:, :, ::-1])
-    # nested at end
-    c = np_(bottle.get_contacts(goal)['position'])
-    ncon = 0 if c.size == 0 else c.shape[0]
-    nested = bool(ncon and tilt_deg(np_(bottle.get_quat())) < 20
+    # nested at end: PROXIMITY metric (2026-07-20 decision) — hard contact NOT required
+    from replay_harness import NESTED_TOUCH_DIST
+    bp_, gp_ = np_(bottle.get_pos()), np_(goal.get_pos())
+    prox = float(np.hypot(bp_[0] - gp_[0], bp_[1] - gp_[1]))
+    nested = bool(picked and prox <= NESTED_TOUCH_DIST
+                  and tilt_deg(np_(bottle.get_quat())) < 20
                   and tilt_deg(np_(goal.get_quat())) < 20)
-    outcome = ('S-nested' if success and nested else 'S' if success else
+    outcome = ('S-nested' if nested else 'S' if success else
                'placed-only' if max_z > w['pick_z'] and np_(bottle.get_pos())[2] > 0.11 else
                'picked-drop' if picked else 'no-pick')
     out = OUTDIR / f'{uid}_{outcome}.mp4'

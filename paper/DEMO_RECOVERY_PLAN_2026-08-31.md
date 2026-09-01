@@ -1,5 +1,11 @@
 # Demo recovery plan — getting from 72+8 usable tapes back to all 91 (2026-08-31)
 
+> **SUPERSEDED IN PART (same day):** see `CRITIQUE_demo_recovery_2026-08-31.md`
+> (adversarial fact-check: bags are local, no ROS1 needed, inventory is 61 solved
+> successes not 72, no Hough prototype exists) and `CAMERA_GATE_2026-08-31.md`
+> (steps 0–1 executed: census + calibration gate PASS at ~1.5–3.5 cm, plus a protocol
+> correction — audit at close-time, not t0). Pipeline: `can_pos_recovery/camera_audit/`.
+
 ## Inventory (verified against CLAUDE.md accounting + METHODS §4.6)
 - Recorded: 93 labeled trials = **75 success + 16 fail + 2 stubs** (stubs excluded forever: gripper
   never closes). The unlabeled trials 200–231 (~32 more) were never ingested — out of scope here.

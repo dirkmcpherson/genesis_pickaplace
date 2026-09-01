@@ -50,13 +50,18 @@
    "pos": 0
   },
   "236": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4989,
-    -0.0255,
+    0.4689,
+    -0.0555,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -67,7 +72,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831b"
   },
   "237": {
    "status": "ok_batch",
@@ -110,13 +116,18 @@
    "pos": 0
   },
   "239": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4703,
-    -0.014,
+    0.4381,
+    -0.05,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -127,7 +138,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831b"
   },
   "242": {
    "status": "ok",
@@ -170,13 +182,18 @@
    "pos": 1
   },
   "244": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4381,
-    -0.2,
+    0.4153,
+    -0.1727,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -187,16 +204,22 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831b"
   },
   "245": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4976,
-    0.1103,
+    0.47759999999999997,
+    0.0903,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6826,
     -0.1309,
@@ -207,7 +230,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831b"
   },
   "248": {
    "status": "ok_batch",
@@ -650,13 +674,18 @@
    "pos": 1
   },
   "287": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
     0.494,
-    -0.0193,
+    -0.0393,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.7347,
     -0.1084,
@@ -667,16 +696,22 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831b"
   },
   "294": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4756,
-    -0.0542,
+    0.49060000000000004,
+    -0.0392,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -687,7 +722,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831b"
   },
   "296": {
    "status": "ok_batch",
@@ -750,13 +786,18 @@
    "pos": 1
   },
   "299": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4252,
-    -0.1985,
+    0.3911,
+    -0.2031,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -767,16 +808,22 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831b"
   },
   "300": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4332,
-    -0.1738,
+    0.4032,
+    -0.1838,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -787,7 +834,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831b"
   },
   "302": {
    "status": "ok_batch",
@@ -1030,13 +1078,18 @@
    "pos": 2
   },
   "315": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.4997,
-    0.1272,
+    0.4897,
+    0.1172,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.8275,
     0.0155,
@@ -1047,7 +1100,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831b"
   },
   "316": {
    "status": "ok_batch",
@@ -1150,13 +1204,18 @@
    "pos": 2
   },
   "328": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
     0.454,
     0.1227,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.6,
     -0.2,
@@ -1167,16 +1226,22 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831b"
   },
   "331": {
-   "status": "ok_batch",
+   "status": "ok",
    "can_pos": [
-    0.582,
-    0.1222,
+    0.5007,
+    0.06330000000000001,
     0.113
    ],
-   "can_quat": null,
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": [
     0.5832,
     0.1233,
@@ -1187,7 +1252,8 @@
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831b"
   },
   "334": {
    "status": "ok_batch",
@@ -1230,16 +1296,26 @@
    "pos": 0
   },
   "233": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "MED",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "234": {
    "status": "ok",
@@ -1265,16 +1341,26 @@
    "stage": "picked"
   },
   "240": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4273,
+    -0.1259,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "fail",
    "conf": "MED",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   },
   "246": {
    "status": "ok",
@@ -1346,16 +1432,26 @@
    "stage": "placed"
   },
   "255": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4445,
+    -0.033100000000000004,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "256": {
    "status": "ok",
@@ -1381,52 +1477,92 @@
    "stage": "nested"
   },
   "259": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4381,
+    -0.2,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   },
   "262": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4575,
+    -0.0338,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "266": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4502,
+    -0.0361,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "267": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4231,
+    -0.1789,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   },
   "268": {
    "status": "no_shelf_batch",
@@ -1441,28 +1577,48 @@
    "pos": 0
   },
   "275": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.43019999999999997,
+    -0.1509,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   },
   "278": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4451,
+    -0.1343,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   },
   "282": {
    "status": "no_shelf_batch",
@@ -1570,16 +1726,26 @@
    "stage": "contact"
   },
   "301": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4862,
+    0.0995,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831"
   },
   "303": {
    "status": "no_shelf_batch",
@@ -1617,16 +1783,26 @@
    "stage": "picked"
   },
   "319": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.3827,
+    0.0212,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 0
+   "pos": 0,
+   "search": "cpu_research_recovery_0831"
   },
   "320": {
    "status": "ok",
@@ -1652,16 +1828,26 @@
    "stage": "nested"
   },
   "321": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4243,
+    0.0161,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "322": {
    "status": "no_shelf_batch",
@@ -1688,16 +1874,26 @@
    "pos": 0
   },
   "329": {
-   "status": "shelf_but_no_slide",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4578,
+    -0.022,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 1
+   "pos": 1,
+   "search": "cpu_research_recovery_0831"
   },
   "330": {
    "status": "ok",
@@ -1723,16 +1919,26 @@
    "stage": "nested"
   },
   "333": {
-   "status": "no_shelf_batch",
-   "can_pos": null,
-   "can_quat": null,
+   "status": "ok",
+   "can_pos": [
+    0.4381,
+    -0.2,
+    0.113
+   ],
+   "can_quat": [
+    1,
+    0,
+    0,
+    0
+   ],
    "goal_pos": null,
    "goal_moved": null,
    "success_rate": null,
    "picked_rate": null,
    "label": "success",
    "conf": "HIGH",
-   "pos": 2
+   "pos": 2,
+   "search": "cpu_research_recovery_0831"
   }
  }
 }
