@@ -384,3 +384,15 @@ plus divergence rate (max critic loss ≥ 1, Fisher exact). Predictions (registe
 result replicates in direction — LAST rnd dH > dDP by ≥ 0.10; divergence dH ≤ 2/8, dDP ≥ 3/8. Note the demo sets
 differ from the old-world block in world and N (58 vs 56) by construction; the comparison is within-world per A19,
 and this block exists to let the cross-learner figure cite two learners in the SAME world, not to pool worlds.
+
+### A21 (2026-09-01, BEFORE any v2 collection readout) — full-pool v2 block (user request: use the recovered demos)
+The 08-31 recovery (DEMO_RECOVERY_RESULTS) solved 74/75 successes, adding 7 nested demos and the arm-base edge
+cluster the frozen sets undersample. v2 sets: **fresh collection at the current validated placements** (kills the
+2 cm training-IC drift), both worlds, all clean solved trials (excluded with reasons: 303 no-video/unsolved,
+237 camera-convicted control-limited, 294 basin-flip pending) → target N≈72/arm. dHv2 = the human tapes;
+dDPv2 = per-IC matched harvest from a DP teacher trained on that world's dHv2 (same recipe as the frozen sets;
+make_matched_sets tooling). Learners: DP (n=5/arm/world, headline = selected ckpt hold+rnd) and RLPD (n=8/arm/world,
+γ 0.99 sparse, statistic = A16: LAST-ckpt rnd-30 + divergence max CL ≥ 1). Fresh seed ids (A9): DP 50-54, RLPD 50-57.
+**Registered predictions:** (i) old-world RLPD gap replicates at v2, dHv2 > dDPv2 by ≥ 0.10; (ii) corrected-world
+RLPD stays null, |diff| < 0.10; (iii) DP indifferent in both worlds (|diff| ≤ 0.06 band). The frozen-set results
+(A16/A20) remain the results of record for the 56-IC sets; v2 is an additive robustness block, not a correction.
