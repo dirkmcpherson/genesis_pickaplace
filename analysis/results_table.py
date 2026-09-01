@@ -16,16 +16,16 @@ import argparse, collections, glob, os, re, statistics as st
 def world_of(seed, path='', arm=None, learner=None):
     """World = demo-set world. Seed blocks: 10-19 old (matched_v2), 20-29 corrected (matched_w3),
     40-42 split halves (matched_w3), 50-59 old halves, 30-37 RLPD gamma-0.99 block (old, matched_v2),
-    100-107 r2d old-world, 120-125 r2d NOCLAMP old-world. r2d 80-93 are old-world EXCEPT dH/dDP 80-83,
-    which exist only as the 08-28 corrected-world gate (DEMOSET=w3; logdir names carry no world).
+    100-107 r2d old-world, 120-125 r2d NOCLAMP old-world. r2d 80-93 are old-world EXCEPT dH/dDP 80-87,
+    which exist only as the corrected-world gate + its n=8 extension (DEMOSET=w3; logdir names carry no world).
     Path/tag overrides: pilotw4/_w4 = ts5 world; _W3 re-score tags = corrected."""
     if 'pilotw4' in path or '_w4' in path: return 'corrected+ts5'
-    if '_W3' in path: return 'corrected'
+    if '_W3' in path or 'g99w3' in path: return 'corrected'   # A20 RLPD wave + W3 re-score tags
     if 10 <= seed <= 19: return 'old'      # 14-19 = 08-28 RLPD old-world top-up
     if 30 <= seed <= 37: return 'old'      # RLPD gamma 0.99 block (A17) incl. dup/fails arms
     if 50 <= seed <= 59: return 'old'      # old-world split halves (08-28)
     if 20 <= seed <= 29 or 40 <= seed <= 42: return 'corrected'
-    if learner == 'r2d' and arm in ('dH', 'dDP') and 80 <= seed <= 83: return 'corrected'
+    if learner == 'r2d' and arm in ('dH', 'dDP') and 80 <= seed <= 87: return 'corrected'   # w3 gate 80-83 + n=8 extension 84-87 (08-31)
     if 80 <= seed <= 93 or 100 <= seed <= 107 or 120 <= seed <= 125: return 'old'
     return '?'
 
