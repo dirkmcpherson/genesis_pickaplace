@@ -484,3 +484,12 @@ the mechanism is bandwidth, not structure). Statistics: ignition (BEST hold ≥ 
 acknowledged — this is a mechanism probe, not a headline table. Set construction must pass the same verify gates
 as all recorded sets; construction tooling and per-set metrics (pause_frac/jerk must actually MOVE as intended —
 a manipulation check, reported before any training) go in WM_METRIC addenda.
+
+### A29 (2026-09-01 evening, BEFORE any v2 DP readout beyond the first two seeds) — pruned-dHv2 DP continuity leg activated
+First v2 signals: dDPv2 teacher pilots on dHv2raw score rnd 5–8/30 and the first two dHv2raw DP learners 9–12/30,
+vs 0.55 on the frozen (leading-idle-pruned, horizon-capped) set — the uncapped raw tapes' idle spans appear to
+degrade DP on random ICs, exactly the user's original pruning hypothesis, which the horizon-capped dHunpruned control
+(n=3, no penalty) could not detect. A25's "optional continuity leg" is therefore ACTIVATED: DP on the pruned dHv2
+sets (matched_v2/dHv2 N=60, matched_w3/dHv2 N=60; A23 eval), seeds 50–57, waves v2fullP / v2fullPw3. Registered
+prediction: pruned-dHv2 DP rnd exceeds dHv2raw DP rnd by ≥ 0.15 in both worlds. The dDPv2 teacher/harvest stays on
+dHv2raw (A25 symmetry); a pruned-teacher variant is NOT added (scope). RLPD stays raw-only (A25).
