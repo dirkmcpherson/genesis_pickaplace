@@ -465,3 +465,22 @@ before this block runs, informed by (and disclosed as informed by) the frozen n=
 Registered predictions: dHv2raw > dDPv2 on BEST rnd by ≥ 0.15; ignition difference ≥ 3/12; and the frozen-block
 direction (human > machine for the WM) replicates on the full pool. Power note: at the frozen block's observed
 effect (≈1 sd), n=12v12 gives ~80 % power; min attainable perm p 7.4e-7.
+
+### A28 (2026-09-01, BEFORE any ablation-set construction readout) — WM burstiness ablation (user: "bonus if we can ablate it")
+The metric screen (WM_METRIC_2026-09-01.md; screening/hypothesis-generating, multiple comparisons disclosed) finds
+the corrected-world-specific human/machine separator is TEMPORAL BURSTINESS — pauses (pause_frac d +1.35), real
+accel/decel bursts (jerk_per_len, HF action power) — while every coverage/support metric separates only the old
+world (internal control consistent with A20). Causality test, three intervention arms on the corrected world +
+the two frozen arms as anchors, r2dreamer, 4 seeds each (fresh ids 110-121, A9), 3M, protocol as A27:
+- **dDPretimed**: w3 dDP tapes re-timed along their own paths — holds inserted with dwell statistics from the
+  same-IC human tape, deltas merged into bursts up to delta_cap — geometry/coverage fixed, temporal profile
+  human-matched; open-loop re-executed, verified, recorded contract-v1.
+- **dHsmoothed**: converse — w3 dH tapes de-paused/constant-speed re-timed.
+- **dDPnoised**: DART-style i.i.d. action noise on w3 dDP (the retired-H3 control): raises bandwidth WITHOUT
+  structured stop-go.
+Registered predictions: ignition(dDPretimed) > ignition(dDP frozen) by ≥ 2/4 seeds; ignition(dHsmoothed) <
+ignition(dH frozen); ignition(dDPnoised) ≈ ignition(dDP frozen) (the discriminating arm: if noise alone ignites,
+the mechanism is bandwidth, not structure). Statistics: ignition (BEST hold ≥ 8/15, as A27) + BEST rnd; small-n
+acknowledged — this is a mechanism probe, not a headline table. Set construction must pass the same verify gates
+as all recorded sets; construction tooling and per-set metrics (pause_frac/jerk must actually MOVE as intended —
+a manipulation check, reported before any training) go in WM_METRIC addenda.
