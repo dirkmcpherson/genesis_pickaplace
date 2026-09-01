@@ -32,8 +32,8 @@ rlpd_last_rnd = {
     'dDP':         [14, 12, 17, 16, 13, 17, 15],          # s30,31,33-37 (s32 final eval missing)
     'dHHfails':    [23, 23, 20, 21, 21, 25, 22, 24],      # s30-37
     'dDPfails':    [19, 15, 3, 18, 15, 20, 20, 19],       # s30-37
-    'dHsucc_dup':  [17, 23, 23, 18],                      # s30-33
-    'dDPsucc_dup': [19, 13, 5, 9],                        # s30-33
+    'dHsucc_dup':  [17, 23, 23, 18, 19, 25, 16, 24],      # s30-37 (n=8 top-up 08-31 pm)
+    'dDPsucc_dup': [19, 13, 5, 9, 15, 17, 15, 21],        # s30-37
 }
 # max critic loss per seed (same arms, s30-37 order); divergence threshold = 1 (A16)
 rlpd_maxcl = {
@@ -41,8 +41,8 @@ rlpd_maxcl = {
     'dDP':         [22.1, 83.6, 0.043, 39.2, 0.03, 5.28, 18.5, 4.56],
     'dHHfails':    [0.019, 0.018, 0.0229, 0.0188, 0.0121, 50.5, 0.823, 0.355],
     'dDPfails':    [0.0231, 0.0916, 83.3, 0.0212, 0.0698, 0.0571, 0.0285, 0.0419],
-    'dHsucc_dup':  [0.0795, 0.0254, 0.0289, 0.0837],
-    'dDPsucc_dup': [0.147, 4.61, 1.65, 0.0668],
+    'dHsucc_dup':  [0.0795, 0.0254, 0.0289, 0.0837, 3.44, 8.98, 0.0475, 0.0331],  # s30-37 (2/8 >= 1)
+    'dDPsucc_dup': [0.147, 4.61, 1.65, 0.0668, 3.49, 26.7, 26.5, 0.115],           # s30-37 (5/8 >= 1)
 }
 # DP corrected world (matched_w3 gc_kp4_riser3_shelf6), seeds 20-29, selected ckpt
 dp_w3 = dict(
@@ -59,7 +59,7 @@ forest = [  # (label, diff, lo, hi, p_perm, colour, note)
     ('DP  (corrected world, selected rnd, n=10 v 10)', 0.060, 0.006, 0.114, 0.041, C['DP'], 'unadjusted'),
     ('RLPD sparse, OLD world  (LAST rnd, n=7 v 7)', 0.205, 0.111, 0.299, 0.002, C['RLPD'], 'A16 prereg, met'),
     ('RLPD +fails, OLD world  (LAST rnd, n=8 v 8)', 0.208, 0.048, 0.368, 0.0009, C['RLPD'], ''),  # perm 2x1s < 0.001
-    ('RLPD +succ_dup, OLD world  (LAST rnd, n=4 v 4)', 0.292, -0.007, 0.590, 0.086, C['RLPD'], 'n=8 queued'),
+    ('RLPD +succ_dup, OLD world  (LAST rnd, n=8 v 8)', 0.213, 0.051, 0.374, 0.013, C['RLPD'], ''),
     ('RLPD sparse, CORRECTED world  (LAST rnd, n=8 v 8)', -0.021, -0.301, 0.259, 0.983, C['RLPD'], 'A20 prereg, FAILED'),
     ('r2dreamer  (corrected world, BEST rnd, n=4 v 4)', 0.408, -0.256, 1.073, 0.143, C['R2D'], 'n=8 ~09-01'),
 ]
@@ -88,13 +88,13 @@ def violin(ax, x, vals, colour, alpha, denom):
 fig, ax = plt.subplots(figsize=(7.6, 4.2))
 order = ['dH', 'dDP', 'dHHfails', 'dDPfails', 'dHsucc_dup', 'dDPsucc_dup']
 labels = ['human\n(n=7)', 'DP\n(n=7)', 'human\n+fails (n=8)', 'DP\n+fails (n=8)',
-          'human\n+dup (n=4)', 'DP\n+dup (n=4)']
+          'human\n+dup (n=8)', 'DP\n+dup (n=8)']
 for i, k in enumerate(order):
     src = 'human' if k.startswith('dH') else 'machine'
     violin(ax, i, rlpd_last_rnd[k], C['RLPD'], 0.40 if src == 'human' else 0.18, 30)
     seeds_pts(ax, i, rlpd_last_rnd[k], C['RLPD'], src, 30)
 for x0, x1, y, txt in [(0, 1, 0.92, '+0.21  p=0.002'), (2, 3, 0.99, '+0.21  p<0.001'),
-                       (4, 5, 0.87, '+0.29  p=0.086')]:
+                       (4, 5, 0.92, '+0.21  p=0.013')]:
     ax.plot([x0, x0, x1, x1], [y - 0.015, y, y, y - 0.015], color='0.35', lw=1)
     ax.text((x0 + x1) / 2, y + 0.008, txt, ha='center', fontsize=8.5, color='0.25')
 ax.set_xticks(range(6)); ax.set_xticklabels(labels, fontsize=8.5)
@@ -109,7 +109,7 @@ fig, (a, b) = plt.subplots(1, 2, figsize=(9.2, 3.8), gridspec_kw={'width_ratios'
 div = [(np.asarray(rlpd_maxcl[k]) >= 1).mean() for k in order]
 nn = [len(rlpd_maxcl[k]) for k in order]
 cl_labels = ['human\n(n=8)', 'DP\n(n=8)', 'human\n+fails\n(n=8)', 'DP\n+fails\n(n=8)',
-             'human\n+dup\n(n=4)', 'DP\n+dup\n(n=4)']
+             'human\n+dup\n(n=8)', 'DP\n+dup\n(n=8)']
 for i, d in enumerate(div):
     a.bar(i, d, color=C['RLPD'], alpha=0.85 if i % 2 == 0 else 0.45)
 for i, (d, n) in enumerate(zip(div, nn)):

@@ -107,9 +107,14 @@ Per-seed LAST rnd: dHHfails 23,23,20,21,21,25,22,24; dDPfails 19,15,3,18,15,20,2
   (n 8 v 4, +0.15, perm p 0.26 — ns). Directionally consistent, individually not significant — write as "failure tapes
   help RLPD if anything, and specifically de-diverge the DP-demo arm; the effect on final score is within noise of a
   row-count control."
-- Dup controls complete n=4 v 4 (LAST rnd): dHsucc_dup 17,23,23,18 (0.675; max CL ≤ 0.08, 0/4 diverged);
-  dDPsucc_dup 19,13,5,9 (0.383; s31 CL 4.6, s32 1.65 → 2/4 diverged). The source gap replicates inside the dup
-  controls (+0.29) — it is not a row-count artefact.
+- Dup controls TOP-UP COMPLETE n=8 v 8 (s34-37 added 08-31 pm; LAST rnd): dHsucc_dup 17,23,23,18,19,25,16,24
+  (**0.688**); dDPsucc_dup 19,13,5,9,15,17,15,21 (**0.475**). Source gap inside the dup controls:
+  **+0.213, CI [+0.051, +0.374], Welch p 0.014 / perm 0.013** — the old-world gap now replicates at the SAME
+  size (+0.21) in three independent preparations (sparse, +fails, +dup), all n=8v8, all significant; it is not
+  a row-count artefact. Divergence in the dup controls at n=8: dH 2/8 (s34 3.4, s35 9.0) vs dDP 5/8 — the sparse
+  asymmetry (1/8 v 6/8) echoes, softer. Fails-vs-dup at full n: dH +0.058 (p 0.26), dDP +0.062 (p 0.53) — direction
+  consistent (A17 rule still met), magnitude within noise; the fails claim remains the DE-DIVERGENCE, not a score lift
+  (fails 1/8+1/8 diverged vs dup 2/8+5/8 — failure tapes stabilise BOTH sources beyond what duplication does).
 - **(2) dense arms — COMPLETE n=6 v 6** (4 of the original 12 died on one node's bad GPU; refills = fresh seeds per A9).
   dH-dense selected rnd 8,6,17,14,17,6 (mean 0.378); dDP-dense 9,7,12,4,11,11 (mean 0.300). Read: potential-shaped
   dense reward HURTS both sources relative to sparse (dH 0.38 vs 0.69; dDP 0.30 vs 0.50) and does not close the source
