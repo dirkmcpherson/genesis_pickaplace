@@ -199,7 +199,8 @@ if [ -n "$ARM" ]; then
     dR2DDPsucc) ;;                                   # MIXED-SOURCE; cancelled 08-28, kept for the record                                   # N15 success-content control (make_succ_control_set.py)
     dR2Ddup13)  DUPLICATE=${DUPLICATE:-13} ;;         # N15 share-matched control: dR2D tapes at demo_duplicate 13
                                                      # (13*1023 rows ~= fails arm's 4*3418/... see AUDIT_results_2026-08-28 §1)
-    *) echo "FATAL: ARM=$ARM (must be dH, dDP, dR2D, dDPfails, dR2DDPfails, dR2DDPsucc, dR2Ddup13)"; exit 1 ;;
+    dDPretimed|dHsmoothed|dDPnoised) ;;               # A28 burstiness-ablation arms (make_ablation_sets.py; DEMOSET=w3 only)
+    *) echo "FATAL: ARM=$ARM (must be dH, dDP, dR2D, dDPfails, dR2DDPfails, dR2DDPsucc, dR2Ddup13, dDPretimed, dHsmoothed, dDPnoised)"; exit 1 ;;
   esac
 fi
 # DEMOSET=v2 (final-RR 2026-08-24): native contract-v1 stride-4 demo dirs built by
