@@ -570,3 +570,90 @@ All recording/eval used `CUDA_VISIBLE_DEVICES=""` unless stated (sim on CPU). Ti
 | 12:40:57 | tufts | ac87545 | `sacct -j 3120026 -X -n -o State` | rc=0 |    PENDING  |
 | 12:41:58 | tufts | ac87545 | `grep -h "RESCORE-RESULT" /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/outputs/n12_rescore/*dH_s84_W3_hold*.log /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/outputs/n12_rescore/*dH_s84_W3_rnd*.log 2>/dev/null \| grep -c "dH_s84_W3 set"` | rc=0 | 2 |
 | 12:42:01 | tufts | ac87545 | `grep -h "RESCORE-RESULT" /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/outputs/n12_rescore/*dH_s84_W3*.log \| sed "s/tag=pick_v5d4c_delta_shaped_//;s/ expected=.*//"` | rc=0 | RESCORE-RESULT dH_s84_W3 set=hold picked=1/15 |
+| 12:44:01 | tufts | ac87545 | `sacct -j 3120026 -X -n -o State` | rc=0 |  COMPLETED  |
+| 12:44:04 | tufts | ac87545 | `tail -3 /cluster/tufts/shortlab/jstale02/compose_rvs_3120026.out` | rc=0 | no sim tape for 334 (real-only, skipped) |
+| 12:44:41 | tufts | ac87545 | `which ffmpeg; ls /cluster/tufts/shortlab/jstale02/condaenv/genesis/bin/ffmpeg 2>/dev/null; module avail ffmpeg 2>&1 \| head -3` | rc=0 | /usr/bin/which: no ffmpeg in (/cluster/tufts/apps/spack/9/x86_64/apps/linux-broadwell/tmux-3.4-sig2opp6qmhqvgjzqerbrphqy2hqpwpj/bin:/cluster/tufts/hpc/tools/ana |
+| 12:44:54 | tufts | ac87545 | `sed -i "s\|^set -u\|set -u\nmodule load ffmpeg/7.0.2 2>/dev/null \|\| true\|" /cluster/tufts/shortlab/jstale02/compose_cluster.sh && sed -i "s\|>/dev/null 2>&1 && done=\|2>>/cluster/tufts/shortlab/jstale02/compose_err.log && done=\|" /cluster/tufts/shortlab/jstale02/compose_cluster.sh && sbatch -p batch -c 16 --mem 16g --time 2:00:00 -J compose_rvs -o /cluster/tufts/shortlab/jstale02/compose_rvs_%j.out --wrap "bash /cluster/tufts/shortlab/jstale02/compose_cluster.sh"` | rc=1 | sed: -e expression #1, char 57: unknown option to `s' |
+| 12:45:11 | tufts | ac87545 | `rm -f /cluster/tufts/shortlab/jstale02/compose_err.log; sbatch -p batch -c 16 --mem 16g --time 2:00:00 -J compose_rvs -o /cluster/tufts/shortlab/jstale02/compose_rvs_%j.out --wrap "bash /cluster/tufts/shortlab/jstale02/compose_cluster.sh"` | rc=0 | Submitted batch job 3120065 |
+| 12:45:24 | tufts | ac87545 | `sacct -j 3120065 -X -n -o State` | rc=0 |  COMPLETED  |
+| 12:45:27 | tufts | ac87545 | `tail -2 /cluster/tufts/shortlab/jstale02/compose_rvs_3120065.out; tail -3 /cluster/tufts/shortlab/jstale02/compose_err.log 2>/dev/null` | rc=0 | ls: cannot access '/cluster/tufts/shortlab/jstale02/v2_review/real_vs_sim/*.mp4': No such file or directory |
+| 12:46:02 | tufts | ac87545 | `rm -f /cluster/tufts/shortlab/jstale02/compose_err.log; sbatch -p batch -c 16 --mem 16g --time 2:00:00 -J compose_rvs -o /cluster/tufts/shortlab/jstale02/compose_rvs_%j.out --wrap "bash /cluster/tufts/shortlab/jstale02/compose_cluster.sh"` | rc=0 | Submitted batch job 3120167 |
+| 12:46:23 | tufts | ac87545 | `scancel 3120167` | rc=0 |  |
+| 12:46:28 | tufts | ac87545 | `rm -f /cluster/tufts/shortlab/jstale02/compose_err.log; sbatch -p batch -c 16 --mem 16g --time 2:00:00 -J compose_rvs -o /cluster/tufts/shortlab/jstale02/compose_rvs_%j.out --wrap "bash /cluster/tufts/shortlab/jstale02/compose_cluster.sh"` | rc=0 | Submitted batch job 3120169 |
+| 12:46:41 | tufts | ac87545 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:48:45 | tufts | ac87545 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:49:42 | tufts | ac87545 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && source ~/.bashrc >/dev/null 2>&1 && conda activate /cluster/tufts/shortlab/jstale02/condaenv/genesis && export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$PWD && for A in dDPretimed dHsmoothed dDPnoised; do python baselines/record_demos.py --teacher sched --src baselines/demos_v1/_ablation/sched_$A --merge --outdir baselines/demos_v1/_ablation/$A 2>&1 \| grep "merge\]"; done; echo "--- fails by set/reason:"; python - << "EOF" import json, glob, collections for A in ("dDPretimed","dHsmoothed","dDPnoised"):     c = collections.Counter(` | rc=0 | [merge] rollouts=58 kept=52 files=52 sha=5387c4bb4d71af11 |
+| 12:50:07 | tufts | ac87545 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && source ~/.bashrc >/dev/null 2>&1 && conda activate /cluster/tufts/shortlab/jstale02/condaenv/genesis && export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$PWD && set -e; for A in dDPretimed dHsmoothed dDPnoised; do python baselines/make_v2_matched.py --src baselines/demos_v1/_ablation/$A --name $A --out-root baselines/matched_w3 2>&1 \| tail -1; done && for A in dDPretimed dHsmoothed dDPnoised; do python baselines/rl/to_dreamer_native.py --src baselines/matched_w3/$A --dst baselines/matched_w3/r2d/$A --repeat 4 --terminal-reward 1 --` | rc=0 |   wrote baselines/matched_w3/dDPretimed: N=52 sim_variant=gc_kp4_riser3_shelf6 sha 5387c4bb4d71af11 |
+| 12:50:38 | tufts | ac87545 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && nice -n 19 /cluster/tufts/shortlab/jstale02/condaenv/genesis/bin/python baselines/diagnostics/tape_dynamics_metrics.py /cluster/tufts/shortlab/jstale02/tape_abl_out --nboot 0 --sets w3/dH=matched_w3/dH w3/dDP=matched_w3/dDP w3/dDPretimed=matched_w3/dDPretimed w3/dHsmoothed=matched_w3/dHsmoothed w3/dDPnoised=matched_w3/dDPnoised 2>&1 \| grep -A9 "Per-set means"` | rc=0 | ## Per-set means (all per-tape metrics + set-level values) |
+| 12:50:48 | tufts | ac87545 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:52:24 | tufts | ac87545 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && git pull --ff-only -q origin 4dof-cartesian && export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$PWD && nice -n 19 /cluster/tufts/shortlab/jstale02/condaenv/genesis/bin/python baselines/make_ablation_sets.py --only dDPnoised --force 2>&1 \| tail -8` | rc=0 | [abl] dH 58 tapes, dDP 58 tapes, common ICs 58 |
+| 12:52:44 | tufts | 96073e1 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/demos_v1/_ablation && mv dDPnoised dDPnoised_v1stopreg && mv dDPnoised_fails dDPnoised_v1stopreg_fails && cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && TEACHER=sched SRC=baselines/demos_v1/_ablation/sched_dDPnoised OUTDIR=baselines/demos_v1/_ablation/dDPnoised SHARD_N=6 PARTITION=batch CPUS=4 MEM=12g TIME=1:30:00 EXTRA="--verify --max-sim-steps 2400 --sim-variant gc_kp4_riser3_shelf6" GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_record.sh 2>&1 \| tail -2` | rc=0 | Submitted batch job 3120213 |
+| 12:52:52 | tufts | 96073e1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:53:09 | tufts | 96073e1 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && for A in dDPretimed dHsmoothed; do DRYRUN=1 ARM=$A SEED=110 DEMOSET=w3 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 CONFIG=genesis_pick_v5d4c_delta_shaped TIME_LIMIT=400 GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_r2dreamer.sh 2>&1 \| grep -E "FATAL\|dry\|ARM=\|n-band" \| head -4; done` | rc=0 | FATAL: ARM=dDPretimed (must be dH, dDP, dR2D, dDPfails, dR2DDPfails, dR2DDPsucc, dR2Ddup13) |
+| 12:53:44 | tufts | 96073e1 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && git stash -q 2>/dev/null; git pull --ff-only -q origin 4dof-cartesian; git stash pop -q 2>/dev/null; for A in dDPretimed dHsmoothed dDPnoised; do DRYRUN=1 ARM=$A SEED=110 DEMOSET=w3 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 CONFIG=genesis_pick_v5d4c_delta_shaped TIME_LIMIT=400 GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_r2dreamer.sh 2>&1 \| grep -E "FATAL\|dry\]\|n-band" \| head -3; done` | rc=0 | [dry] cd /cluster/tufts/shortlab/jstale02/r2dreamer |
+| 12:54:56 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:57:00 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 12:59:04 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:01:07 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:03:11 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:05:12 | tufts | cc78b20 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && TEACHER=dp CKPT=baselines/outputs/dp_pilotv2full/dHv2raw_DP_s1/checkpoints/100000/pretrained_model OUTDIR=baselines/demos_v2/dDPv2 SHARD_N=6 GRES=gpu:1 PARTITION=gpu CPUS=4 MEM=16g TIME=2:00:00 EXTRA="--ic-mode demo --attempts 3 --mode sample --verify" GENESIS_PICKAPLACE_ROOT=$PWD bash cluster/sbatch_record.sh 2>&1 \| tail -2; TEACHER=dp CKPT=baselines/outputs/dp_pilotv2fullw3/dHv2raw_DP_s1/checkpoints/100000/pretrained_model OUTDIR=baselines/demos_v2/dDPv2_w2 SHARD_N=6 GRES=gpu:1 PARTITION=gpu CPUS=4 MEM=16g TIME=2:30:00 EXTRA="--ic-mo` | rc=0 | Submitted batch job 3120440 |
+| 13:05:15 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:07:02 | tufts | cc78b20 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && source ~/.bashrc >/dev/null 2>&1 && conda activate /cluster/tufts/shortlab/jstale02/condaenv/genesis && export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$PWD && set -e; python baselines/record_demos.py --teacher sched --src baselines/demos_v1/_ablation/sched_dDPnoised --merge --outdir baselines/demos_v1/_ablation/dDPnoised 2>&1 \| grep "merge\]" \| head -1 && python baselines/make_v2_matched.py --src baselines/demos_v1/_ablation/dDPnoised --name dDPnoised --out-root baselines/matched_w3 --force 2>&1 \| tail -1 && python baselines/rl` | rc=0 | [merge] rollouts=58 kept=55 files=55 sha=7030bd9a39e97707 |
+| 13:07:19 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:07:23 | tufts | cc78b20 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && nice -n 19 /cluster/tufts/shortlab/jstale02/condaenv/genesis/bin/python baselines/diagnostics/tape_dynamics_metrics.py /cluster/tufts/shortlab/jstale02/tape_abl_out --nboot 0 --sets w3/dH=matched_w3/dH w3/dDP=matched_w3/dDP w3/dDPretimed=matched_w3/dDPretimed w3/dHsmoothed=matched_w3/dHsmoothed w3/dDPnoised=matched_w3/dDPnoised 2>&1 \| grep -A9 "Per-set means"` | rc=0 | ## Per-set means (all per-tape metrics + set-level values) |
+| 13:07:56 | tufts | cc78b20 | `base64 -w0 /cluster/tufts/shortlab/jstale02/tape_abl_out/tape_dyn_metrics.csv` | rc=0 | d29ybGQsYXJtLHVpZCxpY191aWQsc3RhZ2Usbl9yb3dzLHBhdGhfbGVuLHRvcnR1b3NpdHksd2FuZGVyLHNwZWVkX21lYW4sc3BlZWRfc3RkLHNwZWVkX2N2LGFjY2VsX21lYW4samVya19tZWFuLGplcmtfcGVy |
+| 13:08:01 | tufts | cc78b20 | `python3 -c "import json; j=json.load(open(\"/cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3/r2d/dDPnoised/repeat.json\")); print(\"noised r2d src_sha\", j[\"src_sha\"][:16])"` | rc=0 | noised r2d src_sha 7030bd9a39e97707 |
+| 13:09:22 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:11:26 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:13:31 | tufts | cc78b20 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:15:26 | tufts | cc78b20 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace && git pull --ff-only -q origin 4dof-cartesian; N=0; for A in "dDPretimed:110 111:112 113" ; do :; done; for spec in "dDPretimed 110 111" "dDPretimed 112 113" "dHsmoothed 114 115" "dHsmoothed 116 117" "dDPnoised 118 119" "dDPnoised 120 121"; do set -- $spec; ARM=$1 PACK_SEEDS="$2 $3" DEMOSET=w3 R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 CONFIG=genesis_pick_v5d4c_delta_shaped TIME_LIMIT=400 GENESIS_PICKAPLACE_ROOT=$PWD sbatch -p gpu -n 16 --mem 90g --time=30:00:00 cluster/sbatch_r2dreamer_pack.sh && N=$((N+1)); done; echo "packs_submitted=$N"` | rc=0 | Submitted batch job 3120763 |
+| 13:15:35 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:17:39 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:19:43 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:21:47 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:23:52 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:25:56 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:27:59 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:30:04 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:32:07 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:34:12 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:36:16 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:38:21 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:40:25 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:40:42 | tufts | 6b324d1 | `cd /cluster/tufts/shortlab/jstale02/genesis_pickaplace; for j in 3120763 3120764 3120765 3120766 3120767 3120768; do st=$(sacct -j $j -X -n -o State \| head -1 \| tr -d " "); echo "$j $st"; for f in r2d_train_${j}_s*.out; do [ -f "$f" ] && echo "  $f: $(grep -cE "FATAL\|Error" $f) errs, started=$(grep -c "start" $f)"; done; done 2>/dev/null \| head -20` | rc=0 | 3120763 PENDING |
+| 13:42:29 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:44:33 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:46:37 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:48:41 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:50:46 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:52:50 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:54:54 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:56:58 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 13:59:02 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:01:06 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:03:10 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:05:15 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:07:19 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:09:23 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:11:27 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:13:31 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:15:35 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:17:39 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:19:43 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:21:47 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:23:51 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:25:55 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:27:59 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:30:03 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:32:07 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:34:11 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:36:15 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:38:20 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:40:24 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:42:28 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:44:32 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:46:36 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:48:40 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:50:44 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    RUNNING  |
+| 14:52:49 | tufts | 6b324d1 | `sacct -j 3120169 -X -n -o State` | rc=0 |    TIMEOUT  |
+| 14:52:53 | tufts | 6b324d1 | `tail -2 /cluster/tufts/shortlab/jstale02/compose_rvs_3120169.out; head -3 /cluster/tufts/shortlab/jstale02/compose_err.log 2>/dev/null` | rc=0 | no sim tape for 249 |
