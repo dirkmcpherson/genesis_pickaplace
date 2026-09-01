@@ -104,7 +104,7 @@ case "$DEMO_FORMAT" in native|legacy) ;; *) echo "FATAL: DEMO_FORMAT must be nat
 NEED_MANIFEST=""
 if [ "$DEMO_FORMAT" = native ]; then
   case "$ARM" in
-    dH|dDP|dR2D|dDPfails|dR2DDPfails|dHHfails|dR2DR2Dfails|dHsucc_dup|dDPsucc_dup|dHv2|dDPv2) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;   # dHHfails/dR2DR2Dfails: same-source fails arms (make_samesource_fails_arm.py); dHv2/dDPv2: PREREG A21 full-pool v2 sets (make_v2_matched.py)
+    dH|dDP|dR2D|dDPfails|dR2DDPfails|dHHfails|dR2DR2Dfails|dHsucc_dup|dDPsucc_dup|dHv2|dDPv2|dHv2raw) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;   # dHHfails/dR2DR2Dfails: same-source fails arms (make_samesource_fails_arm.py); dHv2/dDPv2/dHv2raw: PREREG A21/A24 full-pool v2 sets (make_v2_matched.py; dHv2raw = unpruned human source, RLPD-only per A24)
     *) echo "FATAL: ARM=$ARM is not a native (contract v1) arm: dH dDP dR2D dDPfails dR2DDPfails"; exit 1 ;;
   esac
 else
