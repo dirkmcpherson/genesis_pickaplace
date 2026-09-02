@@ -502,3 +502,15 @@ checkpoints, same --verify gate, same recorder); kept tapes are merged before pe
 submissions, the A28 release, and the A27 WM packs (submitted only if the corrected-world matched N ≥ 45) run as
 cluster-resident slurm dependency jobs so the chain completes without the operator's laptop (7 h internet window).
 Predictions unchanged (A21/A25/A27/A29).
+
+### A31 (2026-09-01 late, supersedes A25's teacher clause and A30 BEFORE any machine-arm v2 readout) — the dDPv2 teacher trains on PRUNED dHv2 (design correction)
+User correction of record: the DP teacher is the machine-demo GENERATOR; pruning exists precisely because DP cannot
+learn from raw tapes — "to get dDP_DP you must train dHpruned_DP." A25's raw-trained teachers (rnd 5–8/30) and the
+resulting 43/36 harvest were a design error by the operator (A25/A30), not a finding; that harvest is archived,
+not used. Corrected chain: (1) teachers = DP on matched_v2/dHv2 and matched_w3/dHv2 (pruned, N=60/60), 2 seeds per
+world, §3.1 selection per world; (2) dDPv2 harvest over ALL dHv2raw ICs, --attempts 8, --verify, same recorder;
+(3) two per-IC matched views of ONE harvest: dDPv2 (vs the dHv2raw base — the RLPD machine arm) and dDPv2p (vs the
+dHv2 pruned base — the DP machine arm), each with lerobot/r2d as needed; (4) learners: DP human arm of record for
+v2 = pruned dHv2 (A29 leg) vs dDPv2p; RLPD human arm = dHv2raw (A25) vs dDPv2; WM (A27) = dHv2raw vs dDPv2 in the
+corrected world. The A25 raw-DP human leg stays as a disclosed within-source comparison (raw vs pruned human data
+for DP). Predictions unchanged. Chain runs as cluster-resident slurm dependency jobs.
