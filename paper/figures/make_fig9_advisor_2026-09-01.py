@@ -3,8 +3,8 @@
 09-02: fig9a = per-seed rnd-30 success by learner and source (every seed drawn; colour = learner,
 circle = human, triangle = machine; DP's human arm is "human*" = pruned tapes), fig9b = posterior of
 Delta = mu_human - mu_machine per learner (hierarchical Beta-Binomial over seeds; draws from
-analysis/bayes_triple_2026-09-01.py --s84-best-rnd 1) with the ROPE band (|Delta|<0.05) shaded.
-Run bayes_triple first (draws npz in the session scratchpad), then:
+analysis/bayes_triple_2026-09-01.py, no flags -- s84 is pinned inside it) with the ROPE band (|Delta|<0.05) shaded.
+Run bayes_triple first (it writes paper/figures/bayes_draws_2026-09-01.npz next to this script), then:
     python3 paper/figures/make_fig9_advisor_2026-09-01.py [draws.npz]
 """
 import os, sys
@@ -13,7 +13,7 @@ import numpy as np
 import colstyle as cs
 
 DRAWS = sys.argv[1] if len(sys.argv) > 1 else \
-    '/tmp/claude-1000/-home-travel-workspace-genesis-pickaplace/65bc5977-e458-4033-a00d-271aecab941d/scratchpad/bayes_draws.npz'
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bayes_draws_2026-09-01.npz')   # written by bayes_triple (no flags)
 Z = np.load(DRAWS)
 C = {'DP': cs.C['DP'], 'RLPD': cs.C['RLPD'], 'WM': cs.C['WM']}
 DATA = {
