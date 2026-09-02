@@ -55,9 +55,13 @@ port); ✔ = re-checked against source by the lead auditor. Extends, does not re
 
 7. **MED — Bimodal outcomes summarised by means; the WM effect is ignition-only.** RLPD LAST rnd dH 19,1,19,19,1,21,20,19
    vs dDP 18,19,17,19,20,0,20,11: alive-conditional 0.65 vs 0.59 (+0.06). WM BEST rnd conditional on ignition (BEST hold
-   ≥ 8): dH 0.63 (7) vs dDP 0.69 (3) — igniting machine seeds do at least as well; the +0.25 is entirely the 7/8 v 3/8
-   rate. Threshold sensitivity (RESULTS §3.1 per-seed): 7–9 → 7v3, 10 → 6v2, 6 → 7v4 (robust). Fix: one decomposition
-   for all learners — alive/ignited fraction (Fisher), rnd | alive, and selected/LAST/BEST-of-5 — a 3×3 table.
+   ≥ 8): dH 0.67 (6) vs dDP 0.69 (3) — igniting machine seeds do at least as well; the +0.25 is entirely the ignition
+   rate. **CORRECTION (09-02 pm, analysis/DECOMPOSITION_2026-09-02.md):** the registered criterion BEST hold ≥ 8/15 applied
+   to the per-seed list of record gives 6/8 v 3/8 (Fisher 0.315), not the 7/8 v 3/8 (Fisher 0.119) quoted in RESULTS §3.1,
+   the brief and bayes_triple; 7/8 v 3/8 is what BEST rnd ≥ 8/30 gives. Thresholds 6–9 on hold → 6v4/6v3/6v3/6v3. A27's
+   co-primary is registered on a criterion that does not produce the split it cites. Fix: one decomposition for all
+   learners — alive/ignited fraction (Fisher), rnd | alive, and selected/LAST/BEST-of-5 — a 3×3 table; RESULTS must
+   state which criterion the 7/8 was counted under.
 
 8. **MED — WM predictions of record were disconfirmed, then reversed post hoc.** PREREG P-R2D (`:184-187`) registered
    "4/4 ignition on dH extends to dDP"; PAPER_PLAN H4 (`:39`) registered indifference. Observed 3/8. A27's reversed
