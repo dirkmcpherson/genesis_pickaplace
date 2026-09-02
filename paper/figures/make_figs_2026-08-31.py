@@ -51,8 +51,11 @@ dp_w3 = dict(
 # DP old world, seeds 10-14, selected ckpt rnd; dHunpruned s32-34 (old world; -0.056 vs dH, perm p 0.36)
 dp_old = dict(dH_rnd=[17, 16, 18, 15, 19], dDP_rnd=[16, 18, 16, 17, 16], dHunpruned_rnd=[13, 17, 16])
 # r2dreamer corrected world (W3), dense, 3M, BEST = highest in-job sel among archived ckpts; s80-83
-r2d_w3 = dict(dH_hold=[10, 15, 11, 10], dH_rnd=[20, 25, 22, 16],
-              dDP_hold=[1, 2, 2, 15], dDP_rnd=[1, 2, 3, 28])
+r2d_w3 = dict(dH_hold=[10, 15, 11, 10, 1, 11, 3, 13], dH_rnd=[20, 25, 22, 16, 1, 21, 11, 17],     # s80-87 FINAL n=8v8 (09-01)
+              dDP_hold=[1, 2, 2, 15, 13, 0, 9, 6], dDP_rnd=[1, 2, 3, 28, 22, 1, 12, 5])
+# v2 full-pool DP, selected rnd (A25 raw human = dH; A29 pruned human = dHpruned), 09-02 03:30 snapshot
+dp_v2 = dict(old_raw=[12, 15, 9, 6, 10, 9, 15, 8], old_pruned=[18, 15, 12, 17, 15, 15, 15],
+             w3_raw=[9, 9, 7, 5, 10, 5, 5, 7], w3_pruned=[17, 13, 16, 19, 13, 15])
 
 # human-minus-DP gaps for the summary forest (analysis/stats.py, Welch 95% CI, perm p)
 forest = [  # (label, diff, lo, hi, p_perm, colour, note)
@@ -61,7 +64,7 @@ forest = [  # (label, diff, lo, hi, p_perm, colour, note)
     ('RLPD +fails, OLD world  (LAST rnd, n=8 v 8)', 0.208, 0.048, 0.368, 0.0009, C['RLPD'], ''),  # perm 2x1s < 0.001
     ('RLPD +succ_dup, OLD world  (LAST rnd, n=8 v 8)', 0.213, 0.051, 0.374, 0.013, C['RLPD'], ''),
     ('RLPD sparse, CORRECTED world  (LAST rnd, n=8 v 8)', -0.021, -0.301, 0.259, 0.983, C['RLPD'], 'A20 prereg, FAILED'),
-    ('r2dreamer  (corrected world, BEST rnd, n=4 v 4)', 0.408, -0.256, 1.073, 0.143, C['R2D'], 'n=8 ~09-01'),
+    ('r2dreamer  (corrected world, BEST rnd, n=8 v 8)', 0.246, -0.084, 0.576, 0.133, C['R2D'], 'ignition 7/8 v 3/8; A27 n=12 pending'),
 ]
 
 plt.rcParams.update({'font.size': 10, 'axes.spines.top': False, 'axes.spines.right': False,
@@ -142,17 +145,18 @@ a.plot([2.4, 2.4, 3.4, 3.4], [0.685, 0.70, 0.70, 0.685], color='0.35', lw=1)
 a.text(2.9, 0.708, '+0.06  p=0.041', ha='center', fontsize=8.5, color='0.25')
 a.set_ylim(0, 1); a.set_ylabel('pick success (selected ckpt)')
 a.set_title('corrected world, n=10 v 10 (seeds 20-29)', fontsize=10)
-for i, k in enumerate(['dH_rnd', 'dDP_rnd']):
-    src = 'human' if i == 0 else 'machine'
-    seeds_pts(b, i, dp_old[k], C['DP'], src, 30)
-up = np.asarray(dp_old['dHunpruned_rnd']) / 30
-b.scatter([2] * len(up) + rng.uniform(-0.06, 0.06, len(up)), up, marker='*', s=150,
-          facecolor='white', edgecolor=C['DP'], linewidth=1.5)
-b.hlines(up.mean(), 1.78, 2.22, color=C['DP'], linewidth=2.4)
-b.set_xticks([0, 1, 2]); b.set_xticklabels(['human\n(n=5)', 'DP\n(n=5)', 'human\nUNPRUNED\n(n=3)'], fontsize=8)
-b.set_ylim(0, 1); b.set_title('old world, random ICs', fontsize=10)
-fig.suptitle('Diffusion Policy is nearly source-indifferent — and the control holds on RAW human tapes:\n'
-             'unpruned demos cost nothing detectable (−0.06, perm p 0.36, n=3 v 5)', y=1.06, fontsize=10)
+for i, (k, lab) in enumerate([('old_raw', 'raw\n(n=8)'), ('old_pruned', 'pruned\n(n=7)'), ('w3_raw', 'raw\n(n=8)'), ('w3_pruned', 'pruned\n(n=6)')]):
+    x = [0, 1, 2.4, 3.4][i]
+    violin(b, x, dp_v2[k], C['DP'], 0.18 if 'raw' in k else 0.40, 30)
+    seeds_pts(b, x, dp_v2[k], C['DP'], 'human', 30)
+b.set_xticks([0, 1, 2.4, 3.4]); b.set_xticklabels(['raw\n(n=8)', 'pruned\n(n=7)', 'raw\n(n=8)', 'pruned\n(n=6)'], fontsize=8)
+b.text(0.5, -0.2, 'old world', ha='center', transform=b.get_xaxis_transform(), fontsize=9)
+b.text(2.9, -0.2, 'corrected world', ha='center', transform=b.get_xaxis_transform(), fontsize=9)
+b.plot([2.4, 2.4, 3.4, 3.4], [0.70, 0.715, 0.715, 0.70], color='0.35', lw=1)
+b.text(2.9, 0.723, '+0.28  p=0.0004', ha='center', fontsize=8.5, color='0.25')
+b.set_ylim(0, 1); b.set_title('v2 full pool: HUMAN tapes raw vs pruned (random ICs)', fontsize=10)
+fig.suptitle('Diffusion Policy is nearly source-indifferent (left) — but at full pool the RAW human tapes cost it\n'
+             '(right): idle-heavy uncapped demos halve DP on random ICs; pruning is load-bearing for DP (A29 met)', y=1.06, fontsize=10)
 fig.savefig(f'{OUT}/fig3_dp_violin.png'); fig.savefig(f'{OUT}/fig3_dp_violin.pdf')
 
 # ---------------------------------------------------------------- fig 4: r2dreamer W3
@@ -161,13 +165,13 @@ for ax_, hk, rk, ttl in [(a, 'dH_hold', 'dDP_hold', 'hold (15 ICs)'), (b, 'dH_rn
     denom = 15 if 'hold' in hk else 30
     seeds_pts(ax_, 0, r2d_w3[hk], C['R2D'], 'human', denom)
     seeds_pts(ax_, 1, r2d_w3[rk], C['R2D'], 'machine', denom)
-    ax_.set_xticks([0, 1]); ax_.set_xticklabels(['human\n(n=4)', 'DP\n(n=4)'], fontsize=9)
+    ax_.set_xticks([0, 1]); ax_.set_xticklabels(['human\n(n=8)', 'DP\n(n=8)'], fontsize=9)
     ax_.set_xlim(-0.6, 1.6); ax_.set_ylim(0, 1.02); ax_.set_title(ttl, fontsize=10)
 a.set_ylabel('pick success (BEST ckpt)')
-b.text(0.5, 0.06, 'human learns 4/4 seeds; DP 1/4\np=0.143 (min attainable 0.029)\nn=8 v 8 lands ~09-01',
+b.text(0.5, 0.06, 'ignition (BEST hold>=8/15): human 7/8, DP 3/8\nBEST rnd +0.25, perm p 0.133; P(Δ>0)=0.95\nA27 n=12v12 confirmatory (~09-04)',
        ha='center', fontsize=8.5, color='0.3', transform=b.transAxes)
-fig.suptitle('World model (return-clamped DreamerV3), corrected world: human demos ignite it,\n'
-             'DP demos mostly do not — direction only at n=4', y=1.08, fontsize=10)
+fig.suptitle('World model (return-clamped DreamerV3), corrected world, n=8v8 FINAL: human demos ignite it\n'
+             'on 7/8 seeds, DP demos on 3/8 — directional on every statistic, significant on none yet', y=1.08, fontsize=10)
 fig.savefig(f'{OUT}/fig4_r2d_w3.png'); fig.savefig(f'{OUT}/fig4_r2d_w3.pdf')
 
 # ---------------------------------------------------------------- fig 5: forest summary
