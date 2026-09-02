@@ -89,6 +89,28 @@ def parse_provenance(text):
                 has_result=has_result)
 
 
+SKIP_DIRS = ('wandb', '.git', '__pycache__')
+SKIPPED = []                                      # unreadable / dangling paths seen by the last collect()
+
+
+def _files(root, pattern):
+    """Regular, readable files matching pattern under root. Dangling symlinks (wandb `latest-run`) and
+    unreadable files are COUNTED into SKIPPED and reported, never raised, never silently dropped."""
+    for f in sorted(glob.glob(os.path.join(root, '**', pattern), recursive=True)):
+        if any(f'{os.sep}{d}{os.sep}' in f for d in SKIP_DIRS):
+            continue
+        if not os.path.isfile(f):                 # False for dangling symlinks
+            SKIPPED.append(f); continue
+        yield f
+
+
+def _read(f):
+    try:
+        return open(f, errors='ignore').read()
+    except OSError:
+        SKIPPED.append(f); return ''
+
+
 def rundir_world(path, max_depth=3):
     """World for a HEADLINE.txt from ITS OWN run directory (<RUN>/sweep/HEADLINE.txt): any json up to max_depth
     below <RUN> carrying a `sim_variant` key (RLPD/DP ckpt sidecars) or a demo-set root string (lerobot
