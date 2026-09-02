@@ -514,3 +514,23 @@ dHv2 pruned base — the DP machine arm), each with lerobot/r2d as needed; (4) l
 v2 = pruned dHv2 (A29 leg) vs dDPv2p; RLPD human arm = dHv2raw (A25) vs dDPv2; WM (A27) = dHv2raw vs dDPv2 in the
 corrected world. The A25 raw-DP human leg stays as a disclosed within-source comparison (raw vs pruned human data
 for DP). Predictions unchanged. Chain runs as cluster-resident slurm dependency jobs.
+
+### A32 (2026-09-02, BEFORE any readout) — WM critic-target scale: the return clamp is mis-set; correctly scaled arms
+Finding (09-02, fig13 + metrics): r2dreamer's `return_clamp: 100` was set to reward_scale×pick, ignoring the
+training-only potential shaping; replayed episode returns have median ≈ 500–1000, p90 ≈ 800–2500, max ≈ 4900, so the
+λ-return target is clamped on essentially every state (value_replay_max median 100.2) → the critic is trained to
+output ≈100 everywhere → advantage ≈ noise → actor entropy collapse (dDP −6.1 by 1M; dH −2.5→−2.9) → checkpoint
+bistability in BOTH arms. NOCLAMP values (median 150–380, p90 350–900) are of the same order as the true shaped
+returns — the earlier "runaway" verdict (judged against a 100 ceiling) is WITHDRAWN as a yardstick error; NOCLAMP
+still had dead endpoints, so neither variant has been healthy, and a correctly scaled target has never been run.
+The port already contains DV3's percentile return normalization (ReturnEMA), so the fix is scale, not machinery.
+Pilot arms (corrected world, dense, 3M, 2-seed packs, fresh seeds, BEST+LAST protocol + ignition; primary
+readout = LAST-checkpoint stability, i.e. does the endpoint stay alive):
+- **C2000**: return_clamp=2000 (≈ p95 of attainable, a non-binding safety clamp): dH s130-133 (2 packs).
+- **RS1**: reward_scale=1 (terminal 1, shaping scaled with it), return_clamp=0: dH s134-137 (2 packs).
+- **SPARSE-RS1** (the "any hope without dense reward" question): non-shaped config, reward_scale=1, clamp 0:
+  dH s138-139 (1 pack). Expectation registered as LOW (sparse never ignited, 0/7,700 episodes historically).
+Machine-demo (dDP) arms follow only for the variant(s) whose dH endpoints stay alive (registered rule: LAST hold
+≥ 8/15 on ≥ 3/4 seeds). Predictions: C2000 and RS1 ignite at least as often as the clamped block (≥ 3/4) and keep
+≥ 3/4 endpoints alive; SPARSE-RS1 ≤ 1/2 ignition. If both C2000 and RS1 fail the endpoint rule, the WM's
+bistability is not a target-scale artefact and the A27 BEST-of-K framing stands as the claim of record.
