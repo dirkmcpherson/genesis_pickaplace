@@ -202,8 +202,8 @@ is past 13 h and healthy. Done ~09-01, then the same BEST pinning + re-score pro
 **n=8v8 FINAL (09-01, all 32 re-scores in): BEST rnd dH 20,25,22,16,1,21,11,17 (0.554) vs dDP 1,2,3,28,22,1,12,5
 (0.308) — diff +0.246, CI [−0.084, +0.576], Welch p 0.132 / perm 0.133; Bayes (hierarchical Beta-Binomial,
 analysis/bayes_triple_2026-09-01.py) Δ +0.20, CrI [−0.05, +0.42], P(Δ>0) 0.946. Ignition (BEST hold ≥ 8/15):
-dH 7/8 vs dDP 3/8, Fisher p 0.119, P(ign_H > ign_M) 0.974. BEST hold per-seed: dH 10,15,11,10,1,11,3,13;
-dDP 1,2,2,15,13,0,9,6. Honest verdict: consistently DIRECTIONAL on every statistic, significant on none at
+dH **6/8** vs dDP 3/8, Fisher p 0.315, P(ign_H > ign_M) 0.926, Δignition +0.30 CrI [−0.12, +0.67]. BEST hold per-seed: dH 10,15,11,10,1,11,3,13;
+dDP 1,2,2,15,13,0,9,6. **CORRECTION 09-02 (AUDIT_approach / PREREG A35):** this passage previously said 7/8 v 3/8 (Fisher 0.119, P 0.974); that count is what BEST rnd ≥ 8/30 gives (only s84 fails), not the registered BEST-hold criterion, under which dH s84 (hold 1) AND s86 (hold 3) fail. The registered criterion is the one of record; 7/8 v 3/8 is withdrawn everywhere. Honest verdict: consistently DIRECTIONAL on every statistic, significant on none at
 n=8 — seed bimodality in both arms eats the power. A27 (n=12v12, ignition pre-registered co-primary) is the
 confirmatory readout (~09-03). An interim n=7v8 reading (before s84's dead-seed score landed) had CrI
 [+0.07, +0.49] — superseded; do not quote it.**
@@ -222,8 +222,8 @@ percentile return normalization (ReturnEMA), so this is a scale error, not missi
 scale is different — its train_return is ≈20–35 (max 60) while value_mean sits at 300–750 — so the dv3 runaway
 verdict STANDS (10–20× over its attainable return); only the r2dreamer NOCLAMP verdict is withdrawn. Two ports,
 two different pathologies: dv3 = genuine critic runaway; r2dreamer = mis-set clamp saturation. Pilots registered as A32 (C2000, RS1, SPARSE-RS1; dH first, corrected world).
-What survives unchanged: the ignition asymmetry (human 7/8 vs machine 3/8 under identical mis-scaling) is a
-within-block contrast and stands; the endpoint (LAST) claims are suspended pending A32.
+What survives: the ignition asymmetry (human 6/8 vs machine 3/8 under identical mis-scaling; corrected from 7/8, see §3.1) is a
+within-block contrast, directional only (Fisher 0.315), and AUDIT_approach f11 argues ignition under a saturated critic measures demo-dynamics coverage rather than value learning; the endpoint (LAST) claims are suspended pending A32.
 
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 

@@ -22,8 +22,7 @@ null, and the world model strongly prefers human demonstrations.
 **Read the WM row honestly:** at n=8v8 the mean statistic is directional-strong but NOT significant
 (P(Δ>0)=0.95, CrI touches zero) — one dead human seed (s84) moved it below the line, and an earlier draft
 of this brief (n=7v8, before s84's re-score) overstated it as CrI [+0.07,+0.49]; this row is the correction.
-The ignition view is steadier — **human 7/8 vs machine 3/8** (Fisher p 0.119; P(ignition_H > ignition_M) =
-0.974; Δignition +0.40 [−0.00, +0.74]) — but it too is suggestive, not conclusive, at n=8. **The confirmatory
+The ignition view — **human 6/8 vs machine 3/8** under the registered BEST-hold ≥ 8/15 criterion (Fisher p 0.315; P(ignition_H > ignition_M) 0.926; Δignition +0.30 [−0.12, +0.67]; corrected 09-02 from a mis-quoted 7/8 v 3/8 that used BEST rnd, see RESULTS §3.1 / PREREG A35) — is suggestive only, at n=8. **The confirmatory
 test is A27 (n=12v12, ignition pre-defined as co-primary), reading out ~09-03.** Until then the WM claim is
 "consistently directional across every view of the data, pending confirmation," not "established."
 
@@ -42,8 +41,8 @@ The three rows use three checkpoint rules (pre-registered per learner). Same-rul
 | WM, hold | +0.22 (BEST) | **−0.07** (LAST 0.29 vs 0.36; both arms mostly dead) |
 
 DP and RLPD are rule-invariant. **The WM effect exists only under BEST-of-K** — the honest statement of the
-bistability disclosure: the world model REACHES a working policy from human demos far more often (7/8 vs 3/8
-seeds), but neither arm KEEPS it to the end of training. The WM claim is about learnability under selection,
+bistability disclosure: the world model REACHES a working policy from human demos more often (6/8 vs 3/8
+seeds, corrected 09-02), but neither arm KEEPS it to the end of training. The WM claim is about learnability under selection,
 not about the trained endpoint, and must be worded that way.
 
 ## 3. The context that gives the table meaning: the old world
@@ -87,7 +86,7 @@ Without the old world these would look like the same fact; the old world is what
 - **Ignition rate + Fisher exact** (WM co-primary, pre-defined in A27): the WM's failure mode is
   not-igniting (a seed either learns the task or stays near zero), so arm means mix two populations and
   their variance is ugly. Ignition (BEST hold ≥ 8/15) is the statistic matched to that structure; Fisher
-  tests the 7/8 vs 3/8 split exactly. Threshold fixed before the confirmatory block (A27) runs, disclosed
+  tests the 6/8 vs 3/8 split exactly (p 0.315). Threshold fixed before the confirmatory block (A27) runs, disclosed
   as informed by this data.
 
 ## 5. Mechanism status

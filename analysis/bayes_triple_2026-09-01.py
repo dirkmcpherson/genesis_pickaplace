@@ -40,7 +40,7 @@ DATA = {  # corrected world, human vs machine, per-seed successes on rnd-30 (sou
         [1, 2, 3, 28, 22, 1, 12, 5]),                        # dDP s80-87
 }
 EXPECT_N = {'DP (selected ckpt)': (10, 10), 'RLPD (LAST ckpt)': (8, 8), 'WM r2dreamer (BEST ckpt)': (8, 8)}
-WM_IGNITION = ((7, 8), (3, 8))   # BEST hold >= 8/15: dH 7/8, dDP 3/8 (s84 NOT ignited: BEST hold 1/15)
+WM_IGNITION = ((6, 8), (3, 8))   # BEST hold >= 8/15 (registered): dH 6/8 (s84 hold 1, s86 hold 3 fail), dDP 3/8. 09-02 correction: 7/8 was the BEST-rnd>=8/30 count (PREREG A35)
 
 for name, (h, m) in DATA.items():          # the n=7v8 row must never be printable again
     assert (len(h), len(m)) == EXPECT_N[name] and None not in h and None not in m, (name, len(h), len(m))
