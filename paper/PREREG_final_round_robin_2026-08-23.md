@@ -553,3 +553,44 @@ real and the WM-vs-RLPD contrast must be restated as dense-vs-dense.
 - **Kept:** all corrected-world jobs (A31 w3 learners ×16, A27 ×12, A28 ×6, A32 ×5, A33 ×16, w3 re-evals).
 - **Reporting:** old-world results already in RESULTS (RLPD +0.21 ×3, DP raw-vs-pruned old leg, A29 fig11 old panel) stay as a *disclosed sensitivity note* only ("the RLPD source effect reversed to null when the simulator was corrected; we report only the corrected world"). They are not headline rows and are not extended.
 - **Sets built but now unused:** `matched_v2/dDPv2` (N=68, allow-short) and `matched_v2/dDPv2p` (N=60).
+
+### A35 (2026-09-02 pm, auditor follow-up requested by the main session; DISCLOSURE, no design change; BEFORE any A27/A28/A32/A33 readout)
+Source: `paper/AUDIT_approach_2026-09-02.md` findings 8, 13, 25 and `analysis/DECOMPOSITION_2026-09-02.md`.
+1. **WM training horizon of record = 400 sim steps (100 decisions), not the §2 value of 1200.** Every r2dreamer result cell
+   (old-world blocks, the corrected-world gate s80-83, its n=8 extension s84-87, and the queued A27 s90-101 / A28 s110-121 /
+   A32 s130-139 packs) was launched with `TIME_LIMIT=400` (`cluster/a31_chain/submit_learners.sh:30,35`; SESSION_LOG 220/308/409;
+   `sbatch_r2dreamer.sh:188` = sim steps). §8's pilot at time_limit 1200 failed (0/2 seeds at 2e6) and the stated on-fail action
+   "keep 400; amendment" was executed without the amendment (METHODS_draft `[CHECK 21]`). Consequences to disclose: WM online
+   episodes are 100 decisions while demo picks sit at p50 107–146 decisions (a median demo is not executable inside a WM online
+   episode); RLPD trains at 1200 (`sbatch_rlpd.sh:82`); every learner is EVALUATED at 1200. A33's "same reward, same world, same
+   sets" RLPD–WM comparison therefore still differs in train horizon (and in demo-row shaping, CONFOUNDS row 17). No TL-1200 WM
+   cell exists; none is added here.
+2. **A27 ignition is defined on the FROZEN `baselines/eval_ics.json` hold-15** (15 success uids disjoint from the 15 sel uids), as
+   the WM launcher/re-score default (`sbatch_r2dreamer.sh:245`, `r2d_rescore.sh:21`), NOT on A23's v2 "hold = all training ICs"
+   (`eval_ics_v2_w3.json`, sel ⊂ hold, 66 ICs) used by the DP/RLPD v2 waves. rnd-30 is byte-identical across the three IC files
+   (verified 09-02), so the primary statistic is unaffected; hold-based statistics are not comparable across learners in v2.
+3. **Ignition-count discrepancy, recorded before A27 reads out (decision left to the user/main session).** A27 pre-defines
+   ignition as "BEST hold ≥ 8/15, informed by the frozen n=8v8 where it splits 7/8 vs 3/8". Applying that criterion to the
+   per-seed BEST hold of record (RESULTS §3.1: dH 10,15,11,10,1,11,3,13; dDP 1,2,2,15,13,0,9,6) gives **6/8 vs 3/8** (Fisher 0.315;
+   s84 = 1 and s86 = 3 both fail). The quoted 7/8 vs 3/8 (Fisher 0.119) is reproduced by BEST **rnd ≥ 8/30** (only s84 fails).
+   RESULTS §3.1, ADVISOR_BRIEF §2/§4 and `bayes_triple` all carry the 7/8 figure under the hold wording. Before A27 is scored the
+   criterion must be fixed in writing as ONE of: (a) BEST hold ≥ 8/15 on the frozen hold-15 → frozen-block reference 6/8 v 3/8;
+   (b) BEST rnd ≥ 8/30 → 7/8 v 3/8. Whichever is chosen, the frozen-block number quoted next to it must be the one that
+   criterion produces. Threshold sensitivity on hold: ≥6 → 6v4, ≥7–9 → 6v3, ≥10 → 6v2.
+4. **Disclosure table — what had been observed when each WM/RLPD prediction was registered or reversed** (finding 8):
+
+| registration | date | prediction / statistic | seeds already read at registration | status |
+|---|---|---|---|---|
+| §6 P-R2D | 08-23 | dense: 4/4-class ignition on dH "replicates and extends to dDP/dR2D" | 08-19 old-world dH s50-53 only (no matrix seeds) | FAILED in the corrected world (dDP 3/8) |
+| PAPER_PLAN H4 | 07-31 | world models benefit ~equally from human and model demos | none | FAILED (directional human preference) |
+| A13 | 08-28 | old vs corrected world decided by the WM ignition gate | old-world WM blocks | executed |
+| corrected-world gate | 08-29 | s80-83 dH/dDP, no registered source prediction | — | read 08-31: dH 4/4, dDP 1/4 |
+| A16 | 08-29 06:30 | RLPD old world: dH > dDP by ≥0.10 LAST rnd; divergence dH ≤1/8, dDP ≥3/8 | dH/dDP **s30-32 (3 of the 8 seeds per arm the statistic was scored on)** | met on s30-37; on the unseen s33-37 alone: dH LAST rnd 21,17,20,25,24 vs dDP 17,16,13,17,15 (+0.19) |
+| A20 | 08-31 | RLPD corrected world: replicate A16 | none of s40-47 | FAILED (null) |
+| A27 | 09-01 | WM v2: dHv2raw > dDPv2 BEST rnd by ≥0.15; ignition diff ≥3/12 | **all of the frozen n=8v8 (s80-87)** — the reversal of P-R2D/H4 was registered after the data that motivated it | pending; criterion issue in item 3 |
+| A28 | 09-01 | burstiness ablation predictions | frozen n=8v8 + the 38-metric screen (hypothesis-generating, disclosed) | pending |
+| A29 | 09-01 evening | pruned-dHv2 DP ≥ raw + 0.15 | first two dHv2raw DP seeds + teacher pilots | met on s50-57 (n=8v8) |
+| A32 | 09-02 | clamp pilots ignite ≥3/4, endpoints alive ≥3/4 | frozen n=8v8 + NOCLAMP re-scores (motivating data); none of s130-139 | pending |
+| A33 | 09-02 | RLPD-dense corrected world stays null | old-world dense n=6v6; none of s60-67 | pending |
+Rule going forward: every amendment names the seeds already read; confirmatory statistics are reported on unseen seeds
+alongside the full block. Old-world rows are retained here for the disclosure only (A34).
