@@ -1,5 +1,7 @@
 # AUDIT INDEX — entry point for adversarial review
 
+> **2026-09-02:** superseded as the cold-start entry point by `AUDITOR_STARTUP_2026-09-02.md` (rules, current blocks, failure families, file map, ranked targets). Read that first; this index is kept for the 08-28 claim ledger.
+
 Maintained for reviewers arriving cold (human or agent). 46 documents accumulated over five days;
 several are superseded and a few contradict each other. This file says what is live, what is dead,
 what is known-broken, and where to attack. Last updated 2026-08-28 (post gate-2/3 audit: `AUDIT_results_2026-08-28.md`).
