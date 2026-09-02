@@ -594,3 +594,24 @@ Source: `paper/AUDIT_approach_2026-09-02.md` findings 8, 13, 25 and `analysis/DE
 | A33 | 09-02 | RLPD-dense corrected world stays null | old-world dense n=6v6; none of s60-67 | pending |
 Rule going forward: every amendment names the seeds already read; confirmatory statistics are reported on unseen seeds
 alongside the full block. Old-world rows are retained here for the disclosure only (A34).
+
+### A36 (2026-09-02 ~16:30, user decision, BEFORE any A32 readout) — A27 cancelled; its budget moves to A32 machine arms
+- **Decision (user):** A27 (WM n=12v12 under the mis-set clamp, packs 3170427-38) is CANCELLED before any seed ran.
+  Reason: AUDIT_approach findings 11/12/16 — under return_clamp=100 the actor receives no grasp credit and demo rows
+  are unshaped while online rows are shaped, so an A27 readout would be a claim about a saturated-critic learner.
+- **Replacement (same GPU budget, 7 packs vs 12):** machine-demo arms for every A32 variant, mirroring the A32 human
+  arms exactly (same CONFIG/EXTRA/TIME_LIMIT=400, frozen `matched_w3/r2d/dDP` N=58 = the pair of A32's `matched_w3/r2d/dH`
+  N=58; fresh seed ids per A9): C2000 dDP s140-143 (2 packs), RS1 dDP s144-147 (2), SPARSE-RS1 dDP s148-151 (2),
+  plus SPARSE-RS1 dH top-up s152-153 (1) so the sparse pair is 4v4. Jobs 3177807-13.
+- **This supersedes A32's "machine arms follow only for surviving variants" rule:** machine arms now run for all three
+  variants regardless of the dH endpoint outcome (so the source pair exists under whichever config survives).
+- **Readout rule (unchanged from A32):** primary = LAST-checkpoint stability (LAST hold ≥ 8/15) and BEST-of-5 fraction
+  checkpoints only (finding 10); ignition = BEST hold ≥ 8/15 on the frozen eval_ics.json hold-15 (A35); no headline
+  unless present == expected episodes (finding 23). Source contrast per variant: n=4v4 (C2000, RS1, SPARSE-RS1) —
+  underpowered for anything but a large effect; registered as PILOT, not confirmatory. The confirmatory WM source
+  block (n≥8v8) runs only under the surviving variant, on the v2 raw pair (dHv2raw vs dDPv2) once the over-horizon
+  asymmetry (finding 14) is handled — subset exclusion of the 14 over-horizon ICs in both arms, or a re-harvest.
+- **Also pending for the WM (finding 12):** to_dreamer_native.py gains a shaped-demo-reward option (same potential from
+  recorded eef_pos, φ(terminal)=0, γ = learner γ) before any shaped confirmatory block; SPARSE-RS1 is unaffected.
+- **Prediction (registered now, n=4v4 per variant):** if the WM source effect is real and coverage-mediated, human ≥ machine
+  on BEST-of-5 hold under C2000 and RS1 by ≥ 2 seeds; under SPARSE-RS1 we predict ≤ 1/4 ignition in BOTH arms.
