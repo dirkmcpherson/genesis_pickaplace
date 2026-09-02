@@ -8,7 +8,8 @@ export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$GPR MUJOCO_GL=egl; activat
 clog "build start"
 build() { # $1 src $2 name $3 out-root $4 base
   local L=$CHAIN_LOGDIR/mv2_$2_$(basename $3).log
-  if python baselines/make_v2_matched.py --src $1 --name $2 --out-root $3 --base $4 2>&1 | tee "$L"; then return 0; fi
+  python baselines/make_v2_matched.py --src $1 --name $2 --out-root $3 --base $4 2>&1 | tee "$L"
+  if [ "${PIPESTATUS[0]}" -eq 0 ]; then return 0; fi   # 09-02: was `if python|tee` -> tee's rc=0 masked the FATAL (10th silent-default sighting; matched_v2/dDPv2 never built)
   if grep -q "FATAL: per-IC shortfall" "$L"; then
     clog "$3/$2: strict per-IC match FATAL on shortfall ONLY -> rerun --allow-short (manifest short_ics reports it)"
     python baselines/make_v2_matched.py --src $1 --name $2 --out-root $3 --base $4 --allow-short || fatal "make_v2_matched --allow-short $3/$2"
