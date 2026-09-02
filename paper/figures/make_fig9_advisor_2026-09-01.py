@@ -1,70 +1,61 @@
 #!/usr/bin/env python3
-"""fig9: the corrected-world triple gradient, frequentist + Bayesian, one advisor-facing figure.
-Left: per-seed rnd-30 success by learner and source (every seed drawn; conventions: colour=learner,
-circle=human, triangle=machine). Right: posterior of Delta = mu_human - mu_machine per learner
-(hierarchical Beta-Binomial over seeds; draws from analysis/bayes_triple_2026-09-01.py) with the
-ROPE band (|Delta|<0.05) shaded. Run bayes_triple first (draws npz in the session scratchpad).
+"""fig9: the corrected-world triple gradient, frequentist + Bayesian. Single-column format since
+09-02: fig9a = per-seed rnd-30 success by learner and source (every seed drawn; colour = learner,
+circle = human, triangle = machine; DP's human arm is "human*" = pruned tapes), fig9b = posterior of
+Delta = mu_human - mu_machine per learner (hierarchical Beta-Binomial over seeds; draws from
+analysis/bayes_triple_2026-09-01.py --s84-best-rnd 1) with the ROPE band (|Delta|<0.05) shaded.
+Run bayes_triple first (draws npz in the session scratchpad), then:
+    python3 paper/figures/make_fig9_advisor_2026-09-01.py [draws.npz]
 """
-import sys
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+import colstyle as cs
 
 DRAWS = sys.argv[1] if len(sys.argv) > 1 else \
     '/tmp/claude-1000/-home-travel-workspace-genesis-pickaplace/65bc5977-e458-4033-a00d-271aecab941d/scratchpad/bayes_draws.npz'
 Z = np.load(DRAWS)
-C = {'DP': '#1f77b4', 'RLPD': '#d62728', 'WM': '#2ca02c'}
+C = {'DP': cs.C['DP'], 'RLPD': cs.C['RLPD'], 'WM': cs.C['WM']}
 DATA = {
     'DP': ([18, 19, 18, 14, 13, 15, 16, 16, 18, 17], [15, 14, 14, 15, 16, 15, 11, 15, 16, 15]),
     'RLPD': ([19, 1, 19, 19, 1, 21, 20, 19], [18, 19, 17, 19, 20, 0, 20, 11]),
     'WM': ([20, 25, 22, 16, 1, 21, 11, 17], [1, 2, 3, 28, 22, 1, 12, 5]),  # final n=8v8
 }
-SUB = {'DP': 'DP · sel · 10v10', 'RLPD': 'RLPD · LAST · 8v8', 'WM': 'WM · BEST · 8v8'}
-KEY = {'DP': 'DP', 'RLPD': 'RLPD', 'WM': 'WM'}
+SUB = {'DP': 'DP', 'RLPD': 'RLPD', 'WM': 'WM'}   # ckpt rule + n in the caption: sel 10v10 / LAST 8v8 / BEST 8v8
+rng = cs.setup()
 
-rng = np.random.default_rng(0)
-plt.rcParams.update({'font.size': 10, 'axes.spines.top': False, 'axes.spines.right': False,
-                     'figure.dpi': 150, 'savefig.bbox': 'tight'})
-fig, (a, b) = plt.subplots(1, 2, figsize=(10.5, 4.2), gridspec_kw={'width_ratios': [1.1, 1]})
-
+# ---- fig9a: per-seed outcomes
+f, a = cs.fig(h=2.3)
+ticks, labs = [], []
 for i, (name, (h, m)) in enumerate(DATA.items()):
-    xh, xm = i * 2.6, i * 2.6 + 1
-    for x, v, mk in ((xh, h, 'o'), (xm, m, '^')):
-        v = np.asarray(v) / 30
-        a.scatter(x + rng.uniform(-0.13, 0.13, len(v)), v, marker=mk, s=48,
-                  facecolor='white', edgecolor=C[name], linewidth=1.5, zorder=3)
-        a.hlines(v.mean(), x - 0.3, x + 0.3, color=C[name], lw=2.6, zorder=4)
-    a.text((xh + xm) / 2, -0.145, SUB[name], ha='center', fontsize=8, color=C[name],
-           transform=a.get_xaxis_transform())
-a.set_xticks([x for i in range(3) for x in (i * 2.6, i * 2.6 + 1)])
-a.set_xticklabels(['human', 'machine'] * 3, fontsize=9)
-a.set_ylabel('pick success, 30 random ICs')
-a.set_ylim(-0.02, 1.0)
-a.set_title('per-seed outcomes (corrected world)', fontsize=10)
+    xh, xm = i * 2.9, i * 2.9 + 1.15
+    cs.seeds_pts(a, xh, h, C[name], 'human', 30, rng, s=20, jit=0.13, half=0.3)
+    cs.seeds_pts(a, xm, m, C[name], 'machine', 30, rng, s=20, jit=0.13, half=0.3)
+    cs.group_label(a, (xh + xm) / 2, SUB[name], y=-0.2, color=C[name], fs=8)
+    ticks += [xh, xm]; labs += ['H*' if name == 'DP' else 'H', 'M']
+a.set_xticks(ticks); a.set_xticklabels(labs)
+a.set_ylabel('success (rnd-30)'); a.set_ylim(-0.02, 1.0); a.set_xlim(-0.7, 7.65)
+a.set_title('Per-seed outcomes, corrected world')
+a.text(0.99, 0.98, 'H human · M machine', transform=a.transAxes, ha='right', va='top', fontsize=7, color='0.3')
+cs.footnote(f, y=-0.17)
+cs.save(f, 'fig9a_triple_seeds')
 
+# ---- fig9b: posterior of the source effect per learner
+f, b = cs.fig(h=2.3)
 b.axvspan(-0.05, 0.05, color='0.9', zorder=0)
-b.text(0, 0.985, 'ROPE\n(|Δ|<0.05)', ha='center', va='top', fontsize=7.5, color='0.45',
-       transform=b.get_xaxis_transform())
-for name in DATA:
-    d = Z[KEY[name]]
-    xs = np.linspace(-0.4, 0.6, 400)
+b.text(0, -1.45, 'ROPE', ha='center', va='center', fontsize=7, color='0.45')
+xs = np.linspace(-0.4, 0.6, 400)
+for j, name in enumerate(DATA):
+    d = Z[name]
     kde = np.array([np.mean(np.abs(d - x) < 0.012) for x in xs]) / 0.024
-    b.plot(xs, kde, color=C[name], lw=2, label=f"{name}: Δ={d.mean():+.2f}, P(Δ>0)={np.mean(d > 0):.2f}")
-    lo, hi = np.percentile(d, [2.5, 97.5])
-    y = -0.28 - 0.30 * list(DATA).index(name)
-    b.plot([lo, hi], [y, y], color=C[name], lw=2.5)
-    b.plot(d.mean(), y, 'o', color=C[name], ms=6)
-b.axvline(0, color='0.2', lw=1)
-b.set_xlabel('Δ = human − machine (posterior, hierarchical Beta-Binomial over seeds)')
-b.set_yticks([])
-b.set_ylim(-1.25, None)
-b.legend(fontsize=8, loc='upper right', frameon=False)
-b.set_title('source effect per learner: posterior + 95% CrI', fontsize=10)
-
-fig.suptitle('One world, three learners: the demo-source effect grows with how much the learner\n'
-             'uses the demonstrations beyond imitation — DP ≈ indifferent, RLPD null, world model prefers human',
-             fontsize=10.5, y=1.04)
-fig.savefig('paper/figures/fig9_advisor_triple.png')
-fig.savefig('paper/figures/fig9_advisor_triple.pdf')
-print('wrote fig9')
+    lab = (cs.HUMAN_DP.replace('human', 'DP') if name == 'DP' else name)
+    b.plot(xs, kde, color=C[name], lw=1.6, label=f"{lab}: Δ={d.mean():+.2f}, P(Δ>0)={np.mean(d > 0):.2f}")
+    lo, hi = np.percentile(d, [2.5, 97.5]); y = -0.28 - 0.30 * j
+    b.plot([lo, hi], [y, y], color=C[name], lw=2); b.plot(d.mean(), y, 'o', color=C[name], ms=4)
+b.axvline(0, color='0.2', lw=0.8)
+b.set_xlabel('Δ = human − machine'); b.set_yticks([]); b.set_ylim(-1.65, None)
+b.spines['left'].set_visible(False)
+b.legend(loc='upper left', fontsize=7)
+b.set_title('Posterior of the source effect (95% CrI)')
+cs.footnote(f, y=-0.14)
+cs.save(f, 'fig9b_triple_posterior')
