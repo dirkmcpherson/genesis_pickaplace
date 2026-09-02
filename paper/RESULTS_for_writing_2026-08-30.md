@@ -206,6 +206,21 @@ n=8 — seed bimodality in both arms eats the power. A27 (n=12v12, ignition pre-
 confirmatory readout (~09-03). An interim n=7v8 reading (before s84's dead-seed score landed) had CrI
 [+0.07, +0.49] — superseded; do not quote it.**
 
+### 3.2 CORRECTION (09-02): the return clamp is mis-set; the NOCLAMP "runaway" verdict is withdrawn
+`return_clamp: 100` was set to reward_scale×pick and ignores the training-only potential shaping. Replayed episode
+returns in the corrected-world runs: median ≈ 560–1030, p90 ≈ 1290–2460, max ≈ 4900 (s81/s83). The clamped
+critic's value_replay_max sits at 100.2 (median) — the target is clamped on essentially every state, the critic
+learns "≈100 everywhere", advantages become noise, actor entropy collapses (dDP −6.1 by 1M; dH −2.5→−2.9; fig13),
+and checkpoints go bistable in BOTH arms. NOCLAMP's values (median 150–380, p90 350–900, max ≈ 1000–1250) are of the
+same order as the true shaped returns — §3's "values 115–825 against a 100 maximum = runaway" was judged against
+the wrong ceiling and is WITHDRAWN as a claim; NOCLAMP still had dead endpoints (LAST hold ≤ 1/15), so neither
+variant is healthy, and a correctly scaled critic target has not yet been run. The port already has DV3's
+percentile return normalization (ReturnEMA), so this is a scale error, not missing machinery. The dv3-dense
+"value past attainable max" readings in §4 are under the same re-examination (dv3 sparse/touchgoal readings, max
+return truly 100, are unaffected). Pilots registered as A32 (C2000, RS1, SPARSE-RS1; dH first, corrected world).
+What survives unchanged: the ignition asymmetry (human 7/8 vs machine 3/8 under identical mis-scaling) is a
+within-block contrast and stands; the endpoint (LAST) claims are suspended pending A32.
+
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 
 - **Failure mechanism:** on every unclamped ×100-terminal run `value_mean` runs past the attainable return (263–390 vs 100 by
