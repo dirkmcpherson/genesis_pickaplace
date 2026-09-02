@@ -29,6 +29,16 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
   choice (29.6 % fewer frames), not a load-bearing data-cleaning step, and "DP reacts the same to both sources" survives
   the control. (s30/s31 died on a bad GPU and were replaced by fresh seeds s33/s34 per A9.)
 
+- **v2 full-pool DP (A25/A29, 09-02 03:30 snapshot; arm names of record: dH = raw dHv2raw, dHpruned = dHv2):**
+  raw human tapes DEGRADE DP on random ICs — corrected world dH 0.237 (n=8: 9,9,7,5,10,5,5,7 /30) vs dHpruned
+  0.517 (n=6: 17,13,16,19,13,15), diff −0.28, perm p 0.0004, Bayes CrI [−0.40, −0.13]; old world dH 0.35 (n=8)
+  vs dHpruned ~0.51 (n=7: 18,15,12,17,15,15,15). **A29's registered prediction (pruned ≥ raw + 0.15) MET in both
+  worlds.** Reading: the horizon-capped dHunpruned control (n=3, no penalty) was blind to this — the penalty comes
+  from the 14 formerly-over-horizon tapes' idle spans, i.e. it is a property of the FULL raw pool. DP's human arm
+  of record for v2 is therefore dHpruned (A31); the raw leg stays as this disclosed within-source result.
+  First raw-dH RLPD corrected-world seed: 23/30 — RLPD on the same raw tapes is fine (rest of the RLPD v2 human
+  arm pending readout).
+
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
 **Recipe restart (A17):** every γ = 0.998 run is diagnostic-only — 69/74 diverged (critic loss 10²–10⁵). At the published
