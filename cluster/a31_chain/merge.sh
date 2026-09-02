@@ -1,6 +1,6 @@
 #!/bin/bash
 # Stage 2c: merge shard manifests + census for one world (ddpv2_build.sh merge/census part). Usage: merge.sh <old|w3>
-source "$(dirname "$0")/common.sh"; STAGE=merge; world_cfg "${1:?world}"; cd "$GPR" || exit 1
+source /cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/a31_chain/common.sh; STAGE=merge; world_cfg "${1:?world}"; cd "$GPR" || exit 1
 export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$GPR MUJOCO_GL=egl; activate
 clog "merge start $OUTDIR (+_fails): npz $(ls $OUTDIR/*.npz 2>/dev/null | wc -l) / fails $(ls ${OUTDIR}_fails/*.npz 2>/dev/null | wc -l)"
 set -e

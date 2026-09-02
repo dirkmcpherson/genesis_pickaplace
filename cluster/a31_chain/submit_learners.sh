@@ -1,7 +1,7 @@
 #!/bin/bash
 # Stage 4: DRYRUN gates -> DP machine arm (dDPv2p, v2fullP/v2fullPw3, s50-57) + RLPD machine arm (dDPv2, g99v2full/g99v2fullw3,
 # s50-57) -> release A28 packs -> A27 WM packs (corrected world, dHv2raw vs dDPv2, seeds 90-101 as 2-seed packs) if N>=45.
-source "$(dirname "$0")/common.sh"; STAGE=submit; cd "$GPR" || exit 1
+source /cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/a31_chain/common.sh; STAGE=submit; cd "$GPR" || exit 1
 export GENESIS_PICKAPLACE_ROOT=$GPR
 unset DEMO_DIR RAW DATASET ARM SEED WAVE DEMO_ROOT SIM_VARIANT IC_FILE   # stale-env guards
 clog "submit stage start (git $(git rev-parse --short HEAD))"

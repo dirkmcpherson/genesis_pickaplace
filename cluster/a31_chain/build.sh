@@ -3,7 +3,7 @@
 #   dDPv2  = matched vs dHv2raw (A25/A26 raw base; RLPD machine arm; WM arm via r2d in w3)
 #   dDPv2p = matched vs dHv2    (pruned base;       DP machine arm; lerobot)
 # --allow-short fallback exactly as ddpv2_build.sh (strict first; rerun only on the per-IC-shortfall FATAL).
-source "$(dirname "$0")/common.sh"; STAGE=build; cd "$GPR" || exit 1
+source /cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/a31_chain/common.sh; STAGE=build; cd "$GPR" || exit 1
 export CUDA_VISIBLE_DEVICES= GENESIS_PICKAPLACE_ROOT=$GPR MUJOCO_GL=egl; activate
 clog "build start"
 build() { # $1 src $2 name $3 out-root $4 base

@@ -3,7 +3,7 @@
 # Rule (V2_BUILD addendum 3, decision of record): among seeds clearing the pilot bar (sel >= 0.5 at the
 # selected ckpt), rank by hold@selected ASC (2 seeds -> the LOWER, "median not best"), tie -> sel@selected
 # ASC, tie -> lower seed id. No seed clears the bar -> FATAL (chain halts; nothing harvests from a broken teacher).
-source "$(dirname "$0")/common.sh"; STAGE=select; world_cfg "${1:?world}"; cd "$GPR" || exit 1
+source /cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/a31_chain/common.sh; STAGE=select; world_cfg "${1:?world}"; cd "$GPR" || exit 1
 clog "start teacher selection: $TDIR (seeds 0 1)"
 python3 - "$TDIR" "$RAWBASE" "$PRUNEDBASE" <<'PY' || exit 1
 import json, os, re, sys
