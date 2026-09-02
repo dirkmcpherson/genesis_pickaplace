@@ -168,8 +168,8 @@ for ax_, hk, rk, ttl in [(a, 'dH_hold', 'dDP_hold', 'hold (15 ICs)'), (b, 'dH_rn
     ax_.set_xticks([0, 1]); ax_.set_xticklabels(['human\n(n=8)', 'DP\n(n=8)'], fontsize=9)
     ax_.set_xlim(-0.6, 1.6); ax_.set_ylim(0, 1.02); ax_.set_title(ttl, fontsize=10)
 a.set_ylabel('pick success (BEST ckpt)')
-b.text(0.5, 0.06, 'ignition (BEST hold>=8/15): human 7/8, DP 3/8\nBEST rnd +0.25, perm p 0.133; P(Δ>0)=0.95\nA27 n=12v12 confirmatory (~09-04)',
-       ha='center', fontsize=8.5, color='0.3', transform=b.transAxes)
+b.text(0.5, 0.97, 'ignition (BEST hold>=8/15): human 7/8, DP 3/8\nBEST rnd +0.25, perm p 0.133; P(Δ>0)=0.95\nA27 n=12v12 confirmatory (~09-04)',
+       ha='center', va='top', fontsize=8.5, color='0.3', transform=b.transAxes)
 fig.suptitle('World model (return-clamped DreamerV3), corrected world, n=8v8 FINAL: human demos ignite it\n'
              'on 7/8 seeds, DP demos on 3/8 — directional on every statistic, significant on none yet', y=1.08, fontsize=10)
 fig.savefig(f'{OUT}/fig4_r2d_w3.png'); fig.savefig(f'{OUT}/fig4_r2d_w3.pdf')
