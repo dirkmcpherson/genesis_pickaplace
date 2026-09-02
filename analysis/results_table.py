@@ -18,8 +18,9 @@ mislabelled every block launched after 08-31). Provenance lines, all printed by 
 World = sim_variant when printed (gc_kp4_riser3_shelf6 -> corrected, base -> old, anything else -> its
 name), cross-checked against the demo root (matched_w3 -> corrected, matched_v2 -> old); a disagreement
 prints CONFLICT. HEADLINE.txt and RESCORE-RESULT rows carry no provenance of their own: they are joined
-to (a) a checkpoint sidecar `*.action_mode.json` next to the HEADLINE (sim_variant key) or (b) the
-(learner, arm, seed) map built from every .out under the root. Unresolved rows print world='?' and
+to (a) json files in their own run directory (ckpt sidecar `sim_variant`, lerobot train_config `root`), else (b) the
+(learner, arm, seed, wave) map built from every .out under the root (seeds are reused across worlds in v2, so the wave
+in the run-dir path disambiguates). Unresolved rows print world='?' and
 make --selftest exit 1. Cluster command (the v2/A27/A32/A33 .out files are not on the laptop):
   cd $LAB/genesis_pickaplace && python analysis/results_table.py --artifacts . --selftest
 """
@@ -35,6 +36,15 @@ RE_SHA = re.compile(r'DEMO-SHA (\S+) (\S+) n=(\d+) sha=([0-9a-f]+)')
 RE_START = re.compile(r'^== (RLPD|DP) (\S+?)_(?:RLPD|DP)-(\S+?)_s(\d+)')
 RE_R2D_START = re.compile(r'^== r2dreamer (\S+) seed (\d+) start .*?demo=(\S+)')
 RE_ARMSEED = re.compile(r'arm=(\S+) seed=(\d+)')
+# RESCORE tag = <config>_<arm>_s<seed>[_W3][<rule suffix>]; the suffix (e.g. _F20_sample = BEST-of-5 fraction ckpts,
+# _LAST_hold) is a DIFFERENT selection rule and must never be merged into the BEST-of-K rows -> it becomes part of the key.
+RE_RESCORE = re.compile(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP|dHv2raw|dDPv2|dDPretimed|dHsmoothed|dDPnoised)_s(\d+)(_W3)?(\S*) set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)')
+
+
+def _rescore(resc, m):
+    arm, seed, w3, rule, st_, k, n, exp = m.groups()
+    if int(n) != int(exp): return                  # asserted denominator failed
+    resc[(arm, int(seed), w3 or '', rule)][st_] = int(k) / int(n)
 
 
 def world_from_variant(sv):
@@ -79,46 +89,33 @@ def parse_provenance(text):
                 has_result=has_result)
 
 
-def sidecar_world(path):
-    """World from a checkpoint sidecar next to a HEADLINE.txt (<RUN>/sweep/HEADLINE.txt -> <RUN>/**/*.action_mode.json)."""
+def rundir_world(path, max_depth=3):
+    """World for a HEADLINE.txt from ITS OWN run directory (<RUN>/sweep/HEADLINE.txt): any json up to max_depth
+    below <RUN> carrying a `sim_variant` key (RLPD/DP ckpt sidecars) or a demo-set root string (lerobot
+    train_config.json `root`). Unique world -> that; several -> CONFLICT; none -> None."""
     run = os.path.dirname(os.path.dirname(path))
-    svs = set()
-    for sc in glob.glob(os.path.join(run, '**', '*.action_mode.json'), recursive=True):
-        if not os.path.isfile(sc): SKIPPED.append(sc); continue
-        try:
-            sv = json.load(open(sc)).get('sim_variant')
-            if sv: svs.add(world_from_variant(sv))
-        except Exception:
-            pass
-    return next(iter(svs)) if len(svs) == 1 else (None if not svs else 'CONFLICT(' + '|'.join(sorted(svs)) + ')')
-
-
-SKIP_DIRS = ('wandb', '.git', '__pycache__')
-SKIPPED = []                                      # unreadable / dangling paths seen by the last collect()
-
-
-def _files(root, pattern):
-    """Regular, readable files matching pattern under root. Dangling symlinks (wandb `latest-run`) and
-    unreadable files are COUNTED into SKIPPED and reported, never raised, never silently dropped."""
-    for f in sorted(glob.glob(os.path.join(root, '**', pattern), recursive=True)):
-        if any(f'{os.sep}{d}{os.sep}' in f for d in SKIP_DIRS):
-            continue
-        if not os.path.isfile(f):                 # False for dangling symlinks
-            SKIPPED.append(f); continue
-        yield f
-
-
-def _read(f):
-    try:
-        return open(f, errors='ignore').read()
-    except OSError:
-        SKIPPED.append(f); return ''
+    found = set()
+    for d in range(max_depth + 1):
+        for jf in glob.glob(os.path.join(run, *(['*'] * d), '*.json')):
+            if not os.path.isfile(jf) or any(f'{os.sep}{sd}{os.sep}' in jf for sd in SKIP_DIRS):
+                continue
+            try:
+                txt = open(jf, errors='ignore').read(200000)
+            except OSError:
+                SKIPPED.append(jf); continue
+            m = re.search(r'"sim_variant"\s*:\s*"([^"]+)"', txt)
+            if m: found.add(world_from_variant(m.group(1)))
+            for r, w in ROOT_WORLD.items():
+                if f'{r}/' in txt: found.add(w)
+    return next(iter(found)) if len(found) == 1 else (None if not found else 'CONFLICT(' + '|'.join(sorted(found)) + ')')
 
 
 def collect(root, verbose=False):
     rows = collections.defaultdict(dict)          # key -> {seed: (seed, hold, rnd, sha)}; dedup by seed
     provmap = collections.defaultdict(set)        # (learner, arm, seed) -> {world}
+    wavemap = collections.defaultdict(set)        # (learner, arm, seed, wave) -> {world}; seeds are REUSED across worlds (v2 s50-67)
     outs = {}                                     # .out path -> provenance dict (for --selftest)
+    resc = collections.defaultdict(dict)          # (arm, seed, w3, rule) -> {set: frac}; rule = tag suffix after _s<seed>
     SKIPPED.clear()
 
     def put(key, seed, h, r, sha=None):
@@ -131,7 +128,13 @@ def collect(root, verbose=False):
         p = parse_provenance(text); outs[f] = p
         for k in p['arm_seed']:
             provmap[k].add(p['world'])
+            if p['wave']: wavemap[k + (p['wave'],)].add(p['world'])
         for line in text.splitlines():
+            if not line.startswith(('SWEEP-HEADLINE', 'DP-HEADLINE', 'R2D-RESULT', 'RESCORE-RESULT')):
+                continue                            # pack/harvest .out files ECHO other runs' lines with a "[file] " prefix
+            m = RE_RESCORE.search(line)
+            if m:
+                _rescore(resc, m); continue
             m = re.search(r'SWEEP-HEADLINE arm=(\S+) seed=(\d+) reward=(\S+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', line)
             if m:
                 arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
@@ -145,8 +148,14 @@ def collect(root, verbose=False):
                 arm, seed, rw, pk = m.groups(); seed = int(seed)
                 put(('r2d(SEL-ONLY, not a headline)', p['world'], rw, arm), seed, float(pk), float('nan'), p['sha'])
 
-    def lookup(learner, arm, seed):
+    def lookup(learner, arm, seed, path=''):
         ws = provmap.get((learner, arm, seed), set())
+        if len(ws) > 1 and path:                    # same (arm, seed) trained in two worlds: disambiguate by the wave in the path
+            ws2 = set()
+            for (lr, a, sd, wave), w in wavemap.items():
+                if (lr, a, sd) == (learner, arm, seed) and wave and re.search(r'(^|[_/.-])' + re.escape(wave) + r'([_/.-]|$)', path):
+                    ws2 |= w
+            if len(ws2) == 1: ws = ws2
         return next(iter(ws)) if len(ws) == 1 else ('?' if not ws else 'CONFLICT(' + '|'.join(sorted(ws)) + ')')
 
     for f in _files(root, 'HEADLINE.txt'):
@@ -155,21 +164,17 @@ def collect(root, verbose=False):
         if not m: continue
         kind, arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
         learner = 'DP' if kind == 'DP-HEADLINE' else 'RLPD'
-        world = sidecar_world(f) or lookup(learner, arm, seed)
+        world = rundir_world(f) or lookup(learner, arm, seed, f)
         put((learner, world, rw or '-', arm), seed, int(h)/int(hn), int(r)/int(rn))
 
-    resc = collections.defaultdict(dict)          # (arm, seed, w3) -> {set: frac}
     for f in _files(root, '*.log'):               # RESCORE-RESULT lines (n12_rescore/*.log and successors)
         for line in _read(f).splitlines():
-            m = re.search(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP|dHv2raw|dDPv2)_s(\d+)(_W3)?\S* set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)', line)
-            if not m: continue
-            arm, seed, w3, st_, k, n, exp = m.groups()
-            if int(n) != int(exp): continue          # asserted denominator failed
-            resc[(arm, int(seed), w3 or '')][st_] = int(k)/int(n)
-    for (arm, seed, w3), d in resc.items():
+            m = RE_RESCORE.search(line)
+            if m: _rescore(resc, m)
+    for (arm, seed, w3, rule), d in resc.items():
         if 'hold' in d and 'rnd' in d:
             world = 'corrected' if w3 else lookup('r2d', arm, seed)
-            put(('r2dreamer', world, 'dense', arm), seed, d['hold'], d['rnd'])
+            put((f'r2dreamer{rule}', world, 'dense', arm), seed, d['hold'], d['rnd'])
     return {k: list(v.values()) for k, v in rows.items()}, outs
 
 
@@ -180,15 +185,16 @@ def selftest(root):
     for f, p in outs.items():
         key = (p['learner'] or os.path.basename(f).split('_')[0], p['wave'] or '?')
         groups.setdefault(key, (f, p['world']))
-        if p['world'].startswith(('?', 'CONFLICT')) and p['has_result']:
-            bad.append(f'{f}: world={p["world"]} arm_seed={sorted(p["arm_seed"])[:2]}')
+        cells = {k for k in p['arm_seed'] if k[1] != 'legacy'}   # ARM unset -> launcher prints arm=legacy (demo-free probes)
+        if p['world'].startswith(('?', 'CONFLICT')) and p['has_result'] and cells:
+            bad.append(f'{f}: world={p["world"]} arm_seed={sorted(cells)[:2]}')
     print(f'selftest: {len(outs)} .out files, {len(groups)} (learner, wave) groups; '
           f'skipped {len(SKIPPED)} dangling/unreadable paths' + (f' (first: {os.path.relpath(SKIPPED[0], root)})' if SKIPPED else ''))
     for (lr, wv), (f, w) in sorted(groups.items()):
         print(f'  {lr:<6} {wv:<40} world={w:<12} e.g. {os.path.relpath(f, root)}')
     for k, v in sorted(rows.items()):
-        if k[1].startswith(('?', 'CONFLICT')):
-            bad.append(f'table row {k} n={len(v)} world unresolved')
+        if k[1].startswith(('?', 'CONFLICT')) and k[3] != 'legacy':
+            bad.append(f'table row {k} n={len(v)} world unresolved: seeds {sorted(x[0] for x in v)}')
     if bad:
         print('SELFTEST FAILED -- unresolved world:\n  ' + '\n  '.join(bad)); sys.exit(1)
     print('selftest OK: every .out with a result line and every table row has a parsed world (unmatched:* = pre-matrix demo dir, labelled not guessed)')
