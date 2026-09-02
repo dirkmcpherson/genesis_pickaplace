@@ -32,6 +32,20 @@ stable (selected ckpt); RLPD's registered statistic is the LAST checkpoint (A16 
 late divergence); r2dreamer is checkpoint-bistable in BOTH arms, so BEST-of-K on a selection set is
 load-bearing and disclosed (LAST checkpoints are mostly dead in both arms).
 
+### 2b. Checkpoint-rule sensitivity (added 09-02 — a reviewer will ask)
+The three rows use three checkpoint rules (pre-registered per learner). Same-rule re-read, corrected world:
+
+| Δ (human − machine) | selected / BEST | LAST |
+|---|---|---|
+| DP, rnd | +0.06 | +0.05 (final ckpts 0.52 vs 0.47) |
+| RLPD, rnd | +0.04 (perm p 0.66) | −0.02 (p 0.98) |
+| WM, hold | +0.22 (BEST) | **−0.07** (LAST 0.29 vs 0.36; both arms mostly dead) |
+
+DP and RLPD are rule-invariant. **The WM effect exists only under BEST-of-K** — the honest statement of the
+bistability disclosure: the world model REACHES a working policy from human demos far more often (7/8 vs 3/8
+seeds), but neither arm KEEPS it to the end of training. The WM claim is about learnability under selection,
+not about the trained endpoint, and must be worded that way.
+
 ## 3. The context that gives the table meaning: the old world
 
 | RLPD, old world (γ 0.99 sparse) | human | machine | Δ | p |

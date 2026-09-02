@@ -34,6 +34,8 @@ rlpd_last_rnd = {
     'dDPfails':    [19, 15, 3, 18, 15, 20, 20, 19],       # s30-37
     'dHsucc_dup':  [17, 23, 23, 18, 19, 25, 16, 24],      # s30-37 (n=8 top-up 08-31 pm)
     'dDPsucc_dup': [19, 13, 5, 9, 15, 17, 15, 21],        # s30-37
+    'dH_w3':       [19, 1, 19, 19, 1, 21, 20, 19],        # A20 corrected world s40-47 (LAST rnd)
+    'dDP_w3':      [18, 19, 17, 19, 20, 0, 20, 11],
 }
 # max critic loss per seed (same arms, s30-37 order); divergence threshold = 1 (A16)
 rlpd_maxcl = {
@@ -88,29 +90,34 @@ def violin(ax, x, vals, colour, alpha, denom):
 
 
 # ---------------------------------------------------------------- fig 1: RLPD violins
-fig, ax = plt.subplots(figsize=(7.6, 4.2))
-order = ['dH', 'dDP', 'dHHfails', 'dDPfails', 'dHsucc_dup', 'dDPsucc_dup']
+fig, ax = plt.subplots(figsize=(9.4, 4.2))
+order = ['dH', 'dDP', 'dHHfails', 'dDPfails', 'dHsucc_dup', 'dDPsucc_dup', 'dH_w3', 'dDP_w3']
+xs = [0, 1, 2, 3, 4, 5, 6.6, 7.6]
 labels = ['human\n(n=7)', 'DP\n(n=7)', 'human\n+fails (n=8)', 'DP\n+fails (n=8)',
-          'human\n+dup (n=8)', 'DP\n+dup (n=8)']
-for i, k in enumerate(order):
+          'human\n+dup (n=8)', 'DP\n+dup (n=8)', 'human\n(n=8)', 'DP\n(n=8)']
+for x, k in zip(xs, order):
     src = 'human' if k.startswith('dH') else 'machine'
-    violin(ax, i, rlpd_last_rnd[k], C['RLPD'], 0.40 if src == 'human' else 0.18, 30)
-    seeds_pts(ax, i, rlpd_last_rnd[k], C['RLPD'], src, 30)
+    violin(ax, x, rlpd_last_rnd[k], C['RLPD'], 0.40 if src == 'human' else 0.18, 30)
+    seeds_pts(ax, x, rlpd_last_rnd[k], C['RLPD'], src, 30)
 for x0, x1, y, txt in [(0, 1, 0.92, '+0.21  p=0.002'), (2, 3, 0.99, '+0.21  p<0.001'),
-                       (4, 5, 0.92, '+0.21  p=0.013')]:
+                       (4, 5, 0.92, '+0.21  p=0.013'), (6.6, 7.6, 0.92, '−0.02  p=0.98')]:
     ax.plot([x0, x0, x1, x1], [y - 0.015, y, y, y - 0.015], color='0.35', lw=1)
     ax.text((x0 + x1) / 2, y + 0.008, txt, ha='center', fontsize=8.5, color='0.25')
-ax.set_xticks(range(6)); ax.set_xticklabels(labels, fontsize=8.5)
+ax.axvline(5.8, color='0.6', lw=1, ls=':')
+ax.text(2.5, 1.02, 'OLD world (A16 prereg, met)', ha='center', fontsize=9, color='0.3')
+ax.text(7.1, 1.02, 'CORRECTED world (A20, null)', ha='center', fontsize=9, color='0.3')
+ax.set_xticks(xs); ax.set_xticklabels(labels, fontsize=8.5)
 ax.set_ylabel('pick success, 30 random ICs (LAST ckpt)')
-ax.set_ylim(0, 1.07); ax.set_yticks(np.arange(0, 1.01, 0.2))
-ax.set_title('RLPD: human demos beat DP-teacher demos across preparations\n'
-             '(old world, sparse, γ=0.99; seed = unit; exact permutation p)', fontsize=10)
+ax.set_ylim(0, 1.1); ax.set_yticks(np.arange(0, 1.01, 0.2))
+ax.set_title('RLPD demo-source effect is WORLD-DEPENDENT: +0.21 in the lower-fidelity world across three\n'
+             'preparations, absent in the corrected world (sparse, γ=0.99; seed = unit; exact permutation p)', fontsize=10)
 fig.savefig(f'{OUT}/fig1_rlpd_rnd_violin.png'); fig.savefig(f'{OUT}/fig1_rlpd_rnd_violin.pdf')
 
 # ---------------------------------------------------------------- fig 2: divergence mechanism
 fig, (a, b) = plt.subplots(1, 2, figsize=(9.2, 3.8), gridspec_kw={'width_ratios': [1, 1.5]})
-div = [(np.asarray(rlpd_maxcl[k]) >= 1).mean() for k in order]
-nn = [len(rlpd_maxcl[k]) for k in order]
+order2 = order[:6]
+div = [(np.asarray(rlpd_maxcl[k]) >= 1).mean() for k in order2]
+nn = [len(rlpd_maxcl[k]) for k in order2]
 cl_labels = ['human\n(n=8)', 'DP\n(n=8)', 'human\n+fails\n(n=8)', 'DP\n+fails\n(n=8)',
              'human\n+dup\n(n=8)', 'DP\n+dup\n(n=8)']
 for i, d in enumerate(div):
@@ -120,7 +127,7 @@ for i, (d, n) in enumerate(zip(div, nn)):
 a.set_xticks(range(6)); a.set_xticklabels(cl_labels, fontsize=7)
 a.set_ylabel('fraction of seeds diverged\n(max critic loss ≥ 1)'); a.set_ylim(0, 1)
 a.set_title('divergence rate', fontsize=10)
-for i, k in enumerate(order):
+for i, k in enumerate(order2):
     src = 'human' if k.startswith('dH') else 'machine'
     v = np.asarray(rlpd_maxcl[k])
     b.scatter(i + rng.uniform(-0.12, 0.12, len(v)), v, marker=MK[src], s=40,
