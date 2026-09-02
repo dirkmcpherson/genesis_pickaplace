@@ -9,14 +9,16 @@ Seed is the unit. Human − machine throughout. Sources per learner:
 
 | learner | primary | human | machine | Δ | 95 % CI (Welch) | exact perm p | Holm p | min attainable p |
 |---|---|---|---|---|---|---|---|---|
-| DP | selected hold | 0.887 | 0.873 | +0.013 | [-0.048, +0.074] | 0.821 | **0.821** | 0.0000
-| DP | selected rnd | 0.547 | 0.487 | +0.060 | [+0.006, +0.114] | 0.041 | **0.082** | 0.0000
-| RLPD | LAST rnd | 0.496 | 0.517 | -0.021 | [-0.301, +0.259] | 0.983 | **1.000** | 0.0002
+| DP | selected hold | 0.887 | 0.873 | +0.013 | [-0.048, +0.074] | 0.821 | **0.821** | 1.1e-05 |
+| DP | selected rnd | 0.547 | 0.487 | +0.060 | [+0.006, +0.114] | 0.041 | **0.082** | 1.1e-05 |
+| RLPD | LAST rnd | 0.496 | 0.517 | -0.021 | [-0.301, +0.259] | 0.983 | **1.000** | 1.6e-04 |
 | RLPD | divergence (max CL ≥ 1) | 0.375 | 0.375 | +0.000 | — | 1.000 | **1.000** | Fisher |
-| WM | BEST rnd | 0.554 | 0.308 | +0.246 | [-0.084, +0.576] | 0.133 | **0.238** | 0.0002
-| WM | ignition (BEST hold ≥ 8/15) | 0.875 | 0.375 | +0.500 | — | 0.119 | **0.238** | Fisher |
+| WM | BEST rnd | 0.554 | 0.308 | +0.246 | [-0.084, +0.576] | 0.133 | **0.265** | 1.6e-04 |
+| WM | ignition (BEST hold ≥ 8/15, computed) | 0.750 | 0.375 | +0.375 | — | 0.315 | **0.315** | Fisher |
 
-Reading: under the registered Holm rule no learner's source effect is significant at 0.05 in the corrected world (DP rnd 0.042 → 0.083; WM rnd 0.133 / ignition 0.119 → 0.24). The DP "small human edge" is therefore reported as an unadjusted, exploratory p only.
+**Ignition discrepancy.** RESULTS §3.1, ADVISOR_BRIEF and bayes_triple quote ignition as 7/8 v 3/8 (Fisher 0.119) under "BEST hold ≥ 8/15", but the per-seed BEST hold list of record (RESULTS §3.1) gives 6/8 v 3/8 (Fisher 0.315): s84 (hold 1) and s86 (hold 3) both fail the criterion. The quoted split is reproduced by BEST rnd ≥ 8/30 (7/8 v 3/8). Until RESULTS resolves which criterion the 7/8 was counted under, A27's co-primary (A27: "BEST hold ≥ 8/15 ... where it splits 7/8 vs 3/8") rests on a criterion that does not produce that split.
+
+Reading: under the registered Holm rule no learner's source effect is significant at 0.05 in the corrected world (DP rnd 0.042 → 0.083; WM rnd 0.133 / ignition 0.315 → 0.27). The DP "small human edge" is therefore reported as an unadjusted, exploratory p only.
 
 ## (b) Source × learner interaction (rnd, rule of record: DP selected / RLPD LAST / WM BEST)
 

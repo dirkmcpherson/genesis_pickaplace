@@ -55,8 +55,13 @@ WM = dict(
     best_rnd=([20, 25, 22, 16, 1, 21, 11, 17], [1, 2, 3, 28, 22, 1, 12, 5]),
     last_hold_s80_83=([4, 13, 15, 0], [1, 5, 1, 13]),
     last_hold_mean=(0.29, 0.36),               # n=8 means (ADVISOR_BRIEF §2b)
-    ignited=((7, 8), (3, 8)),                  # BEST hold >= 8/15 (A27 pre-defined)
+    ignited_quoted=((7, 8), (3, 8)),           # as QUOTED in RESULTS §3.1 / ADVISOR_BRIEF / bayes_triple ("BEST hold >= 8/15")
 )
+# DISCREPANCY (found 09-02 while building this table): applying the registered criterion BEST hold >= 8/15 to the
+# per-seed BEST hold list of record gives human 6/8 (s84 = 1, s86 = 3 fail), machine 3/8 -- not the quoted 7/8 v 3/8.
+# The quoted split is reproduced by BEST rnd >= 8/30 (only s84 fails). The A27 co-primary is therefore registered on a
+# criterion that does not yield the split it says it was informed by. Ignition below is COMPUTED from the data.
+WM['ignited'] = tuple((sum(x >= 8 for x in arm), len(arm)) for arm in WM['best_hold'])
 ALIVE_RND = 5   # uniform "alive" criterion: >= 5/30 on the rule-of-record rnd (dead seeds score 0-3 in every learner)
 
 
@@ -124,18 +129,27 @@ a, b = frac(WM['best_rnd'][0], NR), frac(WM['best_rnd'][1], NR)
 w = welch(a, b); p, pmin = two_sided_perm(a, b)
 rows_a.append(('WM', 'BEST rnd', w['mean_a'], w['mean_b'], w['diff'], w['ci'], p, pmin))
 (ik, inn), (jk, jn) = WM['ignited']
-rows_a.append(('WM', 'ignition (BEST hold ≥ 8/15)', ik / inn, jk / jn, ik / inn - jk / jn, None, fisher(ik, inn - ik, jk, jn - jk), None))
+rows_a.append(('WM', 'ignition (BEST hold ≥ 8/15, computed)', ik / inn, jk / jn, ik / inn - jk / jn, None, fisher(ik, inn - ik, jk, jn - jk), None))
 holm_by = {}
 for lr in ('DP', 'RLPD', 'WM'):
     idx = [i for i, r in enumerate(rows_a) if r[0] == lr]
     for i, hp in zip(idx, holm([rows_a[i][6] for i in idx])): holm_by[i] = hp
 for i, (lr, nm, mh, mm, d, ci, p, pmin) in enumerate(rows_a):
     cis = f'[{ci[0]:+.3f}, {ci[1]:+.3f}]' if ci else '—'
-    out(f'| {lr} | {nm} | {mh:.3f} | {mm:.3f} | {d:+.3f} | {cis} | {p:.3f} | **{holm_by[i]:.3f}** | {pmin:.4f}' if pmin else
+    out(f'| {lr} | {nm} | {mh:.3f} | {mm:.3f} | {d:+.3f} | {cis} | {p:.3f} | **{holm_by[i]:.3f}** | {pmin:.1e} |' if pmin else
         f'| {lr} | {nm} | {mh:.3f} | {mm:.3f} | {d:+.3f} | {cis} | {p:.3f} | **{holm_by[i]:.3f}** | Fisher |')
 out()
+(qh, qn), (qm, qmn) = WM['ignited_quoted']
+out(f'**Ignition discrepancy.** RESULTS §3.1, ADVISOR_BRIEF and bayes_triple quote ignition as {qh}/{qn} v {qm}/{qmn} '
+    f'(Fisher {fisher(qh, qn-qh, qm, qmn-qm):.3f}) under "BEST hold ≥ 8/15", but the per-seed BEST hold list of record '
+    f'(RESULTS §3.1) gives {ik}/{inn} v {jk}/{jn} (Fisher {fisher(ik, inn-ik, jk, jn-jk):.3f}): s84 (hold 1) and s86 (hold 3) '
+    f'both fail the criterion. The quoted split is reproduced by BEST rnd ≥ 8/30 '
+    f'({sum(x >= 8 for x in WM["best_rnd"][0])}/8 v {sum(x >= 8 for x in WM["best_rnd"][1])}/8). Until RESULTS resolves which '
+    'criterion the 7/8 was counted under, A27\'s co-primary (A27: "BEST hold ≥ 8/15 ... where it splits 7/8 vs 3/8") rests on a '
+    'criterion that does not produce that split.')
+out()
 out('Reading: under the registered Holm rule no learner\'s source effect is significant at 0.05 in the corrected world '
-    '(DP rnd 0.042 → 0.083; WM rnd 0.133 / ignition 0.119 → 0.24). The DP "small human edge" is therefore reported '
+    '(DP rnd 0.042 → 0.083; WM rnd 0.133 / ignition 0.315 → 0.27). The DP "small human edge" is therefore reported '
     'as an unadjusted, exploratory p only.')
 out()
 
