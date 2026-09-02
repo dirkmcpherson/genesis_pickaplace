@@ -546,3 +546,10 @@ Registered predictions: (i) dense RLPD in the corrected world stays NULL on sour
 corrected-world indifference is not a sparse-reward artefact; (ii) dense lowers RLPD's absolute level vs sparse
 (as in the old world). If (i) fails and dense RLPD prefers human demos, the gradient's reward-density confound is
 real and the WM-vs-RLPD contrast must be restated as dense-vs-dense.
+
+### A34 (2026-09-02 14:30, user decision) — old world DROPPED from all further experiments
+- **Decision (user):** the old-vs-corrected-world contrast is process-specific and carries no scientific claim we can convey; the corrected world (`gc_kp4_riser3_shelf6`) is the world of record for every remaining block. No new old-world runs; no old-world readouts scored from here on.
+- **Cancelled at decision time:** the 16 old-world A31 machine-arm learners (v2fullP DP + g99v2full RLPD, s50-57; jobs 3170395/96, 99/3170400, 03/04, 07/08, 11/12, 15/16, 19/20, 23/24 — never started) and the 7 still-running old-world dHv2raw RLPD re-evaluation jobs (g99v2full s61-67). Their trained checkpoints remain archived; nothing is deleted.
+- **Kept:** all corrected-world jobs (A31 w3 learners ×16, A27 ×12, A28 ×6, A32 ×5, A33 ×16, w3 re-evals).
+- **Reporting:** old-world results already in RESULTS (RLPD +0.21 ×3, DP raw-vs-pruned old leg, A29 fig11 old panel) stay as a *disclosed sensitivity note* only ("the RLPD source effect reversed to null when the simulator was corrected; we report only the corrected world"). They are not headline rows and are not extended.
+- **Sets built but now unused:** `matched_v2/dDPv2` (N=68, allow-short) and `matched_v2/dDPv2p` (N=60).
