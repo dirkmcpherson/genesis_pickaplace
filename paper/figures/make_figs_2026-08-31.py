@@ -99,7 +99,7 @@ for x, k in zip(xs, order):
     src = 'human' if k.startswith('dH') else 'machine'
     violin(ax, x, rlpd_last_rnd[k], C['RLPD'], 0.40 if src == 'human' else 0.18, 30)
     seeds_pts(ax, x, rlpd_last_rnd[k], C['RLPD'], src, 30)
-for x0, x1, y, txt in [(0, 1, 0.92, '+0.21  p=0.002'), (2, 3, 0.99, '+0.21  p<0.001'),
+for x0, x1, y, txt in [(0, 1, 0.92, '+0.21  p=0.002'), (2, 3, 0.92, '+0.21  p<0.001'),
                        (4, 5, 0.92, '+0.21  p=0.013'), (6.6, 7.6, 0.92, '−0.02  p=0.98')]:
     ax.plot([x0, x0, x1, x1], [y - 0.015, y, y, y - 0.015], color='0.35', lw=1)
     ax.text((x0 + x1) / 2, y + 0.008, txt, ha='center', fontsize=8.5, color='0.25')
