@@ -49,6 +49,10 @@
 set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
+# TMPDIR on the shared fs: batch nodes' node-local /tmp can be FULL (09-02 job 3162556: torch's
+# distributed/nn/jit instantiator hit ENOSPC in 3 of 15 sel episodes -> an INCOMPLETE cell).
+export TMPDIR=${TMPDIR_OVERRIDE:-/cluster/tufts/shortlab/jstale02/tmp/rlpdsel_${SLURM_JOB_ID:-$$}}; mkdir -p "$TMPDIR" 2>/dev/null || export TMPDIR=/tmp
+trap 'rm -rf "${TMPDIR:?}" 2>/dev/null' EXIT
 
 RUN=${RUN:?set RUN (the launcher OUT dir, e.g. baselines/rl/checkpoints/rlpd_g99v2full_dHv2raw_s60)}
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; WAVE=${WAVE:?set WAVE}
@@ -130,6 +134,14 @@ for C in "${CANDS[@]}"; do
 done
 FINAL_TAG=${CANDS[-1]%%|*}; FINAL_ZIP=${CANDS[-1]#*|}
 echo "== selected $BEST_TAG (sel=$BEST_N/15); final=$FINAL_TAG"
+# resume guard (not in the launcher, which never resumes): eval_sweep reuses any existing
+# <set>_<k>.json in its OUTDIR, and selected/ is keyed by TAG not by checkpoint -- a rerun that
+# selects a DIFFERENT checkpoint must not inherit the old one's hold/rnd episodes.
+for T in selected final; do
+  PREV=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("ckpt_step") or "")' "$SW/$T/sweep.json" 2>/dev/null)
+  WANT=$BEST_TAG; [ "$T" = final ] && WANT=$FINAL_TAG
+  if [ -d "$SW/$T" ] && [ "$PREV" != "$WANT" ]; then echo "RESUME-GUARD: $SW/$T holds ckpt_step=${PREV:-?} != $WANT -> wiping it"; rm -rf "$SW/$T"; fi
+done
 bash cluster/eval_sweep.sh sac "$BEST_ZIP" "$SW/selected" --sets hold,rnd --ckpt-step "$BEST_TAG" --tag selected "${SWEEP_COMMON[@]}" 2>&1 | tee "$SW/selected.log"
 if [ "$BEST_ZIP" = "$FINAL_ZIP" ]; then
   cp "$SW/selected/sweep.json" "$SW/final_sweep.json" 2>/dev/null
