@@ -29,15 +29,17 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
   choice (29.6 % fewer frames), not a load-bearing data-cleaning step, and "DP reacts the same to both sources" survives
   the control. (s30/s31 died on a bad GPU and were replaced by fresh seeds s33/s34 per A9.)
 
-- **v2 full-pool DP (A25/A29, 09-02 03:30 snapshot; arm names of record: dH = raw dHv2raw, dHpruned = dHv2):**
-  raw human tapes DEGRADE DP on random ICs — corrected world dH 0.237 (n=8: 9,9,7,5,10,5,5,7 /30) vs dHpruned
-  0.517 (n=6: 17,13,16,19,13,15), diff −0.28, perm p 0.0004, Bayes CrI [−0.40, −0.13]; old world dH 0.35 (n=8)
-  vs dHpruned ~0.51 (n=7: 18,15,12,17,15,15,15). **A29's registered prediction (pruned ≥ raw + 0.15) MET in both
-  worlds.** Reading: the horizon-capped dHunpruned control (n=3, no penalty) was blind to this — the penalty comes
-  from the 14 formerly-over-horizon tapes' idle spans, i.e. it is a property of the FULL raw pool. DP's human arm
-  of record for v2 is therefore dHpruned (A31); the raw leg stays as this disclosed within-source result.
-  First raw-dH RLPD corrected-world seed: 23/30 — RLPD on the same raw tapes is fine (rest of the RLPD v2 human
-  arm pending readout).
+- **v2 full-pool DP (A25/A29; FINAL n=8v8 per world, 09-02; names of record: dH = raw dHv2raw, dHpruned = dHv2):**
+  raw human tapes DEGRADE DP — rnd-30: old world 0.350 (raw) vs 0.512 (pruned), pruned−raw **+0.16 [+0.07,+0.26],
+  perm p 0.006**; corrected world 0.237 vs 0.508, **+0.27 [+0.19,+0.35], perm p <0.001**; in-dist hold +0.21 / +0.15
+  (both p<0.001). **A29's registered prediction (pruned ≥ raw + 0.15) MET in both worlds** (fig11). Dataset difference
+  (fig12): raw pools carry 2.0–2.1× the rows; ~70 % of the extra rows come from the 8 raw-only trials (16 set slots
+  across worlds; 237–1244 rows each, all ≥ picked) that were formerly over-horizon; raw idle-decision fraction 0.25–0.27
+  vs pruned 0.19–0.20 (arm columns); EEF coverage on the 60 common ICs is IDENTICAL (578 ≡ 577 voxels) — pruning
+  removes time, not space, and the raw pool's extra coverage is entirely those 8 long trials. The horizon-capped
+  dHunpruned control (n=3, no penalty) could not see this. DP's human arm of record for v2 is dHpruned (A31); the raw
+  leg stays as this disclosed within-source result. RLPD on raw dH: 16 runs trained, evaluation being re-run from
+  archived checkpoints (the in-job eval was killed by a cache purge — my error, logged 09-02).
 
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
