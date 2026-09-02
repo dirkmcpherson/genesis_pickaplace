@@ -28,7 +28,7 @@ for world, arm, d in SETS:
         path_len = float(steps.sum())
         net = float(np.linalg.norm(eef[-1] - eef[0]))
         tort = path_len / net if net > 1e-6 else np.nan
-        idle = float((np.abs(act).max(axis=1) < 1e-3).mean())
+        idle = float((np.abs(act[:, :6]).max(axis=1) < 1e-3).mean())   # ARM columns only (col 7 = absolute gripper target; 09-02 fix)
         # wander: mean distance from the straight chord start->end
         a, b = eef[0], eef[-1]; ab = b - a; L2 = (ab @ ab) or 1e-12
         t = np.clip(((eef - a) @ ab) / L2, 0, 1)[:, None]
