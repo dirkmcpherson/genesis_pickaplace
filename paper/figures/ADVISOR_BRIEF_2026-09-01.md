@@ -113,8 +113,8 @@ Without the old world these would look like the same fact; the old world is what
 
 1. WM arm deviations, disclosed — and CORRECTED 09-02: the return clamp (100) is mis-set 5–50× below the shaped
    returns actually attained (median ≈ 500–1000), which explains the checkpoint bistability in both arms (critic
-   saturated → advantage noise → entropy collapse; fig13). The earlier "unclamped ports run away" verdict was judged
-   against the wrong ceiling and is withdrawn; correctly scaled pilots are pre-registered (A32). Dense reward (sparse
+   saturated → advantage noise → entropy collapse; fig13). The earlier "unclamped r2dreamer runs away" verdict was judged
+   against the wrong ceiling and is withdrawn (dv3's runaway, re-checked against its own returns, STANDS); correctly scaled pilots are pre-registered (A32). Dense reward (sparse
    never ignites) and BEST-of-K selection remain disclosed; endpoint (LAST) claims are suspended pending A32.
 2. DP's p = 0.041 is one unadjusted comparison; treat as "at most a small human edge."
 3. RLPD corrected-world n=8 → wide CrI; the v2 full-pool block (n=8v8, training now) adds power.

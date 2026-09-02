@@ -218,8 +218,10 @@ same order as the true shaped returns — §3's "values 115–825 against a 100 
 the wrong ceiling and is WITHDRAWN as a claim; NOCLAMP still had dead endpoints (LAST hold ≤ 1/15), so neither
 variant is healthy, and a correctly scaled critic target has not yet been run. The port already has DV3's
 percentile return normalization (ReturnEMA), so this is a scale error, not missing machinery. The dv3-dense
-"value past attainable max" readings in §4 are under the same re-examination (dv3 sparse/touchgoal readings, max
-return truly 100, are unaffected). Pilots registered as A32 (C2000, RS1, SPARSE-RS1; dH first, corrected world).
+"value past attainable max" readings in §4 were re-checked against dv3's OWN replayed returns (09-02): dv3's shaping
+scale is different — its train_return is ≈20–35 (max 60) while value_mean sits at 300–750 — so the dv3 runaway
+verdict STANDS (10–20× over its attainable return); only the r2dreamer NOCLAMP verdict is withdrawn. Two ports,
+two different pathologies: dv3 = genuine critic runaway; r2dreamer = mis-set clamp saturation. Pilots registered as A32 (C2000, RS1, SPARSE-RS1; dH first, corrected world).
 What survives unchanged: the ignition asymmetry (human 7/8 vs machine 3/8 under identical mis-scaling) is a
 within-block contrast and stands; the endpoint (LAST) claims are suspended pending A32.
 
