@@ -1,6 +1,6 @@
 # RESULTS — for the plane writing session (living; post-blackout update 2026-08-31)
 
-**Read with:** `METHODS_draft_2026-08-28.md` (UPDATE 08-29 blocks), `PREREG_final_round_robin_2026-08-23.md` A9–A19,
+**Read with:** `CONFOUNDS.md` (living confound ledger — every claim must map to a row), `METHODS_draft_2026-08-28.md` (UPDATE 08-29 blocks), `PREREG_final_round_robin_2026-08-23.md` A9–A19,
 `ADVERSARIAL_AUDIT_2026-08-29.md` (what a reviewer will say), `WM_CANDIDATES_2026-08-29.md`.
 Statistics: `analysis/stats.py` (seed is the unit; Welch + exact permutation; min attainable p quoted).
 Readouts: **sel** = 15 selection ICs (ceiling 14/15, training ICs) — selection only, never a headline; **hold** = 15 ICs
