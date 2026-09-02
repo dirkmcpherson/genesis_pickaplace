@@ -534,3 +534,15 @@ Machine-demo (dDP) arms follow only for the variant(s) whose dH endpoints stay a
 ≥ 8/15 on ≥ 3/4 seeds). Predictions: C2000 and RS1 ignite at least as often as the clamped block (≥ 3/4) and keep
 ≥ 3/4 endpoints alive; SPARSE-RS1 ≤ 1/2 ignition. If both C2000 and RS1 fail the endpoint rule, the WM's
 bistability is not a target-scale artefact and the A27 BEST-of-K framing stands as the claim of record.
+
+### A33 (2026-09-02, BEFORE any readout) — reward-density confound: RLPD-dense in the corrected world (user-raised)
+The cross-learner gradient mixes reward regimes (DP none; RLPD sparse; WM dense-only). To compare RLPD and the WM
+under the SAME reward in the SAME world on the SAME frozen sets: RLPD, potential-shaped dense reward (REWARD=dense),
+corrected world, matched_w3/dH vs matched_w3/dDP (the frozen WM-block sets), γ 0.99 UTD 10, seeds 60-67 per arm
+(fresh, A9), wave g99w3dense, frozen protocol (eval_ics.json; hold-15 + rnd-30). Statistic per A16 with the dense
+caveat (watchdog invalid; max critic loss + final≈selected are the health reads): LAST-ckpt rnd-30 + divergence.
+Prior evidence: old-world RLPD-dense n=6v6 human 0.38 vs machine 0.30 (+0.08, ns; shaping hurt both arms).
+Registered predictions: (i) dense RLPD in the corrected world stays NULL on source (|Δ| < 0.10) — i.e. RLPD's
+corrected-world indifference is not a sparse-reward artefact; (ii) dense lowers RLPD's absolute level vs sparse
+(as in the old world). If (i) fails and dense RLPD prefers human demos, the gradient's reward-density confound is
+real and the WM-vs-RLPD contrast must be restated as dense-vs-dense.
