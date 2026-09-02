@@ -493,3 +493,12 @@ degrade DP on random ICs, exactly the user's original pruning hypothesis, which 
 sets (matched_v2/dHv2 N=60, matched_w3/dHv2 N=60; A23 eval), seeds 50–57, waves v2fullP / v2fullPw3. Registered
 prediction: pruned-dHv2 DP rnd exceeds dHv2raw DP rnd by ≥ 0.15 in both worlds. The dDPv2 teacher/harvest stays on
 dHv2raw (A25 symmetry); a pruned-teacher variant is NOT added (scope). RLPD stays raw-only (A25).
+
+### A30 (2026-09-01 late, BEFORE any machine-arm v2 readout) — dDPv2 harvest top-up + cluster-resident chain
+First dDPv2 harvest (attempts 3, weak raw-trained teachers: rnd 5–8/30) kept 43/69 (old) and 36/66 (corrected) ICs.
+Per A26's "every demonstration" rule, the MISSING ICs are re-harvested with attempts raised to 8 (same teacher
+checkpoints, same --verify gate, same recorder); kept tapes are merged before per-IC matching against dHv2raw
+(make_v2_matched, --allow-short fallback reports any residual shortfall in the manifest). The machine-arm learner
+submissions, the A28 release, and the A27 WM packs (submitted only if the corrected-world matched N ≥ 45) run as
+cluster-resident slurm dependency jobs so the chain completes without the operator's laptop (7 h internet window).
+Predictions unchanged (A21/A25/A27/A29).
