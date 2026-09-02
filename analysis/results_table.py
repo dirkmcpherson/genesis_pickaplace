@@ -160,15 +160,24 @@ def collect(root, verbose=False):
             m = re.search(r'SWEEP-HEADLINE arm=(\S+) seed=(\d+) reward=(\S+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', line)
             if m:
                 arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
-                put(('RLPD', p['world'], rw, arm), seed, int(h)/int(hn), int(r)/int(rn), p['sha']); continue
+                put(('RLPD', p['world'], p['wave'] or '?', rw, arm), seed, int(h)/int(hn), int(r)/int(rn), p['sha']); continue
             m = re.search(r'DP-HEADLINE arm=(\S+) seed=(\d+).*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', line)
             if m:
                 arm, seed, h, hn, r, rn = m.groups(); seed = int(seed)
-                put(('DP', p['world'], '-', arm), seed, int(h)/int(hn), int(r)/int(rn), p['sha']); continue
+                put(('DP', p['world'], p['wave'] or '?', '-', arm), seed, int(h)/int(hn), int(r)/int(rn), p['sha']); continue
             m = re.search(r'R2D-RESULT arm=(\S+) seed=(\d+) .*?reward=(\S+) .*?picked=([0-9.]+)', line)
             if m:                                   # sel readout only: selection set, 14/15 ceiling
                 arm, seed, rw, pk = m.groups(); seed = int(seed)
-                put(('r2d(SEL-ONLY, not a headline)', p['world'], rw, arm), seed, float(pk), float('nan'), p['sha'])
+                put(('r2d(SEL-ONLY, not a headline)', p['world'], p['wave'] or '?', rw, arm), seed, float(pk), float('nan'), p['sha'])
+
+    def wave_of(learner, arm, seed, path):
+        """Wave for a HEADLINE.txt row: a wave known from the .out map that appears in the path, else the
+        run-dir name (rlpd_<wave>_<arm>_s<seed> / dp_<wave>/<arm>_DP_s<seed>), else '?'."""
+        known = {wave for (lr, a, sd, wave) in wavemap if (lr, a, sd) == (learner, arm, seed) and wave}
+        hits = [w for w in known if re.search(r'(^|[_/.-])' + re.escape(w) + r'([_/.-]|$)', path)]
+        if len(hits) == 1: return hits[0]
+        m = re.search(r'(?:^|/)(?:dp|rlpd)_([A-Za-z0-9]+?)(?:_meta|_selected)?(?:_' + re.escape(arm) + r'_s' + str(seed) + r'|/' + re.escape(arm) + r'_(?:DP|RLPD)_s' + str(seed) + r')(?:/|$)', path)
+        return m.group(1) if m else '?'
 
     def lookup(learner, arm, seed, path=''):
         ws = provmap.get((learner, arm, seed), set())
@@ -187,7 +196,7 @@ def collect(root, verbose=False):
         kind, arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
         learner = 'DP' if kind == 'DP-HEADLINE' else 'RLPD'
         world = rundir_world(f) or lookup(learner, arm, seed, f)
-        put((learner, world, rw or '-', arm), seed, int(h)/int(hn), int(r)/int(rn))
+        put((learner, world, wave_of(learner, arm, seed, f), rw or '-', arm), seed, int(h)/int(hn), int(r)/int(rn))
 
     for f in _files(root, '*.log'):               # RESCORE-RESULT lines (n12_rescore/*.log and successors)
         for line in _read(f).splitlines():
@@ -196,7 +205,7 @@ def collect(root, verbose=False):
     for (arm, seed, w3, rule), d in resc.items():
         if 'hold' in d and 'rnd' in d:
             world = 'corrected' if w3 else lookup('r2d', arm, seed)
-            put((f'r2dreamer{rule}', world, 'dense', arm), seed, d['hold'], d['rnd'])
+            put((f'r2dreamer{rule}', world, '-', 'dense', arm), seed, d['hold'], d['rnd'])
     return {k: list(v.values()) for k, v in rows.items()}, outs
 
 
@@ -215,7 +224,7 @@ def selftest(root):
     for (lr, wv), (f, w) in sorted(groups.items()):
         print(f'  {lr:<6} {wv:<40} world={w:<12} e.g. {os.path.relpath(f, root)}')
     for k, v in sorted(rows.items()):
-        if k[1].startswith(('?', 'CONFLICT')) and k[3] != 'legacy':
+        if k[1].startswith(('?', 'CONFLICT')) and k[4] != 'legacy':
             bad.append(f'table row {k} n={len(v)} world unresolved: seeds {sorted(x[0] for x in v)}')
     if bad:
         print('SELFTEST FAILED -- unresolved world:\n  ' + '\n  '.join(bad)); sys.exit(1)
@@ -230,13 +239,14 @@ def main():
     rows, _ = collect(root)
     if SKIPPED:
         print(f'WARN: skipped {len(SKIPPED)} dangling/unreadable paths (first: {SKIPPED[0]})', file=sys.stderr)
-    L = ['| learner | world | reward | arm | n | hold | rnd | per-seed hold | demo sha |', '|---|---|---|---|---|---|---|---|---|']
+    L = ['| learner | world | wave | reward | arm | n | hold | rnd | per-seed (seed:hold/rnd) | demo sha |', '|---|---|---|---|---|---|---|---|---|---|']
     for k in sorted(rows):
         v = sorted(rows[k]); h = [x[1] for x in v]
         rnd = f'{st.mean([x[2] for x in v]):.2f}' if v[0][2] == v[0][2] else 'n/a'
         shas = sorted({x[3] for x in v if x[3]})
-        L.append(f'| {k[0]} | {k[1]} | {k[2]} | {k[3]} | {len(v)} | {st.mean(h):.2f} | {rnd} | '
-                 + ' '.join(f'{x:.2f}' for x in h) + f' | {",".join(shas) or "-"} |')
+        sha = ('MIXED-SHA:' if len(shas) > 1 else '') + (','.join(shas) or '-')   # >1 sha = two demo sets under one key
+        L.append(f'| {k[0]} | {k[1]} | {k[2]} | {k[3]} | {k[4]} | {len(v)} | {st.mean(h):.2f} | {rnd} | '
+                 + ' '.join(f'{x[0]}:{x[1]:.2f}/{x[2]:.2f}' if x[2] == x[2] else f'{x[0]}:{x[1]:.2f}' for x in v) + f' | {sha} |')
     out = '\n'.join(L)
     print(out)
     if a.md:
