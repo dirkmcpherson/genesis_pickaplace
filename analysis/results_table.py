@@ -84,6 +84,7 @@ def sidecar_world(path):
     run = os.path.dirname(os.path.dirname(path))
     svs = set()
     for sc in glob.glob(os.path.join(run, '**', '*.action_mode.json'), recursive=True):
+        if not os.path.isfile(sc): SKIPPED.append(sc); continue
         try:
             sv = json.load(open(sc)).get('sim_variant')
             if sv: svs.add(world_from_variant(sv))
@@ -92,17 +93,41 @@ def sidecar_world(path):
     return next(iter(svs)) if len(svs) == 1 else (None if not svs else 'CONFLICT(' + '|'.join(sorted(svs)) + ')')
 
 
+SKIP_DIRS = ('wandb', '.git', '__pycache__')
+SKIPPED = []                                      # unreadable / dangling paths seen by the last collect()
+
+
+def _files(root, pattern):
+    """Regular, readable files matching pattern under root. Dangling symlinks (wandb `latest-run`) and
+    unreadable files are COUNTED into SKIPPED and reported, never raised, never silently dropped."""
+    for f in sorted(glob.glob(os.path.join(root, '**', pattern), recursive=True)):
+        if any(f'{os.sep}{d}{os.sep}' in f for d in SKIP_DIRS):
+            continue
+        if not os.path.isfile(f):                 # False for dangling symlinks
+            SKIPPED.append(f); continue
+        yield f
+
+
+def _read(f):
+    try:
+        return open(f, errors='ignore').read()
+    except OSError:
+        SKIPPED.append(f); return ''
+
+
 def collect(root, verbose=False):
     rows = collections.defaultdict(dict)          # key -> {seed: (seed, hold, rnd, sha)}; dedup by seed
     provmap = collections.defaultdict(set)        # (learner, arm, seed) -> {world}
     outs = {}                                     # .out path -> provenance dict (for --selftest)
+    SKIPPED.clear()
 
     def put(key, seed, h, r, sha=None):
         if seed == 0: return                        # smoke
         rows[key].setdefault(seed, (seed, h, r, sha or ''))   # first sighting wins (mirror copies are identical)
 
-    for f in sorted(glob.glob(os.path.join(root, '**', '*.out'), recursive=True)):
-        text = open(f, errors='ignore').read()
+    for f in _files(root, '*.out'):
+        text = _read(f)
+        if not text: continue
         p = parse_provenance(text); outs[f] = p
         for k in p['arm_seed']:
             provmap[k].add(p['world'])
@@ -124,8 +149,8 @@ def collect(root, verbose=False):
         ws = provmap.get((learner, arm, seed), set())
         return next(iter(ws)) if len(ws) == 1 else ('?' if not ws else 'CONFLICT(' + '|'.join(sorted(ws)) + ')')
 
-    for f in sorted(glob.glob(os.path.join(root, '**', 'HEADLINE.txt'), recursive=True)):
-        line = open(f).read()
+    for f in _files(root, 'HEADLINE.txt'):
+        line = _read(f)
         m = re.search(r'(DP-HEADLINE|SWEEP-HEADLINE) arm=(\S+) seed=(\d+)(?: reward=(\S+))?.*? hold=(\d+)/(\d+) rnd=(\d+)/(\d+)', line)
         if not m: continue
         kind, arm, seed, rw, h, hn, r, rn = m.groups(); seed = int(seed)
@@ -134,8 +159,8 @@ def collect(root, verbose=False):
         put((learner, world, rw or '-', arm), seed, int(h)/int(hn), int(r)/int(rn))
 
     resc = collections.defaultdict(dict)          # (arm, seed, w3) -> {set: frac}
-    for f in sorted(glob.glob(os.path.join(root, '**', '*.log'), recursive=True)):
-        for line in open(f, errors='ignore'):
+    for f in _files(root, '*.log'):               # RESCORE-RESULT lines (n12_rescore/*.log and successors)
+        for line in _read(f).splitlines():
             m = re.search(r'RESCORE-RESULT tag=\S*?_(dR2DDPfails|dR2D|dH|dDP|dHv2raw|dDPv2)_s(\d+)(_W3)?\S* set=(hold|rnd) picked=(\d+)/(\d+) expected=(\d+)', line)
             if not m: continue
             arm, seed, w3, st_, k, n, exp = m.groups()
@@ -157,7 +182,8 @@ def selftest(root):
         groups.setdefault(key, (f, p['world']))
         if p['world'].startswith(('?', 'CONFLICT')) and p['has_result']:
             bad.append(f'{f}: world={p["world"]} arm_seed={sorted(p["arm_seed"])[:2]}')
-    print(f'selftest: {len(outs)} .out files, {len(groups)} (learner, wave) groups')
+    print(f'selftest: {len(outs)} .out files, {len(groups)} (learner, wave) groups; '
+          f'skipped {len(SKIPPED)} dangling/unreadable paths' + (f' (first: {os.path.relpath(SKIPPED[0], root)})' if SKIPPED else ''))
     for (lr, wv), (f, w) in sorted(groups.items()):
         print(f'  {lr:<6} {wv:<40} world={w:<12} e.g. {os.path.relpath(f, root)}')
     for k, v in sorted(rows.items()):
@@ -174,6 +200,8 @@ def main():
     a = ap.parse_args(); root = os.path.expanduser(a.artifacts)
     if a.selftest: return selftest(root)
     rows, _ = collect(root)
+    if SKIPPED:
+        print(f'WARN: skipped {len(SKIPPED)} dangling/unreadable paths (first: {SKIPPED[0]})', file=sys.stderr)
     L = ['| learner | world | reward | arm | n | hold | rnd | per-seed hold | demo sha |', '|---|---|---|---|---|---|---|---|---|']
     for k in sorted(rows):
         v = sorted(rows[k]); h = [x[1] for x in v]
