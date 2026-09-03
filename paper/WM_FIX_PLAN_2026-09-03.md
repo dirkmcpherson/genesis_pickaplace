@@ -216,3 +216,12 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   reaches 0.6, through 150k. Reading rule: whichever single lever removes the collapse on 2/2 seeds becomes part of the
   stage-2 recipe; if none does, the terminal-handling path (is_terminal → discount, cont-head training, imagination
   from terminal rows) is bisected against the base commit before stage 2.
+- (e) **distinct terminal — `state_extra: tool_goal`** (registered 12:10 cluster clock, before submission): the 17-dim state
+  carries no tool position, so "reached" is a smooth boundary for the cont/reward heads; append [tool xyz, tool–goal
+  distance] (21-dim, adapter-side, opt-in; eval passes it through). r2dreamer R=0.25, 2 seeds × 150k, tag `tg`.
+  Predicts: if the collapse is head smoothness at an indistinct terminal, `tg` learns and STAYS ≥ 0.6; if it still
+  collapses, the leak is in the imagination/bootstrap path itself (clamp1 is then the only remaining lever).
+  Paper relevance: the pick terminal (sustained 10-step hold above pick_z) is not a function of the state either — if
+  (e) holds, stage 2 must give the WM a state-function terminal (or a hold-counter feature) before it can be fair.
+- Interim 1c readings (12:07): ent3e5 s1 exploded to 9.92 at the 25k bin after all (0.75 → falling); repdreamer s1
+  0.86 at 25k–50k, entropy −5.0 (learning; collapse pending); dv3 R=0.30 s0 first successes (25k bin 4/4).
