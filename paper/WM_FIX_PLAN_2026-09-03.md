@@ -255,3 +255,19 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   Reading: PASS ⇒ the fork's CODE is fine and its DEFAULT RECIPE is the deficit (every dv3 genesis run used the fork's
   recipe knobs — msrecipe restored 16×64 but not precision/eval mode); FAIL ⇒ a code difference remains (bisect the
   633-line dreamer.py diff next).
+
+### Stage 1c (f) + Stage 2 third arm — registered 2026-09-03 13:15 (cluster clock), before submission
+- Finding (clamp1 end-of-run traces, 5k rows): BOTH seeds show transient entropy blow-ups even with the clamp
+  (s0: 9.93 @111.6k, 7.15 @136.6k; s1: 9.92 @136.6k, 9.78 @141.6k), each recovering within 5–10k steps to ≈ −4 with
+  `ret_replay_max` pinned at 1.0. The 25k-bin success (0.97–1.00) averages over flickers; s0's end-of-run save
+  (150k) fell inside an unlogged window after its last row (146.6k) — consistent with its fresh evals (3/15, 0/15,
+  1/15) while s1's save fell in a good phase (15/15 ×3). ⇒ the clamp turns permanent collapse into recoverable
+  flicker; with imagined returns saturated at the cap, the actor's return gradient vanishes near the goal and the
+  entropy bonus (3e-4) briefly dominates.
+- (f) **clamp1 + ent3e5** (`env.return_clamp=1.0 env.act_entropy=3e-5`), reach_goal R=0.25, 2 seeds × 150k, tag
+  `clamp1ent5`. Predicts: no flickers (entropy stays ≤ 0 after ignition) and fresh evals ≥ 12/15 on 2/2 seeds.
+  ent3e5 alone failed (critic runaway); clamp alone flickers; the combination is the untested cell.
+- Stage 2 third arm: dH `clamp1ent5` (2 seeds × 1M), same everything else. Read-out rule unchanged (fresh evals);
+  additionally each stage-2 run reports its entropy-flicker count (rows with entropy > 5 after ignition).
+- Reporting rule for all clamp runs: fresh-eval numbers come from the END-OF-RUN checkpoint as registered, AND the
+  checkpoint's phase is disclosed (entropy at the last logged row); no cherry-picking among snapshots.
