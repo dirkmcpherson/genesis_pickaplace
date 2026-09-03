@@ -340,3 +340,7 @@ fresh evals pending; the collapse-to-zero is r2dreamer-specific.
   (989/980 @173k). Reading: code OK, default recipe deficient (batch 32×96 = 3× fewer updates, fp16, sampled eval).
   The dv3 "port suspect" flag is downgraded to "recipe suspect"; dv3 genesis diagnostics inherit it + the base-world
   confound.
+- Stage-2 note 17:05 (cluster clock): the dH `bnormclamp1ent5` s1 run (3238967) HUNG at 480k (Genesis worker spin) and is
+  replaced by a fresh seed 2 (3241649) as the second dH run of record for the pair gate ({dH s0, dH s2, dDP s0, dDP s1});
+  the warm restart of s1 from its 428k save (3241650) is DISCLOSED only and does not enter the gate. First number of
+  record: dH s0 hold 15/15 (sample), 14/15 (mode), rnd 18/30 (sample).
