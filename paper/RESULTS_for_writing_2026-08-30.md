@@ -224,8 +224,8 @@ is past 13 h and healthy. Done ~09-01, then the same BEST pinning + re-score pro
 (min p 0.0002, ~80 % power at the observed gap).
 
 **✅ 09-03 CORRECTED NUMBERS OF RECORD (WM_BEST5_RESCORE §5; corrected world, fresh process, BEST-of-5 fraction ckpts by in-job sel, sampled, 192/192 cells present):**
-BEST-of-5 rnd per seed (/30): **dH 1,22,17,20,0,11,16,7 = 0.392** vs **dDP 2,19,2,8,8,10,7,7 = 0.262** — diff **+0.13, exact perm p 0.36**;
-BEST-of-5 hold: dH 0.550 vs dDP 0.250; ignition (BEST-of-5 hold ≥ 8/15): **dH 4/8 vs dDP 1/8, Fisher p 0.28**. LAST (F100) rnd: dH 0.34 vs dDP 0.15
+BEST-of-5 rnd per seed (/30): **dH 1,22,17,20,0,11,16,7 = 0.392** vs **dDP 2,19,2,8,8,10,7,7 = 0.262** — diff **+0.13, exact perm p 0.30**;
+BEST-of-5 hold: dH 0.550 vs dDP 0.250; ignition (BEST-of-5 hold ≥ 8/15): **dH 4/8 vs dDP 1/8, Fisher p 0.28**. LAST (F100) rnd: dH 0.275 vs dDP 0.146
 (alive at LAST: dH s81/s83/s86, dDP s81). For the record, the same checkpoints re-scored BEST-of-K in the corrected world give
 dH 0.558 vs dDP 0.392 rnd (+0.17) — the K-inflation and the world error partly cancelled in the old table. **Verdict unchanged
 in direction, weaker in size, and still not significant: directional WM preference for human demos under selection; no
