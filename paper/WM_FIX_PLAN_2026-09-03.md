@@ -194,3 +194,24 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   actor_dist bounded_normal, action_repeat 1, time_limit 400 one at a time; both ports fail ⇒ shared task setup.
 - Stage 0 note: dv3 (cluster tree) cartpole s1 LAST 581 < 800 ⇒ dv3 "port suspect" until the upstream reference
   (3234321/22) reads out; dv3 stage-1b results carry that flag.
+
+### Stage 1c — collapse ablations, registered 2026-09-03 11:50 (cluster clock), before submission
+- Observation (stage 1b, r2dreamer, R=0.25, both seeds; R=0.30 both seeds): the policy LEARNS (success 0.82–0.89 per 25k
+  bin at 25k–50k, episodes ≈37 decisions, actor entropy −3.3…−4.5 nats = committed) and then COLLAPSES to 0.00 within one
+  10k bin with entropy at the 9.93 ceiling (max_std on all 7 dims); the collapse follows the critic exceeding the true
+  maximum return (max 1.0): replay λ-return targets 1.38–1.48, replay value max 1.21–1.50, `train/val` 1.22, with the
+  continuation head at 0.79–0.95 during the buildup. Same "ignite then die" signature as every pick run (A32).
+- Hypotheses, one lever each, r2dreamer R=0.25, 2 seeds × 150k (collapse is visible by 60k), everything else = stage 1b:
+  (a) **`env.return_clamp=1.0`** — cap λ-return targets at the known max (the port's own lever, here at the CORRECT scale).
+      Predicts: no collapse if the mechanism is overestimation past the terminal.
+  (b) **`model.rep_loss=dreamer`** — plain DreamerV3 representation instead of R2Dreamer's redundancy-reduction loss.
+      Predicts: no change if the representation is not the cause.
+  (c) **`env.act_entropy=3e-5`** — the recipe's entropy coefficient (port's "ratchet" fix). Predicts: slower but not
+      absent collapse if the driver is the critic, absence if the driver is the entropy bonus.
+  (d) **dv3 reference at R=0.25**, 2 seeds × 150k (same env copy, same threshold). Predicts: dv3 also collapses ⇒ shared
+      task/terminal-handling issue (cont head at an indistinct terminal state); dv3 stable ⇒ r2dreamer-specific.
+- Score per run: `train_task_success` per 10k bin (curve shape), actor entropy, `train/ret_replay_max`, and the
+  fresh-process eval at the end (15 hold ICs). "No collapse" = success ≥ 0.6 in every 10k bin after the first bin that
+  reaches 0.6, through 150k. Reading rule: whichever single lever removes the collapse on 2/2 seeds becomes part of the
+  stage-2 recipe; if none does, the terminal-handling path (is_terminal → discount, cont-head training, imagination
+  from terminal rows) is bisected against the base commit before stage 2.
