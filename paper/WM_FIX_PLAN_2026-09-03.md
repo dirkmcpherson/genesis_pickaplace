@@ -331,7 +331,7 @@ clamp1ent5 s1); only fresh-process evals count, reported in sample AND mode.
 Stage-2 recipe candidates (running on dH and dDP): `clamp1ent5` (clipped actor) and `bnormclamp1ent5` (stock actor).
 dv3 reference (unclamped, fork+world hook): learns on 3/4 runs with wobble (0.5–1.0 per bin), 1/4 never ignites —
 fresh evals pending; the collapse-to-zero is r2dreamer-specific.
-- Stage-2 note 14:52 (cluster clock): dH `clamp1ent5` collapsed on BOTH seeds (s0 ≈100k, s1 ≈400k: entropy −6.15 → 9.93
+- Stage-2 note 14:52 (cluster clock) [SUPERSEDED 15:01: s1 recovered to 0.87 by 450k — a flicker, not a collapse; the dH gate for this setting is undecided until its fresh eval]: dH `clamp1ent5` collapsed on BOTH seeds (s0 ≈100k, s1 ≈400k: entropy −6.15 → 9.93
   and val 0.85 → 0.18 within 25k steps, with the critic never above the clamp) ⇒ under the registered rule that
   setting will fail the dH gate and its dDP runs (3240972/73) are reported but NOT scored for the pair. The stock-actor
   setting `bnormclamp1ent5` is the live candidate (dH 0.83 / 0.97 online at 300k, both seeds committed).
