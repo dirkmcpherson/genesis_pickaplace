@@ -292,3 +292,9 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   reach_goal R=0.25, 2 seeds × 150k each, tags `bnormclamp1`, `bnormclamp1ent5` — registered 13:48 (cluster clock),
   before submission. Predicts: (h) ≥ (f) in stability (no wobble); (i) tightest. Stage-2 arms for the best of
   {(f), (h), (i)} by fresh eval + flicker count follow after this read-out (≈ 40 min).
+- Stage-2 amendment 13:52 (cluster clock): stage-2 dH at 160–340k — clamp1 (2/2) and clamp0 (2/2) dead at entropy 9.93 with
+  0 online picks; clamp1ent5 s1 IGNITING (picked 0.13/0.19/0.24 per 50k bin, entropy −5.6, val 0.74) while clamp1ent5
+  s0 died (entropy 9.93 @186k). With the clipped actor even (f) is 1/2 in the pick task. Given (g) at the reach rung
+  (stock actor survives the overshoot), the stage-2 arm **(i) `bnormclamp1ent5`** (`env.actor_dist=bounded_normal
+  env.return_clamp=1.0 env.act_entropy=3e-5`, 2 seeds × 1M) is submitted NOW rather than after the reach read-out;
+  (h) `bnormclamp1` is added as a stage-2 arm only if it beats (i) at the reach rung. Gate/scoring unchanged.
