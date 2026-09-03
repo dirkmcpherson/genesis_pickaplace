@@ -118,3 +118,26 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   action_repeat 1; time_limit 400) before any stage-2 run. Pixels+state repeat only after state-only passes.
 - dv3 counterpart (optional, same gate): `--configs genesis_pickplace genesis_touchgoal` with `mlp_keys 'state'`
   is already in the cluster configs.yaml; run only if r2dreamer fails and a cross-port comparison is needed.
+
+### Amendment 2026-09-03 09:55 (after user context: dv3 solved a pixel arm-pick in-house; DayDreamer)
+- **Stage 1 now includes dv3 as a MANDATORY reference port** (same gate, same fresh-process scoring, same 4
+  settings: state-only obs, sparse scale 1, time_limit 1200, no clamp, stock entropy; cluster configs
+  `genesis_pickplace`-style vector mode + `genesis_touchgoal` scope). Reading rule: r2dreamer-state fails while
+  dv3-state passes ⇒ r2dreamer adapter; both fail ⇒ shared task setup (7-dim delta-joint action space, IC
+  distribution, reward reachability); both pass ⇒ pixels-only obs was the blocker. r2dreamer's result still
+  gates stage 2 (it is the arm of record).
+- **Stage 0b — in-house positive controls on a SPARSE PIXEL ARM PICK (ManiSkill PickCube), already on record:**
+  (a) r2dreamer, cluster `$LAB/r2dreamer/runs/ms_pickcube_s{0,1}` (2026-08-18, same core code as today's cluster
+  tree = the Aug-15 tarball core): pixels-only, `pd_ee_delta_pos` 4-dim, time_limit 100, 10 teleop demos,
+  +100 terminal, **STOCK knobs** (act_entropy 3e-4, return_clamp 0, bounded_normal, horizon 333, no
+  re-injection, demo_duplicate 1, buffer 320k ≥ all rows so nothing evicted). Train success per 25k bin:
+  s0 0.69@25k → 0.86@50k → ≈0.9 thereafter; s1 0.33@25k → 0.92@50k → ≈0.9; in-loop eval success (10 eps)
+  over the last 8 evals 0.6–1.0 (s0) / 0.0–1.0 (s1), 0.9/1.0 at 301k. (b) dv3 fork, March 2026 (wandb
+  `dreamer_v3_maniskill`, ≈200 runs; MANISKILL_VS_GENESIS.md): takeoff 110–140k, eval 0.6–1.0; that was the
+  March fork — the CURRENT cluster dv3 tree is unverified on ManiSkill (no env with dv3 deps + mani_skill;
+  rerun only if dv3 fails stage 1). ⇒ Both ports' learning machinery works on a demo-seeded sparse pixel
+  arm pick. The Genesis failure lives in the Genesis-specific deltas: 7-dim delta-joint actions, horizon
+  400/1200 vs 100, act_entropy 3e-5, clamp 100, bounded_normal_clipped, FIFO eviction + re-injection ×4,
+  reward_scale 100 with shaping, pixels-only rig content. Stage 2 must therefore mirror the ManiSkill
+  recipe's knobs (stock entropy, no clamp, no eviction, no re-injection, no duplication) — already the plan's
+  §3 stage-2 spec — and DMC stage 0 remains only a sanity check of the current trees.
