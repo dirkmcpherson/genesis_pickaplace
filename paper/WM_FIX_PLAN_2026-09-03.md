@@ -151,3 +151,21 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   before any paper use. dv3's stage-1 reference likewise starts without waiting for dv3's (slow, ≈22 fps)
   cartpole endpoint. Rationale: wall-clock (walker ≈ 2 h, dv3 cartpole ≈ 2.5 h) vs. no expected information
   gain for the stage-1 decision; user asked (10:00) how to speed the process up.
+
+### Stage 2 gate — registered 2026-09-03 10:25 (before any stage-2 run; runs only after stage 1 passes for r2dreamer)
+- Runs: r2dreamer, `env=genesis_pick_state` (= `genesis_pick_v5d4c_delta` recipe of record with exactly: `state_obs`
+  true + `mlp_keys 'state'` / `cnn_keys '$^'`; `reward_scale 1` sparse +1 on demo AND online rows, no shaping;
+  `time_limit 1200`; `act_entropy 3e-4`; `return_clamp 0`; native stride-4 demo dirs WITH state
+  (`$LAB/wm_fix_2026-09-03/demos_state/{dH,dDP}`, `demo_downsample 1`), `demo_reinject_every 0`,
+  `demo_duplicate 1`, `buffer.max_size 5e5` so nothing is evicted in 1M steps), world `gc_kp4_riser3_shelf6`
+  exported + demo-dir provenance gate (variant/stride/with_state/terminal 1.0 asserted before training).
+  Order: dH s0/s1 first; dDP s0/s1 only after dH is read out (sequencing per §3). 2 seeds × 1M env steps.
+- Score: FRESH-process `eval_genesis.py` on the final `latest.pt`, sample mode, max-steps 1200, 15 hold ICs and 30
+  rnd ICs (`baselines/eval_ics.json`), success = `picked` (pick scope), all 15/30 episodes present (row 22), `[sim-variant]`
+  line present (row 42). Secondary curve: `episode/train_task_success`/`train_picked` per 50k bin.
+- **Gate (plan §3): LAST hold ≥ 8/15 on ≥ 3/4 runs across the dH+dDP pair.** Read-out order: dH alone first (2 runs);
+  if BOTH dH seeds < 8/15 the dDP pair still runs (the pair gate needs 4 runs) but the recipe is flagged weak.
+- Disconfirm: < 3/4 ⇒ stage 2 fails; suspects in order: exploration under sparse +1 at horizon 1200 (compare
+  train-curve ignition against the ManiSkill fingerprint: actor entropy collapsing to ≈ −2 nats early), demo
+  contribution (rerun with `demo_duplicate 4` as the only change), obs (pixels+state). Message the main session
+  with the recipe only on PASS, before any human-vs-machine readout (PREREG A37).
