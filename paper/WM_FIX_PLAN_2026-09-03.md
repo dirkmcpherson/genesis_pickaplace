@@ -278,3 +278,7 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   suspect not yet ablated (repdreamer ruled out the representation loss). Predicts: if `bnorm` learns and holds,
   the projected-sample actor is the collapse driver (its log-prob of projected tail samples enters the actor loss);
   if it collapses, the driver is elsewhere in the port's actor–critic path (ReturnEMA/advantage handling next).
+- Note 13:25 (cluster clock): resume-check confirms clamp1 s0's end-of-run checkpoint is a flicker-phase policy
+  (evaluator honest). Stage-2 gate unchanged (end-of-run fresh eval); disclosed alongside: entropy at the last
+  logged row and the flicker count. Any FUTURE run that keeps periodic snapshots may add a phase-aware BEST-of-≤5
+  fresh-eval number (CONFOUNDS row 25 discipline) — none of the currently running stage-2 jobs keeps snapshots.
