@@ -141,3 +141,13 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   reward_scale 100 with shaping, pixels-only rig content. Stage 2 must therefore mirror the ManiSkill
   recipe's knobs (stock entropy, no clamp, no eviction, no re-injection, no duplication) — already the plan's
   §3 stage-2 spec — and DMC stage 0 remains only a sanity check of the current trees.
+
+### Amendment 2026-09-03 10:05 — sequencing (written BEFORE any stage-1 submission)
+- Stage 1 (both ports) may be SUBMITTED as soon as cartpole_balance passes 2/2 for r2dreamer, running in
+  parallel with the walker_walk sanity runs, because the decisive reference for "does this port's learning
+  machinery work on a demo-seeded sparse arm pick" is the in-house ManiSkill control already on record (stage
+  0b; same r2dreamer core as today's tree). Walker stays registered as written: if walker later FAILS its gate
+  for a port, that port's stage-1/2 results are flagged "port suspect" and the bisect against upstream runs
+  before any paper use. dv3's stage-1 reference likewise starts without waiting for dv3's (slow, ≈22 fps)
+  cartpole endpoint. Rationale: wall-clock (walker ≈ 2 h, dv3 cartpole ≈ 2.5 h) vs. no expected information
+  gain for the stage-1 decision; user asked (10:00) how to speed the process up.
