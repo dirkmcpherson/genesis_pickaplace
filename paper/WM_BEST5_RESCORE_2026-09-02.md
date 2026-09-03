@@ -1,6 +1,6 @@
 # WM BEST-of-5 re-selection (AUDIT_approach_2026-09-02 finding 10) — frozen corrected-world r2dreamer block, n=8v8
 
-**STATUS: JOBS SUBMITTED, RESULTS PENDING** (192 CPU jobs on `-p batch`; this box lost its Tufts DNS path at ~17:40
+**STATUS: COMPLETE (09-03 morning) — §5 holds the numbers; §0–§4 are the audit trail.**
 on 09-02 — `login-prod.pax.tufts.edu` is an internal-only name — so the readout below stops at the first cell; §5 will
 be completed when the cluster is reachable again. Everything in §1–§4 is settled.)
 
@@ -142,3 +142,70 @@ Can only be written once all 96 sampled-mode cells are present == expected. What
 numbers in RESULTS §3.1 are base-world evaluations of corrected-world policies (§0a), and five seeds' "100 %"
 checkpoints are post-restart 112k-step snapshots (§0b); both must be disclosed with whatever finding 10 turns out to
 change.
+
+## 5. RESULTS (2026-09-03 morning, all 192 cells present, corrected world, mode=sample, fresh process) — collector output verbatim
+
+## BEST-of-5 re-selection, mode=sample, world=gc_kp4_riser3_shelf6 (fresh process), hold=15 rnd=30
+
+| arm | seed | K_old | BEST-of-K ckpt | rec. BEST-K hold (base world) | rec. BEST-K rnd (base) | BEST-K hold (corr. world, fresh) | BEST-K rnd (corr.) | BEST-of-5 (by sel) | sel | BEST-5 hold | BEST-5 rnd | F20 h/r | F40 h/r | F60 h/r | F80 h/r | F100 h/r |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| dDP | 80 | 29 | BEST_selected.pt | 1/15 | 1/30 | 0/15 | 2/30 | F100 (ckpt_2922490.pt) | 0.00 | 0/15 | 2/30 | 0/15 / 1/30 | 0/15 / 3/30 | 0/15 / 3/30 | 0/15 / 3/30 | 0/15 / 2/30 |
+| dDP | 81 | 29 | BEST_selected.pt | 2/15 | 2/30 | 15/15 | 19/30 | F100 (ckpt_2926014.pt) | 0.87 | 15/15 | 19/30 | 0/15 / 3/30 | 2/15 / 3/30 | 5/15 / 9/30 | 7/15 / 9/30 | 15/15 / 19/30 |
+| dDP | 82 | 29 | BEST_selected.pt | 2/15 | 3/30 | 4/15 | 5/30 | F100 (ckpt_2925833.pt) | 0.00 | 0/15 | 2/30 | 0/15 / 2/30 | 0/15 / 2/30 | 0/15 / 3/30 | 0/15 / 5/30 | 0/15 / 2/30 |
+| dDP | 83 | 29 | BEST_selected.pt | 15/15 | 28/30 | 15/15 | 22/30 | F100 (ckpt_2924722.pt) | 0.33 | 6/15 | 8/30 | 0/15 / 2/30 | 0/15 / 1/30 | 0/15 / 0/30 | 0/15 / 0/30 | 6/15 / 8/30 |
+| dDP | 84 | 37 | BEST_selected.pt | 13/15 | 22/30 | 9/15 | 18/30 | F80 (ckpt_2423332.pt) | 0.27 | 2/15 | 8/30 | 0/15 / 1/30 | 0/15 / 2/30 | 1/15 / 3/30 | 2/15 / 8/30 | 1/15 / 4/30 |
+| dDP | 85 | 58 | BEST_selected.pt | 0/15 | 1/30 | 6/15 | 8/30 | F60 (ckpt_1823793.pt) | 0.20 | 2/15 | 10/30 | 0/15 / 0/30 | 0/15 / 3/30 | 2/15 / 10/30 | 0/15 / 3/30 | 0/15 / 0/30 |
+| dDP | 86 | 58 | BEST_selected.pt | 9/15 | 12/30 | 11/15 | 17/30 | F80 (ckpt_2422649.pt) | 0.13 | 0/15 | 7/30 | 0/15 / 1/30 | 0/15 / 2/30 | 0/15 / 3/30 | 0/15 / 7/30 | 0/15 / 0/30 |
+| dDP | 87 | 58 | BEST_selected.pt | 6/15 | 5/30 | 3/15 | 3/30 | F60 (ckpt_1822705.pt) | 0.20 | 5/15 | 7/30 | 0/15 / 5/30 | 0/15 / 4/30 | 5/15 / 7/30 | 0/15 / 3/30 | 0/15 / 0/30 |
+| dH | 80 | 29 | BEST_selected.pt | 10/15 | 20/30 | 10/15 | 13/30 | F40 (ckpt_1216389.pt) | 0.07 | 0/15 | 1/30 | 0/15 / 1/30 | 0/15 / 1/30 | 0/15 / 1/30 | 0/15 / 2/30 | 0/15 / 1/30 |
+| dH | 81 | 29 | BEST_selected.pt | 15/15 | 25/30 | 15/15 | 22/30 | F100 (ckpt_2913425.pt) | 0.93 | 15/15 | 22/30 | 0/15 / 2/30 | 10/15 / 17/30 | 0/15 / 1/30 | 13/15 / 12/30 | 15/15 / 22/30 |
+| dH | 82 | 29 | BEST_selected.pt | 11/15 | 22/30 | 15/15 | 17/30 | F80 (ckpt_2414281.pt) | 0.93 | 15/15 | 17/30 | 2/15 / 1/30 | 0/15 / 0/30 | 15/15 / 24/30 | 15/15 / 17/30 | 4/15 / 5/30 |
+| dH | 83 | 29 | BEST_selected.pt | 10/15 | 16/30 | 14/15 | 20/30 | F100 (ckpt_2915262.pt) | 0.93 | 14/15 | 20/30 | 0/15 / 3/30 | 0/15 / 1/30 | 8/15 / 11/30 | 15/15 / 20/30 | 14/15 / 20/30 |
+| dH | 84 | 58 | BEST_selected.pt | 1/15 | 1/30 | 0/15 | 5/30 | F100 (ckpt_2999588.pt) | 0.00 | 0/15 | 0/30 | 0/15 / 1/30 | 0/15 / 3/30 | 0/15 / 2/30 | 0/15 / 3/30 | 0/15 / 0/30 |
+| dH | 85 | 37 | BEST_selected.pt | 11/15 | 21/30 | 13/15 | 19/30 | F20 (ckpt_617056.pt) | 0.33 | 1/15 | 11/30 | 1/15 / 11/30 | 2/15 / 2/30 | 0/15 / 0/30 | 0/15 / 0/30 | 1/15 / 2/30 |
+| dH | 86 | 37 | BEST_selected.pt | 3/15 | 11/30 | 11/15 | 15/30 | F100 (ckpt_2915603.pt) | 0.87 | 14/15 | 16/30 | 0/15 / 0/30 | 0/15 / 1/30 | 0/15 / 1/30 | 1/15 / 1/30 | 14/15 / 16/30 |
+| dH | 87 | 58 | BEST_selected.pt | 13/15 | 17/30 | 15/15 | 23/30 | F40 (ckpt_1213055.pt) | 0.67 | 7/15 | 7/30 | 0/15 / 1/30 | 7/15 / 7/30 | 0/15 / 3/30 | 0/15 / 0/30 | 0/15 / 0/30 |
+
+`!` = present != expected or missing/wrongworld episodes (INVALID, excluded); `--` = pending.
+
+### Arm means (mean of per-seed rates; n = valid seeds)
+
+| statistic | dH mean (n) | dDP mean (n) | diff | excluded seeds |
+|---|---|---|---|---|
+| rec. BEST-of-K hold (base world) | 0.617 (8) | 0.400 (8) | +0.217 | dH [] dDP [] |
+| rec. BEST-of-K rnd (base world) | 0.554 (8) | 0.308 (8) | +0.246 | dH [] dDP [] |
+| BEST-of-K hold (corr. world, fresh) | 0.775 (8) | 0.525 (8) | +0.250 | dH [] dDP [] |
+| BEST-of-K rnd (corr. world, fresh) | 0.558 (8) | 0.392 (8) | +0.167 | dH [] dDP [] |
+| BEST-of-5 hold (corr. world, fresh) | 0.550 (8) | 0.250 (8) | +0.300 | dH [] dDP [] |
+| BEST-of-5 rnd (corr. world, fresh) | 0.392 (8) | 0.262 (8) | +0.129 | dH [] dDP [] |
+
+### Ignition (BEST hold >= 8/15), Fisher exact two-sided (pure python)
+
+| criterion | dH ignited/n | dDP ignited/n | Fisher p |
+|---|---|---|---|
+| rec. BEST-of-K hold (base world) | 6/8 | 3/8 | 0.315 |
+| BEST-of-K hold (corr. world, fresh) | 7/8 | 4/8 | 0.282 |
+| BEST-of-5 hold (corr. world, fresh) | 4/8 | 1/8 | 0.282 |
+
+### Which fraction won (BEST-of-5 by in-job sel) and the max-over-5 hold bound
+
+| arm | seed | winner | sel of winner | max hold over 5 (fraction) | max rnd over 5 (fraction) |
+|---|---|---|---|---|---|
+| dDP | 80 | F100 | 0.00 | 0/15 (F80) | 3/30 (F80) |
+| dDP | 81 | F100 | 0.87 | 15/15 (F100) | 19/30 (F100) |
+| dDP | 82 | F100 | 0.00 | 0/15 (F80) | 5/30 (F80) |
+| dDP | 83 | F100 | 0.33 | 6/15 (F100) | 8/30 (F100) |
+| dDP | 84 | F80 | 0.27 | 2/15 (F80) | 8/30 (F80) |
+| dDP | 85 | F60 | 0.20 | 2/15 (F60) | 10/30 (F60) |
+| dDP | 86 | F80 | 0.13 | 0/15 (F80) | 7/30 (F80) |
+| dDP | 87 | F60 | 0.20 | 5/15 (F60) | 7/30 (F60) |
+| dH | 80 | F40 | 0.07 | 0/15 (F80) | 2/30 (F80) |
+| dH | 81 | F100 | 0.93 | 15/15 (F100) | 22/30 (F100) |
+| dH | 82 | F80 | 0.93 | 15/15 (F80) | 24/30 (F60) |
+| dH | 83 | F100 | 0.93 | 15/15 (F80) | 20/30 (F80) |
+| dH | 84 | F100 | 0.00 | 0/15 (F80) | 3/30 (F80) |
+| dH | 85 | F20 | 0.33 | 2/15 (F40) | 11/30 (F20) |
+| dH | 86 | F100 | 0.87 | 14/15 (F100) | 16/30 (F100) |
+| dH | 87 | F40 | 0.67 | 7/15 (F40) | 7/30 (F40) |
+
+cells mode=sample: 192 present, 192 valid, expected 192

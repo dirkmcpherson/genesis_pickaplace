@@ -41,6 +41,10 @@ r2dreamer gate s80–83). One world per table (A19). Version stamp at the bottom
   leg stays as this disclosed within-source result. RLPD on raw dH: 16 runs trained, evaluation being re-run from
   archived checkpoints (the in-job eval was killed by a cache purge — my error, logged 09-02).
 
+**v2 pool, corrected world (09-03 morning, wave v2fullPw3, fixed 100k, selected ckpt): dHpruned (dHv2, N=60) rnd 17,13,16,19,13,15,13,16 = 0.508 (n=8) vs
+dDPpruned (dDPv2p, N=60) rnd 15,14,16,16,14,13 = 0.489 (n=6; s56/57 pending) → Δ +0.02. Hold: 62–65/66 vs 58–66/66. DP indifferent to
+source on the full pool as on the frozen block (+0.06). Self-distillation framing applies (CONFOUNDS row 26).**
+
 ## 2. RLPD (SB3 SAC subclass, E=10 Z=2 UTD 10, 50/50 demo batches, LayerNorm critics)
 
 **Recipe restart (A17):** every γ = 0.998 run is diagnostic-only — 69/74 diverged (critic loss 10²–10⁵). At the published
@@ -173,7 +177,7 @@ weak; this is the corrected-world confirmation. Not yet checked: critic-loss div
 
 ### 2.5 v2 raw-human RLPD arm, corrected world (re-evaluated from archived ckpts, rlpd_select_confirm.sh; n=7 of 8, s65 rerunning)
 g99v2fullw3 dHv2raw (N=66, uncapped raw tapes), s60-67, selected=ckpt_100=final for all 7: hold 66,66,66,65,66,66,66 (/66);
-rnd 23,20,18,20,18,24,19 (/30) → **mean rnd 0.676 (142/210), every seed alive**. Machine arm (dDPv2 N=66, A31, s50-57)
+rnd 23,20,18,20,18,24,19 (/30); s65 (rerun, ckpt_080 selected) hold 66/66 rnd 19/30 but LAST collapsed (1/66, 2/30) → **n=8: selected rnd 161/240 = 0.671, 8/8 alive at selection, 7/8 at LAST**. Machine arm (dDPv2 N=66, A31, s50-57)
 training since 09-02 14:20. Note the row-count/horizon asymmetries inside this pair (CONFOUNDS rows 8, 19).
 
 
@@ -219,7 +223,15 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 is past 13 h and healthy. Done ~09-01, then the same BEST pinning + re-score protocol takes the table to n=8 v 8
 (min p 0.0002, ~80 % power at the observed gap).
 
-**⚠ 09-02 night — THE TABLE BELOW IS INVALID AS AN ESTIMATE (WM_BEST5_RESCORE §0): every r2d re-score of record was run WITHOUT `R2D_SIM_VARIANT`, i.e. policies trained in the corrected world were scored in the BASE world (0 of 2289 n12_rescore logs carry the [sim-variant] line); AND the seeds' budgets are unmatched (3M / ≈3.9M / 6M after OOM warm restarts, s84-87). A fresh-process BEST-of-5 re-score in the correct world is running (cluster/r2d_best5_submit.sh). Do not quote any number in this paragraph until it lands.**
+**✅ 09-03 CORRECTED NUMBERS OF RECORD (WM_BEST5_RESCORE §5; corrected world, fresh process, BEST-of-5 fraction ckpts by in-job sel, sampled, 192/192 cells present):**
+BEST-of-5 rnd per seed (/30): **dH 1,22,17,20,0,11,16,7 = 0.392** vs **dDP 2,19,2,8,8,10,7,7 = 0.262** — diff **+0.13, exact perm p 0.36**;
+BEST-of-5 hold: dH 0.550 vs dDP 0.250; ignition (BEST-of-5 hold ≥ 8/15): **dH 4/8 vs dDP 1/8, Fisher p 0.28**. LAST (F100) rnd: dH 0.34 vs dDP 0.15
+(alive at LAST: dH s81/s83/s86, dDP s81). For the record, the same checkpoints re-scored BEST-of-K in the corrected world give
+dH 0.558 vs dDP 0.392 rnd (+0.17) — the K-inflation and the world error partly cancelled in the old table. **Verdict unchanged
+in direction, weaker in size, and still not significant: directional WM preference for human demos under selection; no
+endpoint claim.** The paragraph below is the superseded base-world/BEST-of-K table, kept for the audit trail only.
+
+**⚠ superseded 09-02 night — the table below was INVALID AS AN ESTIMATE (WM_BEST5_RESCORE §0): every r2d re-score of record was run WITHOUT `R2D_SIM_VARIANT`, i.e. policies trained in the corrected world were scored in the BASE world (0 of 2289 n12_rescore logs carry the [sim-variant] line); AND the seeds' budgets are unmatched (3M / ≈3.9M / 6M after OOM warm restarts, s84-87). A fresh-process BEST-of-5 re-score in the correct world is running (cluster/r2d_best5_submit.sh). Do not quote any number in this paragraph until it lands.**
 
 **n=8v8 FINAL (09-01, all 32 re-scores in): BEST rnd dH 20,25,22,16,1,21,11,17 (0.554) vs dDP 1,2,3,28,22,1,12,5
 (0.308) — diff +0.246, CI [−0.084, +0.576], Welch p 0.132 / perm 0.133; Bayes (hierarchical Beta-Binomial,
@@ -246,6 +258,20 @@ verdict STANDS (10–20× over its attainable return); only the r2dreamer NOCLAM
 two different pathologies: dv3 = genuine critic runaway; r2dreamer = mis-set clamp saturation. Pilots registered as A32 (C2000, RS1, SPARSE-RS1; dH first, corrected world).
 What survives: the ignition asymmetry (human 6/8 vs machine 3/8 under identical mis-scaling; corrected from 7/8, see §3.1) is a
 within-block contrast, directional only (Fisher 0.315), and AUDIT_approach f11 argues ignition under a saturated critic measures demo-dynamics coverage rather than value learning; the endpoint (LAST) claims are suspended pending A32.
+
+### 3.3 A32 readout (09-03 morning): critic-target-scale fixes do NOT keep WM endpoints alive; sparse never ignites
+All 10 dH pilots complete (3M, corrected world, in-job sel = 29 snapshots each, LAST = final snapshot):
+- **C2000** (return_clamp 2000) s130-133: max in-job sel 0.80/0.93/0.93/0.93 → **LAST sel 0.00 ×4**.
+- **RS1** (reward_scale 1, clamp 0) s134-137: max sel 0.93/0.87/0.33/0.93 → **LAST sel 0.00 ×4**.
+- **SPARSE-RS1** s138-139: max sel **0.00 ×2** (never ignited, as registered).
+Registered A32 predictions (≥ 3/4 endpoints alive under C2000/RS1) **FAIL**. The clamp mis-set (row 13) is real but is NOT the
+cause of the endpoint collapse: with a correctly scaled target every run still ignites mid-training and dies by 3M. Remaining
+candidate causes: unshaped demo rows vs shaped online rows (row 17), the 400-step train horizon (row 18), entropy coefficient
+3e-5 (row 16), FIFO demo eviction at 450k buffer (all demo frames gone by 0.45M online steps; re-injection every 150k).
+A33 (§2.4) shows the same shaping kills RLPD too. **WM status: no configuration tried (clamp100, C2000, RS1, sparse) yields
+a learner that keeps a working policy; the WM arm reports a directional selection-time preference for human demos (§3.1
+corrected numbers) and a disclosed endpoint failure.** A36 machine packs (7, queued) would add n=4v4 source contrasts under
+C2000/RS1/sparse at selection time only — recommendation: cancel unless the selection-time contrast is wanted at that n.
 
 ## 4. dv3 (dreamerv3-torch, NM512 port) — mechanism found; standard arm under test
 
