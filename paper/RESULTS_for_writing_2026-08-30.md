@@ -157,6 +157,26 @@ RLPD × world × source interaction, not a harder world. Cross-check in flight: 
 corrected world (~09-01) — its n=4 direction (human >> DP) is the opposite pattern in the same world, so the
 WM readout decides whether world-dependence is learner-general or RLPD-specific.
 
+### 2.4 A33 readout (09-02 night): RLPD with DENSE (potential-shaped) reward COLLAPSES in the corrected world, both arms
+Wave g99w3dense, frozen matched_w3 dH (pruned, N=58) vs dDP (N=58), s60-67, --demo-shaping on (demo half relabeled with
+the same potential, φ(terminal)=0), 100k decisions, selection on sel-15 among 5 ckpts, confirm on hold-15 + rnd-30; all
+16 headlines present (rlpd_3163620-36.out, SWEEP-HEADLINE). Selected-ckpt rnd (/30): **dH 4,4,4,1,1,8,5,2 = 29/240 (0.12)**;
+**dDP 0,1,0,11,7,1,1,0 = 21/240 (0.09)**. LAST (ckpt_100) rnd: dH 4,2,4,1,1,0,0,1 (0.05); dDP 0,1,0,2,1,0,1,0 (0.02).
+Selected hold (/15): dH 5,2,4,0,0,9,1,2; dDP 0,0,0,7,5,3,5,0. Compare SPARSE RLPD in the same world: A20 dH/dDP ≈ 0.6
+(selected rnd) and the raw-human v2 arm 0.68 (n=7, §2.5). **Verdict: dense reward is not a "more learnable" variant here —
+the shaping DESTROYS RLPD (≈ 0.6 → ≈ 0.1 rnd) in both arms; source contrast under dense = null-by-death (Δ +0.03).**
+Implications: (i) CONFOUNDS row 3 resolves in the unexpected direction: reward density alone flips a learner from working
+to dead, so no cross-learner row that differs in density (WM dense vs RLPD sparse) is interpretable; (ii) the WM's dense
+shaping is now suspect on its own, independently of the clamp (rows 13/16/17) — the SPARSE-RS1 A32 pair is the only WM
+configuration with a working-learner precedent; (iii) the 08-19 old-world dense RLPD legs (RESULTS §2.2) were already
+weak; this is the corrected-world confirmation. Not yet checked: critic-loss divergence rows for these 16 (row 24 statistic).
+
+### 2.5 v2 raw-human RLPD arm, corrected world (re-evaluated from archived ckpts, rlpd_select_confirm.sh; n=7 of 8, s65 rerunning)
+g99v2fullw3 dHv2raw (N=66, uncapped raw tapes), s60-67, selected=ckpt_100=final for all 7: hold 66,66,66,65,66,66,66 (/66);
+rnd 23,20,18,20,18,24,19 (/30) → **mean rnd 0.676 (142/210), every seed alive**. Machine arm (dDPv2 N=66, A31, s50-57)
+training since 09-02 14:20. Note the row-count/horizon asymmetries inside this pair (CONFOUNDS rows 8, 19).
+
+
 ## 3. r2dreamer (in-house DreamerV3; replay critic loss = official DV3 v2 component; return clamp = deviation)
 
 - **Old world, dense, 3M (historic block, seeds 50–53, 100–103, 80–87 dR2D):** selected checkpoints reach 13–15/15 hold on
@@ -198,6 +218,8 @@ Direction: human > DP for the world model; NOT significant at n=4 (min p 0.029).
 2-seed packs at 90 GB (3085547/48; logdirs resume from latest.pt, DUPLICATE_OK reason logged); the dDP pack (3025536)
 is past 13 h and healthy. Done ~09-01, then the same BEST pinning + re-score protocol takes the table to n=8 v 8
 (min p 0.0002, ~80 % power at the observed gap).
+
+**⚠ 09-02 night — THE TABLE BELOW IS INVALID AS AN ESTIMATE (WM_BEST5_RESCORE §0): every r2d re-score of record was run WITHOUT `R2D_SIM_VARIANT`, i.e. policies trained in the corrected world were scored in the BASE world (0 of 2289 n12_rescore logs carry the [sim-variant] line); AND the seeds' budgets are unmatched (3M / ≈3.9M / 6M after OOM warm restarts, s84-87). A fresh-process BEST-of-5 re-score in the correct world is running (cluster/r2d_best5_submit.sh). Do not quote any number in this paragraph until it lands.**
 
 **n=8v8 FINAL (09-01, all 32 re-scores in): BEST rnd dH 20,25,22,16,1,21,11,17 (0.554) vs dDP 1,2,3,28,22,1,12,5
 (0.308) — diff +0.246, CI [−0.084, +0.576], Welch p 0.132 / perm 0.133; Bayes (hierarchical Beta-Binomial,
