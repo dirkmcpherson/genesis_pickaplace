@@ -304,3 +304,30 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   ones alive on dH at 250–460k (0.70–0.84 online picks) while clamp1/clamp0 are dead. Read-out rule unchanged: the pair
   is scored per setting by the registered fresh evals (sample; mode disclosed); a setting whose dH runs fail the gate
   is not scored on dDP.
+
+### Stage 1b/1c VERDICT — 2026-09-03 14:48 (cluster clock)
+Reach-rung (`reach_goal` R=0.25, state input, no demos, corrected world, 150k; fresh-process evals of the end-of-run
+checkpoint on 15 hold ICs, 1200 steps; random baseline 4/20 sampled):
+
+| lever | sample-mode fresh eval (s0, s1) | mode fresh eval | verdict |
+|---|---|---|---|
+| base (clipped actor, no clamp) | 0/15, 0/15 (R=0.30, 300k) and 0/15, 0/15 | — | learn-then-collapse |
+| ent3e5 | 0/15, 0/15 | — | collapse |
+| repdreamer | 0/15, 0/15 | — | collapse |
+| tg (21-dim state) | 0/15, 0/15 | — | collapse |
+| clamp1 | 3/15, 15/15 | 0/15 (s0), 15/15 (s1) | holds with flickers; s0 end checkpoint bad |
+| clamp1ent5 | 15/15, 9/15 | 15/15 (s1; +30/30 demo ICs) | holds, no flicker; sampled std on real states ≈0.5 |
+| bnorm (stock actor, no clamp) | 15/15, 15/15 | — | survives the critic overshoot with wobble |
+| (h) bnormclamp1 | 15/15, 15/15 | — | holds (train 1.00/1.00 from 75k; entropy 2–4) |
+| (i) bnormclamp1ent5 | 15/15, 15/15 | — | holds (train 1.00/1.00 from 75k; entropy ≈ −5.3) |
+
+Mechanism of record: (1) TRIGGER — λ-return targets exceed the maximum attainable return (imagination through an
+indistinct terminal keeps bootstrapping/paying), critic overshoots, the actor's return gradient flattens;
+(2) AMPLIFIER — the port's `bounded_normal_clipped` actor turns the resulting entropy excursion into a permanent
+collapse (stock `bounded_normal` wobbles and recovers). Fixes: `return_clamp = max return` (removes the trigger),
+stock actor (removes the amplifier), `act_entropy 3e-5` (suppresses the residual flicker under the clamp).
+Reading of `episode/train_*`: an UPPER BOUND on frozen performance (in-episode adaptation, 0.99 vs 0.62 for
+clamp1ent5 s1); only fresh-process evals count, reported in sample AND mode.
+Stage-2 recipe candidates (running on dH and dDP): `clamp1ent5` (clipped actor) and `bnormclamp1ent5` (stock actor).
+dv3 reference (unclamped, fork+world hook): learns on 3/4 runs with wobble (0.5–1.0 per bin), 1/4 never ignites —
+fresh evals pending; the collapse-to-zero is r2dreamer-specific.
