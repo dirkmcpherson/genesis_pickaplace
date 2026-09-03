@@ -84,3 +84,37 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
 
 ## 7. Registered gates
 (append here)
+
+### Stage 0 gate — registered 2026-09-03 08:25 (before any gated run)
+- Runs: `cartpole_balance` then `walker_walk`, DMC from pixels, each port's stock `dmc_vision` config (r2dreamer:
+  action_repeat 2, time_limit 1000, train_ratio 512, size12M, entropy 3e-4, clamp 0; dv3: `--configs dmc_vision`,
+  action_repeat 2, train_ratio 512, clamp 0). Only `env_num`/`--envs`=4 (box is CPU-shared), seed, steps, logdir,
+  eval cadence change. 2 seeds per (port, task).
+- Score = mean eval return over the port's own periodic eval (≥ 2 episodes), read from `metrics.jsonl`; report the
+  LAST eval and the best-of-last-3 evals, with step.
+- **cartpole_balance gate:** LAST eval return ≥ 800 (max 1000) by 200k env steps on 2/2 seeds. Published DreamerV3
+  (vision) reaches ≈ 900+ well before 200k.
+- **walker_walk gate:** eval return ≥ 600 by 500k env steps on ≥ 1/2 seeds and ≥ 400 on 2/2 (published DV3 ≈ 900
+  at 500k; the plan's own bar is > 600 by 500k). Walker runs only if cartpole passes for that port.
+- Disconfirm branches: cartpole < 800 on any seed ⇒ that port FAILS stage 0 → bisect (port tree vs its upstream
+  base: r2dreamer `1fadce4`; dv3 NM512 upstream) before stages 1–3; ladder stops for that port. Both pass ⇒ stage 1.
+- Code of record for the gated runs: cluster trees (`$LAB/r2dreamer`, `$LAB/dreamerv3-torch`) rsynced locally;
+  if the VPN stays down, the reconstructed tree `~/wm_fix_2026-09-03/r2d_record` (base `1fadce4` + tarball) is used
+  for r2dreamer and the result is labeled RECONSTRUCTED until the cluster diff is clean.
+
+### Stage 1 gate — registered 2026-09-03 (local 09:50), before any stage-1 run; runs only after stage 0 passes
+- Run: r2dreamer, `env=genesis_touchgoal_state` (draft in `~/wm_fix_2026-09-03/cluster_r2d/configs/env/`; =
+  touchgoal recipe of record + `state_obs: true`, `encoder.mlp_keys 'state'`, `cnn_keys '$^'`, `reward_scale 1`,
+  `time_limit 1200`, `act_entropy 3e-4`, `return_clamp 0`, no demos; actor_dist `bounded_normal_clipped`,
+  delta_joint 0.025/leash 5, action_repeat 4, horizon 333, train_ratio 512, env_num 6 unchanged), world
+  `R2D_SIM_VARIANT=gc_kp4_riser3_shelf6` exported, 2 seeds × 300k env steps, from a COPY of the cluster tree with
+  the state_obs patch (`$LAB/wm_fix_2026-09-03/r2dreamer_fix`), never editing `$LAB/r2dreamer` in place.
+- Primary score: FRESH-process `eval_genesis.py` on the final `latest.pt`, sample mode, 15 hold ICs
+  (`baselines/eval_ics.json --ic-set hold`), max-steps 1200, with the `[sim-variant]` line present and 15/15
+  episodes present; success = `task_success` (touched_goal). Secondary (curve): `episode/train_task_success`
+  mean over the last 20k env steps from `metrics.jsonl`.
+- **Gate: fresh-eval success ≥ 0.8 (≥ 12/15) on 2/2 seeds.** Disconfirm: < 0.8 on any seed ⇒ the adapter/obs
+  path is the suspect (stage 0 passed); next step = one ablation per suspect (actor_dist bounded_normal;
+  action_repeat 1; time_limit 400) before any stage-2 run. Pixels+state repeat only after state-only passes.
+- dv3 counterpart (optional, same gate): `--configs genesis_pickplace genesis_touchgoal` with `mlp_keys 'state'`
+  is already in the cluster configs.yaml; run only if r2dreamer fails and a cross-port comparison is needed.
