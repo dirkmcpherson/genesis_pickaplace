@@ -271,3 +271,10 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   additionally each stage-2 run reports its entropy-flicker count (rows with entropy > 5 after ignition).
 - Reporting rule for all clamp runs: fresh-eval numbers come from the END-OF-RUN checkpoint as registered, AND the
   checkpoint's phase is disclosed (entropy at the last logged row); no cherry-picking among snapshots.
+- (g) **`env.actor_dist=bounded_normal`** (stock r2dreamer actor instead of the port's `bounded_normal_clipped`), reach_goal
+  R=0.25, no clamp, 2 seeds × 150k, tag `bnorm` — registered 13:20 (cluster clock), before submission. Motivation:
+  the dv3 reference (unclamped, same env copy) is at 0.75–1.00 success with entropy 0.3–2.0 and no collapse on 3/4 runs
+  at 75–80k, while every unclamped r2dreamer run collapses ⇒ r2dreamer-specific; the clipped actor is the registered
+  suspect not yet ablated (repdreamer ruled out the representation loss). Predicts: if `bnorm` learns and holds,
+  the projected-sample actor is the collapse driver (its log-prob of projected tail samples enters the actor loss);
+  if it collapses, the driver is elsewhere in the port's actor–critic path (ReturnEMA/advantage handling next).
