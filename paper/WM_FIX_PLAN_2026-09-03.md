@@ -243,3 +243,15 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   session carries exactly that.
 - The `tg` (distinct-terminal) diagnostic continues in parallel; its result informs whether the pick terminal
   definition (sustained 10-step hold) needs a state-function form, but does not gate stage 2.
+
+### Stage 0 bisect for dv3 — registered 2026-09-03 12:35 (cluster clock), before submission
+- Finding: the cluster dv3 fork's `defaults` differ from upstream 6ef8646 in learning-relevant ways: `batch_size 32`
+  (upstream 16), `batch_length 96` (64) ⇒ at `train_ratio 512` the fork does ONE update per 6 env steps vs upstream's
+  one per 2 (3× fewer updates per step); `precision 16` (32); `eval_action_mode 'sample'` (upstream evaluates the
+  mode); plus `dyn_gru_blocks 8` and other fork-only keys. Upstream reached 797/925 at 65k where the fork sat near
+  270–380; the fork's 709 at 205k is ≈ the 3×-slower curve.
+- Run: fork tree, `--configs dmc_vision nowandb --batch_size 16 --batch_length 64 --precision 32 --eval_action_mode mode`,
+  cartpole, 2 seeds × 200k, tag `updefaults`. Gate: same as stage 0 (LAST ≥ 800 by 200k on 2/2).
+  Reading: PASS ⇒ the fork's CODE is fine and its DEFAULT RECIPE is the deficit (every dv3 genesis run used the fork's
+  recipe knobs — msrecipe restored 16×64 but not precision/eval mode); FAIL ⇒ a code difference remains (bisect the
+  633-line dreamer.py diff next).
