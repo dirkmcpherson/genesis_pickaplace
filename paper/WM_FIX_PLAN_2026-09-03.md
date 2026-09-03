@@ -225,3 +225,21 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   (e) holds, stage 2 must give the WM a state-function terminal (or a hold-counter feature) before it can be fair.
 - Interim 1c readings (12:07): ent3e5 s1 exploded to 9.92 at the 25k bin after all (0.75 → falling); repdreamer s1
   0.86 at 25k–50k, entropy −5.0 (learning; collapse pending); dv3 R=0.30 s0 first successes (25k bin 4/4).
+
+### Stage 2 amendment — registered 2026-09-03 12:20 (cluster clock), before any stage-2 submission
+- Stage 1c reading (12:17): `env.return_clamp=1.0` (= the known max return under sparse +1, reward_scale 1) is the single
+  lever that removes the learn-then-collapse on 2/2 seeds (0.94–0.98 across consecutive bins, entropy ≈ −3.7); base,
+  ent3e5 and repdreamer all collapse on 2/2. Submission of stage 2 waits for the clamp1 runs' 150k endpoints + fresh
+  evals (registered "no collapse through 150k" criterion), expected ≈ 12:40.
+- Stage 2 runs (dH first, as registered): **clamp1 = `env=genesis_pick_state env.return_clamp=1.0`** (PRIMARY, tag
+  `clamp1`, 2 seeds × 1M) AND **clamp0 = the originally registered stock setting** (CONTROL, 2 seeds × 1M), same demo
+  set `demos_state/dH`, same everything else. Max return in pick scope = 1.0 (single +1 at the hardened pick terminal,
+  `to_dreamer_native` normalises the double-grant rows to 1). dDP then runs with whichever setting passes the dH read-out
+  (both if both pass; the human-vs-machine pair is scored per setting).
+- Gate unchanged (LAST hold ≥ 8/15 on ≥ 3/4 across the dH+dDP pair, fresh process, corrected world, 15/30 episodes).
+  Additional pre-stated reading: if clamp1 passes and clamp0 fails on dH, the paper's WM arm of record (clamp 100 under
+  shaped ×100 returns, i.e. mis-set) is confounded by the clamp scale and the corrected recipe is
+  `sparse + reward_scale 1 + return_clamp 1 + state obs + no eviction/re-injection`; PREREG A37 message to the main
+  session carries exactly that.
+- The `tg` (distinct-terminal) diagnostic continues in parallel; its result informs whether the pick terminal
+  definition (sustained 10-step hold) needs a state-function form, but does not gate stage 2.
