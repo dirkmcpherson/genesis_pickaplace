@@ -85,7 +85,7 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
 ## 7. Registered gates
 (append here)
 
-### Stage 0 gate — registered 2026-09-03 08:25 (before any gated run)
+### Stage 0 gate — registered 2026-09-03 ~07:55 (before any gated run; stamp corrected 09:18, was written as 08:25 from a wrong clock)
 - Runs: `cartpole_balance` then `walker_walk`, DMC from pixels, each port's stock `dmc_vision` config (r2dreamer:
   action_repeat 2, time_limit 1000, train_ratio 512, size12M, entropy 3e-4, clamp 0; dv3: `--configs dmc_vision`,
   action_repeat 2, train_ratio 512, clamp 0). Only `env_num`/`--envs`=4 (box is CPU-shared), seed, steps, logdir,
@@ -102,7 +102,7 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   if the VPN stays down, the reconstructed tree `~/wm_fix_2026-09-03/r2d_record` (base `1fadce4` + tarball) is used
   for r2dreamer and the result is labeled RECONSTRUCTED until the cluster diff is clean.
 
-### Stage 1 gate — registered 2026-09-03 (local 09:50), before any stage-1 run; runs only after stage 0 passes
+### Stage 1 gate — registered 2026-09-03 ~09:08, before any stage-1 run; runs only after stage 0 passes
 - Run: r2dreamer, `env=genesis_touchgoal_state` (draft in `~/wm_fix_2026-09-03/cluster_r2d/configs/env/`; =
   touchgoal recipe of record + `state_obs: true`, `encoder.mlp_keys 'state'`, `cnn_keys '$^'`, `reward_scale 1`,
   `time_limit 1200`, `act_entropy 3e-4`, `return_clamp 0`, no demos; actor_dist `bounded_normal_clipped`,

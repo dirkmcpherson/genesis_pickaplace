@@ -46,8 +46,12 @@ def tape_sha(files):
     return h.hexdigest()
 
 
-def convert_one(z, terminal_reward):
-    """Contract-v1 npz (np.load'ed) -> dict of dreamer arrays, or raise ValueError."""
+def convert_one(z, terminal_reward, with_state=False):
+    """Contract-v1 npz (np.load'ed) -> dict of dreamer arrays, or raise ValueError.
+
+    with_state (WM fix 2026-09-03, opt-in): also emit `state` (T,17) float32 = the tape's per-decision
+    `states` (n,17) + `final_state` (17,), aligned with `image` (obs before each decision + final).
+    Default False = byte-identical output."""
     n = int(z['n']) if 'n' in z.files else int(len(z['actions_delta']))
     img = np.asarray(z['images'])
     act = np.asarray(z['actions_delta'], np.float32)
@@ -82,9 +86,20 @@ def convert_one(z, terminal_reward):
     is_terminal = np.zeros(T, bool); is_terminal[-1] = bool(term[-1])
     is_first = np.zeros(T, bool); is_first[0] = True
     is_last = np.zeros(T, bool); is_last[-1] = True
-    return dict(image=img.astype(np.uint8), action=action, reward=reward, n_double_grant=n_double,
-                discount=(1.0 - is_terminal.astype(np.float32)), is_first=is_first, is_last=is_last,
-                is_terminal=is_terminal, logprob=np.zeros(T, np.float32))
+    out = dict(image=img.astype(np.uint8), action=action, reward=reward, n_double_grant=n_double,
+               discount=(1.0 - is_terminal.astype(np.float32)), is_first=is_first, is_last=is_last,
+               is_terminal=is_terminal, logprob=np.zeros(T, np.float32))
+    if with_state:
+        if 'states' not in z.files or 'final_state' not in z.files:
+            raise ValueError('--with-state needs states + final_state in the tape')
+        st = np.asarray(z['states'], np.float32); fs = np.asarray(z['final_state'], np.float32).reshape(1, -1)
+        if st.shape != (n, 17) or fs.shape != (1, 17):
+            raise ValueError(f'states/final_state shape {st.shape}/{fs.shape}, expected ({n},17)/(1,17)')
+        state = np.concatenate([st, fs]).astype(np.float32)
+        if state.shape[0] != T or not np.isfinite(state).all():
+            raise ValueError(f'state {state.shape} must be ({T},17) and finite')
+        out['state'] = state
+    return out
 
 
 def main():
@@ -94,6 +109,8 @@ def main():
     ap.add_argument('--repeat', type=int, required=True, help='MUST equal the tapes\' action_repeat stamp and the training run\'s action_repeat')
     ap.add_argument('--terminal-reward', type=float, default=100.0, help='MS-parity terminal scale (env genesis_reward_scale)')
     ap.add_argument('--scope', default='pick')
+    ap.add_argument('--with-state', action='store_true',
+                    help='ALSO write state (T,17) float32 from states+final_state (WM fix stage 2, state-input WM); default off = byte-identical')
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
@@ -108,7 +125,7 @@ def main():
     plan = []
     for f in files:
         z = np.load(f, allow_pickle=True)
-        need = ['images', 'actions_delta', 'rewards', 'terminated', 'truncated']
+        need = ['images', 'actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else [])
         miss = [k for k in need if k not in z.files]
         if miss:
             errors.append(f'{os.path.basename(f)}: missing {miss} (not a contract-v1 tape with images)'); continue
@@ -117,7 +134,7 @@ def main():
             errors.append(f'{os.path.basename(f)}: action_repeat stamp {rep} != --repeat {args.repeat}'); continue
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
         try:
-            ep = convert_one(z, args.terminal_reward)
+            ep = convert_one(z, args.terminal_reward, with_state=args.with_state)
             census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
         except ValueError as e:
             errors.append(f'{os.path.basename(f)}: {e}'); continue
@@ -153,6 +170,7 @@ def main():
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=args.scope,
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
+        with_state=bool(args.with_state), state_dim=(17 if args.with_state else None),
         src=os.path.abspath(args.src), src_sha=tape_sha(files),
         src_manifest_sha=(json.load(open(src_manifest)).get('content_sha256') if os.path.exists(src_manifest) else None),
         generator='baselines/rl/to_dreamer_native.py',
