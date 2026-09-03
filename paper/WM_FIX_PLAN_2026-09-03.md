@@ -335,3 +335,8 @@ fresh evals pending; the collapse-to-zero is r2dreamer-specific.
   and val 0.85 → 0.18 within 25k steps, with the critic never above the clamp) ⇒ under the registered rule that
   setting will fail the dH gate and its dDP runs (3240972/73) are reported but NOT scored for the pair. The stock-actor
   setting `bnormclamp1ent5` is the live candidate (dH 0.83 / 0.97 online at 300k, both seeds committed).
+- Stage-0 dv3 verdict 15:45 (cluster clock): upstream NM512 tree PASSES cartpole (998/997 by 195k, 2/2); the cluster fork
+  with its own defaults FAILS (513/581); the fork with upstream's four defaults restored is on the upstream curve
+  (989/980 @173k). Reading: code OK, default recipe deficient (batch 32×96 = 3× fewer updates, fp16, sampled eval).
+  The dv3 "port suspect" flag is downgraded to "recipe suspect"; dv3 genesis diagnostics inherit it + the base-world
+  confound.
