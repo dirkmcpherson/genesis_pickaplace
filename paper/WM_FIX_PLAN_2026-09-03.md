@@ -298,3 +298,9 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   (stock actor survives the overshoot), the stage-2 arm **(i) `bnormclamp1ent5`** (`env.actor_dist=bounded_normal
   env.return_clamp=1.0 env.act_entropy=3e-5`, 2 seeds × 1M) is submitted NOW rather than after the reach read-out;
   (h) `bnormclamp1` is added as a stage-2 arm only if it beats (i) at the reach rung. Gate/scoring unchanged.
+- Stage-2 amendment 14:40 (cluster clock): dDP arms submitted NOW (before the dH read-out at ≈17:00) for the two candidate
+  settings — `clamp1ent5` and `bnormclamp1ent5`, 2 seeds × 1M each, same demo protocol (`demos_state/dDP`, 58 tapes,
+  corrected world, provenance gate). Rationale: wall-clock (user 10:00), and the two settings are already the only
+  ones alive on dH at 250–460k (0.70–0.84 online picks) while clamp1/clamp0 are dead. Read-out rule unchanged: the pair
+  is scored per setting by the registered fresh evals (sample; mode disclosed); a setting whose dH runs fail the gate
+  is not scored on dDP.
