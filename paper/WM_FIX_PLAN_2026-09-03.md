@@ -169,3 +169,28 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   train-curve ignition against the ManiSkill fingerprint: actor entropy collapsing to ≈ −2 nats early), demo
   contribution (rerun with `demo_duplicate 4` as the only change), obs (pixels+state). Message the main session
   with the recipe only on PASS, before any human-vs-machine readout (PREREG A37).
+
+### Stage 1 verdict + Stage 1b gate — registered 2026-09-03 11:30 (cluster clock), before any 1b submission
+- **Stage 1 as registered (sparse touchgoal, state input): r2dreamer FAIL on both seeds — but by reward UNREACHABILITY,
+  not by a demonstrated learning defect.** Both seeds trained 300k steps (≈270 episodes each) without a single goal
+  contact (`reward_frames` 0.00 throughout); the random-policy probes (10 eps × 300 decisions each) never touched the
+  goal in the corrected world (best 0.231 m), the base world (0.268 m) or with 25-decision held actions (0.158 m).
+  A trainer cannot learn from a reward it never receives; the disconfirm branch's "adapter suspect" reading is NOT
+  supported by this result alone. The fresh evals (registered primary score) are recorded when they finish.
+- **Stage 1b (amended stage 1): `reach_goal` — sparse +1 and terminate when the TOOL is within REACH_GOAL_DIST of the
+  GOAL can**, otherwise the stage-1 recipe unchanged (state-only obs, no demos, delta_joint 0.025/leash 5, repeat 4,
+  time_limit 1200, reward_scale 1, entropy 3e-4, clamp 0, corrected world). Implemented in a PRIVATE env copy
+  (`$LAB/wm_fix_2026-09-03/gp_root`, `reach_goal_patch.py`, 14 lines; shared tree untouched); both ports use it.
+  Calibration (uniform random, corrected world): min tool–goal distance median 0.354 m, best 0.231 m; at R = 0.30 the
+  random policy reached the goal in 3/4 episodes so far (22–174 decisions) ⇒ easy/dense; R = 0.25 ⇒ rare-but-present.
+- Runs: r2dreamer R ∈ {0.30, 0.25} × 2 seeds × 300k; dv3 (reference) R = 0.30 × 2 seeds × 300k. Score: FRESH-process
+  eval on the final checkpoint, 15 hold ICs, 1200 steps (r2dreamer sample mode / dv3 deterministic), success =
+  `reached_goal`, all 15 present, `[sim-variant]` line present; secondary: `train_task_success` per 25k bin +
+  actor entropy (ManiSkill fingerprint: collapse away from the 9.9 maximum).
+- **Gate: R = 0.30 fresh-eval success ≥ 0.8 (≥ 12/15) on 2/2 r2dreamer seeds** (this is the "can it learn at all"
+  bar: random already gets ≈ 75% within an episode, so a learner must be near-perfect AND faster — report mean
+  decisions-to-success vs the random baseline). R = 0.25 reported, not gated (expected to separate learners).
+  Disconfirm: r2dreamer < 0.8 at R = 0.30 on any seed while dv3 passes ⇒ r2dreamer adapter/trainer suspect → ablate
+  actor_dist bounded_normal, action_repeat 1, time_limit 400 one at a time; both ports fail ⇒ shared task setup.
+- Stage 0 note: dv3 (cluster tree) cartpole s1 LAST 581 < 800 ⇒ dv3 "port suspect" until the upstream reference
+  (3234321/22) reads out; dv3 stage-1b results carry that flag.
