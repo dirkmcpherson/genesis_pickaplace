@@ -70,6 +70,7 @@ same potential from recorded `eef_pos`, φ(terminal)=0, γ = learner γ) and A33
 the full step budget and rename snapshots; `latest.pt` polling gives K per run that varies; wandb_cache deletion under
 running jobs; action_repeat/demo_downsample mismatch asserts; images (64,64,6) uint8; contract-v1 tapes end at the
 env terminal (never bootstrap past it); nested/pick predicates require the can to RIDE the gripper (PICK_SUSTAIN 10).
+(09-03 additions) two jobs compiling on ONE node with a shared torch-inductor cache die at the first update (`InductorError SubprocException`) — export a per-job `TORCHINDUCTOR_CACHE_DIR`; `pkill -f <pattern>` over ssh kills the shell whose own command line contains the pattern; `dm_control` has no `__version__` (use importlib.metadata); the r2dreamer evaluator's IC-reset helpers bypass `adapter.reset` and must add every obs key the training used; dv3 counts `steps` before action_repeat (runs past the nominal budget) — read the last eval AT OR BEFORE the registered budget.
 
 ## 5. Honesty protocol (mandatory)
 Register each stage's gate before running it (append to this file under "## 7. Registered gates", dated). Report
