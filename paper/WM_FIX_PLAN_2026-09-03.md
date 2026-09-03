@@ -344,3 +344,24 @@ fresh evals pending; the collapse-to-zero is r2dreamer-specific.
   replaced by a fresh seed 2 (3241649) as the second dH run of record for the pair gate ({dH s0, dH s2, dDP s0, dDP s1});
   the warm restart of s1 from its 428k save (3241650) is DISCLOSED only and does not enter the gate. First number of
   record: dH s0 hold 15/15 (sample), 14/15 (mode), rnd 18/30 (sample).
+
+### Stage 1d — dv3 diagnosis at the reach rung, registered 2026-09-03 18:35 (cluster clock), before submission
+Observation: dv3 (fork tree + world hook, unclamped, state input) learns `reach_goal` but never consolidates — per-bin
+success wobbles 0.3–1.0 on 3/4 runs, 1/4 never ignites, and the two finished checkpoints score **1/15 and 0/15** frozen
+(fresh process, deterministic actor). Two candidate causes, each a single lever, 2 seeds × 150k, everything else = the
+dv3 stage-1b config (state-only obs, sparse +1, R=0.25, time_limit 1200, corrected world):
+- (a) **EEF action space** (`genesis_cartesian`, `genesis_cartesian_control=delta`): 5-dim ee-position deltas
+  [dx,dy,dz,dpitch,grip] instead of 7 joint deltas — the analog of ManiSkill's `pd_ee_delta_pos`, which is the one
+  large untested delta from MANISKILL_VS_GENESIS.md between the working March run and every Genesis run. Requires
+  `reach_goal` in `CartesianFullTaskEnv` (added to the private env copy `gp_root`, 14 lines, same semantics) and the
+  sim-variant hook on the adapter's cartesian branch (it was missing — the branch built the BASE world silently;
+  fixed in `dv3_fix`). Tag `eef`.
+- (b) **precision 32** (`--precision 32`): the fork's `precision: 16` default is one of the three deltas proven to cost
+  it the DMC gate (513/581 at fp16 vs 991/985 with upstream defaults restored); every dv3 genesis run inherited it.
+  Tag `fp32`.
+Gate for both: fresh-process eval, 15 hold ICs, 1200 steps, `reached_goal`, deterministic actor (dv3's evaluator),
+success ≥ 0.8 on 2/2 seeds; secondary = per-25k success curve and whether the wobble disappears. Reading: (a) passes
+⇒ the 7-dim joint action space is the dv3 blocker (and the paper's dv3 diagnostics are confounded by it);
+(b) passes ⇒ the fork's fp16 default is; both fail ⇒ neither, and the dv3 arm stays "weak at this budget" with
+r2dreamer as the WM arm of record. r2dreamer EEF is NOT run here (its adapter has no cartesian path and it already
+passes stage 2 with joint deltas); noted as follow-up if the EEF lever is decisive for dv3.
