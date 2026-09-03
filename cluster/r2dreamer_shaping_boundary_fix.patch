@@ -1,0 +1,66 @@
+From 6af0ec74e699565008a678b155b77e03a29aea4f Mon Sep 17 00:00:00 2001
+From: j <dirkmcpherson@gmail.com>
+Date: Wed, 19 Aug 2026 23:32:07 -0400
+Subject: [PATCH] pick_shaping timescale fix: potential applied at the ADAPTER
+ decision boundary (once per agent step), not per FullTaskEnv sim step
+
+Per-substep application under this adapter's repeat-4 loop left a
+path-dependent -(1-gamma)*sum(phi_substeps) residual (a reward for staying
+FAR from the can, per-episode the same order as the +100 terminal). Caught
+by the 08-19 live-fire parity check before any shaped run consumed data.
+FullTaskEnv pick_shaping is now OFF here; the adapter reads _pick_phi() and
+applies gamma=0.999 * phi' - phi once per step(), scaled with reward_scale.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01AVJaT7Q3CMdpEUB5ogc3GM
+---
+ envs/genesis.py | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/envs/genesis.py b/envs/genesis.py
+index 0b3202e..7bbebfb 100644
+--- a/envs/genesis.py
++++ b/envs/genesis.py
+@@ -134,8 +134,12 @@ class GenesisPick(gym.Env):
+             render_size=self._size,
+             camera_rig=True,
+             shaping=self._place_shaping,
+-            pick_shaping=self._pick_shaping,
+-            pick_shaping_gamma=0.999,  # = r2dreamer discount (Ng-invariance)
++            # pick_shaping is applied by THIS adapter (below), NOT by FullTaskEnv:
++            # this adapter calls env.step() once per SIM step, so FullTaskEnv-side
++            # shaping would fire per substep -- the (1-gamma)*sum(phi) timescale
++            # bug the 08-19 live-fire parity check caught. FullTaskEnv._pick_phi()
++            # is still used as the potential.
++            pick_shaping=False,
+             # getattr: instances pickled before this attr existed must still build
+             entry_bank=getattr(self, "_place_entry_bank", None),
+         )
+@@ -181,6 +185,8 @@ class GenesisPick(gym.Env):
+             self._build()
+         self._env.reset()
+         self.sync_delta_target()
++        if getattr(self, "_pick_shaping", False):
++            self._pick_phi_prev = self._env._pick_phi()
+         obs = {
+             "is_first": True,
+             "is_last": False,
+@@ -224,6 +230,15 @@ class GenesisPick(gym.Env):
+                 reward += float(r)
+                 if terminated or truncated:
+                     break
++        if getattr(self, "_pick_shaping", False):
++            # TRAINING-ONLY approach potential, applied ONCE per AGENT step (this
++            # adapter's decision boundary = `repeat` sim steps), gamma = the
++            # r2dreamer discount (Ng-invariance holds only at the timescale the
++            # agent discounts at). Scaled by reward_scale below with everything
++            # else (uniform scaling preserves the invariance).
++            phi = self._env._pick_phi()
++            reward += 0.999 * phi - self._pick_phi_prev
++            self._pick_phi_prev = phi
+         # getattr: instances pickled before reward_scale existed must still run
+         reward *= float(getattr(self, "_reward_scale", 1.0))
+         done = bool(terminated or truncated)  # truncated never fires (max_steps=1e9)
+-- 
+2.34.1
+

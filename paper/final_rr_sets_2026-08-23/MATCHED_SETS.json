@@ -1,0 +1,48 @@
+{
+ "built": "2026-08-23T13:53:35",
+ "N": 51,
+ "cap_n": 66,
+ "seed": 0,
+ "git": "0e1fda19ababea52dc39130f0cd755a3249b53a9",
+ "source_counts": {
+  "dH": 51,
+  "dDP": 64,
+  "dR2D": 64
+ },
+ "matching": {
+  "common_capacity": 51,
+  "N": 51,
+  "uids_total": 64,
+  "unmatched": null,
+  "ic_multiset_identical": true
+ },
+ "fails_arm_n_fails": 14,
+ "sets": {
+  "dH": {
+   "dir": "baselines/matched_v1/dH",
+   "content_sha256": "58fd89bce03ab13de86b3f92f5467fc4238e09458fe9a21e217061f6e4e63c8b",
+   "N": 51
+  },
+  "dDP": {
+   "dir": "baselines/matched_v1/dDP",
+   "content_sha256": "9be55219c67783ebd7f3a5eb7cda3fc556927adc7a76958cdeacee3813b9fbac",
+   "N": 51
+  },
+  "dR2D": {
+   "dir": "baselines/matched_v1/dR2D",
+   "content_sha256": "fe93dbdd343f221b53853e7866356094208cb9a545409da1d316d8c0f1f9aaa2",
+   "N": 51
+  },
+  "dDPfails": {
+   "dir": "baselines/matched_v1/dDPfails",
+   "content_sha256": "c84fd1c14386d00078ba6895b5375f8202a7ab974c2404166a3e9f584999db5a",
+   "N": 65
+  },
+  "dR2DDPfails": {
+   "dir": "baselines/matched_v1/dR2DDPfails",
+   "content_sha256": "4bf50466deacba2be0163f885ec868a861787f60b80e1d6673d8629403e87ec2",
+   "N": 65
+  }
+ },
+ "census_command": "python analysis/characterize_demo_sets.py dH=baselines/matched_v1/dH dDP=baselines/matched_v1/dDP dR2D=baselines/matched_v1/dR2D dDPfails=baselines/matched_v1/dDPfails dR2DDPfails=baselines/matched_v1/dR2DDPfails --out baselines/matched_v1/census.md --json baselines/matched_v1/census.json"
+}

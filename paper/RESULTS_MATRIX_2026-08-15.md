@@ -8,9 +8,10 @@ paper/RUN_LEDGER_2026-08-14.md, FABLE_HANDOFF_2026-08-13.md §12-22.
 
 | condition | best number | protocol | verdict |
 |---|---|---|---|
-| dH_DP | 0.62 in-dist (0.40-0.80, n=8) / 0.23 random | hardened predicate, sequence evals, P2-robustness-checked | **READY** |
+| dHpruned_DP | 0.62 in-dist (0.40-0.80, n=8) / 0.23 random | PRUNED pick-phase set (idle teleop frames collapsed, 29.6% dropped; make_dp_pruned); hardened predicate, sequence evals, P2-robustness-checked | **READY** — the DP-functional human arm |
+| dH_DP (unpruned) | 0.27 / 0.13 in-dist (jobs_jact_v2 s0, single seed) | UNPRUNED pick-phase set, same frames every RL/WM row consumes | **READY as the preprocessing control** — ~2.5x below pruned; DP needs pruning to function on human teleop. n=1; an n=8 unpruned wave is a cheap Thursday add if the row is to stand alone |
 | dDP_DP | 0.80 in-dist (0.67-0.93, n=8) / 0.23 random | same, matched-N, matched rule | **READY** |
-| dH vs dDP (BC claim) | P(model>human) = 0.994 in-dist; random arms tie | Bayesian, n=8/arm | **READY** with the P2 methods paragraph |
+| dHpruned vs dDP (BC claim) | P(model>human) = 0.994 in-dist; random arms tie | Bayesian, n=8/arm; note the human arm is the PRUNED set (a hand-crafted advantage to dH — the claim is conservative) | **READY** with the P2 methods paragraph |
 | dDP2_DP (gen-1) | 0.87 lineage; chain 0.67 -> 0.87 -> 0.87 | older protocol | descriptive/appendix only |
 | dH_SACfD | 0 (16 seeds) | honest predicate | **REFRAME** — confounded by the entropy-backup defect (stock SB3). Publish as the bug narrative, not as "SACfD fails" |
 | dDP_SACfD | 0 (16 seeds) | same | same reframe |

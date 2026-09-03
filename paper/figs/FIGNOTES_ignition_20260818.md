@@ -423,3 +423,9 @@ $V analysis/make_ignition_figs_20260818.py                  # -> the ten PNGs
 ```
 
 Style: figures follow paper/figs/STYLE_RULE.md (shape = source, color = algorithm; user directive 2026-08-18).
+
+
+NOTATION UPDATE (user, 08-18): the DP human arm plotted here is **dHpruned_DP**
+(pruned pick-phase set). dH_DP (unpruned) = 0.27/0.13, n=1 control, not yet
+plotted; will be added as its own series when the n=8 unpruned wave exists.
+Every RL/WM dH row consumes the UNPRUNED set.

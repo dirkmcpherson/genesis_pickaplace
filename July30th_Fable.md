@@ -263,3 +263,23 @@ normalized target variance -- pose targets hug the current pose -- vs joint
 targets), not execution, not data, not obs. The week-old mystery is localized.
 Next: single-seed confirm at x3, then (if pursued) action-head fixes: delta-from-
 current parameterization with proper scaling, or per-dim normalization surgery.
+
+---
+
+## §2 addendum (08-20): archaeology + first mechanism audit
+- The 08-01 2x2 verdict above IS the answer of record (action reps kill BC;
+  ee obs helps). Discrepancy flagged: the on-disk 100k eval VIDEOS for
+  jobs_jact_v2 count 0/15 picked while the recorded verdict says 0.27 —
+  video artifacts and the recorded number came from different invocations.
+  The x3-seed confirm of the decisive cells is therefore NOT optional.
+- Quick conditional-variance audit (132k frames, both cells): eact xyz hugs
+  the current pose (signal fraction 0.10-0.12) about the SAME as jact joints
+  (0.04-0.18) -> "degenerate normalized variance" alone does not separate
+  the working and failing cells. The abs6 ORIENTATION dims show residual
+  std 1.3-4.4x action std vs state dims 3-5 — PRELIMINARY, likely a
+  parameterization mismatch in the audit itself (state quat vs action
+  orientation encoding); verify the converter layouts before interpreting.
+- Next (per plan): converter-layout check -> redo orientation-dim audit
+  aligned -> x3 confirm of {eobs_jact, jobs_eact, jobs_jact} -> then one
+  fix retrain (delta-from-current with honest scaling or normalization
+  surgery).

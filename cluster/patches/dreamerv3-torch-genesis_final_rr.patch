@@ -1,0 +1,432 @@
+diff --git a/configs.yaml b/configs.yaml
+index c508c32..a2089bc 100644
+--- a/configs.yaml
++++ b/configs.yaml
+@@ -35,6 +35,7 @@ defaults:
+   envs: 1
+   action_repeat: 2
+   time_limit: 1000
++  return_clamp: 0            # >0: clamp the lambda-return target (see models.py _compute_target, 08-28)
+   grayscale: False
+   prefill: 2500
+   reward_EMA: True
+@@ -470,3 +471,50 @@ genesis_pixels_vec:
+   parallel: False
+   eval_episode_num: 0       # one world per process; eval stays out-of-process
+   train_ratio: 64           # trainer now binds, not collection; retune upward later
++
++genesis_pick_msrecipe_shaped:
++  # DENSE variant (08-19): the msrecipe genesis config + TRAINING-ONLY pick-scope
++  # potential shaping (envs/genesis.py pick_shaping -> FullTaskEnv, gamma=0.997).
++  # Use ON TOP of the msrecipe config: --configs genesis_pick_msrecipe genesis_pick_msrecipe_shaped
++  genesis_pick_shaping: True
++
++
++genesis_final_rr:
++  # FINAL ROUND ROBIN overlay (genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md
++  # §1-2). Stack it AFTER genesis_pick_msrecipe [genesis_pick_msrecipe_shaped]:
++  #   --configs genesis_pixels genesis_pick_msrecipe [genesis_pick_msrecipe_shaped] genesis_final_rr
++  # Changes vs the 08-19 round robin, nothing else: one training horizon for every learner
++  # (1200 sim steps = 300 decisions at action_repeat 4; was 600) and the longer budget the
++  # source audit asked for (1e6 env steps = 250k decisions = 62.5k updates at train_ratio 256;
++  # the 3e5 budget was ~18.75k updates, below the project's own MS takeoff count). Demo dirs
++  # must be contract-v1 sets converted by to_dreamer_native.py (repeat.json action_repeat 4,
++  # terminal_reward 100 -- both asserted by dreamer.py as before).
++  time_limit: 1200
++  steps: 1e6
++
++genesis_dv3clamp:
++  # dv3 diagnosis 2026-08-28, suspect 1: return-target clamp only (what r2dreamer runs with).
++  return_clamp: 100
++
++genesis_dv3fix:
++  # dv3 diagnosis 2026-08-28, suspects 1+2+4 together: clamp + r2dreamer update intensity + r2dreamer horizon.
++  return_clamp: 100
++  train_ratio: 512
++  time_limit: 400
++
++genesis_touchgoal:
++  # 2026-08-28 learnability probe (user): touch the GOAL can across the workspace, no grasp, NO demos.
++  # Same obs/action/repeat as pick; +100 on first robot-link contact with the goal can (FullTaskEnv scope=touchgoal).
++  genesis_scope: 'touchgoal'
++  time_limit: 400
++  steps: 5e5
++
++genesis_dv3std:
++  # 2026-08-28 (user: validity over performance): the STANDARD DreamerV3 handling of reward scale --
++  # symlog/two-hot heads, no clamp, reward_scale 1 -- instead of the ManiSkill-parity +100 terminal.
++  # Demos must be terminal-reward-1 native sets (genesis_pickaplace/baselines/matched_v2/r2d/<arm>).
++  genesis_reward_scale: 1.0
++  force_sparse: False
++  return_clamp: 0
++  train_ratio: 512
++  time_limit: 400
+diff --git a/convert_genesis_demos_repeat.py b/convert_genesis_demos_repeat.py
+index da35046..c35781f 100644
+--- a/convert_genesis_demos_repeat.py
++++ b/convert_genesis_demos_repeat.py
+@@ -1,5 +1,23 @@
+ """Stride-N (action-repeat) IMAGE demo converter for the genesis ManiSkill-recipe port.
+ 
++FINAL ROUND ROBIN (2026-08-23, genesis_pickaplace paper/PREREG_final_round_robin_2026-08-23.md):
++  * CONTRACT-v1 demo dirs (recorded at the decision clock by genesis_pickaplace
++    baselines/record_demos.py; keys actions_delta/terminated/picked/...) are NOT converted
++    here -- they are already one row per decision; use
++    genesis_pickaplace/baselines/rl/to_dreamer_native.py (same output format, same
++    repeat.json stamp). This script REFUSES such a dir with a pointer.
++  * --terminal-guard on (DEFAULT): the encoders this script calls
++    (train_sacfd_full.relabel_full / delta_encode_transitions_repeat) now apply the env-
++    consistent terminal guard BY DEFAULT (genesis_pickaplace B2, 2026-08-23): a no-pick
++    tape that TIPS (tilt>60 deg with grip open) comes back with done=True at the tip window
++    and later frames dropped; scope=pick marks done at the pick and drops the tail. This
++    converter therefore (1) KEEPS the encoder's `dones` as is_terminal in the no-pick
++    branch (tip -> True, value 0; a cap-truncated tape stays False and bootstraps) instead
++    of zeroing it, and (2) places the pick terminal ON the pick row: --grant-slack defaults
++    to 0 and >0 is refused unless --terminal-guard off (the 48-frame slack mixed a late demo
++    terminal with an early online one). `off` passes demo_terminal_guard=False through to
++    the encoders and restores the 08-18 behaviour byte-for-byte.
++
+ WHY THIS EXISTS
+ ---------------
+ dv3 loads demos from FILES and never downsamples them. Its genesis pick demos
+@@ -61,7 +79,7 @@ for _p in (REPO / 'baselines', REPO / 'baselines' / 'rl', REPO / 'can_pos_recove
+ PICK_Z = 0.1505
+ 
+ 
+-def encode_episode(path, repeat, cap, pick_z):
++def encode_episode(path, repeat, cap, pick_z, terminal_guard=True):
+     """One demo npz -> (obs_frame_idx, actions, rewards, dones, n_transitions).
+ 
+     obs_frame_idx[j] is the RAW frame index whose image/state is the observation the
+@@ -70,7 +88,7 @@ def encode_episode(path, repeat, cap, pick_z):
+     train_sacfd_full.delta_encode_transitions_repeat (asserted in main()).
+     """
+     from train_sacfd_full import relabel_full
+-    trans, _ = relabel_full([str(path)], pick_z)
++    trans, _ = relabel_full([str(path)], pick_z, terminal_guard=terminal_guard)
+     if not trans:
+         return None
+     n = len(trans)
+@@ -124,6 +142,10 @@ def main():
+                          'hardened predicate adds a 10-frame sustain, and open-loop '
+                          'delta replay lags the demo -- a tape cut at the grant frame '
+                          'ends before the replayed lift crosses pick_z.')
++    ap.add_argument('--terminal-guard', dest='terminal_guard', choices=['on', 'off'], default='on',
++                    help='on (default): env-consistent terminals from the guarded encoders (tip -> '
++                         'is_terminal at the cut, pick ON the pick row, grant_slack must be 0); off: '
++                         'the 08-18 behaviour (slack kept, no-pick tapes bootstrap to the cap)')
+     ap.add_argument('--check-encoder', dest='check_encoder', action='store_true',
+                     default=True,
+                     help='assert per-episode bitwise equality with '
+@@ -137,6 +159,21 @@ def main():
+     src = REPO / args.src
+     paths = sorted(glob.glob(str(src / '*.npz')), key=lambda p: int(pl.Path(p).stem))
+     assert paths, f'no npz in {src}'
++    _probe = np.load(paths[0], allow_pickle=True)
++    if 'actions_delta' in _probe.files and 'terminated' in _probe.files:
++        raise SystemExit(f'{src} is a CONTRACT-v1 (decision-rate) demo dir: it is already one row per '
++                         'decision. Convert it with genesis_pickaplace/baselines/rl/to_dreamer_native.py '
++                         f'--repeat {args.repeat} (no re-windowing, no relabel); this script is the '
++                         'stride-1 (30 Hz tape) path only.')
++    guard = (args.terminal_guard == 'on')
++    if guard and args.grant_slack != 0:
++        # the default in the argparser is 12 (08-18 sets); under the guard the pick terminal
++        # sits ON the pick row, so only an explicit --grant-slack 0 or --terminal-guard off is valid
++        if '--grant-slack' in sys.argv:
++            raise SystemExit(f'--grant-slack {args.grant_slack} is incompatible with --terminal-guard on '
++                             '(the pick terminal sits on the pick row); pass --grant-slack 0 or --terminal-guard off')
++        print('[terminal-guard] grant_slack default 12 -> 0 (pick terminal on the pick row)')
++        args.grant_slack = 0
+     dst = pl.Path(args.dst)
+     dst.mkdir(parents=True, exist_ok=True)
+     # Filenames encode length, so a re-run with a different stride would ORPHAN the old
+@@ -152,7 +189,7 @@ def main():
+         d = np.load(p, allow_pickle=True)
+         uid = int(d['uid'])
+         stage = str(d['stage']) if 'stage' in d.files else '?'
+-        enc = encode_episode(p, args.repeat, args.delta_cap, PICK_Z)
++        enc = encode_episode(p, args.repeat, args.delta_cap, PICK_Z, terminal_guard=guard)
+         if enc is None:
+             census['n_empty'] += 1
+             print(f'{uid}: {stage:<8} SKIPPED (relabel_full produced no transitions)')
+@@ -160,7 +197,7 @@ def main():
+         obs_idx, acts, rews, dones, n_trans = enc
+         if args.check_encoder:
+             ref = delta_encode_transitions_repeat([str(p)], PICK_Z, 'full',
+-                                                  args.delta_cap, args.repeat)
++                                                  args.delta_cap, args.repeat, terminal_guard=guard)
+             assert len(ref) == len(acts), (uid, len(ref), len(acts))
+             assert np.array_equal(np.stack([t[1] for t in ref]), acts), uid
+             assert np.array_equal(np.asarray([t[2] for t in ref], np.float32), rews), uid
+@@ -193,10 +230,20 @@ def main():
+             T = k + 1
+             census['n_pick'] += 1
+         else:
+-            # no-pick demo: full-length zero-reward dynamics data, is_terminal all False
+-            # so the value head BOOTSTRAPS at the cut instead of learning a 0 terminal.
+             rew = np.zeros(T, dtype=np.float32)
+-            is_terminal = np.zeros(T, dtype=bool)
++            if guard:
++                # env-consistent terminal for a no-pick tape: the GUARDED encoder already cut
++                # the tape at the env's tip rule and set done=True there (value 0); a
++                # cap-truncated tape carries no done and keeps bootstrapping. KEEP the
++                # encoder's flags -- the 08-18 code zeroed them, which is the bug.
++                is_terminal = np.concatenate([[False], dones]).astype(bool)
++                if is_terminal.any():
++                    assert is_terminal[-1] and not is_terminal[:-1].any(), (uid, 'guarded encoder must end the tape at its terminal')
++                    census['n_tip_terminal'] = census.get('n_tip_terminal', 0) + 1
++            else:
++                # 08-18 behaviour: full-length zero-reward dynamics data, is_terminal all False
++                # so the value head BOOTSTRAPS at the cut instead of learning a 0 terminal.
++                is_terminal = np.zeros(T, dtype=bool)
+             census['n_nopick'] += 1
+         is_first = np.zeros(T, dtype=bool); is_first[0] = True
+         is_last = np.zeros(T, dtype=bool); is_last[-1] = True
+@@ -219,6 +266,7 @@ def main():
+         scope=args.scope,
+         terminal_reward=float(args.terminal_reward),
+         grant_slack_decisions=int(args.grant_slack),
++        terminal_guard=args.terminal_guard,
+         pick_z=PICK_Z,
+         src=str(src),
+         generator='convert_genesis_demos_repeat.py',
+diff --git a/dreamer.py b/dreamer.py
+index 7add8c6..1f58234 100644
+--- a/dreamer.py
++++ b/dreamer.py
+@@ -373,6 +373,7 @@ def make_env(config, mode, id):
+             delta_cap=getattr(config, 'genesis_delta_cap', 0.025),
+             delta_leash_mult=getattr(config, 'genesis_delta_leash_mult', 5.0),
+             reward_scale=getattr(config, 'genesis_reward_scale', 1.0),
++            pick_shaping=getattr(config, 'genesis_pick_shaping', False),
+         )
+         env = wrappers.NormalizeActions(env)
+     elif suite == 'pinpad':
+diff --git a/envs/genesis.py b/envs/genesis.py
+index 3c042ba..04a9eca 100644
+--- a/envs/genesis.py
++++ b/envs/genesis.py
+@@ -28,8 +28,11 @@ class GenesisPickPlace:
+                  pixels=False, action_repeat=1, workspace_limit=False,
+                  cartesian_control='delta', scope='full',
+                  joint_action_mode='absolute', delta_cap=0.025,
+-                 delta_leash_mult=5.0, reward_scale=1.0):
++                 delta_leash_mult=5.0, reward_scale=1.0, pick_shaping=False):
+         self._task = task
++        # dense lever (08-19): potential-based approach shaping inside FullTaskEnv,
++        # TRAINING-ONLY, gamma=0.997 (dv3 discount). Default off = byte-identical.
++        self._pick_shaping = bool(pick_shaping)
+         # task 'cartesian' -> 4-DOF ee-velocity actions ([-1,1]^5, the demos' native
+         # teleop modality) via CartesianFullTaskEnv; else 7-dim joint actions.
+         self._cartesian = (task == 'cartesian')
+@@ -64,7 +67,7 @@ class GenesisPickPlace:
+         # which is what the demo converter writes into the demo tapes as well. Scaling is
+         # ILLEGAL outside pick scope: the staged full-task ladder (1/1/2/4) rescaled by
+         # 100 is exactly the v7 bug (a completed task became 100 while a pick stayed 1).
+-        assert float(reward_scale) == 1.0 or scope == 'pick', (
++        assert float(reward_scale) == 1.0 or scope in ('pick', 'touchgoal'), (
+             f'reward_scale {reward_scale} is only valid with scope=pick (staged scopes '
+             f'must keep their native scale -- the v7 rescale-on-staged bug)')
+         self._reward_scale = float(reward_scale)
+@@ -100,6 +103,8 @@ class GenesisPickPlace:
+             from full_env import FullTaskEnv
+             self._env = FullTaskEnv(backend='cpu', max_steps=10 ** 9,
+                                     scope=self._scope,
++                                    pick_shaping=self._pick_shaping,
++                                    pick_shaping_gamma=0.997,  # = dv3 discount (Ng-invariance)
+                                     render_size=self._size if self._render else None,
+                                     camera_rig=self._pixels,
+                                     workspace_limit=self._workspace_limit,
+@@ -208,7 +213,7 @@ class GenesisPickPlace:
+         # pick), so keying success off 'nested' logged a flat 0 for the whole run and
+         # train_success_rate was unreadable exactly where it matters. Explicit map, no
+         # fallback -- an unknown scope raises rather than silently reporting 0.
+-        _success_key = {'full': 'nested', 'pick': 'picked', 'place': 'placed_v2'}[self._scope]
++        _success_key = {'full': 'nested', 'pick': 'picked', 'place': 'placed_v2', 'touchgoal': 'touched_goal'}[self._scope]
+         obs['log_task_success'] = float(bool(info.get(_success_key, False)))
+         return obs, float(reward), done, info
+ 
+diff --git a/genesis_eval.py b/genesis_eval.py
+index bcbde41..5df8071 100644
+--- a/genesis_eval.py
++++ b/genesis_eval.py
+@@ -43,7 +43,21 @@ ap.add_argument('--configs', nargs='*', default=['genesis_pixels'],
+                      "joint env is a 5-vs-7-dim action mismatch that crashed the "
+                      "periodic eval silently)")
+ ap.add_argument('--episodes', type=int, default=8)
+-ap.add_argument('--max-steps', type=int, default=900, help='env steps (action_repeat applied inside)')
++ap.add_argument('--max-steps', type=int, default=900, help='env steps (action_repeat applied inside). '
++                'FINAL ROUND ROBIN (PREREG 2026-08-23 §5): the sweep passes 1200 explicitly -- the '
++                'one eval horizon of every learner; never rely on this default there')
++# --- shared IC file (PREREG §5): one JSON for every learner/source/arm ------------------
++ap.add_argument('--ic-file', default=None,
++                help='genesis_pickaplace/baselines/eval_ics.json: {"sel": [uid,...], "hold": [uid,...], '
++                     '"rnd": [reset-kwarg dict,...]}. Overrides --ic-mode/--episodes: the episodes '
++                     'are the chosen set\'s entries (ints -> demo-uid reset, dicts -> explicit IC).')
++ap.add_argument('--ic-set', choices=['sel', 'hold', 'rnd'], default=None)
++ap.add_argument('--device', default=None,
++                help='override the run config device (the final-RR sweep evaluates on CPU: '
++                     '--device cpu with CUDA_VISIBLE_DEVICES="", one episode per process)')
++ap.add_argument('--ic-index', type=int, default=None,
++                help='run ONLY this entry of --ic-set (one episode per fresh process; the sweep '
++                     'driver aggregates the per-episode JSON lines)')
+ ap.add_argument('--seed', type=int, default=0)
+ ap.add_argument('--out', default=None)
+ ap.add_argument('--no-wandb', action='store_true')
+@@ -106,6 +120,8 @@ elif args.control:
+     cfg['genesis_cartesian_control'] = args.control
+     print(f'[eval] no run_config.json; --control {args.control}', flush=True)
+ cfg['logdir'] = str(LOGDIR)
++if args.device:
++    cfg['device'] = args.device
+ cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
+ config = argparse.Namespace(**cfg)
+ config.traindir = LOGDIR / 'train_eps'
+@@ -133,7 +149,17 @@ rng = np.random.RandomState(args.seed)
+ vids = []
+ 
+ _ics = None
+-if args.ic_mode == 'random':
++_ic_entries = None           # (ic_set, index, entry) per episode when --ic-file is used
++if args.ic_file:
++    assert args.ic_set, '--ic-file needs --ic-set sel|hold|rnd'
++    _icf = json.loads(pl.Path(args.ic_file).read_text())
++    _ents = list(_icf[args.ic_set])
++    _idx = [args.ic_index] if args.ic_index is not None else list(range(len(_ents)))
++    _ic_entries = [(args.ic_set, i, _ents[i]) for i in _idx]
++    args.episodes = len(_ic_entries)
++    print(f'[eval] ic-file {args.ic_file} set {args.ic_set}: {args.episodes} episode(s) '
++          f'{"(index " + str(args.ic_index) + ")" if args.ic_index is not None else ""} max_steps {args.max_steps}', flush=True)
++elif args.ic_mode == 'random':
+     sys.path.insert(0, os.path.join(os.environ.get(
+         'GENESIS_PICKAPLACE_ROOT', '/home/j/workspace/genesis_pickaplace'), 'baselines'))
+     import ic_sampling
+@@ -142,7 +168,14 @@ if args.ic_mode == 'random':
+ 
+ seqs = []       # dataset-convention sequences for the world-model recon video
+ for ep in range(args.episodes):
+-    obs = env.reset(ic=(_ics[ep] if _ics else None))
++    if _ic_entries is not None:
++        _set, _i, _ent = _ic_entries[ep]
++        if isinstance(_ent, dict) and _ent.get('uid') is None:
++            obs = env.reset(ic=_ent)                     # explicit support IC (rnd)
++        else:
++            obs = env.reset(uid=int(_ent['uid'] if isinstance(_ent, dict) else _ent))   # demo uid (sel/hold)
++    else:
++        obs = env.reset(ic=(_ics[ep] if _ics else None))
+     seq = (dict(image=[obs['image']], action=[np.zeros(config.num_actions, np.float32)])
+            if ep < 6 else None)
+     obs = {k: np.array([v]) for k, v in obs.items()}
+@@ -189,6 +222,16 @@ for ep in range(args.episodes):
+     vw.release()
+     vids.append(str(p))
+     print(f'ep{ep}: {oc} ({t} steps)', flush=True)
++    if _ic_entries is not None:
++        # one JSON line per episode -- the sweep driver (genesis_pickaplace cluster/eval_sweep.sh)
++        # aggregates these with asserted denominators; missing lines are reported missing, never 0
++        import socket as _socket
++        _rec = dict(kind='dv3', logdir=str(LOGDIR), ic_set=_ic_entries[ep][0], ic_index=int(_ic_entries[ep][1]),
++                    picked=bool(stage_flags.get('picked')), outcome=oc, n_steps=int(t), max_steps=int(args.max_steps),
++                    action_repeat=int(getattr(config, 'action_repeat', 1)), act_selection='deterministic',
++                    node=_socket.gethostname(), slurm_job=os.environ.get('SLURM_JOB_ID'))
++        with open(OUT / 'episodes.jsonl', 'a') as _fh:
++            _fh.write(json.dumps(_rec) + '\n')
+ 
+ n = max(agg['n'], 1)
+ metrics = {f'policy_eval/{k}': agg[k] / n for k in STAGES}
+diff --git a/models.py b/models.py
+index c1ac2b4..fb24c1f 100644
+--- a/models.py
++++ b/models.py
+@@ -473,6 +473,17 @@ class ImagBehavior(nn.Module):
+             lambda_=self._config.discount_lambda,
+             axis=0,
+         )
++        # 2026-08-28 (genesis_pickaplace dv3 diagnosis): optional return-target clamp. In every
++        # genesis dv3 run value_mean ran to 4-5x the maximum attainable return (100) with zero
++        # realized reward -- the same runaway r2dreamer fixed with return_clamp 100. Off (0) by
++        # default so existing configs are unchanged; set return_clamp > 0 to enable.
++        _rc = float(getattr(self._config, "return_clamp", 0.0) or 0.0)
++        if _rc > 0:
++            # lambda_return returns the per-step list on axis 0 (stacked later in _train).
++            if isinstance(target, (list, tuple)):
++                target = type(target)(torch.clamp(t, max=_rc) for t in target)
++            else:
++                target = torch.clamp(target, max=_rc)
+         weights = torch.cumprod(
+             torch.cat([torch.ones_like(discount[:1]), discount[:-1]], 0), 0
+         ).detach()
+diff --git a/sbatch_genesis_multi.sh b/sbatch_genesis_multi.sh
+index f57219b..e7a263c 100755
+--- a/sbatch_genesis_multi.sh
++++ b/sbatch_genesis_multi.sh
+@@ -269,7 +269,7 @@ arm_pat() { case "$1" in
+ esac; }
+ 
+ PIDS=(); EVAL_PIDS=(); WATCH_PIDS=(); i=0
+-TAGS_RUN=(); DIRS_RUN=(); CARTS_RUN=(); CTRLS_RUN=(); MSRS_RUN=()
++TAGS_RUN=(); DIRS_RUN=(); CARTS_RUN=(); CTRLS_RUN=(); MSRS_RUN=(); SHAPEDS_RUN=()
+ ARMS_RUN=(); SEEDS_RUN=(); DEMOD_RUN=(); REGKNOBS_RUN=()
+ IFS='|' read -ra SPECS <<< "$RUNS"
+ for spec in "${SPECS[@]}"; do
+@@ -346,7 +346,7 @@ for spec in "${SPECS[@]}"; do
+     echo "SKIP $TAG: ACTREP=$ACTREP but $DEMOD has no repeat.json stride stamp (stride-1 demos)"; continue
+   fi
+ 
+-  DREAMER_CMD=("$PY" dreamer.py --configs genesis_pixels ${CART:+genesis_cartesian} ${VEC:+genesis_pixels_vec} ${MSR:+genesis_pick_msrecipe}
++  DREAMER_CMD=("$PY" dreamer.py --configs genesis_pixels ${CART:+genesis_cartesian} ${VEC:+genesis_pixels_vec} ${MSR:+genesis_pick_msrecipe} ${SHAPED:+genesis_pick_msrecipe_shaped}
+     ${CTRL:+--genesis_cartesian_control "$CTRL"}
+     ${SCOPE:+--genesis_scope "$SCOPE"}
+     ${ACTREP:+--action_repeat "$ACTREP"}
+@@ -361,10 +361,12 @@ for spec in "${SPECS[@]}"; do
+   # never re-reads $STEPS/$ACTREP/etc, which by job end hold the LAST spec's
+   # values, not this spec's (the exact staleness bug this comment is here to
+   # not reintroduce).
+-  REG_KNOBS=(steps="${STEPS:-5000000}" action_repeat="${ACTREP:-1}" msr="${MSR:-0}"
++  REG_KNOBS=(steps="${STEPS:-5000000}" action_repeat="${ACTREP:-1}" msr="${MSR:-0}" shaped="${SHAPED:-0}"
+              scope="${SCOPE:-full}" cart="${CART:-0}" ctrl="${CTRL:-none}")
++  # registry gets an ABSOLUTE demo path (08-18 smoke: the relative DEMOD is
++  # dreamer.py-relative and resolved against the WRONG root inside run_registry)
+   REG_FLAGS=(--script sbatch_genesis_multi.sh --arm "${ARM:-$TAG}" --seed "${SEED:-0}"
+-             --demo-dir "$DEMOD" --registry cluster/RUN_REGISTRY.jsonl)
++             --demo-dir "$REPO_DIR/$DEMOD" --registry "$GENESIS_PICKAPLACE_ROOT/cluster/RUN_REGISTRY.jsonl")
+ 
+   if [ -n "${DRYRUN:-}" ]; then
+     echo "[dry] TAG=$TAG ARM=${ARM:-'-'} SEED=${SEED:-'-'} DEMODIR=$DEMOD ACTREP=${ACTREP:-1} MSR=${MSR:-0} STEPS=${STEPS:-5000000} (NDEMO=$NDEMO)"
+@@ -383,10 +385,16 @@ for spec in "${SPECS[@]}"; do
+   mkdir -p "$RUNDIR"
+   if [ -n "${ARM:-}" ]; then
+     if [ "$HAVE_REGISTRY" = 1 ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ]; then   # skip on preemption requeue
+-      python "$REGISTRY_PY" check "${REG_FLAGS[@]}" "${REG_KNOBS[@]}" || {
++      set +e; python "$REGISTRY_PY" check "${REG_FLAGS[@]}" "${REG_KNOBS[@]}"; _rc=$?; set -e
++      if [ "$_rc" -eq 2 ]; then
+         echo "SKIP $TAG: RUN_REGISTRY refused (see message above); set DUPLICATE_OK=\"<reason>\" to override"
+         continue
+-      }
++      elif [ "$_rc" -ne 0 ]; then
++        # 08-18 smoke: a registry CRASH (bad path etc.) was reported as a clean
++        # SKIP with fail=0/exit 0 -- a silent-default. Anything but 0/2 is FATAL.
++        echo "FATAL: RUN_REGISTRY check crashed (rc=$_rc) for $TAG -- not a refusal; fix the gate, do not skip"
++        exit 1
++      fi
+       # register AT LAUNCH (08-18 review): a preempted/crashed 3e5 run must still
+       # leave its identity line, else a resubmit silently double-counts.
+       python "$REGISTRY_PY" register "${REG_FLAGS[@]}" "${REG_KNOBS[@]}" \
+@@ -406,7 +414,7 @@ for spec in "${SPECS[@]}"; do
+   DREAMER_PID=$!
+   PIDS+=("$DREAMER_PID"); TAGS_RUN+=("$TAG"); DIRS_RUN+=("$RUNDIR"); CARTS_RUN+=("${CART:-}")
+   CTRLS_RUN+=("${CTRL:-}")     # eval MUST build the same control mode it trained
+-  MSRS_RUN+=("${MSR:-}"); ARMS_RUN+=("${ARM:-}"); SEEDS_RUN+=("${SEED:-}"); DEMOD_RUN+=("$DEMOD")
++  MSRS_RUN+=("${MSR:-}"); SHAPEDS_RUN+=("${SHAPED:-}"); ARMS_RUN+=("${ARM:-}"); SEEDS_RUN+=("${SEED:-}"); DEMOD_RUN+=("$DEMOD")
+   REGKNOBS_RUN+=("${REG_KNOBS[*]}")
+ 
+   # ---- (d) seed-honored assertion -------------------------------------------
+@@ -454,7 +462,7 @@ for j in "${!PIDS[@]}"; do
+     if [ -n "$L" ] && [ -f "$L/latest.pt" ]; then
+       STEP=$(tail -1 "$L/metrics.jsonl" 2>/dev/null | grep -oE '"step": [0-9]+' | grep -oE '[0-9]+')
+       "$PY" genesis_eval.py --logdir "$L" --episodes "${EVALEPS:-6}" \
+-        --configs genesis_pixels $( [ -n "${CARTS_RUN[$j]}" ] && echo genesis_cartesian ) $( [ -n "${MSRS_RUN[$j]}" ] && echo genesis_pick_msrecipe ) \
++        --configs genesis_pixels $( [ -n "${CARTS_RUN[$j]}" ] && echo genesis_cartesian ) $( [ -n "${MSRS_RUN[$j]}" ] && echo genesis_pick_msrecipe ) $( [ -n "${SHAPEDS_RUN[$j]:-}" ] && echo genesis_pick_msrecipe_shaped ) \
+         ${CTRLS_RUN[$j]:+--control ${CTRLS_RUN[$j]}} \
+         --results-file "$L/eval_results.jsonl" \
+         --name "${TAGS_RUN[$j]}-eval-step${STEP:-0}" \

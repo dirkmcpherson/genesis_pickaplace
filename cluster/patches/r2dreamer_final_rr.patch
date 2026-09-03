@@ -1,0 +1,190 @@
+--- a/envs/genesis.py
++++ b/envs/genesis.py
+@@ -55,7 +55,13 @@
+     def __init__(self, task="pick", size=(64, 64), seed=0, scope="pick",
+                  place_shaping=False, pick_shaping=False, place_entry_bank=None, action_repeat=1,
+                  reward_scale=1.0, action_mode="absolute", delta_cap=None,
+-                 delta_leash_mult=None):
++                 delta_leash_mult=None, pick_shaping_gamma=0.999):
++        # pick_shaping_gamma (2026-08-24 fix, PREREG final-RR): MUST equal the AGENT
++        # discount 1 - 1/horizon (0.997 for horizon 333). The 08-19 wave hard-coded
++        # 0.999 (stale horizon-1000 comment) -> a distance-proportional per-step bias
++        # ~(0.999-0.997)*phi*reward_scale. Default 0.999 keeps old ckpts/behaviour
++        # reproducible; envs/__init__.py now passes the config-derived value.
++        self._pick_shaping_gamma = float(pick_shaping_gamma)
+         self._task = task
+         self._size = tuple(size)
+         self._seed = seed
+@@ -121,6 +127,14 @@
+         for p in (f"{REPO}/baselines", f"{REPO}/baselines/rl", f"{REPO}/can_pos_recovery"):
+             if p not in sys.path:
+                 sys.path.insert(0, p)
++        # SIM VARIANT (final-RR 2026-08-24, corrected-world program): the same MDP
++        # realized in a patched Genesis world (gc_kp4_riser3_shelf6 = the program's
++        # world; genesis_pickaplace baselines/sim_variant_hook.py). R2D_SIM_VARIANT
++        # env var selects it; 'base' (default) is byte-identical to before.
++        import os as _os
++        self._sim_variant = _os.environ.get("R2D_SIM_VARIANT", "base") or "base"
++        import sim_variant_hook as _svh
++        _svh.apply_pre(self._sim_variant)
+         from full_env import FullTaskEnv
+         import pick_env as _pe
+ 
+@@ -143,6 +157,7 @@
+             # getattr: instances pickled before this attr existed must still build
+             entry_bank=getattr(self, "_place_entry_bank", None),
+         )
++        _svh.apply_post(self._env, self._sim_variant)
+         self._env.reset(seed=self._seed)
+ 
+     def _image(self):
+@@ -236,8 +251,10 @@
+             # r2dreamer discount (Ng-invariance holds only at the timescale the
+             # agent discounts at). Scaled by reward_scale below with everything
+             # else (uniform scaling preserves the invariance).
+-            phi = self._env._pick_phi()
+-            reward += 0.999 * phi - self._pick_phi_prev
++            # phi(terminal)=0 (Ng episodic form; matches FullTaskEnv
++            # pick_shaping_terminal_zero=True on the RLPD side, PREREG A4/§2)
++            phi = 0.0 if terminated else self._env._pick_phi()
++            reward += self._pick_shaping_gamma * phi - self._pick_phi_prev
+             self._pick_phi_prev = phi
+         # getattr: instances pickled before reward_scale existed must still run
+         reward *= float(getattr(self, "_reward_scale", 1.0))
+--- a/envs/__init__.py
++++ b/envs/__init__.py
+@@ -133,6 +133,11 @@
+             # shaping=); default false, honest metric stays placed_v2.
+             place_shaping=config.get("place_shaping", False),
+             pick_shaping=config.get("pick_shaping", False),
++            # shaping gamma = the agent discount 1 - 1/horizon (env.horizon feeds
++            # model.horizon via oc.select); falls back to the legacy 0.999 ONLY if
++            # the config has no horizon (pre-v5 configs, all unshaped anyway)
++            pick_shaping_gamma=(1.0 - 1.0 / float(config.get("horizon", 0) or 0)
++                                if config.get("horizon", None) else 0.999),
+             # scope='place' entry bank path; null -> legacy single-entry bank
+             place_entry_bank=config.get("place_entry_bank", None),
+             # one agent step = N sim steps (rewards summed, early break on
+--- a/demo_prefill.py
++++ b/demo_prefill.py
+@@ -163,7 +163,30 @@
+         return None
+     ds = int(config.env.get("demo_downsample", 1) or 1)
+     repeat = int(config.env.get("action_repeat", 1) or 1)
+-    assert ds == repeat, (
++    # NATIVE stride-N demo dirs (final-RR 2026-08-24): a repeat.json stamp in the
++    # demo dir declares the dir is ALREADY at the decision clock (one row per
++    # agent step, written by genesis_pickaplace to_dreamer_native.py). Then the
++    # loader must NOT downsample: require demo_downsample=1 and stamp == repeat.
++    # Un-stamped dirs keep the legacy contract (stride-1 tapes, ds == repeat).
++    import json as _json
++    _stampf = pathlib.Path(demo_dir).expanduser() / "repeat.json"
++    if _stampf.exists():
++        _stamp = _json.loads(_stampf.read_text())
++        _nat = int(_stamp.get("action_repeat", 1))
++        assert _nat == repeat, (
++            f"native demo dir stride {_nat} (repeat.json) != env.action_repeat {repeat}")
++        assert ds == 1, (
++            f"native stride-{_nat} demo dir requires env.demo_downsample=1 (rows are "
++            f"already one-per-agent-step); got demo_downsample={ds}")
++        _tr = _stamp.get("terminal_reward", None)
++        _sc = float(config.env.get("reward_scale", 1.0) or 1.0)
++        if _tr is not None:
++            assert abs(float(_tr) - 1.0) < 1e-9, (
++                f"native r2d demo dirs must carry terminal reward 1.0 in the npz "
++                f"(prefill multiplies by env.reward_scale={_sc}); this dir was built "
++                f"with --terminal-reward {_tr} -- rebuild with --terminal-reward 1")
++    else:
++        assert ds == repeat, (
+         f"env.demo_downsample ({ds}) must equal env.action_repeat ({repeat}): "
+         "demo rows and online rows must cover the same number of sim steps, or "
+         "the world model learns contradictory dynamics from the same buffer"
+--- a/eval_genesis.py
++++ b/eval_genesis.py
+@@ -57,6 +57,14 @@
+ ap.add_argument("--fps", type=float, default=0,
+                 help="video playback fps; 0 = real-time (30Hz sim / action_repeat, "
+                      "i.e. 7.5 for repeat-4 -- frames are one per agent step)")
++ap.add_argument("--ic-file", default=None,
++                help="genesis_pickaplace baselines/eval_ics.json: use its IC sets instead "
++                     "of random uid draws (final-RR one-harness protocol)")
++ap.add_argument("--ic-set", choices=["sel", "hold", "rnd"], default="sel",
++                help="which IC set from --ic-file")
++ap.add_argument("--ic-index", type=int, default=None,
++                help="single IC index from the set (one episode); default = the whole set "
++                     "(overrides --episodes)")
+ ap.add_argument("--torch-threads", type=int, default=4,
+                 help="cap torch CPU threads (training's 8 genesis workers share this box)")
+ ap.add_argument("--append-metrics", metavar="RUN_DIR", default=None,
+@@ -189,7 +197,39 @@
+     env._build()
+ print(f"[eval] world built in {time.time() - t0:.1f} s")
+ rng = np.random.RandomState(args.seed)
+-uids = rng.choice(env._env.success_uids, size=args.episodes, replace=True)
++if args.ic_file:
++    import json as _json
++    _icj = _json.load(open(args.ic_file))
++    _entries = _icj[args.ic_set]
++    if args.ic_index is not None:
++        _entries = [_entries[int(args.ic_index)]]
++    ics = list(_entries)
++    args.episodes = len(ics)
++    print(f"[eval] ICs from {args.ic_file} set={args.ic_set}"
++          + (f" index={args.ic_index}" if args.ic_index is not None else "")
++          + f" -> {len(ics)} episode(s)  (--episodes/--seed IC draw overridden)")
++else:
++    ics = [int(u) for u in rng.choice(env._env.success_uids, size=args.episodes, replace=True)]
++
++
++def reset_to_ic(ic):
++    """uid int -> demo-IC reset (reset_to_uid); dict -> explicit can/goal pose
++    (FullTaskEnv.reset_to, the rnd entries of eval_ics.json)."""
++    if not isinstance(ic, dict):
++        return reset_to_uid(int(ic))
++    if env._env is None:
++        env._build()
++    kw = {k: ic[k] for k in ("can_pos", "can_quat", "goal_pos") if ic.get(k) is not None}
++    env._env.reset_to(kw)
++    getattr(env, "sync_delta_target", lambda: None)()
++    obs = {"is_first": True, "is_last": False, "is_terminal": False, "image": env._image()}
++    for k in STAGE_KEYS + ("task_success",):
++        obs[f"log_{k}"] = np.float32(0.0)
++    return obs
++
++
++def _ic_label(ic, ep):
++    return f"uid{int(ic)}" if not isinstance(ic, dict) else args.ic_set + str(args.ic_index if args.ic_index is not None else ep)
+ 
+ # Outcome taxonomy is scope-aware: in scope='place' the can STARTS held, so
+ # 'picked' is trivially granted on every episode (the pre-2026-08-08 eval
+@@ -202,7 +242,7 @@
+ ep_tiles = []   # (frames (T,64,128,3) RGB, outcome) per episode, for the grid video
+ for ep in range(args.episodes):
+     t_ep = time.time()
+-    obs = reset_to_uid(uids[ep])
++    obs = reset_to_ic(ics[ep])
+     state = agent.get_initial_state(1)
+     trans = pack(obs, 0.0)
+     frames = [obs["image"]]
+@@ -222,7 +262,7 @@
+     dt = time.time() - t_ep
+ 
+     s = args.scale
+-    vid = OUT / f"ep{ep}_uid{int(uids[ep])}_{outcome}.mp4"
++    vid = OUT / f"ep{ep}_{_ic_label(ics[ep], ep)}_{outcome}.mp4"
+     h, w = 64 * s, 128 * s
+     vw = cv2.VideoWriter(str(vid), cv2.VideoWriter_fourcc(*"mp4v"), args.fps, (w, h))
+     for f in frames:
+@@ -232,9 +272,10 @@
+ 
+     ep_tiles.append((np.stack([np.hstack([f[..., :3], f[..., 3:]])
+                                for f in frames]), outcome))
+-    results.append(dict(ep=ep, uid=int(uids[ep]), outcome=outcome, steps=t,
++    results.append(dict(ep=ep, uid=(int(ics[ep]) if not isinstance(ics[ep], dict) else None),
++                        ic=(ics[ep] if isinstance(ics[ep], dict) else None), ic_set=(args.ic_set if args.ic_file else None), outcome=outcome, steps=t,
+                         reward=ep_reward, seconds=round(dt, 1), video=str(vid)))
+-    print(f"ep{ep}: uid={int(uids[ep])} {outcome} ({t} steps, r={ep_reward:.1f}, "
++    print(f"ep{ep}: {_ic_label(ics[ep], ep)} {outcome} ({t} steps, r={ep_reward:.1f}, "
+           f"{dt:.1f} s)", flush=True)
+ 
+ # ---- single grid video: every episode as one tile (top|wrist), outcome-labeled.

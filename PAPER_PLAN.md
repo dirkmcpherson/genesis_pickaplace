@@ -244,6 +244,82 @@ localized per stage rather than inferred through the funnel.
 
 ## Decision Log
 
+- 2026-08-23 14:50 EDT (assistant, cluster session): **FINAL-RR WINDOW BLOCK LAUNCHED** on
+  `baselines/matched_v2` (dH = recorder `--arrival either` 56/66; dDP 56 of 64 from the
+  DP-r4 pilot s0 ckpt 020000; dR2D 56 of 64 from r2dreamer dH-dense s51 BEST (A2); identical
+  IC multiset; fails arms 8 teacher fails). DP 3×5 seeds (10-14), RLPD 3×{sparse,dense}×4
+  seeds (10-13) = 39 sbatch jobs; pre-launch audit passed with amendments A4-A8
+  (paper/AUDIT_prelaunch_2026-08-23.md); dense smoke clean. DP-r4 pilots: hold 11-13/15,
+  rnd 15/30 (vs stride-1 dHpruned_DP 0.62/0.23). Follower lab (paper/real2sim_follower_lab_
+  2026-08-23.md): tier 1 (arrival test) adopted; tier 2 = SIMULATOR defects (no gravity comp,
+  soft PD, robot mounted >=3 cm too low, gripper driven ~10 N·m into the can -> 7-8 mm
+  penetration) with a real-data-justified fix (gravity comp + kp×4 + 3 cm riser: sim-vs-real
+  joint error 0.047 -> 0.004 rad) DEFERRED to the full rerun (every teacher must be retrained
+  in the new world). Session log: paper/SESSION_LOG_2026-08-23_cluster.md.
+
+- 2026-08-23 (user): **Independent-audit schedule LOCKED** — milestone-gated (pre-launch /
+  results readout / claim / change / reproducibility), fresh-context read-only auditors citing
+  file:line; table in PREREG_final_round_robin_2026-08-23.md §11. First due: pre-launch audit
+  2026-08-24 before the DP/RLPD block.
+
+- 2026-08-23 (cluster session, assistant on pax020 via ssh; user decisions inline):
+  **FINAL-ROUND-ROBIN PREREQUISITES STARTED.** (1) dH re-recorded through the learners'
+  MDP with the contract-v1 recorder (`baselines/record_demos.py --teacher human`,
+  repeat 4, cap 0.025, tip rule, 1200 sim steps): **51/66 kept** (bar >=50). The 15
+  losses are deterministic (re-run byte-identical): 2 lying-can ICs (tip at decision 1),
+  1 knock-over, 5 human demos longer than the horizon (source tapes 1260-2530 frames),
+  7 where the human moved faster than the learners' cap (follower lags, dilation 1.1-3.0).
+  Kept dilation p50 1.04 (max 1.36) — the follower tracks the human in real time.
+  12 of the 66 have no recovered placement; `--ic-from-tape` resets to the tape's own
+  frame-0 can pose (10 of those 12 kept). (2) dR2D teacher: CHAMPION_1576820.pt is NOT on
+  the cluster; a PROVISIONAL dR2D set (64 tapes / 64 of 66 ICs) was recorded from the
+  round-robin dH-dense s51 BEST checkpoint (1.00 on sel at selection); becomes the teacher
+  of record (amendment) unless the champion is rsynced in time. (3) DP-r4 dH pilot (2
+  seeds) training on pax020 — its median seed becomes the dDP teacher per PREREG §3.1.
+  (4) USER PLAN: after this window, give a Fable an unlimited budget to improve the
+  real->sim translation of the human demos (the recorder's kept/dilation/frac-at-cap on
+  the pruned 66 is the scoreboard; baseline 51/66, 1.04, 5.5%); if fruitful, the whole
+  chain (recorder -> matched sets -> sbatch) reruns mechanically. Reading list for that
+  effort: paper/p1_delta_divergence_2026-08-13.md, paper/measured_ref_integration_2026-08-14.md,
+  baselines/rl/rerecord_delta_demos.py, CAN_STARTING_POSITION.md.
+
+- 2026-08-23 (user direction + assistant audit): **TIME-BASE STANDARDIZATION OF THE
+  DEMO SETS — proposal, decision pending.** User: "we did action_repeat=4 to help the
+  WM and RL algorithms, but it doesn't make sense to then give it DP demos that don't
+  have the action repeat." Audited state of record (round robin 08-19):
+  learners — RLPD action_repeat **1** (sbatch_rlpd.sh; the ar4/ar8 waves of 08-14 were
+  pre-T1 and are dead), DP stride 1 (30 Hz frames, 1200-step eval), r2dreamer **4**,
+  dv3 **4**. Tapes — dH: human 30 Hz joystick, stride 1; dDP: DP teacher acting at
+  stride 1 (m1all_harvest, 1200-step cap), stride-1 tape; dR2D: r2dreamer champion
+  acting at repeat 4, recorded per SIM step (stride-1 tape whose 4-frame windows are
+  the teacher's own decisions). Consumption — RLPD/DP take the stride-1 tapes as-is;
+  dv3 gets stride-4 windows via convert_genesis_demos_repeat.py (`*_msr_delta25_r4`);
+  r2dreamer downsamples the stride-1 `*_delta25` dirs at load by the same window rule.
+  So for the repeat-4 learners the stride-4 re-encoding is EXACT for dR2D by
+  construction, near-exact for dH, and lossy for dDP: census tool (new "Time-base"
+  table, analysis/characterize_demo_sets.py --stride 4, dev box 08-23): windows exactly
+  representable dDP 0.1% vs human-proxy 54%; command-vs-ramp deviation p50 0.25 cap
+  (6 mrad) vs 0.01 cap; windows with an intra-window direction reversal 94% vs 5%
+  (the DP teacher's absolute-target command flips sign on ~40% of consecutive frames
+  — diffusion jitter around a smooth measured path; the PD filters it, so the
+  measured-state consequence is small, but the (s, a_window, s') triples the WM learns
+  from are not the ramp the learner would execute). Conclusion: the model-demo arms
+  are NOT on a common time-base with their learners — dR2D is the only natively
+  repeat-4 model set; dDP is a stride-1 teacher's tape re-windowed. Options, cheapest
+  first: (A) re-harvest dDP with the SAME DP teacher held at repeat 4 (policy queried
+  once per 4 sim steps, target held) — needs a yield check first (the teacher was
+  trained on 30 Hz data; hold-4 changes its closed loop); (B) make DP a repeat-4
+  learner too (train on the stride-4 windowed human tapes, eval hold-4 at 300
+  decisions) and harvest dDP from THAT teacher — every learner and every tape on one
+  decision clock, dDP natively representable like dR2D; requires retraining the DP
+  rows and the dDP set; (C) keep the learners, report the time-base per (set, learner)
+  with the census table and treat dDP's re-windowing as a stated confound of the WM
+  human-vs-model contrast (on top of the fail-tape confound). Recommendation: B as
+  the paper's standard (one clock), with A as the immediate cluster test of whether
+  a hold-4 DP teacher still picks. RLPD stays stride 1 unless re-positively-controlled
+  at repeat 4. Numbers: scratchpad census_stride.md; to be re-run on the cluster
+  over all five sets (dR2D expected ~1.0 exact).
+
 - 2026-08-10 (night): ACTION-SPACE FIX STACK for the r2dreamer arm (user
   directive: "restrict the range of the env's diff_joint action space so it's
   not so different from the demonstrations"). Forensics on pick_delta_s0's
@@ -283,6 +359,17 @@ localized per stage rather than inferred through the funnel.
 - 2026-07-29: All headline claims require ×3 seeds. (standing honesty protocol)
 
 ## Deferred maintenance (not urgent, tracked so it isn't lost)
+
+- **Full-task recording is code-ready, deferred until the program expands past pick** (user 08-24:
+  pick phase only for now). `record_demos.py --scope full` (contract v1 + additive scope/max_sim_steps
+  scalars, stage flags, partial dir, scope-aware validator; commit 90c6024; smoke 3/3 clean on the
+  cluster: uid 242 nested, 233 contact-partial, 251 picked-partial, corrected world, job 2830915).
+  Source gap: `baselines/episodes_all` (91 full tapes) is NOT on the cluster -- rsync it (or use
+  `episodes_fulltask_pruned`, 26 tapes = 20 nested + 6 contact, cluster-resident). Deferred command:
+  `TEACHER=human SRC=baselines/episodes_fulltask_pruned OUTDIR=baselines/demos_v1/dHfull_w2 SHARD_N=8
+  PARTITION=batch CPUS=4 MEM=12g TIME=3:00:00 EXTRA="--scope full --ic-from-tape --arrival either
+  --sim-variant gc_kp4_riser3_shelf6 --max-sim-steps 2400" bash cluster/sbatch_record.sh` then
+  `--teacher human --scope full --merge --outdir` on the three dirs.
 
 - Git history carries ~862MB of accidentally-committed datasets (2026-07-31).
   Cosmetic: fresh clones are slow. Fix = `git filter-repo` + coordinated

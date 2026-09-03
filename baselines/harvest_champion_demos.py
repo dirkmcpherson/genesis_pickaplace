@@ -51,6 +51,14 @@ Usage (CPU; the venv must have tensordict/omegaconf -> r2dreamer's .venv):
       --outdir baselines/episodes_champion_pick --shard-idx 0 --shard-n 8
   ... --teacher random --outdir baselines/episodes_champion_negctl
   ... --merge --outdir baselines/episodes_champion_pick        # census, no sim
+
+--images (added 08-18, dv3 round-robin gap): the plain set above has NO images
+(only states/actions were ever recorded), so it cannot feed
+dreamerv3-torch/convert_genesis_demos_repeat.py (asserts an 'images' key) --
+the dR2D_DV3 round-robin arm needs a re-harvest with --images:
+  ... --outdir baselines/episodes_champion_pick_img \
+      --full-outdir baselines/episodes_champion_pick_img_full --images
+Still CPU-only (FullTaskEnv(backend='cpu', camera_rig=True)); no GPU touched.
 """
 import os
 
@@ -116,6 +124,16 @@ ap.add_argument("--device", default="cpu")
 ap.add_argument("--torch-threads", type=int, default=2)
 ap.add_argument("--merge", action="store_true",
                 help="no sim: merge shard manifests + print the census")
+ap.add_argument("--images", action="store_true",
+                help="ALSO record a per-SIM-step 'images' array (64,64,6) uint8, "
+                     "aligned 1:1 with states/actions (rig_obs(): topB overhead ++ "
+                     "wrist RGB). Needed for pixel-based students (dv3/r2dreamer image "
+                     "mode); the plain (no --images) champion set has no images and "
+                     "cannot feed convert_genesis_demos_repeat.py, which asserts an "
+                     "'images' key (paper/CLUSTER_ROUND dv3 round-robin gap, 08-18). "
+                     "CPU-only (FullTaskEnv(backend='cpu', camera_rig=True) already "
+                     "renders on CPU; this flag adds ~REPEAT-4x more render() calls "
+                     "than the agent's own per-decision obs, so it is opt-in.")
 args = ap.parse_args()
 
 OUT = REPO / args.outdir
@@ -287,12 +305,16 @@ assert abs(PICK_Z - 0.1505) < 1e-6, PICK_Z
 # the sim executed, per sim step, with no second implementation to drift.
 _inner = env._env
 _orig_step = _inner.step
-_rec = dict(states=[], actions=[], s_prev=None, on=False)
+_rec = dict(states=[], actions=[], images=[], s_prev=None, on=False)
 
 
 def _recording_step(a_norm):
     if _rec["on"]:
         _rec["states"].append(np.asarray(_rec["s_prev"], dtype=np.float32))
+        if args.images:
+            # rig_obs() BEFORE the sim advances -> aligned with s_prev (the obs
+            # this step's action was taken from), same convention as states.
+            _rec["images"].append(env._image())
         a_phys = pick_env.denormalize_action(a_norm)
         # cross-check against the adapter's own integrated target (float32 round-trip
         # through normalize/denormalize only; a mismatch means the adapter changed)
@@ -346,15 +368,18 @@ STAMP = dict(source="r2dreamer_champion_harvest", teacher_ckpt=str(CKPT),
              teacher_kind=args.teacher, act_mode=args.mode, delta_ref="target",
              delta_scale=DELTA_CAP, teacher_action_repeat=REPEAT, tape_stride=1,
              git_genesis=GIT_G, git_r2dreamer=GIT_R,
-             schema="states(n,17) actions(n,7 ABSOLUTE [6 rad, grip 0..1]) "
-                    "uid=rollout_index ic_uid=IC label=success stage=picked")
+             schema="states(n,17) actions(n,7 ABSOLUTE [6 rad, grip 0..1])"
+                    + (" images(n,64,64,6) uint8 (rig_obs, aligned with states)"
+                       if args.images else "") +
+                    " uid=rollout_index ic_uid=IC label=success stage=picked")
 
 
 # ------------------------------------------------------------------------- rollout
 def roll(uid):
     """One closed-loop rollout. Returns (record, arrays|None)."""
     obs, s0 = reset_to_uid(uid)
-    _rec["states"], _rec["actions"], _rec["s_prev"], _rec["on"] = [], [], s0, True
+    _rec["states"], _rec["actions"], _rec["images"] = [], [], []
+    _rec["s_prev"], _rec["on"] = s0, True
     if agent is not None:
         state = agent.get_initial_state(1)
         trans = pack(obs, 0.0)
@@ -377,6 +402,10 @@ def roll(uid):
     outcome = "picked" if picked else ("tipped" if tipped else "timeout")
     S = np.stack(_rec["states"]).astype(np.float32) if _rec["states"] else None
     A = np.stack(_rec["actions"]).astype(np.float32) if _rec["actions"] else None
+    I = (np.stack(_rec["images"]).astype(np.uint8)
+         if (args.images and _rec["images"]) else None)
+    if args.images and S is not None:
+        assert I is not None and len(I) == len(S), (len(I) if I is not None else None, len(S))
     rec = dict(ic_uid=int(uid), outcome=outcome, decisions=int(t),
                sim_steps=int(0 if S is None else len(S)),
                seconds=round(time.time() - t_ep, 1), kept=False)
@@ -393,9 +422,13 @@ def roll(uid):
         return rec, None, None
     end = min(k + 2, len(S))
     rec.update(kept=True, grant_frame=k, n=int(end), n_full=int(len(S)))
-    return rec, dict(states=S[:end], actions=A[:end], n=int(end),
-                     label="success", stage="picked"), \
-        dict(states=S, actions=A, n=int(len(S)), label="success", stage="picked")
+    trunc = dict(states=S[:end], actions=A[:end], n=int(end),
+                 label="success", stage="picked")
+    full = dict(states=S, actions=A, n=int(len(S)), label="success", stage="picked")
+    if I is not None:
+        trunc["images"] = I[:end]
+        full["images"] = I
+    return rec, trunc, full
 
 
 records = []

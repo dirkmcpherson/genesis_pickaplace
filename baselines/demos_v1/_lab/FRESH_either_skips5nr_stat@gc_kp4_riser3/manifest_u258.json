@@ -1,0 +1,129 @@
+{
+ "config_name": "either_skips5nr_stat",
+ "config": {
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 25,
+  "arrival": "either",
+  "tol_t": 0.025,
+  "pass_tol": 0.075,
+  "aim": "window",
+  "L": 0,
+  "skip_tol": 0.005,
+  "skip_grip": 0.02,
+  "skip_ref": 10.0,
+  "max_skip": 64,
+  "grip_settle": 0.003,
+  "effort_settle": 0.1,
+  "skip_guard": 45,
+  "skip_dq": 0.002,
+  "skip_lag": null,
+  "stall_hold": "jump",
+  "stat_eps": 0.001
+ },
+ "sim": "gc_kp4_riser3",
+ "sim_applied": {
+  "name": "gc_kp4_riser3",
+  "kp": [
+   800.0,
+   800.0,
+   600.0,
+   400.0,
+   240.0,
+   240.0
+  ],
+  "kv": [
+   40.0,
+   40.0,
+   30.0,
+   20.0,
+   12.0,
+   12.0
+  ],
+  "effort": [
+   50.0,
+   50.0,
+   50.0,
+   20.0,
+   20.0,
+   20.0
+  ],
+  "gravity_comp": 1.0,
+  "riser": 0.03
+ },
+ "git_sha": "3cbe909",
+ "shard": [
+  0,
+  1
+ ],
+ "built": "2026-08-23T13:29:39",
+ "records": [
+  {
+   "ic_uid": 258,
+   "ic_can_xy": [
+    0.4332,
+    -0.019
+   ],
+   "outcome": "picked",
+   "decisions": 69,
+   "sim_steps": 273,
+   "seconds": 10.1,
+   "kept": true,
+   "end_reason": "terminated",
+   "src_uid": 258,
+   "src_label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 278,
+   "waypoints_reached": 275,
+   "dwell_stalls": 0,
+   "dilation": 0.993,
+   "settle_decisions": 0,
+   "n_cap": 8,
+   "frac_cap": 0.1159,
+   "skipped": 7,
+   "dil_active": 0.993,
+   "exhaust_simstep": null,
+   "fast_stalls": 0,
+   "config": "either_skips5nr_stat",
+   "src_diag": {
+    "n": 278,
+    "idle_frac": 0.368,
+    "T_cap": 287,
+    "T_path": 98,
+    "frac_win_over_cap": 0.095,
+    "peak_win": 0.153,
+    "frac_qwin_over_cap": 0.088,
+    "lead_p99": 0.167,
+    "lead_max": 0.17,
+    "frac_lead_over_leash": 0.162,
+    "first_lift": 276,
+    "grip_close": 173,
+    "tilt0": 0.0,
+    "can_xy0": [
+     0.4332,
+     -0.019
+    ]
+   },
+   "fid": {
+    "path_ratio": 0.921,
+    "dev_max": 0.1986,
+    "path_ratio_cmd": 0.897,
+    "dev_cmd_max": 0.0452,
+    "dev_cmd_p50": 0.0035,
+    "dev_cmd_p95": 0.0249,
+    "dev_p95": 0.1536,
+    "dev_mean": 0.0796,
+    "cov_max": 0.2303,
+    "dev_at_close": 0.0751,
+    "grip_close_simstep": 172,
+    "grip_close_human": 173,
+    "can_move_before_close": 0.0404
+   },
+   "rollout": 100580,
+   "file": "baselines/demos_v1/_lab/FRESH_either_skips5nr_stat@gc_kp4_riser3/100580.npz",
+   "label": "success",
+   "n": 69
+  }
+ ]
+}

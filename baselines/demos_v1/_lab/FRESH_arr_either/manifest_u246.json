@@ -1,0 +1,101 @@
+{
+ "config_name": "arr_either",
+ "config": {
+  "tol": 0.025,
+  "max_dwell": 8,
+  "dilation_cap": 3.0,
+  "settle": 25,
+  "arrival": "either",
+  "tol_t": 0.025,
+  "pass_tol": 0.075,
+  "aim": "window",
+  "L": 0,
+  "skip_tol": null,
+  "skip_grip": 0.02,
+  "skip_ref": 0.025,
+  "max_skip": 64,
+  "grip_settle": 0.01,
+  "effort_settle": null,
+  "skip_guard": 0,
+  "skip_dq": null,
+  "skip_lag": null,
+  "stall_hold": "jump",
+  "stat_eps": null
+ },
+ "sim": "base",
+ "sim_applied": null,
+ "git_sha": "3cbe909",
+ "shard": [
+  0,
+  1
+ ],
+ "built": "2026-08-23T13:08:19",
+ "records": [
+  {
+   "ic_uid": 246,
+   "ic_can_xy": [
+    0.4381,
+    -0.05
+   ],
+   "outcome": "tipped",
+   "decisions": 128,
+   "sim_steps": 509,
+   "seconds": 18.7,
+   "kept": false,
+   "end_reason": "terminated",
+   "src_uid": 246,
+   "src_label": "success",
+   "src_stage": "picked",
+   "n_src_frames": 1556,
+   "waypoints_reached": 511,
+   "dwell_stalls": 0,
+   "dilation": 0.329,
+   "settle_decisions": 0,
+   "n_cap": 4,
+   "frac_cap": 0.0312,
+   "skipped": 0,
+   "dil_active": 0.329,
+   "exhaust_simstep": null,
+   "fast_stalls": 0,
+   "config": "arr_either",
+   "src_diag": {
+    "n": 1556,
+    "idle_frac": 0.682,
+    "T_cap": 1569,
+    "T_path": 207,
+    "frac_win_over_cap": 0.021,
+    "peak_win": 0.154,
+    "frac_qwin_over_cap": 0.006,
+    "lead_p99": 0.089,
+    "lead_max": 0.101,
+    "frac_lead_over_leash": 0.0,
+    "first_lift": 1554,
+    "grip_close": 1403,
+    "tilt0": 0.0,
+    "can_xy0": [
+     0.4381,
+     -0.05
+    ]
+   },
+   "fid": {
+    "path_ratio": 0.962,
+    "dev_max": 0.0278,
+    "path_ratio_cmd": 0.924,
+    "dev_cmd_max": 0.0668,
+    "dev_cmd_p50": 0.0298,
+    "dev_cmd_p95": 0.039,
+    "dev_p95": 0.0118,
+    "dev_mean": 0.0029,
+    "cov_max": 0.025,
+    "dev_at_close": null,
+    "grip_close_simstep": -1,
+    "grip_close_human": 1403,
+    "can_move_before_close": 0.0681
+   },
+   "rollout": 100460,
+   "file": "baselines/demos_v1/_lab/FRESH_arr_either_fails/100460.npz",
+   "label": "fail",
+   "n": 128
+  }
+ ]
+}

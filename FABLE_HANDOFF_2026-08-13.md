@@ -1306,3 +1306,84 @@ RELAUNCHED CORRECTLY: msHEAD_demo_s{0,1}, March recipe verbatim, 2e5 steps,
 post-F2/F3 code (seeds now real). Bar (registered): success >=0.8 by 2e5 on
 >=1/2 seeds reproduces March; <0.5 on both = HEAD regression suspect ->
 bisect the msrecipe/vec-facade commits. ETA ~10-14h.
+
+## 37. POWER-LOSS-PROOFING + DENSE EXTENSION (08-19 evening)
+
+Context: user may be unavailable up to 10 days; cluster shuts off in ~6; the
+dev box lost power once already. Everything needed to review or continue is
+now in PUSHED git or wandb:
+- paper/REVIEW_GUIDE.md = the cold-start document (read order, wandb map,
+  aggregation rules, open bars, headline claims). START THERE.
+- Round robin final scope = training only, ~20 seeds core + optional dense
+  block (ROUND_ROBIN doc §3 + DENSE EXTENSION section). No cluster harvest
+  round (shutoff). My solo-work plan while user is away: local dense verdict,
+  multi-policy-per-WM pilot on local champion checkpoints, figures/docs from
+  wandb.
+- Dense lever now spans all three RL/WM trainers, gamma-matched per agent
+  (RLPD 0.998 flag; r2dreamer shaped config, 0.999; dv3 SHAPED=1 overlay,
+  0.997). full_env gained pick_shaping_gamma. Pushed: genesis_pickaplace
+  through daf3c23; dreamerv3-torch d645765 (pushed to fork); r2dreamer has NO
+  pushable remote -> its commit 4d98b56 is archived as
+  cluster/r2dreamer_dense_lever.patch (note: the patch swept in the full
+  staged-but-uncommitted port state from prior agent work, 12 files -- all
+  legitimate working-tree state the cluster rsync already carries).
+- Dense verdict state at write time: s1 5/15 fresh (PASS component); s0/s2
+  relaunched post-power-loss, sweeps tonight; bar in ROUND_ROBIN §0.
+- Wednesday smoke ledger: ALL scripts/arms proven on cluster (RLPD dH+dDP,
+  DP dR2D+dDP-inline-build, dv3 dH [dDP/dR2D tails pending], r2d dR2D x2);
+  registry REFUSE/WARN/bypass all demonstrated; wandb sweep push verified.
+
+## §38 (08-19 night) — DENSE VERDICT: PASS; smokes verified; final submit block posted
+- **RLPD dense PASS (final).** Fresh-process 100k sweeps, 15 demo-IC + 15
+  random-IC per seed, scored as ['metrics']['eval/picked']: s0 0/15 demo
+  (3/15 random), s1 4/15 (2/15), s2 5/15 (5/15). Bar >=2/3 seeds >=3/15: met
+  (s1,s2). Pooled demo-IC 9/45 = 0.20 >= 0.16: met. Matches the registered
+  §3 expectation (ignition odds up, ceiling unchanged). s1's original
+  pre-power-loss sweep read 5/15; the re-sweep (after /tmp wiped the
+  artifacts) reads 4/15 — same checkpoint, fresh-process episode variance;
+  both clear the component. Verdict JSONs archived in
+  paper/dense_verdict_2026-08-19/ (30 files/seed).
+- **All four remaining cluster smokes verified directly in wandb** (no .out
+  needed): dDP_RLPD-n20_s0 (sweep/ fields pushed), dDP_DP_s0 + -eval
+  (in-job build + eval, 0.5/0.5), dv3 genesis_pixels_smoke_dDP-joint and
+  _dR2D-joint (finished). Smoke matrix complete: every script x arm proven.
+- **FINAL THURSDAY SUBMIT BLOCK appended to ROUND_ROBIN** (paste-and-leave):
+  core 20 seeds (RLPD dDP x6, DP dR2D x3, r2d dR2D s40-43, dv3 dH x3 /
+  dDP x2 / dR2D x2) + dense 13 (RLPD shaped s3-8 FRESH seeds — pre-data
+  amendment away from s0-5 to avoid local-seed re-execution; r2d shaped
+  s50-53; dv3 SHAPED=1 s0-2). 33 jobs. Rsync of dense plumbing + git pull
+  required first (lines in the doc).
+- REVIEW_GUIDE dense bar marked CLOSED/PASS.
+- Local wandb runs dH_RLPD-dense_s{0,2} show in-train summaries that differ
+  from the fresh sweeps (e.g. s0 in-train random 0 vs sweep 3/15) — protocol
+  unchanged: fresh-process sweep JSONs are the numbers of record.
+
+## §39 (08-19 ~23:50) — ROUND ROBIN LIVE (33 jobs); SHAPING TIMESCALE BUG caught post-submit, fixed
+- User submitted the FULL final block a day early (job IDs 2667157-2667192;
+  census verified: 12 rlpd + 3 dp + 8 r2d + 10 dv3 = 33, matching the plan
+  exactly). paper/ROUND_ROBIN_RUNNING_2026-08-19.md = what runs, incl.
+  obs/action spaces per algorithm.
+- **Live-fire caught a REAL shaped-reward bug** (the reason live-fire exists):
+  full_env applied gamma*phi'-phi per SIM step; r2d/dv3 discount per AGENT
+  step (repeat 4). Residual +(1-gamma)*2*dist per substep = reward for
+  staying FAR, per-episode ~ the +100 terminal (dv3 gamma 0.997 x scale 100:
+  ~0.4-0.5/decision at d=0.3, ~60-80/episode). RLPD repeat-1 EXACT ->
+  local dense verdict + 6 running RLPD-shaped jobs unaffected.
+- Fix: full_env.step() applies shaping once per call (covers dv3 env-side
+  repeat; repeat-1 numerics IDENTICAL — all _step_once returns come after
+  the old block, so no path skipped it); r2dreamer adapter applies at its
+  own boundary (FullTaskEnv pick_shaping=False there; adapter reads
+  _pick_phi(), gamma 0.999, scaled with reward_scale). r2dreamer commit
+  6af0ec7, archived as cluster/r2dreamer_shaping_boundary_fix.patch.
+- Verification: FullTaskEnv repeat-4 parity max_err 0.00e+00 at gamma
+  0.997 AND 0.999, dynamics bit-identical, shaping fires every step
+  (scratchpad harness, 3 harness bugs fixed en route: action dim, 5-tuple
+  step API, array obs). dv3 live-run (exact cluster config stack) PASSED
+  pre-fix already at the plumbing level: train_return 55-114 with
+  log_picked 0 = potential flowing. r2d live-run through the PATCHED
+  adapter: prefill 268 eps @ scale 100, online steps clean. r2d
+  adapter-boundary numeric parity: PASS (max_err 2.38e-07, 40/40 steps shaped, dynamics identical; artifacts paper/shaping_livefire_2026-08-19/).
+- User scancelled the 7 shaped WM jobs while still PD (zero GPU wasted);
+  recovery block (pull + one-file rsync + resubmit with
+  DUPLICATE_OK="shaping-timescale-fix-08-19") is in ROUND_ROBIN
+  "SHAPING TIMESCALE FIX" section.

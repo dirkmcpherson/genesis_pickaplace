@@ -161,3 +161,16 @@ this setup: 110-137k. PROVISIONAL PASS pending the 100k/150k decision points
 scores the relaxed cut (same predicate the March reference used); stated for
 the record. If confirmed: the fork is sound; bounded_normal off the suspect
 list; genesis lottery = task x recipe.
+
+## DENSE-REWARD ASSESSMENT (local, launched 08-18 ~13:00, registered pre-data)
+Lever: FullTaskEnv pick_shaping (potential-based approach term -2*||eef-can||,
+gamma-matched 0.998, Ng-invariant, TRAINING-ONLY; eval metric unchanged =
+sparse fresh-process pick). Gate passed: default path pays 0 / byte-identical
+obs; shaped path 60/60 nonzero at ~0.004/step; dynamics-neutral; bounded.
+Design: 3 seeds x 100k, dH demos, nb config + --pick-shaping on. Compare vs
+the cluster n=16 dH primary (8/16 ignited, pooled 0.221) with the same-machine
+caveat (local box; the local expansion-wave dH seeds 3-7 = 2/5, 0.16 pooled
+are the like-for-like local reference).
+BAR for "worth queueing Thursday": >=2/3 seeds >=3/15 fresh demo-IC AND pooled
+pick rate >= the local dH reference (0.16). Fail either -> dense stays off the
+round robin; the sparse-is-hard story stands unamended.

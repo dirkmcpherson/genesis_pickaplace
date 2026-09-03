@@ -1,0 +1,386 @@
+From 4d98b56fff8768e2a884a456b1efb25b492198b1 Mon Sep 17 00:00:00 2001
+From: j <dirkmcpherson@gmail.com>
+Date: Wed, 19 Aug 2026 17:26:05 -0400
+Subject: [PATCH] Dense lever for r2dreamer: pick_shaping env knob (gamma
+ 0.999) + shaped champion config variant
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01AVJaT7Q3CMdpEUB5ogc3GM
+---
+ .../env/genesis_pick_v5d4c_delta_shaped.yaml  |  86 ++++++
+ envs/__init__.py                              |   1 +
+ envs/genesis.py                               | 257 ++++++++++++++++++
+ 3 files changed, 344 insertions(+)
+ create mode 100644 configs/env/genesis_pick_v5d4c_delta_shaped.yaml
+ create mode 100644 envs/genesis.py
+
+diff --git a/configs/env/genesis_pick_v5d4c_delta_shaped.yaml b/configs/env/genesis_pick_v5d4c_delta_shaped.yaml
+new file mode 100644
+index 0000000..4d3e965
+--- /dev/null
++++ b/configs/env/genesis_pick_v5d4c_delta_shaped.yaml
+@@ -0,0 +1,86 @@
++# genesis_pick_v5d4c_delta: v5d4 (champion recipe) + RETURN-TARGET CLAMP pilot
++# from the pick_delta_s0 lunge forensics + user directive "restrict the range
++# of the env's diff_joint action space so it's not so different from the demos").
++#
++# pick_delta_s0 (v4_delta) showed the first genuine learning transient (train
++# picked 0.24 @128k, entropy collapsed to -5) then decayed while the policy
++# LUNGED at the can (eval: tips in 1-2 agent steps, forearm strikes; grid video
++# r2dreamer_genesis/f1jbsa0b). Three compounding causes, all fixed here:
++#
++# 1. actor_dist bounded_normal_clipped: stock bounded_normal tanh-bounds the
++#    MEAN only -- with entropy-driven std near max_std 1.0 the actor SAMPLED at
++#    +-4 (train/action_max 3.8/-4.3). The env executes clip(a) but the buffer
++#    and imagination keep the raw sample: world model conditioned on fictional
++#    actions (the v6-v13 demo-scale bug family, policy side), log_prob of tail
++#    samples in the actor update, and every |a|>1 sample = saturated max-speed
++#    command. bounded_normal_clipped projects samples (incl. rsample -- the
++#    method collect and imagination actually call) into [-1,1].
++# 2. delta_cap 0.04 -> 0.025: the demos' p99 per-frame commanded delta is
++#    0.0259 rad (median 0.002 -- humans are mostly nearly still). At cap 0.04 a
++#    saturated action moves 69 deg/s, 1.5x beyond anything demonstrated; at
++#    0.025 saturation = the demos' p99 speed (44 deg/s). Re-encode cost: 1.31%
++#    of demo frames clip (replay-gated below). Demo set MUST be re-encoded at
++#    this cap: demonstrations/genesis_pick_pruned_delta25.
++# 3. act_entropy 3e-4 -> 3e-5: v4_delta silently inherited v3's ManiSkill-stock
++#    3e-4 -- 10x the locally-proven v2 recipe value. pick_delta_s0's rate decay
++#    (0.24 -> 0.08) tracked entropy re-ratcheting between demo re-injections.
++#
++# delta_leash_mult 5: the leash bounds |target - qpos| and must stay >= the
++# demos' ABSOLUTE PD lead (p99 0.126 rad) regardless of cap: 5 * 0.025 = 0.125
++# (v4: 3 * 0.04 = 0.12). Everything else inherited from v4_delta.
++
++task: 'genesis_pick'
++steps: 3e6
++env_num: 6               # ONE Genesis CPU world per spawn worker
++eval_episode_num: 0      # eval builds eval_episode_num EXTRA worlds -- keep 0 for now
++action_repeat: 4         # adapter-side: 1 agent step = 4 sim steps; in delta mode the
++                         # target integrates a*delta_cap on EACH of the 4 sim steps
++demo_downsample: 4       # MUST equal action_repeat (demo_prefill asserts)
++train_ratio: 512         # = 1 update / 2 agent steps at repeat 4 (MS-like intensity)
++time_limit: 400          # sim steps; // action_repeat -> 100 AGENT steps (MS parity)
++
++seed: ${seed}
++device: ${device}
++
++size: [64, 64]
++scope: 'pick'            # +1 and terminate on the pick
++action_mode: delta_joint
++delta_cap: 0.025         # rad per sim step per arm dim = demo p99 speed; MUST match
++                         # the demo set's encoding cap (genesis_pick_pruned_delta25)
++delta_leash_mult: 5      # 5 * 0.025 = 0.125 >= demo PD-lead p99 0.126 (see header)
++actor_dist: bounded_normal_clipped   # consumed by model/_base_.yaml oc.select hook
++actor_bc_lambda: 0.0     # MUST STAY 0 (user, 2026-08-11): actor-BC imitates the
++                         # demonstrator's actions and CONFOUNDS the H4 design --
++                         # the world-model arm must consume demos as
++                         # dynamics/reward DATA only. Non-confounding levers for
++                         # the exploration-starvation problem: demo_duplicate,
++                         # demo_reinject_every, act_entropy, budget.
++demo_dir: null           # set to .../dreamerv3-torch/demonstrations/genesis_pick_pruned_delta25
++demo_reinject_every: 150000  # d4: halved cadence (proven with duplicate 4)
++demo_duplicate: 4       # d4: demos ~10%% of full buffer (43k of 450k rows)
++reward_scale: 100.0      # env AND demo rewards (same factor both places)
++
++# Consumed via ${oc.select:...} hooks in configs.yaml / model/_base_.yaml:
++storage_device: cpu      # 64x64x6 uint8 replay stays in RAM
++horizon: 333             # discount 0.997; pick at ~100 agent steps -> 0.74 visibility
++act_entropy: 3e-5        # v2-recipe value (NOT v3/v4's stock 3e-4 -- see header)
++
++encoder:
++  mlp_keys: '$^'
++  cnn_keys: 'image'
++decoder:                 # unused unless model.rep_loss=dreamer, but the group is referenced
++  mlp_keys: '$^'
++  cnn_keys: 'image'
++# --- v5d4 provenance (2026-08-11) -------------------------------------------
++# This is the CHAMPION recipe: pick_delta25d4_s0 produced CHAMPION_1576820
++# (eval 0.91 sampled n=45 / 1.00 mode, demo ICs, hardened predicate) and an
++# independent 0.87 draw 400k steps later. Training is BISTABLE (lambda-return
++# explosion past the 100 max -- diagnosed, unpatched): checkpoints are a phase
++# lottery, so the sbatch runs an archive+eval+prune loop and a best-checkpoint
++# confirmation stage. Known caveat: discovery-phase seed variance is severe
++# (seed 1 never discovered in 1.9M steps).
++return_clamp: 100.0    # = reward_scale * pick(+1); the known max return (clamp pilot)
++# DENSE variant (08-19): champion recipe + TRAINING-ONLY pick-scope potential
++# shaping (FullTaskEnv pick_shaping, gamma=0.999 in the wrapper). Eval metric
++# unchanged (sparse fresh picked). See genesis_pickaplace paper/ROUND_ROBIN doc.
++pick_shaping: true
+diff --git a/envs/__init__.py b/envs/__init__.py
+index a4388f5..f5a46ea 100644
+--- a/envs/__init__.py
++++ b/envs/__init__.py
+@@ -132,6 +132,7 @@ def make_env(config, id):
+             # TRAINING-ONLY dense shaping for scope='place' (FullTaskEnv
+             # shaping=); default false, honest metric stays placed_v2.
+             place_shaping=config.get("place_shaping", False),
++            pick_shaping=config.get("pick_shaping", False),
+             # scope='place' entry bank path; null -> legacy single-entry bank
+             place_entry_bank=config.get("place_entry_bank", None),
+             # one agent step = N sim steps (rewards summed, early break on
+diff --git a/envs/genesis.py b/envs/genesis.py
+new file mode 100644
+index 0000000..0b3202e
+--- /dev/null
++++ b/envs/genesis.py
+@@ -0,0 +1,257 @@
++"""Genesis pick-and-place suite for r2dreamer (task: genesis_pick).
++
++Wraps genesis_pickaplace's FullTaskEnv (staged sparse reward, [-1,1]^7 joint
++actions, 64x64x6 two-camera rig obs: overhead RGB ++ wrist RGB). Ported from
++the dv3 adapter (~/workspace/dreamerv3-torch/envs/genesis.py), rebased on
++gymnasium + the metaworld adapter's API: bare-dict reset, old 4-tuple step,
++is_first / is_last / is_terminal in every obs.
++
++Genesis constraints honored here (keep these verbatim):
++  - gs.init exactly once per process, world built ONCE and reused across
++    episodes. LAZY _build() on first reset(): under ParallelEnv the constructed
++    adapter is cloudpickled into a spawn worker -- the world must be built in
++    the WORKER, never in the parent. Nothing genesis-related is imported at
++    module load, and observation_space/action_space are static (readable from
++    the parent proxy without triggering a build).
++  - FullTaskEnv gets max_steps=10**9 so it never self-truncates (and never
++    runs its internal settle mid-episode); episode length is owned by
++    r2dreamer's wrappers.TimeLimit(config.time_limit), which sets
++    obs['is_last']=True + info['discount']=1.0 on timeout. is_terminal fires
++    ONLY on true task termination (scope='pick': picked; plus the tip rule).
++
++Logging contract: trainer.eval SUMS log_* obs keys per step, so the stage
++flags are emitted as 0.0 on every step EXCEPT the episode-final one, where
++they carry the episode-cumulative predicates (from FullTaskEnv._granted +
++info). Known blind spot: a TimeLimit truncation happens OUTSIDE this adapter,
++so a truncated episode reports all-zero log_* -- exact for picked/tipped in
++scope='pick' (either would have terminated), only pre-pick goal contact can
++be under-reported.
++"""
++import os
++
++import gymnasium as gym
++import numpy as np
++
++REPO = os.environ.get("GENESIS_PICKAPLACE_ROOT", "/home/j/workspace/genesis_pickaplace")
++
++STAGE_KEYS = ("picked", "placed", "contact", "nested", "tipped")
++# scope='place' adds one stage key + redefines success (scope-GATED: the pick
++# obs-space/key set is byte-identical to before the place work).
++PLACE_EXTRA_KEYS = ("placed_v2",)
++
++
++class GenesisPick(gym.Env):
++    # delta_joint mode: rad per SIM step per arm dim for a full-scale action.
++    # Calibrated 2026-08-10 on episodes_pick_pruned_img (118,194 frames),
++    # COMMANDED-target deltas (the demo encoding): global p99 |dcmd| = 0.0249,
++    # max per-dim p99 = 0.0307 (joint 4); 0.04 clips only 0.17% of demo
++    # per-frame deltas (max ever 0.059). MUST match the converter's --delta-cap
++    # (to_dreamer_demos.py --action-encoding delta_joint).
++    DELTA_CAP = 0.04
++    DELTA_LEASH_MULT = 3.0  # target leashed to measured qpos within 3*cap = 0.12
++                            # (mirrors CartesianCanEnv's setpoint leash); covers
++                            # the demos' |cmd - q| PD lead (p99 = 0.126)
++
++    def __init__(self, task="pick", size=(64, 64), seed=0, scope="pick",
++                 place_shaping=False, pick_shaping=False, place_entry_bank=None, action_repeat=1,
++                 reward_scale=1.0, action_mode="absolute", delta_cap=None,
++                 delta_leash_mult=None):
++        self._task = task
++        self._size = tuple(size)
++        self._seed = seed
++        self._scope = scope
++        # Action mode (env.action_mode): 'absolute' (default, byte-identical to
++        # every prior run) = action IS the normalized joint target. 'delta_joint'
++        # = arm dims in [-1,1] are per-SIM-step joint-target DELTAS (a*cap rad,
++        # integrated onto a persistent target initialized from measured qpos at
++        # reset, clipped to the ARM_LO/HI envelope, and leashed to measured qpos
++        # within DELTA_LEASH_MULT*cap so the error can never run away); grip dim
++        # stays ABSOLUTE ([-1,1] -> 0..1). Motivation (MANISKILL_VS_GENESIS #4):
++        # the working MS run used pd_ee_delta_pos -- delta-position targets are
++        # self-correcting under entropy noise (mean-reverting hover), while
++        # absolute joint targets turn sampled-action exploration into arm thrash.
++        # Under action_repeat N the target integrates a*cap EACH sim step, so an
++        # agent-step action a moves the target N*a*cap -- exactly what the demo
++        # converter + demo_prefill's mean-pooled downsample encode.
++        assert action_mode in ("absolute", "delta_joint"), action_mode
++        self._action_mode = action_mode
++        self._delta_cap = float(delta_cap if delta_cap is not None else self.DELTA_CAP)
++        # Leash mult is configurable so cap and leash decouple: the cap bounds
++        # per-step SPEED (policy-facing), the leash bounds |target - qpos| and
++        # must stay >= the demos' ABSOLUTE PD lead (p99 0.126 rad) or demo
++        # replay is clipped. E.g. cap 0.025 needs mult 5 (0.125) where cap 0.04
++        # needed only 3 (0.12).
++        self._delta_leash_mult = float(
++            delta_leash_mult if delta_leash_mult is not None else self.DELTA_LEASH_MULT)
++        # Action repeat INSIDE the adapter (dmc/metaworld style): one agent
++        # step = N sim steps holding the same action, rewards summed, early
++        # break on termination. Default 1 = byte-identical to the old behavior
++        # (existing runs/configs unaffected). Demos MUST be downsampled by the
++        # same factor (env.demo_downsample) or the world model learns
++        # contradictory dynamics from demos vs rollouts.
++        self._action_repeat = int(action_repeat)
++        # Reward-scale lever (env.reward_scale, default 1.0 = old behavior):
++        # multiplies EVERY env-side reward. Motivation (R2D_PICK_DIAGNOSIS #2):
++        # the symexp_twohot reward head leaks ~0.005/state on zero-reward data;
++        # at scale 1 the sparse +1 pick terminal is the same order as the leak
++        # integrated over the horizon. Scaling the true reward (e.g. 100x) puts
++        # the real signal orders of magnitude above the leak; the return
++        # normalizer's percentile scaling absorbs the magnitude. demo_prefill
++        # applies the SAME factor to demo rewards -- the reward function must
++        # stay coherent between online and demo rows.
++        self._reward_scale = float(reward_scale)
++        # TRAINING-ONLY place-scope shaping (FullTaskEnv shaping=): dense
++        # potential-based term + step cost. log_placed_v2 / log_task_success
++        # stay the honest sparse metric regardless.
++        self._place_shaping = bool(place_shaping)
++        # dense lever (08-19): pick-scope potential shaping in FullTaskEnv,
++        # TRAINING-ONLY, gamma=0.999 (r2dreamer horizon-1000 discount).
++        self._pick_shaping = bool(pick_shaping)
++        # scope='place' entry bank path (FullTaskEnv entry_bank=). None keeps
++        # the legacy single-entry-per-demo pick_entry_states.json; a DENSE bank
++        # (place_entry_states_dense.json) is sampled uniformly over entries.
++        self._place_entry_bank = place_entry_bank
++        self._env = None  # lazy: built on first reset, inside the spawn worker
++        self.reward_range = [-np.inf, np.inf]
++        self._stage_keys = STAGE_KEYS + (PLACE_EXTRA_KEYS if scope == "place" else ())
++
++    def _build(self):
++        import sys
++
++        for p in (f"{REPO}/baselines", f"{REPO}/baselines/rl", f"{REPO}/can_pos_recovery"):
++            if p not in sys.path:
++                sys.path.insert(0, p)
++        from full_env import FullTaskEnv
++        import pick_env as _pe
++
++        # delta_joint machinery (bound lazily: module-load stays genesis-free)
++        self._pe_normalize = _pe.normalize_action
++        self._arm_lo, self._arm_hi = _pe.ARM_LO.copy(), _pe.ARM_HI.copy()
++        self._env = FullTaskEnv(
++            backend="cpu",
++            max_steps=10**9,
++            scope=self._scope,
++            render_size=self._size,
++            camera_rig=True,
++            shaping=self._place_shaping,
++            pick_shaping=self._pick_shaping,
++            pick_shaping_gamma=0.999,  # = r2dreamer discount (Ng-invariance)
++            # getattr: instances pickled before this attr existed must still build
++            entry_bank=getattr(self, "_place_entry_bank", None),
++        )
++        self._env.reset(seed=self._seed)
++
++    def _image(self):
++        # (64,64,6) uint8: topB overhead RGB ++ through-gripper wrist RGB --
++        # channel order MUST match the dv3 demo rig (stage-2 prefill mixes them).
++        return self._env.genv.rig_obs()
++
++    @property
++    def observation_space(self):
++        spaces = {
++            "image": gym.spaces.Box(0, 255, self._size + (6,), dtype=np.uint8),
++        }
++        for k in self._stage_keys + ("task_success",):
++            spaces[f"log_{k}"] = gym.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float32)
++        return gym.spaces.Dict(spaces)
++
++    @property
++    def action_space(self):
++        # Plain Box, NO .discrete attribute: Dreamer.__init__ does
++        # hasattr(act_space, "discrete") -- setting discrete=False would still
++        # route to the onehot dist. Absence selects the continuous
++        # bounded_normal actor.
++        return gym.spaces.Box(-1.0, 1.0, (7,), dtype=np.float32)
++
++    def sync_delta_target(self):
++        """(Re-)initialize the delta_joint persistent target from measured qpos.
++
++        Called by reset(); MUST also be called by any external code that resets
++        the inner env directly (eval_genesis.reset_to_uid bypasses adapter
++        reset), or the target carries over from the previous episode. No-op in
++        absolute mode."""
++        if getattr(self, "_action_mode", "absolute") != "delta_joint" or self._env is None:
++            return
++        q = np.asarray(self._env.genv._obs()["state"][:6], dtype=np.float64)
++        self._dj_target = q.copy()
++        self._dj_qmeas = q.copy()
++
++    def reset(self, **kwargs):
++        if self._env is None:
++            self._build()
++        self._env.reset()
++        self.sync_delta_target()
++        obs = {
++            "is_first": True,
++            "is_last": False,
++            "is_terminal": False,
++            "image": self._image(),
++        }
++        for k in self._stage_keys + ("task_success",):
++            obs[f"log_{k}"] = np.float32(0.0)
++        # NO 'reward' key: ParallelEnv.step injects reward itself from the
++        # step return and zeroes it on reset rows.
++        return obs
++
++    def step(self, action):
++        a = np.asarray(action, dtype=np.float32)
++        assert np.isfinite(a).all(), a
++        # getattr: instances pickled before action_repeat existed must still run
++        repeat = getattr(self, "_action_repeat", 1)
++        reward = 0.0
++        if getattr(self, "_action_mode", "absolute") == "delta_joint":
++            # Integrate a*cap onto the persistent joint target EACH sim step
++            # (ramped targets, like the 30 Hz demos), leashed to measured qpos.
++            # getattr: instances pickled before delta_leash_mult existed must still run
++            cap = self._delta_cap
++            leash = getattr(self, "_delta_leash_mult", self.DELTA_LEASH_MULT) * cap
++            d = np.clip(a[:6].astype(np.float64), -1.0, 1.0) * cap
++            grip01 = (float(np.clip(a[6], -1.0, 1.0)) + 1.0) / 2.0  # grip ABSOLUTE
++            for _ in range(repeat):
++                sp = np.clip(self._dj_target + d, self._arm_lo, self._arm_hi)
++                self._dj_target = self._dj_qmeas + np.clip(
++                    sp - self._dj_qmeas, -leash, leash)
++                phys = np.concatenate([self._dj_target, [grip01]])
++                state, r, terminated, truncated, info = self._env.step(
++                    self._pe_normalize(phys).astype(np.float32))
++                self._dj_qmeas = np.asarray(state[:6], dtype=np.float64)
++                reward += float(r)
++                if terminated or truncated:
++                    break
++        else:
++            for _ in range(repeat):
++                _state, r, terminated, truncated, info = self._env.step(a)
++                reward += float(r)
++                if terminated or truncated:
++                    break
++        # getattr: instances pickled before reward_scale existed must still run
++        reward *= float(getattr(self, "_reward_scale", 1.0))
++        done = bool(terminated or truncated)  # truncated never fires (max_steps=1e9)
++        obs = {
++            "is_first": False,
++            "is_last": done,
++            "is_terminal": bool(terminated),
++            "image": self._image(),
++        }
++        # Stage flags: zero on every step except the final one (trainer.eval
++        # SUMS log_* per step). Episode-cumulative record = env._granted
++        # (staged-reward grants); 'tipped' only ever appears on the
++        # terminating step's info.
++        for k in self._stage_keys:
++            hit = done and (k in self._env._granted or bool(info.get(k)))
++            obs[f"log_{k}"] = np.float32(float(hit))
++        # task_success: scope='place' -> placed_v2 (the scope's own terminal
++        # predicate); otherwise nested only (NOT bare early-termination, which
++        # would count tip-outs as successes -- the dv3 proxy bug).
++        success_key = "placed_v2" if self._scope == "place" else "nested"
++        obs["log_task_success"] = np.float32(
++            float(done and (success_key in self._env._granted
++                            or bool(info.get(success_key))))
++        )
++        return obs, np.float32(reward), done, info
++
++    def render(self):
++        return self._image()
++
++    def close(self):
++        pass
+-- 
+2.34.1
+
