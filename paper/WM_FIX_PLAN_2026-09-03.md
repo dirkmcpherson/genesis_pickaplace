@@ -282,3 +282,13 @@ register PREREG A37 (new WM recipe) BEFORE any human-vs-machine readout.
   (evaluator honest). Stage-2 gate unchanged (end-of-run fresh eval); disclosed alongside: entropy at the last
   logged row and the flicker count. Any FUTURE run that keeps periodic snapshots may add a phase-aware BEST-of-≤5
   fresh-eval number (CONFOUNDS row 25 discipline) — none of the currently running stage-2 jobs keeps snapshots.
+- (g) result 13:43: `bnorm` (stock actor, NO clamp) learns and HOLDS with wobble — s0 0.98/0.86/0.96/0.98/1.00 per 25k
+  bin to 130k (entropy −1.5 at the end), s1 0.94/0.93/0.82/0.92/0.90 (entropy excursions to 9.15 at 90k, recovers) —
+  while its critic overshoots exactly like the clipped runs (val 1.05–1.29, replay targets max 2.9, value max 2.1) and
+  its raw samples reach ±4.8 (env clips). ⇒ the port's `bounded_normal_clipped` converts the critic-leak episode into a
+  PERMANENT collapse; the stock actor survives it. Two contributors, one trigger (critic past max) and one
+  amplifier (projected-sample actor).
+- (h) **`bnorm + clamp1`** (`env.actor_dist=bounded_normal env.return_clamp=1.0`) and (i) **`bnorm + clamp1 + ent3e5`**,
+  reach_goal R=0.25, 2 seeds × 150k each, tags `bnormclamp1`, `bnormclamp1ent5` — registered 13:48 (cluster clock),
+  before submission. Predicts: (h) ≥ (f) in stability (no wobble); (i) tightest. Stage-2 arms for the best of
+  {(f), (h), (i)} by fresh eval + flicker count follow after this read-out (≈ 40 min).
