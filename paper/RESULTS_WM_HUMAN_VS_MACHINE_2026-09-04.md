@@ -113,3 +113,5 @@ Expected wall time: ≈3 h per run on one GPU with 6 CPU worlds; 16 runs fit on 
 
 ## 10. What is not claimed
 Not a ranking of learners (budgets and eval modes differ). Not an H4 verdict (pre-registration pending). Not a statement about the old world (where RLPD showed +0.21; that effect did not survive the corrected world and is not revisited here). Not a dv3 result.
+
+*Rendered copy (same content, private link): https://claude.ai/code/artifact/332dca67-a755-477b-b40f-700f18bcba79*
