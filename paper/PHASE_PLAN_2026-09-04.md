@@ -129,3 +129,8 @@ release 32→20, honest nested 16→23, set-down 46→50, contact 26→28, picke
   filter applicable to DP teacher grip outputs — an og4 machine harvest, so the place phase could later be run
   symmetrically under og4. The og4 recorder code is uncommitted in the sim-box working tree (record_demos.py,
   sim_variants.py); the cluster recorder used here is the committed version.
+- Amendment (b) note, 2026-09-04 19:50: one rnd300 cell (dDP s1, deterministic actions) stalls the simulator
+  deterministically on placement index 269 (twice, same episode). Treatment, disclosed: the evaluator's new
+  `--ic-skip` records that episode as outcome `hang`, counted as a FAILURE (0 picks), so the cell is 299 scored + 1
+  failure rather than missing; no other cell of the 36 stalled. The rnd300 statistic for that seed is therefore a
+  lower bound by at most 1/300.
