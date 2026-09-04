@@ -443,3 +443,9 @@ Arms of record per learner (James): human = **dHv2raw** for RLPD / r2dreamer / d
   machine runs (≈ 3% less). Not corrected mid-flight (12 runs already in progress); reported in the morning table.
   The raw human set also carries ≈ 1.9× the transitions of the machine set (14,484 vs 7,476) — the idle-time content
   James wants kept.
+- **Stage 3 VERDICT 2026-09-04 04:20 (cluster clock):** r2dreamer, dHv2raw vs dDP, n=8 vs 8, LAST ckpt, rnd30 MODE:
+  0.617 vs 0.608, Δ +0.008, exact perm p 0.875 (SAMPLE 0.613 vs 0.629, p 0.641). Registered prediction "|Δ| < 0.10"
+  MET; the coverage-mechanism alternative ("dHv2raw > dDP by ≥ 0.10") NOT met. Secondary cells all n.s. (hold15 p 0.733,
+  holdv2 p 0.106 at n=7 machine, alldemo p 0.238), human in-distribution cells 1–2 pp lower. Stage 1e (dv3 EEF+fp32)
+  {4/15, 15/15}: gate FAILED; dv3 excluded from the pick row by the registered rule. Ladder closed; the human-vs-machine
+  interpretation remains the main session's (PREREG A37).
