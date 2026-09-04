@@ -54,7 +54,7 @@ def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only
     Default False = byte-identical output."""
     n = int(z['n']) if 'n' in z.files else int(len(z['actions_delta']))
     if state_only:
-        img = np.zeros((n + 1, 1, 1, 1), np.uint8)   # no images in the tape; the state-only WM never reads them
+        img = np.zeros((n + 1, 64, 64, 6), np.uint8)   # no images in the tape; the loader asserts (T,64,64,6) uint8; zeros compress to ~nothing
     else:
         img = np.asarray(z['images'])
     act = np.asarray(z['actions_delta'], np.float32)
