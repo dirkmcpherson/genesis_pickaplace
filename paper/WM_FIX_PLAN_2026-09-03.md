@@ -365,3 +365,20 @@ success ≥ 0.8 on 2/2 seeds; secondary = per-25k success curve and whether the 
 (b) passes ⇒ the fork's fp16 default is; both fail ⇒ neither, and the dv3 arm stays "weak at this budget" with
 r2dreamer as the WM arm of record. r2dreamer EEF is NOT run here (its adapter has no cartesian path and it already
 passes stage 2 with joint deltas); noted as follow-up if the EEF lever is decisive for dv3.
+
+### Stage 2b — RAW demo pair (dHv2raw vs dDPv2) under the fixed recipe, registered 2026-09-03 20:20, before submission
+- Motivation (user, 20:15): stage 2 used the PRUNED pair `matched_w3/{dH,dDP}` (N=58). The paper's raw arms are
+  `matched_w3/{dHv2raw,dDPv2}` (N=66) — dDPv2 is the machine set matched to the RAW human base, so the pair to run is
+  dHv2raw vs dDPv2 (mixing dHv2raw with the pruned-matched dDP would break the matching that makes the contrast fair).
+- Recipe: identical to the stage-2 winner `bnormclamp1ent5` — `env=genesis_pick_state`, `env.actor_dist=bounded_normal`,
+  `env.return_clamp=1.0`, `env.act_entropy=3e-5`, state obs, sparse +1 both sides, reward_scale 1, time_limit 1200,
+  no re-injection/duplication, buffer 5e5, corrected world; 2 seeds × 1M each, evals hold15+rnd30 in sample AND mode.
+- Inputs to build first (CPU, minutes): `to_dreamer_native.py --with-state --repeat 4 --terminal-reward 1` from
+  `matched_w3/dHv2raw` and `matched_w3/dDPv2` into `demos_state/{dHv2raw,dDPv2}`; the launcher's demo-gate asserts
+  world/stride/with_state/terminal-1.0 and the tape count before training (its hardcoded `== 58` check must be
+  relaxed to the set's own `n_written`).
+- Gate (same as stage 2): LAST hold ≥ 8/15 on ≥ 3/4 of the four runs, fresh process, corrected world, all episodes
+  present. Reporting: sample AND mode, hold15 + rnd30, plus each checkpoint's entropy at the save. The human-vs-machine
+  READ-OUT still waits on PREREG A37 (main session) — this registers the RUNS, not the comparison's interpretation.
+- Blocked at registration time: the VPN dropped at 20:05, so nothing is submitted; commands are staged in
+  `~/wm_fix_2026-09-03/stage2b_submit.sh` and fire as soon as the tunnel is back.
