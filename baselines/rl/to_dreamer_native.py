@@ -144,7 +144,7 @@ def main():
         sys.exit('FATAL: --phase needs --phases-json')
     if args.state_only and not args.with_state:
         sys.exit('FATAL: --state-only needs --with-state')
-    phases = {int(k): v for k, v in json.load(open(args.phases_json)).items()} if args.phase else None
+    phases = {(int(k) if k.isdigit() else k): v for k, v in json.load(open(args.phases_json)).items()} if args.phase else None
     n_skipped_no_phase = 0
 
     files = sorted(glob.glob(os.path.join(args.src, '*.npz')))
@@ -169,7 +169,9 @@ def main():
         cut = None
         if args.phase:
             u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
-            ph = phases.get(u)
+            # manifest keyed by tape FILE (make_phase_banks.py, 2026-09-04): several tapes may share an IC in a harvest;
+            # legacy uid-keyed manifests still resolve for one-tape-per-IC sets
+            ph = phases.get(os.path.basename(f)) or phases.get(u)
             if args.phase == 'place':
                 ok = ph and ph.get('k_pick') is not None and ph.get('k_placed_v2') is not None
                 cut = (ph['k_pick'], ph['k_placed_v2']) if ok else None
