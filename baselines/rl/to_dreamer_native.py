@@ -137,6 +137,7 @@ def main():
                          'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
     ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
     ap.add_argument('--state-only', action='store_true', help='tapes recorded with --no-images: write no image, state required')
+    ap.add_argument('--one-per-ic', action='store_true', help='PHASE PLAN: keep only the FIRST tape (sorted filename) per ic_uid that has the phase -- harvests carry up to 3 attempts per IC')
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
@@ -145,7 +146,7 @@ def main():
     if args.state_only and not args.with_state:
         sys.exit('FATAL: --state-only needs --with-state')
     phases = {(int(k) if k.isdigit() else k): v for k, v in json.load(open(args.phases_json)).items()} if args.phase else None
-    n_skipped_no_phase = 0
+    n_skipped_no_phase = 0; n_skipped_dup_ic = 0; seen_ic = set()
 
     files = sorted(glob.glob(os.path.join(args.src, '*.npz')))
     if not files:
@@ -180,6 +181,10 @@ def main():
                 cut = (ph['k_placed_v2'], ph['k_contact']) if ok else None
             if cut is None:
                 n_skipped_no_phase += 1; continue      # the tape never reached this phase: not an error, a yield
+            if args.one_per_ic:
+                if u in seen_ic:
+                    n_skipped_dup_ic += 1; continue
+                seen_ic.add(u)
         try:
             ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only)
             census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
@@ -201,7 +206,7 @@ def main():
     if len(svs) > 1:
         sys.exit(f'FATAL: mixed sim_variant stamps in source set: {sorted(svs)}')
     if args.phase:
-        print(f'[to_dreamer_native] phase={args.phase}: {n_skipped_no_phase} tape(s) skipped (never reached the phase), {len(plan)} cut')
+        print(f'[to_dreamer_native] phase={args.phase}: {n_skipped_no_phase} tape(s) skipped (never reached the phase), {n_skipped_dup_ic} skipped (duplicate IC, --one-per-ic), {len(plan)} cut')
     if not plan:
         sys.exit('FATAL: no tapes to write')
     print(f'[to_dreamer_native] {len(plan)} tapes from {args.src}: pick {census["n_pick"]} / no-pick {census["n_nopick"]} '
@@ -225,7 +230,7 @@ def main():
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=(args.phase or args.scope),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
-        n_skipped_no_phase=int(n_skipped_no_phase), state_only=bool(args.state_only),
+        n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
         with_state=bool(args.with_state), state_dim=(17 if args.with_state else None),
         src=os.path.abspath(args.src), src_sha=tape_sha(files),
