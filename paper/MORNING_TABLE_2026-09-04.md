@@ -118,6 +118,8 @@ dDP 1311/2100 = **0.624** (7 seeds), dH-pruned pilot 367/600 = 0.612 — each wi
 prediction: within 0.05, MET). SAMPLE: 0.597 / 0.619 / 0.593. Human-vs-machine on 300 placements: Δ ≈ −0.02, n.s.
 
 **ALL-DATA human arm `dHv2all`** (106 tapes: 66 successes + 24 non-picking raw-run recordings + 16 real-fail demos, 73 rewarded),
-r2dreamer, 8 seeds, LAST: rnd30 **0.588 MODE / 0.571 SAMPLE** vs dHv2raw 0.617 / 0.613 (Δ −0.03 / −0.04, p 0.58 / 0.32); hold15
-0.917 vs 0.967; in-distribution cells 0.91–0.94 vs 0.95–0.98. **Registered prediction (WM gains ≥ 0.05 from failures) NOT met.**
+r2dreamer, 8 seeds, LAST, all cells complete: rnd30 **0.588 MODE / 0.571 SAMPLE** vs dHv2raw 0.617 / 0.613 (Δ −0.03 / −0.04, p 0.58 / 0.32);
+rnd300 **0.593 / 0.574** vs 0.602 / 0.597 (p 0.79 / 0.48); hold15 0.917 vs 0.967 (p 0.32); holdv2-66 0.939 vs 0.975 (p 0.18); alldemo-74 0.921
+vs 0.951 (p 0.22). Against the machine arm the in-distribution deficit is significant (holdv2 p 0.035, alldemo p 0.044).
+**Registered prediction (WM gains ≥ 0.05 from failures) NOT met** — no gain on random starts, a small in-distribution cost.
 RLPD dHv2all (8/8): LAST rnd 18, 21, 1, 18, 19, 18, 19, 19 = **0.554** vs dHv2raw 0.600 (Δ −0.046, p 0.567; one dead seed per arm; 0.629 vs 0.676 without them).
