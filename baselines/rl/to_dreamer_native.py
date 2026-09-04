@@ -208,8 +208,10 @@ def main():
     if args.dry_run:
         print('[dry-run] nothing written'); return
     os.makedirs(args.dst, exist_ok=True)
-    for f, uid, T, ep in plan:
-        np.savez_compressed(os.path.join(args.dst, f'genesis-{uid:06d}-{T}.npz'), **ep)
+    for k, (f, uid, T, ep) in enumerate(plan):
+        # unique per tape: sets with repeated ICs (dHv2all) collided on uid+length (2026-09-04); the trailing
+        # -{T} field is what the dreamer loaders parse as the episode length, so the sequence goes before it
+        np.savez_compressed(os.path.join(args.dst, f'genesis-{uid:06d}-{k:03d}-{T}.npz'), **ep)
         census['n_written'] += 1
     src_manifest = os.path.join(args.src, 'manifest.json')
     try:
