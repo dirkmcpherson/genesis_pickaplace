@@ -13,16 +13,16 @@ citations for the DP and RLPD rows: `paper/CROSS_LEARNER_CONDITIONS_2026-09-03.m
 
 | learner | human arm | machine arm (dDP) | Δ (human − machine) | test | eval actions | n |
 |---|---|---|---|---|---|---|
-| DP (diffusion policy, lerobot, state) | dH pruned **0.520** (LAST; selected 0.547) | **0.467** (LAST; selected 0.487) | **+0.053** (LAST) / +0.06 (selected, perm p 0.041, Holm 0.082) | LAST exact perm **p = 0.088** (computed 09-03 23:58 from the audit's per-seed counts) | sampled | 10 vs 10 |
-| RLPD (SAC + demos, state) | dHv2raw **0.600** (LAST; selected 0.671) | **0.517** (LAST; selected 0.521) | **+0.083** (LAST) | LAST exact perm **p = 0.402** (computed 23:58; one dead seed in each arm: dHv2raw s65 2/30, dDP s45 0/30) | deterministic | 8 vs 8 |
+| DP (diffusion policy, lerobot, state) | dH pruned **0.520** (LAST; selected 0.547) | **0.467** (LAST; selected 0.487) | **+0.053** (LAST) / +0.06 (selected, perm p 0.041, Holm 0.082) | LAST exact perm **p = 0.123** (computed 09-03 23:58 from the audit's per-seed counts) | sampled | 10 vs 10 |
+| RLPD (SAC + demos, state) | dHv2raw **0.600** (LAST; selected 0.671) | **0.517** (LAST; selected 0.521) | **+0.083** (LAST) | LAST exact perm **p = 0.485** (computed 23:58; one dead seed in each arm: dHv2raw s65 2/30, dDP s45 0/30) | deterministic | 8 vs 8 |
 | r2dreamer (world model, state, fixed recipe) | dHv2raw — *regenerate* | dDP — *regenerate* | — | exact perm, `morning_table.py` | MODE (like RLPD) and SAMPLE (like DP) | 8 vs 8 when the 23:05 expansion lands (≈02:45) |
 | dv3 (world model) | not run on pick | not run on pick | — | — | — | reach proxy only: baseline {1/15,0/15}, fp32 {15/15,0/15}, EEF {11/15,3/15}, EEF+fp32 pending (≈01:15) |
 
 r2dreamer n=2 pilot on the PRUNED pair (not the design of record, disclosed): dH 0.600|0.617 vs dDP 0.617|0.633
 (sample|mode), hold-15 28/30 vs 29/30, alldemo-74 0.95 vs 0.95–0.97 — indistinguishable at n=2.
 
-Context rows (same statistic): RLPD frozen pair dH-pruned 0.496 vs dDP 0.517, Δ −0.021, p 0.984 (the pre-registered A20 null);
-RLPD raw pair dHv2raw 0.600 vs dDPv2 0.567, Δ +0.033, p 0.657 (not the design; dDPv2 is the raw-matched machine set).
+Context rows (same statistic): RLPD frozen pair dH-pruned 0.496 vs dDP 0.517, Δ −0.021, p 0.983 (the pre-registered A20 null — reproduces the audit's value, validating the test code);
+RLPD raw pair dHv2raw 0.600 vs dDPv2 0.567, Δ +0.033, p 0.646 (not the design; dDPv2 is the raw-matched machine set).
 Every RLPD contrast is carried by one dead seed per arm; with those excluded the arms sit at 0.68–0.70 vs 0.68–0.74.
 
 ## 2. World-model rows (regenerate: `ssh pax 'cd $LAB/wm_fix_2026-09-03 && python3 morning_table.py runs'`)
