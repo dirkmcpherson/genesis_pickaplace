@@ -418,3 +418,22 @@ different halves: fp32 raises the good seed's ceiling (1/15 → 15/15), EEF rais
 - Also registered: **dv3 has never been run on the PICK task under a fixed recipe** — every dv3 number in this ladder
   is the reach proxy. Before any claim that dv3 is (or is not) comparable to DP/RLPD, it needs the pick task with
   demos under whichever lever survives (2 seeds × 1M, `demos_state/dH`, same evals). Not submitted yet.
+
+### Stage 3 (cross-learner comparison) — registered 2026-09-03 23:05, before submission (James's overnight directive via the meta session)
+Goal: DP, r2dreamer, RLPD (and dv3 if it earns a pick run) compared like-to-like on human vs machine demonstrations.
+Arms of record per learner (James): human = **dHv2raw** for RLPD / r2dreamer / dv3, **dH (pruned)** for DP (DP dies on raw
+— RESULTS §1); machine = **dDP** (the frozen pruned-matched N=58 machine set) for everyone.
+- **r2dreamer seed expansion to n=8 per arm**: dHv2raw s2–s7 and dDP s2–s7 (12 runs × 1M, recipe `bnormclamp1ent5`,
+  same launcher/evals), joining dHv2raw s0/s1 (running) and dDP s0/s1 (done). Statistic of record for the contrast:
+  LAST checkpoint, **rnd30 in MODE** (deterministic — like-for-like with DP's and RLPD's deterministic evals), n=8 vs 8,
+  exact permutation test on the per-seed rnd counts (the paper's A16 statistic), plus hold15 and alldemo74 as
+  secondary; SAMPLE numbers reported alongside (disclosed). Prediction registered: from n=2, dHv2raw ≈ dDP (|Δ| < 0.10);
+  if RLPD's coverage mechanism generalises to WMs, dHv2raw > dDP by ≥ 0.10.
+- **Confound audit (tonight, documentation only)**: for each learner record world, demo set (path, N, tape/row counts),
+  obs, action space + caps, budget, eval IC file/set, predicate, horizon, action mode, n seeds, checkpoint rule; every
+  mismatch goes into the morning table as a disclosed asymmetry, never silently absorbed. Known already: budgets are
+  paradigm-specific (DP 100k grad steps offline; RLPD 100k env steps; r2dreamer 1M env steps) and cannot be
+  equalised without changing the learners — disclosed, not matched.
+- dv3 on the pick task only if stage 1e clears its gate (≥ 0.8 on 2/2 seeds); otherwise dv3 is reported on the reach
+  proxy with its seed-variance verdict and excluded from the pick comparison (not silently — as a row marked
+  "not run: no working configuration").
