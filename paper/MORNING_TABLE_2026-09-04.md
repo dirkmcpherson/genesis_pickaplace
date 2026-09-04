@@ -15,7 +15,7 @@ citations for the DP and RLPD rows: `paper/CROSS_LEARNER_CONDITIONS_2026-09-03.m
 |---|---|---|---|---|---|---|
 | DP (diffusion policy, lerobot, state) | dH pruned **0.520** (LAST; selected 0.547) | **0.467** (LAST; selected 0.487) | **+0.053** (LAST) / +0.06 (selected, perm p 0.041, Holm 0.082) | LAST exact perm **p = 0.123** (computed 09-03 23:58 from the audit's per-seed counts) | sampled | 10 vs 10 |
 | RLPD (SAC + demos, state) | dHv2raw **0.600** (LAST; selected 0.671) | **0.517** (LAST; selected 0.521) | **+0.083** (LAST) | LAST exact perm **p = 0.485** (computed 23:58; one dead seed in each arm: dHv2raw s65 2/30, dDP s45 0/30) | deterministic | 8 vs 8 |
-| r2dreamer (world model, state, fixed recipe) | dHv2raw — *regenerate* | dDP — *regenerate* | — | exact perm, `morning_table.py` | MODE (like RLPD) and SAMPLE (like DP) | 8 vs 8 when the 23:05 expansion lands (≈02:45) |
+| r2dreamer (world model, state, fixed recipe `bnormclamp1ent5`) | dHv2raw **0.617** MODE (148/240) / 0.613 SAMPLE (147/240) | **0.608** MODE (146/240) / 0.629 SAMPLE (151/240) | **+0.008** MODE / −0.017 SAMPLE | exact perm **p = 0.875** (MODE) / 0.641 (SAMPLE); registered prediction \|Δ\| < 0.10 MET | MODE (compare with RLPD) and SAMPLE (compare with DP) | 8 vs 8 (all 16 runs to 1M, fresh evals 04:00 on 09-04) |
 | dv3 (world model) | not run on pick — no working configuration | not run on pick | — | — | — | reach proxy only (fresh eval, 15 hold ICs): baseline {1/15,0/15}, fp32 {15/15,0/15}, EEF {11/15,3/15}, EEF+fp32 {4/15,15/15}; every lever bimodal; excluded by the registered rule (PLAN §7 1e) |
 
 r2dreamer n=2 pilot on the PRUNED pair (not the design of record, disclosed): dH 0.600|0.617 vs dDP 0.617|0.633
@@ -27,7 +27,63 @@ Every RLPD contrast is carried by one dead seed per arm; with those excluded the
 
 ## 2. World-model rows (regenerate: `ssh pax 'cd $LAB/wm_fix_2026-09-03 && python3 morning_table.py runs'`)
 
-<!-- paste morning_table.py output here in the morning: per-run cells hold15 / rnd30 / holdv2(66) / alldemo(74) × sample|mode, per-arm totals, permutation tests -->
+Generated 2026-09-04 04:15 by `morning_table.py` (cluster). Rows other than `bnormclamp1ent5` are the failing recipe settings from the
+trainer-fix ladder (kept for the record; the `resume400k` row is a disclosed warm restart, not a run of record). dDP s5's holdv2 cell
+was still computing at generation time (jobs 3251573/74).
+
+| run | setting | seed | hold15 S | hold15 M | rnd30 S | rnd30 M | holdv2(66) S | holdv2 M | alldemo(74) S | alldemo M |
+|---|---|---|---|---|---|---|---|---|---|---|
+| dDP | bnormclamp1ent5 | s0 | 15/15 | 15/15 | 20/30 | 20/30 | 66/66 | 66/66 | 71/74 | 72/74 |
+| dDP | bnormclamp1ent5 | s1 | 14/15 | 14/15 | 17/30 | 18/30 | 66/66 | 66/66 | 70/74 | 72/74 |
+| dDP | bnormclamp1ent5 | s2 | 15/15 | 15/15 | 19/30 | 18/30 | 65/66 | 66/66 | 71/74 | 72/74 |
+| dDP | bnormclamp1ent5 | s3 | 15/15 | 15/15 | 19/30 | 18/30 | 66/66 | 65/66 | 72/74 | 72/74 |
+| dDP | bnormclamp1ent5 | s4 | 15/15 | 15/15 | 20/30 | 16/30 | 65/66 | 64/66 | 69/74 | 71/74 |
+| dDP | bnormclamp1ent5 | s5 | 15/15 | 15/15 | 20/30 | 19/30 | — | — | 68/74 | 71/74 |
+| dDP | bnormclamp1ent5 | s6 | 15/15 | 15/15 | 16/30 | 19/30 | 66/66 | 66/66 | 71/74 | 72/74 |
+| dDP | bnormclamp1ent5 | s7 | 15/15 | 15/15 | 20/30 | 18/30 | 62/66 | 66/66 | 70/74 | 71/74 |
+| dDP | clamp1ent5 | s0 | 0/15 | 0/15 | 0/30 | 0/30 | — | — | 0/74 | 0/74 |
+| dDP | clamp1ent5 | s1 | 0/15 | 0/15 | 0/30 | 0/30 | — | — | 0/74 | 0/74 |
+| dH | bnormclamp1ent5 (resume400k, disclosed) | s1 | 14/15 | 15/15 | 20/30 | 19/30 | 65/66 | 66/66 | 72/74 | 71/74 |
+| dH | bnormclamp1ent5 | s0 | 15/15 | 14/15 | 18/30 | 18/30 | 62/66 | 64/66 | 71/74 | 70/74 |
+| dH | bnormclamp1ent5 | s2 | 13/15 | 14/15 | 18/30 | 19/30 | 61/66 | 63/66 | 70/74 | 70/74 |
+| dH | clamp1 | s0 | 0/15 | — | 0/30 | — | — | — | 0/74 | 0/74 |
+| dH | clamp1 | s1 | 0/15 | — | 0/30 | — | — | — | 0/74 | 0/74 |
+| dH | clamp1ent5 | s0 | 0/15 | — | 1/30 | — | — | — | 0/74 | 0/74 |
+| dH | clamp1ent5 | s1 | 14/15 | 13/15 | 17/30 | 17/30 | — | — | 62/74 | 68/74 |
+| dHv2raw | bnormclamp1ent5 | s0 | 12/15 | 12/15 | 16/30 | 15/30 | 60/66 | 64/66 | 61/74 | 66/74 |
+| dHv2raw | bnormclamp1ent5 | s1 | 15/15 | 15/15 | 20/30 | 19/30 | 66/66 | 66/66 | 71/74 | 72/74 |
+| dHv2raw | bnormclamp1ent5 | s2 | 15/15 | 15/15 | 20/30 | 19/30 | 64/66 | 65/66 | 72/74 | 72/74 |
+| dHv2raw | bnormclamp1ent5 | s3 | 13/15 | 14/15 | 18/30 | 19/30 | 65/66 | 62/66 | 64/74 | 71/74 |
+| dHv2raw | bnormclamp1ent5 | s4 | 15/15 | 15/15 | 19/30 | 21/30 | 66/66 | 66/66 | 72/74 | 72/74 |
+| dHv2raw | bnormclamp1ent5 | s5 | 14/15 | 15/15 | 16/30 | 17/30 | 63/66 | 64/66 | 68/74 | 72/74 |
+| dHv2raw | bnormclamp1ent5 | s6 | 15/15 | 15/15 | 18/30 | 20/30 | 66/66 | 65/66 | 68/74 | 68/74 |
+| dHv2raw | bnormclamp1ent5 | s7 | 15/15 | 15/15 | 20/30 | 18/30 | 63/66 | 63/66 | 69/74 | 70/74 |
+
+Per-arm totals, recipe bnormclamp1ent5, LAST checkpoint (S = sampled actions, M = deterministic mode):
+| arm | n | hold15 S | hold15 M | rnd30 S | rnd30 M | holdv2 S | holdv2 M | alldemo S | alldemo M |
+|---|---|---|---|---|---|---|---|---|---|
+| dH | 2 | 28/30 (0.933, n=2) | 28/30 (0.933, n=2) | 36/60 (0.600, n=2) | 37/60 (0.617, n=2) | 123/132 (0.932, n=2) | 127/132 (0.962, n=2) | 141/148 (0.953, n=2) | 140/148 (0.946, n=2) |
+| dHv2raw | 8 | 114/120 (0.950, n=8) | 116/120 (0.967, n=8) | 147/240 (0.613, n=8) | 148/240 (0.617, n=8) | 513/528 (0.972, n=8) | 515/528 (0.975, n=8) | 545/592 (0.921, n=8) | 563/592 (0.951, n=8) |
+| dDP | 8 | 119/120 (0.992, n=8) | 119/120 (0.992, n=8) | 151/240 (0.629, n=8) | 146/240 (0.608, n=8) | 456/462 (0.987, n=7) | 459/462 (0.994, n=7) | 562/592 (0.949, n=8) | 573/592 (0.968, n=8) |
+
+- rnd30 MODE (statistic of record): dHv2raw [15, 19, 19, 19, 21, 17, 20, 18] vs dDP [20, 18, 18, 18, 16, 19, 19, 18] → Δ per-seed count +0.25, exact two-sided perm p = 0.875 (n=8 vs 8)
+- rnd30 MODE (statistic of record): dH [18, 19] vs dDP [20, 18, 18, 18, 16, 19, 19, 18] → Δ per-seed count +0.25, exact two-sided perm p = 1.000 (n=2 vs 8)
+- rnd30 SAMPLE: dHv2raw [16, 20, 20, 18, 19, 16, 18, 20] vs dDP [20, 17, 19, 19, 20, 20, 16, 20] → Δ per-seed count -0.50, exact two-sided perm p = 0.641 (n=8 vs 8)
+- rnd30 SAMPLE: dH [18, 18] vs dDP [20, 17, 19, 19, 20, 20, 16, 20] → Δ per-seed count -0.88, exact two-sided perm p = 0.622 (n=2 vs 8)
+- hold15 MODE: dHv2raw [12, 15, 15, 14, 15, 15, 15, 15] vs dDP [15, 14, 15, 15, 15, 15, 15, 15] → Δ per-seed count -0.38, exact two-sided perm p = 0.733 (n=8 vs 8)
+- hold15 MODE: dH [14, 14] vs dDP [15, 14, 15, 15, 15, 15, 15, 15] → Δ per-seed count -0.88, exact two-sided perm p = 0.067 (n=2 vs 8)
+- holdv2(66) MODE: dHv2raw [64, 66, 65, 62, 66, 64, 65, 63] vs dDP [66, 66, 66, 65, 64, 66, 66] → Δ per-seed count -1.20, exact two-sided perm p = 0.106 (n=8 vs 7)
+- holdv2(66) MODE: dH [64, 63] vs dDP [66, 66, 66, 65, 64, 66, 66] → Δ per-seed count -2.07, exact two-sided perm p = 0.056 (n=2 vs 7)
+- alldemo(74) MODE: dHv2raw [66, 72, 72, 71, 72, 72, 68, 70] vs dDP [72, 72, 72, 72, 71, 71, 72, 71] → Δ per-seed count -1.25, exact two-sided perm p = 0.238 (n=8 vs 8)
+- alldemo(74) MODE: dH [70, 70] vs dDP [72, 72, 72, 72, 71, 71, 72, 71] → Δ per-seed count -1.62, exact two-sided perm p = 0.022 (n=2 vs 8)
+
+Secondary cells, n=8 vs 8 (MODE): hold-15 116/120 vs 119/120 (p 0.733); holdv2-66 (training ICs of the raw set) 515/528 vs 459/462
+(n=7 machine, p 0.106); alldemo-74 563/592 vs 573/592 (p 0.238). The human arm's in-distribution cells trail the machine arm's by
+1–2 percentage points; none is significant at n=8. Spread: worst human seed hold 12/15, rnd 15/30 (s0); worst machine seed rnd 16/30
+(s4, MODE). No dead seeds in either arm (contrast RLPD: one dead seed per arm).
+
+dv3 reach-proxy full-demo-set cells (deterministic, 74 uids; the cartesian env exposes 86 solved uids so its `all` set is 86): baseline
+{0.10, 0.01}, fp32 {0.95, 0.00}, EEF {0.69, 0.24}, EEF+fp32 {0.21, 0.97} — the same bimodality as the hold-15 cells.
 
 ## 3. Asymmetries that remain after matching (disclosed, not absorbed)
 
