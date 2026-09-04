@@ -46,18 +46,39 @@ def tape_sha(files):
     return h.hexdigest()
 
 
-def convert_one(z, terminal_reward, with_state=False):
+def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only=False):
     """Contract-v1 npz (np.load'ed) -> dict of dreamer arrays, or raise ValueError.
 
     with_state (WM fix 2026-09-03, opt-in): also emit `state` (T,17) float32 = the tape's per-decision
     `states` (n,17) + `final_state` (17,), aligned with `image` (obs before each decision + final).
     Default False = byte-identical output."""
     n = int(z['n']) if 'n' in z.files else int(len(z['actions_delta']))
-    img = np.asarray(z['images'])
+    if state_only:
+        img = np.zeros((n + 1, 1, 1, 1), np.uint8)   # no images in the tape; the state-only WM never reads them
+    else:
+        img = np.asarray(z['images'])
     act = np.asarray(z['actions_delta'], np.float32)
     rew = np.asarray(z['rewards'], np.float32).reshape(-1)
     term = np.asarray(z['terminated'], bool).reshape(-1)
     trunc = np.asarray(z['truncated'], bool).reshape(-1)
+    st_full = np.asarray(z['states'], np.float32) if 'states' in z.files else None
+    fs_full = np.asarray(z['final_state'], np.float32).reshape(1, -1) if 'final_state' in z.files else None
+    if phase_cut is not None:
+        # PHASE PLAN 2026-09-04: cut a FULL-scope tape to one phase [k_entry, k_grant] (rows inclusive), the
+        # same convention as the entry banks (row k = obs before decision k). The phase pays exactly one +1 on
+        # its grant row and terminates there; earlier rows carry 0 regardless of the tape's staged rewards.
+        k0, k1 = int(phase_cut[0]), int(phase_cut[1])
+        if not (0 <= k0 <= k1 < n):
+            raise ValueError(f'phase cut [{k0},{k1}] outside tape n={n}')
+        if st_full is None or fs_full is None:
+            raise ValueError('phase cut needs states + final_state')
+        nxt = st_full[k1 + 1:k1 + 2] if k1 + 1 < n else fs_full
+        st_full = st_full[k0:k1 + 1]; fs_full = nxt
+        img = img[k0:k1 + 2]; act = act[k0:k1 + 1]
+        rew = np.zeros(k1 - k0 + 1, np.float32); rew[-1] = 1.0
+        term = np.zeros(k1 - k0 + 1, bool); term[-1] = True
+        trunc = np.zeros(k1 - k0 + 1, bool)
+        n = k1 - k0 + 1
     if act.shape[0] != n or rew.shape[0] != n or term.shape[0] != n:
         raise ValueError(f'length mismatch n={n} actions_delta={act.shape} rewards={rew.shape} terminated={term.shape}')
     if img.shape[0] != n + 1:
@@ -92,7 +113,7 @@ def convert_one(z, terminal_reward, with_state=False):
     if with_state:
         if 'states' not in z.files or 'final_state' not in z.files:
             raise ValueError('--with-state needs states + final_state in the tape')
-        st = np.asarray(z['states'], np.float32); fs = np.asarray(z['final_state'], np.float32).reshape(1, -1)
+        st = st_full; fs = fs_full
         if st.shape != (n, 17) or fs.shape != (1, 17):
             raise ValueError(f'states/final_state shape {st.shape}/{fs.shape}, expected ({n},17)/(1,17)')
         state = np.concatenate([st, fs]).astype(np.float32)
@@ -111,9 +132,20 @@ def main():
     ap.add_argument('--scope', default='pick')
     ap.add_argument('--with-state', action='store_true',
                     help='ALSO write state (T,17) float32 from states+final_state (WM fix stage 2, state-input WM); default off = byte-identical')
+    ap.add_argument('--phase', choices=['place', 'contact'], default=None,
+                    help='PHASE PLAN 2026-09-04: cut FULL-scope tapes to one phase using --phases-json (make_phase_banks.py): '
+                         'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
+    ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
+    ap.add_argument('--state-only', action='store_true', help='tapes recorded with --no-images: write no image, state required')
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
+    if args.phase and not args.phases_json:
+        sys.exit('FATAL: --phase needs --phases-json')
+    if args.state_only and not args.with_state:
+        sys.exit('FATAL: --state-only needs --with-state')
+    phases = {int(k): v for k, v in json.load(open(args.phases_json)).items()} if args.phase else None
+    n_skipped_no_phase = 0
 
     files = sorted(glob.glob(os.path.join(args.src, '*.npz')))
     if not files:
@@ -125,7 +157,7 @@ def main():
     plan = []
     for f in files:
         z = np.load(f, allow_pickle=True)
-        need = ['images', 'actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else [])
+        need = ([] if args.state_only else ['images']) + ['actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else [])
         miss = [k for k in need if k not in z.files]
         if miss:
             errors.append(f'{os.path.basename(f)}: missing {miss} (not a contract-v1 tape with images)'); continue
@@ -133,12 +165,24 @@ def main():
         if rep != args.repeat:
             errors.append(f'{os.path.basename(f)}: action_repeat stamp {rep} != --repeat {args.repeat}'); continue
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
+        cut = None
+        if args.phase:
+            u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
+            ph = phases.get(u)
+            if args.phase == 'place':
+                ok = ph and ph.get('k_pick') is not None and ph.get('k_placed_v2') is not None
+                cut = (ph['k_pick'], ph['k_placed_v2']) if ok else None
+            else:
+                ok = ph and ph.get('k_placed_v2') is not None and ph.get('k_contact') is not None and ph['k_contact'] > ph['k_placed_v2']
+                cut = (ph['k_placed_v2'], ph['k_contact']) if ok else None
+            if cut is None:
+                n_skipped_no_phase += 1; continue      # the tape never reached this phase: not an error, a yield
         try:
-            ep = convert_one(z, args.terminal_reward, with_state=args.with_state)
+            ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only)
             census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
         except ValueError as e:
             errors.append(f'{os.path.basename(f)}: {e}'); continue
-        uid = int(z['uid']) if 'uid' in z.files else int(os.path.splitext(os.path.basename(f))[0])
+        uid = int(z['ic_uid']) if (args.phase and 'ic_uid' in z.files) else (int(z['uid']) if 'uid' in z.files else int(os.path.splitext(os.path.basename(f))[0]))
         T = len(ep['reward'])
         picked = bool(ep['reward'].sum() > 0)
         census['n_pick' if picked else 'n_nopick'] += 1
@@ -151,6 +195,10 @@ def main():
         sys.exit(f'FATAL: {len(errors)} tape(s) rejected -- fix the source set, do not convert a partial set')
     if len(cap_seen) > 1:
         sys.exit(f'FATAL: mixed delta_cap stamps in source set: {sorted(cap_seen)}')
+    if args.phase:
+        print(f'[to_dreamer_native] phase={args.phase}: {n_skipped_no_phase} tape(s) skipped (never reached the phase), {len(plan)} cut')
+    if not plan:
+        sys.exit('FATAL: no tapes to write')
     print(f'[to_dreamer_native] {len(plan)} tapes from {args.src}: pick {census["n_pick"]} / no-pick {census["n_nopick"]} '
           f'(tipped-terminal {census["n_tipped_terminal"]}, cap-truncated {census["n_cap_truncated"]}); '
           f'T p50 {int(np.median(lens))} max {max(lens)}; total reward {total_reward:.0f}')
@@ -168,7 +216,9 @@ def main():
     meta = dict(
         sim_variant=(sorted(svs)[0] if 'svs' in dir() and svs else src_sv),
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
-        delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=args.scope,
+        delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=(args.phase or args.scope),
+        phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
+        n_skipped_no_phase=int(n_skipped_no_phase), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
         with_state=bool(args.with_state), state_dim=(17 if args.with_state else None),
         src=os.path.abspath(args.src), src_sha=tape_sha(files),
