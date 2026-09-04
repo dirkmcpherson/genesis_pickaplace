@@ -1,0 +1,71 @@
+# PHASE PLAN — human vs machine demonstrations, per task phase (registered 2026-09-04 09:15, before any learner run)
+
+**Ask (James, 2026-09-04 08:20):** repeat the human-vs-machine comparison for each phase of the task; initial conditions
+may come from the demonstrations or from policies that can do the earlier phases; expect less data per later phase;
+Place and Contact at least.
+
+## 1. Phases and boundaries (predicates of record)
+| phase | entry state | success predicate | terminal | horizon |
+|---|---|---|---|---|
+| 1 Pick | task start (done: RESULTS_WM_HUMAN_VS_MACHINE) | `picked` (hardened lift) | on pick | 1200 sim |
+| 2 Place | can lifted, at the **pick grant** | `placed_v2` = grip command < 0.45 (released) ∧ can in the shelf footprint z-band ∧ tilt < 20°, sustained 10 frames (`FullTaskEnv.scope='place'`, `full_env.py:679-688`) | on placed_v2; tip rule | 600 sim (existing scope cap) |
+| 3 Contact | can released on the shelf, at the **placed_v2 grant** | `contact` = solver contact can↔goal ∧ picked-history ∧ eef behind the can (`genesis_can_env.py:271-274`) | on contact; tip rule | 600 sim |
+| 4 Nested | (not in this plan) | settled nested test | — | — |
+
+The legacy `placed` flag (z-band while held) is unearnable in this world (CONFOUNDS row 47) and is NOT used. The per-step
+`nested` proxy under-counts ~3× and is not used as a boundary; phase 4 waits on that fix.
+Because the pruning rule only collapses idle runs BEFORE the pick (`make_dp_pruned.py`), the raw and pruned human tapes
+are identical from the pick grant on ⇒ **one human arm per later phase** (no raw/pruned split for phases 2–3).
+
+## 2. Data chain (all in the corrected world `gc_kp4_riser3_shelf6`, cluster, rsync-only)
+1. **Human full-task tapes** `baselines/demos_v2/dHfull_w3`: `record_demos.py --teacher human --scope full` from the 75
+   success-labelled full-length tapes `episodes_all_v2r` (the follower consumes their absolute command streams), 8 CPU
+   shards, array 3256732 (launched 09:05). Yields per phase are a RESULT, recorded here when in (the sim-box replay
+   funnel predicts ≈ 66 placed / 26 contact / 16 nested of 74).
+2. **Machine full-task teacher**: a DP trained on the PRUNED human full tapes (pre-pick idle collapsed by
+   `make_dp_pruned.py`, from-pick-on untouched; lerobot conversion; 100k grad steps, seed 0) — the full-scope analogue
+   of the dDP teacher (`dp_pilotw2/dH_DP_s0`). **Machine full-task tapes** `dDPfull_w3`: `record_demos.py --teacher dp
+   --scope full --ic-mode demo --attempts 3 --mode sample --verify` from the same demo ICs. Yield per phase is a result.
+3. **Entry banks** (JSON, the existing bank schema: frame, qpos[6], grip_cmd, grip_obs, can_pos, can_quat, goal_xy):
+   `bank_place_{h,m}.json` at the pick grant and `bank_contact_{h,m}.json` at the placed_v2 grant (offline predicate =
+   the env's, as in `to_dreamer_demos_place.py`), one entry per tape that reaches the boundary, per source (h = human,
+   m = machine). Restore survival (`_restore_place_entry` verify) must be ≥ 0.9 per bank, else the bank is rebuilt with
+   a longer settle — a gate, not a tuning knob.
+4. **Phase-segmented demos**, native stride-4 with state, terminal +1 at the phase's own grant, nothing else:
+   `demos_state/{dH,dDP}_{place,contact}` = tape[entry frame → grant frame + 1]. Converter: extend
+   `to_dreamer_native.py` with `--phase place|contact` (it currently cannot cut and rejects full-scope tapes).
+5. **Evaluation ICs per phase** (shared across arms and learners): (a) `holdE` = entries of the 15 hold uids' human tapes
+   (the demo-IC analogue) plus (b) `polE` = entries produced by POLICIES that do the earlier phases — the eight stage-1
+   r2dreamer pick policies of the *human* arm run from the 30 fixed random placements to the pick grant (phase 2), and
+   the phase-2 winners run to placed_v2 (phase 3) — the random-IC analogue, outside the demo support. Both banks are
+   frozen files with the generating checkpoints' names inside them.
+
+## 3. Learners, in order
+- **r2dreamer** (fixed recipe `bnormclamp1ent5`; adapter already takes `scope='place'` + `place_entry_bank`): phase 2 first,
+  then phase 3 after `scope='contact'` is added to `FullTaskEnv` (private copy) and the adapter. 8 seeds per arm, 1M
+  sim steps (episodes are ≤ 600 sim steps so this is ≥ 2× the decisions of phase 1), evals hold-E + pol-E in sample and
+  mode, LAST checkpoint. Training entry distribution = each arm's OWN bank (human arm trains from human entries,
+  machine arm from machine entries); evaluation banks shared.
+- **RLPD**: needs `--scope place|contact`, an entry-bank reset and phase ranks in its relabeler (`train_rlpd.py`,
+  `train_sacfd_full.py:32`); built after the WM phase-2 read-out, same seeds and evals.
+- **DP**: phase datasets via `convert_to_lerobot.py` (phase-agnostic) + an entry-state-capable evaluator (today's
+  `wandb_eval.py` builds `GenesisCanEnv` and cannot restore a mid-task state) — built after RLPD.
+- **dv3**: excluded (no working configuration, stage 1e).
+
+## 4. Statistic, gates, predictions (registered)
+- Per phase and learner: success rate on **pol-E** (the shared out-of-support entry bank) at the LAST checkpoint, per-seed
+  counts, exact two-sided permutation test, n = 8 v 8; hold-E secondary; sample and mode both reported.
+- Negative controls before any read-out: random policy from each bank (expected ≈ 0 for placed_v2 and contact); the
+  stage-1 pick policies replayed past the pick without the phase learner (documents what "do nothing new" earns).
+- Gate for a phase to be reported as a comparison: both arms have ≥ 20 phase demos AND both arms' recipe produces
+  ≥ 0.5 on hold-E in ≥ 3/8 seeds (a learnability floor; otherwise the phase is reported as "not learnable at this
+  budget", with the yields). Prediction (from phase 1): |Δ| < 0.10 on pol-E for phase 2; no registered prediction for
+  phase 3 beyond "machine demos ≤ human demos in count".
+- Disclosed by construction: demo counts per arm per phase (the point of the ask), entry-distribution asymmetry between
+  arms during training, the machine teacher's own phase yields, that phase-3 entries for training come from tapes but
+  for pol-E from phase-2 policies.
+
+## 5. Order of work and time (cluster)
+Human recording ≈ 20 min (running) → banks + converter + contact scope ≈ 3 h of code with smoke tests on the recorded
+tapes → pruned full set + lerobot + DP teacher ≈ 2 h → machine harvest ≈ 1–2 h → WM phase-2 runs (16 × ~3 h, parallel)
+→ phase-3 the following night. RLPD/DP tooling in the gaps.
