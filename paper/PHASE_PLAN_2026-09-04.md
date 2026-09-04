@@ -69,3 +69,22 @@ are identical from the pick grant on ⇒ **one human arm per later phase** (no r
 Human recording ≈ 20 min (running) → banks + converter + contact scope ≈ 3 h of code with smoke tests on the recorded
 tapes → pruned full set + lerobot + DP teacher ≈ 2 h → machine harvest ≈ 1–2 h → WM phase-2 runs (16 × ~3 h, parallel)
 → phase-3 the following night. RLPD/DP tooling in the gaps.
+
+### Amendment 2026-09-04 11:10 — (a) the release band was stale; (b) broader-IC retest of the phase-1 models (James)
+(a) `placed_v2` (and the legacy `placed`) reference `BOX_TOP_Z = 0.11`, but `gc_kp4_riser3_shelf6` raises the shelf
+by `shelf_dz = 0.06` (top 0.17 world) and no predicate constant moved with it (sim_variants.py:66 says they MUST).
+Measured on the 74 human full-task tapes: 52/64 pick-reaching tapes release the can after the pick, at can-centre z
+p10 0.220 / p50 0.231 / p90 0.256, 51/52 inside the shelf footprint, 47/52 upright — and **0/52 inside the coded
+band 0.12–0.18**; can centre at the contact frame p50 0.228 = shelf top 0.17 + half a 0.101 m can. Fix (private env
+copy + bank builder, `shelf_band_patch.py`): the band is `shelf_top_z + [0.01, 0.07]` with `shelf_top_z = BOX_TOP_Z +
+shelf_dz(variant)` read from `sim_variants.VARIANTS` — 0.18–0.24 in this world. Banks and yields are rebuilt with
+it; the phase-2 boundary definition is otherwise unchanged. CONFOUNDS row 47's blast radius now has a concrete
+instance: every prior place-phase dataset/bank and the frozen block's `placed` numbers used the 0.11 band.
+(b) **Registered (James, 11:05): re-evaluate the phase-1 (pick) checkpoints of record on a MUCH broader random-IC
+set.** Design: `rnd300` = 300 placements from `ic_sampling.sample_support_ics(env, 300, seed=1)` (the same support
+box as rnd30 — `baselines/eval_ics.json` `support_box` — a different seed so rnd30 is not a subset), frozen as
+`baselines/eval_ics_rnd300.json`; all 16 stage-3 r2dreamer checkpoints (dHv2raw s0–7, dDP s0–7), LAST, MODE and
+SAMPLE; statistic = per-seed picks /300, exact permutation as before; also the two dH-pruned pilot seeds. Predicts
+the rnd30 estimate within ±0.05 per arm (rnd30 is a 30-draw sample of the same support). If RLPD/DP checkpoints of
+record are on disk, the same file is run through their evaluators so the broader set is shared. NOT yet submitted
+(VPN down at registration time).
