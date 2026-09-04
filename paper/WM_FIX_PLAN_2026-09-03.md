@@ -437,3 +437,9 @@ Arms of record per learner (James): human = **dHv2raw** for RLPD / r2dreamer / d
 - dv3 on the pick task only if stage 1e clears its gate (≥ 0.8 on 2/2 seeds); otherwise dv3 is reported on the reach
   proxy with its seed-variance verdict and excluded from the pick comparison (not silently — as a row marked
   "not run: no working configuration").
+- Stage-3 disclosed asymmetry (23:10): the trainer's step counter includes the demo prefill, so with `env.steps=1e6`
+  the ONLINE budget is 1M − prefill: dHv2raw prefill = **57,936** steps (14,484 rows × repeat 4) vs dDP **≈29,904**
+  (7,476 rows × 4) vs dH-pruned 27,940 (6,985 rows × 4) ⇒ the raw-human runs get ≈ 942k online steps vs ≈ 970k for the
+  machine runs (≈ 3% less). Not corrected mid-flight (12 runs already in progress); reported in the morning table.
+  The raw human set also carries ≈ 1.9× the transitions of the machine set (14,484 vs 7,476) — the idle-time content
+  James wants kept.
