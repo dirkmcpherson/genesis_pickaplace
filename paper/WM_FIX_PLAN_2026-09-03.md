@@ -391,3 +391,11 @@ passes stage 2 with joint deltas); noted as follow-up if the EEF lever is decisi
   N=58 — tape and transition counts are reported next to the result (dH pruned = 6,985 rows; dHv2raw and dDP row
   counts recorded at conversion), and the contrast is "best available machine demos vs authentic human demos",
   not a size-matched pair.
+- **Full demo-IC-set evaluation — registered 2026-09-03 20:30 (user):** every checkpoint of record is additionally
+  scored on the FULL demo IC set (all 61 success-labeled uids, each exactly once, ascending — the training reset
+  distribution), in BOTH action modes, alongside the existing rnd30 random-IC numbers. `--ic-set all` added to both
+  evaluators (r2dreamer `eval_genesis.py`, dv3 `genesis_eval.py`); the stage-2 launcher now runs hold15 + rnd30 +
+  alldemo61 × {sample, mode} at the end of every run. Sweep for already-finished checkpoints:
+  `~/wm_fix_2026-09-03/alldemo_sweep.sh` (11 pick checkpoints + 10 reach checkpoints × 2 modes + 8 dv3 runs).
+  Reporting: the three IC sets are distinct populations — hold15 ⊂ demo ICs (held out from selection), alldemo61 =
+  the full training distribution, rnd30 = placements outside the demo support — and are never pooled.
