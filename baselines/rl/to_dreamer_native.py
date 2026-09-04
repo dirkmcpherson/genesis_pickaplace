@@ -153,7 +153,7 @@ def main():
     if os.path.exists(args.dst) and os.listdir(args.dst) and not args.force:
         sys.exit(f'FATAL: {args.dst} exists and is not empty (use --force)')
     census = dict(n_written=0, n_pick=0, n_nopick=0, n_tipped_terminal=0, n_cap_truncated=0)
-    lens, total_reward, cap_seen, errors = [], 0.0, set(), []
+    lens, total_reward, cap_seen, errors, svs = [], 0.0, set(), [], set()
     plan = []
     for f in files:
         z = np.load(f, allow_pickle=True)
@@ -165,6 +165,7 @@ def main():
         if rep != args.repeat:
             errors.append(f'{os.path.basename(f)}: action_repeat stamp {rep} != --repeat {args.repeat}'); continue
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
+        if 'sim_variant' in z.files: svs.add(str(z['sim_variant']))   # world stamp from the TAPES (a symlink/merged dir has no manifest)
         cut = None
         if args.phase:
             u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
@@ -195,6 +196,8 @@ def main():
         sys.exit(f'FATAL: {len(errors)} tape(s) rejected -- fix the source set, do not convert a partial set')
     if len(cap_seen) > 1:
         sys.exit(f'FATAL: mixed delta_cap stamps in source set: {sorted(cap_seen)}')
+    if len(svs) > 1:
+        sys.exit(f'FATAL: mixed sim_variant stamps in source set: {sorted(svs)}')
     if args.phase:
         print(f'[to_dreamer_native] phase={args.phase}: {n_skipped_no_phase} tape(s) skipped (never reached the phase), {len(plan)} cut')
     if not plan:
@@ -214,7 +217,7 @@ def main():
     except Exception:
         src_sv = 'base'
     meta = dict(
-        sim_variant=(sorted(svs)[0] if 'svs' in dir() and svs else src_sv),
+        sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=(args.phase or args.scope),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
