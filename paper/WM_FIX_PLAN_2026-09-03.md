@@ -449,3 +449,6 @@ Arms of record per learner (James): human = **dHv2raw** for RLPD / r2dreamer / d
   holdv2 p 0.106 at n=7 machine, alldemo p 0.238), human in-distribution cells 1–2 pp lower. Stage 1e (dv3 EEF+fp32)
   {4/15, 15/15}: gate FAILED; dv3 excluded from the pick row by the registered rule. Ladder closed; the human-vs-machine
   interpretation remains the main session's (PREREG A37).
+- Trap (2026-09-04 16:25): the fresh-process evaluator can hang mid-sweep exactly like a training worker (rnd300 job
+  3257994 froze at episode 269/300 for 92 min while `R`). Detect by output mtime; cancel, delete the partial cell dir,
+  resubmit. A per-episode watchdog in `eval_genesis.py` is the proper fix (not built).
