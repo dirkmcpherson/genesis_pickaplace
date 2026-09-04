@@ -111,3 +111,13 @@ dv3 reach-proxy full-demo-set cells (deterministic, 74 uids; the cartesian env e
 ## 4. What is NOT claimed
 The r2dreamer human-vs-machine contrast is reported, not interpreted as H4, until PREREG A37 (main session) registers
 the fixed recipe; the WM-fix ladder's own registered predictions (PLAN §7) are scored in the log.
+
+## 5. Additions 2026-09-04 evening (James's work order, PHASE_PLAN §6)
+**Broader random-IC retest (300 placements, seed 1, same support box), LAST checkpoint, MODE:** dHv2raw 1444/2400 = **0.602**,
+dDP 1311/2100 = **0.624** (7 seeds), dH-pruned pilot 367/600 = 0.612 — each within 0.02 of its rnd30 estimate (registered
+prediction: within 0.05, MET). SAMPLE: 0.597 / 0.619 / 0.593. Human-vs-machine on 300 placements: Δ ≈ −0.02, n.s.
+
+**ALL-DATA human arm `dHv2all`** (106 tapes: 66 successes + 24 non-picking raw-run recordings + 16 real-fail demos, 73 rewarded),
+r2dreamer, 8 seeds, LAST: rnd30 **0.588 MODE / 0.571 SAMPLE** vs dHv2raw 0.617 / 0.613 (Δ −0.03 / −0.04, p 0.58 / 0.32); hold15
+0.917 vs 0.967; in-distribution cells 0.91–0.94 vs 0.95–0.98. **Registered prediction (WM gains ≥ 0.05 from failures) NOT met.**
+RLPD dHv2all (7/8): LAST rnd 18, 21, 1, 18, 19, 18, 19 (one dead seed, as in the raw arm).
