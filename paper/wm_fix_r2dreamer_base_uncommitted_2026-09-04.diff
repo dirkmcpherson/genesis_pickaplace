@@ -1,0 +1,536 @@
+diff --git a/buffer.py b/buffer.py
+index 477abc8..1acaaba 100644
+--- a/buffer.py
++++ b/buffer.py
+@@ -25,6 +25,11 @@ class Buffer:
+         # (B, ...) -> (B, 1, ...)
+         self._buffer.extend(data.unsqueeze(1))
+ 
++    def add_chunk(self, data):
++        # (B, T, ...): T time-rows across all B columns in one extend.
++        # Same layout as T add_transition calls (demo prefill uses this).
++        self._buffer.extend(data)
++
+     def sample(self):
+         sample_td, info = self._buffer.sample(return_info=True)
+         # The sampler returns a flattened batch of length B*(T+1).
+diff --git a/configs/configs.yaml b/configs/configs.yaml
+index 7ea8e7e..8449fd4 100644
+--- a/configs/configs.yaml
++++ b/configs/configs.yaml
+@@ -22,7 +22,8 @@ buffer:
+   batch_length: ${batch_length}
+   max_size: 5e5
+   device: ${device}
+-  storage_device: ${device}
++  # env configs may pin replay storage (e.g. genesis_pick -> cpu); default = ${device}
++  storage_device: ${oc.select:env.storage_device,${device}}
+ 
+ trainer:
+   steps: ${env.steps}
+@@ -35,4 +36,5 @@ trainer:
+   video_pred_log: False
+   params_hist_log: False
+   update_log_every: 5e3
++  save_every: 1e5   # periodic atomic latest.pt (env steps); 0 disables
+   action_repeat: ${env.action_repeat}
+diff --git a/configs/model/_base_.yaml b/configs/model/_base_.yaml
+index b3ac2b6..c9f5f51 100644
+--- a/configs/model/_base_.yaml
++++ b/configs/model/_base_.yaml
+@@ -1,7 +1,21 @@
+-act_entropy: 3e-4
++# Env group files may override via env.act_entropy (same oc.select cross-package
++# trick as horizon/actor_bc_lambda). Default 3e-4 = dv3's setting, tuned for
++# DENSE-reward benchmarks; with sparse terminal-only reward the advantage term
++# is ~0 and the entropy bonus becomes the only actor gradient (see
++# R2D_PICK_DIAGNOSIS.md: genesis_pick_demo_s0 entropy -0.45 -> 9.2).
++act_entropy: ${oc.select:env.act_entropy,3e-4}
++# Actor behavior-cloning auxiliary loss on demo-flagged replay rows (demo
++# prefill/re-injection). 0.0 = OFF (default; BC branch skipped, no behavior
++# change). Env group files set it via env.actor_bc_lambda (same oc.select
++# cross-package trick as horizon -- a group file cannot override model.*
++# directly). Schedule is hardcoded in dreamer.py: linear from this value to
++# 0.1 over the first 500k ONLINE env steps, then constant 0.1.
++actor_bc_lambda: ${oc.select:env.actor_bc_lambda,0.0}
++# Lambda-return target clamp; env files set env.return_clamp (0 = off).
++return_clamp: ${oc.select:env.return_clamp,0.0}
+ kl_free: 1.0
+ imag_horizon: 15
+-horizon: 333
++horizon: ${oc.select:env.horizon,333}  # env configs may override (e.g. genesis_pick -> 1000); default 333
+ lamb: 0.95
+ compile: True
+ log_grads: False
+@@ -153,7 +167,9 @@ actor:
+   device: ${device}
+   dist:
+     cont:
+-      name: 'bounded_normal'
++      # env group files may set env.actor_dist: bounded_normal_clipped
++      # (samples projected into [-1,1]; see distributions.bounded_normal_clipped)
++      name: ${oc.select:env.actor_dist,bounded_normal}
+       min_std: 0.1
+       max_std: 1.0
+     disc:
+diff --git a/demo_prefill.py b/demo_prefill.py
+index 58d458a..677c6d8 100644
+--- a/demo_prefill.py
++++ b/demo_prefill.py
+@@ -163,7 +163,30 @@ def add_demo_set(replay_buffer, agent, config):
+         return None
+     ds = int(config.env.get("demo_downsample", 1) or 1)
+     repeat = int(config.env.get("action_repeat", 1) or 1)
+-    assert ds == repeat, (
++    # NATIVE stride-N demo dirs (final-RR 2026-08-24): a repeat.json stamp in the
++    # demo dir declares the dir is ALREADY at the decision clock (one row per
++    # agent step, written by genesis_pickaplace to_dreamer_native.py). Then the
++    # loader must NOT downsample: require demo_downsample=1 and stamp == repeat.
++    # Un-stamped dirs keep the legacy contract (stride-1 tapes, ds == repeat).
++    import json as _json
++    _stampf = pathlib.Path(demo_dir).expanduser() / "repeat.json"
++    if _stampf.exists():
++        _stamp = _json.loads(_stampf.read_text())
++        _nat = int(_stamp.get("action_repeat", 1))
++        assert _nat == repeat, (
++            f"native demo dir stride {_nat} (repeat.json) != env.action_repeat {repeat}")
++        assert ds == 1, (
++            f"native stride-{_nat} demo dir requires env.demo_downsample=1 (rows are "
++            f"already one-per-agent-step); got demo_downsample={ds}")
++        _tr = _stamp.get("terminal_reward", None)
++        _sc = float(config.env.get("reward_scale", 1.0) or 1.0)
++        if _tr is not None:
++            assert abs(float(_tr) - 1.0) < 1e-9, (
++                f"native r2d demo dirs must carry terminal reward 1.0 in the npz "
++                f"(prefill multiplies by env.reward_scale={_sc}); this dir was built "
++                f"with --terminal-reward {_tr} -- rebuild with --terminal-reward 1")
++    else:
++        assert ds == repeat, (
+         f"env.demo_downsample ({ds}) must equal env.action_repeat ({repeat}): "
+         "demo rows and online rows must cover the same number of sim steps, or "
+         "the world model learns contradictory dynamics from the same buffer"
+diff --git a/distributions.py b/distributions.py
+index 265e799..17c4369 100644
+--- a/distributions.py
++++ b/distributions.py
+@@ -222,6 +222,35 @@ def bounded_normal(x, min_std, max_std, **kwargs):
+     return torchd.independent.Independent(dist, 1)
+ 
+ 
++class BoundFull(Bound):
++    """Bound that also projects rsample. Bound only overrides sample/mode;
++    rsample falls through __getattr__ to the RAW dist -- and rsample is what
++    both the collect path (dreamer.act) and imagination (_imagine) call, so a
++    Bound-wrapped actor still emits unbounded actions everywhere it matters."""
++
++    def rsample(self, sample_shape=()):
++        out = self._dist.rsample(sample_shape)
++        return out / torch.clip(torch.abs(out), min=1.0).detach()
++
++
++def bounded_normal_clipped(x, min_std, max_std, **kwargs):
++    """bounded_normal whose SAMPLES are projected into [-1,1] (straight-through:
++    the divisor is detached, matching Bound.sample's convention).
++
++    Why (genesis, 2026-08-10): plain bounded_normal tanh-bounds the MEAN only;
++    with entropy-driven std near max_std=1.0 the actor sampled at +-4
++    (train/action_max 3.8/-4.3 in pick_delta_s0). The env clips to [-1,1] before
++    executing, but the replay buffer and imagination keep the RAW sample -- the
++    world model learns dynamics conditioned on action values that were never
++    executed (the same action-scale bug family as the unnormalized-demo one that
++    poisoned runs v6-v13), and log_prob of +-4 tail samples fed the actor update.
++    Env configs opt in via env.actor_dist; their benchmarks keep bounded_normal."""
++    mean, std = torch.chunk(x, 2, dim=-1)
++    std = (max_std - min_std) * torch.sigmoid(std + 2.0) + min_std
++    dist = torchd.normal.Normal(torch.tanh(to_f32(mean)), to_f32(std))
++    return BoundFull(torchd.independent.Independent(dist, 1))
++
++
+ def normal_std_fixed(mean, std, **kwargs):
+     dist = torchd.normal.Normal(to_f32(mean), to_f32(std))
+     return Bound(torchd.independent.Independent(dist, 1))
+diff --git a/dreamer.py b/dreamer.py
+index a54500d..35fe2b4 100644
+--- a/dreamer.py
++++ b/dreamer.py
+@@ -30,6 +30,30 @@ class Dreamer(nn.Module):
+         self.act_dim = act_space.n if hasattr(act_space, "n") else sum(act_space.shape)
+         self.rep_loss = str(config.rep_loss)
+ 
++        # Actor behavior-cloning auxiliary loss on demo-flagged replay rows
++        # (model.actor_bc_lambda, default 0.0 = OFF: the BC branch in _cal_grad
++        # is skipped entirely, byte-identical behavior). Schedule (hardcoded):
++        # lambda decays LINEARLY from actor_bc_lambda to 0.1 over the first
++        # 500k ONLINE env steps, then stays at 0.1. The live value is kept in a
++        # non-persistent buffer so the compiled _cal_grad graph reads updates
++        # without recompiling (same pattern as ReturnEMA's ema_vals).
++        self.actor_bc_lambda = float(config.get("actor_bc_lambda", 0.0) or 0.0)
++        # Lambda-return target clamp (model.return_clamp, 0 = OFF, byte-identical).
++        # Motivation (2026-08-11, pick_delta25d4_s0 forensics): with sparse
++        # terminal reward, the cont head's small error at terminals lets targets
++        # compound past the TRUE max return (observed 130-640 in a 100-max MDP;
++        # every one of 23 entropy-collapse onsets was preceded by ret_replay_max
++        # > 100). The task's max return is KNOWN (reward_scale * total stage
++        # reward), so clipping targets at it is principled, not a heuristic.
++        self.return_clamp = float(config.get("return_clamp", 0.0) or 0.0)
++        self._bc_decay_steps = 500_000
++        self._bc_lambda_final = 0.1
++        self.register_buffer(
++            "_bc_lambda_t",
++            torch.tensor(self.actor_bc_lambda, dtype=torch.float32, device=self.device),
++            persistent=False,
++        )
++
+         # World model components
+         shapes = {k: tuple(v.shape) for k, v in obs_space.spaces.items()}
+         self.encoder = networks.MultiEncoder(config.encoder, shapes)
+@@ -307,8 +331,13 @@ class Dreamer(nn.Module):
+         error = (model - truth + 1.0) / 2.0
+         return torch.cat([truth, model, error], 2)
+ 
+-    def update(self, replay_buffer):
+-        """Sample a batch from replay and perform one optimization step."""
++    def update(self, replay_buffer, online_step=0):
++        """Sample a batch from replay and perform one optimization step.
++
++        ``online_step`` (env steps SINCE the prefill, threaded in by the
++        trainer) drives the actor-BC lambda decay; ignored when
++        model.actor_bc_lambda is 0.
++        """
+         data, index, initial = replay_buffer.sample()
+         torch.compiler.cudagraph_mark_step_begin()
+         p_data = self.preprocess(data)
+@@ -316,6 +345,17 @@ class Dreamer(nn.Module):
+         if self.rep_loss == "dreamerpro":
+             self.ema_update()
+         metrics = {}
++        if self.actor_bc_lambda > 0.0:
++            # Linear decay actor_bc_lambda -> 0.1 over the first 500k online
++            # env steps, then constant. Written into the graph-visible buffer.
++            frac = min(max(float(online_step), 0.0) / self._bc_decay_steps, 1.0)
++            lam = self.actor_bc_lambda + (self._bc_lambda_final - self.actor_bc_lambda) * frac
++            self._bc_lambda_t.fill_(lam)
++            metrics["actor_bc_lambda"] = lam
++        # Replay-content diagnostics: reward-bearing frames actually sampled
++        # into this batch (visibility for demo prefill mixing / FIFO eviction).
++        metrics["data/reward_frames"] = (data["reward"] > 0).float().sum()
++        metrics["data/reward_sum"] = data["reward"].sum()
+         with autocast(device_type=self.device.type, dtype=torch.float16):
+             (stoch, deter), mets = self._cal_grad(p_data, initial)
+         self._scaler.unscale_(self._optimizer)  # unscale grads in params
+@@ -459,6 +499,8 @@ class Dreamer(nn.Module):
+         ret = self._lambda_return(
+             last, term, imag_reward, imag_value, imag_value, disc, self.lamb
+         )  # (B*T, T_imag-1, 1)
++        if self.return_clamp > 0:
++            ret = torch.clamp(ret, max=self.return_clamp)
+         ret_offset, ret_scale = self.return_ema(ret)
+         # (B*T, T_imag-1, 1)
+         adv = (ret - imag_value[:, :-1]) / ret_scale
+@@ -507,6 +549,8 @@ class Dreamer(nn.Module):
+         disc = 1 - 1 / self.horizon
+         weight = 1.0 - last
+         ret = self._lambda_return(last, term, reward, value, boot, disc, self.lamb)
++        if self.return_clamp > 0:
++            ret = torch.clamp(ret, max=self.return_clamp)
+         ret_padded = torch.cat([ret, 0 * ret[:, -1:]], 1)
+ 
+         # Keep this attached to the world model so gradients can flow through
+@@ -523,6 +567,32 @@ class Dreamer(nn.Module):
+         metrics.update(tools.tensorstats(slow_value, "slow_value_replay"))
+ 
+         total_loss = sum([v * self._loss_scales[k] for k, v in losses.items()])
++
++        # === Actor behavior cloning on demo-flagged replay rows ===
++        # Skipped entirely when model.actor_bc_lambda == 0 (default): no extra
++        # compute, no behavior change. Otherwise: imitate the demo action taken
++        # AT each demo posterior state, weighted by the decayed lambda buffer.
++        #
++        # Index bookkeeping: storage rows pair obs_t with the action chosen AT
++        # obs_t (online convention; demo rows match it since the
++        # demo_prefill._load_episode shift). Buffer.sample() moves stored
++        # actions one step back, so the action executed at data-row t sits at
++        # data["action"][:, t+1] -- the SAME storage row as data-obs row t.
++        # Pair the posterior feature at t (detached: BC shapes the ACTOR only,
++        # world model untouched) with that action; mask to demo rows that are
++        # not episode-final (final rows store a zero placeholder action).
++        if self.actor_bc_lambda > 0.0 and "is_demo" in data.keys():
++            bc_action = to_f32(data["action"][:, 1:]).detach()
++            demo = to_f32(data["is_demo"])
++            # (B, T-1)
++            bc_mask = (demo[:, :-1] * (1.0 - to_f32(data["is_last"][:, :-1]))).squeeze(-1)
++            # (B, T-1)
++            bc_nll = -self.actor(feat[:, :-1].detach()).log_prob(bc_action)
++            bc_loss = (bc_mask * bc_nll).sum() / bc_mask.sum().clamp(min=1.0)
++            metrics["actor_bc_loss"] = bc_loss.detach()
++            metrics["actor_bc_frames"] = bc_mask.sum()
++            total_loss = total_loss + self._bc_lambda_t * bc_loss
++
+         self._scaler.scale(total_loss).backward()
+ 
+         metrics.update({f"loss/{name}": loss for name, loss in losses.items()})
+diff --git a/envs/__init__.py b/envs/__init__.py
+index a4388f5..948eaa9 100644
+--- a/envs/__init__.py
++++ b/envs/__init__.py
+@@ -132,6 +132,12 @@ def make_env(config, id):
+             # TRAINING-ONLY dense shaping for scope='place' (FullTaskEnv
+             # shaping=); default false, honest metric stays placed_v2.
+             place_shaping=config.get("place_shaping", False),
++            pick_shaping=config.get("pick_shaping", False),
++            # shaping gamma = the agent discount 1 - 1/horizon (env.horizon feeds
++            # model.horizon via oc.select); falls back to the legacy 0.999 ONLY if
++            # the config has no horizon (pre-v5 configs, all unshaped anyway)
++            pick_shaping_gamma=(1.0 - 1.0 / float(config.get("horizon", 0) or 0)
++                                if config.get("horizon", None) else 0.999),
+             # scope='place' entry bank path; null -> legacy single-entry bank
+             place_entry_bank=config.get("place_entry_bank", None),
+             # one agent step = N sim steps (rewards summed, early break on
+diff --git a/networks.py b/networks.py
+index 20b24f2..e927c99 100644
+--- a/networks.py
++++ b/networks.py
+@@ -344,7 +344,7 @@ class MLPHead(nn.Module):
+         self._outscale = float(config.outscale)
+         self._dist = getattr(dists, str(config.dist.name))
+ 
+-        if self._dist_name == "bounded_normal":
++        if self._dist_name in ("bounded_normal", "bounded_normal_clipped"):
+             self.last = nn.Linear(self.mlp.out_dim, config.shape[0] * 2, bias=True)
+             kwargs = {"min_std": float(config.dist.min_std), "max_std": float(config.dist.max_std)}
+         elif self._dist_name == "onehot":
+diff --git a/tools.py b/tools.py
+index 66abc00..5605971 100644
+--- a/tools.py
++++ b/tools.py
+@@ -153,6 +153,29 @@ class CudaBenchmark:
+         print(self._comment, self._st.elapsed_time(self._nd) / 1000)
+ 
+ 
++def _prepare_video_np2(V):
++    """numpy>=2.3 removed np.reshape's `newshape` kwarg, which torch 2.8's
++    torch.utils.tensorboard._utils._prepare_video still passes -> TypeError on
++    every add_video. Drop-in replacement (same semantics: (B,T,C,H,W) float/uint8
++    -> (T, n_rows*H, n_cols*W, C) grid), installed below."""
++    b, t, c, h, w = V.shape
++    if V.dtype == np.uint8:
++        V = np.float32(V) / 255.0
++    if b & (b - 1) != 0:  # pad batch to the next power of two
++        pad = int(2 ** b.bit_length() - b)
++        V = np.concatenate((V, np.zeros((pad, t, c, h, w), dtype=V.dtype)), axis=0)
++    n_rows = 2 ** ((b.bit_length() - 1) // 2)
++    n_cols = V.shape[0] // n_rows
++    V = V.reshape(n_rows, n_cols, t, c, h, w)
++    V = np.transpose(V, axes=(2, 0, 4, 1, 5, 3))
++    return V.reshape(t, n_rows * h, n_cols * w, c)
++
++
++import torch.utils.tensorboard.summary as _tb_summary  # noqa: E402
++
++_tb_summary._prepare_video = _prepare_video_np2
++
++
+ class Logger:
+     def __init__(self, logdir, filename="metrics.jsonl"):
+         self._logdir = logdir
+@@ -196,6 +219,11 @@ class Logger:
+             if np.issubdtype(value.dtype, np.floating):
+                 value = np.clip(255 * value, 0, 255).astype(np.uint8)
+             B, T, H, W, C = value.shape
++            if C == 6:
++                # Two-camera rig (genesis): show top ++ wrist side-by-side --
++                # TensorBoard add_video requires C in {1, 3}.
++                value = np.concatenate([value[..., :3], value[..., 3:]], axis=3)
++                B, T, H, W, C = value.shape
+             value = value.transpose(1, 4, 2, 0, 3).reshape((1, T, C, H, B * W))
+             self._writer.add_video(name, value, step, 16)
+         for name, value in self._histograms.items():
+diff --git a/train.py b/train.py
+index 3a21e5b..a96fe75 100644
+--- a/train.py
++++ b/train.py
+@@ -48,12 +48,51 @@ def main(config):
+         act_space,
+     ).to(config.device)
+ 
+-    policy_trainer = OnlineTrainer(config.trainer, replay_buffer, logger, logdir, train_envs, eval_envs)
++    # WARM RESTART for preempt/requeue (cluster): `+resume=true` reloads agent
++    # weights + optimizer state from logdir/latest.pt (the periodic atomic
++    # save, trainer save_every). NOT a full resume: the replay buffer is not
++    # persisted, so the buffer restarts at prefill and the step counter
++    # re-runs the whole env.steps budget -- only the learned parameters
++    # survive. No-op when the flag is absent or latest.pt does not exist yet.
++    ckpt_path = logdir / "latest.pt"
++    if config.get("resume", False) and ckpt_path.exists():
++        ckpt = torch.load(ckpt_path, map_location=config.device, weights_only=False)
++        agent.load_state_dict(ckpt["agent_state_dict"])
++        tools.recursively_load_optim_state_dict(agent, ckpt["optims_state_dict"])
++        print(f"WARM RESTART: loaded agent+optims from {ckpt_path} "
++              f"(saved step {ckpt.get('step', '?')}); replay buffer + step counter start fresh.")
++
++    # Demo prefill (no-op unless env.demo_dir is set). Runs after agent
++    # creation (latent shapes come from agent.rssm.initial) and before the
++    # trainer, whose start step = buffer.count() -- prefill spends env.steps.
++    from demo_prefill import make_reinjector, prefill_from_npz
++
++    prefill_info = prefill_from_npz(replay_buffer, agent, config)
++    if prefill_info is not None:
++        print("Demo prefill:", prefill_info)
++        online = int(config.env.steps) - prefill_info["transitions_added"]
++        print(f"Step accounting: trainer starts at step {prefill_info['transitions_added']}; "
++              f"env.steps={int(config.env.steps)} -> {online} online env steps.")
++        assert online > 0, "env.steps must exceed the prefill count (prefill spends the step budget)"
++
++    # Periodic demo re-injection (env.demo_reinject_every > 0 + env.demo_dir):
++    # re-adds the full demo set every N online env steps; unlike prefill this
++    # does NOT spend the env.steps budget (trainer increments step from env
++    # dones only after its initial buffer.count() read).
++    demo_reinjector = make_reinjector(replay_buffer, agent, config)
++    demo_reinject_every = int(config.env.get("demo_reinject_every", 0) or 0)
++    if demo_reinjector is not None:
++        print(f"Demo re-injection enabled: full set every {demo_reinject_every} online env steps.")
++
++    policy_trainer = OnlineTrainer(config.trainer, replay_buffer, logger, logdir, train_envs, eval_envs,
++                                   demo_reinjector=demo_reinjector,
++                                   demo_reinject_every=demo_reinject_every)
+     policy_trainer.begin(agent)
+ 
+     items_to_save = {
+         "agent_state_dict": agent.state_dict(),
+         "optims_state_dict": tools.recursively_collect_optim_state_dict(agent),
++        "step": int(config.env.steps),  # loop exits at step >= env.steps
+     }
+     torch.save(items_to_save, logdir / "latest.pt")
+ 
+diff --git a/trainer.py b/trainer.py
+index 84434f9..c087a46 100644
+--- a/trainer.py
++++ b/trainer.py
+@@ -1,12 +1,24 @@
++import os
++import pathlib
++
+ import torch
+ 
+ import tools
+ 
+ 
+ class OnlineTrainer:
+-    def __init__(self, config, replay_buffer, logger, logdir, train_envs, eval_envs):
++    def __init__(self, config, replay_buffer, logger, logdir, train_envs, eval_envs,
++                 demo_reinjector=None, demo_reinject_every=0):
+         self.replay_buffer = replay_buffer
++        # Periodic demo re-injection (env.demo_reinject_every, default 0 = off):
++        # every N ONLINE env steps, re-add the full demo set via the prefill's
++        # add_chunk path. Safe for step accounting: begin() reads buffer.count()
++        # ONCE to seed `step` and then increments it from env dones only, so
++        # these extends never inflate the step counter the way prefill does.
++        self._demo_reinjector = demo_reinjector
++        self._demo_reinject_every = int(demo_reinject_every)
+         self.logger = logger
++        self.logdir = pathlib.Path(logdir)
+         self.train_envs = train_envs
+         self.eval_envs = eval_envs
+         self.steps = int(config.steps)
+@@ -22,8 +34,23 @@ class OnlineTrainer:
+         self._should_pretrain = tools.Once()
+         self._should_log = tools.Every(config.update_log_every)
+         self._should_eval = tools.Every(self.eval_every)
++        self._should_save = tools.Every(config.save_every)
+         self._action_repeat = config.action_repeat
+ 
++    def save_checkpoint(self, agent, step=None):
++        """Periodic latest.pt: SAME payload/format as train.py's end-of-run save
++        (eval_genesis.py + optim resume both work on it). Atomic: write tmp then
++        rename, so a crash mid-write can't leave a corrupt latest.pt."""
++        payload = {
++            "agent_state_dict": agent.state_dict(),
++            "optims_state_dict": tools.recursively_collect_optim_state_dict(agent),
++        }
++        if step is not None:
++            payload["step"] = int(step)  # lets eval_genesis name wandb runs -step<N>
++        tmp = self.logdir / "latest.pt.tmp"
++        torch.save(payload, tmp)
++        os.replace(tmp, self.logdir / "latest.pt")
++
+     def eval(self, agent, train_step):
+         """Run evaluation episodes.
+ 
+@@ -108,7 +135,21 @@ class OnlineTrainer:
+         envs = self.train_envs
+         video_cache = []
+         step = self.replay_buffer.count() * self._action_repeat
++        # ONLINE step counter origin (post-prefill): the actor-BC lambda decay
++        # in Dreamer.update is scheduled in ONLINE env steps, not total steps.
++        online_step0 = step
++        # Demo flag column for online rows (False; demo_prefill rows carry True).
++        # Added to every stored trans so the buffer key-set matches the prefill's.
++        online_is_demo = torch.zeros(envs.env_num, 1, dtype=torch.bool, device=agent.device)
+         update_count = 0
++        # Demo re-injection schedule: cadence counted in ONLINE env steps, i.e.
++        # relative to the post-prefill starting step. `step` itself is never
++        # re-derived from buffer.count() after this point, so re-injections
++        # grow the buffer without advancing the step counter.
++        reinject_next = None
++        reinject_count = 0
++        if self._demo_reinjector is not None and self._demo_reinject_every > 0:
++            reinject_next = step + self._demo_reinject_every
+         # (B,)
+         done = torch.ones(envs.env_num, dtype=torch.bool, device=agent.device)
+         returns = torch.zeros(envs.env_num, dtype=torch.float32, device=agent.device)
+@@ -124,6 +165,10 @@ class OnlineTrainer:
+             # Evaluation
+             if self._should_eval(step) and self.eval_episode_num > 0 and self.eval_envs is not None:
+                 self.eval(agent, step)
++            # Periodic checkpoint (Every fires on its first call too -> an early
++            # latest.pt exists from the start of the run; step-0 save is cheap).
++            if self._should_save(step):
++                self.save_checkpoint(agent, step=step)
+             # Save metrics
+             if done.any():
+                 for i, d in enumerate(done):
+@@ -134,6 +179,12 @@ class OnlineTrainer:
+                             video_cache = []
+                         self.logger.scalar("episode/score", returns[i])
+                         self.logger.scalar("episode/length", lengths[i])
++                        # Per-episode stage metrics (genesis emits log_* only on
++                        # the final step, so the last trans carries the episode
++                        # flags). Train path has no eval-style aggregation.
++                        for key in trans.keys():
++                            if key.startswith("log_"):
++                                self.logger.scalar(f"episode/train_{key[4:]}", float(trans[key][i, 0]))
+                         self.logger.write(step + i)  # to show all values on tensorboard
+                         returns[i] = lengths[i] = 0
+             step += int((~done).sum()) * self._action_repeat  # step is based on env side
+@@ -162,10 +213,22 @@ class OnlineTrainer:
+             trans["stoch"] = agent_state["stoch"]
+             trans["deter"] = agent_state["deter"]
+             trans["episode"] = episode_ids  # Don't lift dim
++            trans["is_demo"] = online_is_demo  # online rows are never demo data
+             if "image" in trans:
+                 video_cache.append(trans["image"][0])
+             self.replay_buffer.add_transition(trans.detach())
+             returns += trans["reward"][:, 0]
++            # Periodic demo re-injection (does not advance `step`).
++            if reinject_next is not None and step >= reinject_next:
++                info = self._demo_reinjector()
++                reinject_count += 1
++                reinject_next = step + self._demo_reinject_every
++                print(
++                    f"Demo re-injection #{reinject_count} at env step {step}: "
++                    f"+{info['transitions_added']} transitions, "
++                    f"buffer.count={self.replay_buffer.count()} (step counter unaffected)"
++                )
++                self.logger.scalar("train/data/demo_reinjections", reinject_count)
+             # Update models after enough data has accumulated
+             if step // (envs.env_num * self._action_repeat) > self.batch_length + 1:
+                 if self._should_pretrain():
+@@ -173,7 +236,7 @@ class OnlineTrainer:
+                 else:
+                     update_num = self._updates_needed(step)
+                 for _ in range(update_num):
+-                    _metrics = agent.update(self.replay_buffer)
++                    _metrics = agent.update(self.replay_buffer, online_step=step - online_step0)
+                     train_metrics = _metrics
+                 update_count += update_num
+                 # Log training metrics

@@ -1,0 +1,259 @@
+Only in r2dreamer_fix/configs/env: genesis_pick_state.yaml
+Only in r2dreamer_fix/configs/env: genesis_reachgoal_state_tg.yaml
+Only in r2dreamer_fix/configs/env: genesis_reachgoal_state.yaml
+Only in r2dreamer_fix/configs/env: genesis_reach_state.yaml
+Only in r2dreamer_fix/configs/env: genesis_touchgoal_state.yaml
+diff -ru -x __pycache__ -x '*.pyc' -x runs -x '*venv*' -x logs -x '*.pt' -x '*.npz' -x .git -x wandb /cluster/tufts/shortlab/jstale02/r2dreamer/demo_prefill.py r2dreamer_fix/demo_prefill.py
+--- /cluster/tufts/shortlab/jstale02/r2dreamer/demo_prefill.py	2026-08-24 07:19:44.888796635 -0400
++++ r2dreamer_fix/demo_prefill.py	2026-09-03 09:26:32.408794361 -0400
+@@ -73,7 +73,13 @@
+             "is_last": d["is_last"].astype(bool),
+             "is_terminal": d["is_terminal"].astype(bool),
+         }
++        # WM fix stage 2 (2026-09-03): optional ground-truth state column written by
++        # to_dreamer_native.py --with-state; consumed only when env.state_obs is true.
++        if "state" in d.files:
++            ep["state"] = d["state"].astype(np.float32)
+     T = len(ep["reward"])
++    if "state" in ep:
++        assert ep["state"].shape == (T, 17), (path, ep["state"].shape)
+     assert ep["image"].shape == (T, 64, 64, 6) and ep["image"].dtype == np.uint8, path
+     # act_dim defaults to 7 (genesis joint control); add_demo_set derives it
+     # from the live agent so a demo set encoded for a different action space
+@@ -122,6 +128,7 @@
+             "is_first": ep["is_first"][idx],
+             "is_last": ep["is_last"][idx],
+             "is_terminal": ep["is_terminal"][idx],
++            **({"state": ep["state"][idx]} if "state" in ep else {}),
+         }
+     ep["action"] = np.concatenate([ep["action"][1:], np.zeros_like(ep["action"][:1])])
+     return ep
+@@ -239,6 +246,14 @@
+     is_first = stream_cat("is_first")[..., None]
+     is_last = stream_cat("is_last")[..., None]
+     is_terminal = stream_cat("is_terminal")[..., None]
++    # WM fix stage 2: demo rows must carry the same key set as online rows. When the env emits
++    # `state` (env.state_obs), every tape must have it; otherwise it is dropped even if present.
++    want_state = bool(config.env.get("state_obs", False))
++    if want_state:
++        missing = [i for i, e in enumerate(eps) if "state" not in e]
++        assert not missing, f"env.state_obs=true but {len(missing)} demo tape(s) lack `state` (convert with --with-state)"
++        state = stream_cat("state")
++        assert state.shape[-1] == 17 and state.dtype == np.float32, state.shape
+ 
+     for t0 in range(0, target, CHUNK_ROWS):
+         t1 = min(t0 + CHUNK_ROWS, target)
+@@ -258,6 +273,8 @@
+             # the same column so the storage key-set stays consistent).
+             "is_demo": torch.ones((env_num, c, 1), dtype=torch.bool),
+         }
++        if want_state:
++            row["state"] = torch.from_numpy(state[:, t0:t1])
+         scope = config.env.get("scope", "pick")
+         suite = str(config.env.task).split("_", 1)[0]
+         if suite == "maniskill":
+Only in r2dreamer_fix: diff_rollout.py
+diff -ru -x __pycache__ -x '*.pyc' -x runs -x '*venv*' -x logs -x '*.pt' -x '*.npz' -x .git -x wandb /cluster/tufts/shortlab/jstale02/r2dreamer/envs/genesis.py r2dreamer_fix/envs/genesis.py
+--- /cluster/tufts/shortlab/jstale02/r2dreamer/envs/genesis.py	2026-08-28 06:14:17.736130028 -0400
++++ r2dreamer_fix/envs/genesis.py	2026-09-03 12:07:29.185826295 -0400
+@@ -55,13 +55,25 @@
+     def __init__(self, task="pick", size=(64, 64), seed=0, scope="pick",
+                  place_shaping=False, pick_shaping=False, place_entry_bank=None, action_repeat=1,
+                  reward_scale=1.0, action_mode="absolute", delta_cap=None,
+-                 delta_leash_mult=None, pick_shaping_gamma=0.999):
++                 delta_leash_mult=None, pick_shaping_gamma=0.999, state_obs=False, state_extra=None):
+         # pick_shaping_gamma (2026-08-24 fix, PREREG final-RR): MUST equal the AGENT
+         # discount 1 - 1/horizon (0.997 for horizon 333). The 08-19 wave hard-coded
+         # 0.999 (stale horizon-1000 comment) -> a distance-proportional per-step bias
+         # ~(0.999-0.997)*phi*reward_scale. Default 0.999 keeps old ckpts/behaviour
+         # reproducible; envs/__init__.py now passes the config-derived value.
+         self._pick_shaping_gamma = float(pick_shaping_gamma)
++        # state_obs (WM fix stage 1, 2026-09-03): ALSO emit the 17-dim ground-truth
++        # state vector [q(6), grip motor, grip effort, can xyz, can quat wxyz, goal xy]
++        # (genesis_can_env._obs()["state"], the same vector DP/RLPD train on) under
++        # obs["state"] so env.encoder.mlp_keys can select it. Default False =
++        # byte-identical pixels-only behavior for every existing config.
++        self._state_obs = bool(state_obs)
++        self._last_state = None
++        # state_extra (stage-1c diagnostic, 2026-09-03): None | "tool_goal" -> append [tool xyz (3), tool-goal
++        # distance (1)] to the 17-dim state (21-dim), making the reach_goal terminal DISTINCT in the observation.
++        # Default None = byte-identical.
++        assert state_extra in (None, "tool_goal"), state_extra
++        self._state_extra = state_extra
+         self._task = task
+         self._size = tuple(size)
+         self._seed = seed
+@@ -160,6 +172,15 @@
+         _svh.apply_post(self._env, self._sim_variant)
+         self._env.reset(seed=self._seed)
+ 
++    def _state_vec(self, base):
++        st = np.asarray(base, dtype=np.float32)
++        if getattr(self, "_state_extra", None) == "tool_goal":
++            genv = self._env.genv
++            tool = np.asarray(genv.tool_pos(), dtype=np.float32).reshape(-1)[:3]
++            goal = np.asarray(genv.w["goal"].get_pos(), dtype=np.float32).reshape(-1)[:3]
++            st = np.concatenate([st, tool, [np.linalg.norm(tool - goal)]]).astype(np.float32)
++        return st
++
+     def _image(self):
+         # (64,64,6) uint8: topB overhead RGB ++ through-gripper wrist RGB --
+         # channel order MUST match the dv3 demo rig (stage-2 prefill mixes them).
+@@ -170,6 +191,9 @@
+         spaces = {
+             "image": gym.spaces.Box(0, 255, self._size + (6,), dtype=np.uint8),
+         }
++        if getattr(self, "_state_obs", False):
++            _dim = 17 + (4 if getattr(self, "_state_extra", None) == "tool_goal" else 0)
++            spaces["state"] = gym.spaces.Box(-np.inf, np.inf, (_dim,), dtype=np.float32)
+         for k in self._stage_keys + ("task_success",):
+             spaces[f"log_{k}"] = gym.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float32)
+         return gym.spaces.Dict(spaces)
+@@ -198,7 +222,8 @@
+     def reset(self, **kwargs):
+         if self._env is None:
+             self._build()
+-        self._env.reset()
++        _state0, _ = self._env.reset()
++        self._last_state = self._state_vec(_state0)
+         self.sync_delta_target()
+         if getattr(self, "_pick_shaping", False):
+             self._pick_phi_prev = self._env._pick_phi()
+@@ -208,6 +233,8 @@
+             "is_terminal": False,
+             "image": self._image(),
+         }
++        if getattr(self, "_state_obs", False):
++            obs["state"] = self._last_state
+         for k in self._stage_keys + ("task_success",):
+             obs[f"log_{k}"] = np.float32(0.0)
+         # NO 'reward' key: ParallelEnv.step injects reward itself from the
+@@ -236,12 +263,14 @@
+                 state, r, terminated, truncated, info = self._env.step(
+                     self._pe_normalize(phys).astype(np.float32))
+                 self._dj_qmeas = np.asarray(state[:6], dtype=np.float64)
++                self._last_state = self._state_vec(state)
+                 reward += float(r)
+                 if terminated or truncated:
+                     break
+         else:
+             for _ in range(repeat):
+                 _state, r, terminated, truncated, info = self._env.step(a)
++                self._last_state = self._state_vec(_state)
+                 reward += float(r)
+                 if terminated or truncated:
+                     break
+@@ -265,6 +294,8 @@
+             "is_terminal": bool(terminated),
+             "image": self._image(),
+         }
++        if getattr(self, "_state_obs", False):
++            obs["state"] = self._last_state
+         # Stage flags: zero on every step except the final one (trainer.eval
+         # SUMS log_* per step). Episode-cumulative record = env._granted
+         # (staged-reward grants); 'tipped' only ever appears on the
+@@ -275,7 +306,7 @@
+         # task_success: scope='place' -> placed_v2 (the scope's own terminal
+         # predicate); otherwise nested only (NOT bare early-termination, which
+         # would count tip-outs as successes -- the dv3 proxy bug).
+-        success_key = {"place": "placed_v2", "touchgoal": "touched_goal"}.get(self._scope, "nested")
++        success_key = {"place": "placed_v2", "touchgoal": "touched_goal", "reach": "reached", "reach_goal": "reached_goal"}.get(self._scope, "nested")  # reach added 2026-09-03 (stage-1b)
+         obs["log_task_success"] = np.float32(
+             float(done and (success_key in self._env._granted
+                             or bool(info.get(success_key))))
+diff -ru -x __pycache__ -x '*.pyc' -x runs -x '*venv*' -x logs -x '*.pt' -x '*.npz' -x .git -x wandb /cluster/tufts/shortlab/jstale02/r2dreamer/envs/__init__.py r2dreamer_fix/envs/__init__.py
+--- /cluster/tufts/shortlab/jstale02/r2dreamer/envs/__init__.py	2026-08-24 07:19:07.218517751 -0400
++++ r2dreamer_fix/envs/__init__.py	2026-09-03 12:07:29.186014109 -0400
+@@ -147,6 +147,9 @@
+             # multiplies env-side rewards; demo_prefill applies the SAME
+             # factor to demo rewards (env.reward_scale, default 1.0).
+             reward_scale=config.get("reward_scale", 1.0),
++            # WM fix stage 1 (2026-09-03): opt-in 17-dim ground-truth 'state' obs key
++            state_obs=config.get("state_obs", False),
++            state_extra=config.get("state_extra", None),
+             # 'absolute' (default) | 'delta_joint': arm dims are per-SIM-step
+             # joint-target deltas (a*delta_cap rad) integrated onto a leashed
+             # persistent target; grip stays absolute. Demos MUST be delta-
+diff -ru -x __pycache__ -x '*.pyc' -x runs -x '*venv*' -x logs -x '*.pt' -x '*.npz' -x .git -x wandb /cluster/tufts/shortlab/jstale02/r2dreamer/eval_genesis.py r2dreamer_fix/eval_genesis.py
+--- /cluster/tufts/shortlab/jstale02/r2dreamer/eval_genesis.py	2026-08-24 07:21:55.363167289 -0400
++++ r2dreamer_fix/eval_genesis.py	2026-09-03 21:14:44.870851985 -0400
+@@ -60,7 +60,7 @@
+ ap.add_argument("--ic-file", default=None,
+                 help="genesis_pickaplace baselines/eval_ics.json: use its IC sets instead "
+                      "of random uid draws (final-RR one-harness protocol)")
+-ap.add_argument("--ic-set", choices=["sel", "hold", "rnd"], default="sel",
++ap.add_argument("--ic-set", choices=["sel", "hold", "rnd", "all"], default="sel",
+                 help="which IC set from --ic-file")
+ ap.add_argument("--ic-index", type=int, default=None,
+                 help="single IC index from the set (one episode); default = the whole set "
+@@ -131,8 +131,12 @@
+                   action_mode=str(cfg.env.get("action_mode", "absolute")),
+                   delta_cap=cfg.env.get("delta_cap", None),
+                   delta_leash_mult=cfg.env.get("delta_leash_mult", None),
+-                  reward_scale=float(cfg.env.get("reward_scale", 1.0)))
+-print(f"[eval] action_mode={env._action_mode} delta_cap={getattr(env, '_delta_cap', None)}")
++                  reward_scale=float(cfg.env.get("reward_scale", 1.0)),
++                  # WM fix stage 1 (2026-09-03): state-input runs need the same obs keys as training
++                  state_obs=bool(cfg.env.get("state_obs", False)),
++                  state_extra=cfg.env.get("state_extra", None))
++print(f"[eval] action_mode={env._action_mode} delta_cap={getattr(env, '_delta_cap', None)} "
++      f"state_obs={getattr(env, '_state_obs', False)} obs_keys={list(env.observation_space.spaces.keys())}")
+ 
+ # ---- agent: rebuild exactly as train.py does, then load the checkpoint ----
+ agent = Dreamer(cfg.model, env.observation_space, env.action_space).to(args.device)
+@@ -184,6 +188,10 @@
+     # it carries over from the previous episode. No-op in absolute mode.
+     getattr(env, "sync_delta_target", lambda: None)()
+     obs = {"is_first": True, "is_last": False, "is_terminal": False, "image": env._image()}
++    if getattr(env, "_state_obs", False):   # WM fix 2026-09-03: state-input runs (bypasses adapter.reset)
++        _st = env._state_vec(env._env.genv._obs()["state"])
++        env._last_state = _st
++        obs["state"] = _st
+     for k in STAGE_KEYS + ("task_success",):
+         obs[f"log_{k}"] = np.float32(0.0)
+     return obs
+@@ -197,7 +205,13 @@
+     env._build()
+ print(f"[eval] world built in {time.time() - t0:.1f} s")
+ rng = np.random.RandomState(args.seed)
+-if args.ic_file:
++if args.ic_set == "all":
++    # WM fix 2026-09-03 (user): FULL demo-IC set -- every success-labeled uid exactly once, in ascending
++    # order (deterministic, no resampling). The training reset distribution is uniform over this set.
++    ics = [int(u) for u in sorted(env._env.success_uids)]
++    args.episodes = len(ics)
++    print(f"[eval] FULL demo IC set: {len(ics)} uids (each once) {ics[:6]}...", flush=True)
++elif args.ic_file:
+     import json as _json
+     _icj = _json.load(open(args.ic_file))
+     _entries = _icj[args.ic_set]
+@@ -223,6 +237,10 @@
+     env._env.reset_to(kw)
+     getattr(env, "sync_delta_target", lambda: None)()
+     obs = {"is_first": True, "is_last": False, "is_terminal": False, "image": env._image()}
++    if getattr(env, "_state_obs", False):   # WM fix 2026-09-03: state-input runs (bypasses adapter.reset)
++        _st = env._state_vec(env._env.genv._obs()["state"])
++        env._last_state = _st
++        obs["state"] = _st
+     for k in STAGE_KEYS + ("task_success",):
+         obs[f"log_{k}"] = np.float32(0.0)
+     return obs
+@@ -236,7 +254,7 @@
+ # reported place timeouts as picked 1.00). Place outcomes: placed_v2 (the
+ # scope's terminal success) / tipped / timeout.
+ SCOPE = str(cfg.env.scope)
+-success_key = "placed_v2" if SCOPE == "place" else "picked"
++success_key = {"place": "placed_v2", "touchgoal": "touched_goal", "reach": "reached", "reach_goal": "reached_goal"}.get(SCOPE, "picked")  # WM fix 2026-09-03: scope-aware (was picked for touchgoal)
+ results = []
+ counts = {success_key: 0, "tipped": 0, "timeout": 0}
+ ep_tiles = []   # (frames (T,64,128,3) RGB, outcome) per episode, for the grid video
+@@ -273,7 +291,7 @@
+     ep_tiles.append((np.stack([np.hstack([f[..., :3], f[..., 3:]])
+                                for f in frames]), outcome))
+     results.append(dict(ep=ep, uid=(int(ics[ep]) if not isinstance(ics[ep], dict) else None),
+-                        ic=(ics[ep] if isinstance(ics[ep], dict) else None), ic_set=(args.ic_set if args.ic_file else None), outcome=outcome, steps=t,
++                        ic=(ics[ep] if isinstance(ics[ep], dict) else None), ic_set=(args.ic_set if (args.ic_file or args.ic_set == "all") else None), outcome=outcome, steps=t,
+                         reward=ep_reward, seconds=round(dt, 1), video=str(vid)))
+     print(f"ep{ep}: {_ic_label(ics[ep], ep)} {outcome} ({t} steps, r={ep_reward:.1f}, "
+           f"{dt:.1f} s)", flush=True)
+Only in /cluster/tufts/shortlab/jstale02/r2dreamer: r2dreamer.egg-info
