@@ -399,3 +399,22 @@ passes stage 2 with joint deltas); noted as follow-up if the EEF lever is decisi
   `~/wm_fix_2026-09-03/alldemo_sweep.sh` (11 pick checkpoints + 10 reach checkpoints × 2 modes + 8 dv3 runs).
   Reporting: the three IC sets are distinct populations — hold15 ⊂ demo ICs (held out from selection), alldemo61 =
   the full training distribution, rnd30 = placements outside the demo support — and are never pooled.
+
+### Stage 1d VERDICT + 1e registered — 2026-09-03 22:15 (cluster clock)
+dv3, reach_goal R=0.25, state input, 150k, corrected world; fresh eval (deterministic actor, 15 hold ICs):
+
+| lever | s0 | s1 | mean | note |
+|---|---|---|---|---|
+| baseline (fp16, 7-dim joint deltas) | 1/15 | 0/15 | 0.03 | the configuration behind every dv3 genesis number |
+| (b) fp32 | **15/15** | 0/15 | 0.50 | best ceiling, worst floor — one seed produces nothing |
+| (a) EEF (`genesis_cartesian delta`, 5-dim ee deltas) | **11/15** | 3/15 | 0.47 | both seeds non-zero: best floor |
+
+Gate (≥ 0.8 on 2/2) **FAILS for both levers**; both improve massively on the baseline (0.03 → ≈0.5). They fix
+different halves: fp32 raises the good seed's ceiling (1/15 → 15/15), EEF raises the bad seed's floor (0/15 → 3/15).
+- **(1e) registered, before submission: EEF + fp32 together** (`genesis_cartesian` + `--genesis_cartesian_control delta`
+  + `--precision 32`), 2 seeds × 150k, same gate. Predicts: if the two are complementary, ≥ 0.8 on 2/2; if not, the
+  dv3 arm's problem at this budget is seed variance that no single knob removes, and the honest statement for the
+  paper is that dv3 needs either more seeds or a different budget — r2dreamer stays the WM arm of record either way.
+- Also registered: **dv3 has never been run on the PICK task under a fixed recipe** — every dv3 number in this ladder
+  is the reach proxy. Before any claim that dv3 is (or is not) comparable to DP/RLPD, it needs the pick task with
+  demos under whichever lever survives (2 seeds × 1M, `demos_state/dH`, same evals). Not submitted yet.
