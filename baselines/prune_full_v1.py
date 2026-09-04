@@ -8,7 +8,7 @@ sim_states/sim_actions are masked per sim step x action_repeat); scalars pass th
 usage: prune_full_v1.py --src <dir> --dst <dir> [--margin 38] [--idle-eps 1e-3]   (38 decisions ~ 5 s at 7.5 Hz)"""
 import argparse, glob, json, os, sys
 import numpy as np
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rl'))
 import pick_env
 ap = argparse.ArgumentParser(); ap.add_argument('--src', required=True); ap.add_argument('--dst', required=True)
 ap.add_argument('--margin', type=int, default=38); ap.add_argument('--idle-eps', type=float, default=1e-3)
