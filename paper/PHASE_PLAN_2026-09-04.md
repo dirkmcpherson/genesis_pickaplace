@@ -134,3 +134,14 @@ release 32→20, honest nested 16→23, set-down 46→50, contact 26→28, picke
   `--ic-skip` records that episode as outcome `hang`, counted as a FAILURE (0 picks), so the cell is 299 scored + 1
   failure rather than missing; no other cell of the 36 stalled. The rnd300 statistic for that seed is therefore a
   lower bound by at most 1/300.
+
+### Amendment 2026-09-04 22:00 — machine phase sets capped to ONE tape per IC (registered before the machine runs started)
+The full-task harvest keeps up to 3 attempts per demo IC (195 tapes over 72 ICs; picked 179, contact 46, nested-proxy
+16, tipped 32). Uncapped, the machine place set would be 104 segments vs the human arm's 39 from 39 ICs — demo COUNT
+would be confounded with source. The arm of record therefore takes the FIRST tape (sorted filename) per IC that reaches
+the phase, the same one-tape-per-IC rule as the phase-1 machine set: **dDP place 63 segments (63 ICs) vs dH 39; dDP
+contact-after-release 25 vs dH 11.** The uncapped sets are kept (`demos_state/dDPuncapped_*`, disclosed, not run).
+Consequences: the place phase runs two-armed (both ≥ 20); the contact phase runs ONE-ARMED — the human arm is below the
+registered floor (11) and GATE-SKIPs, the machine arm (25) trains — reported as a learnability result, not a comparison.
+Training entry banks stay uncapped (machine 179 entries, human 64): the reset distribution over starts, not the demo
+count, and disclosed as such. The DP full-task teacher's own headline: hold 14/15, rnd 14/30 (pick predicate).
