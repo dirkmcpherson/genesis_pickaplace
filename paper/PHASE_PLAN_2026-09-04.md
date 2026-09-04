@@ -88,3 +88,26 @@ SAMPLE; statistic = per-seed picks /300, exact permutation as before; also the t
 the rnd30 estimate within ±0.05 per arm (rnd30 is a 30-draw sample of the same support). If RLPD/DP checkpoints of
 record are on disk, the same file is run through their evaluators so the broader set is shared. NOT yet submitted
 (VPN down at registration time).
+
+## 6. Work order 2026-09-04 12:15 (James) — three items, 60 h of queue inside a 12 h VPN window
+1. **ALL-DATA human arm, new label `dHv2all`** = every recorded human episode in the corrected world at pick scope:
+   the 66 `dHv2raw` successes + the recorder's kept fails/partials of the same run + the 16 real-fail demonstrations
+   (never recorded before; recorded now with `record_demos.py --teacher human --scope pick --uids <16 fail uids>`
+   from `episodes_pick_phase_all`, which carries all 91). Fail tapes carry reward 0 throughout, terminal by cap or tip.
+   The old sets and results are untouched. Learners: r2dreamer (recipe of record) and RLPD (recipe of record, native
+   arm added to `cluster/sbatch_rlpd.sh`), 8 seeds each; DP is not run (it degrades on raw and cannot use zero-reward
+   tapes). Evals: hold15, rnd30, holdv2, alldemo74 and rnd300, sample and mode. **Registered prediction (James's
+   hypothesis): the world model GAINS from human failures — r2dreamer dHv2all > dHv2raw on rnd30 MODE by ≥ 0.05;
+   RLPD no registered direction.** Statistic as before (LAST ckpt, per-seed counts, exact permutation, n = 8 v 8
+   against the existing dHv2raw runs).
+2. **All-phase experiments** = §1–5 of this plan (place, contact), executed as a Slurm dependency chain so it runs
+   unattended: banks → teacher data → DP full-task teacher → machine harvest → machine banks + phase segments +
+   evaluation banks → 16 WM place runs; contact runs gated at job start on the registered yield floor (≥ 20 demos
+   per arm), exiting cleanly with a logged reason otherwise.
+3. **Visual + quantitative characterization of dDP vs dHv2raw** (delegated): per-tape descriptors on both sets with
+   the same IC pairing (length, idle fraction, path length, speed and jerk, time-to-grasp, approach height and
+   direction, grip-close timing, can displacement before the grasp), a side-by-side video gallery of matched uids,
+   and a short note; read-only on the data, no learner runs.
+Queue plan (GPU-hours): r2dreamer dHv2all 8 × 3 h = 24; RLPD dHv2all 8 × ~4 h = 32; rnd300 evals 36 × 0.3 h ≈ 11;
+WM place 16 × 3 h = 48; WM contact 16 × 3 h = 48 (gated); DP teacher 3 h; ≈ 165 GPU-h total, ≈ 60 h of wall at the
+cluster's usual 3-job-per-hour drain, all submitted with dependencies inside the window.
