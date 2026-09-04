@@ -382,3 +382,12 @@ passes stage 2 with joint deltas); noted as follow-up if the EEF lever is decisi
   READ-OUT still waits on PREREG A37 (main session) — this registers the RUNS, not the comparison's interpretation.
 - Blocked at registration time: the VPN dropped at 20:05, so nothing is submitted; commands are staged in
   `~/wm_fix_2026-09-03/stage2b_submit.sh` and fire as soon as the tunnel is back.
+- **Stage 2b CORRECTED 2026-09-03 20:25 (user):** the comparison of interest is **dDP (the good machine arm, the
+  pruned-matched N=58 set already run in stage 2) vs dHv2raw (authentic, unpruned human, N=66)** — NOT dHv2raw vs
+  dDPv2, because a machine arm trained from the raw base does not perform well enough to make the contrast fair.
+  Consequence: only the **dHv2raw arm is new** (2 seeds × 1M, same fixed recipe); the machine side is the completed
+  stage-2 dDP pair (hold 15/15 and 14/15; rnd 20/30 and 17/30, sample = mode within one episode). dDPv2 is NOT run.
+  DISCLOSED asymmetry, by design: the human set is unpruned (N=66 tapes) and the machine set is the pruned-matched
+  N=58 — tape and transition counts are reported next to the result (dH pruned = 6,985 rows; dHv2raw and dDP row
+  counts recorded at conversion), and the contrast is "best available machine demos vs authentic human demos",
+  not a size-matched pair.
