@@ -55,7 +55,9 @@ for p in sorted(glob.glob(str(SRC / '*.npz'))):
     if len(_s) == len(_a) + 1:
         _s = _s[:-1]        # realized npz: drop the trailing next-state (BC pairs only)
     if args.picked_only:
-        got_pick = (bool(d['picked']) if 'picked' in d.files else
+        # contract-v1 full-scope tapes carry picked as a per-decision STICKY array (PHASE PLAN 2026-09-04)
+        _pk = d['picked'] if 'picked' in d.files else None
+        got_pick = (bool(np.asarray(_pk).any()) if _pk is not None else
                     str(d['stage']) in ('picked', 'placed', 'contact', 'nested'))
         if not got_pick:
             print(f'{pl.Path(p).stem}: skip (no pick)', flush=True)
