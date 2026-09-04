@@ -111,3 +111,21 @@ record are on disk, the same file is run through their evaluators so the broader
 Queue plan (GPU-hours): r2dreamer dHv2all 8 × 3 h = 24; RLPD dHv2all 8 × ~4 h = 32; rnd300 evals 36 × 0.3 h ≈ 11;
 WM place 16 × 3 h = 48; WM contact 16 × 3 h = 48 (gated); DP teacher 3 h; ≈ 165 GPU-h total, ≈ 60 h of wall at the
 cluster's usual 3-job-per-hour drain, all submitted with dependencies inside the window.
+
+### Note 2026-09-04 15:30 — relevance of the sim-box adoption (`gc_kp4_riser3_shelf6_og4`, CONFOUNDS row 50) to this plan
+The adopted change is a RECORDER-path filter (record_demos.HumanFollower `_filter_grip`, `grip_open_gain=4`): opening
+moves of the human's grip stream are amplified 4× below the running hold plateau; closing/holds untouched; the world is
+bit-identical to w3; the code asserts `teacher == 'human'` (machine harvests never get it). Census effect: tipped at
+release 32→20, honest nested 16→23, set-down 46→50, contact 26→28, picked unchanged.
+- Phase 1 (pick): NOT affected — the filter acts at the release, pick-scope tapes end at the pick, the world is the same.
+  Nothing in RESULTS_WM_HUMAN_VS_MACHINE, the dHv2all arm or the rnd300 retest changes.
+- Phase 2 (place) and later: AFFECTED in principle. The human full-task tapes of this plan (`dHfull_w3`) were recorded
+  with the plain w3 recorder (no filter): 15/74 tips at release, placed_v2 39/64. Under og4 the human releases would tip
+  less and more tapes would register a place — but the machine teacher/harvest cannot receive the filter as coded, so
+  og4 human data vs plain-recorder machine data would carry the row-50 asymmetry into the very phase that is about
+  releasing. The running chain is therefore left on the plain recorder for BOTH arms (symmetric, registered).
+- Proposed follow-up, not launched: a disclosed `dHfull_og4` human recording (15 CPU-min) for a within-human
+  comparison of place-phase yield and learner performance (plain vs og4 releases), and — if the sim-box agent makes the
+  filter applicable to DP teacher grip outputs — an og4 machine harvest, so the place phase could later be run
+  symmetrically under og4. The og4 recorder code is uncommitted in the sim-box working tree (record_demos.py,
+  sim_variants.py); the cluster recorder used here is the committed version.
