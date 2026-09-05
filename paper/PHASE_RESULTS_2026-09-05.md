@@ -108,3 +108,15 @@ Reading: on the machine-policy bank the human arm is 0.04 lower, on the human-po
 ## 5. Not claimed
 Not an H4 verdict (pre-registration by the main session pending); not a contact-phase comparison (one-armed); not a
 statement about the release-filter recorder variant (og4), which neither arm used.
+
+## 6. Clock control: the repeat-1 pilot (registered as PHASE_PLAN amendment (c′); read out 2026-09-05 14:55)
+
+Question (user): could action_repeat 4 be hiding a human-vs-machine effect? The 30 Hz diagnostic (`clock_diag.py`) showed machine per-step targets reverse direction inside the 4-step window far more than human ones (d ≈ −1.9), content the repeat-4 learner never sees. Pilot: the pick stage re-trained with one decision per simulator step, the same 66/58 matched tapes re-encoded at one row per sim step (cap 0.025 per step, as at repeat 4, which integrates a×cap every sim step), discount and gradient updates per sim step held equal, 4 seeds per arm, 1e6 sim steps.
+
+| cell | human (4 seeds) | machine (4 seeds) | Δ | p |
+|---|---|---|---|---|
+| rnd30 MODE (registered) | 77/120 (0.642) | 78/120 (0.650) | −0.008 | 1.000 |
+| rnd30 SAMPLE | 76/120 (0.633) | 74/120 (0.617) | +0.017 | 0.829 |
+| hold15 MODE / SAMPLE | 60/60 / 59/60 | 60/60 / 60/60 | 0 / −0.017 | 1.000 / 1.000 |
+
+Every seed of both arms learned (0.60–0.73 on rnd30 MODE), so the recipe transfers to the finer clock, and the null is unchanged: the hold was not masking a source effect. Uncompensated by construction and disclosed: 4× more decisions per unit experience and a 4× shorter model context in sim time (batch_length 64 decisions). Cross-clock rates are descriptive only.

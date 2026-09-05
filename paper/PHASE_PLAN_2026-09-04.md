@@ -182,6 +182,17 @@ The diagnostic rule in amendment (c) fired (machine target sign reversals within
 - Runs: r2dreamer, 4 seeds × {dHv2raw, dDP}, 1e6 sim steps, smoke (5k steps, hold15) gates the 8 runs (`afterok`). Eval: LAST checkpoint, fresh process, hold15 + rnd30, sample and mode (the 74-IC set is skipped in-job at 1200 decisions/episode; `EVAL_SETS="hold rnd"`).
 - **Predictions (registered).** P1 (the clock hides nothing): |Δ(dHv2raw − dDP)| on rnd30 MODE < 0.10 (n=4v4; minimum two-sided exact p = 0.029). P2 (the clock hid a source effect): |Δ| ≥ 0.15 with the same sign on hold15 and rnd30; my prior is P1 at ≈ 2:1, and if P2, human > machine (the machine's sub-window sign reversals are chunk-boundary jitter that a 30 Hz learner must model as action noise; the human's joystick targets are smooth at 30 Hz). Disconfirm branch: if any arm has all 4 seeds < 0.30 on rnd30, the repeat-1 recipe (never tuned; the control ladder was built at repeat 4) is uninformative about the source question — reported as "recipe not transferable to repeat 1", no re-tuning without a new registration. Cross-clock comparisons (repeat-1 vs repeat-4 rates) are confounded by the uncompensated items above and are descriptive only.
 
+#### (c′) VERDICT — read out 2026-09-05 14:55 (all 8 runs, LAST checkpoint, fresh process, `wmfix_s2` in-job evals)
+
+| cell | human dHv2raw (4 seeds) | machine dDP (4 seeds) | Δ (human − machine) | exact perm p |
+|---|---|---|---|---|
+| rnd30 MODE (registered) | 22, 18, 18, 19 = 77/120 (0.642) | 18, 20, 19, 21 = 78/120 (0.650) | −0.008 | 1.000 |
+| rnd30 SAMPLE | 20, 20, 17, 19 = 76/120 (0.633) | 17, 20, 19, 18 = 74/120 (0.617) | +0.017 | 0.829 |
+| hold15 MODE | 60/60 | 60/60 | 0 | 1.000 |
+| hold15 SAMPLE | 59/60 | 60/60 | −0.017 | 1.000 |
+
+**P1 met, P2 not met:** at action_repeat 1 (one decision per simulator step; cap, leash, discount and updates per sim step held equal) the two demo sources are indistinguishable, |Δ| = 0.008 on the registered cell against the 0.10 margin; the disconfirm branch ("recipe not transferable") did not fire — every seed of both arms learned (rnd30 0.60–0.73). The action-repeat hold was not hiding a source effect. Descriptive cross-clock line (uncompensated batch_length, 4× more decisions per unit experience): the same four seeds at repeat 4 scored human 15, 19, 19, 19 / machine 20, 18, 18, 18 on rnd30 MODE, i.e. the repeat-1 runs are within a few episodes of their repeat-4 counterparts; picks are faster at repeat 1 (mean episode length 229–349 decisions ≈ 8–12 s of sim time vs the 300-decision cap at repeat 4). Runs 3290344–47 (human), 3290348–51 (machine); demos `demos_state_r1/{dHv2raw,dDP}` (build gate in the log); config `genesis_pick_state_r1.yaml`.
+
 ### Amendment (d) — END-TO-END full-task arm (registered 2026-09-05 10:05, before any run)
 
 User (2026-09-05): "now that everything is working maybe we should try to learn the entire task end to end in addition to phases." Registered design:
