@@ -132,7 +132,7 @@ def main():
     ap.add_argument('--scope', default='pick')
     ap.add_argument('--with-state', action='store_true',
                     help='ALSO write state (T,17) float32 from states+final_state (WM fix stage 2, state-input WM); default off = byte-identical')
-    ap.add_argument('--phase', choices=['place', 'contact'], default=None,
+    ap.add_argument('--phase', choices=['place', 'contact', 'carrycontact'], default=None,
                     help='PHASE PLAN 2026-09-04: cut FULL-scope tapes to one phase using --phases-json (make_phase_banks.py): '
                          'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
     ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
@@ -176,6 +176,9 @@ def main():
             if args.phase == 'place':
                 ok = ph and ph.get('k_pick') is not None and ph.get('k_placed_v2') is not None
                 cut = (ph['k_pick'], ph['k_placed_v2']) if ok else None
+            elif args.phase == 'carrycontact':   # contact from the pick grant by EITHER route (2026-09-05)
+                ok = ph and ph.get('k_pick') is not None and ph.get('k_contact') is not None and ph['k_contact'] > ph['k_pick']
+                cut = (ph['k_pick'], ph['k_contact']) if ok else None
             else:
                 ok = ph and ph.get('k_placed_v2') is not None and ph.get('k_contact') is not None and ph['k_contact'] > ph['k_placed_v2']
                 cut = (ph['k_placed_v2'], ph['k_contact']) if ok else None
