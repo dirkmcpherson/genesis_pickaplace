@@ -165,6 +165,8 @@ def main():
                          'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
     ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
     ap.add_argument('--state-only', action='store_true', help='tapes recorded with --no-images: write no image, state required')
+    ap.add_argument('--max-tapes', type=int, default=None, help='MATCHED-N (PHASE_PLAN (e), user 2026-09-05): after all other filters, keep a uniform random subset of this many tapes (without replacement, --subsample-seed); the kept file list goes to repeat.json')
+    ap.add_argument('--subsample-seed', type=int, default=0)
     ap.add_argument('--reward-from-tape', action='store_true', help='END-TO-END arm (PHASE_PLAN (d)): keep the recorded staged rewards (full scope) instead of one terminal +1')
     ap.add_argument('--one-per-ic-best', action='store_true', help='END-TO-END arm: keep ONE tape per ic_uid -- the highest recorded reward sum (nested > contact > picked > none), ties -> shortest')
     ap.add_argument('--stride1-cap', type=float, default=None, help='PHASE_PLAN (c): re-encode at the SIM rate (action_repeat 1) from sim_states/sim_actions; value = delta cap per sim step (0.00625 = 0.025/4 keeps the per-second cap)')
@@ -255,6 +257,13 @@ def main():
         sys.exit(f'FATAL: mixed sim_variant stamps in source set: {sorted(svs)}')
     if args.phase:
         print(f'[to_dreamer_native] phase={args.phase}: {n_skipped_no_phase} tape(s) skipped (never reached the phase), {n_skipped_dup_ic} skipped (duplicate IC, --one-per-ic), {len(plan)} cut')
+    subsample_kept = None
+    if args.max_tapes is not None and len(plan) > args.max_tapes:
+        # MATCHED-N (PHASE_PLAN (e)): uniform subset without replacement of the tapes that survived every other filter
+        rng = np.random.default_rng(args.subsample_seed); keep = sorted(rng.choice(len(plan), size=args.max_tapes, replace=False).tolist())
+        dropped = len(plan) - len(keep); plan = [plan[i] for i in keep]; subsample_kept = [os.path.basename(f) for (f, _, _, _) in plan]
+        lens = [T for (_, _, T, _) in plan]; total_reward = float(sum(float(ep['reward'].sum()) for (_, _, _, ep) in plan))
+        print(f'[to_dreamer_native] --max-tapes {args.max_tapes} (seed {args.subsample_seed}): kept {len(plan)}, dropped {dropped}; total reward now {total_reward:.0f}')
     if not plan:
         sys.exit('FATAL: no tapes to write')
     print(f'[to_dreamer_native] {len(plan)} tapes from {args.src}: pick {census["n_pick"]} / no-pick {census["n_nopick"]} '
@@ -277,7 +286,8 @@ def main():
         sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(args.stride1_cap if args.stride1_cap is not None else (sorted(cap_seen)[0] if cap_seen else None)), scope=(args.phase or args.scope),
-        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best), source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
+        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best),
+        max_tapes=args.max_tapes, subsample_seed=(args.subsample_seed if args.max_tapes is not None else None), subsample_kept=subsample_kept, source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
         n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
