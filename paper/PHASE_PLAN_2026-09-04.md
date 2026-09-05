@@ -151,3 +151,23 @@ count, and disclosed as such. The DP full-task teacher's own headline: hold 14/1
   the polE statistic exists under both entry-generating sources; the registered statistic stays the human-generated
   bank (registered first), the machine-generated bank is reported beside it. Prediction: the two banks rank the arms
   the same way (|Δ of Δ| < 0.10); a reversal would mean the entry distribution, not the demos, drives the difference.
+
+### Amendment 2026-09-05 14:10 — contact phase continued (James); the action-repeat question (James)
+**(a) Contact-from-pick, two-armed — new phase `carrycontact`.** Entry = the pick grant (same banks as place: human 64 /
+machine 179 entries; eval banks holdE_place, polE_place, polE_place_dDP); success = the env's `contact` predicate
+reached by EITHER route (set down then slide, or carry into the goal); segment = [k_pick, k_contact]; tips terminate;
+horizon 600 sim steps. Yields: human 21 tapes reach contact (11 after a release + 10 while holding) ≥ floor 20;
+machine 46 tapes / one per IC. Registered as the phase-3 comparison of record; prediction as for place (|Δ| < 0.10 on
+polE MODE). Same recipe, 8 seeds per arm.
+**(b) Contact-from-release, human arm below the floor — disclosed, not of record.** 8 human seeds on the 11 release-
+route segments, so the one-armed machine result (25 demos, holdE 0.98) has a comparator; reported with the floor
+violation stated, no test of record.
+**(c) Action repeat 4 as a possible mask (James).** Every learner sees decisions at 7.5 Hz; the human tapes' within-
+window structure (jitter, micro-corrections at 30 Hz) is averaged into one window-end target, the machine teacher's
+output is smooth by construction. Registered two-step check: (1) a data-only diagnostic on the source tapes
+(`sim_actions`/`sim_states` per sim step): within-window action variance, sign reversals, spectral energy above
+3.75 Hz, and the fraction of window-end targets that differ from the window mean, human vs machine, paired by IC;
+(2) IF the sets differ at 30 Hz by more than they differ at 7.5 Hz (d ≥ 0.5 on any of those), a repeat-1 pilot
+(r2dreamer, dHv2raw vs dDP re-encoded at stride 1, 4 seeds per arm, 1M sim steps = 1M decisions, same evals) is
+submitted; otherwise the clock is reported as "no structure to hide". Note: the old-world RLPD +0.21 was ALSO at
+repeat 4 (final round robin 08-23), so the clock is not what removed it.
