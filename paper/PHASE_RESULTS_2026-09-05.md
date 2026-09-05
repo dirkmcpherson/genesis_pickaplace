@@ -21,8 +21,58 @@ demo rows and online. Learner: r2dreamer, recipe `bnormclamp1ent5` (state obs, s
   tapes / 72 ICs → pick 179, placed_v2 (one per IC) 63, contact 46 (25 after a release).
 
 ## 2. Result
-<!-- regenerate: ssh pax 'cd $LAB/wm_fix_2026-09-03 && python3 phase_table.py runs place' ; paste per-run cells, per-arm totals, permutation tests -->
-(pending — place runs 3263097–104 (dH) and 3270587/92/93/94 + 3272139–42 (dDP) finish 2026-09-04 late evening, cluster clock)
+Generated 2026-09-05 09:30 (cluster clock) by `phase_table.py`, all 16 place runs and 8 machine contact runs at 1M steps, LAST checkpoint,
+fresh process; the polE-dDP columns (machine-policy-generated bank, 149 entries) were computing at generation time (32 jobs 3290111–42).
+
+| run (place) | holdE S | holdE M | polE S | polE M | polE-dDP S | polE-dDP M |
+|---|---|---|---|---|---|---|
+| dDP bnormclamp1ent5 s0 | 13/13 | 13/13 | 95/148 | 92/148 | — | — |
+| dDP bnormclamp1ent5 s1 | 13/13 | 13/13 | 114/148 | 117/148 | — | — |
+| dDP bnormclamp1ent5 s2 | 13/13 | 12/13 | 101/148 | 101/148 | — | — |
+| dDP bnormclamp1ent5 s3 | 12/13 | 13/13 | 109/148 | 113/148 | — | — |
+| dDP bnormclamp1ent5 s4 | 13/13 | 13/13 | 101/148 | 103/148 | — | — |
+| dDP bnormclamp1ent5 s5 | 13/13 | 13/13 | 91/148 | 99/148 | — | — |
+| dDP bnormclamp1ent5 s6 | 13/13 | 13/13 | 110/148 | 112/148 | — | — |
+| dDP bnormclamp1ent5 s7 | 13/13 | 12/13 | 109/148 | 103/148 | — | — |
+| dH bnormclamp1ent5 s0 | 13/13 | 13/13 | 113/148 | 113/148 | — | — |
+| dH bnormclamp1ent5 s1 | 13/13 | 13/13 | 82/148 | 86/148 | — | — |
+| dH bnormclamp1ent5 s2 | 13/13 | 13/13 | 110/148 | 112/148 | — | — |
+| dH bnormclamp1ent5 s3 | 13/13 | 13/13 | 109/148 | 112/148 | — | — |
+| dH bnormclamp1ent5 s4 | 13/13 | 13/13 | 77/148 | 82/148 | — | — |
+| dH bnormclamp1ent5 s5 | 13/13 | 13/13 | 103/148 | 99/148 | — | — |
+| dH bnormclamp1ent5 s6 | 13/13 | 13/13 | 111/148 | 110/148 | — | — |
+| dH bnormclamp1ent5 s7 | 13/13 | 13/13 | 109/148 | 118/148 | — | — |
+
+| arm | n | holdE S | holdE M | polE S | polE M | polE-dDP S | polE-dDP M |
+|---|---|---|---|---|---|---|---|
+| dH | 8 | 104/104 (1.000, n=8) | 104/104 (1.000, n=8) | 814/1184 (0.688, n=8) | 832/1184 (0.703, n=8) | — | — |
+| dDP | 8 | 103/104 (0.990, n=8) | 102/104 (0.981, n=8) | 830/1184 (0.701, n=8) | 840/1184 (0.709, n=8) | — | — |
+- polE MODE (statistic of record; human-policy entries): dH [113, 86, 112, 112, 82, 99, 110, 118] vs dDP [92, 117, 101, 113, 103, 99, 112, 103] -> Δ per-seed count -1.00, exact two-sided perm p = 0.878 (n=8 vs 8)
+- polE SAMPLE: dH [113, 82, 110, 109, 77, 103, 111, 109] vs dDP [95, 114, 101, 109, 101, 91, 110, 109] -> Δ per-seed count -2.00, exact two-sided perm p = 0.748 (n=8 vs 8)
+- holdE MODE: dH [13, 13, 13, 13, 13, 13, 13, 13] vs dDP [13, 13, 12, 13, 13, 13, 13, 12] -> Δ per-seed count +0.25, exact two-sided perm p = 0.467 (n=8 vs 8)
+
+| run (contact) | holdE S | holdE M | polE S | polE M | polE-dDP S | polE-dDP M |
+|---|---|---|---|---|---|---|
+| dDP bnormclamp1ent5 s0 | 10/11 | 10/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s1 | 10/11 | 10/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s2 | 11/11 | 10/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s3 | 11/11 | 11/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s4 | 11/11 | 11/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s5 | 11/11 | 11/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s6 | 11/11 | 11/11 | — | — | — | — |
+| dDP bnormclamp1ent5 s7 | 11/11 | 11/11 | — | — | — | — |
+
+| arm | n | holdE S | holdE M | polE S | polE M | polE-dDP S | polE-dDP M |
+|---|---|---|---|---|---|---|---|
+| dH | 0 | — | — | — | — | — | — |
+| dDP | 8 | 86/88 (0.977, n=8) | 85/88 (0.966, n=8) | — | — | — | — |
+
+**Place-phase verdict (registered statistic: polE MODE, n = 8 v 8): human 832/1184 = 0.703 vs machine 840/1184 = 0.709, Δ −0.006,
+exact permutation p = 0.878** (SAMPLE 0.688 vs 0.701, p 0.748). holdE (13 hold-uid human starts): 104/104 vs 102/104 — saturated; the
+learnability floor (≥ 0.5 holdE in ≥ 3/8 seeds) is met by every seed of both arms. The registered prediction |Δ| < 0.10 is MET.
+Per-seed spread on polE MODE: human 82–118, machine 92–117 (two human seeds, s1 and s4, sit at 0.55–0.58; the arms' medians are 111 and 103).
+**Contact phase, one-armed (machine, 25 demos):** holdE 86/88 sampled / 85/88 deterministic across 8 seeds; the human arm (11 demos) was
+gate-skipped, so this is a learnability read: contact-from-release is readily learned with 25 machine segments.
 
 ## 3. Negative controls and gates
 - Registered floor: ≥ 20 phase demos per arm (place: 39 / 63 ✓; contact: 11 / 25 → human skipped).
