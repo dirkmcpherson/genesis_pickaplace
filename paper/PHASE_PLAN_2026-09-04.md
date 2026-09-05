@@ -145,3 +145,9 @@ Consequences: the place phase runs two-armed (both ≥ 20); the contact phase ru
 registered floor (11) and GATE-SKIPs, the machine arm (25) trains — reported as a learnability result, not a comparison.
 Training entry banks stay uncapped (machine 179 entries, human 64): the reset distribution over starts, not the demo
 count, and disclosed as such. The DP full-task teacher's own headline: hold 14/15, rnd 14/30 (pick predicate).
+- Addition 2026-09-05 01:30 (registered before use): a SECOND policy-generated place bank, `polE_place_dDP`, from the eight
+  MACHINE-arm phase-1 pick checkpoints on the same 30 random placements (same dump procedure as `polE_place`, which
+  came from the human-arm checkpoints). Every place checkpoint of both arms is scored post hoc on it, both modes, so
+  the polE statistic exists under both entry-generating sources; the registered statistic stays the human-generated
+  bank (registered first), the machine-generated bank is reported beside it. Prediction: the two banks rank the arms
+  the same way (|Δ of Δ| < 0.10); a reversal would mean the entry distribution, not the demos, drives the difference.
