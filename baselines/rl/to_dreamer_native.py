@@ -46,7 +46,7 @@ def tape_sha(files):
     return h.hexdigest()
 
 
-def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only=False, stride1_cap=None):
+def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only=False, stride1_cap=None, reward_from_tape=False):
     """Contract-v1 npz (np.load'ed) -> dict of dreamer arrays, or raise ValueError.
 
     with_state (WM fix 2026-09-03, opt-in): also emit `state` (T,17) float32 = the tape's per-decision
@@ -110,9 +110,15 @@ def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only
     # stage grant AND the hardened-pick terminal inside ONE repeat-4 window -> reward 2.0 on the
     # terminal row (seen on r2d-teacher tapes, ~68-step picks); the dreamer tape still carries a
     # single terminal_reward there. Positive reward anywhere BEFORE the terminal row is refused.
-    if not np.all(np.isin(np.round(rew, 6), [0.0, 1.0, 2.0])):
+    if reward_from_tape:
+        # END-TO-END arm (PHASE_PLAN amendment (d), 2026-09-05): keep the recorded STAGED sparse rewards
+        # (full_env STAGE_REWARD picked 1 / placed 1 / contact 2 / nested 4, each paid once at its grant; no shaping is
+        # ever baked into tapes). Rows carry sums of grants; positive rewards before the last row are the earlier grants.
+        if not np.all(np.isin(np.round(rew, 6), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])):
+            raise ValueError(f'staged rewards must be sums of {{1,1,2,4}} grants; seen {np.unique(rew)[:8]}')
+    elif not np.all(np.isin(np.round(rew, 6), [0.0, 1.0, 2.0])):
         raise ValueError(f'rewards must be sparse {{0,1,2}} (shaping is never baked into tapes); seen {np.unique(rew)[:6]}')
-    if (rew[:-1] > 0).any():
+    elif (rew[:-1] > 0).any():
         raise ValueError('positive reward before the terminal row -- pick scope pays only at the terminal decision')
     if np.abs(act).max() > 1.0 + 1e-6:
         raise ValueError('actions_delta outside [-1,1]')
@@ -121,7 +127,10 @@ def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only
     # 2026-08-28: single-stage pick pays exactly ONE terminal. The 2.0 rows above were the env's
     # double-grant bug (full_env.py, fixed 08-28); tapes recorded before the fix are normalised here
     # and the count is reported by main() so it appears in repeat.json.
-    n_double = int((rew > 1.0).sum()); rew = np.minimum(rew, 1.0)
+    if reward_from_tape:
+        n_double = 0
+    else:
+        n_double = int((rew > 1.0).sum()); rew = np.minimum(rew, 1.0)
     reward = np.concatenate([[0.0], rew * float(terminal_reward)]).astype(np.float32)
     is_terminal = np.zeros(T, bool); is_terminal[-1] = bool(term[-1])
     is_first = np.zeros(T, bool); is_first[0] = True
@@ -156,6 +165,8 @@ def main():
                          'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
     ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
     ap.add_argument('--state-only', action='store_true', help='tapes recorded with --no-images: write no image, state required')
+    ap.add_argument('--reward-from-tape', action='store_true', help='END-TO-END arm (PHASE_PLAN (d)): keep the recorded staged rewards (full scope) instead of one terminal +1')
+    ap.add_argument('--one-per-ic-best', action='store_true', help='END-TO-END arm: keep ONE tape per ic_uid -- the highest recorded reward sum (nested > contact > picked > none), ties -> shortest')
     ap.add_argument('--stride1-cap', type=float, default=None, help='PHASE_PLAN (c): re-encode at the SIM rate (action_repeat 1) from sim_states/sim_actions; value = delta cap per sim step (0.00625 = 0.025/4 keeps the per-second cap)')
     ap.add_argument('--one-per-ic', action='store_true', help='PHASE PLAN: keep only the FIRST tape (sorted filename) per ic_uid that has the phase -- harvests carry up to 3 attempts per IC')
     ap.add_argument('--force', action='store_true')
@@ -176,6 +187,16 @@ def main():
     census = dict(n_written=0, n_pick=0, n_nopick=0, n_tipped_terminal=0, n_cap_truncated=0)
     lens, total_reward, cap_seen, errors, svs = [], 0.0, set(), [], set()
     plan = []
+    best_keep = None
+    if args.one_per_ic_best:
+        best = {}
+        for f in files:
+            z = np.load(f); u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
+            key = (float(np.asarray(z['rewards'], np.float32).sum()), -int(z['n']))
+            if u not in best or key > best[u][0]:
+                best[u] = (key, f)
+        best_keep = {v[1] for v in best.values()}
+        print(f'[to_dreamer_native] --one-per-ic-best: {len(files)} tapes over {len(best)} ICs -> keeping {len(best_keep)}')
     for f in files:
         z = np.load(f, allow_pickle=True)
         need = ([] if args.state_only else ['images']) + ['actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else []) + (['sim_states', 'sim_actions'] if args.stride1_cap is not None else [])
@@ -190,6 +211,8 @@ def main():
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
         if 'sim_variant' in z.files: svs.add(str(z['sim_variant']))   # world stamp from the TAPES (a symlink/merged dir has no manifest)
         cut = None
+        if best_keep is not None and f not in best_keep:
+            n_skipped_dup_ic += 1; continue
         if args.phase:
             u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
             # manifest keyed by tape FILE (make_phase_banks.py, 2026-09-04): several tapes may share an IC in a harvest;
@@ -211,7 +234,7 @@ def main():
                     n_skipped_dup_ic += 1; continue
                 seen_ic.add(u)
         try:
-            ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only, stride1_cap=args.stride1_cap)
+            ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only, stride1_cap=args.stride1_cap, reward_from_tape=args.reward_from_tape)
             census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
         except ValueError as e:
             errors.append(f'{os.path.basename(f)}: {e}'); continue
@@ -254,7 +277,7 @@ def main():
         sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(args.stride1_cap if args.stride1_cap is not None else (sorted(cap_seen)[0] if cap_seen else None)), scope=(args.phase or args.scope),
-        stride1_cap=args.stride1_cap, source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
+        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best), source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
         n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
