@@ -46,23 +46,41 @@ def tape_sha(files):
     return h.hexdigest()
 
 
-def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only=False):
+def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only=False, stride1_cap=None):
     """Contract-v1 npz (np.load'ed) -> dict of dreamer arrays, or raise ValueError.
 
     with_state (WM fix 2026-09-03, opt-in): also emit `state` (T,17) float32 = the tape's per-decision
     `states` (n,17) + `final_state` (17,), aligned with `image` (obs before each decision + final).
     Default False = byte-identical output."""
     n = int(z['n']) if 'n' in z.files else int(len(z['actions_delta']))
-    if state_only:
+    if stride1_cap is not None:
+        # PHASE_PLAN amendment (c), 2026-09-05: re-encode at the SIMULATOR rate from sim_states/sim_actions (rep rows per
+        # decision; sim_actions[rep*t+rep-1] == actions[t], sim_states[rep*t] == states[t] -- verified on the sets).
+        # Row t' = (state before sim step t', normalized delta of the absolute target vs the previous step's target,
+        # cap = stride1_cap rad per sim step); reward +1 on the last row (the pick grant), terminal there.
+        rep_ = int(z['action_repeat']); SS = np.asarray(z['sim_states'], np.float32); SA = np.asarray(z['sim_actions'], np.float32)
+        T1 = n * rep_; assert SS.shape[0] >= T1 and SA.shape[0] >= T1, (SS.shape, SA.shape, n, rep_)
+        SS = SS[:T1]; SA = SA[:T1]
+        prev = np.concatenate([np.asarray(z['states'], np.float32)[:1, :6] * 0 + SA[:1, :6], SA[:-1, :6]])   # first delta = 0
+        d = np.clip((SA[:, :6] - prev) / float(stride1_cap), -1.0, 1.0)
+        grip = SA[:, 6:7]
+        act = np.concatenate([d, grip], axis=1).astype(np.float32)
+        n = T1
+        img = np.zeros((n + 1, 64, 64, 6), np.uint8)
+        rew = np.zeros(n, np.float32); rew[-1] = float(np.asarray(z['rewards'], np.float32).reshape(-1)[-1] > 0)
+        term = np.zeros(n, bool); term[-1] = bool(np.asarray(z['terminated'], bool).reshape(-1)[-1]); trunc = np.zeros(n, bool); trunc[-1] = not term[-1]
+        st_full = SS; fs_full = np.asarray(z['final_state'], np.float32).reshape(1, -1)
+    elif state_only:
         img = np.zeros((n + 1, 64, 64, 6), np.uint8)   # no images in the tape; the loader asserts (T,64,64,6) uint8; zeros compress to ~nothing
     else:
         img = np.asarray(z['images'])
-    act = np.asarray(z['actions_delta'], np.float32)
-    rew = np.asarray(z['rewards'], np.float32).reshape(-1)
-    term = np.asarray(z['terminated'], bool).reshape(-1)
-    trunc = np.asarray(z['truncated'], bool).reshape(-1)
-    st_full = np.asarray(z['states'], np.float32) if 'states' in z.files else None
-    fs_full = np.asarray(z['final_state'], np.float32).reshape(1, -1) if 'final_state' in z.files else None
+    if stride1_cap is None:
+        act = np.asarray(z['actions_delta'], np.float32)
+        rew = np.asarray(z['rewards'], np.float32).reshape(-1)
+        term = np.asarray(z['terminated'], bool).reshape(-1)
+        trunc = np.asarray(z['truncated'], bool).reshape(-1)
+        st_full = np.asarray(z['states'], np.float32) if 'states' in z.files else None
+        fs_full = np.asarray(z['final_state'], np.float32).reshape(1, -1) if 'final_state' in z.files else None
     if phase_cut is not None:
         # PHASE PLAN 2026-09-04: cut a FULL-scope tape to one phase [k_entry, k_grant] (rows inclusive), the
         # same convention as the entry banks (row k = obs before decision k). The phase pays exactly one +1 on
@@ -137,6 +155,7 @@ def main():
                          'place = [k_pick, k_placed_v2], contact = [k_placed_v2, k_contact]; +1 on the grant row only')
     ap.add_argument('--phases-json', default=None, help='<prefix>_phases.json from make_phase_banks.py (required with --phase)')
     ap.add_argument('--state-only', action='store_true', help='tapes recorded with --no-images: write no image, state required')
+    ap.add_argument('--stride1-cap', type=float, default=None, help='PHASE_PLAN (c): re-encode at the SIM rate (action_repeat 1) from sim_states/sim_actions; value = delta cap per sim step (0.00625 = 0.025/4 keeps the per-second cap)')
     ap.add_argument('--one-per-ic', action='store_true', help='PHASE PLAN: keep only the FIRST tape (sorted filename) per ic_uid that has the phase -- harvests carry up to 3 attempts per IC')
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
@@ -158,12 +177,14 @@ def main():
     plan = []
     for f in files:
         z = np.load(f, allow_pickle=True)
-        need = ([] if args.state_only else ['images']) + ['actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else [])
+        need = ([] if args.state_only else ['images']) + ['actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else []) + (['sim_states', 'sim_actions'] if args.stride1_cap is not None else [])
         miss = [k for k in need if k not in z.files]
         if miss:
             errors.append(f'{os.path.basename(f)}: missing {miss} (not a contract-v1 tape with images)'); continue
         rep = int(z['action_repeat']) if 'action_repeat' in z.files else None
-        if rep != args.repeat:
+        if args.stride1_cap is not None and args.repeat != 1:
+            sys.exit('FATAL: --stride1-cap needs --repeat 1')
+        if args.stride1_cap is None and rep != args.repeat:
             errors.append(f'{os.path.basename(f)}: action_repeat stamp {rep} != --repeat {args.repeat}'); continue
         if 'delta_cap' in z.files: cap_seen.add(round(float(z['delta_cap']), 6))
         if 'sim_variant' in z.files: svs.add(str(z['sim_variant']))   # world stamp from the TAPES (a symlink/merged dir has no manifest)
@@ -189,7 +210,7 @@ def main():
                     n_skipped_dup_ic += 1; continue
                 seen_ic.add(u)
         try:
-            ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only)
+            ep = convert_one(z, args.terminal_reward, with_state=args.with_state, phase_cut=cut, state_only=args.state_only, stride1_cap=args.stride1_cap)
             census['n_double_grant'] = census.get('n_double_grant', 0) + int(ep.pop('n_double_grant'))
         except ValueError as e:
             errors.append(f'{os.path.basename(f)}: {e}'); continue
@@ -231,7 +252,8 @@ def main():
     meta = dict(
         sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
-        delta_cap=(sorted(cap_seen)[0] if cap_seen else None), scope=(args.phase or args.scope),
+        delta_cap=(args.stride1_cap if args.stride1_cap is not None else (sorted(cap_seen)[0] if cap_seen else None)), scope=(args.phase or args.scope),
+        stride1_cap=args.stride1_cap, source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
         n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
