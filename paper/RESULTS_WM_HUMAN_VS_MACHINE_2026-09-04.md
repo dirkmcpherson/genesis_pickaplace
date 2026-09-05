@@ -117,7 +117,7 @@ Not a ranking of learners (budgets and eval modes differ). Not an H4 verdict (pr
 *Rendered copy (same content, private link): https://claude.ai/code/artifact/332dca67-a755-477b-b40f-700f18bcba79*
 
 ## 11. Addenda (2026-09-04 evening)
-- **Broader random-IC retest (300 placements):** dHv2raw 0.602, dDP 0.624 (deterministic; 0.597 / 0.619 sampled) — within 0.02 of the
+- **Broader random-IC retest (300 placements):** dHv2raw 0.602, dDP 0.618 (deterministic, 8 v 8, Δ −0.017, p 0.546; 0.597 / 0.619 sampled) — within 0.02 of the
   30-placement estimates; the null stands. One machine cell counts a deterministic simulator stall on one placement as a failure.
 - **All-data human arm `dHv2all`** (66 successes + 40 non-picking/failed recordings): r2dreamer rnd30 0.588 vs 0.617 raw (p 0.58), rnd300
   0.593 vs 0.602, in-distribution cells 0.92–0.94 vs 0.95–0.98; RLPD 0.554 vs 0.600 (one dead seed per arm). The registered "world

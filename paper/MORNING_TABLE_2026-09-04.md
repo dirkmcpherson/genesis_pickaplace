@@ -114,8 +114,9 @@ the fixed recipe; the WM-fix ladder's own registered predictions (PLAN §7) are 
 
 ## 5. Additions 2026-09-04 evening (James's work order, PHASE_PLAN §6)
 **Broader random-IC retest (300 placements, seed 1, same support box), LAST checkpoint, MODE:** dHv2raw 1444/2400 = **0.602**,
-dDP 1311/2100 = **0.624** (7 seeds), dH-pruned pilot 367/600 = 0.612 — each within 0.02 of its rnd30 estimate (registered
-prediction: within 0.05, MET). SAMPLE: 0.597 / 0.619 / 0.593. Human-vs-machine on 300 placements: Δ ≈ −0.02, n.s.
+dDP 1484/2400 = **0.618** (8 seeds; one cell counts a deterministic simulator stall as a failure), dH-pruned pilot 367/600 = 0.612 — each within
+0.02 of its rnd30 estimate (registered prediction: within 0.05, MET). SAMPLE: 0.597 / 0.619 / 0.593. Human-vs-machine on 300 placements:
+Δ −0.017 (MODE), exact perm p 0.546, n = 8 v 8 — the null stands.
 
 **ALL-DATA human arm `dHv2all`** (106 tapes: 66 successes + 24 non-picking raw-run recordings + 16 real-fail demos, 73 rewarded),
 r2dreamer, 8 seeds, LAST, all cells complete: rnd30 **0.588 MODE / 0.571 SAMPLE** vs dHv2raw 0.617 / 0.613 (Δ −0.03 / −0.04, p 0.58 / 0.32);
