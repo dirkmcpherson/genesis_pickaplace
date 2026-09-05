@@ -59,7 +59,8 @@ def convert_one(z, terminal_reward, with_state=False, phase_cut=None, state_only
         # Row t' = (state before sim step t', normalized delta of the absolute target vs the previous step's target,
         # cap = stride1_cap rad per sim step); reward +1 on the last row (the pick grant), terminal there.
         rep_ = int(z['action_repeat']); SS = np.asarray(z['sim_states'], np.float32); SA = np.asarray(z['sim_actions'], np.float32)
-        T1 = n * rep_; assert SS.shape[0] >= T1 and SA.shape[0] >= T1, (SS.shape, SA.shape, n, rep_)
+        # the recorder stops at the grant, so the LAST decision window may hold fewer than rep_ sim steps (e.g. 282 rows for n 71)
+        T1 = min(SS.shape[0], SA.shape[0]); assert (n - 1) * rep_ < T1 <= n * rep_, (SS.shape, SA.shape, n, rep_)
         SS = SS[:T1]; SA = SA[:T1]
         prev = np.concatenate([np.asarray(z['states'], np.float32)[:1, :6] * 0 + SA[:1, :6], SA[:-1, :6]])   # first delta = 0
         d = np.clip((SA[:, :6] - prev) / float(stride1_cap), -1.0, 1.0)
