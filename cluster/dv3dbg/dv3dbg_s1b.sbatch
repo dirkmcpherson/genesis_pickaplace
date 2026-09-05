@@ -4,6 +4,7 @@
 # preempt-safe (--requeue + dv3's own logdir re-entry), pax077 excluded, 2-day limit, eval refused unless training
 # reached its budget (an untrained checkpoint must never be evaluated as if complete).
 # usage: TAG=<tag> sbatch dv3dbg_s1b.sbatch <seed> <env_steps> <reach_goal_dist_m> [dreamer flags...]
+#        env: DV3_TREE=<tree dir> (default $W/dv3_fix), DV3_EXTRA_CONFIGS="<config blocks>" spliced into --configs
 #SBATCH -J dv3dbg_s1b
 #SBATCH -p gpu,preempt
 #SBATCH --requeue
@@ -21,7 +22,7 @@ SEED=$1; STEPS=$2; RGD=$3; shift 3
 : "${TAG:?TAG required (run tag, e.g. clamp1)}"
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
-TREE=$W/dv3_fix
+TREE=${DV3_TREE:-$W/dv3_fix}              # round 1: dv3_fix (frozen); later rounds may use $W/dv3_dbg (= dv3_fix + G2 demo hunk + config blocks)
 PY=$LAB/condaenv/genesis/bin/python
 NAME=dv3dbg_reach_r${RGD}_${TAG}_s${SEED}
 LOGDIR=$W/runs/$NAME
