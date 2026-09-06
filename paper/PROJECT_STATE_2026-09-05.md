@@ -61,7 +61,7 @@ Because so few human tapes reach contact *after* releasing the can, the register
 
 ### 3.7 End-to-end: learning the whole task from scratch
 
-Your suggestion this morning. From the can on the table to nested, with the staged reward the RLPD arm used (1 for pick, 1 for place, 2 for contact, 4 for nested), 2 million steps, 4 seeds per arm, 74 human tapes including failures vs 72 best-per-start machine tapes. All eight runs are training; the first finish early tomorrow morning. Registered predictions: both arms learn the pick, no stage differs by more than 0.10, nested stays below 0.2 for both.
+Your suggestion this morning. From the can on the table to nested, with the staged reward the RLPD arm used (1 for pick, 1 for place, 2 for contact, 4 for nested), 2 million steps, 4 seeds per arm, 74 human tapes including failures vs 72 best-per-start machine tapes. All eight runs are training; the first finished its 2 million steps at 21:00. One wrinkle: these eight were submitted a few minutes before a launcher fix, so their built-in evaluation step aborts after training; the checkpoints are intact and a CPU job scores each run post hoc as it finishes (the first two are being scored now). Same checkpoint, same protocol, just not in-job. Registered predictions: both arms learn the pick, no stage differs by more than 0.10, nested stays below 0.2 for both.
 
 ### 3.8 What the demonstrations actually look like
 
