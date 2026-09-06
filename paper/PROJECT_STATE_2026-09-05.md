@@ -116,3 +116,21 @@ The cluster queue stalled this afternoon at 10 running jobs because every job sa
 ## 9. Small glossary
 
 *Arm* — one experimental condition (a demo set × a learner). *Seed* — one independent training run. *Mode vs sample* — deterministic vs sampled actions at evaluation. *Prefill* — loading the demonstrations into the learner's replay buffer before training. *Return clamp* — capping the value targets at the maximum attainable return. *Entry bank* — a set of saved mid-task states used to start a later-stage episode. *Restore* — reconstructing such a state in the simulator. *Matched-N* — the machine set cut down to the same number of demonstrations as the human set. *Permutation test* — shuffling seed labels between the two arms to see how often a difference this large appears by chance.
+
+## 10. State at disconnect (VPN dropped 21:43; last cluster readings 20:51–21:20)
+
+Everything below keeps running on the cluster without the VPN. The chains are self-contained: the matched-count machine runs evaluate themselves in-job, the end-to-end runs are scored by a loop on the cluster's login node, and the DV3 agent's jobs finish and evaluate on their own. What I cannot do until the VPN returns is read the results or submit anything new.
+
+| work | state at disconnect | expected to finish (cluster clock) |
+|---|---|---|
+| Human carrycontact, 21 demos | done, 8 of 8 seeds: 0.807 on policy-generated starts (mode), 104/104 on human starts | done |
+| Matched machine arms: carrycontact 21, place 39, contact 11 | 14 of 24 training since 18:40, 10 queued | first batch around midnight, the rest by early morning |
+| Contact on the policy-generated bank | scored for human n11 (0.593) and machine n25 (0.609); matched machine n11 in the batch above | with the batch above |
+| End-to-end full task (2M steps) | 2 of 8 finished training and being scored; 6 training | last finish ≈ 01:30, scoring through the night |
+| Repeat-1 clock pilot | done: 0.642 vs 0.650 (p 1.0) | done |
+| DV3 round 1 (reach proxy, clamp) | 4 seeds clean through 150k–200k steps, targets held at 1.0 | gate evaluations ≈ 22:50 (fp32 pair) and ≈ 00:30 (fp16 pair) |
+| Robomimic leg | plan frozen, nothing installed | Monday, your call |
+
+**What happens when the VPN comes back.** Read the three phase tables (place, contact, carrycontact) and the end-to-end table; write the matched-count numbers into the results doc as the numbers of record; make and send the review reels for the matched arms and the end-to-end runs; read the DV3 agent's gate verdict. Then the robomimic decision.
+
+**The three sentences I would say if asked for the state of the science tonight.** Across pick, place, and (so far) the contact stages, and for all three learner families, we have not found a case where a learner that interacts with the environment does better with clean machine demonstrations than with messy human ones, at matched demonstration counts. The world models needed a fix to learn at all, and the fix is now reproducing on the second world-model port. The remaining exposure is that our machine demonstrations descend from the human ones; the public robomimic Can task with independently machine-generated data is the planned answer.
