@@ -57,7 +57,7 @@ Starting from a placed can, learn to slide it into the goal can. On the bank of 
 
 ### 3.6 Carrycontact: the two-armed contact comparison
 
-Because so few human tapes reach contact *after* releasing the can, the registered two-armed contact comparison starts from the pick-grant state and rewards contact by any route, held or released: 21 human segments vs 21 machine segments (matched today; the 36-demo machine version was cancelled before it started). Human seeds are landing at about 0.78 on the policy-generated bank; the machine seeds are training tonight.
+Because so few human tapes reach contact *after* releasing the can, the registered two-armed contact comparison starts from the pick-grant state and rewards contact by any route, held or released: 21 human segments vs 21 machine segments (matched today; the 36-demo machine version was cancelled before it started). All eight human seeds are done: 0.807 on the policy-generated bank in mode (955 of 1184; 0.835 over the 1144 starts that restore in this scope) and 104 of 104 on the human-entry bank. The matched machine seeds are training tonight.
 
 ### 3.7 End-to-end: learning the whole task from scratch
 
