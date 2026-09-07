@@ -23,7 +23,7 @@ export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplac
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; STEPS=${STEPS:-100000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DEMO=$LAB/robomimic_data/arms/$ARM/rlpd/transitions.npz; [ "$ARM" = none ] && DEMO=none
-NAME=rlpd_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/rlpd/$NAME
+NAME=rlpd_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/rlpd/$NAME   # ARM=none -> rlpd_none_s<k> = G2b no-demo control (demo_batch 0)
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED steps=$STEPS demo=$DEMO out=$OUT restart=${SLURM_RESTART_COUNT:-0}"
 [ "$DEMO" = none ] || [ -f "$DEMO" ] || { echo "FATAL: demo file missing: $DEMO (convert_arms.py)"; exit 1; }

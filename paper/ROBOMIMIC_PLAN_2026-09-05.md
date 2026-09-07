@@ -143,3 +143,52 @@ exact permutation on per-seed counts, 8 seeds, launchers unchanged) applies verb
 ### Amendment A3 — primary contrast changed to MH200 v MG200s (user, 2026-09-07 10:45; recorded 13:45)
 
 User: "drop single-human for now since our own dataset is just mixed-human." The PH200 arms were removed from the submitted matrix (the 72-job mis-fire at 10:26 was cancelled before any job started; the 48-run matrix submitted at 10:50 is MH200 + MG200s × rlpd/r2d/dp × 8 seeds). The primary source contrast is therefore **MH200 v MG200s** for every learner; PH200 v MG200s and PH200 v MH200 remain registered secondaries to be run only on a later go. The BC-RNN control keeps all three (PH 0.92 / MH 0.927 / MG 0.393). Falsifier (a) is read on MH200 v MG200s.
+
+## A4. Amendment 2026-09-07 (registered BEFORE any run; runs held until the coordinator confirms): action-process control for the RLPD MH200 v MG200s gap
+*Trigger: adversarial review S1-1 — MG demo actions differ from human ones in three non-source ways that none of the A2
+controls (MGall, MG718s, MG200s@300k, all drawn from the same SAC rollouts) removes. Recomputed on the arms' rlpd
+transitions (`robomimic_data/arms/action_stats.json`, arm dims 0–5): mean |a| MG200s 0.664 vs MH200 0.144 (PH200 0.236);
+mean |a_t − a_{t−1}| 0.274 vs 0.043 (0.050); gripper: MG 1,903 distinct values (29 % at |g| ≥ 0.99, 1 % exactly ±1)
+vs binary ±1 on every human row; MG drives all six OSC dims incl. the three rotations (per-dim |a| 0.58–0.78 vs human
+0.02–0.06). Any RLPD deficit on MG data is equally consistent with "bang-bang, high-frequency demonstrations" as with
+"machine source".*
+- **Design (re-execution pairs; the honest form — the actions in every tuple are the ones that produced s′):** each
+  arm is built by replaying a modified action sequence open-loop in the installed env from `reset_to({model xml,
+  states[0]})` of the ORIGINAL tape, recording the fresh observation each step (`get_observation()`), for the tape's own
+  length T (no extra actions exist), keeping the tape iff `is_success()` fires within T, cutting at first success,
+  +1 once, terminal. Each modified arm is paired with a **re-execution control** built by the same pipeline with the
+  UNMODIFIED actions, and both arms are restricted to the tapes that succeed in BOTH re-executions (identical tape
+  sets; removes survivorship and replay-drift asymmetry). Yields are reported before any training.
+  - **R0 MG200s_re** (control): MG200s, original actions, re-executed. **R1 MG200s_sm** (treatment): arm dims passed
+    through a causal EMA a′_t = β a′_{t−1} + (1−β) a_t (a′_0 = a_0) with ONE β for the whole arm, found by bisection so
+    that the arm's mean |Δa′| equals MH200's 0.043; gripper binarised at 0 (g′ = +1 if g > 0 else −1, robosuite's
+    close/open convention). The EMA also lowers |a| on the sign-flipping components (reported, not matched separately);
+    a magnitude-restored variant (per-tape rescale of a′ to the tape's original mean |a|, then clip) is registered as
+    **R1m** and built only if R1's yield < 100 tapes.
+  - **R2 MH200_re** (control): MH200, original actions, re-executed. **R3 MH200_rough** (treatment): a′_t = clip(a_t +
+    n_t, −1, 1), n_t i.i.d. uniform per dim with half-width ε set by bisection so that the arm's mean |Δa′| equals
+    MG200s's 0.274 (seeded, fixed); gripper unchanged (binary — MG's continuous gripper has no human mirror). Resulting
+    mean |a| reported (it rises but cannot be matched to 0.664 without saturating every row).
+  - Optional, zero build cost (review S1-1 (b)): **Can-Paired good 100 v bad 100** (one operator, one action process,
+    success vs failure) as a within-process quality contrast; RLPD 8 seeds each if the A4 pairs are run.
+- **Learner / statistic:** RLPD recipe of record, 100k decisions, 8 seeds per arm, LAST on bank_can50, mode primary /
+  sample secondary, exact two-sided permutation on per-seed counts, contrasts R1 v R0 and R3 v R2 (within-pair, same
+  tapes), plus R1 v MH200@100k. TOST ±0.10 where equivalence is claimed.
+- **Predictions (falsifiable):** P-A4-1: **R1 − R0 ≥ +0.15 (p < 0.05)** — smoothing + binarising the SAC actions
+  recovers a large part of the gap, and R1 ≥ MH200 − 0.10 → the "source" effect is (mostly) the action process.
+  P-A4-2: **R3 − R2 ≤ −0.15 (p < 0.05)** — roughened human actions hurt RLPD. P-A4-3: R0 ≈ MG200s and R2 ≈ MH200
+  (|Δ| < 0.10; re-execution itself is neutral — the G0 result makes this likely for MH; for MG it is the yield that
+  is uncertain). **Decision rules:** if P-A4-1 holds → the paper's sentence is "RLPD learns worse from bang-bang,
+  high-frequency demonstrations; the SAC generator produces them" (mechanism named), not "source-sensitive";
+  if |R1 − R0| < 0.10 AND |R3 − R2| < 0.10 → the action process is not the mechanism and the A2 decision rule stands;
+  mixed outcomes (one pair moves, the other not) → report both, no source claim; if R1's yield < 50 tapes even with
+  R1m → the control is "not buildable by open-loop replay" and only R3 v R2 is read.
+- **Counts (upper bounds; the measured yields replace them in the log before training):** R0/R1 ≤ 200 tapes, ≤ 16,501
+  rows (MG200s re-cut at the re-execution's first success); R2/R3 ≤ 200 tapes, ≤ 41,134 rows; Paired 100 + 100 tapes,
+  ≈ 9.9k rows (19,795 rows in the file, bad half uncut). Cost ≈ 32 runs × ~1.5–2 GPU-h ≈ 48–64 GPU-h (R0–R3);
+  Paired +16 runs. Build (CPU, login node, ~200 replays × ~3 s per arm) needs no GPU.
+- **Disclosures:** re-executed tapes are new sim trajectories (the plan's "no re-execution" rule is suspended for this
+  control only, by design); β/ε are arm-level constants; yields select tapes (identical sets within a pair, but the
+  pair's set is a non-random subset of the arm); the EMA changes both smoothness and magnitude; the t=0 artefact
+  (review S2-6) is ABSENT from re-executed arms (fresh observations) — a further difference from the file-based arms,
+  disclosed. **Nothing in A4 is submitted until the coordinator confirms.**

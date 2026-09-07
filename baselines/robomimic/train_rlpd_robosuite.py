@@ -68,10 +68,16 @@ def main():
     print(f"[cfg] RLPD | E={args.ensemble_size} Z={args.subset_size} UTD={args.utd} gamma={args.gamma} ent_coef={args.ent_coef} "
           f"target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 steps={args.steps} (decisions)", flush=True)
     if args.demo == "none":
-        # G2 negative control: no demos. RLPDSAC.train asserts a demo buffer; feed a single zero-reward dummy transition
-        # so the 50/50 machinery runs unchanged with an informationless demo half (disclosed as the no-demo control).
+        # G2b negative control (plan §5; adversarial review S1, 2026-09-07): NO demonstrations. The demo half is EMPTY --
+        # demo_batch is forced to 0 so every 256-row batch is online data (RLPDSAC.train: online_bs = 256 - 0; the demo
+        # sampler draws 0 rows). A single zero row exists only to satisfy set_demo_data's non-empty assertion; it is
+        # never sampled (asserted below). Everything else (E10/Z2 LN critics, UTD 10, gamma, alpha) is the recipe of record.
+        if args.demo_batch != 0:
+            print(f"[demos] NONE: forcing --demo-batch {args.demo_batch} -> 0 (empty demo half)", flush=True)
+            args.demo_batch = 0
+            model.demo_batch = 0
         transitions = [(np.zeros(23, np.float32), np.zeros(7, np.float32), 0.0, np.zeros(23, np.float32), False)]
-        demo_sha = None; print("[demos] NONE (negative control; dummy zero transition as the demo half)", flush=True)
+        demo_sha = None; print("[demos] NONE (G2b no-demo control; demo_batch 0 -> pure online SAC with the RLPD critic recipe)", flush=True)
     else:
         transitions = robomimic_demo_transitions(args.demo); demo_sha = sha256_file(args.demo)
         man = json.loads((pl.Path(args.demo).parent / "manifest.json").read_text())
@@ -80,6 +86,8 @@ def main():
               f"{sum(t[4] for t in transitions)} terminal, sha256 {demo_sha[:16]}... arm {man['arm']}", flush=True)
     demo = DemoData(transitions, None, th.device(args.device), seed=args.seed)
     model.set_demo_data(demo)
+    if args.demo == "none":
+        assert model.demo_batch == 0 and demo.sample(0).rewards.shape[0] == 0, (model.demo_batch, "demo half must be empty")
     out = pl.Path(args.out); out.mkdir(parents=True, exist_ok=True)
     sidecar = dict(learner="rlpd", task="robosuite_can", hdf5=hdf5, arm=args.arm, demo=args.demo, demo_sha256=demo_sha,
                    gamma=args.gamma, utd=args.utd, ensemble_size=args.ensemble_size, subset_size=args.subset_size,

@@ -180,3 +180,13 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   matrix's 16 pending dp runs go first; 20 GPUs in use by r2d ×16 + dv3dbg ×4): C1 MGall s0–7 = **3349120–3349127**;
   C2 MG718s s0–7 = **3349128–3349135**; C3 MG200s@300k s0–7 = **3349136–3349143** (TAG ext300k, K = 5 checkpoints).
   Outputs `robomimic_runs/rlpd/rlpd_{MGall,MG718s}_ctl_s<k>/` and `rlpd_MG200s_ext300k_s<k>/`, LAST on bank_can50 mode+sample.
+- 12:10 (09-07) Adversarial review `paper/ADVERSARIAL_REVIEW_robomimic_ops_2026-09-07.md` S1/S2 read. **G2b (no-demo RLPD ≤ 0.10)
+  SUBMITTED: 3350586–3350593** (`ARM=none`, 8 seeds, 100k decisions, recipe of record with the demo half EMPTY —
+  `train_rlpd_robosuite.py` now forces demo_batch 0 for `--demo none` and asserts the demo sampler draws 0 rows; the
+  earlier code would have fed a constant zero row as half of every batch), name robo_rlpd_nodemo, out `rlpd_none_s<k>/`.
+- Action statistics recomputed from the arms' rlpd transitions (`robomimic_data/arms/action_stats.json`; arm dims 0-5,
+  roughness = mean |a_t − a_{t−1}| within tapes): PH200 |a| 0.236, |Δa| 0.050, gripper binary 100 %, saturated 7.4 %;
+  MH200 0.144 / 0.043 / 100 % / 2.4 %; **MG200s 0.664 / 0.274 / 1.0 % (1,903 distinct gripper values) / 12.2 %**;
+  MG718s 0.666 / 0.274 / 1.1 % / 12.3 %; MGall 0.620 / 0.386 / 0.5 % / 7.8 %. Per-dim mean |a| MG200s
+  [0.78, 0.71, 0.70, 0.58, 0.61, 0.60] vs MH200 [0.19, 0.35, 0.21, 0.02, 0.04, 0.06] — the SAC policy drives every OSC dim,
+  incl. the three rotations humans barely touch, at ~4× the human magnitude. Confirms the review's S1-1 numbers.
