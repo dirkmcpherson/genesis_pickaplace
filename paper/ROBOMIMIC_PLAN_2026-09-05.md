@@ -111,3 +111,31 @@ or seed on the robomimic data; the registered text above is unchanged.*
   `buffer.max_size = 2·rows + 500k` so no demo row is evicted (the same "nothing evicted" choice as the Genesis WM arm).
 - **Bank restore (clarification of §2)**: entries are restored with `reset_to({model: xml, states})` (robomimic's
   playback convention; the model xml is stored alongside the flattened state), not states-only.
+
+## A2. Amendment 2026-09-07 (registered BEFORE any control run): RLPD source-effect controls — quantity, failures, budget
+*Trigger (coordinator, 09-07): the RLPD arm of the primary matrix read out with falsifier (a) firing on the quality/source axis —
+`eval_bank50_mode` LAST, n = 8 v 8: MH200 [27, 44, 30, 1, 20, 9, 24, 27] = 0.455 vs MG200s [10, 2, 2, 13, 6, 12, 9, 5] = 0.147,
+Δ = +0.307, exact two-sided p = 0.008 (sample: 0.458 vs 0.168, p = 0.011). Before that is read as a demonstration-SOURCE
+effect, three controls separate tape count / row count, failure rows and budget from source. Written before any of them
+is built or submitted; the primary-matrix protocol (bank_can50, LAST checkpoint, mode primary / sample secondary,
+exact permutation on per-seed counts, 8 seeds, launchers unchanged) applies verbatim.*
+- **C1 — MGall** (the registered §3 secondary): all 3,900 SAC rollouts incl. 3,182 failures, 536,522 rows after the cut
+  (718 rewarded terminals; reward density 0.13 % vs MG200s 1.2 %, MH200 0.49 %), RLPD 100k decisions, 8 seeds (`ARM=MGall`).
+- **C2 — MG718s** (new arm, same converters/manifests): EVERY successful MG rollout, 718 tapes, ≈ 59k rows (> MH200's
+  41,134 rows and 3.6× its tape count; MG200s ⊂ MG718s), RLPD 100k decisions, 8 seeds (`ARM=MG718s`). Row- and
+  tape-superior to MH200, so a remaining deficit cannot be quantity.
+- **C3 — MG200s @ 300k decisions** = the §4/§5 registered budget extension for the arm that failed G3 (MG200s LAST
+  ≥ 0.5 in 0/8 seeds at 100k), 8 seeds (`STEPS=300000 TAG=ext300k`). Same launcher, K = 5 checkpoints archived.
+- **Statistic**: MODE success on the bank at LAST per seed; exact two-sided permutation, n = 8 v 8, against the primary
+  cells MG200s@100k (0.147) and MH200@100k (0.455); TOST ±0.10 where equivalence is claimed. Sample as secondary.
+- **Predictions (falsifiable):** P1 (C2): MG718s > MG200s by ≥ 0.10 (more rewarded tapes help an off-policy learner) but
+  MG718s < MH200 by ≥ 0.15 with p < 0.05 — the source effect survives row-matching. P2 (C1): |MGall − MG718s| < 0.10
+  (failure rows neither rescue nor sink it — the Genesis `dHv2all` precedent), hence MGall < MH200 by ≥ 0.15. P3 (C3):
+  MG200s@300k improves over MG200s@100k by ≥ 0.10 but stays below MH200@100k by ≥ 0.15; G3 at 300k (≥ 0.5 in ≥ 3/8 seeds)
+  NOT met. **Decision rules:** if MG718s or MGall reaches MH200 − 0.10 → the effect was quantity/coverage, not source;
+  if MG200s@300k reaches MH200@100k − 0.10 → it was budget (MG data are slower to exploit, not worse); if all three stay
+  ≥ 0.15 below MH200 (p < 0.05) → falsifier (a) stands as a source effect on RLPD, to be read with the t0-placement
+  covariate (`CAN_POS`) and the per-checkpoint-block composition recorded in the log.
+- **Disclosures:** MG718s and MGall share every MG200s tape (nested arms, not independent samples); the SAC checkpoint
+  block of each tape is inferred from index order (no per-checkpoint key in the file); C3 is a longer budget on the SAME
+  demos; all three are RLPD-only (the r2d/dp arms of the matrix are still running and are not extended here).
