@@ -121,3 +121,9 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   - r2dreamer 3337882: COMPLETED in 9:13 wall (torch.compile + prefill 22,914 rows + 1,686 online decisions), 12.6 GB RSS at buffer 47,200 rows; `R2D-RESULT r2d_PH200_smoke_s0 mode=0/10 sample=0/10` (0 expected); latest.pt + metrics.jsonl + both eval dirs written; eval 6.5 s/episode.
   - DP 3337917: COMPLETED in 6:10 wall (2,000 grad steps @ 0.058 s + eval); config.json now carries `"type": "diffusion"` (draccus 0.10.0 at save time); **`DP-RESULT dp_PH200_smoke_s0 sample=3/10`** at 2k steps — the data/env/evaluator chain is coherent (a policy trained on the file's obs succeeds in the live env from bank states).
   - Measured rates → primary-run estimates (submit_primary.sh HOURS): RLPD ≈ 59 ms/decision with UTD-10 → 100k ≈ 1.6 h + 8 min eval ≈ 2 h; DP 0.058 s/step → 100k ≈ 1.6 h + ~10 min eval ≈ 2 h; r2dreamer (train_ratio 512 → 250k updates for 500k online decisions) ≈ 6 h from the Genesis rate (UNVERIFIED until the pilot). 72 runs ≈ 240 GPU-h. Memory: 48 g holds a 5.2e5-row buffer; MGall (1.6e6 rows) would need ~96 g.
+- **01:20 (09-07) G1 PASS — BC-RNN positive control on PH200** (robomimic's own low-dim BC-RNN recipe, 2000 epochs × 100
+  steps, LAST checkpoint = model_epoch_2000, deterministic GMM mode, 50-state bank, fresh process; array 3337852 tasks
+  0-2, ~25 min each on L40): **47/50, 46/50, 48/50 = 0.94 / 0.92 / 0.96, mean 0.94 ≥ 0.90** (paper: 100 on the old
+  physics, max over checkpoints). The installed env + re-hosted v1.5 data + our bank/evaluator reproduce the published
+  regime; together with G0 (4/5) and G2a (random 0/50) the leg's gates that can be run before the primary matrix all pass.
+  MH200 / MG200s seeds follow in the same array (throttle 4).
