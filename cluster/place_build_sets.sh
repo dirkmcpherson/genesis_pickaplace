@@ -21,8 +21,10 @@ W=${W:-$LAB/wm_fix_2026-09-03}; DEMO_ROOT=${DEMO_ROOT:-$LAB/genesis_pickaplace/b
 if [ -n "${SLURM_JOB_ID:-}" ]; then module load anaconda/2025.06.0; conda activate "${CONDA_ENV:-$LAB/condaenv/genesis}"; fi
 FORCE=(); [ "${REDO:-0}" = 1 ] && FORCE=(--force)
 echo "== place_build_sets $(date) host=$(hostname) git=$(git rev-parse --short HEAD) DEMO_ROOT=$DEMO_ROOT"
-python baselines/rl/place_demos.py cut --src "$TAPES/dHfull_w3_all"  --phases "$W/phase_banks/human_phases.json"   --out "$DEMO_ROOT/dH_place" "${FORCE[@]}"
-python baselines/rl/place_demos.py cut --src "$TAPES/dDPfull_w3_all" --phases "$W/phase_banks/machine_phases.json" --out "$DEMO_ROOT/dDP_place_n39" --one-per-ic --keep-from "$W/demos_state/dDP_place_n39/repeat.json" "${FORCE[@]}"
+if [ -f "$DEMO_ROOT/dH_place/manifest.json" ] && [ "${REDO:-0}" != 1 ]; then echo "# dH_place already cut (manifest present), kept"; else
+python baselines/rl/place_demos.py cut --src "$TAPES/dHfull_w3_all"  --phases "$W/phase_banks/human_phases.json"   --out "$DEMO_ROOT/dH_place" "${FORCE[@]}"; fi
+if [ -f "$DEMO_ROOT/dDP_place_n39/manifest.json" ] && [ "${REDO:-0}" != 1 ]; then echo "# dDP_place_n39 already cut (manifest present), kept"; else
+python baselines/rl/place_demos.py cut --src "$TAPES/dDPfull_w3_all" --phases "$W/phase_banks/machine_phases.json" --out "$DEMO_ROOT/dDP_place_n39" --one-per-ic --keep-from "$W/demos_state/dDP_place_n39/repeat.json" "${FORCE[@]}"; fi
 python baselines/rl/place_demos.py check --raw "$DEMO_ROOT/dH_place"       --segments "$W/demos_state/dH_place"
 python baselines/rl/place_demos.py check --raw "$DEMO_ROOT/dDP_place_n39"  --segments "$W/demos_state/dDP_place_n39"
 python baselines/rl/place_demos.py census --segments "$W/demos_state/dH_place"
