@@ -56,6 +56,16 @@ PENDING.
 
 PENDING — jobs `rs2_rescore_L0-3` (4 lanes × 4 evals = 16 concurrent, CPU), 320 cells, new dirs `fresh_eval_<tag>_<mode>_v2`.
 
+*Note written before any `_v2` cell exists (2026-09-07 15:5x):* the end-to-end reproduction guard registered in (j) asks that
+every per-episode `outcome` / `steps` / `stages.contact` / `stages.nested` equal the cell of record. Within an episode the
+fix changes nothing (the settle runs after the last decision), so **episode 0 must match exactly**. Later episodes could
+still differ if the 100 settle steps leave solver state that `GenesisCanEnv.reset` does not clear — the same exposure the
+DP/RLPD path has had all along (`eval_core.run_eval` calls `_nested()` at the end of every episode, then resets), which is
+precisely the protocol this fix restores parity with. So the pre-stated reading is: mismatches starting at episode ≥ 1,
+with episode 0 exact, are an inter-episode physics-leak signature of the settle (reported, quantified, and the honest
+column still stands because each episode is fully reset); a mismatch at episode 0, or in a bank cell's own first episode,
+would be a real bug in the patch and blocks the readout.
+
 ## 5. Verdicts
 
 PENDING.
