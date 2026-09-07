@@ -30,9 +30,25 @@ Not changed: any reward, termination or stored training row; the (i) `wmfix_phev
 
 "commanded-below-measured" = what the restore actually commanded (`clip(grip_cmd, 0, 1)`) is below the measured closure `grip_obs` of the entry (the review's criterion; 35 → 5 for `polE_place` reproduces its numbers exactly). For `polE_contact` every entry was restored with the fingers commanded FULLY open (raw values all negative → clipped to 0); the physical values are all below the release threshold, i.e. the fingers are commanded open by the amount the policy actually commanded (mean 0.127), and 151/160 are still opening relative to the measured closure — consistent with a releasing gripper. The human banks (`holdE_*`, `human_*`, `machine_*`) are tape-derived physical values and are unchanged.
 
-### 2.2 Restore survival, every entry, raw-grip vs physical-grip (`bank_restore_check.py`, one world per scope, the env's own restore; prep job 3350963)
+### 2.2 Restore survival, every entry, raw-grip vs physical-grip (`bank_restore_check.py`, one world per scope, the env's own restore; prep job 3351417)
 
-PENDING — filled in from `rs2_prep/restore_<scope>_<bank>.json`.
+| scope | bank | n | survived (raw grip) | survived (physical grip) | entries whose survival changed | failing entries |
+|---|---|---|---|---|---|---|
+| place | polE_place | 148 | 143 (0.966) | 143 (0.966) | 0 | 900002, 900007, 900055, 900058, 900126 (both banks) |
+| carrycontact | polE_place | 148 | 143 (0.966) | 143 (0.966) | 0 | the same five |
+| place | polE_place_dDP | 149 | 146 (0.980) | 146 (0.980) | 0 | 910043, 910051, 910103 (both banks) |
+| contact | polE_contact | 160 | 160 (1.000) | 160 (1.000) | 0 | none |
+
+**Two findings.** (a) *The grip-units bug is not what made entries fail to restore*: over all 467 entries, not one survival
+outcome changes between the raw-grip and the physical-grip bank (`fail_before_only` and `fail_after_only` are empty in every
+scope). The fix changes what the fingers are commanded to do at the entry — and therefore the episode's opening dynamics —
+not whether the state can be restored. The alternative registered in (j) P2 ("if the five failures vanish under physical
+grip, the units bug was their driver") is answered: **no**.
+(b) *The place/carrycontact asymmetry was purely the missing pin*: the same bank gives byte-identical survival (143/148) and
+the identical five failures in both scopes, confirming review S1-3 directly. The carrycontact cells of record were right to
+report 5/148 `restore_failed`; the place cells' 0/148 was the substitution artefact. Under the fix the pinned place and
+polEdDP cells are expected to report 5/148 and 3/149 restore failures respectively (counted as failures, symmetric across
+arms since both arms share the bank).
 
 ### 2.3 Names, and how the contact_push lanes were kept clean
 Three files per bank: `*_rawgrip.json` (the byte-identical raw-grip original), `*_physgrip.json` (the rebuild: per-entry
