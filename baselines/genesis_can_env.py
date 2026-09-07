@@ -189,7 +189,8 @@ class GenesisCanEnv:
         self._contact_push = False
         self._contact_frame = None; self._contact_push_frame = None
         self._contact_gripper_goal = False   # gripper touched the GOAL while the pick-can touched it
-        self._contact_farside = False        # some pick-can/goal contact frame had the gripper on the far side
+        self._contact_farside = False        # some pick-can/goal contact frame had the TOOL on the far side
+        self._contact_farside_wrist = False  # ... the WRIST on the far side (the withdrawn first definition)
         self._pick_run = 0   # consecutive frames satisfying the held-can guard
         # Seed with the reset configuration: HARDCODED_START is inside the box by
         # construction, so the very first out-of-box action can be held against it.
@@ -201,7 +202,9 @@ class GenesisCanEnv:
         # lazily on first use was a bug: if the first tool_pos() call happened
         # mid-episode, the offset was fitted at the wrong pose and every tool position
         # after it was wrong.
-        if self.workspace_limit:
+        # contact_push (2026-09-07) reads tool_pos() every contact frame, so the offset must exist for EVERY
+        # env, not only workspace-limited ones: calibrate once per world, here, at the known start pose.
+        if self.workspace_limit or self._tool_offset is None:
             self._calib_tool_offset()
         self.ws_violations = 0
         return self._obs()
@@ -284,15 +287,24 @@ class GenesisCanEnv:
         # above is unchanged and stays the predicate of record. User: 'contact is ideally through a slide
         # where the gripper and the goal can are on opposite sides of the pick-can'. contact_push =
         #   picked (earlier in the episode)  AND  pick-can<->goal solver contact THIS step
-        #   AND  dot(ee_xy - can_xy, goal_xy - can_xy) < 0   (eef on the far side of the pick-can along the
-        #        can->goal line, table plane; `contact` tests robot-x only: ee_x < can_x)
+        #   AND  dot(tool_xy - can_xy, goal_xy - can_xy) < 0   (the TOOL point -- tool_pos(), the gripper tip
+        #        reconstructed from the wrist -- on the far side of the pick-can along the can->goal line, table
+        #        plane). NOT the wrist link `ee` that `contact` uses: the wrist sits ~0.145 m behind the tool, so
+        #        a wrist-based far-side test fires on 132/148 banked HELD states and `contact`'s own ee_x < can_x
+        #        holds on 332/332 banked states (ADVERSARIAL_REVIEW_eval_env_2026-09-07 S2-5) -- it would grant
+        #        on the pure carry the predicate exists to exclude.
         #   AND  no gripper<->goal solver contact THIS step  (goal.get_contacts(kinova) empty).
         # Sticky once true, like `contact`. Diagnostics (why a `contact` episode fails the stricter test):
         # contact_gripper_goal = any gripper-goal contact on a picked pick-can/goal contact frame;
-        # contact_farside = any such frame with dot < 0.
+        # contact_farside = any such frame with dot < 0. Also logged: the wrist-based dot sign (contact_farside_wrist)
+        # so the two definitions can be compared post hoc.
         if self._picked and bg_touch:
             gp_ = np_(w['goal'].get_pos())
-            dot = float((ee[0] - bp[0]) * (gp_[0] - bp[0]) + (ee[1] - bp[1]) * (gp_[1] - bp[1]))
+            tool = np.asarray(self.tool_pos(), dtype=np.float64)
+            dot = float((tool[0] - bp[0]) * (gp_[0] - bp[0]) + (tool[1] - bp[1]) * (gp_[1] - bp[1]))
+            dot_w = float((ee[0] - bp[0]) * (gp_[0] - bp[0]) + (ee[1] - bp[1]) * (gp_[1] - bp[1]))
+            if dot_w < 0.0:
+                self._contact_farside_wrist = True
             gg = np_(w['goal'].get_contacts(w['kinova'])['position'])
             gg_touch = bool(gg.size and gg.shape[0])
             if gg_touch:
@@ -308,6 +320,7 @@ class GenesisCanEnv:
                     contact_push_frame=self._contact_push_frame,
                     contact_gripper_goal=self._contact_gripper_goal,
                     contact_farside=self._contact_farside,
+                    contact_farside_wrist=self._contact_farside_wrist,
                     t=self._t, uid=self._uid, ws_blocked=ws_blocked,
                     ws_violations=self.ws_violations)
         if done:

@@ -7,7 +7,9 @@ pick-can at angle theta from the eef->can direction (table plane, same z). Flags
   (a) theta = 0, gap > 0: goal straight ahead, gripper behind the can, not touching the goal -> contact T, contact_push T
   (b) theta > 90 (dot > 0), no gripper-goal contact: goal on the gripper's side -> contact may be T, contact_push F (wrong side)
   (c) theta = 0, gap = 0: held can pushed straight into the goal -- the finger tips protrude past the can and touch the
-      goal too -> contact T, contact_push F (gripper-goal contact)
+      goal too -> contact T, contact_push F (gripper-goal contact); with the TOOL-point projection (2026-09-07 correction,
+      ADVERSARIAL_REVIEW S2-5) the held can is also on the WRONG side: the tool point sits ahead of a held can's centre.
+  dot_tool is the predicate's projection; dot_wrist (the withdrawn wrist-based definition) is printed for comparison.
   control: goal 0.5 m away -> contact F, contact_push F
 Exits non-zero if the canonical cases do not come out as expected.
 usage: contact_push_check.py [--variant gc_kp4_riser3_shelf6] [--bank <holdE_place.json>] [--uid 252]"""
@@ -24,7 +26,7 @@ ap.add_argument('--variant', default='gc_kp4_riser3_shelf6')
 ap.add_argument('--bank', default=None, help='entry bank JSON (dict uid->entry or list); default: a held-can state from pick_entry_states.json')
 ap.add_argument('--uid', type=int, default=252)
 ap.add_argument('--thetas', type=float, nargs='*', default=[0.0, 30.0, 60.0, 90.0, 100.0, 110.0, 135.0, 180.0])
-ap.add_argument('--gaps', type=float, nargs='*', default=[0.0, 0.03, 0.06, 0.09], help='forward shift of the pick-can out of the fingers (m)')
+ap.add_argument('--gaps', type=float, nargs='*', default=[0.0, 0.03, 0.06, 0.09, 0.12], help='forward shift of the pick-can out of the fingers (m)')
 args = ap.parse_args()
 
 import sim_variant_hook as svh
@@ -84,10 +86,13 @@ def place_goal_and_step(theta_deg=None, far=False, gap=0.0):
     a = np.concatenate([np.asarray(e['qpos'], np.float64), [float(e['grip_cmd'])]])
     _obs, _done, info = env.step(a)
     bp2 = np_(w['bottle'].get_pos()); ee2 = np_(w['eef'].get_pos()); gp = np_(w['goal'].get_pos())
-    dot = float((ee2[0]-bp2[0])*(gp[0]-bp2[0]) + (ee2[1]-bp2[1])*(gp[1]-bp2[1]))
+    tool = np.asarray(env.tool_pos(), dtype=np.float64)
+    dot = float((tool[0]-bp2[0])*(gp[0]-bp2[0]) + (tool[1]-bp2[1])*(gp[1]-bp2[1]))       # the predicate's projection (TOOL point)
+    dot_w = float((ee2[0]-bp2[0])*(gp[0]-bp2[0]) + (ee2[1]-bp2[1])*(gp[1]-bp2[1]))       # wrist-based (withdrawn first definition)
     bg = np_(w['bottle'].get_contacts(w['goal'])['position']); gg = np_(w['goal'].get_contacts(w['kinova'])['position'])
     gg_rel = [[round(float(np.dot(p[:2] - bp2[:2], u)), 3), round(float(np.dot(p[:2] - bp2[:2], n)), 3)] for p in (gg.reshape(-1, 3) if gg.size else [])]
-    return dict(theta=('far' if far else theta_deg), gap=gap, dot=round(dot, 5), ee_x_lt_can_x=bool(ee2[0] < bp2[0]), gg_xy_rel_can=gg_rel,
+    return dict(theta=('far' if far else theta_deg), gap=gap, dot=round(dot, 5), dot_wrist=round(dot_w, 5), tool_fwd_of_can=round(float(np.dot(tool[:2] - bp2[:2], u)), 3),
+                ee_x_lt_can_x=bool(ee2[0] < bp2[0]), gg_xy_rel_can=gg_rel,
                 bottle_goal_contacts=int(bg.shape[0] if bg.size else 0), gripper_goal_contacts=int(gg.shape[0] if gg.size else 0),
                 picked=bool(info['picked']), contact=bool(info['contact']), contact_push=bool(info['contact_push']),
                 contact_gripper_goal=bool(info['contact_gripper_goal']), contact_farside=bool(info['contact_farside']),
@@ -95,9 +100,9 @@ def place_goal_and_step(theta_deg=None, far=False, gap=0.0):
 
 
 rows = [place_goal_and_step(far=True)] + [place_goal_and_step(t, gap=g) for g in args.gaps for t in args.thetas]
-print(f'\n{"gap":>5} {"theta":>6} {"dot":>9} {"ee_x<can_x":>10} {"bg":>3} {"gg":>3} {"contact":>8} {"push":>6} {"gg_any":>7} {"farside":>8}  gg contact xy rel. can (fwd, left)')
+print(f'\n{"gap":>5} {"theta":>6} {"dot_tool":>9} {"dot_wrist":>9} {"tool_fwd":>8} {"ee_x<can_x":>10} {"bg":>3} {"gg":>3} {"contact":>8} {"push":>6} {"gg_any":>7} {"farside":>8}  gg contact xy rel. can (fwd, left)')
 for r in rows:
-    print(f'{r["gap"]:>5.2f} {str(r["theta"]):>6} {r["dot"]:>9.5f} {str(r["ee_x_lt_can_x"]):>10} {r["bottle_goal_contacts"]:>3} {r["gripper_goal_contacts"]:>3} '
+    print(f'{r["gap"]:>5.2f} {str(r["theta"]):>6} {r["dot"]:>9.5f} {r["dot_wrist"]:>9.5f} {r["tool_fwd_of_can"]:>8.3f} {str(r["ee_x_lt_can_x"]):>10} {r["bottle_goal_contacts"]:>3} {r["gripper_goal_contacts"]:>3} '
           f'{str(r["contact"]):>8} {str(r["contact_push"]):>6} {str(r["contact_gripper_goal"]):>7} {str(r["contact_farside"]):>8}  {r["gg_xy_rel_can"]}')
 print('\nrows_json=' + json.dumps(rows))
 
