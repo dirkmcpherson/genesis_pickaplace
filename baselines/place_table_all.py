@@ -9,7 +9,11 @@ usage: place_table_all.py [--wm-runs $W/runs] [--rlpd-runs baselines/rl/checkpoi
                           [--polE-tag polE] [--seeds 0-7]
 --polE-tag selects which polE cell directory to read (e.g. `polE` = fresh_eval_polE_*, or a re-scored tag such as
 `polEv2` for the rebuilt bank), so the WM cells of record and any re-score are both addressable. Numbers only from the
-json files; a missing cell prints '—' and is excluded from the test; a cell with restore failures shows (rf N)."""
+json files; a missing cell prints '—' and is excluded from the test; a cell with restore failures shows (rf N).
+
+Validated 2026-09-07 against the r2dreamer place cells of record: this script reproduces PHASE_RESULTS_2026-09-05 §2.y
+exactly -- human 832/1184 = 0.703 vs machine-39 766/1184 = 0.647 on polE MODE, Δ +8.25 per seed (+0.056), exact p 0.227;
+polE SAMPLE Δ +2.00 (+0.014), p 0.743 -- so the learner rows added below are computed by the same code path as the WM row."""
 import argparse, glob, itertools, json, os
 
 
