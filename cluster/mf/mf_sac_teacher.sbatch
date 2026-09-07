@@ -43,7 +43,11 @@ ARM=dRLteacher
 OUT=baselines/rl/checkpoints/mf_sac_t2_s${SEED}${TAG:+_$TAG}
 RUN_NAME="mf_sac_t2_s${SEED}${TAG:+_$TAG}"
 NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
-[ -e "$OUT/rlpd_final.zip" ] && { echo "FATAL: $OUT already holds a final checkpoint"; exit 2; }
+# EVAL_ONLY=1: skip training, (re)score an existing run's checkpoints (post-hoc path; CPU job is fine)
+EVAL_ONLY=${EVAL_ONLY:-0}
+if [ "$EVAL_ONLY" != 1 ]; then
+  [ -e "$OUT/rlpd_final.zip" ] && { echo "FATAL: $OUT already holds a final checkpoint"; exit 2; }
+fi
 
 TRAIN_ARGS=(--steps "$STEPS" --scope pick --action-mode delta_joint --delta-ref target
   --action-repeat "$ACTION_REPEAT" --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON"
@@ -63,6 +67,10 @@ REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=pick action_mode=delta_joi
 SWEEP_COMMON=(--ic-file "$IC_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" --seed "$SEED" --reward dense
               --wandb-run "$RUN_NAME" --wandb-project genesis_paper)
 
+if [ "$EVAL_ONLY" = 1 ]; then
+  echo "== $RUN_NAME EVAL_ONLY $(date -Is) node=$NODE_CLASS root=$GENESIS_PICKAPLACE_ROOT"
+  module load anaconda/2025.06.0; conda activate "${CONDA_ENV:-$LAB/condaenv/genesis}"
+else
 echo "== $RUN_NAME start $(date -Is) node=$NODE_CLASS host=$(hostname) gpu=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1) root=$GENESIS_PICKAPLACE_ROOT git=$(git rev-parse --short HEAD) steps=$STEPS(decisions) gamma=$GAMMA utd=$UTD variant=$SIM_VARIANT"
 printf '%s %s ' "$(date -Is)" "$RUN_NAME" >> $W/COMMANDS.log; printf '%q ' python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}" >> $W/COMMANDS.log; echo " # job ${SLURM_JOB_ID:-local}" >> $W/COMMANDS.log
 
@@ -81,12 +89,13 @@ python -c 'import stable_baselines3' 2>/dev/null || pip install --no-input 'stab
 
 python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}"
 echo "# train rc=$? $(date -Is)"
-SLURM_OUT=$W/slurm/mf_sac_t2_${SLURM_JOB_ID}.out
+SLURM_OUT=$W/slurm/${SLURM_JOB_NAME}_${SLURM_JOB_ID}.out
 n=$(grep -c "\[sim-variant\] $SIM_VARIANT" "$SLURM_OUT" || true); echo "# [sim-variant] lines: $n"
 [ "$n" -ge 1 ] || { echo "FATAL: no [sim-variant] line"; exit 3; }
 grep -q -- '--no-demos: NO demonstration buffer' "$SLURM_OUT" || { echo "FATAL: the no-demos line is missing"; exit 3; }
 grep -E '^\[cfg\] RLPD' "$SLURM_OUT" | grep -q 'demo_batch=0/256' || { echo "FATAL: demo_batch is not 0"; exit 3; }
 grep -E '^\[cfg\] RLPD' "$SLURM_OUT" | grep -q 'pick_shaping=on' || { echo "FATAL: pick_shaping is not on"; exit 3; }
+fi   # EVAL_ONLY
 
 FINAL_CK=$OUT/rlpd_final.zip
 [ -f "$FINAL_CK" ] || { echo "FATAL: no final checkpoint at $FINAL_CK"; exit 1; }

@@ -589,6 +589,13 @@ class R2DTeacher(Adapter):
         assert abs(float(cfg.env.get('delta_cap', 0.04)) - DELTA_CAP) < 1e-9, cfg.env.get('delta_cap')
         assert abs(float(cfg.env.get('delta_leash_mult', 3.0)) - LEASH_MULT) < 1e-9, cfg.env.get('delta_leash_mult')
         assert tuple(cfg.env.size) == IMG_SHAPE[:2], tuple(cfg.env.size)
+        # STATE-input checkpoints (WM fix 2026-09-03 recipe: env.state_obs true, encoder mlp 'state'):
+        # the actor also needs obs['state'] = the 17-dim FullTaskEnv state (the recorder's own obs);
+        # pixels are still supplied (the encoder ignores them under cnn_keys '$^'). Machine-first
+        # arm 2026-09-07 (reward-only r2dreamer teacher, paper/MACHINE_FIRST_PLAN amendment (a)).
+        self.state_obs = bool(cfg.env.get('state_obs', False))
+        assert cfg.env.get('state_extra', None) in (None, 'None', ''), (
+            'state_extra checkpoints are not supported by the recorder', cfg.env.get('state_extra'))
         # observation/action spaces: harvest_champion_demos.py takes them from
         # r2dreamer's GenesisPick (constructed WITHOUT building its world -- _build() is
         # lazy there; Genesis allows one world per process and ours is FullTaskEnv).
@@ -597,12 +604,14 @@ class R2DTeacher(Adapter):
             from envs.genesis import GenesisPick
             gp = GenesisPick('pick', size=tuple(cfg.env.size), seed=seed, scope='pick',
                              action_repeat=REPEAT, action_mode='delta_joint', delta_cap=DELTA_CAP,
-                             delta_leash_mult=LEASH_MULT, reward_scale=float(cfg.env.get('reward_scale', 1.0)))
+                             delta_leash_mult=LEASH_MULT, reward_scale=float(cfg.env.get('reward_scale', 1.0)),
+                             state_obs=self.state_obs)
             assert getattr(gp, '_env', None) is None, 'GenesisPick built a world on construction'
             obs_space, act_space = gp.observation_space, gp.action_space
         except Exception as e:   # pragma: no cover
             print(f'[r2d] WARNING: GenesisPick spaces unavailable ({type(e).__name__}: {e}); using minimal gym spaces', flush=True)
             import gymnasium as gym
+            assert not self.state_obs, 'state-input checkpoints need the real GenesisPick spaces'
             obs_space = gym.spaces.Dict({'image': gym.spaces.Box(0, 255, IMG_SHAPE, np.uint8)})
             act_space = gym.spaces.Box(-1.0, 1.0, (ACT_DIM,), np.float32)
         self.agent = Dreamer(cfg.model, obs_space, act_space).to(device)
@@ -612,11 +621,16 @@ class R2DTeacher(Adapter):
         self.agent.clone_and_freeze(); self.agent.requires_grad_(False); self.agent.eval()
         self.ckpt = str(ckpt); self.ckpt_step = ck.get('step'); self.mode = mode; self.device = device
         self.torch = torch; self.TensorDict = TensorDict; self.STAGE_KEYS = tuple(STAGE_KEYS)
-        print(f'[r2d] champion loaded step={self.ckpt_step} (missing {len(missing)}, unexpected {len(unexpected)})', flush=True)
+        print(f'[r2d] champion loaded step={self.ckpt_step} (missing {len(missing)}, unexpected {len(unexpected)}) '
+              f'state_obs={self.state_obs} obs_keys={list(obs_space.spaces.keys())}', flush=True)
 
-    def _obs(self, env, first, reward):
+    def _obs(self, env, first, reward, state=None):
         o = {'image': np.asarray(env.genv.rig_obs(), np.uint8), 'is_first': first,
              'is_last': False, 'is_terminal': False}
+        if self.state_obs:
+            st = np.asarray(state, np.float32).reshape(-1)
+            assert st.shape == (17,), st.shape
+            o['state'] = st
         for k in self.STAGE_KEYS + ('task_success',):
             o[f'log_{k}'] = np.float32(0.0)
         d = {k: self.torch.as_tensor(np.asarray(v)[None]) for k, v in o.items()}
@@ -629,14 +643,14 @@ class R2DTeacher(Adapter):
 
     def reset(self, obs, env):
         self.state = self.agent.get_initial_state(1)
-        self.trans = self._obs(env, True, 0.0)
+        self.trans = self._obs(env, True, 0.0, obs)
 
     def act(self, obs, env, t):
         act, self.state = self.agent.act(self.trans, self.state, eval=(self.mode == 'mode'))
         return act[0].detach().cpu().numpy().astype(np.float32)
 
     def observe(self, obs, env, reward, done):
-        self.trans = self._obs(env, False, reward)
+        self.trans = self._obs(env, False, reward, obs)
 
 
 # ================================================================================ main
