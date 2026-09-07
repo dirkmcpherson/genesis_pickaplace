@@ -257,7 +257,9 @@ def build_reel(root, name, cell, info, h264=True):
     Wd += Wd % 2; H += H % 2
     tmp = f"{root}/{info['reel']}.mp4v.mp4"; out = f"{root}/{info['reel']}"
     vw = cv2.VideoWriter(tmp, cv2.VideoWriter_fourcc(*"mp4v"), OUT_FPS, (Wd, H))
-    title = f"{name} | {cell} ({info['kind']}) | H s{info['seedH']} (row 1) vs M s{info['seedM']} (row 2) | same start per column"
+    _runs = " ".join(str(v) for v in info.values() if isinstance(v, str)) + " " + name
+    learner = ("r2dreamer world model" if ("_r2d_" in _runs or "r2d" in _runs) else "RLPD" if "rlpd" in _runs.lower() else "Diffusion Policy" if "_dp_" in _runs.lower() else "dv3" if "dv3" in _runs.lower() else "see index")
+    title = f"{name} | LEARNER: {learner} | {cell} ({info['kind']}) | H s{info['seedH']} (row 1) vs M s{info['seedM']} (row 2) | same start per column"
     for t in range(T):
         canvas = np.zeros((H, Wd, 3), np.uint8)
         cv2.putText(canvas, f"{title} | t={t}/{T}", (2, 12), FONT, 0.4, (200, 200, 200), 1, cv2.LINE_AA)
