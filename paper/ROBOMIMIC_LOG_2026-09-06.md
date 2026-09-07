@@ -222,3 +222,21 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
     0.115, 25/40; ε 0.20 → 0.144, 19/40; ε 0.30 → 0.205, 4/40. The largest roughness that keeps ≥ 100 paired tapes of 200
     is ε = 0.15 (|Δa| ≈ 0.115 = 2.7× MH's, 42 % of MG's; expected ~125 paired tapes); ε = 0.20 (|Δa| 0.144, 53 % of
     MG's) is borderline (~95 expected). Addendum to A4 to be registered with the chosen ε before any R2/R3 training.
+- 14:05 (09-07) A4 registered-parameter builds finished (`tasks` output; 1,228 s for the MH pair):
+  - MG200s pair: β = 0.8712 (bisected on the full arm; modified |a| 0.471, |Δa| 0.0431, gripper binary 100 %) →
+    **control 114/200, treatment 0/200, BOTH 0/200 → FATAL, no arms written.**
+  - MH200 pair at the REGISTERED roughness (ε = 0.4056 for |Δa| 0.2741, modified |a| 0.267) → **control 185/200 (93 %),
+    treatment 5/200, BOTH 5/200**; the two 5-tape arms `MH200_re` / `MH200_rough` were written (732 / 740 rows) but are
+    far below any usable N — not trainable, kept only as provenance.
+  - MG β-ladder (40 tapes, control 20/40): β 0.30 → |Δa| 0.139, both 3/40; β 0.50 → |Δa| 0.103, both 0/40. Even a
+    mild EMA destroys MG tapes' open-loop success, so R1/R1m are unbuildable at any smoothing that reaches the target.
+- **14:30 (09-07) A4 arms built; addendum registered in the plan before submitting.** Final yields (of 200 source tapes,
+  kept iff BOTH control and treatment re-execute to success): MG pair R0 114 / R1 0 / R1m 0 / β-ladder 3-0-0-0 → MG
+  treatment ABANDONED per the registered rule (P-A4-1 withdrawn, unrun). MH pair: registered ε 0.4056 → control 185,
+  treatment 5 (arms `MH200_re`/`MH200_rough` written, 5 tapes, never trained); **ε 0.15 → BOTH 95** (`MH200_re15`
+  15,702 rows |Δa| 0.0455; `MH200_rough15` 15,681 rows |Δa| 0.1177); **ε 0.20 → BOTH 61** (`MH200_re20` 9,806 rows
+  |Δa| 0.0439; `MH200_rough20` 9,781 rows |Δa| 0.1459). Dose = 43 % / 53 % of MG200s's roughness; gripper binary in all.
+- **14:35 (09-07) A4 SUBMITTED: 32 RLPD runs, 8 seeds per arm, `--nice=6000` (behind the A2 controls and G2b), preempt QOS,
+  100k decisions, LAST on bank_can50 (mode + sample):** MH200_re15 **3351474–3351481**, MH200_rough15 **3351482–3351489**,
+  MH200_re20 **3351490–3351497**, MH200_rough20 **3351498–3351499, 3351501–3351506** (out `rlpd_<ARM>_a4_s<k>/`).
+  Queue order of ours: 16 dp (matrix) → 8 G2b nodemo → 24 A2 controls (nice 5000) → 32 A4 (nice 6000).
