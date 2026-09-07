@@ -14,12 +14,12 @@ The statistic everywhere: LAST checkpoint, fresh process, deterministic actions 
 
 | learner | human | machine | Δ | p | n |
 |---|---|---|---|---|---|
-| World model r2dreamer, rnd30 | 0.617 | 0.608 | +0.009 | 0.875 | 8 v 8 |
+| World model r2dreamer, rnd30 | 0.617 ± 0.062 | 0.608 ± 0.039 | +0.009 | 0.875 | 8 v 8; MDE 0.078, CI ±0.055 |
 | World model, rnd300 retest | 0.602 | 0.618 | −0.017 | 0.546 | 8 v 8 |
 | RLPD, rnd30 | 0.600 | 0.517 | +0.083 | 0.485 | 8 v 8 |
 | DP (pruned human vs machine), rnd30 | 0.520 | 0.467 | +0.053 | 0.123 | 10 v 10 |
 
-Per-seed counts and the MDEs for these cells are in `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §3 and `MORNING_TABLE_2026-09-04.md` §1; the RLPD arm's seed spread is the widest of the three (one dead seed per arm in the all-data variant), so its null is the weakest. Also of record: the world model's in-distribution deficit for human demos (holdv2 p 0.035, all-demo p 0.044) — small, significant, and the only significant source effect in the project; out of distribution it vanishes.
+World-model per-seed counts: human [15, 19, 19, 19, 21, 17, 20, 18] vs machine [20, 18, 18, 18, 16, 19, 19, 18] of 30 — a null precise to ≈ 0.08. RLPD and DP per-seed lists are in `CROSS_LEARNER_CONDITIONS_2026-09-03.md` §1–2 and `MORNING_TABLE_2026-09-04.md` §1; the RLPD arm's seed spread is the widest of the three (one dead seed per arm in the all-data variant), so its null is the weakest. Also of record: the world model's in-distribution deficit for human demos (holdv2 p 0.035, all-demo p 0.044) — small, significant, and the only significant source effect in the project; out of distribution it vanishes.
 
 ### 2.2 Human failures added (dHv2all = 106 tapes vs raw 66; registered prediction: gain)
 
@@ -83,7 +83,7 @@ Gate 1 (reach proxy) passed 15/15 on all four seeds once the return clamp was po
 
 ## 3. What the nulls do and do not establish
 
-1. **Established at ≈ 0.1 precision:** no source effect for the world model at pick, place, contact and carrycontact, and for RLPD at pick, with demonstration counts matched. The carrycontact null is precise to ≈ 0.03.
+1. **Established at ≈ 0.1 precision or better:** no source effect for the world model at pick (≈ 0.08), place (≈ 0.13), contact (≈ 0.12) and carrycontact (≈ 0.03), and for RLPD at pick, with demonstration counts matched.
 2. **Established only at ≈ 0.2 precision:** the end-to-end null; the RLPD null is between the two.
 3. **Directionally consistent, never significant:** where there is any lean it is toward human demos out of distribution (place +0.056, RLPD +0.083) and toward machine demos in distribution (the WM holdv2/all-demo deficit).
 4. **Not established:** anything about images (state observations only), about a second task (Genesis only until robomimic runs), about a generator independent of the human data (the machine demos are a distillation), or about pure imitation on THIS task at matched idle structure (DP was only ever run on pruned human vs machine).
