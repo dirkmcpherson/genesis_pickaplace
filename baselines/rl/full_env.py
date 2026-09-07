@@ -386,6 +386,13 @@ class FullTaskEnv(gym.Env):
         if scope in ('place', 'contact', 'carrycontact'):
             assert _vn != 'base' or _dz == 0.0, 'variant lookup failed'
             print(f'[phase] variant {_vn}: shelf_top_z {self.shelf_top_z:.3f} (band {self.shelf_top_z+0.01:.3f}..{self.shelf_top_z+0.07:.3f})', flush=True)
+        # amendment (j) 2026-09-07 (ADVERSARIAL_REVIEW_eval_env S3-7): the band above is derived from an ENV VAR while the
+        # world is built by sim_variant_hook.apply_pre() -- nothing tied them together. Assert against the BUILT shelf box
+        # (sim_variants.install() moves it by shelf_dz at build time) on EVERY path that constructs this env.
+        _built_top = self._world_shelf_top()
+        assert abs(_built_top - self.shelf_top_z) < 1e-6, (
+            f'shelf band mismatch: variant env var {_vn!r} gives shelf_top_z {self.shelf_top_z:.4f} but the BUILT world\'s shelf top is '
+            f'{_built_top:.4f} -- export R2D_SIM_VARIANT/GENESIS_SIM_VARIANT to the variant the world was built with')
         if scope in ('place', 'contact', 'carrycontact'):
             # entry_bank: path to the bank JSON. Default = the legacy single-
             # entry-per-demo bank (uid-keyed DICT) so existing runs are byte-
@@ -417,6 +424,17 @@ class FullTaskEnv(gym.Env):
         self._pv2_run = 0
         self._attempted = False
         self._phi = 0.0
+
+    def _world_shelf_top(self):
+        """Top z of the shelf box AS BUILT (the Box entity whose morph size is replay_harness.BOX_SIZE; its base-link
+        position reflects sim_variants.install()'s shelf_dz shift). amendment (j) 2026-09-07."""
+        from replay_harness import BOX_SIZE
+        for ent in self.genv.w['scene'].entities:
+            m = getattr(ent, 'morph', None)
+            if m is not None and type(m).__name__ == 'Box' and getattr(m, 'size', None) is not None \
+                    and np.allclose(np.asarray(m.size, float), np.asarray(BOX_SIZE, float), atol=1e-9):
+                return float(np.asarray(np_(ent.get_pos()), dtype=np.float64).reshape(-1)[2]) + float(BOX_SIZE[2]) / 2.0
+        raise RuntimeError('shelf box entity (Box morph of size BOX_SIZE) not found in the built world')
 
     def _sync_dj_target(self):
         """(Re-)seed the delta_joint persistent target from measured qpos.
@@ -495,6 +513,7 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._hold_run = 0
+        self._pv2_run = 0   # amendment (j): placed_v2 is computed in scope=full too
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
@@ -598,6 +617,7 @@ class FullTaskEnv(gym.Env):
         self._t = 0
         self._granted = set()
         self._hold_run = 0
+        self._pv2_run = 0   # amendment (j)
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {}
@@ -780,6 +800,20 @@ class FullTaskEnv(gym.Env):
         # needs contact, which needs the hardened picked -- 10 held frames -- plus a
         # carry and release, so it cannot pre-empt a 25-frame hold in practice, and the
         # tip rule below cannot fire mid-hold either: it requires grip OPEN.)
+        if self.scope == 'full':
+            # amendment (j) 2026-09-07 (ADVERSARIAL_REVIEW_eval_env S1-2): the phase-scope release predicate placed_v2
+            # (grip commanded open < PLACE_RELEASE, can inside the shelf footprint and the WORLD's shelf band, tilt <
+            # PLACE_TILT_DEG, sustained PLACE_SUSTAIN frames) is computed here too, LOGGED ONLY: no reward, no termination,
+            # so the staged ladder, every running job and every stored row are unchanged. The legacy `placed` (STAGE_REWARD)
+            # keeps the stale base-world band and is reported as stale by the evaluator.
+            _bp = np_(self.genv.w['bottle'].get_pos())
+            _ok = (float(a_phys[6]) < self.PLACE_RELEASE and in_shelf_footprint(_bp)
+                   and self.shelf_top_z + 0.01 < _bp[2] < self.shelf_top_z + 0.07
+                   and tilt_deg(np_(self.genv.w['bottle'].get_quat())) < self.PLACE_TILT_DEG)
+            self._pv2_run = self._pv2_run + 1 if _ok else 0
+            if self._pv2_run >= self.PLACE_SUSTAIN:
+                info['placed_v2'] = True
+                self._granted.add('placed_v2')
         terminated = bool(info.get('nested')) and self.scope != 'place'
         # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --
         # the grip-column bug, 4th sighting; this block also never ran before
