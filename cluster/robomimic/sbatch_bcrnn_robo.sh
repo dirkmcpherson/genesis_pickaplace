@@ -35,7 +35,9 @@ $PY $B/make_bcrnn_config.py --arm $ARM --seed $SEED --num-epochs $EPOCHS --out $
 TRAIN_PY=$($PY -c 'import robomimic, os; print(os.path.join(os.path.dirname(robomimic.__file__), "scripts", "train.py"))')
 $PY $TRAIN_PY --config $OUT/config.json 2>&1 | tee $OUT/train.log | grep --line-buffered -E "Epoch [0-9]+0 |finished run|run failed|Traceback|Error" | cut -c1-200
 grep -q "finished run successfully" $OUT/train.log || { echo "FATAL: robomimic train.py did not finish successfully (see $OUT/train.log)"; exit 1; }
-CKPT=$(ls -1 $OUT/trained/$NAME/*/models/model_epoch_*.pth | sort -t_ -k3 -n | tail -1)
+# LAST = the highest epoch number, sorted on the BASENAME (sorting the full path on `_` fields picked epoch 950 in the
+# first array, 2026-09-07 01:20 -- those evals were re-done at epoch 2000 by bcrnn_reeval_last.sh)
+CKPT=$(ls -1 $OUT/trained/$NAME/*/models/model_epoch_*.pth | awk -F'model_epoch_' '{split($2,a,".pth"); print a[1]"\t"$0}' | sort -n | tail -1 | cut -f2)
 [ -f "$CKPT" ] || { echo "FATAL: no checkpoint under $OUT/trained"; exit 1; }
 echo "# LAST checkpoint: $CKPT"
 CUDA_VISIBLE_DEVICES="" $PY $B/eval_bcrnn_robosuite.py --checkpoint "$CKPT" --arm $ARM --episodes $EVAL_EPISODES --out $OUT/eval_bank50 2>&1 | grep -E "^\[eval|Traceback|Error" | tail -3

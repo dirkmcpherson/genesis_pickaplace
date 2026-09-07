@@ -127,3 +127,9 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   physics, max over checkpoints). The installed env + re-hosted v1.5 data + our bank/evaluator reproduce the published
   regime; together with G0 (4/5) and G2a (random 0/50) the leg's gates that can be run before the primary matrix all pass.
   MH200 / MG200s seeds follow in the same array (throttle 4).
+- **01:30 (09-07) CORRECTION to the 01:20 G1 entry:** the launcher's checkpoint pick (`sort -t_ -k3 -n` on the FULL path)
+  selected `model_epoch_950.pth`, not the last (`model_epoch_2000.pth`; training did reach 2000 epochs — "finished run
+  successfully"). So 47/46/48 (PH200) and 49/50 (MH200 s0) are EPOCH-950 numbers, kept as `eval_bank50_ep950/`. The
+  selector now sorts the basename's epoch number; `cluster/robomimic/bcrnn_reeval_last.sh` re-scores every finished run
+  at its true LAST checkpoint (fresh process, CPU) — the array's remaining tasks (4-8) still run the old script (Slurm
+  copies scripts at submission) and are re-scored by the same tool when they finish. G1 is re-read below.
