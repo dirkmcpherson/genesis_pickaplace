@@ -192,3 +192,36 @@ vs binary ±1 on every human row; MG drives all six OSC dims incl. the three rot
   pair's set is a non-random subset of the arm); the EMA changes both smoothness and magnitude; the t=0 artefact
   (review S2-6) is ABSENT from re-executed arms (fresh observations) — a further difference from the file-based arms,
   disclosed. **Nothing in A4 is submitted until the coordinator confirms.**
+
+### A4 addendum — 2026-09-07 14:30 (registered BEFORE any A4 training; measured yields decide the arms)
+*A4 registered "the largest roughness that keeps ≥ 100 paired tapes" as the fallback when the registered target is not
+open-loop executable. Measured (builder `baselines/robomimic/build_reexec_arms.py`, all yields out of the 200 MH200 /
+200 MG200s source tapes, control = original actions re-executed, treatment = modified, kept iff BOTH succeed):*
+- **MG pair — NOT BUILDABLE, as the registered rule anticipated.** R0 control 114/200 (57 %); R1 (EMA β = 0.8712 →
+  |Δa| 0.0431, gripper binarised) **0/200**; R1m (magnitude restored, |a| 0.577, |Δa| 0.0522) **0/200**; β-ladder on 40
+  tapes (control 20/40): β 0.30 → 3/40, β 0.50/0.70/0.86 → 0/40. Per A4's rule ("R1 yield < 50 even with R1m → not
+  buildable by open-loop replay; only R3 v R2 is read"), **the MG treatment arm is abandoned**; P-A4-1 is NOT testable
+  and is withdrawn, unrun. The 114/200 control yield is reported as a fact about MG tapes (they are open-loop
+  reproducible about half the time; any modification of their actions destroys that).
+- **MH pair — built at a reduced roughness (dose ladder), because the registered ε is not executable either.** At the
+  registered ε = 0.4056 (|Δa| 0.2741 = MG's): control 185/200, treatment 5/200 → 5-tape arms, unusable (written as
+  provenance only, never trained). Ladder (40 tapes, control 37/40): ε 0.05 → both 33, 0.10 → 29, 0.15 → 25, 0.20 → 19,
+  0.30 → 4. Full builds: **ε = 0.15 → control 185/200, treatment 98/200, BOTH 95** (`MH200_re15` 95 tapes / 15,702 rows,
+  |a| 0.159, |Δa| 0.0455; `MH200_rough15` 95 tapes / 15,681 rows, |a| 0.189, **|Δa| 0.1177 = 2.6× MH200's 0.0431, 43 % of
+  MG200s's 0.2741**); **ε = 0.20 → BOTH 61** (`MH200_re20` 61 / 9,806, |Δa| 0.0439; `MH200_rough20` 61 / 9,781,
+  **|Δa| 0.1459 = 53 % of MG's**). 95 < the registered 100 by five tapes — disclosed, and the reason both doses are run:
+  the pair is now a **dose-response** design (ε 0.15 primary by yield, ε 0.20 secondary), not a single matched arm.
+- **Registered statistic and predictions for what IS run** (32 RLPD runs = 4 arms × 8 seeds, 100k decisions, LAST on
+  bank_can50, mode primary / sample secondary, exact two-sided permutation on per-seed counts, n = 8 v 8):
+  **P-A4-2′ (replaces P-A4-2 at the executable dose): rough15 − re15 ≤ −0.10 (p < 0.05)**, and rough20 − re20 ≤ rough15 −
+  re15 (monotone dose-response). **P-A4-3′: re15 and re20 are within 0.10 of MH200@100k** (re-execution + tape selection
+  are neutral). **Decision rules:** if P-A4-2′ holds → roughness alone degrades RLPD on human demonstrations, so the
+  MH200-v-MG200s gap cannot be attributed to source without also holding action statistics fixed — the paper's sentence
+  names the action process as a live mechanism; if |rough − re| < 0.10 at BOTH doses → roughness up to 53 % of MG's is
+  not sufficient to explain the gap (magnitude, gripper coding and source remain jointly confounded, stated as such);
+  if re15/re20 differ from MH200 by ≥ 0.10 → the pair is read only within itself (the selection is not neutral).
+- **Disclosures:** the treatment is a *partial* dose (43 % / 53 % of MG's roughness), so a null is bounded, not general;
+  the kept tapes are the easier 95 (or 61) of 200 (both arms identical sets); |a| rises with ε (0.159 → 0.189) so
+  roughness and magnitude move together; the gripper stays binary in both arms (MG's continuous gripper has no human
+  mirror and remains untested); re-executed arms carry no t=0 observation artefact. **Can-Paired good-v-bad is NOT run**
+  (it needs a build; the coordinator restricted it to "no build").
