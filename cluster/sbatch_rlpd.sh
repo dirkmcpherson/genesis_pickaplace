@@ -104,7 +104,7 @@ case "$DEMO_FORMAT" in native|legacy) ;; *) echo "FATAL: DEMO_FORMAT must be nat
 NEED_MANIFEST=""
 if [ "$DEMO_FORMAT" = native ]; then
   case "$ARM" in
-    dH|dDP|dR2D|dDPfails|dR2DDPfails|dHHfails|dR2DR2Dfails|dHsucc_dup|dDPsucc_dup|dHv2|dDPv2|dHv2raw|dHv2all) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;   # dHv2all: ALL-DATA raw human incl. fails (PHASE_PLAN §6, 2026-09-04)   # dHHfails/dR2DR2Dfails: same-source fails arms (make_samesource_fails_arm.py); dHv2/dDPv2/dHv2raw: PREREG A21/A24 full-pool v2 sets (make_v2_matched.py; dHv2raw = unpruned human source, RLPD-only per A24)
+    dH|dDP|dR2D|dDPfails|dR2DDPfails|dHHfails|dR2DR2Dfails|dHsucc_dup|dDPsucc_dup|dHv2|dDPv2|dHv2raw|dHv2all|dRL) ARM_DEMO=$DEMO_ROOT/$ARM; PAT='^[0-9]{6}\.npz$' ;;   # dRL: machine-first set (reward-only teacher harvest, MACHINE_FIRST_PLAN_2026-09-07 §2, baselines/mf_build_drl.py)   # dHv2all: ALL-DATA raw human incl. fails (PHASE_PLAN §6, 2026-09-04)   # dHHfails/dR2DR2Dfails: same-source fails arms (make_samesource_fails_arm.py); dHv2/dDPv2/dHv2raw: PREREG A21/A24 full-pool v2 sets (make_v2_matched.py; dHv2raw = unpruned human source, RLPD-only per A24)
     *) echo "FATAL: ARM=$ARM is not a native (contract v1) arm: dH dDP dR2D dDPfails dR2DDPfails"; exit 1 ;;
   esac
 else
