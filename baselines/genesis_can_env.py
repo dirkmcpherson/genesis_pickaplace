@@ -185,6 +185,11 @@ class GenesisCanEnv:
         w['scene'].step()
         self._t = 0
         self._picked = self._placed = self._contact = False
+        # contact_push (2026-09-07, logged only -- `contact` is unchanged): see step()
+        self._contact_push = False
+        self._contact_frame = None; self._contact_push_frame = None
+        self._contact_gripper_goal = False   # gripper touched the GOAL while the pick-can touched it
+        self._contact_farside = False        # some pick-can/goal contact frame had the gripper on the far side
         self._pick_run = 0   # consecutive frames satisfying the held-can guard
         # Seed with the reset configuration: HARDCODED_START is inside the box by
         # construction, so the very first out-of-box action can be held against it.
@@ -269,11 +274,40 @@ class GenesisCanEnv:
         # shoved along the table into the goal's base registers as task success without
         # any pick/place/slide (confirmed on trial 284: contact at table level, z=0.10)
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
-        if self._picked and (c.size and c.shape[0]) and \
+        bg_touch = bool(c.size and c.shape[0])
+        if self._picked and bg_touch and \
            float(ee[0]) < float(bp[0]):
+            if not self._contact:
+                self._contact_frame = self._t
             self._contact = True
+        # contact_push (2026-09-07, PHASE_PLAN amendment (g)): STRICTER contact, LOGGED ONLY -- `contact`
+        # above is unchanged and stays the predicate of record. User: 'contact is ideally through a slide
+        # where the gripper and the goal can are on opposite sides of the pick-can'. contact_push =
+        #   picked (earlier in the episode)  AND  pick-can<->goal solver contact THIS step
+        #   AND  dot(ee_xy - can_xy, goal_xy - can_xy) < 0   (eef on the far side of the pick-can along the
+        #        can->goal line, table plane; `contact` tests robot-x only: ee_x < can_x)
+        #   AND  no gripper<->goal solver contact THIS step  (goal.get_contacts(kinova) empty).
+        # Sticky once true, like `contact`. Diagnostics (why a `contact` episode fails the stricter test):
+        # contact_gripper_goal = any gripper-goal contact on a picked pick-can/goal contact frame;
+        # contact_farside = any such frame with dot < 0.
+        if self._picked and bg_touch:
+            gp_ = np_(w['goal'].get_pos())
+            dot = float((ee[0] - bp[0]) * (gp_[0] - bp[0]) + (ee[1] - bp[1]) * (gp_[1] - bp[1]))
+            gg = np_(w['goal'].get_contacts(w['kinova'])['position'])
+            gg_touch = bool(gg.size and gg.shape[0])
+            if gg_touch:
+                self._contact_gripper_goal = True
+            if dot < 0.0:
+                self._contact_farside = True
+            if dot < 0.0 and not gg_touch and not self._contact_push:
+                self._contact_push = True
+                self._contact_push_frame = self._t
         done = self._t >= self.max_steps
         info = dict(picked=self._picked, placed=self._placed, contact=self._contact,
+                    contact_push=self._contact_push, contact_frame=self._contact_frame,
+                    contact_push_frame=self._contact_push_frame,
+                    contact_gripper_goal=self._contact_gripper_goal,
+                    contact_farside=self._contact_farside,
                     t=self._t, uid=self._uid, ws_blocked=ws_blocked,
                     ws_violations=self.ws_violations)
         if done:
