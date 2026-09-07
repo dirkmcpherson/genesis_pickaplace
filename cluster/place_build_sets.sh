@@ -33,6 +33,11 @@ for SET in dH_place dDP_place_n39; do
   DS=$DEMO_ROOT/$SET/lerobot
   if [ -d "$DS" ] && [ "${REDO:-0}" = 1 ]; then rm -rf "$DS"; fi
   [ -d "$DS" ] || python baselines/convert_to_lerobot.py "$DEMO_ROOT/$SET" "$DS" 8 4 none
-  python3 -c 'import json,sys; i=json.load(open(sys.argv[1]+"/meta/info.json")); m=json.load(open(sys.argv[2])); assert i["total_episodes"]==m["n_kept"]==39 and abs(i["fps"]-7.5)<1e-9 and i["total_frames"]==m["decisions_total"], (i["total_episodes"], i["fps"], i["total_frames"], m["decisions_total"]); print(f"LEROBOT-OK {sys.argv[1]}: episodes {i[\"total_episodes\"]} frames {i[\"total_frames\"]} fps {i[\"fps\"]} sha {m[\"content_sha256\"][:16]}")' "$DS" "$DEMO_ROOT/$SET/manifest.json"
+  python3 - "$DS" "$DEMO_ROOT/$SET/manifest.json" <<'PY'
+import json, sys
+i = json.load(open(sys.argv[1] + '/meta/info.json')); m = json.load(open(sys.argv[2]))
+assert i['total_episodes'] == m['n_kept'] == 39 and abs(i['fps'] - 7.5) < 1e-9 and i['total_frames'] == m['decisions_total'], (i['total_episodes'], i['fps'], i['total_frames'], m['decisions_total'])
+print('LEROBOT-OK %s: episodes %d frames %d fps %s sha %s' % (sys.argv[1], i['total_episodes'], i['total_frames'], i['fps'], m['content_sha256'][:16]))
+PY
 done
 echo "== place_build_sets done $(date)"
