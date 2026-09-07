@@ -60,10 +60,13 @@ def main():
             det = load_sets(os.path.join(run, 'sweep', 'final_sweep.json')) or load_sets(os.path.join(run, 'sweep', 'final', 'sweep.json'))
             d15 = load_sets(os.path.join(run, 'sweep', 'final_det15', 'sweep.json'))
             smp = load_sets(os.path.join(run, 'sweep', 'final_sampled', 'sweep.json'))
-            rows.append(dict(seed=s, run=run, det=det, d15=d15, smp=smp))
+            s60 = load_sets(os.path.join(run, 'sweep', 'final_sampled_spots60', 'sweep.json'))
+            d60 = load_sets(os.path.join(run, 'sweep', 'final_det_spots60', 'sweep.json'))
+            rows.append(dict(seed=s, run=run, det=det, d15=d15, smp=smp, s60=s60, d60=d60))
         arms[label] = (name, rows)
     cols = [('det hold/66', 'det', 'hold'), ('det rnd/30', 'det', 'rnd'), ('det hold15', 'd15', 'hold'),
-            ('SMP hold15', 'smp', 'hold'), ('SMP rnd/30', 'smp', 'rnd')]
+            ('SMP hold15', 'smp', 'hold'), ('SMP rnd/30', 'smp', 'rnd'),
+            ('det spots60', 'd60', 'spots60'), ('SMP spots60', 's60', 'spots60')]
     print(f'| arm | seed | ' + ' | '.join(c[0] for c in cols) + ' |')
     print('|---|---|' + '---|' * len(cols))
     for label, (name, rows) in arms.items():
@@ -77,7 +80,8 @@ def main():
     hn, hr = arms['human']; mn, mr = arms['machine']
     print()
     for lab, k, s in (('SAMPLED rnd30', 'smp', 'rnd'), ('SAMPLED hold15', 'smp', 'hold'), ('deterministic rnd30 (existing)', 'det', 'rnd'),
-                      ('deterministic hold15 (new comparator)', 'd15', 'hold')):
+                      ('deterministic hold15 (new comparator)', 'd15', 'hold'),
+                      ('SAMPLED spots60 (amendment (k))', 's60', 'spots60'), ('deterministic spots60', 'd60', 'spots60')):
         a = [r[k][s][0] for r in hr if complete((r[k] or {}).get(s))]; b = [r[k][s][0] for r in mr if complete((r[k] or {}).get(s))]
         if len(a) >= 2 and len(b) >= 2:
             o, p = perm(a, b)

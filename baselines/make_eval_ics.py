@@ -119,8 +119,18 @@ def episodes_from_file(icf, ic_set, index=None):
     elif ic_set == 'rnd':
         eps = [dict(can_pos=tuple(e['can_pos']), goal_pos=tuple(e['goal_pos']), uid=None)
                for e in d['rnd']]
+    elif ic_set in d and isinstance(d[ic_set], list) and d[ic_set]:
+        # any other registered set (2026-09-07: `spots60` in baselines/eval_ics_spots60.json, PHASE_PLAN amendment (k)),
+        # resolved by its entry SCHEMA: pose dicts (can_pos/goal_pos, uid null) = the rnd convention; ints = demo uids
+        ents = d[ic_set]
+        if all(isinstance(e, dict) and 'can_pos' in e for e in ents):
+            eps = [dict(can_pos=tuple(e['can_pos']), goal_pos=tuple(e['goal_pos']), uid=None) for e in ents]
+        elif all(isinstance(e, (int, str)) and str(e).isdigit() for e in ents):
+            eps = [dict(uid=int(u)) for u in ents]
+        else:
+            raise SystemExit(f'ic set {ic_set!r}: unrecognised entry schema')
     else:
-        raise SystemExit(f'unknown ic set {ic_set!r} (sel|hold|rnd)')
+        raise SystemExit(f'unknown ic set {ic_set!r} (sel|hold|rnd or a list key of the file)')
     if index is not None:
         assert 0 <= index < len(eps), f'--ic-index {index} out of range for {ic_set} (n={len(eps)})'
         eps = [eps[index]]

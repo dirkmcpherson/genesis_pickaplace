@@ -90,7 +90,7 @@ ap.add_argument('--ic-file', default=None,
                      '--ic-set selects the set and --ic-index k evaluates ONLY the k-th IC '
                      '(one episode per fresh process = cluster/eval_sweep.sh). --random/--uids/'
                      '--ic-mode are ignored with a printed note.')
-ap.add_argument('--ic-set', choices=['sel', 'hold', 'rnd'], default=None)
+ap.add_argument('--ic-set', default=None, help='sel | hold | rnd, or any other list key of --ic-file (e.g. spots60, amendment (k)); schema-resolved by make_eval_ics.episodes_from_file')
 ap.add_argument('--ic-index', type=int, default=None)
 ap.add_argument('--arm', default=None, help='recorded into the result JSON (provenance only)')
 ap.add_argument('--ckpt-step', default=None, help='recorded into the result JSON (provenance only)')
