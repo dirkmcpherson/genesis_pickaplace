@@ -102,6 +102,9 @@ Gate 1 (reach proxy) passed 15/15 on all four seeds once the return clamp was po
 
 ## 5. What would change the conclusion
 
+**Update 2026-09-07 13:30 — the first falsifier below has FIRED for RLPD.** robomimic Can, 8 seeds, 50 shared starts, last checkpoint, deterministic: RLPD from mixed-human demos 0.455 vs from SAC-generated demos 0.147, Δ +0.307, p 0.008 (sampled 0.458 vs 0.168, p 0.011). On an independent machine generator RLPD is source-sensitive, in the same direction as imitation (BC-RNN 0.927 vs 0.393). Two confounds are being controlled before this is read as a source effect: demonstration quantity (MH200 ≈ 41k transitions vs MG200s ≈ 16.5k, because SAC rollouts are short) via MGall and an all-successes MG arm (718 tapes, ≈ 59k rows), and the RLPD budget (100k → 300k decisions, the registered extension; the MG arm had 0/8 seeds ≥ 0.5). The world-model and DP arms are still running. Whatever the controls show, the Genesis result now reads as "source-indifferent on THIS task with distilled machine demos", and the paper's framing must be decided on the robomimic outcome.
+
+
 - A robomimic result where RLPD or the world model drop by ≥ 0.15 on MG vs PH (the registered falsifier) — source-indifference would then be a Genesis-specific finding.
 - A matched-count end-to-end result at 16 v 16 showing a ≥ 0.15 stage gap (the current MDE is ≈ 0.2).
 - An unmodified world model that learns and shows a source effect (no such learner exists at present).
