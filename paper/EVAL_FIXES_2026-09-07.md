@@ -64,9 +64,21 @@ and the canonical names are repointed to the rebuild only after all 64 of those 
 were also pointed at the byte-identical `*_rawgrip.json` copies so any resubmission of those lanes is unaffected by the
 repointing. Net effect: no file another agent's running job reads is mutated, and no (j) cell uses a raw-grip bank.
 
-## 3. Evaluator smoke (prep job 3350963)
+## 3. Evaluator smoke (prep job 3351417, CPU; `rs2_prep/`)
 
-PENDING.
+Bank of 7 entries = the five that fail to restore + two controls, place scope, checkpoint `s2_r2d_place_state_dH_bnormclamp1ent5_s0`:
+
+| check | result |
+|---|---|
+| pinning | `pin_stats {n_enumerated 7, n_restored_match 2, n_restore_failed 5, n_hang 0}`; every survivor's `restored_uid` equals the enumerated uid (900000, 900001) with `entry_frame` 12 / 11; the five failures log the SAME entry retried 30× (`tried [(900002, 12), (900002, 12), …]`) — no cross-entry substitution is possible any more |
+| restore_failed accounting | 5/7 = 0.714 reported, all stages False, episode counted in `n` |
+| `--dump-entries` units | 2 entries: raw −0.978 → physical 0.011 and raw −0.970 → 0.015, with `grip_units='physical01'`, `bank_version='physgrip_2026-09-07'` (a place-scope dump is taken at the placed_v2 grant, i.e. an OPEN gripper, so small physical values are correct) |
+| full scope keys | `nested_proxy`, `nested_honest`, `outcomes_honest {nested_honest 0, proxy_only 0, tipped 0, timeout 1}`, `stages.placed_v2` present; hold IC 0 = uid 252, `restored_uid` 252, timeout at 300 decisions |
+| phase scopes | `nested_proxy` / `nested_honest` / `outcomes_honest` are `null` (full scope only), as designed |
+| stamps | `eval_fixes 'j'`, `entries_pinned true`, `bank_path`, `bank_sha256`, `bank_version`, `world_shelf_top_z 0.170` |
+| shelf assertion (S3-7) | passed on every env construction in the prep job (0.170 = BOX_TOP_Z 0.11 + shelf_dz 0.06 of `gc_kp4_riser3_shelf6`, equal to the built shelf box's top) |
+
+Both smoke evals returned rc=0; `PREP-DONE` 16:12:50.
 
 ## 4. Re-score: cells of record vs re-scored (`eval_fixes_table.py`)
 
