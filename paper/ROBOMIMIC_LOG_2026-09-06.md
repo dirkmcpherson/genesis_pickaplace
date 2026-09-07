@@ -137,3 +137,18 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   BC-RNN PH200 s0/s1/s2 = 46/50, 46/50, 46/50 = 0.92 / 0.92 / 0.92 → mean 0.92 ≥ 0.90 — G1 PASS.** MH200 s0 = 49/50 (0.98).
   (Epoch-950 evals kept as `eval_bank50_ep950/`: PH200 47/46/48, MH200 s0 49.) Remaining array tasks (MH200 s1-2,
   MG200s s0-2) are re-scored at LAST by the same tool when they finish; the launcher itself is fixed for future runs.
+- **02:20 (09-07) BC-RNN control, remaining arms at the LAST checkpoint (epoch 2000; array 3337852 tasks 4-7 COMPLETED
+  23:50–26:51 wall each; re-scored by `bcrnn_reeval_last.sh`):** MH200 s1 45/50, s2 45/50 (with s0 49/50 → **0.98 / 0.90 /
+  0.90, mean 0.927**); **MG200s s0 22/50, s1 14/50 (0.44 / 0.28)**; MG200s s2 (task 3337852_8, COMPLETED 23:26 wall) below.
+  Read against the plan §5 BC-RNN predictions: MG200s below PH200 by ≥ 0.15 — met by a wide margin (0.92 vs ≈0.36, the
+  same direction and size as robomimic Table 1 BC-RNN PH 100 → MG 68.7, larger here on v1.5 physics at LAST rather than
+  max-over-checkpoints); MH200 within 0.10 of PH200 — met (0.927 vs 0.92). Every run's epoch-950 eval (the array's
+  own eval step) is kept as `eval_bank50_ep950/` (verified present for MH200 s1/s2 and MG200s s0/s1/s2); `eval_bank50/`
+  is the LAST-checkpoint score.
+- **02:35 (09-07) BC-RNN control COMPLETE — all nine runs at the LAST checkpoint (epoch 2000), 50-state bank, deterministic:**
+  PH200 46/46/46 (0.92 / 0.92 / 0.92, mean 0.92), MH200 49/45/45 (0.98 / 0.90 / 0.90, mean 0.927), **MG200s 22/14/23
+  (0.44 / 0.28 / 0.46, mean 0.393)**. Registered BC-RNN predictions (plan §5): MG200s ≤ PH200 − 0.15 → Δ = −0.53 (met);
+  MH200 within 0.10 of PH200 → Δ = +0.007 (met). Direction and size match robomimic Table 1 (BC-RNN PH 100 / MH 100 /
+  MG 68.7 on the old physics, max over checkpoints); the MG drop is larger here (LAST checkpoint, v1.5.1 physics, our
+  bank). G1 (PH200 ≥ 0.90) stands at 0.92. Array 3337852 tasks 0-8 all COMPLETED (23:26–26:51 wall each, L40/L40S);
+  per-run `eval_bank50/metrics.json` (LAST) + `eval_bank50_ep950/` (the array's own eval, kept). No GPU job of ours left in the queue.
