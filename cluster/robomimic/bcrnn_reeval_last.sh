@@ -19,5 +19,5 @@ for OUT in "${RUNS[@]}"; do
     OE=$(echo $OLD | sed 's/model_epoch_//; s/.pth//'); mv $OUT/eval_bank50 $OUT/eval_bank50_ep$OE; echo "$NAME: kept old eval as eval_bank50_ep$OE"
   fi
   $PY $B/eval_bcrnn_robosuite.py --checkpoint "$CKPT" --arm $ARM --out $OUT/eval_bank50 2>&1 | grep -E "^\[eval bcrnn\] [0-9]+/|Traceback|Error" | tail -2
-  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(f"BCRNN-RESULT-LAST {sys.argv[2]} last={d[\"n_success\"]}/{d[\"episodes\"]} epoch={sys.argv[3]}")' $OUT/eval_bank50/metrics.json $NAME $EP
+  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print("BCRNN-RESULT-LAST", sys.argv[2], "last=" + str(d["n_success"]) + "/" + str(d["episodes"]), "epoch=" + sys.argv[3])' $OUT/eval_bank50/metrics.json $NAME $EP
 done

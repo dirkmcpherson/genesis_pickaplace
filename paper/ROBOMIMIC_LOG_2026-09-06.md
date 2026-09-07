@@ -133,3 +133,7 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   selector now sorts the basename's epoch number; `cluster/robomimic/bcrnn_reeval_last.sh` re-scores every finished run
   at its true LAST checkpoint (fresh process, CPU) — the array's remaining tasks (4-8) still run the old script (Slurm
   copies scripts at submission) and are re-scored by the same tool when they finish. G1 is re-read below.
+- **01:50 (09-07) G1 at the TRUE LAST checkpoint (model_epoch_2000, `bcrnn_reeval_last.sh`, fresh CPU process, 50-state bank):
+  BC-RNN PH200 s0/s1/s2 = 46/50, 46/50, 46/50 = 0.92 / 0.92 / 0.92 → mean 0.92 ≥ 0.90 — G1 PASS.** MH200 s0 = 49/50 (0.98).
+  (Epoch-950 evals kept as `eval_bank50_ep950/`: PH200 47/46/48, MH200 s0 49.) Remaining array tasks (MH200 s1-2,
+  MG200s s0-2) are re-scored at LAST by the same tool when they finish; the launcher itself is fixed for future runs.
