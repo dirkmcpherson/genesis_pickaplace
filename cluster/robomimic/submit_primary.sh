@@ -23,7 +23,7 @@ for l in $LEARNERS; do for a in $SOURCES; do for s in $SEEDS; do
   echo "ARM=$a SEED=$s sbatch $C/${SCRIPT[$l]}"; n=$((n + 1)); total=$(python3 -c "print($total + ${HOURS[$l]})")
 done; done; done
 echo "# $n runs, ~$total GPU-h (rlpd ${HOURS[rlpd]}h, r2d ${HOURS[r2d]}h, dp ${HOURS[dp]}h per run; preempt QOS, <= 20 GPUs per user)"
-if [ -z "${GO:-}" ]; then echo "# DRY RUN (set GO=1 to submit)"; exit 0; fi
+if [ "${GO:-}" != "1" ]; then echo "# DRY RUN (set GO=1 to submit; GO=${GO:-unset} does not submit)"; exit 0; fi
 Q=$(squeue -u "$USER" -h | wc -l); [ "$Q" -le "$MAXQ" ] || { echo "FATAL: $Q jobs already queued/running > MAXQ=$MAXQ"; exit 1; }
 for l in $LEARNERS; do for a in $SOURCES; do for s in $SEEDS; do
   J=$(ARM=$a SEED=$s sbatch --parsable $C/${SCRIPT[$l]}); echo "$(date -Is) submitted $J $l $a s$s" | tee -a $LAB/robomimic_runs/SUBMITTED.log
