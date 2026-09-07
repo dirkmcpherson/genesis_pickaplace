@@ -69,3 +69,19 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   TRUE relative pose (one row per tape differs between demo and online data — disclosed, not "fixed": the files are
   used as published, no re-encoding).
 - 23:58 `prep_data.sh` chain launched (G0 record → bank_can50 → arm manifests + masked copies → conversions → random control).
+- 00:05 (09-07) Bank + arms built (`prep.log`): `bank_can50.npz` sha256 `72b75550…`, K = 50, state dim 71, restore-twice
+  error 0, restore-vs-reseed (physical dims) 1e-7; WORLD can t0 x ∈ [−0.006, 0.215], y ∈ [−0.419, −0.084], min pairwise
+  1.02 cm. NB the plan §1 "t0 placements x ∈ [−0.28, 0.03], y ∈ [−0.18, −0.05] in object[0:3]" measured the RELATIVE
+  can→eef slice (same layout slip); the registered t0-placement covariate must use `CAN_POS` (world). Arms (rows after
+  the cut / tapes / len min-med-max): PH200 22,400 / 200 / 78-111-147; MH200 41,134 / 200 / 97-171-1046 (34/34/33/33/33/33
+  per operator, better→worse); MG200s 16,501 / 200 / 45-77-146, 300-block histogram [0,0,0,0,0,0,2,6,10,29,42,55,56];
+  MH300 61,548 / 300; MGall 536,522 / 3,900 (718 success); PH200pb 31,242 / 300 (200 success). Masked copies
+  (`*_masked.hdf5`, sha 7d03e225… / ab011b3f… / 0074bc45…) carry `mask/<ARM>` for robomimic's trainer.
+- 00:10 (09-07) `verify_env.sh`: robo_venv python 3.10.14 | torch 2.7.0+cu126 | numpy 2.2.6 | mujoco 3.3.7 | robosuite 1.5.1 |
+  robomimic 0.5.0 | h5py 3.16.0 | gymnasium 1.2.3 | sb3 2.8.0 | lerobot 0.4.5 | hydra 1.3.6; r2d_venv_robo python 3.11.15 |
+  torch 2.8.0+cu126 | numpy 2.4.6 | mujoco 3.3.7 | robosuite 1.5.1 | robomimic 0.5.0 | h5py 3.16.0 | gymnasium 1.2.0 |
+  tensordict 0.9.1 | torchrl 0.9.2 | hydra 1.3.2. Launcher dry-runs OK (rlpd / r2d / bcrnn).
+- 00:12 SUBMITTED (preempt QOS, `--exclude=pax077 --constraint=l40s|a100|l40|h200`, all started at once on pax151/152):
+  smokes 2k steps on PH200 (10 bank episodes each): RLPD **3337812**, r2dreamer **3337813** (env.steps 24,600 = 22,600
+  prefill + 2,000 online), DP **3337814**; BC-RNN control **3337815** = array 0-8 (%1 while the smokes run; ARM =
+  (PH200 MH200 MG200s)[id/3], SEED = id%3; 2000 epochs × 100 steps, LAST checkpoint on the 50-state bank). ≤ 4 GPU jobs in flight.

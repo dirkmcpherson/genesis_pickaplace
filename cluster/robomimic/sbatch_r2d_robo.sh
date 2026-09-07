@@ -47,7 +47,7 @@ echo "# train rc=$TRAIN_RC $(date -Is)"
 [ "$TRAIN_RC" -eq 0 ] || { echo "FATAL: training exited $TRAIN_RC"; exit 1; }
 [ -f $LOGDIR/latest.pt ] || { echo "FATAL: no latest.pt"; exit 1; }
 LAST=$(tail -c 4000 $LOGDIR/metrics.jsonl 2>/dev/null | grep -oE "\"step\": [0-9]+" | tail -1 | grep -oE "[0-9]+" || echo 0)
-[ "${LAST:-0}" -ge $((STEPS - 5000)) ] || { echo "FATAL: last logged step $LAST < $((STEPS - 5000)) -- training did not reach its budget"; exit 1; }
+if [ "$ONLINE" -gt 10000 ]; then [ "${LAST:-0}" -ge $((STEPS - 5000)) ] || { echo "FATAL: last logged step $LAST < $((STEPS - 5000)) -- training did not reach its budget"; exit 1; }; else echo "# smoke (ONLINE=$ONLINE <= 10k): budget check skipped; last logged step $LAST"; fi
 for MODE in mode sample; do
   CUDA_VISIBLE_DEVICES="" "$PY" eval_robosuite.py --checkpoint $LOGDIR/latest.pt --mode $MODE --episodes $EVAL_EPISODES --seed 0 --out $LOGDIR/eval_bank50_$MODE --device cpu 2>&1 | grep -E "^\[eval\]|^\[eval r2d [a-z]+\] [0-9]+/|Traceback|Error" | tail -3
 done

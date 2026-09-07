@@ -19,6 +19,9 @@
 set -euo pipefail
 LAB=/cluster/tufts/shortlab/jstale02; PY=$LAB/robo_venv/bin/python
 export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace} PYTHONUNBUFFERED=1 MUJOCO_GL=egl
+# Array mode (the 3-source x 3-seed control under the <= 4-GPU-jobs-in-flight rule): sbatch --array=0-8%N ... maps
+# task id -> ARM = (PH200 MH200 MG200s)[id / 3], SEED = id % 3 when ARM/SEED are not given explicitly.
+if [ -n "${SLURM_ARRAY_TASK_ID:-}" ] && [ -z "${ARM:-}" ]; then _A=(PH200 MH200 MG200s); ARM=${_A[$((SLURM_ARRAY_TASK_ID / 3))]}; SEED=$((SLURM_ARRAY_TASK_ID % 3)); fi
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; EPOCHS=${EPOCHS:-2000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 NAME=bcrnn_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/bcrnn/$NAME
