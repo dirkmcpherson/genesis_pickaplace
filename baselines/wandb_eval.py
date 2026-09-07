@@ -95,6 +95,12 @@ ap.add_argument('--ic-index', type=int, default=None)
 ap.add_argument('--arm', default=None, help='recorded into the result JSON (provenance only)')
 ap.add_argument('--ckpt-step', default=None, help='recorded into the result JSON (provenance only)')
 ap.add_argument('--reward', default=None, help='sparse|dense tag, recorded only')
+ap.add_argument('--sample-actions', action='store_true',
+                help="SAC/RLPD only (2026-09-07, user: SAMPLED actions are the statistic of record for "
+                     "RLPD and r2dreamer): model.predict(deterministic=False), i.e. one draw from the "
+                     "actor's squashed Gaussian per decision, seeded by --seed (re-seeded AFTER SAC.load, "
+                     "which reseeds torch with the TRAINING seed). Default off = the deterministic cells "
+                     "of record are byte-identical. DP is always sampled (diffusion noise); flag ignored.")
 args = ap.parse_args()
 assert (args.ic_file is None) == (args.ic_set is None), '--ic-file and --ic-set go together'
 assert args.ic_index is None or args.ic_file is not None, '--ic-index needs --ic-file'
@@ -167,6 +173,13 @@ if args.kind == 'sac':
     else:
         from pick_env import denormalize_action
     model = SAC.load(args.checkpoint, device='cpu')
+    # SB3's load() -> _setup_model() -> set_random_seed(self.seed) reseeds torch/numpy with the
+    # checkpoint's TRAINING seed; re-seed with --seed so a sampled eval's noise stream is the
+    # per-episode seed (= the IC index under cluster/eval_sweep.sh), not the training seed.
+    _th.manual_seed(args.seed); np.random.seed(args.seed)
+    _DETERMINISTIC = not args.sample_actions
+    _dev = []   # per-query mean |a_sampled - a_mean| when sampling (recorded as sample_dev_mean/max)
+    print(f'[eval] sac action selection: {"SAMPLED (deterministic=False, seed %d)" % args.seed if args.sample_actions else "deterministic"}', flush=True)
 
     _mode = args.action_mode
     _repeat = args.action_repeat            # None => resolve from sidecar/default
@@ -233,7 +246,9 @@ if args.kind == 'sac':
             if _dj['target'] is None:
                 _dj['target'] = q.copy()
             if _dj['k'] % _repeat == 0:
-                _dj['a'], _ = model.predict(obs['state'], deterministic=True)
+                _dj['a'], _ = model.predict(obs['state'], deterministic=_DETERMINISTIC)
+                if not _DETERMINISTIC:   # diagnostic: how far the draw sits from the actor mean (0 = collapsed std)
+                    _dev.append(float(np.abs(_dj['a'] - model.predict(obs['state'], deterministic=True)[0]).mean()))
             _dj['k'] += 1
             a = _dj['a']
             if _dref == 'measured':
@@ -260,7 +275,9 @@ if args.kind == 'sac':
             _dj['k'] = 0
     else:
         def policy_action(obs):
-            a, _ = model.predict(obs['state'], deterministic=True)
+            a, _ = model.predict(obs['state'], deterministic=_DETERMINISTIC)
+            if not _DETERMINISTIC:
+                _dev.append(float(np.abs(a - model.predict(obs['state'], deterministic=True)[0]).mean()))
             return denormalize_action(a)
         policy_reset = None
 else:
@@ -433,7 +450,8 @@ _node = dict(hostname=_socket.gethostname(),
              slurm_partition=os.environ.get('SLURM_JOB_PARTITION'),
              slurm_job_id=os.environ.get('SLURM_JOB_ID'),
              cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES'), sim_variant=_SIM_VARIANT)
-_act_sel = ('deterministic' if args.kind == 'sac' else f'sampled(seed={args.seed})')
+_act_sel = (('deterministic' if not args.sample_actions else f'sampled(seed={args.seed})')
+            if args.kind == 'sac' else f'sampled(seed={args.seed})')
 _eps_all = [dict(ic_set=_name, **e) for _name, _a in _aggs.items() for e in _a.get('episodes', [])]
 result = dict(metrics=metrics, videos=vids, tiled=tiled, checkpoint=args.checkpoint,
               seed=args.seed, max_steps=args.max_steps, delta_ref=_dref,
@@ -442,7 +460,9 @@ result = dict(metrics=metrics, videos=vids, tiled=tiled, checkpoint=args.checkpo
               ic_file=args.ic_file, ic_set=args.ic_set, ic_index=args.ic_index,
               action_repeat=(int(_repeat) if '_repeat' in globals() else None),
               action_mode=(_mode if '_mode' in globals() else None),
-              act_selection=_act_sel, node=_node, git=_git,
+              act_selection=_act_sel, sample_actions=bool(args.sample_actions), node=_node, git=_git,
+              sample_dev_mean=(float(np.mean(_dev)) if ('_dev' in globals() and _dev) else None),
+              sample_dev_max=(float(np.max(_dev)) if ('_dev' in globals() and _dev) else None),
               picked=int(sum(a['picked'] for a in _aggs.values())),
               n=int(sum(a['n'] for a in _aggs.values())),
               n_steps=([e['n_steps'] for e in _eps_all] if _eps_all else None),

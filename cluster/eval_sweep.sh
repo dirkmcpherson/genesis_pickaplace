@@ -14,6 +14,8 @@
 #     --arm A --seed S --ckpt-step T --reward R --tag TAG   provenance, recorded in every json
 #     --wandb-run NAME --wandb-project PROJ   best-effort summary push: sweep/<tag>/<set>
 #     --max-jobs J          concurrent worlds (default: SLURM_CPUS_PER_TASK/2, min 1)
+#     --sample-actions      sac only (2026-09-07): SAMPLED actions (wandb_eval --sample-actions, one draw
+#                           per decision seeded by the episode index k); default = deterministic (of record)
 #   env:
 #     SIDECAR_OPTIONAL=1    allow a legacy checkpoint without sidecar (prints the defaults it
 #                           assumes LOUDLY; never for the block of record)
@@ -35,9 +37,10 @@ export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1
 
 KIND=${1:?usage: eval_sweep.sh KIND CKPT OUTDIR [options]}; CKPT=${2:?CKPT}; OUTDIR=${3:?OUTDIR}; shift 3
 SETS="sel,hold,rnd"; ICF=baselines/eval_ics.json; MAXS=1200; ARM=""; SEED=""; CSTEP=""; REWARD=""; TAG=""
-WRUN=""; WPROJ=""; MAXJ=""
+WRUN=""; WPROJ=""; MAXJ=""; SAMPLE_FLAG=()
 while [ $# -gt 0 ]; do
   case "$1" in
+    --sample-actions) SAMPLE_FLAG=(--sample-actions); shift 1 ;;
     --sets) SETS=$2; shift 2 ;;
     --ic-file) ICF=$2; shift 2 ;;
     --max-steps) MAXS=$2; shift 2 ;;
@@ -105,7 +108,8 @@ else
 fi
 
 PROV=(); [ -n "$ARM" ] && PROV+=(--arm "$ARM"); [ -n "$CSTEP" ] && PROV+=(--ckpt-step "$CSTEP"); [ -n "$REWARD" ] && PROV+=(--reward "$REWARD")
-echo "[sweep] kind=$KIND ckpt=$CKPT sets=$SETS ic_file=$ICF max_steps=$MAXS max_jobs=$MAXJ out=$OUTDIR tag=${TAG:-}"
+[ "${#SAMPLE_FLAG[@]}" -gt 0 ] && [ "$KIND" != sac ] && { echo "FATAL: --sample-actions is a sac-only switch (dp is always sampled)"; exit 1; }
+echo "[sweep] kind=$KIND ckpt=$CKPT sets=$SETS ic_file=$ICF max_steps=$MAXS max_jobs=$MAXJ out=$OUTDIR tag=${TAG:-} act_selection=$([ "${#SAMPLE_FLAG[@]}" -gt 0 ] && echo sampled || echo "$([ "$KIND" = dp ] && echo sampled || echo deterministic)")"
 
 # ---- one fresh process per episode ------------------------------------------------------
 IFS=',' read -ra SETLIST <<< "$SETS"
@@ -126,7 +130,7 @@ for S in "${SETLIST[@]}"; do
     _ENV=(env); if [ "$KIND" != "dp" ] || [ "${POLICY_CUDA:-1}" != "1" ]; then _ENV=(env CUDA_VISIBLE_DEVICES=""); fi
     ( "${_ENV[@]}" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
         --ic-file "$ICF" --ic-set "$S" --ic-index "$k" --max-steps "$MAXS" --seed "$k" \
-        "${MODE_FLAGS[@]}" "${PROV[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
+        "${MODE_FLAGS[@]}" "${PROV[@]}" "${SAMPLE_FLAG[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
         --json "$J" --no-wandb > "$OUTDIR/${S}_${k}.log" 2>&1 ) &
   done
 done
@@ -136,10 +140,10 @@ set +e   # from here on nothing may silently abort the aggregation (08-23 smoke:
 echo "[sweep] episodes done ($(ls "$OUTDIR"/*.json 2>/dev/null | wc -l) result files); aggregating"
 
 # ---- aggregate: asserted denominators, missing never 0 ---------------------------------
-python3 -u - "$OUTDIR" "$ICF" "$SETS" "$KIND" "$ARM" "$SEED" "$CSTEP" "$TAG" "$WRUN" "$WPROJ" "$CKPT" "$MAXS" <<'PY'
+python3 -u - "$OUTDIR" "$ICF" "$SETS" "$KIND" "$ARM" "$SEED" "$CSTEP" "$TAG" "$WRUN" "$WPROJ" "$CKPT" "$MAXS" "${#SAMPLE_FLAG[@]}" <<'PY'
 import json, os, sys, glob
-out, icf, sets, kind, arm, seed, cstep, tag, wrun, wproj, ckpt, maxs = sys.argv[1:13]
-ic = json.load(open(icf)); res = {}; parts = []; missing_all = {}
+out, icf, sets, kind, arm, seed, cstep, tag, wrun, wproj, ckpt, maxs, nsmp = sys.argv[1:14]
+ic = json.load(open(icf)); res = {}; parts = []; missing_all = {}; act_sels = set()
 for S in sets.split(','):
     n_exp = len(ic[S]); picked = 0; present = 0; missing = []; eps = []
     for k in range(n_exp):
@@ -147,6 +151,7 @@ for S in sets.split(','):
         if not os.path.exists(f):
             missing.append(k); continue
         d = json.load(open(f)); present += 1
+        if d.get('act_selection'): act_sels.add(str(d['act_selection']).split('(')[0])   # legacy jsons (pre 08-23) carry none
         p = int(d.get('picked', round(d['metrics'].get('eval/picked', 0.0) * max(d['metrics'].get('eval/n', 1), 1))))
         picked += p
         eps.append(dict(k=k, picked=p, n_steps=d.get('n_steps'), action_repeat=d.get('action_repeat'),
@@ -156,11 +161,13 @@ for S in sets.split(','):
                   rate=(picked / present if present else None), episodes=eps)
     parts.append(f'{S}={picked}/{present}' + (f'(exp {n_exp})' if present != n_exp else ''))
     if missing: missing_all[S] = missing
+act_sel = ('sampled' if (int(nsmp) > 0 or kind == 'dp') else 'deterministic')
+assert act_sels <= {act_sel}, f'per-episode act_selection {act_sels} disagrees with the sweep flag ({act_sel})'
 summ = dict(kind=kind, arm=arm or None, seed=seed or None, ckpt=ckpt, ckpt_step=cstep or None, tag=tag or None,
-            max_steps=int(maxs), ic_file=icf, sets=res, missing=missing_all)
+            max_steps=int(maxs), ic_file=icf, act_selection=act_sel, sets=res, missing=missing_all)
 json.dump(summ, open(os.path.join(out, 'sweep.json'), 'w'), indent=1)
 print(f'SWEEP-RESULT kind={kind} arm={arm or "-"} seed={seed or "-"} ckpt={cstep or os.path.basename(ckpt)} '
-      f'tag={tag or "-"} ' + ' '.join(parts) + f' missing={json.dumps(missing_all) if missing_all else "none"}')
+      f'tag={tag or "-"} act={act_sel} ' + ' '.join(parts) + f' missing={json.dumps(missing_all) if missing_all else "none"}')
 if missing_all:
     print(f'SWEEP-MISSING {json.dumps(missing_all)} -- denominators above count PRESENT episodes only; '
           f'the cell is INCOMPLETE, never read a missing episode as 0')
