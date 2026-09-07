@@ -247,7 +247,10 @@ def main():
     ap.add_argument('--sets', default=os.path.expanduser('~/wm_fix_2026-09-03/characterization/sets'))
     ap.add_argument('--out', default=os.path.expanduser('~/wm_fix_2026-09-03/characterization'))
     ap.add_argument('--n-gallery', type=int, default=12)
+    ap.add_argument('--machine', default='dDP', help='machine set dir name under --sets (2026-09-07: dRL for the machine-first arm)')
+    ap.add_argument('--human', default='dHv2raw')
     args = ap.parse_args()
+    SETS['machine'] = args.machine; SETS['human'] = args.human
     out = pl.Path(args.out); out.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(0)
 
@@ -267,7 +270,7 @@ def main():
                 fh.write(f'{SETS[s]},{u},{int(u in paired)},' + ','.join(str(r[k]) for k in keys) + '\n')
 
     # ---- per-set table (all tapes of each set)
-    lines = ['| descriptor | unit | human dHv2raw (n=%d) mean / median [IQR] | machine dDP (n=%d) mean / median [IQR] |' % (len(rows['human']), len(rows['machine'])), '|---|---|---|---|']
+    lines = ['| descriptor | unit | human %s (n=%d) mean / median [IQR] | machine %s (n=%d) mean / median [IQR] |' % (SETS['human'], len(rows['human']), SETS['machine'], len(rows['machine'])), '|---|---|---|---|']
     per_set = {}
     for k, lab, unit in DESC:
         cells = []
@@ -335,9 +338,9 @@ def main():
         ax.set_title(f'{lab}\n{unit}  paired p={pf(st["p_wilcoxon"])} d_z={st["dz"]:+.2f}', fontsize=7)
         ax.set_xticks([0, 1]); ax.set_xticklabels(['human', 'machine'], fontsize=7); ax.tick_params(axis='y', labelsize=6)
     for ax in axes.ravel()[len(show):]: ax.axis('off')
-    fig.suptitle(f'dHv2raw (human, n={len(rows["human"])}) vs dDP (machine, n={len(rows["machine"])}) - world gc_kp4_riser3_shelf6, pick scope, 7.5 Hz decisions; p = Wilcoxon on the {len(paired)} paired ICs', fontsize=8)
+    fig.suptitle(f'{SETS["human"]} (human, n={len(rows["human"])}) vs {SETS["machine"]} (machine, n={len(rows["machine"])}) - world gc_kp4_riser3_shelf6, pick scope, 7.5 Hz decisions; p = Wilcoxon on the {len(paired)} paired ICs', fontsize=8)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
-    fig.savefig(out / 'fig_descriptors_dDP_vs_dHv2raw.png', dpi=160); plt.close(fig)
+    fig.savefig(out / f'fig_descriptors_{SETS["machine"]}_vs_{SETS["human"]}.png', dpi=160); plt.close(fig)
 
     # ---- xy trajectory panel for the gallery uids
     fig, axes = plt.subplots(3, 4, figsize=(12, 9))
