@@ -1,0 +1,43 @@
+# Robomimic leg (paper/ROBOMIMIC_PLAN_2026-09-05.md §4): r2dreamer on robosuite Can, STATE input, demos from
+# convert_arms.py's r2d/ dirs. Base = genesis_pick_state.yaml (WM fix stage 2) with the recipe of record's command-
+# line overrides baked in (bnormclamp1ent5: actor_dist bounded_normal, return_clamp 1.0, act_entropy 3e-5 --
+# COMMANDS.log 2026-09-04) and exactly the plan's environment changes: action_repeat 1, time_limit 400, 23-dim state,
+# 3-channel 16x16 placeholder image (cnn_keys '$^' never reads it). Unchanged: horizon 333, train_ratio 512,
+# env_num 6, storage cpu, actor_bc_lambda 0 (MUST stay 0), reward_scale 1, demo_downsample 1, no re-injection.
+# env.steps / env.demo_dir / buffer.max_size are set by the launcher (steps = prefill rows + online decisions).
+task: 'robosuite_can'
+steps: 5.2e5
+env_num: 6
+eval_episode_num: 0
+action_repeat: 1
+demo_downsample: 1
+train_ratio: 512
+time_limit: 400
+
+seed: ${seed}
+device: ${device}
+
+size: [16, 16]
+image_channels: 3
+state_obs: true
+state_dim: 23
+hdf5: /cluster/tufts/shortlab/jstale02/robomimic_data/v1.5/can/ph/low_dim_v15.hdf5   # env_meta source (identical env_kwargs in every Can file)
+scope: 'can'
+actor_dist: bounded_normal
+actor_bc_lambda: 0.0
+demo_dir: null
+demo_reinject_every: 0
+demo_duplicate: 1
+reward_scale: 1.0
+
+storage_device: cpu
+horizon: 333
+act_entropy: 3e-5
+return_clamp: 1.0
+
+encoder:
+  mlp_keys: 'state'
+  cnn_keys: '$^'
+decoder:
+  mlp_keys: 'state'
+  cnn_keys: '$^'

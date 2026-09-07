@@ -79,3 +79,35 @@ Risks, in order: (1) **Install/version hell** — robosuite 1.5.1 on mujoco 3.3.
 8. Gates: G0 replay-consistency of 5 PH tapes (version match), G1 BC-RNN ≥ 0.90 on PH, G2 random ≤ 2/50 and no-demo learners ≤ 0.10, G3 learnability ≥ 0.5 in ≥ 3/8 seeds; one registered budget extension each (RLPD 100k→300k decisions, WM 500k→1M).
 9. Cost ≈ 220 GPU-h primary (48 runs at ~3 h RLPD / ~5 h WM, times UNVERIFIED for MuJoCo), ≈ 350 GPU-h with secondaries; ~8 working days plus queue slack.
 10. Falsifiers are registered in both directions (PH ≫ MG breaks source-indifference; MG ≫ PH extends robomimic's offline result online); either is reportable, and "not learnable at this budget" is the third honest outcome.
+
+## A1. Amendment 2026-09-06 (registered before any DP run): Diffusion Policy as the third learner
+*Requested by the user 2026-09-06 ("our three algorithm families"). Written at preparation time, before any DP smoke
+or seed on the robomimic data; the registered text above is unchanged.*
+- **Learner**: lerobot Diffusion Policy, STATE-ONLY inputs — `observation.state` = eef_pos + eef_quat + gripper_qpos (9),
+  `observation.environment_state` = object (14), action = the file's 7-dim OSC_POSE + gripper in [−1, 1] executed directly
+  (the env's own action space; no integrator, no action repeat). Recipe of record = `cluster/sbatch_dp.sh`'s: 100k gradient
+  steps, batch 64, lerobot 0.4.5 (fork `genesis-fixes`) defaults otherwise (horizon 16, n_obs_steps 2, n_action_steps 8);
+  dataset fps 20 (one row per decision, identical cut rule to the other learners). Launcher `cluster/robomimic/sbatch_dp_robo.sh`,
+  converter `baselines/robomimic/convert_arms.py --targets lerobot`, evaluator `baselines/robomimic/eval_dp_robosuite.py`.
+- **Statistic**: success on the same 50-state bank, LAST checkpoint, SAMPLED actions (DP is stochastic; per-episode torch seed
+  = bank index, as `cluster/eval_sweep.sh` does), n = 8 v 8, the same three contrasts and the same exact permutation + TOST
+  (±0.10) as §5. DP has no "mode" cell; the sampled cell is its statistic of record.
+- **Gate G3-DP** (learnability, same rule as §5 G3): every arm ≥ 0.5 on the bank in ≥ 3/8 seeds at LAST; one registered
+  extension to 300k gradient steps; otherwise "not learnable at this budget". No no-demo control is meaningful for BC.
+- **Prediction (from robomimic Table 1 BC/BC-RNN rows and our Genesis DP results, `RESULTS_WM_HUMAN_VS_MACHINE §2`)**:
+  DP on MG200s BELOW PH200 by ≥ 0.15 (the offline learners lose on MG: BC 95→65, BC-RNN 100→69); MH200 within 0.10 of PH200
+  (Can: MH costs BC −9, BC-RNN 0). I.e. the BC-family gradient the paper claims for BC should reappear for DP, while §5
+  predicts |Δ| < 0.10 for RLPD and r2dreamer on the same three sets — that contrast (DP source-sensitive, online learners
+  source-indifferent) is the pre-registered pattern; DP source-INdifference (|Δ| < 0.10 on PH v MG) would falsify it and
+  would say the robomimic BC loss on MG is a BC-RNN/MLP artefact, not a demo-source property.
+- **Disclosures**: DP trains only on success-cut rows (rows after the first success are dropped for every learner, so the
+  DP sets are exactly the RLPD/WM demo sets); MG200s ≈ 16.5k rows vs PH200 ≈ 22.2k vs MH200 ≈ 41k (tape-matched, not
+  row-matched); lerobot's default normalisation (min-max over the dataset) is learner-internal; our LAST-checkpoint /
+  sampled-action protocol vs robomimic's max-over-checkpoints.
+- **Environment note (fact, not a change)**: the runs use the NEW `$LAB/robo_venv` (RLPD, DP, BC-RNN) and
+  `$LAB/r2d_venv_robo` (r2dreamer overlay on r2d_venv) — `cluster/robomimic/verify_env.sh` prints the pins.
+- **Budget accounting for r2dreamer (clarification of §4)**: "500k decisions" = ONLINE decisions; the launcher sets
+  `env.steps = prefill rows + 500k` because the demo prefill spends `env.steps` by construction (`demo_prefill.py`), and
+  `buffer.max_size = 2·rows + 500k` so no demo row is evicted (the same "nothing evicted" choice as the Genesis WM arm).
+- **Bank restore (clarification of §2)**: entries are restored with `reset_to({model: xml, states})` (robomimic's
+  playback convention; the model xml is stored alongside the flattened state), not states-only.
