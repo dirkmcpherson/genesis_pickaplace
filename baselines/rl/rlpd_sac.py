@@ -222,7 +222,12 @@ class RLPDSAC(SAC):
         return super()._excluded_save_params() + ['demo_data']
 
     def train(self, gradient_steps, batch_size=256):
-        assert self.demo_data is not None, 'call set_demo_data() before learn()'
+        # demo_batch == 0 (machine-first arm T2, MACHINE_FIRST_PLAN 2026-09-07 amendment
+        # (a)): plain SAC with the RLPD critics/UTD -- every batch is online, no demo
+        # buffer is required. demo_batch > 0 keeps the RLPD 50/50 path byte-identical.
+        use_demos = self.demo_batch > 0
+        if use_demos:
+            assert self.demo_data is not None, 'call set_demo_data() before learn()'
         self.policy.set_training_mode(True)
         opt = [self.actor.optimizer, self.critic.optimizer]
         if self.ent_coef_optimizer is not None:
@@ -241,13 +246,18 @@ class RLPDSAC(SAC):
             last = gstep == gradient_steps - 1
             # ---- 50/50 two-buffer batch (explicit, not a monkey-patched sample) ----
             online = self.replay_buffer.sample(online_bs, env=self._vec_normalize_env)
-            demo = self.demo_data.sample(self.demo_batch)
-            obs = th.cat([online.observations, demo.observations])
-            act = th.cat([online.actions, demo.actions])
-            nobs = th.cat([online.next_observations, demo.next_observations])
-            dones = th.cat([online.dones, demo.dones])
-            rewards = th.cat([online.rewards, demo.rewards])
-            demo_rew_counts.append(float((demo.rewards > 0).sum().item()))
+            if use_demos:
+                demo = self.demo_data.sample(self.demo_batch)
+                obs = th.cat([online.observations, demo.observations])
+                act = th.cat([online.actions, demo.actions])
+                nobs = th.cat([online.next_observations, demo.next_observations])
+                dones = th.cat([online.dones, demo.dones])
+                rewards = th.cat([online.rewards, demo.rewards])
+                demo_rew_counts.append(float((demo.rewards > 0).sum().item()))
+            else:
+                obs, act, nobs = online.observations, online.actions, online.next_observations
+                dones, rewards = online.dones, online.rewards
+                demo_rew_counts.append(0.0)
 
             ent_coef = (th.exp(self.log_ent_coef.detach()) if auto_alpha
                         else self.ent_coef_tensor)

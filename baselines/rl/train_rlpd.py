@@ -58,6 +58,11 @@ def main():
     ap.add_argument('--ensemble-size', type=int, default=10, help='E critic ensemble')
     ap.add_argument('--subset-size', type=int, default=2,
                     help='Z: target = min over a random Z-of-E TARGET critics')
+    ap.add_argument('--no-demos', action='store_true',
+                    help='machine-first arm T2 (paper/MACHINE_FIRST_PLAN_2026-09-07.md amendment (a)): '
+                         'plain SAC with the RLPD critics/UTD and NO demonstration buffer '
+                         '(demo_batch forced to 0, every batch online; --demo-dir ignored, '
+                         'sidecar demo_dir="none"). Reward-only teacher; disclosed.')
     ap.add_argument('--demo-batch', type=int, default=128,
                     help='demo half of the 256 batch (128 demo + 128 online = 50/50)')
     ap.add_argument('--backup-entropy', choices=['on', 'off'], default='off',
@@ -202,7 +207,14 @@ def main():
             f'delta_ref=target); got action_mode={args.action_mode} delta_ref={args.delta_ref}')
         assert args.pick_hold_reward == 'off', 'no hold-reward relabel for native tapes (not built)'
         assert args.scope == 'pick', 'contract-v1 tapes are pick-scope recordings'
-    if args.demo_shaping == 'auto':
+    if args.no_demos:
+        assert args.demo_shaping in ('auto', 'off'), '--no-demos has no demo half to shape'
+        demo_shaping = False
+        args.demo_batch = 0
+        print('[demos] --no-demos: NO demonstration buffer (demo_batch=0, every batch online); '
+              'plain SAC + RLPD critics/UTD; reward-only teacher (MACHINE_FIRST_PLAN amendment (a))',
+              flush=True)
+    elif args.demo_shaping == 'auto':
         demo_shaping = native and args.pick_shaping == 'on'
     else:
         demo_shaping = (args.demo_shaping == 'on')
@@ -298,77 +310,83 @@ def main():
     print(model.critic, flush=True)
 
     # ---- demos: SAME encoder as train_sacfd_full (bit-identical tensors) ----
-    paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
-    assert paths, f'no npz in {args.demo_dir}'
-    demo_sha = demo_dir_sha256(paths)
-    print(f'[demos] {len(paths)} npz in {args.demo_dir} content_sha256={demo_sha[:16]}... '
-          f'format={args.demo_format} terminal_guard={args.demo_terminal_guard} '
-          f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
-    if native:
-        transitions, census = native_demo_transitions(
-            paths, expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat, delta_cap=env.delta_cap,
-                               delta_leash=env.delta_leash, delta_ref=args.delta_ref),
-            gamma=args.gamma, shaping=demo_shaping,
-            phi_scale=FullTaskEnv.PICK_SHAPING_SCALE)
-        print_native_census(census, tag=args.demo_dir)
-        assert census['n_transitions'] > 0, 'empty native demo set'
-        norm = None
-    elif hold_reward:
-        # REWARD-DENSITY path: per-frame hold reward, tape cut at the demo's own K-th
-        # consecutive held frame. Same pick_z INSTANCE the env runs on and the same
-        # full_env.pick_hold_held predicate the env calls -- the demo reward stream and
-        # the env reward stream are one definition, not two implementations.
-        transitions, census = hold_region_encode_transitions(
-            paths, env.pick_z, env.delta_cap, args.pick_hold_k, args.delta_ref,
-            terminal_guard=guard)
-        print_hold_census(census, tag=f'{args.demo_dir} ref={args.delta_ref}')
-        assert census['n_terminal'] > 0, (
-            f'no demo in {args.demo_dir} shows {args.pick_hold_k} consecutive held '
-            'frames -- this is a PICK-TRUNCATED set (episodes_pick_phase_all is cut '
-            '~2 frames past the lift). The hold-reward arm needs FULL-LENGTH tapes '
-            '(baselines/episodes_all or baselines/episodes_delta_rerecord).')
-        print(f'[demos] encoder=hold_region_encode_transitions '
-              f'delta_ref={args.delta_ref} cap={env.delta_cap} K={args.pick_hold_k}',
-              flush=True)
-        norm = None
-    elif args.action_mode == 'delta_joint':
-        # EXPLICIT encoder selection (no silent stride-1 fallback): action_repeat>1
-        # decision-level demos vs the stride-1 encoder. repeat==1 keeps the exact
-        # stride-1 tensors SACfD/the gate assert bit-equality against.
-        # delta_ref picks the REFERENCE the encoder differences against, in lockstep
-        # with the env: 'target' = previous COMMAND (open-loop), 'measured' = the
-        # demo's RECORDED measured qpos, leash-scaled (mirrors _step_once's measured
-        # branch). Mixing the two is the P1 failure mode, so both are explicit here.
-        if args.delta_ref == 'measured':
-            _enc = (delta_encode_transitions_measured_repeat
-                    if args.action_repeat > 1 else delta_encode_transitions_measured)
-        else:
-            _enc = (delta_encode_transitions_repeat
-                    if args.action_repeat > 1 else delta_encode_transitions)
-        if args.action_repeat > 1:
-            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
-                               args.action_repeat, terminal_guard=guard)
-        else:
-            transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
-                               terminal_guard=guard)
-        print(f'[demos] encoder={_enc.__name__} delta_ref={args.delta_ref} '
-              f'cap={env.delta_cap} leash={env.delta_leash} terminal_guard={guard}', flush=True)
-        norm = None                    # actions already in normalized delta space
+    if args.no_demos:
+        paths, demo_sha = [], 'none'
+        args.demo_dir = 'none'
+        assert model.demo_batch == 0, model.demo_batch
+        print('[demos] none (--no-demos): 0 eps -> 0 transitions; batches are 100% online', flush=True)
     else:
-        transitions, _ = relabel_full(paths, env.pick_z, scope=args.scope,
-                                      terminal_guard=guard)
-        if args.scope == 'pick':
-            transitions = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
-                           (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
-        norm = pick_env.normalize_action
-    import torch as th
-    demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
-    model.set_demo_data(demo)
-    n_done = sum(1 for t in transitions if t[4])
-    n_done_r0 = sum(1 for t in transitions if t[4] and t[2] <= 0.0)
-    print(f'[demos] {len(paths)} eps -> {demo.n} transitions in the IMMUTABLE demo '
-          f'buffer (50% of every batch), {demo.n_rewarded} rewarded, {n_done} terminal '
-          f'({n_done_r0} zero-reward terminals = tip-guarded fails)', flush=True)
+      paths = sorted(glob.glob(str(REPO / args.demo_dir / '*.npz')))
+      assert paths, f'no npz in {args.demo_dir}'
+      demo_sha = demo_dir_sha256(paths)
+      print(f'[demos] {len(paths)} npz in {args.demo_dir} content_sha256={demo_sha[:16]}... '
+            f'format={args.demo_format} terminal_guard={args.demo_terminal_guard} '
+            f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
+      if native:
+          transitions, census = native_demo_transitions(
+              paths, expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat, delta_cap=env.delta_cap,
+                                 delta_leash=env.delta_leash, delta_ref=args.delta_ref),
+              gamma=args.gamma, shaping=demo_shaping,
+              phi_scale=FullTaskEnv.PICK_SHAPING_SCALE)
+          print_native_census(census, tag=args.demo_dir)
+          assert census['n_transitions'] > 0, 'empty native demo set'
+          norm = None
+      elif hold_reward:
+          # REWARD-DENSITY path: per-frame hold reward, tape cut at the demo's own K-th
+          # consecutive held frame. Same pick_z INSTANCE the env runs on and the same
+          # full_env.pick_hold_held predicate the env calls -- the demo reward stream and
+          # the env reward stream are one definition, not two implementations.
+          transitions, census = hold_region_encode_transitions(
+              paths, env.pick_z, env.delta_cap, args.pick_hold_k, args.delta_ref,
+              terminal_guard=guard)
+          print_hold_census(census, tag=f'{args.demo_dir} ref={args.delta_ref}')
+          assert census['n_terminal'] > 0, (
+              f'no demo in {args.demo_dir} shows {args.pick_hold_k} consecutive held '
+              'frames -- this is a PICK-TRUNCATED set (episodes_pick_phase_all is cut '
+              '~2 frames past the lift). The hold-reward arm needs FULL-LENGTH tapes '
+              '(baselines/episodes_all or baselines/episodes_delta_rerecord).')
+          print(f'[demos] encoder=hold_region_encode_transitions '
+                f'delta_ref={args.delta_ref} cap={env.delta_cap} K={args.pick_hold_k}',
+                flush=True)
+          norm = None
+      elif args.action_mode == 'delta_joint':
+          # EXPLICIT encoder selection (no silent stride-1 fallback): action_repeat>1
+          # decision-level demos vs the stride-1 encoder. repeat==1 keeps the exact
+          # stride-1 tensors SACfD/the gate assert bit-equality against.
+          # delta_ref picks the REFERENCE the encoder differences against, in lockstep
+          # with the env: 'target' = previous COMMAND (open-loop), 'measured' = the
+          # demo's RECORDED measured qpos, leash-scaled (mirrors _step_once's measured
+          # branch). Mixing the two is the P1 failure mode, so both are explicit here.
+          if args.delta_ref == 'measured':
+              _enc = (delta_encode_transitions_measured_repeat
+                      if args.action_repeat > 1 else delta_encode_transitions_measured)
+          else:
+              _enc = (delta_encode_transitions_repeat
+                      if args.action_repeat > 1 else delta_encode_transitions)
+          if args.action_repeat > 1:
+              transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
+                                 args.action_repeat, terminal_guard=guard)
+          else:
+              transitions = _enc(paths, env.pick_z, args.scope, env.delta_cap,
+                                 terminal_guard=guard)
+          print(f'[demos] encoder={_enc.__name__} delta_ref={args.delta_ref} '
+                f'cap={env.delta_cap} leash={env.delta_leash} terminal_guard={guard}', flush=True)
+          norm = None                    # actions already in normalized delta space
+      else:
+          transitions, _ = relabel_full(paths, env.pick_z, scope=args.scope,
+                                        terminal_guard=guard)
+          if args.scope == 'pick':
+              transitions = [(o, a, r, o2, True) if r >= STAGE_REWARD['picked'] else
+                             (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
+          norm = pick_env.normalize_action
+      import torch as th
+      demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
+      model.set_demo_data(demo)
+      n_done = sum(1 for t in transitions if t[4])
+      n_done_r0 = sum(1 for t in transitions if t[4] and t[2] <= 0.0)
+      print(f'[demos] {len(paths)} eps -> {demo.n} transitions in the IMMUTABLE demo '
+            f'buffer (50% of every batch), {demo.n_rewarded} rewarded, {n_done} terminal '
+            f'({n_done_r0} zero-reward terminals = tip-guarded fails)', flush=True)
 
     # ---- output + action_mode sidecars (the silent-default-bug rule: control mode
     # travels WITH the artifact so wandb_eval --action-mode auto reads it) ----
