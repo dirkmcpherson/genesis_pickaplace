@@ -118,7 +118,7 @@ def rd(p, s):
     except Exception:
         return 'MISSING'
 fin = os.path.join(sw, 'final', 'sweep.json')
-extra = ' '.join(f"{os.path.basename(d)}_rnd={rd(os.path.join(d,'sweep.json'),'rnd')}" for d in sorted(glob.glob(os.path.join(sw, 'ckpt_*'))))
+extra = ' '.join(f"{os.path.basename(d)}_rnd={rd(os.path.join(d,'sweep.json'),'rnd')}" for d in sorted(glob.glob(os.path.join(sw, 'ckpt_*'))) if os.path.isdir(d))
 print(f"SWEEP-HEADLINE arm=dRLteacher seed={seed} reward=dense no_demos=on final_hold={rd(fin,'hold')} final_rnd={rd(fin,'rnd')} {extra} node={node}")
 PY
 echo "JOB DONE $RUN_NAME $(date -Is)"
