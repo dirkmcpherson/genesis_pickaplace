@@ -21,6 +21,8 @@ The statistic everywhere: LAST checkpoint, fresh process, deterministic actions 
 
 World-model per-seed counts: human [15, 19, 19, 19, 21, 17, 20, 18] vs machine [20, 18, 18, 18, 16, 19, 19, 18] of 30 — a null precise to ≈ 0.08. RLPD and DP per-seed lists are in `CROSS_LEARNER_CONDITIONS_2026-09-03.md` §1–2 and `MORNING_TABLE_2026-09-04.md` §1; the RLPD arm's seed spread is the widest of the three (one dead seed per arm in the all-data variant), so its null is the weakest. Also of record: the world model's in-distribution deficit for human demos (holdv2 p 0.035, all-demo p 0.044) — small, significant, and the only significant source effect in the project; out of distribution it vanishes.
 
+**DP pruned-human "0.80 vs 0.52" resolved (2026-09-07, `DP_PRUNED_GAP_2026-09-07.md`):** the 0.80 is an in-distribution cell (held-out human starts; the pruned-human DP is at 0.913 there now) and 0.52 is the random-start cell. Ten of the 30 random starts are picked 0 of 280 times across every DP seed of both arms because they lie beyond the farthest training can position (x ≥ 0.524 vs ≤ 0.513 in every pruned set); on the other 20 starts DP picks 0.78 (0.78 × 20/30 = 0.52). RLPD reaches 5 and the world model 4 of those ten. Not a regression; a support-extrapolation limit of the imitator. Reporting change to adopt: stratify rnd30 by support (20 in / 10 out) in the cross-learner table.
+
 ### 2.2 Human failures added (dHv2all = 106 tapes vs raw 66; registered prediction: gain)
 
 World model 0.588 vs 0.617 (p 0.579); RLPD 0.554 vs 0.600 (p 0.567). Prediction not met; no gain, no significant loss. Unmatched counts by design.
