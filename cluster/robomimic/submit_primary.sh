@@ -17,7 +17,7 @@ for a in $SOURCES; do for l in $LEARNERS; do
   [ -f "$f" ] || { echo "FATAL: arm $a not converted for $l ($f missing)"; exit 1; }
 done; done
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }
-[ -f $LAB/robomimic_data/g0_report.json ] && python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); print("G0:", r["verdict"], f"{r[\"n_pass\"]}/{r[\"n\"]}"); sys.exit(0 if r["verdict"]=="PASS" else 1)' $LAB/robomimic_data/g0_report.json || { echo "FATAL: G0 not passed/recorded"; exit 1; }
+[ -f $LAB/robomimic_data/g0_report.json ] && python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); print("G0:", r["verdict"], str(r["n_pass"]) + "/" + str(r["n"]), "success-flag agree", r.get("n_success_flag_agree")); sys.exit(0 if r["verdict"]=="PASS" else 1)' $LAB/robomimic_data/g0_report.json || { echo "FATAL: G0 not passed/recorded"; exit 1; }
 n=0; total=0
 for l in $LEARNERS; do for a in $SOURCES; do for s in $SEEDS; do
   echo "ARM=$a SEED=$s sbatch $C/${SCRIPT[$l]}"; n=$((n + 1)); total=$(python3 -c "print($total + ${HOURS[$l]})")
