@@ -272,7 +272,7 @@ class FullTaskEnv(gym.Env):
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
-                 entry_bank=None, action_mode='absolute', delta_cap=0.025,
+                 entry_bank=None, phase_sparse=False, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True):
@@ -334,7 +334,7 @@ class FullTaskEnv(gym.Env):
         # constants). Default False so eval and every other caller are unchanged.
         assert not (shaping and scope != 'place'), 'shaping is a scope=place lever'
         self.shaping = bool(shaping)
-        assert not (pick_shaping and scope not in ('pick', 'reach', 'touchgoal')), 'pick_shaping is a scope=pick/reach/touchgoal lever'
+        assert not (pick_shaping and scope not in ('pick', 'reach', 'touchgoal', 'reach_goal')), 'pick_shaping is a scope=pick/reach/touchgoal/reach_goal lever'
         self.pick_shaping = bool(pick_shaping)
         # gamma MUST match the consuming agent's discount for exact Ng-invariance
         # (RLPD 0.998 default; r2dreamer passes 0.999, dv3 0.997).
@@ -370,12 +370,23 @@ class FullTaskEnv(gym.Env):
         # Explicit per-scope default cap (NOT silently scope-mangled when the caller
         # passes a value): full/pick 900, place 600 (entry->release is much shorter).
         if max_steps is None:
-            max_steps = 600 if scope == 'place' else 900
+            max_steps = 600 if scope in ('place', 'contact', 'carrycontact') else 900
         self.max_steps = int(max_steps)
         self.fixed_uid = fixed_uid
         self.success_uids = sorted(
             u for u, r in self.genv.placements.items() if r.get('label') == 'success')
-        if scope == 'place':
+        assert scope in ('full', 'pick', 'place', 'contact', 'carrycontact', 'reach', 'touchgoal', 'reach_goal'), f'unknown scope {scope!r}'
+        self.phase_sparse = bool(phase_sparse)   # PHASE PLAN: tips terminate only (no penalty) in place/contact
+        # PHASE PLAN: shelf-referenced band follows the WORLD's shelf (sim_variants shelf_dz), not the stale constant.
+        import os as _os, sim_variants as _sv
+        _vn = _os.environ.get('R2D_SIM_VARIANT') or _os.environ.get('GENESIS_SIM_VARIANT') or 'base'
+        _vd = getattr(_sv, 'VARIANTS', None) or getattr(_sv, '_VARIANTS', None) or {}
+        _dz = float((_vd.get(_vn) or {}).get('shelf_dz', 0.0)) if isinstance(_vd, dict) else 0.0
+        self.shelf_top_z = float(BOX_TOP_Z) + _dz
+        if scope in ('place', 'contact', 'carrycontact'):
+            assert _vn != 'base' or _dz == 0.0, 'variant lookup failed'
+            print(f'[phase] variant {_vn}: shelf_top_z {self.shelf_top_z:.3f} (band {self.shelf_top_z+0.01:.3f}..{self.shelf_top_z+0.07:.3f})', flush=True)
+        if scope in ('place', 'contact', 'carrycontact'):
             # entry_bank: path to the bank JSON. Default = the legacy single-
             # entry-per-demo bank (uid-keyed DICT) so existing runs are byte-
             # identical. A dense bank (make_place_entry_bank.py) is a LIST of
@@ -474,8 +485,10 @@ class FullTaskEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         uid = (options or {}).get('uid') or self.fixed_uid
-        if self.scope == 'place':
+        if self.scope in ('place', 'carrycontact'):
             return self._reset_place(uid)
+        if self.scope == 'contact':
+            return self._reset_contact(uid)
         if uid is None:
             uid = int(self.np_random.choice(self.success_uids))
         obs = self.genv.reset(uid=int(uid))
@@ -525,6 +538,59 @@ class FullTaskEnv(gym.Env):
                   f'(can dropped), resampling', flush=True)
         raise RuntimeError(f'scope=place reset: no entry survived restore '
                            f'(tried {tried})')
+
+    def _restore_contact_entry(self, e):
+        """Restore a banked placed_v2-grant entry (can released on the shelf, gripper open); True if the can
+        is still upright and inside the shelf band after the settle."""
+        w = self.genv.w
+        goal_pos = (e['goal_xy'][0], e['goal_xy'][1], w['goal_start_z'])
+        self.genv.reset(can_pos=e['can_pos'], can_quat=e['can_quat'], goal_pos=goal_pos)
+        kin = w['kinova']
+        q = np.array(HARDCODED_START, dtype=np.float64)
+        q[:6] = e['qpos']
+        q[6:] = gripper_targets(float(e['grip_obs']) * 100.0)
+        kin.set_dofs_position(q, w['kdofs'])
+        kin.zero_all_dofs_velocity()
+        w['bottle'].set_pos(e['can_pos'])
+        w['bottle'].set_quat(list(e['can_quat']))
+        try:
+            w['bottle'].zero_all_dofs_velocity()
+        except Exception:
+            pass
+        kin.control_dofs_position(np.asarray(e['qpos'], np.float64), dofs_idx_local=w['kdofs'][:6])
+        kin.control_dofs_position(np.array(gripper_targets(float(e['grip_cmd']) * 100.0)),
+                                  dofs_idx_local=np.array(w['kdofs'][-4:]))
+        for _ in range(self.PLACE_SETTLE):
+            w['scene'].step()
+        bp = np_(w['bottle'].get_pos())
+        return bool(in_shelf_footprint(bp[:2]) and self.shelf_top_z + 0.01 < bp[2] < self.shelf_top_z + 0.07
+                    and tilt_deg(np_(w['bottle'].get_quat())) < self.PLACE_TILT_DEG)
+
+    def _reset_contact(self, uid=None):
+        tried = []
+        pool = self._entries if uid is None else [e for e in self._entries if e['uid'] == int(uid)]
+        assert pool, f'no bank entries for uid {uid}'
+        for _ in range(self.PLACE_MAX_TRIES):
+            e = pool[int(self.np_random.integers(len(pool)))]
+            u = e['uid']
+            self.place_attempts += 1
+            ok = self._restore_contact_entry(e)
+            if ok:
+                self.place_survived += 1
+            if not self._survival_reported and ok:
+                print(f'[contact] entry-restore survival so far: {self.place_survived}/{self.place_attempts}', flush=True)
+                self._survival_reported = True
+            if ok:
+                self._t = 0
+                # the pick and the release already happened in the demo this state came from
+                self.genv._picked = True
+                self._granted = {'picked', 'placed_v2'}
+                self._sync_dj_target()
+                return (self.genv._obs()['state'].astype(np.float32),
+                        {'uid': u, 'entry_frame': int(e['frame'])})
+            tried.append((u, int(e['frame'])))
+            print(f'[contact] entry {u}@{int(e["frame"])} did not survive restore, resampling', flush=True)
+        raise RuntimeError(f'scope=contact reset: no entry survived restore (tried {tried})')
 
     def reset_to(self, ic):
         """Reset to an explicit IC dict (ic_sampling-style) -- random-IC eval."""
@@ -636,6 +702,18 @@ class FullTaskEnv(gym.Env):
             if d < self.REACH_DIST:
                 info['reached'] = True; reward += 1.0
                 return (obs['state'].astype(np.float32), reward, True, False, info)
+        if self.scope == 'reach_goal':
+            # WM fix stage 1b (2026-09-03): sparse +1 when the tool comes within REACH_GOAL_DIST of the GOAL can.
+            # Threshold is REQUIRED from the environment (no silent default); calibrated by the random-policy probe.
+            import os as _os
+            _r = _os.environ.get('REACH_GOAL_DIST')
+            assert _r, "scope=reach_goal needs REACH_GOAL_DIST (metres) exported"
+            ee = np.asarray(self.genv.tool_pos(), dtype=np.float64)
+            gp = np_(self.genv.w['goal'].get_pos())
+            d = float(np.linalg.norm(ee - gp)); info['reach_goal_dist'] = d
+            if d < float(_r):
+                info['reached_goal'] = True; reward += 1.0
+                return (obs['state'].astype(np.float32), reward, True, False, info)
         if self.scope == 'pick':
             # pick_shaping is applied in step(), once per decision -- NOT here.
             # Per-substep application under action_repeat>1 is a bug (see step()).
@@ -663,6 +741,11 @@ class FullTaskEnv(gym.Env):
                 if terminated:
                     truncated = False
                     return (obs['state'].astype(np.float32), reward, True, False, info)
+        if self.scope in ('contact', 'carrycontact'):
+            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history, eef behind the can)
+            if info.get('contact'):
+                self._granted.add('contact')
+                return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
         if self.scope == 'place':
             # PLACED_V2 (release-based, supersedes the mid-lift z-band proxy):
             # grip commanded open + can inside the shelf footprint/z-band +
@@ -681,7 +764,7 @@ class FullTaskEnv(gym.Env):
                 self._phi = phi
             ok = (float(a_phys[6]) < self.PLACE_RELEASE
                   and in_shelf_footprint(bp)
-                  and BOX_TOP_Z + 0.01 < bp[2] < BOX_TOP_Z + 0.07
+                  and self.shelf_top_z + 0.01 < bp[2] < self.shelf_top_z + 0.07
                   and tilt_deg(np_(w['bottle'].get_quat())) < self.PLACE_TILT_DEG)
             self._pv2_run = self._pv2_run + 1 if ok else 0
             info['placed_v2'] = self._pv2_run >= self.PLACE_SUSTAIN
@@ -706,7 +789,7 @@ class FullTaskEnv(gym.Env):
                 and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
             # scope='place' ONLY pays a penalty for the tip (dropped the held
             # can); pick/full keep TIP_PENALTY = 0.0 (termination only).
-            if self.scope == 'place':
+            if self.scope == 'place' and not self.phase_sparse:
                 # v7: a tip ON the shelf is a near-miss from a place ATTEMPT --
                 # cheap (-0.1) so failure during experimentation stays affordable;
                 # a drop elsewhere is a real failure (-1). A flat -1 (v6) taught
@@ -811,6 +894,18 @@ class CartesianFullTaskEnv(gym.Env):
             if info.get(stage) and stage not in self._granted:
                 reward += r
                 self._granted.add(stage)
+        if self.scope == 'reach_goal':
+            # WM fix (EEF arm, 2026-09-03): sparse +1 when the tool reaches the GOAL can.
+            # Threshold REQUIRED from the environment -- no silent default.
+            import os as _os
+            _r = _os.environ.get('REACH_GOAL_DIST')
+            assert _r, "scope=reach_goal needs REACH_GOAL_DIST (metres) exported"
+            ee = np.asarray(self.genv.tool_pos(), dtype=np.float64)
+            gp = np_(self.genv.w['goal'].get_pos())
+            d = float(np.linalg.norm(ee - gp)); info['reach_goal_dist'] = d
+            if d < float(_r):
+                info['reached_goal'] = True; reward += 1.0
+                return (obs['state'].astype(np.float32), reward, True, False, info)
         if self.scope == 'pick':
             terminated = bool(info.get('picked'))
             if terminated:

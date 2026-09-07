@@ -119,8 +119,13 @@ def main():
                          'mirrored by the demo encoder, the in-train eval, and '
                          'wandb_eval --action-mode auto (the silent-default rule).')
     # --- shared-with-SACfD flags (mirror train_sacfd_full) ---
-    ap.add_argument('--scope', choices=['full', 'pick'], default='pick',
-                    help='pick: +1 and terminate on the pick (phase-1 paper core)')
+    ap.add_argument('--scope', choices=['full', 'pick', 'place'], default='pick',
+                    help='pick: +1 and terminate on the pick (phase-1 paper core); place: PHASE_PLAN amendment (h) '
+                         '(2026-09-07) -- reset restores a banked pick-grant entry (--entry-bank), +1 and terminate '
+                         'on placed_v2, tips terminate without penalty (phase_sparse), demos = --demo-format segment')
+    ap.add_argument('--entry-bank', default=None,
+                    help='scope=place: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
+                         'REQUIRED for place (the env default bank is the OLD world)')
     ap.add_argument('--action-mode', choices=['absolute', 'delta_joint'],
                     default='delta_joint',
                     help='delta_joint: env actions are per-step joint-target deltas '
@@ -151,13 +156,16 @@ def main():
                          "definition: full_env.terminal_from_tape. off = the pre-08-23 "
                          "tensors (fail tapes whole with done=False -- the unanchored "
                          "bootstrap chains behind dDP_RLPD 0/6, AUDIT_impl F1).")
-    ap.add_argument('--demo-format', choices=['legacy', 'native'], default='legacy',
+    ap.add_argument('--demo-format', choices=['legacy', 'native', 'segment'], default='legacy',
                     help="legacy (default): stride-1 state/command tapes re-encoded by "
                          "train_sacfd_full's delta encoders. native: contract-v1 tapes "
                          "from baselines/record_demos.py (one row per decision recorded "
                          "through THIS env: actions_delta/rewards/terminated verbatim, no "
                          "re-encoding, no relabel predicate); the tape's action_repeat / "
-                         "delta_cap / delta_leash / delta_ref stamps MUST equal the run's.")
+                         "delta_cap / delta_leash / delta_ref stamps MUST equal the run's. segment: "
+                         "r2dreamer-native PLACE segments (to_dreamer_native.py --phase place --with-state; "
+                         "demos_state/{dH_place,dDP_place_n39}), the same rows the WM trained on, via "
+                         "place_demos.segment_transitions (scope=place only).")
     ap.add_argument('--demo-shaping', choices=['auto', 'on', 'off'], default='auto',
                     help="dense arms: relabel the DEMO half with the SAME potential the "
                          "env pays online (full_env.pick_shaping_phi on the recorded "
@@ -196,12 +204,24 @@ def main():
     assert args.action_repeat >= 1, args.action_repeat
     guard = (args.demo_terminal_guard == 'on')
     native = (args.demo_format == 'native')
+    segment = (args.demo_format == 'segment')
     if native:
         assert args.action_mode == 'delta_joint' and args.delta_ref == 'target', (
             'contract-v1 tapes are recorded through FullTaskEnv(delta_joint, '
             f'delta_ref=target); got action_mode={args.action_mode} delta_ref={args.delta_ref}')
         assert args.pick_hold_reward == 'off', 'no hold-reward relabel for native tapes (not built)'
         assert args.scope == 'pick', 'contract-v1 tapes are pick-scope recordings'
+    if args.scope == 'place':
+        # PHASE_PLAN amendment (h): every place-scope precondition stated, none defaulted
+        assert segment, 'scope=place trains on --demo-format segment (the r2dreamer-native place segments)'
+        assert args.entry_bank and os.path.exists(args.entry_bank), f'scope=place needs --entry-bank (got {args.entry_bank})'
+        assert args.action_mode == 'delta_joint' and args.delta_ref == 'target' and args.action_repeat == 4, (
+            'place protocol: delta_joint / target / action_repeat 4')
+        assert args.pick_shaping == 'off' and args.pick_hold_reward == 'off', 'pick levers are not place levers'
+        assert args.eval_freq == 0, 'in-train VideoEvalCallback evaluates the PICK; place runs are scored post hoc by eval_place.py (pass --eval-freq 0)'
+        assert args.train_max_steps == 600, f'place-scope horizon of record is 600 sim steps (got {args.train_max_steps})'
+    else:
+        assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place levers'
     if args.demo_shaping == 'auto':
         demo_shaping = native and args.pick_shaping == 'on'
     else:
@@ -235,9 +255,12 @@ def main():
             f'is applied to); got action_mode={args.action_mode}')
     from sim_variant_hook import apply_pre, apply_post
     apply_pre(args.sim_variant)
+    # the env reads the world's shelf offset (placed_v2 band) from this variable (private full_env copy of record)
+    os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
+                      entry_bank=args.entry_bank, phase_sparse=(args.scope == 'place'),
                       pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k,
                       pick_shaping=(args.pick_shaping == 'on'),
                       # shaping gamma = the AGENT's discount (Ng invariance needs them
@@ -253,6 +276,13 @@ def main():
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
+    if args.scope == 'place':
+        import sim_variants as _sv
+        from replay_harness import BOX_TOP_Z as _BT
+        _want = float(_BT) + float(_sv.VARIANTS[args.sim_variant].get('shelf_dz', 0.0)) if args.sim_variant != 'base' else float(_BT)
+        assert env.phase_sparse and abs(env.shelf_top_z - _want) < 1e-9, (env.phase_sparse, env.shelf_top_z, _want)
+        print(f'[env] place scope: entry bank {args.entry_bank} ({len(env._entries)} entries), shelf_top_z {env.shelf_top_z:.3f}, '
+              f'phase_sparse (tips terminate, no penalty), +1 on placed_v2', flush=True)
     assert env.pick_shaping_terminal_zero == (args.pick_shaping_terminal_zero == 'on')
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
@@ -304,7 +334,15 @@ def main():
     print(f'[demos] {len(paths)} npz in {args.demo_dir} content_sha256={demo_sha[:16]}... '
           f'format={args.demo_format} terminal_guard={args.demo_terminal_guard} '
           f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
-    if native:
+    if segment:
+        from place_demos import segment_transitions, print_segment_census
+        transitions, census = segment_transitions(
+            str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
+                                                    delta_cap=env.delta_cap, phase='place', terminal_reward=1.0))
+        print_segment_census(census, tag=args.demo_dir)
+        assert census['n_transitions'] > 0, 'empty segment demo set'
+        norm = None
+    elif native:
         transitions, census = native_demo_transitions(
             paths, expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat, delta_cap=env.delta_cap,
                                delta_leash=env.delta_leash, delta_ref=args.delta_ref),
@@ -397,6 +435,10 @@ def main():
                # 2026-08-23 demo-set protections + budget/horizon (PREREG §2, §4)
                'demo_format': args.demo_format,
                'sim_variant': args.sim_variant,
+               # 2026-09-07: cap/leash travel with the artifact (review: eval integrators must not hard-code them)
+               'delta_cap': env.delta_cap, 'delta_leash': env.delta_leash,
+               'entry_bank': (os.path.abspath(args.entry_bank) if args.entry_bank else None),
+               'phase_sparse': bool(getattr(env, 'phase_sparse', False)),
                'demo_terminal_guard': args.demo_terminal_guard,
                'demo_shaping': ('on' if demo_shaping else 'off'),
                'pick_shaping_terminal_zero': args.pick_shaping_terminal_zero,
