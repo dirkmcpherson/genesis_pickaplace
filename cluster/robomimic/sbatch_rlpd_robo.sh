@@ -21,7 +21,7 @@ set -euo pipefail
 LAB=/cluster/tufts/shortlab/jstale02; PY=$LAB/robo_venv/bin/python
 export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace} PYTHONUNBUFFERED=1 MUJOCO_GL=egl OMP_NUM_THREADS=4
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; STEPS=${STEPS:-100000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
-case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
+case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DEMO=$LAB/robomimic_data/arms/$ARM/rlpd/transitions.npz; [ "$ARM" = none ] && DEMO=none
 NAME=rlpd_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/rlpd/$NAME
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic

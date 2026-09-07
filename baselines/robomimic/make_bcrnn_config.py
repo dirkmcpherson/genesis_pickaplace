@@ -24,7 +24,7 @@ from robo_common import DATA_ROOT, STATE_KEYS, HORIZON  # noqa: E402
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arm", required=True, choices=["PH200", "MH200", "MG200s", "MH300", "MGall"])
+    ap.add_argument("--arm", required=True, choices=["PH200", "MH200", "MG200s", "MH300", "MGall", "MG718s"])
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", required=True, help="config json path")
     ap.add_argument("--output-dir", required=True, help="robomimic train.output_dir")

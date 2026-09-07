@@ -156,3 +156,19 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
 ## 2026-09-07 13:30 — RLPD arm of the robomimic matrix READ OUT: the registered falsifier FIRED
 
 `eval_bank50_mode` (LAST checkpoint, deterministic, 50 shared starts, 8 seeds): **MH200 [27, 44, 30, 1, 20, 9, 24, 27] = 182/400 (0.455) vs MG200s [10, 2, 2, 13, 6, 12, 9, 5] = 59/400 (0.147); Δ +0.307, exact two-sided permutation p = 0.008**; sampled actions 0.458 vs 0.168, Δ +0.290, p 0.011. Plan §5 falsifier (a) — an online learner with Δ ≥ 0.15 and p < 0.05 on the source axis — is met for RLPD: on an independent machine generator, RLPD is NOT source-indifferent; it learns far better from mixed-skill human demonstrations than from SAC rollouts. G3 learnability (≥ 0.5 in ≥ 3/8 seeds) passes for MH200 (4/8) and fails for MG200s (0/8). Caveats carried from the plan: rows are unmatched (MH200 ≈ 41k transitions vs MG200s ≈ 16.5k; MG tapes are short), MG starts come from SAC's own reset distribution, and RLPD's 100k-decision budget is short of BC-RNN's 0.93 on MH (per-seed spread 1–44 of 50 includes a dead seed). Follow-ups (registered as an amendment by the robomimic agent before running): RLPD on **MGall** (all 3,900 rollouts incl. failures, 585k rows — the registered secondary) and on **MG718s** (every successful rollout, ≈ 59k rows ≥ MH200's) to separate quantity from source; the registered budget extension (100k → 300k decisions) for the MG arm. r2dreamer and DP arms still running.
+
+## 2026-09-07 — RLPD primary readout trigger + amendment A2 controls
+- 11:00 Coordinator: RLPD arm read out with falsifier (a) firing on the quality axis. Verified from the run dirs
+  (`robomimic_runs/rlpd/rlpd_<ARM>_s<k>/eval_bank50_{mode,sample}/metrics.json`, LAST): MH200 mode [27,44,30,1,20,9,24,27]
+  = 0.455 / sample [29,41,31,2,22,7,28,23]; MG200s mode [10,2,2,13,6,12,9,5] = 0.147 / sample [7,1,4,16,12,11,9,7].
+  **PH200 RLPD (3346687–94) has NO result: the 8 runs were CANCELLED (train.log only, no checkpoint)** — the registered
+  PRIMARY contrast PH200 v MG200s is therefore not yet measured for RLPD; flagged to the coordinator.
+- Amendment A2 registered in the plan (commit 10e5662) BEFORE building or submitting anything: C1 MGall ×8, C2 MG718s
+  (new arm, every successful MG rollout) ×8, C3 MG200s @ 300k decisions ×8; predictions P1–P3 + decision rules there.
+- Transition counts per arm (`robomimic_data/arms/arm_counts.json`; rlpd transitions = rows after the cut; rewarded =
+  terminal +1 rows; density = rewarded/transitions): PH200 22,400 / 200 / 0.89 %; MH200 41,134 / 200 / 0.49 %; MG200s
+  16,501 / 200 / 1.21 %; MH300 61,548 / 300 / 0.49 %; MGall 536,522 / 718 / 0.13 %; PH200pb 31,242 / 200 / 0.64 %.
+  **MG200s demo rows by SAC checkpoint block (300-rollout blocks in index order, blocks 0–12):** tapes
+  [0,0,0,0,0,0,2,6,10,29,42,55,56], row fractions [0,0,0,0,0,0,0.011,0.037,0.064,0.144,0.227,0.262,0.256] — 89 % of the
+  MG200s demo rows come from the last four blocks (checkpoints 10–13 of 13), 0 % from the first six. MGall rows by block:
+  0.084 ×6 (all-failure 150-row blocks), then 0.084, 0.082, 0.081, 0.068, 0.069, 0.057, 0.057 (successes are shorter).

@@ -26,7 +26,7 @@ import numpy as np
 sys.path.insert(0, str(pl.Path(__file__).resolve().parent))
 from robo_common import HDF5, DATA_ROOT, sha256_file  # noqa: E402
 
-ARMS = ("PH200", "MH200", "MG200s", "MH300", "MGall", "PH200pb")
+ARMS = ("PH200", "MH200", "MG200s", "MH300", "MGall", "PH200pb", "MG718s")
 
 
 def demo_stats(f, names):
@@ -44,6 +44,7 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=str(DATA_ROOT / "arms"))
     ap.add_argument("--no-masked-copies", action="store_true")
+    ap.add_argument("--only", default=None, help="write ONLY this arm's manifest/mask (others left untouched); e.g. MG718s (amendment A2)")
     args = ap.parse_args()
     import h5py
     out = pl.Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -96,7 +97,13 @@ def main():
         arms["MG200s"] = dict(src="mg", demos=pick, stats=[stmap[d] for d in pick], block300_histogram=blocks,
                               note="200 of the 718 successful rollouts, uniform without replacement; no per-checkpoint key in the file")
         arms["MGall"] = dict(src="mg", demos=mg, stats=st)
+        # amendment A2 (2026-09-07): every successful MG rollout (718; MG200s is a subset) -- the RLPD quantity control
+        blocks718 = np.bincount([(int(d.split("_")[1]) - 1) // 300 for d in succ], minlength=13).tolist()
+        arms["MG718s"] = dict(src="mg", demos=succ, stats=[stmap[d] for d in succ], block300_histogram=blocks718,
+                              note="amendment A2 (2026-09-07): every successful MG rollout; MG200s is a subset; quantity control for RLPD")
     # --- write manifests ---
+    if args.only:
+        arms = {args.only: arms[args.only]}
     for arm, a in arms.items():
         d = out / arm; d.mkdir(exist_ok=True)
         rows = int(sum(s["rows_kept"] for s in a["stats"])) + (int(sum(s["rows_kept"] for s in a["extra"]["stats"])) if "extra" in a else 0)
@@ -130,6 +137,8 @@ def main():
                         del f[key]
                     f.create_dataset(key, data=np.array(a["demos"], dtype="S"))
             print(f"[arms] masked copy {dst} sha256 {sha256_file(dst)[:16]}... masks: {[k for k, v in arms.items() if v['src'] == src and 'extra' not in v]}")
+    if args.only and (out / "arms_index.json").exists():
+        idx = json.loads((out / "arms_index.json").read_text()); idx["arms"] = sorted(set(idx["arms"]) | set(arms)); (out / "arms_index.json").write_text(json.dumps(idx, indent=1)); print(f"[arms] arms_index.json += {list(arms)}"); return
     (out / "arms_index.json").write_text(json.dumps(dict(seed=args.seed, arms=list(arms), source_sha256=shas,
                                                           masked=({s: str(HDF5[s].with_name(HDF5[s].stem + '_masked.hdf5')) for s in ('ph', 'mh', 'mg')} if not args.no_masked_copies else None)), indent=1))
     print(f"[arms] wrote {out}/arms_index.json")
