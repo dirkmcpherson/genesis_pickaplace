@@ -289,3 +289,19 @@ Source: `ADVERSARIAL_REVIEW_eval_env_2026-09-07.md` (87a6dba) S1-1, S1-2, S1-3, 
 - P3 contact-after-release (fingers restored at the intended released command instead of fully open): the (f) prediction |Δ(human n11 − machine n11)| < 0.10 on polE_contact MODE; absolute rates may move either way (no directional prediction); machine n25 descriptive.
 - P4 end-to-end: (d) P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2) is re-derived on picked / placed_v2 / contact / nested_honest, and (d) P3 (nested < 0.2 for both arms) on nested_honest, with the proxy column beside. No directional prediction for nested_honest vs nested_proxy (a held can touching the goal counts honest but not proxy; a released can knocked away counts proxy but not honest). Reproduction guard: per-episode `outcome`, `steps`, `stages.contact` and `stages.nested` of every `_v2` end-to-end cell MUST equal the cell of record (no bank; identical physics up to the last decision) — any mismatch is a finding. Bank cells restore different states by construction (pin / grip), so no per-episode identity is asserted for them.
 - Verdict per comparison in `paper/EVAL_FIXES_2026-09-07.md` (cell of record vs re-scored: per-seed lists, arm totals, Δ, exact p, both modes): "the null survives" iff the primary MODE cell meets the registered |Δ| < 0.10; `PHASE_RESULTS_2026-09-05.md` gets a dated §9 pointing to it (earlier sections untouched).
+
+### Amendment (l) — SLIDE/END-TO-END success is contact-after-release; `nested` is folded into it (user, 2026-09-07 17:05; registered before any job)
+
+User: "train for contact (with the can placed on the shelf and not held by the gripper), rather than nested. Treat it as one category."
+
+**Predicate `slide_success`** (new; logged beside the existing keys, which are not changed): sticky-true from the first step at which ALL of
+1. `picked` was granted earlier in the episode (unchanged precondition),
+2. the solver reports contact between the pick-can and the goal can,
+3. the gripper is commanded open (`grip_cmd < 0.3`, the threshold the existing nested proxy uses),
+4. the pick-can centre lies in the shelf footprint and its tilt is < 20° (the `placed_v2` geometry, i.e. it is standing on the shelf, not held or falling),
+
+hold simultaneously, sustained for 3 decisions. Rationale: "on the shelf and released, touching the goal" is the task as demonstrated; it makes release load-bearing, which the old `contact` did not require and which the carrycontact re-score showed ~69 % of contact credit was exploiting (the can still in the grasp). It also removes the `nested_proxy`/`nested_honest` split (amendment (j) S1-1) from the headline: `nested` becomes a sub-case reported for continuity, not the target.
+
+**Scope of the change.** (a) End-to-end: `slide_success` is the success statistic of record; `nested_honest`, `nested_proxy`, `contact` and `contact_push` stay as reported columns. (b) Slide phase (`scope='contact'`, entry = a released placed-on-shelf state): success becomes `slide_success` rather than bare `contact`; the entry definition is unchanged. (c) Carrycontact keeps bare `contact` and is now explicitly the "contact by any route incl. still held" control against which `slide_success` is read. (d) Rewards are NOT changed by this amendment: the world-model end-to-end runs of record keep the staged reward (user: do not re-run the world model yet), and any new RLPD end-to-end arm uses the same staged reward so the two are comparable.
+
+**Re-scoring, not re-running:** every existing world-model contact / carrycontact / end-to-end checkpoint is re-scored on CPU with `slide_success` added; no training is repeated. Prediction: on the end-to-end rnd30 cells `slide_success` is at or below `nested_honest` for both arms, and the human-vs-machine difference stays within 0.10; on the slide phase the human-vs-machine difference likewise stays within 0.10 but both arms fall well below their bare-`contact` rates.
