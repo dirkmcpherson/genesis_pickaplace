@@ -139,3 +139,7 @@ exact permutation on per-seed counts, 8 seeds, launchers unchanged) applies verb
 - **Disclosures:** MG718s and MGall share every MG200s tape (nested arms, not independent samples); the SAC checkpoint
   block of each tape is inferred from index order (no per-checkpoint key in the file); C3 is a longer budget on the SAME
   demos; all three are RLPD-only (the r2d/dp arms of the matrix are still running and are not extended here).
+
+### Amendment A3 — primary contrast changed to MH200 v MG200s (user, 2026-09-07 10:45; recorded 13:45)
+
+User: "drop single-human for now since our own dataset is just mixed-human." The PH200 arms were removed from the submitted matrix (the 72-job mis-fire at 10:26 was cancelled before any job started; the 48-run matrix submitted at 10:50 is MH200 + MG200s × rlpd/r2d/dp × 8 seeds). The primary source contrast is therefore **MH200 v MG200s** for every learner; PH200 v MG200s and PH200 v MH200 remain registered secondaries to be run only on a later go. The BC-RNN control keeps all three (PH 0.92 / MH 0.927 / MG 0.393). Falsifier (a) is read on MH200 v MG200s.
