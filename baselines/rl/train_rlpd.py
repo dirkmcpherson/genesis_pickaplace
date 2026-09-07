@@ -223,7 +223,7 @@ def main():
         assert native, ('--demo-shaping on needs --demo-format native (legacy tapes carry no '
                         'eef_pos; a half-shaped buffer is the F10 asymmetry, refused)')
         assert args.pick_shaping == 'on', '--demo-shaping on without --pick-shaping on makes no sense'
-    elif native and args.pick_shaping == 'on':
+    elif native and args.pick_shaping == 'on' and not args.no_demos:
         print('[demos] WARNING: --pick-shaping on with --demo-shaping off: the demo half '
               'stays sparse while online transitions are shaped (F10 asymmetry).', flush=True)
     hold_reward = args.pick_hold_reward == 'on'

@@ -2,7 +2,7 @@
 # Machine-first arm, teacher T1 = REWARD-ONLY r2dreamer (no demo prefill) + pick-scope potential shaping.
 # paper/MACHINE_FIRST_PLAN_2026-09-07.md §1 T1 + amendment (a). Copy of wmfix_s2.sbatch (the WM launcher of
 # record) with the demo-dir gate REMOVED and env.demo_dir left unset (null in genesis_pick_state.yaml ->
-# demo_prefill is a no-op); the caller passes env.pick_shaping=true env.return_clamp=1.6714 and the
+# demo_prefill is a no-op); the caller passes +env.pick_shaping=true env.return_clamp=1.6714 and the
 # recipe overrides. Run dir $W/runs/mf_r2d_t1_s<seed>; in-job fresh-process evals (EVAL_SETS default hold rnd).
 # usage: sbatch -p gpu mf_teacher.sbatch <seed> <steps> env.pick_shaping=true env.return_clamp=1.6714 \
 #          env.actor_dist=bounded_normal env.act_entropy=3e-5
@@ -35,7 +35,7 @@ echo "# $(date -Is) host=$(hostname) gpu=$(nvidia-smi --query-gpu=name --format=
 grep -q 'state_obs' envs/genesis.py demo_prefill.py configs/env/genesis_pick_state.yaml || { echo "FATAL: tree lacks the state patches"; exit 2; }
 # NO demo gate: reward-only teacher, env.demo_dir stays null (no prefill)
 case " $* " in *' env.demo_dir='*) echo 'FATAL: env.demo_dir must stay unset for the reward-only teacher'; exit 2;; esac
-case " $* " in *' env.pick_shaping=true '*) ;; *) echo 'FATAL: pass env.pick_shaping=true (amendment (a))'; exit 2;; esac
+case " $* " in *' +env.pick_shaping=true '*) ;; *) echo 'FATAL: pass +env.pick_shaping=true (amendment (a); the + adds the key to the struct config)'; exit 2;; esac
 if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$LOGDIR" ]; then echo "# requeued (restart ${SLURM_RESTART_COUNT}): clearing the partial logdir and starting clean"; rm -rf "$LOGDIR"; fi
 mkdir -p "$LOGDIR"
 # RESUME_FROM=<latest.pt> (optional): warm restart from that checkpoint (weights+optims; buffer restarts at prefill,
