@@ -211,3 +211,14 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   MG tapes' large, saturated motions are not tolerant to that discrepancy when replayed open-loop (0/6), human tapes are
   (PH 10/10, MH ~95 %). The consequence for A4 is unchanged (MG pair unbuildable by open-loop replay); the confound
   statement for the MG readouts should say "not open-loop reproducible", nothing stronger.
+- **13:40 (09-07) A4 yields (measured BEFORE any training; `logs/build_A4_*.log`, `logs/ladder_A4_MH.log`):**
+  - MG pair (registered target |Δa| 0.043 = MH200's; EMA β = 0.8597 by bisection, gripper binarised at 0; modified arm
+    |a| 0.48, |Δa| 0.043): **R0 control 114/200 re-execute successfully (57 %) — so the 0/6 above was the first six tapes,
+    not the arm; R1 treatment 0/200; BOTH 0/200.** R1's yield < 100 ⇒ the registered R1m (per-tape magnitude restored
+    after the EMA) is being built now; a β ladder (40 tapes, β ∈ {0.3, 0.5, 0.7, 0.86}) runs alongside as a diagnostic.
+  - MH pair (registered target |Δa| 0.274 = MG200s's; uniform noise, ε by bisection): control 130/141 at the last
+    checkpoint (~92 %), treatment 4/141 (~3 %) — the registered roughness is not open-loop executable by human tapes.
+    **ε yield-ladder (40 tapes, control 37/40):** ε 0.05 → |Δa| 0.061, both 33/40; ε 0.10 → 0.087, 29/40; ε 0.15 →
+    0.115, 25/40; ε 0.20 → 0.144, 19/40; ε 0.30 → 0.205, 4/40. The largest roughness that keeps ≥ 100 paired tapes of 200
+    is ε = 0.15 (|Δa| ≈ 0.115 = 2.7× MH's, 42 % of MG's; expected ~125 paired tapes); ε = 0.20 (|Δa| 0.144, 53 % of
+    MG's) is borderline (~95 expected). Addendum to A4 to be registered with the chosen ε before any R2/R3 training.

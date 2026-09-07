@@ -23,7 +23,7 @@ LAB=/cluster/tufts/shortlab/jstale02; R2D=$LAB/robomimic_r2d; PY=$LAB/r2d_venv_r
 export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace} PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 export TORCHINDUCTOR_CACHE_DIR=$LAB/robomimic_runs/inductor_cache/${SLURM_JOB_ID:-local} PYTHONPATH=$R2D   # PYTHONPATH: r2d_venv carries an editable r2dreamer install pointing at the ORIGINAL tree; the copy must win
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; ONLINE=${ONLINE:-500000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
-case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|MG200s_re|MG200s_sm|MG200s_smm|MH200_re|MH200_rough|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
+case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|MG200s_re|MG200s_sm|MG200s_smm|MH200_re|MH200_rough|MH200_re15|MH200_rough15|MH200_re20|MH200_rough20|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DEMO=$LAB/robomimic_data/arms/$ARM/r2d
 NAME=r2d_${ARM}${TAG:+_$TAG}_s${SEED}; LOGDIR=$LAB/robomimic_runs/r2d/$NAME
 if [ "$ARM" = none ]; then ROWS=0; DEMO_OVR=(); else
