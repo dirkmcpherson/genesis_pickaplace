@@ -25,7 +25,11 @@ step robomimic_deps2 "$PIP" install transformers imageio matplotlib || exit 1
 # robomimic also imports torchvision (models/obs_core.py). A plain `pip install torchvision` re-resolves torch from PyPI
 # INTO the overlay (seen 23:07: a 555 MB torch wheel shadowing r2d_venv's 2.8.0+cu126) -- so: the cu126 build that pairs
 # with torch 2.8.0, --no-deps, and any shadow torch removed first.
-fix_torch_shadow() { "$PIP" uninstall -y torch 2>/dev/null | grep -i "successfully" || true; rm -rf "$V"/lib/python3.11/site-packages/torch "$V"/lib/python3.11/site-packages/torch-*.dist-info "$V"/lib/python3.11/site-packages/torchvision "$V"/lib/python3.11/site-packages/torchvision-*.dist-info; return 0; }
+# NEVER `pip uninstall` here: with --system-site-packages pip can reach into r2d_venv. Delete overlay dirs only.
+# The aborted `pip install torchvision` (23:07) left torch's WHOLE dependency set in the overlay -- torch, functorch,
+# triton 3.8 (base: 3.4), nvidia-*/cuda-* cu13 libs, setuptools 79 (base pin 77.0.3): triton shadowed torch 2.8's
+# inductor (`triton_key` ImportError, r2d smoke 3337813). All of them go.
+fix_torch_shadow() { ( cd "$V/lib/python3.11/site-packages" && rm -rf torch torch-*.dist-info torchvision torchvision-*.dist-info functorch triton triton-*.dist-info nvidia nvidia_*.dist-info cuda cuda_*.dist-info setuptools setuptools-*.dist-info pkg_resources _distutils_hack distutils-precedence.pth ); return 0; }
 step torchvision_clean fix_torch_shadow || exit 1
 step torchvision "$PIP" install --no-deps "torchvision==0.23.0" --index-url https://download.pytorch.org/whl/cu126 || exit 1
 robomimic_import_loop() {
@@ -50,6 +54,9 @@ print('torch from', torch.__file__); print('numpy from', numpy.__file__)
 assert robosuite.__version__ == '1.5.1'
 assert torch.__version__.startswith('2.8.0'), torch.__version__   # the base r2d_venv build, not a PyPI re-resolve
 import robomimic.utils.env_utils, robomimic.envs.env_robosuite
+import triton, setuptools; assert triton.__version__.startswith('3.4'), triton.__version__   # the base's triton (torch 2.8 inductor)
+import torch._inductor.codecache; from triton.compiler.compiler import triton_key
+print('inductor+triton', triton.__version__, 'setuptools', setuptools.__version__)
 print('BUILD-OK')
 PY
 echo "# build_r2d_venv_robo end $(date -Is)"

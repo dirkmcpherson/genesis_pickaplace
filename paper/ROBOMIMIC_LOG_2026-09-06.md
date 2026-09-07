@@ -85,3 +85,34 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   smokes 2k steps on PH200 (10 bank episodes each): RLPD **3337812**, r2dreamer **3337813** (env.steps 24,600 = 22,600
   prefill + 2,000 online), DP **3337814**; BC-RNN control **3337815** = array 0-8 (%1 while the smokes run; ARM =
   (PH200 MH200 MG200s)[id/3], SEED = id%3; 2000 epochs × 100 steps, LAST checkpoint on the 50-state bank). ≤ 4 GPU jobs in flight.
+- 00:20 (09-07) BC-RNN array 3337815 tasks 0-4 FAILED at import (25 s each): `transformers<5` had pulled huggingface_hub
+  back to 0.36.2 and diffusers 0.40.0 (imported by `robomimic.algo`) needs `get_cached_repo_tree` (hf_hub ≥ 1.0). Fix:
+  `diffusers==0.35.2` in robo_venv (the genesis env's pin; verified `robomimic.algo` + lerobot DiffusionPolicy +
+  LeRobotDataset import together; recipe updated with the pin + the wider verify). Tasks 5-8 cancelled; array resubmitted.
+  The DP smoke (lerobot's own diffusers use) was unaffected and kept training.
+- 00:35 (09-07) SMOKE ROUND 1 (all three FAILED, each at a different, now-fixed point; nothing physics-related):
+  - RLPD 3337812: training end-to-end OK (2,000 decisions in 0.02 h on an L40 incl. the 22,400-row demo half; 5 archived
+    checkpoints + rlpd_final.zip + sidecars); the mode eval RAN (10 bank episodes in 44.8 s → 0/10 at 2k steps, as expected)
+    but the launcher died on its own `grep "^\[eval\]"` (the evaluator prints `[eval rlpd mode]`) under `pipefail`. Fix:
+    `^\[eval` + `|| true` in both online launchers. Resubmitted as 3337881.
+  - r2dreamer 3337813: prefill OK (200 episodes, 22,600 rows → 22,914 transitions incl. stream padding; step accounting
+    22,914 + 1,686 online), then `ImportError: triton_key` in torch.compile — the aborted `pip install torchvision` (23:07)
+    had left torch's dependency set in the overlay (triton 3.8 vs the base's 3.4, functorch, nvidia-*/cuda-* cu13,
+    setuptools 79 vs the pinned 77.0.3). Removed from the overlay (dirs only; never `pip uninstall` under
+    --system-site-packages), recipe's cleanup widened + asserts triton 3.4/inductor import. Resubmitted as 3337882.
+  - DP 3337814: lerobot-train OK (2,000 steps @ 0.058 s/step on an L40, 5 checkpoints + last, dataset 22,400 frames /
+    200 episodes, 249M params) but the evaluator's `DiffusionPolicy.from_pretrained` failed in draccus 0.11.6
+    (ParsingError: no top-level "type" in config.json). Pinned draccus==0.10.0 (the genesis env's version, the one every
+    Genesis DP checkpoint was loaded with); load + one action verified on the smoke checkpoint. DP smoke resubmitted.
+  - BC-RNN control array 3337852 (after the diffusers pin): task 0 trains at ~0.5 s/epoch (2000 epochs ≈ 17 min);
+    throttle 4 → 2 while the smokes rerun (≤ 4 GPU jobs in flight).
+- 00:45 (09-07) **Data prep chain COMPLETE** (`prep.log`, 23:37→23:45): conversions (rows after the cut | rlpd transitions |
+  r2d rows incl. the final-obs row per tape | lerobot frames): PH200 22,400 | 22,400 | 22,600 | 22,400; MH200 41,134 |
+  41,134 | 41,334 | 41,134; MG200s 16,501 | 16,501 | 16,701 | 16,501; MH300 61,548 | 61,548 | 61,848 | 61,548; MGall 536,522 |
+  536,522 | 540,422 | — ; PH200pb 31,242 | 31,242 | 31,542 | —. Every arm's manifest carries the source sha256, tape list
+  and cut rule; `rlpd/manifest.json` (+ sha of transitions.npz), `r2d/repeat.json` (action_repeat 1, terminal_reward 1,
+  state_dim 23, image 16x16x3), `lerobot/robomimic_source.json` (fps 20, proprio 9). **G2a random-policy control on the
+  bank: 0/50** (registered ≤ 2/50 — PASS; `robomimic_data/eval_random_bank50/metrics.json`).
+- DP checkpoint "type" root cause confirmed: Genesis DP checkpoints on the cluster (draccus 0.10.0) carry
+  `"type": "diffusion"` in config.json; the smoke's (saved under draccus 0.11.6) does not, and `PreTrainedConfig.from_pretrained`
+  parses config.json against the abstract class → needs the key. Pin = save-time fix; the smoke retrains as 3337917.

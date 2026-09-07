@@ -35,7 +35,7 @@ nvidia-smi --query-gpu=name --format=csv,noheader | head -1
 $PY $B/train_rlpd_robosuite.py --demo "$DEMO" --arm "$ARM" --steps "$STEPS" --seed "$SEED" --out "$OUT" --device cuda 2>&1 | tee $OUT/train.log | grep --line-buffered -E "^\[|Traceback|Error|Q-WATCHDOG" | cut -c1-220
 [ -f $OUT/rlpd_final.zip ] || { echo "FATAL: no rlpd_final.zip"; exit 1; }
 for MODE in mode sample; do
-  CUDA_VISIBLE_DEVICES="" $PY $B/eval_rlpd_robosuite.py --checkpoint $OUT/rlpd_final.zip --mode $MODE --episodes $EVAL_EPISODES --out $OUT/eval_bank50_$MODE 2>&1 | grep -E "^\[eval\]|Traceback|Error" | tail -3
+  CUDA_VISIBLE_DEVICES="" $PY $B/eval_rlpd_robosuite.py --checkpoint $OUT/rlpd_final.zip --mode $MODE --episodes $EVAL_EPISODES --out $OUT/eval_bank50_$MODE 2>&1 | { grep -E "^\[eval|Traceback|Error|FATAL" || true; } | tail -3
 done
 $PY - "$OUT" <<'PY'
 import json, sys, os

@@ -41,6 +41,12 @@ step robomimic_deps2 "$PIP" install transformers || exit 1
 # transformers 5.x makes PretrainedConfig a dataclass, which breaks lerobot 0.4.5's groot config at import
 # (`non-default argument backbone_cfg follows default argument`, seen 23:10); 4.57.x imports cleanly for both.
 step transformers_lt5 "$PIP" install "transformers<5" || exit 1
+# transformers<5 pulls huggingface_hub back to 0.36.x; diffusers 0.40 then fails at import (`get_cached_repo_tree`,
+# hf_hub >= 1.0) inside robomimic.algo (BC-RNN control job 3337815_0, 2026-09-07 00:15). 0.35.2 = the genesis env's pin.
+step diffusers_pin "$PIP" install "diffusers==0.35.2" || exit 1
+# draccus 0.11.x cannot parse a saved lerobot config.json without a top-level "type" (PreTrainedConfig.from_pretrained ->
+# ParsingError; DP smoke 3337814 eval, 2026-09-07). 0.10.0 = the genesis env's version every Genesis DP result used.
+step draccus_pin "$PIP" install "draccus==0.10.0" || exit 1
 robomimic_import_loop() {
   for i in 1 2 3 4 5 6; do
     MISSING=$("$V/bin/python" -c 'import robomimic.utils.file_utils, robomimic.envs.env_robosuite, robomimic.algo' 2>&1 | grep -oE "No module named '[^']+'" | grep -oE "'[^']+'" | tr -d "'" | cut -d. -f1)
@@ -82,7 +88,9 @@ import lerobot
 from lerobot.policies.diffusion.configuration_diffusion import DiffusionConfig
 print('lerobot', lerobot.__version__, 'DiffusionConfig ok')
 import robomimic.utils.env_utils, robomimic.utils.file_utils, robomimic.envs.env_robosuite, robomimic.algo
-print('robomimic env_utils/file_utils/env_robosuite/algo import ok')
+from lerobot.policies.diffusion.modeling_diffusion import DiffusionPolicy
+from lerobot.datasets.lerobot_dataset import LeRobotDataset
+print('robomimic env_utils/file_utils/env_robosuite/algo + lerobot DiffusionPolicy/LeRobotDataset import ok')
 print('BUILD-OK')
 PY
 echo "# build_robo_venv end $(date -Is)"
