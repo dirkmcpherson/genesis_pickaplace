@@ -257,8 +257,8 @@ def build_reel(root, name, cell, info, h264=True):
     Wd += Wd % 2; H += H % 2
     tmp = f"{root}/{info['reel']}.mp4v.mp4"; out = f"{root}/{info['reel']}"
     vw = cv2.VideoWriter(tmp, cv2.VideoWriter_fourcc(*"mp4v"), OUT_FPS, (Wd, H))
-    _runs = " ".join(str(v) for v in info.values() if isinstance(v, str)) + " " + name
-    learner = ("r2dreamer world model" if ("_r2d_" in _runs or "r2d" in _runs) else "RLPD" if "rlpd" in _runs.lower() else "Diffusion Policy" if "_dp_" in _runs.lower() else "dv3" if "dv3" in _runs.lower() else "see index")
+    _tpl = " ".join(str(x) for row in COMPARISONS if row[0] == name for x in row[1:3])   # the H/M run-name templates of this comparison
+    learner = ("r2dreamer world model" if "r2d" in _tpl else "RLPD" if "rlpd" in _tpl.lower() else "Diffusion Policy" if "_dp_" in _tpl.lower() else "dv3" if "dv3" in _tpl.lower() else "see index")
     title = f"{name} | LEARNER: {learner} | {cell} ({info['kind']}) | H s{info['seedH']} (row 1) vs M s{info['seedM']} (row 2) | same start per column"
     for t in range(T):
         canvas = np.zeros((H, Wd, 3), np.uint8)
