@@ -211,6 +211,7 @@ def main():
         assert args.demo_shaping in ('auto', 'off'), '--no-demos has no demo half to shape'
         demo_shaping = False
         args.demo_batch = 0
+        args.demo_dir = 'none'   # the [cfg] line and the sidecar both say so
         print('[demos] --no-demos: NO demonstration buffer (demo_batch=0, every batch online); '
               'plain SAC + RLPD critics/UTD; reward-only teacher (MACHINE_FIRST_PLAN amendment (a))',
               flush=True)
