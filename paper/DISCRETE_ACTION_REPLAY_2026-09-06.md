@@ -42,10 +42,88 @@ Disclosure: the pipeline smoke ran raw and tern on ONE uid (232) before this was
 
 **Decision rules.** P1 met → the ternary code is faithful enough to define a discrete-action arm; vocabulary = the 16 words that carry 99.1 % (+ the 3-valued gripper) — report whether tern_rawgrip and raw_terngrip attribute any loss to the arm or the gripper half. P1 failed but P2 met → the analog easing matters physically; the five-level code is the candidate (report its used vocabulary). Both failed → snapping is not faithful on this path; report whether the losses are timing (first-stage frame indices shift) or spatial (settled can position) before proposing anything. P4 vs P1: if held loses more than tern, the jitter is load-bearing (do not de-jitter the tapes); if held loses less, de-jittering is free.
 
-## 3. Results
+## 3. Results (2026-09-07 00:29; 48 jobs, 8 × 1-thread processes, all rc=0; numbers from `table.md`)
 
-*(to be filled from `table.md` after the runs — numbers only from tool output)*
+Funnel over the 74 success-labelled uids (counts; `placed` = honest shifted band; `nested` = eval rule of record after 100 settle steps; `tipped` = settled tilt > 60°; `tilt>60 any` = any frame; arm L1 = mean per-axis snapping error as a fraction of the cap; words/uid = median distinct arm words per tape):
 
-## 4. Per-uid flips
+| code | n | picked | placed | set-down | contact | nested | tipped | tilt>60 any | arm L1 | words/uid |
+|---|---|---|---|---|---|---|---|---|---|---|
+| raw | 74 | 17 | 12 | 4 | 2 | 1 | 21 | 23 | 0.000 | nan |
+| tern | 74 | 23 | 17 | 6 | 6 | 2 | 24 | 29 | 0.014 | 14 |
+| five | 74 | 19 | 14 | 5 | 3 | 1 | 23 | 24 | 0.008 | 33 |
+| held | 74 | 24 | 17 | 6 | 6 | 1 | 26 | 28 | 0.020 | 13 |
+| tern_rawgrip | 74 | 23 | 17 | 6 | 4 | 1 | 22 | 26 | 0.014 | 14 |
+| raw_terngrip | 74 | 19 | 13 | 4 | 3 | 1 | 20 | 22 | 0.000 | nan |
 
-## 5. Recommendation
+**Registered predictions — all MET, with the power caveat FIRED.** "Cost" = raw − code:
+
+| prediction | picked | contact | verdict |
+|---|---|---|---|
+| P1 tern ≤ 3 / ≤ 3 | −6 (17→23) | −4 (2→6) | MET (a gain) |
+| P2 five ≤ 1 / ≤ 1 | −2 (17→19) | −1 (2→3) | MET (a gain) |
+| P3 raw_terngrip ≤ 1 / ≤ 1 | −2 (17→19) | −1 (2→3) | MET (a gain) |
+| P4 held ≤ 3 / ≤ 3 | −7 (17→24) | −4 (2→6) | MET (a gain) |
+| P5 tern per-uid contact flips ≤ 10; nested cost ≤ 3; tipped within ±5 | flips 6 (1 lost, 5 gained); nested +1 (1→2); tipped +3 (21→24) | | MET |
+| power caveat: raw picks < 50 | raw picked **17/74** | | FIRED |
+
+**Reading.** (1) No code loses net stages on this path: every snapped code matches or exceeds raw at every rung (tern: picked +6, placed +5, set-down +2, contact +4, nested +1; tipped +3, inside the ±5 noise band). Per-uid the flips are two-way (tern: 3 picks lost / 9 gained; 1 contact lost / 5 gained), the first-pick frame among same-stage uids moves by a median −2 frames (IQR −3..0; bang-bang pushes travel slightly faster than eased ones), and the settled can xy among same-stage uids moves by a median 3.1 cm, p90 32 cm — the post-release phase is chaotic, as in the w3 census noise floor (CONFOUNDS row 47). (2) Five-level is outcome-closest to raw (10/74 uids change stage, first-pick shift median 0, settled-position shift median 1.0 cm, p90 15 cm): it is nearly a bit-faithful copy of raw, and buys nothing over ternary. (3) The gripper ternary ramp is lossless in practice: raw_terngrip vs raw flips 2/74 uids (both up), first-pick shift 0, settled shift median 0.3 cm; the ramp tracks the recorded position within 2.2 units median / 4.1 max. tern_rawgrip vs tern isolates the arm code: same picked/placed (23/17), contact 4 vs 6 — the gripper half adds nothing systematic. (4) Held-word (de-jittered) is not worse than ternary (24/17/6/1 vs 23/17/6/2): the step-to-step jitter is not load-bearing; de-jittering is free (but non-causal as implemented).
+
+**The registered power caveat fired, and its cause is diagnosed (offline, no sim).** The raw commanded path reproduces picked 17 / placed 12 / contact 2 / nested 1 in w3 against the joint-target path's 69 / 66 / 26 / 16 on the same 74 uids (recorder-path census, context only). Integrating the recorded twist at the tape's own dt and comparing with the bag's `tool_pose`: by the frame of the first gripper close the integrated command has drifted from the real tool position by a **median 4.2 cm (p25 2.0, p75 11.2, p90 23.8 cm)**; at the tape end median 12.9 cm. Raw-picked uids have median 2.6 cm drift at close (p90 5.3), the 57 non-picked 6.2 cm (p90 27). Only 19/74 tapes are within 2 cm at close (32 within 3 cm). I.e. the real arm did **not** realize the commanded twist 1:1 (the plugin's tracking, workspace clamp and command timing are not in the tape), so open-loop integration of the joystick command misses the can in most demos regardless of snapping. The 07-24 "uid 232 picks+contacts" validation was one favourable uid in the base world. This is a property of the commanded path, not of the codes — and it means the raw joystick twist is a poor *action label* for the demonstrations in absolute terms even before discretisation. Disclosed post-hoc context (not registered): a raw-code re-run in the `base` world on two shards (`ctx_base/`, see the log) — filled below if it landed before commit.
+
+Deviations / disclosures: the harness has no gripper bit, the script builds the ternary ramp (§1); held-word uses a ±2-frame window (non-causal); the env's own `placed` band is unshifted and never fires in shelf6 (`placed_env` 0 everywhere; the honest shifted band is reported); a transient pytest from another project (`fightspoon/wargame`) ran on the box for ~1 min during the last wave — irrelevant to single-thread deterministic physics (bit-exactness vs the default-thread run verified on the smoke uid); one deterministic pass per cell, no repeats.
+
+## 4. Per-uid flips (stage ladder none < picked < placed < contact < nested; lists from `table.md`)
+
+Raw stages: nested [259]; contact [308]; placed [232, 235, 251, 257, 261, 265, 266, 309, 321, 331]; picked [243, 248, 254, 258, 302]; the other 57 never pick.
+
+**tern vs raw** (n=74): stage UP 12 ['232:placed->contact', '252:none->placed', '255:none->picked', '258:picked->contact', '265:placed->contact', '275:none->placed', '295:none->contact', '297:none->nested', '298:none->contact', '301:none->picked', '305:none->picked', '317:none->placed']; DOWN 3 ['254:picked->none', '266:placed->none', '331:placed->none']
+- picked: lost 3 [254, 266, 331]  gained 9 [252, 255, 275, 295, 297, 298, 301, 305, 317]
+- placed: lost 2 [266, 331]  gained 7 [252, 258, 275, 295, 297, 298, 317]
+- setdown: lost 1 [266]  gained 3 [252, 297, 317]
+- contact: lost 1 [259]  gained 5 [232, 258, 265, 295, 298]
+- nested: lost 0 []  gained 1 [297]
+- tipped: lost 7 [235, 236, 242, 252, 254, 273, 286]  gained 10 [233, 262, 265, 266, 295, 298, 299, 301, 304, 316]
+
+**five vs raw** (n=74): stage UP 6 ['254:picked->placed', '273:none->picked', '298:none->contact', '306:none->contact', '316:none->picked', '317:none->placed']; DOWN 4 ['243:picked->none', '257:placed->none', '308:contact->placed', '331:placed->none']
+- picked: lost 3 [243, 257, 331]  gained 5 [273, 298, 306, 316, 317]
+- placed: lost 2 [257, 331]  gained 4 [254, 298, 306, 317]
+- setdown: lost 0 []  gained 1 [321]
+- contact: lost 1 [308]  gained 2 [298, 306]
+- nested: lost 0 []  gained 0 []
+- tipped: lost 6 [236, 242, 252, 257, 273, 286]  gained 8 [243, 256, 262, 274, 277, 298, 317, 335]
+
+**held vs raw** (n=74): stage UP 13 ['243:picked->placed', '252:none->placed', '255:none->picked', '258:picked->placed', '261:placed->contact', '273:none->picked', '275:none->placed', '297:none->contact', '298:none->contact', '301:none->picked', '305:none->picked', '317:none->contact', '325:none->picked']; DOWN 3 ['254:picked->none', '266:placed->none', '331:placed->none']
+- picked: lost 3 [254, 266, 331]  gained 10 [252, 255, 273, 275, 297, 298, 301, 305, 317, 325]
+- placed: lost 2 [266, 331]  gained 7 [243, 252, 258, 275, 297, 298, 317]
+- setdown: lost 1 [266]  gained 3 [252, 275, 321]
+- contact: lost 0 []  gained 4 [261, 297, 298, 317]
+- nested: lost 0 []  gained 0 []
+- tipped: lost 6 [236, 242, 252, 254, 286, 321]  gained 11 [262, 266, 274, 297, 298, 300, 301, 304, 305, 317, 319]
+
+**tern_rawgrip vs raw** (n=74): stage UP 10 ['252:none->placed', '255:none->picked', '258:picked->placed', '275:none->placed', '295:none->contact', '297:none->placed', '298:none->contact', '301:none->picked', '305:none->picked', '317:none->placed']; DOWN 3 ['254:picked->none', '266:placed->none', '331:placed->none']
+- picked: lost 3 [254, 266, 331]  gained 9 [252, 255, 275, 295, 297, 298, 301, 305, 317]
+- placed: lost 2 [266, 331]  gained 7 [252, 258, 275, 295, 297, 298, 317]
+- setdown: lost 1 [266]  gained 3 [252, 258, 317]
+- contact: lost 0 []  gained 2 [295, 298]
+- nested: lost 0 []  gained 0 []
+- tipped: lost 8 [236, 242, 252, 254, 258, 286, 306, 309]  gained 9 [262, 265, 266, 275, 295, 297, 298, 301, 316]
+
+**raw_terngrip vs raw** (n=74): stage UP 2 ['298:none->contact', '316:none->picked']; DOWN 0 []
+- picked: lost 0 []  gained 2 [298, 316]
+- placed: lost 0 []  gained 1 [298]
+- setdown: lost 0 []  gained 0 []
+- contact: lost 0 []  gained 1 [298]
+- nested: lost 0 []  gained 0 []
+- tipped: lost 2 [242, 329]  gained 1 [298]
+
+Timing vs spatial (`diag`): among the flipped uids the first-pick frame, where both codes pick, is within ±10 frames (e.g. 258: 421 → 411); the flips are spatial — a few cm of integrated-path difference at the grasp decides the pick (254/266/331 lost under every arm code; 252/255/275/297/298/301/305/317 gained under both tern and held), and once the can is released the settled position is chaotic (same uid: 18 → 88 cm for 331 under tern).
+
+## 5. Recommendation (10 lines)
+
+1. **Snapping is not the bottleneck.** On the commanded path a discrete code costs nothing: ternary arm + ternary gripper matches or beats the raw twist at every stage (P1–P5 all met, every "cost" negative); five-level is outcome-closest to raw but buys nothing; held-word shows the jitter is not load-bearing.
+2. **A ternary code is faithful enough to define a discrete-action arm**, and the gripper is naturally three-valued too ({open, hold, close} driving a 1.5 unit/frame ramp — lossless here).
+3. **Vocabulary:** 45 of 81 arm words occur; **16 words carry 99.1 %** (34 for 99.9 %; 8 for 77.9 %); per tape median 13. With the gripper: a 16 × 3 = **48-word codebook** (or the full 81 × 3 = 243 product for a categorical actor; the unused words simply never appear in the data).
+4. **But the raw joystick twist is a poor action label in absolute terms:** open-loop, it reproduces only 17/74 picks in w3 (joint path 69/74) because the real arm realised it with a median 4.2 cm drift by grasp time. A discrete arm built by snapping the *recorded joystick* would inherit this drift.
+5. **Faithful construction for the arm:** snap the *realised* Cartesian velocity of the tapes of record (the joint-path replay's per-frame tool velocity — `baselines/derive_cartesian_realized.py` already derives it — quantised to the same 16(+gripper) words), then repeat this replay check on those words before building a learner (same script, ~1 h on 8 processes). If the realised-velocity ternary tape reproduces the joint-path funnel to within the census noise (picked ≥ 66, contact ≥ 21), the discrete arm is defined; otherwise the word rate (40 Hz) or the cap needs a registered change.
+6. **Do not** build the discrete arm on `_cartesian.npy` twist directly; **do not** read the +6 pick gain as "discrete is better" — it is within the two-way flip structure of a path that misses most grasps.
+7. Nothing blocked a code; the held-word row was cheap and ran; no learner was built or trained; frozen sets, `matched_w3`, `demos_v2` and the cluster untouched.

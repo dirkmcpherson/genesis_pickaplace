@@ -318,9 +318,35 @@ def table(a):
     (root / 'table.md').write_text(txt + '\n')
 
 
+def diag(a):
+    """Timing vs spatial: for every code vs ref, first-stage frame shifts and settled-position
+    shifts, on the uids that flipped and on the uids that did not."""
+    root = pl.Path(a.outdir)
+    load = lambda c: {int(json.loads(p.read_text())['uid']): json.loads(p.read_text()) for p in (root / c).glob('*.json')}
+    rs = load(a.ref)
+    for c in [c for c in CODES if c != a.ref and (root / c).exists()]:
+        recs = load(c); us = sorted(u for u in recs if u in rs)
+        same = [u for u in us if recs[u]['stage'] == rs[u]['stage']]
+        flip = [u for u in us if recs[u]['stage'] != rs[u]['stage']]
+        dpick = [recs[u]['first']['picked'] - rs[u]['first']['picked'] for u in same
+                 if 'picked' in recs[u]['first'] and 'picked' in rs[u]['first']]
+        dcon = [recs[u]['first']['contact'] - rs[u]['first']['contact'] for u in same
+                if 'contact' in recs[u]['first'] and 'contact' in rs[u]['first']]
+        dpos = [float(np.linalg.norm(np.array(recs[u]['can_end'][:2]) - np.array(rs[u]['can_end'][:2]))) * 100 for u in same]
+        print(f'\n== {c} vs {a.ref}: same stage {len(same)}, flipped {len(flip)}')
+        if dpick: print(f'  same-stage uids: first-pick shift (frames) median {np.median(dpick):+.0f} (IQR {np.percentile(dpick, 25):+.0f}..{np.percentile(dpick, 75):+.0f}); '
+                        f'first-contact shift median {(np.median(dcon) if dcon else float("nan")):+.0f} (n {len(dcon)}); '
+                        f'settled can xy shift median {np.median(dpos):.1f} cm, p90 {np.percentile(dpos, 90):.1f} cm')
+        for u in flip:
+            r, k = rs[u], recs[u]
+            print(f'  {u}: {r["stage"]} -> {k["stage"]} | first ref {r["first"]} code {k["first"]} | dist {r["dist_settled"]*100:.1f} -> {k["dist_settled"]*100:.1f} cm '
+                  f'| tilt {r["can_tilt_settled"]:.0f} -> {k["can_tilt_settled"]:.0f} | tip_free {r["tip_free_first"]} -> {k["tip_free_first"]} | n {r["n_frames"]}')
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
+    d = sub.add_parser('diag'); d.add_argument('--outdir', required=True); d.add_argument('--ref', default='raw')
     r = sub.add_parser('run')
     r.add_argument('--code', required=True, choices=CODES)
     r.add_argument('--outdir', required=True)
@@ -332,4 +358,4 @@ if __name__ == '__main__':
     t = sub.add_parser('table'); t.add_argument('--outdir', required=True); t.add_argument('--ref', default='raw')
     t.add_argument('--common', action='store_true', help='restrict every row to the uids present in all codes')
     args = ap.parse_args()
-    dict(run=run, vocab=vocab, table=table)[args.cmd](args)
+    dict(run=run, vocab=vocab, table=table, diag=diag)[args.cmd](args)
