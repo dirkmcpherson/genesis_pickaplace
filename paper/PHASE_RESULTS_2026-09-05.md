@@ -129,7 +129,7 @@ The two-armed contact comparison of record when contact-after-release yields too
 
 Per-seed MODE: human [116, 124, 120, 120, 115, 121, 123, 116] vs machine [117, 119, 114, 119, 123, 115, 116, 119] → Δ +1.6 per seed (**+0.011**), exact p 0.348; SAMPLE Δ +0.9, p 0.660. Registered prediction (|Δ| < 0.10) MET. Five polE entries fail to restore in this scope for every arm (rf 40 = 5 × 8 seeds); they are counted as failures symmetrically and the 143-entry column drops them. Human runs 3290191–98; machine 3291435–42 (the unmatched 36-demo machine runs were cancelled before they started).
 
-## 5. End-to-end full task (amendment (d)); wave 1 read out 2026-09-06, wave 2 (seeds 4–7) RUNNING
+## 5. End-to-end full task (amendment (d)); wave 1 read out 2026-09-06, **wave 2 read out 2026-09-07 08:40 — 8 v 8 of record below**
 
 From the pick-scope starts to nested, staged sparse reward (pick 1 / place 1 / contact 2 / nested 4), 2e6 steps, return clamp 8, human = all 74 tapes incl. 10 no-picks vs machine = best tape per start (72). Success-by-stage = the stage was granted at any time in the episode. `placed_v2` is a phase-scope key and is never granted in scope=full; the release-based `placed` key is the full-scope place stage.
 
@@ -143,6 +143,22 @@ From the pick-scope starts to nested, staged sparse reward (pick 1 / place 1 / c
 | hold15 MODE, machine | 46/60 (0.767) | 36/60 (0.600) | 15/60 (0.250) |
 
 Per-seed rnd30 MODE: picked human [8, 18, 19, 19] vs machine [14, 10, 22, 14] (Δ +0.033, p 0.83); contact [4, 16, 15, 13] vs [5, 6, 18, 5] (Δ **+0.117**, p 0.49); nested [2, 4, 9, 10] vs [4, 1, 7, 4] (Δ +0.075, p 0.40). Against the registrations: P1 (both arms learn the pick, ≥ 0.5 in ≥ 3/4 seeds) — human 3/4 yes, machine 1/4 (mean exactly 0.500): met for the human arm only; P2 (|Δ| < 0.10 at every stage reached ≥ 0.2) — met at pick and nested, **not at contact** (+0.117, n.s.); P3 (nested < 0.2 both) — human 0.208, machine 0.133: marginally not met for the human arm. Every difference points the same way (human ≥ machine at every stage and on both IC sets), none is significant at n = 4. The registered wave-2 trigger (both arms ≥ 0.5 picked on rnd30 MODE) is met by the letter (0.533 / 0.500); wave 2 = seeds 4–7 per arm submitted 2026-09-06 22:40 (3337021–28, fixed launcher, in-job evals) → the 8 v 8 readout decides. Descriptive: these are the first policies in this project to reach nested from the pick-scope starts (0.21–0.30 on the human arm). **Route:** the release-based `placed` stage is almost never granted (human 0–1 of 120, machine 0–3 of 120 per cell) while contact and nested are — the policies carry the held can straight into the goal can and settle there without ever releasing it (the held-contact route the carrycontact phase rewards; `nested` requires picked + proximity + both upright + settled, not a release). The human demonstrations mostly release before sliding (39 of 64 picked tapes); the learned policies do not copy that. Wave-1 runs 3290391–98, evaluated post hoc (checkpoints intact, protocol identical).
+
+
+### 5.1 Eight seeds per arm (of record; wave 1 seeds 0–3 evaluated post hoc, wave 2 seeds 4–7 in-job; identical checkpoint protocol)
+
+| cell (8 seeds each) | picked | contact | nested |
+|---|---|---|---|
+| rnd30 MODE, human (all 74 tapes) | 120/240 (0.500) | 91/240 (0.379) | 39/240 (0.163) |
+| rnd30 MODE, machine (best 72) | 129/240 (0.537) | 81/240 (0.338) | 46/240 (0.192) |
+| rnd30 SAMPLE, human | 124/240 (0.517) | 107/240 (0.446) | 52/240 (0.217) |
+| rnd30 SAMPLE, machine | 127/240 (0.529) | 86/240 (0.358) | 47/240 (0.196) |
+| hold15 MODE, human | 106/120 (0.883) | 90/120 (0.750) | 38/120 (0.317) |
+| hold15 MODE, machine | 104/120 (0.867) | 79/120 (0.658) | 42/120 (0.350) |
+
+Per-seed rnd30 MODE, human vs machine: picked [8, 18, 19, 19, 18, 9, 11, 18] vs [14, 10, 22, 14, 19, 19, 15, 16] (Δ −0.037, p 0.643); contact [4, 16, 15, 13, 13, 7, 7, 16] vs [5, 6, 18, 5, 12, 8, 14, 13] (Δ +0.042, p 0.639); nested [2, 4, 9, 10, 2, 1, 6, 5] vs [4, 1, 7, 4, 9, 6, 9, 6] (Δ −0.029, p 0.621). SAMPLE: contact Δ +0.088 (p 0.232), nested Δ +0.021 (p 0.747). hold15 MODE: contact Δ +0.092 (p 0.328), nested Δ −0.033 (p 0.778).
+
+**Verdict against the registrations.** P1 (both arms learn the pick): 5/8 seeds ≥ 0.5 on rnd30 MODE in EACH arm — met. P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2): met at every cell (largest |Δ| 0.092, hold15 contact). P3 (nested < 0.2 for both): met (0.163 / 0.192). The wave-1 direction (human ahead at every stage, contact +0.117) did not survive four more seeds per arm: at 8 v 8 the signs alternate by stage and by cell, and no difference approaches significance. Conclusion of record: **no demonstration-source effect on the end-to-end task at 2e6 steps**, consistent with pick, place, contact and carrycontact. Per-seed spread is large (picked 8–19 of 30 within an arm), which is the seed-variance story of the whole project; the `placed` route note above stands (0–4 of 240 granted).
 
 ## 6. Asymmetries (disclosed)
 1. Demo counts 39 vs 63 (one tape per IC on both sides; the machine teacher solved more ICs than the humans placed).

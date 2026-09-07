@@ -229,3 +229,4 @@ The contact-after-release phase has only the 11-entry human holdE bank, and ever
 - **(f) polE_contact bank:** discriminates (0.59–0.60 vs holdE at ceiling); zero restore failures; adopted as the contact statistic of record.
 - **(d) end-to-end, wave 1 (4 v 4):** P1 met for the human arm only (machine 1/4 seeds ≥ 0.5, mean 0.500); P2 not met at contact (+0.117, p 0.49); P3 marginally not met (human nested 0.208). Wave 2 (seeds 4–7) submitted 22:40 per the registered trigger; the 8 v 8 result decides. No claim from wave 1 beyond "every stage points human ≥ machine, none significant".
 - **(c′) repeat-1:** P1 met (read out 2026-09-05 14:55).
+- **(d) end-to-end, wave 2 (8 v 8, read out 2026-09-07 08:40):** P1, P2 and P3 all met at 8 seeds per arm; the wave-1 contact gap (+0.117) fell to +0.042 (p 0.64) and the signs alternate by stage — no source effect. PHASE_RESULTS §5.1.
