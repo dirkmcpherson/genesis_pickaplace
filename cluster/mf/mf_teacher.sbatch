@@ -57,9 +57,19 @@ grep -q 'Demo prefill:' $SLURM_OUT && { echo 'FATAL: a demo prefill ran in the r
 grep -E '^\s*(pick_shaping|return_clamp|demo_dir|actor_dist|act_entropy):' $LOGDIR/.hydra/config.yaml | sed 's/^/# cfg /'
 "$PY" - $LOGDIR/metrics.jsonl <<'PYS'
 import json, sys
-vals = [json.loads(l).get('train/data/reward_sum') for l in open(sys.argv[1]) if 'reward_sum' in l]
-vals = [v for v in vals if v is not None]
-print(f"# shaping check: {len(vals)} reward_sum samples, non-integer {sum(abs(v-round(v))>1e-6 for v in vals)}, min {min(vals):.3f} max {max(vals):.3f}")
+rs, sc = [], []
+for l in open(sys.argv[1]):
+    try: d = json.loads(l)
+    except Exception: continue
+    if d.get('train/data/reward_sum') is not None: rs.append(float(d['train/data/reward_sum']))
+    if d.get('episode/score') is not None: sc.append(float(d['episode/score']))
+def rep(name, v):
+    if not v: return f"{name}: 0 samples"
+    return f"{name}: {len(v)} samples, non-integer {sum(abs(x-round(x))>1e-6 for x in v)}, min {min(v):.3f} max {max(v):.3f}"
+print("# shaping check:", rep('reward_sum', rs), '|', rep('episode/score', sc))
+allv = rs + sc
+if len(allv) >= 20 and not any(abs(x-round(x)) > 1e-6 for x in allv):
+    print("FATAL: every logged reward/score is an integer -- shaping is NOT active"); sys.exit(3)
 PYS
 # FRESH-process evals (sample mode, protocol horizon): 15 hold + 30 rnd (CONFOUNDS row 22: all episodes present)
 for MODE in sample mode; do for SET in ${EVAL_SETS:-hold rnd}; do   # EVAL_SETS override (repeat-1 pilot: "hold rnd", the 74-IC set at 1200 decisions/episode is too slow in-job)   # sample = registered statistic; mode = DP/RLPD-like deterministic counterpart (disclosed); all = FULL demo IC set (user, 2026-09-03)
