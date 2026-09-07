@@ -172,3 +172,11 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   [0,0,0,0,0,0,2,6,10,29,42,55,56], row fractions [0,0,0,0,0,0,0.011,0.037,0.064,0.144,0.227,0.262,0.256] — 89 % of the
   MG200s demo rows come from the last four blocks (checkpoints 10–13 of 13), 0 % from the first six. MGall rows by block:
   0.084 ×6 (all-failure 150-row blocks), then 0.084, 0.082, 0.081, 0.068, 0.069, 0.057, 0.057 (successes are shorter).
+- 11:25 MG718s built with the same tooling (`make_arms.py --only MG718s`, `convert_arms.py`): 718 tapes / 59,222 rows
+  (rlpd 59,222 transitions, 718 rewarded, density 1.21 %; r2d 59,940 rows; lerobot 59,222 frames), tape len 45/76/150,
+  MG200s ⊂ MG718s verified, block tapes [0,0,0,0,0,0,3,24,31,130,132,195,203]; mask `MG718s` added to the mg masked copy
+  (its sha is now d6380b96…; MG200s/MGall masks unchanged). `arm_counts.json` updated.
+- 11:27 **A2 controls SUBMITTED** (`sbatch_rlpd_robo.sh`, preempt QOS, `--requeue --exclude=pax077`, `--nice=5000` so the
+  matrix's 16 pending dp runs go first; 20 GPUs in use by r2d ×16 + dv3dbg ×4): C1 MGall s0–7 = **3349120–3349127**;
+  C2 MG718s s0–7 = **3349128–3349135**; C3 MG200s@300k s0–7 = **3349136–3349143** (TAG ext300k, K = 5 checkpoints).
+  Outputs `robomimic_runs/rlpd/rlpd_{MGall,MG718s}_ctl_s<k>/` and `rlpd_MG200s_ext300k_s<k>/`, LAST on bank_can50 mode+sample.
