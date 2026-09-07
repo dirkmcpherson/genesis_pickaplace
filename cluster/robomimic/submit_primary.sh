@@ -10,7 +10,7 @@ set -euo pipefail
 LAB=/cluster/tufts/shortlab/jstale02
 ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace}; C=$ROOT/cluster/robomimic
 SOURCES=${SOURCES:-"PH200 MH200 MG200s"}; LEARNERS=${LEARNERS:-"rlpd r2d dp"}; SEEDS=${SEEDS:-"0 1 2 3 4 5 6 7"}; MAXQ=${MAXQ:-60}
-declare -A HOURS=([rlpd]=3.0 [r2d]=6.0 [dp]=3.0)      # per-run GPU-hour estimates (plan §4; r2d/dp UNVERIFIED until the pilots)
+declare -A HOURS=([rlpd]=2.0 [r2d]=6.0 [dp]=2.0)      # per-run GPU-h: rlpd/dp from the 2k-step smokes (59 ms/decision UTD-10; 0.058 s/step) + ~10 min eval; r2d from the Genesis update rate (UNVERIFIED until the pilot)
 declare -A SCRIPT=([rlpd]=sbatch_rlpd_robo.sh [r2d]=sbatch_r2d_robo.sh [dp]=sbatch_dp_robo.sh)
 for a in $SOURCES; do for l in $LEARNERS; do
   case $l in rlpd) f=$LAB/robomimic_data/arms/$a/rlpd/transitions.npz ;; r2d) f=$LAB/robomimic_data/arms/$a/r2d/repeat.json ;; dp) f=$LAB/robomimic_data/arms/$a/lerobot/meta/info.json ;; esac
