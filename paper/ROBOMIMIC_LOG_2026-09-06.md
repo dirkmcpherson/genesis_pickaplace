@@ -190,3 +190,24 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   MG718s 0.666 / 0.274 / 1.1 % / 12.3 %; MGall 0.620 / 0.386 / 0.5 % / 7.8 %. Per-dim mean |a| MG200s
   [0.78, 0.71, 0.70, 0.58, 0.61, 0.60] vs MH200 [0.19, 0.35, 0.21, 0.02, 0.04, 0.06] — the SAC policy drives every OSC dim,
   incl. the three rotations humans barely touch, at ~4× the human magnitude. Confirms the review's S1-1 numbers.
+- **13:05 (09-07) A4 build — MG tapes are NOT open-loop reproducible in the installed env.** `g0_replay.py --demos` on the
+  first six MG200s tapes (successful SAC rollouts, `g0_report_MG200s_n6.json`): env success **0/6** (file: 6/6), eef
+  error along the replay 6–94 cm, final can error 48–94 cm; one-step restore eef error median 5.5–9.6 mm (PH: ~2 mm).
+  Failed MG rollouts (demo_1–4, can never moves) trivially "pass" (can error 0.0 cm) — uninformative. Consequently the
+  A4 MG pair's CONTROL R0 (original actions re-executed) yields ≈ 0 (build log: 0/200 at the first checkpoints), so
+  per the registered A4 rule the MG pair is **not buildable by open-loop replay**; only R3 v R2 can be read. The MH
+  control (R2) re-executes at ~95 % (20/21 at the first checkpoint), the roughened treatment (ε for |Δa| 0.274) at
+  ~5 % — a ε yield-ladder (40 tapes, ε ∈ {0.05, 0.1, 0.15, 0.2, 0.3}) is running to find the largest roughness that
+  keeps ≥ 100 paired tapes; an addendum will register the chosen ε before any R2/R3 training.
+  Interpretation to carry into every MG readout: every MG demo tuple's a → s′ is a response the installed robosuite-1.5.1
+  controller does not reproduce (the SAC data were generated under an earlier robosuite/mujoco-py controller and only
+  the states were re-hosted), whereas human tapes replay to ≈ 1 cm (G0). For an off-policy learner that bootstraps
+  through demo tuples this is an "off-dynamics demonstration" confound shared by MG200s, MG718s and MGall.
+- 13:15 **Correction of the 13:05 interpretation:** the one-step restore discrepancy is source-INDEPENDENT in relative
+  terms (`robomimic_data/step_rel_err.py`, 5 tapes per source, ~20 restored steps each: |eef_env − eef_file| / |file eef
+  step| median PH 0.57, MH 0.58, MG 0.56; p90 0.92 / 0.90 / 0.91). Absolute errors scale with the commanded step
+  (2.5 / 2.8 / 6.9 mm for file steps of 8.2 / 8.9 / 14.8 mm) — i.e. the same un-restorable controller state for every
+  source, not an MG-specific dynamics regime. So "off-dynamics demonstrations" is NOT supported; what is established:
+  MG tapes' large, saturated motions are not tolerant to that discrepancy when replayed open-loop (0/6), human tapes are
+  (PH 10/10, MH ~95 %). The consequence for A4 is unchanged (MG pair unbuildable by open-loop replay); the confound
+  statement for the MG readouts should say "not open-loop reproducible", nothing stronger.

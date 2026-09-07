@@ -28,6 +28,7 @@ def main():
     ap.add_argument("--need", type=int, default=4)
     ap.add_argument("--tol", type=float, default=0.01, help="final can-position tolerance (m)")
     ap.add_argument("--out", default=None, help="json report path (default <data_root>/g0_report.json)")
+    ap.add_argument("--demos", default=None, help="comma list of demo keys to replay instead of the first --n (e.g. successful MG rollouts)")
     args = ap.parse_args()
     import h5py
     import robosuite, robomimic, mujoco
@@ -36,7 +37,7 @@ def main():
           f"env {meta['env_name']} file env_version {meta.get('env_version')} | sha256 {sha256_file(args.hdf5)[:16]}...", flush=True)
     rows = []
     with h5py.File(args.hdf5, "r") as f:
-        demos = sorted(f["data"].keys(), key=lambda s: int(s.split("_")[1]))[: args.n]
+        demos = args.demos.split(",") if args.demos else sorted(f["data"].keys(), key=lambda s: int(s.split("_")[1]))[: args.n]
         for ep in demos:
             g = f["data"][ep]
             states = np.asarray(g["states"]); acts = np.asarray(g["actions"], dtype=np.float32)
