@@ -414,3 +414,14 @@ discrete-action line, where re-execution was assumed approximately free):
   0.534. So the published row did not inflate the human-machine difference; it compared each arm at its own recipe
   optimum, which is a different quantity again. `MH200_nogmm` (deterministic head on the human arm, 3 seeds, at 1333 /
   1005 / 639 of 2000 epochs) completes the second head-matched contrast.
+- 2026-09-08 interim (A4, not a readout): the SECOND control arm `MH200_re20` is **not** at the floor — 17/50 and 16/50
+  on its first two seeds (~0.33) versus `re15`'s completed 0.080, despite `re20` being SMALLER (61 tapes / 9,806 rows vs
+  95 / 15,702). Structural comparison: 60 of `re20`'s 61 tapes are also in `re15` (near-subset), per-tape rows
+  146 vs 162 median, and action statistics are indistinguishable (|a| 0.1595 v 0.1586, |Δa| 0.0439 v 0.0455, gripper
+  binary in both). So the two arms differ essentially only in WHICH human tapes survived their pair's treatment replay —
+  `re20`'s are the ones robust to the harsher ε 0.20 perturbation. **Consequence for the floor rule: it is applied
+  per pair.** The ε 0.15 pair floors (rule fires: counts, no p-value); the ε 0.20 pair has a non-floored control, so if
+  `rough20` completes meaningfully below it, that pair may be informative after all. It also weakens the "small arm ⇒
+  floor" reading I flagged as a possibility: 9.8k rows scoring 0.33 shows size alone does not determine the floor, which
+  raises the value of A6's `MH80` (native, 16.4k rows) as the discriminator rather than lowering it. No conclusion until
+  both arms have all 8 seeds.
