@@ -141,3 +141,13 @@ The evaluator agent has closed the investigation (committed 14e0cc9). Two indepe
 **Rules that now follow for end-to-end cells:** re-run whole sequences, never single episodes pulled from a sequence; record the node; hold CPU class fixed within a comparison. A per-episode re-seed would make episodes independent but changes every existing number, so it needs its own registration (amendment (s) already produces isolated cells alongside shared ones, which gets the same information without invalidating anything).
 
 **Still outstanding, unchanged:** the paired 30-episode sequence checks on a 36-core and a 64-core node, which decide whether `PHASE_RESULTS` §5.1's aggregates stand. The 320-cell re-score stays held until then.
+
+## 04:30 — mechanism pinned exactly: AVX2 vs AVX-512 (and a trap in Slurm's labels)
+
+**It is the instruction set, not the core count.** pax109 and pax154 carry the *same* CPU — Xeon E5-2695 v4, Broadwell, **AVX2** — and both reproduce the record bit-for-bit. pax001 (Xeon Gold 6248, Cascade Lake) and pax030 (Xeon Gold 6438M, Sapphire Rapids) are **AVX-512** parts and both diverge, at every thread pinning tested. Different vectorised kernels in the Genesis CPU backend produce different rounding, amplified over a 300-decision contact-rich horizon. Core count correlated with this only because it happened to track the part.
+
+**Operational trap, worth carrying beyond this project: Slurm's feature labels lie.** `pax001` advertises `AvailableFeatures=broadwell` but is a Cascade Lake Gold 6248. So `--constraint=broadwell` does **not** guarantee a reproducing node. Pin by CPU model read from `/proc/cpuinfo`, or by explicit `--nodelist`. (Our GPU launchers constrain on GPU type, not CPU features, so they are unaffected — but any CPU-class pinning we add must not rely on the labels.)
+
+**Scope, which is reassuring:** phase cells are immune to both effects — short episodes, bank-restored starts, 3488/3488 bit-exact — so the place, carrycontact and contact re-scores are safe to run on any node, and that is most of the held 320 cells. Only long full-scope end-to-end cells need "whole sequence, same CPU model".
+
+**For the paper's methods section:** we can state precisely that contact-rich simulation outcomes here are bit-reproducible within an instruction-set class and can flip across AVX2/AVX-512 over long horizons, with the crossover quantified (agreement to 1e-9 at decision 12, outcome flip by decision 32). Few papers in this area can say anything this specific about their own reproducibility.
