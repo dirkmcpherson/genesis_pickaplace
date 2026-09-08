@@ -152,15 +152,23 @@ settle-leak branch pre-stated in §4.
   correctly; an earlier "hidden solver state" reading of this probe was wrong and is withdrawn (see 7.3).
 
 ### 7.2 Cause 1 — hardware class (explains the ep0 case)
-| node | physical CPUs / arch | ep0 |
-|---|---|---|
-| **pax109** (the record's node), **pax154** | **36**, broadwell | `nested`/32, r=7.0 — reproduces the record (6 runs, `-n 4` and `-n 8`) |
-| pax001 | 80 logical, broadwell | `timeout`/300 (both allocations) |
-| pax030, **pax004** (the node of the first failing rerun) | 64, sapphirerapids | `timeout`/300 |
+| node | CPU (from `/proc/cpuinfo`) | ISA | ep0 |
+|---|---|---|---|
+| **pax109** (the record's node) | Xeon **E5-2695 v4** (Broadwell), 36 | AVX2 | `nested`/32, r=7.0 — reproduces (4 runs, `-n 4` and `-n 8`) |
+| **pax154** | Xeon **E5-2695 v4** (Broadwell), 36 | AVX2 | `nested`/32, r=7.0 — reproduces (2 runs) |
+| pax001 | Xeon **Gold 6248** (Cascade Lake), 80 logical | AVX-512 | `timeout`/300 (both allocations, all thread pinnings) |
+| pax030 | Xeon **Gold 6438M** (Sapphire Rapids), 64 | AVX-512 | `timeout`/300 |
+| **pax004** (node of the first failing rerun) | sapphirerapids, 64 | AVX-512 | `timeout`/300 |
+
+The split is exact along the CPU model: the two nodes carrying the *same* pre-AVX-512 Broadwell part reproduce the record
+bit-for-bit; every AVX-512 part (Cascade Lake, Sapphire Rapids) diverges. That is the signature of different vectorised
+code paths in the Genesis/taichi CPU kernels, not of core count or thread count. **Operational trap:** Slurm's feature
+label is unreliable here — `pax001` is advertised `AvailableFeatures=broadwell` but is a Cascade Lake Gold 6248, so a
+`--constraint=broadwell` reservation does NOT guarantee a reproducing node; pin by CPU model or by explicit nodelist.
 
 Each node is self-consistent; nodes of different class disagree. **Not fixable by pinning threads:** `TI_NUM_THREADS` ∈
 {4, 8, 36} on pax001 and 36 on pax030 all still give `timeout`/300, while pax109 gives `nested`/32 at both 4 and 36. So the
-difference is arithmetic-level (vectorisation / FMA contraction differing by CPU model), amplified chaotically over a
+difference is arithmetic-level — AVX-512 versus AVX2 kernels giving different rounding — amplified chaotically over a
 300-decision contact-rich horizon. Short phase episodes (1–19 frames) cannot amplify — which is exactly why the 3488
 phase episodes reproduce bit-exactly across nodes. *An earlier claim in this section that the split was "not a CPU-family
 split" was wrong: it rested on an unverified assumption that the first failing rerun ran on pax154; it ran on pax004.*
