@@ -683,3 +683,21 @@ of the human arm of record. Consequence, stated rather than discovered later: th
 `nested_honest` or `slide_success` key, so the (v) world-model cells of record must come from the pinned post-hoc
 re-score, exactly as the arms of record's cells do. RLPD and DP are unaffected — both arms of each are training in the
 same tree, at the same time, on the same code.
+
+---
+
+## Amendment (w) — episode-record requirement for all future runs (user, 2026-09-08)
+
+**The principle: observability must not be bought by changing the reward.** The current full-scope runs violate this by accident. Stage *flags* are written only when an episode terminates inside the adapter, so a horizon truncation logs all zeros even for an episode that picked — measured at 1,198 of 2,911 episodes on one run, every one exactly the horizon length, 608 of which had scored. The only truncation-proof channel left was the accumulated reward, which means **what we can observe is limited to what we pay for**. That is why end-to-end curves exist for pick, contact and the nested proxy but **not for placement or slide**: the reward's `placed` rung uses the stale release predicate that is essentially never granted, `placed_v2` exists only as a flag, and slide is not a rung at all.
+
+**Requirement 1 — one complete episode record, written on every exit path.** Each episode emits exactly one record, from a single code path reached by **both** termination and truncation, carrying **cumulative (sticky)** outcomes for every stage of interest: `picked`, `placed_v2`, `contact`, `contact_push`, `nested`, and the accepted-slide predicate. Sticky means once achieved in the episode it remains true, so truncation cannot erase it. One path, not two, so the branches cannot diverge — the present defect is exactly two paths where one was assumed.
+
+**Requirement 2 — settle-dependent metrics must not perturb training.** Any predicate needing extra simulation (the settled nested predicate; accepted-slide, which requires a release and a rest) must be evaluated in a way that cannot advance or mutate the training environment's state. Either compute it in evaluation only, or from a snapshot/deferred pass. **Measuring must not change what is being measured** — and a settle executed inline during training would do exactly that.
+
+**Requirement 3 — the reward is unchanged.** Logging is added; no rung is introduced, removed or reweighted to make a stage visible. Runs remain comparable with existing arms on the reward they optimise, and the observability change is orthogonal to it.
+
+**What it buys:** acquisition curves for pick, placement and accepted slide within the full task, on one axis, without the reward-versus-score mismatch that currently makes the end-to-end runs optimise a proxy while the statistic of record sits elsewhere.
+
+**Implementation note.** The per-episode logging callback added to the queued RLPD runs is the model: logging-only, wrapping no environment, consuming no randomness, swallowing its own exceptions so it cannot kill a run, at about 0.16 MB per run. Cost is negligible; the discipline is that it must sit on the shared exit path and must never call anything that steps the simulator.
+
+**Standing check.** After computing any per-stage statistic, assert that strictly harder stages are subsets of easier ones. Three identical ignition steps across nested stages is what exposed the present defect, and the check is already in `HRI_results/curves/learning_curves.py`.
