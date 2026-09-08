@@ -210,6 +210,12 @@ def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
 
 
 
+# Amendment (w) episode record. DEFAULT OFF: e2e jobs are queued against this file, and
+# changing shared code mid-experiment would put a code difference BETWEEN arms. Future runs
+# opt in with FULLENV_EPISODE_RECORD=1; with it unset behaviour is unchanged in every respect.
+EPISODE_RECORD = os.environ.get('FULLENV_EPISODE_RECORD', '') == '1'
+
+
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
@@ -684,6 +690,27 @@ class FullTaskEnv(gym.Env):
             phi = 0.0 if (terminated and self.pick_shaping_terminal_zero) else self._pick_phi()
             total_reward += self._pick_gamma * phi - self._pick_phi_prev
             self._pick_phi_prev = phi
+        if (terminated or truncated) and EPISODE_RECORD:
+            # Amendment (w): ONE episode record, emitted from the SINGLE exit path that
+            # both termination and truncation reach. `self._granted` is already sticky and
+            # cumulative -- a stage enters it the first time the env's own predicate flips
+            # and never leaves -- so this reports what the episode actually reached.
+            #
+            # Why it is needed: the per-step stage flags are written only when an episode
+            # terminates INSIDE the adapter, so a horizon truncation logged all zeros even
+            # for an episode that had picked (1198/2911 episodes on one run, every one at
+            # exactly the horizon, 608 of them having scored). That left the accumulated
+            # reward as the only truncation-proof channel, which is why `placed_v2` and the
+            # slide predicate have no full-scope curves: they are not reward rungs.
+            #
+            # LOGGING ONLY. No simulation is advanced, no state mutated, no reward term
+            # added; the reward ladder is untouched so runs stay comparable with existing
+            # arms. Scalars only -- no containers -- so no logger can choke on the type.
+            info = dict(info)
+            info['episode_end'] = True
+            for _stage in ('picked', 'placed_v2', 'contact',
+                           'contact_push', 'slide_success', 'nested'):
+                info['ep_' + _stage] = bool(_stage in self._granted)
         return obs, total_reward, terminated, truncated, info
 
     def _step_once(self, action):
