@@ -425,3 +425,35 @@ discrete-action line, where re-execution was assumed approximately free):
   floor" reading I flagged as a possibility: 9.8k rows scoring 0.33 shows size alone does not determine the floor, which
   raises the value of A6's `MH80` (native, 16.4k rows) as the discriminator rather than lowering it. No conclusion until
   both arms have all 8 seeds.
+
+## 2026-09-08 — A5 COMPLETE: a data x architecture interaction, and a mechanism test that partly refutes the story
+**Cells (3 seeds each, LAST = `model_epoch_2000.pth` verified per cell, `finished run successfully` in every train log,
+forced head verified in every `config.json`, bank `72b75550…`):**
+| arm | GMM-5 head | deterministic head | head effect |
+|---|---|---|---|
+| MH200 (human) | 49,45,45 = **0.927** | 33,26,25 = **0.560** | **+0.367** |
+| MG200s (machine) | 6,4,4 = **0.093** | 22,14,23 = **0.393** | **−0.300** |
+**The head helps the human arm and hurts the machine arm — opposite signs, interaction size +0.667.** Matched-head
+source gaps: **GMM both 0.834; deterministic both 0.167 — the same comparison differs by 5.0x** depending on an
+architecture choice (the published cross-head number was 0.534, i.e. each arm at its own recipe optimum: a third
+quantity). Registered decision rules (ii) and (iii) BOTH fire; per A5's pre-commitments the **BC-RNN row stays withdrawn
+and the cross-learner ordering stays withdrawn** — an interaction of this size is precisely why a cross-head comparison
+cannot carry a source interpretation. Effect-size framing retained (3 v 3 cannot reach p < 0.05; |Δ| ≫ the ±0.10 band).
+**Mechanism test (`baselines/robomimic/action_multimodality.py`, 1,200 anchors/arm, k = 25 state-space neighbours,
+states standardised on the pooled arms; statistic = 2-means split gain on the PC1 projection of the neighbourhood's
+actions MINUS a matched unimodal-Gaussian null resampled from the same neighbourhood):**
+| arm | split gain | unimodal null | **excess** | frac > 0.05 | neighbourhood action sd |
+|---|---|---|---|---|---|
+| PH200 (1 human operator) | 0.801 | 0.675 | **+0.126** | 0.68 | 0.120 |
+| MH200 (6 human operators) | 0.803 | 0.676 | **+0.127** | 0.71 | 0.103 |
+| MG200s (SAC) | 0.755 | 0.674 | **+0.080** | 0.65 | 0.362 |
+| MG718s (SAC) | 0.756 | 0.675 | **+0.081** | 0.63 | 0.344 |
+**Verdict on the proposed mechanism: partly supported, partly REFUTED.** Supported: human conditional action
+distributions carry ~1.6x more non-Gaussian structure than machine ones (+0.127 v +0.080). Refuted: (a) the machine sets
+are NOT unimodal — they retain a clear excess (+0.080, 63–65 % of neighbourhoods above 0.05); (b) **the "several
+operators, several strategies" account fails outright — PH200 (ONE operator) is indistinguishable from MH200 (SIX):
++0.126 v +0.127.** Whatever makes human demonstrations multi-modal here is within-operator, not between-operator.
+A third, unpredicted difference is larger than the modality one: the machine neighbourhood action spread is **3x** the
+human one (0.36 v 0.11), consistent with the bang-bang/saturated action statistics already documented. A plausible
+revised account — a 5-mode mixture fits tight, structured human actions and wastes capacity/adds variance on wide,
+saturated machine actions — is NOT tested by these data and is flagged as an open question, not a finding.
