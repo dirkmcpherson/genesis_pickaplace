@@ -197,4 +197,45 @@ Neither cause is a defect in the environment or in amendments (j)/(l). Both are 
 **an end-to-end cell is reproducible as a whole sequence on the same CPU class, and not otherwise.** Every end-to-end cell
 should therefore record its node and be re-run whole. Phase cells are immune on both counts (short episodes, bank-restored
 starts, 3488 episodes bit-exact). Whether the cell-level aggregates of `PHASE_RESULTS §5.1` move is measured by the paired
-30-episode in-order reruns on pax109 (the record's own class) and pax154 — RESULT PENDING.
+30-episode in-order reruns — RESULT BELOW (§7.5).
+
+### 7.5 The published cell reproduces exactly: §5.1 stands on its own terms
+`dHfull_all` s3 rnd30 MODE, all 30 episodes re-run in order on pax154 (same CPU model as the record's pax109), current
+(j)+(l) code:
+
+| | record | re-run | Δ |
+|---|---|---|---|
+| per-episode outcome / steps | — | **0/30 differ** | — |
+| picked | 19/30 (0.633) | 19/30 (0.633) | +0.000 |
+| contact | 13/30 (0.433) | 13/30 (0.433) | +0.000 |
+| nested | 10/30 (0.333) | 10/30 (0.333) | +0.000 |
+
+So the published aggregates are exactly reproducible under whole-sequence, same-CPU-model conditions, and the patches do
+not move them. What the re-score adds on that same cell:
+
+| column | rate | reading |
+|---|---|---|
+| `nested` = `nested_proxy` | 10/30 = 0.333 | the training proxy — what §5.1 published |
+| **`nested_honest`** | **4/30 = 0.133** | the settled predicate DP/RLPD report: the published number over-counts **2.5×**; proxy-only episodes are 0, 3, 15, 17, 18, 27 |
+| **`placed_v2`** (fix 4) | **8/30 = 0.267** | earnable in the full scope now; the stale `placed` is 0/30 — 8 episodes DID release onto the shelf band, so the "carry the can in without releasing" reading (§5.1/REVIEW_GUIDE §2.7) is refuted by measurement, not just by argument |
+| `contact_push` | 10/30 vs `contact` 13/30 | 3 of 13 contact credits fail the stricter test |
+| **`slide_success`** (l) | **2/30 = 0.067** | ≤ `nested_honest`, meeting amendment (l)'s registered prediction on this cell |
+| `outcomes_honest` | nested_honest 4 / proxy_only 6 / tipped 9 / timeout 11 | |
+
+`slide_routes = {sustained: 0, settle: 2}`: **both** grants were earned in the held continuation, confirming that a literal
+in-episode "sustained 3 decisions" counter would have reported 0/30 (§6).
+
+### 7.6 NEW CONFOUND: the end-to-end arms were evaluated on different hardware classes
+Mapping each of the 64 end-to-end record cells to its producing job and node (rnd30 MODE, the §5.1 statistic of record):
+
+| arm | node classes over the 8 seeds |
+|---|---|
+| human `dHfull_all` | **2 × broadwell/36 (AVX2: s2, s3)**, 1 × graniterapids/96 (s4), 5 × sapphirerapids/64 |
+| machine `dDPfull` | **8 × sapphirerapids/64** |
+
+Three human cells were produced on hardware classes that no machine cell used, two of them on the AVX2 class shown in §7.2
+to flip long-horizon outcomes. Since CPU class demonstrably changes end-to-end episode outcomes, **hardware class is
+partially confounded with arm in the published 8 v 8**. The size of the effect on a real cell is being measured by re-running
+`dHfull_all` s3 (record: broadwell) on sapphirerapids — RESULT PENDING. Recommendation regardless of that number: re-score
+all 64 end-to-end cells on ONE pinned CPU model, which removes the confound and yields one internally consistent set; phase
+cells need no pinning (3488 episodes bit-exact across classes).
