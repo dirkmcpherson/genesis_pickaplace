@@ -295,3 +295,30 @@ Two corrections are folded in here and they push in opposite directions, which i
 failures instead of being replaced by a different start), while the rebuilt bank's corrected grip makes the restored entries
 slightly more tractable. Reporting the raw-grip figures as if they were the pinned physical-grip ones is what the stamps now
 prevent.
+
+### 8.2 PLACE, the rest of P1: sampled statistic and the hold-out bank (8 v 8, complete)
+
+**polE SAMPLE** — the statistic of record for the three-learner table (sampled actions, user 2026-09-07):
+
+| arm | record | re-scored | Δ |
+|---|---|---|---|
+| human (39) | 814/1184 = 0.688 | 838/1184 = **0.708** | +0.020 |
+| machine-39 | 798/1184 = 0.674 | 772/1184 = **0.652** | −0.022 |
+
+Human − machine: **+0.014 (p 0.743) → +0.056 (p 0.206)**; registered |Δ| < 0.10 MET both times. Note the arms move in
+*opposite* directions here (+0.020 vs −0.022), so the gap quadruples even though each arm moves ~0.02: the corrections are
+symmetric in construction (40 restore-failure episodes per arm) but not in effect.
+
+**holdE, which isolates the pinning fix** (this bank's content was never rebuilt, so the only change is that entries are
+enumerated exactly once instead of drawn with replacement):
+
+| cell | record | re-scored | Δ |
+|---|---|---|---|
+| holdE MODE human | 104/104 = 1.000 | 103/104 = 0.990 | −0.010 |
+| holdE MODE machine-39 | 103/104 = 0.990 | 100/104 = 0.962 | −0.029 |
+| holdE SAMPLE human | 104/104 = 1.000 | 104/104 = 1.000 | +0.000 |
+| holdE SAMPLE machine-39 | 100/104 = 0.962 | 100/104 = 0.962 | +0.000 |
+
+So **sampling-with-replacement alone was worth up to 0.029** on a 13-entry bank, with zero restore failures involved — a
+clean measurement of the S1-3 defect in isolation, and the reason holdE cells needed re-running even though their bank is
+byte-identical.
