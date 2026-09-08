@@ -47,3 +47,26 @@
 ## 5. Things that were already caught, as calibration
 
 The reviewer should know the failure rate here is non-trivial and mostly self-caught: a comparability defect where world-model cells were scored on a different entry bank than every new cell, invisible because those cells carry no bank stamp; a contact predicate that scored carrying the can in rather than sliding it, in 84–86 % of policy grants; a slide success rule that passed 2 of 74 human demonstrations; a robomimic source claim overturned by its own registered control; and a training-proxy metric over-counting a published figure by 2.5×. Two patterns to be suspicious of. **Metrics whose name describes the intended behaviour rather than what they measure** — that covers the contact predicate, the slide rule and the training proxy. And **a convenient label trusted over the artefact that recorded the fact** — that covers a node census taken from the scheduler's advertised CPU features (wrong on this cluster) and cells attributed to a training run's event file when the evaluation ran later as a separate job. Both label errors produced confident, coherent, wrong conclusions that survived review until someone joined to the primary record instead.
+
+
+## 6. What the independent audit found — read before writing any sentence
+
+An audit of every claim against its registration and its cells (2026-09-08) produced the artefacts in `HRI_results/`: a claims ledger keyed to sentences, a per-row verification guide, and a registration outcomes table. **35 registered predictions: 9 met, 11 FAILED, 6 not evaluable, 1 demoted, 3 withdrawn, 5 pending.** Our record is not clean and must not be described as such. Eight specific exposures:
+
+1. **"All registered predictions met" was written in two documents and is false.** The margin fails on the in-distribution release predicate — 0.083 human against 0.242 machine, with the machine arm above the trigger that makes the prediction apply. Corrected at both sites.
+
+2. **The registered equivalence procedure (TOST) has never been run — on any contrast, anywhere.** Every equivalence-flavoured sentence in this project currently rests on something other than the test registered for it. Either run it or stop using equivalence language.
+
+3. **The paper's original headline hypothesis, H4, is recorded as FAILED**, with a directional human preference. The null that now stands was registered *after* that failure. **Presenting the current null as H4 confirmed would invert the record** — this is the single most dangerous sentence the paper could contain.
+
+4. **The in-training-distribution amendment has numbers but no met/not-met verdict written anywhere**, and its world-model clause was never run.
+
+5. **The slide statistic is recorded as "met" twice for a predicate the project withdrew.** It must never be counted among satisfied predictions.
+
+6. **Registration-timing exposure, self-disclosed and easy to omit:** one amendment was registered after 3 of the 8 seeds it was scored on, another after 2, and a third after the full frozen comparison. These are disclosed in our own logs and must survive into the write-up.
+
+7. **One registration is stamped 7 minutes after the job it governs was submitted.** Unexplained; the neighbouring gates in the same series are correctly ordered. Investigate or disclose.
+
+8. **"World models are source-indifferent" is not supported as a general claim.** It rests on one task, and the independent-task replication produced a world model that scored 0 of 400 — it never learned the task at all.
+
+**Two rules are enforced mechanically in the ledger rather than left to judgement**: a null may not be described as equivalence where the detectable effect exceeds the margin, and no lean may be attributed to demonstration source while the set-construction confound is unresolved. The first rule fired on the auditor's own entry, downgrading a claim it had marked established.
