@@ -499,3 +499,57 @@ submission. `--require-isa` stays as the diagnostic stamp — it is what makes a
    cheap or a scheduling problem (the only DP number on record, 568 s/episode, is from a different machine and does
    not transfer).
 5. Then the 32-cell pinned pass, and read out with `--cell-root rec` (never mixing `preview` and `record`).
+
+### 2026-09-08 07:0x–07:35 — machine-size census, and the two blocking measurements
+
+Link back at 07:02. Login node confirmed clean of my probes (the six `srun --overlap` matches belong to `laolab`, not
+me). `isa_map.json` deleted unread. Clone `$LAB/gp_e2e` re-synced and committed (`884f643`), `isa_probe.sh` removed.
+
+**Machine-size census** (`cluster/hw_probe.sh`, PAR=6, 124 nodes probed, 120 answered → `hw_map.json`):
+
+| physical cores | machines | with GPU | isa |
+|---|---|---|---|
+| 32 | 5 | 5 | avx512 |
+| 36 | 24 | 2 | **avx2** |
+| 40 | 25 | 20 | avx512 |
+| 48 | 10 | 4 | avx512 |
+| 64 | **55** | 15 | avx512 |
+| 96 | 1 | 1 | avx512 |
+
+**`REQUIRE_CORES=64` chosen** — the most common non-36 size, 55 machines, so the pinned pass needs no `--nodelist`.
+
+**Finding that bears on the unresolved instruction-set question: on this cluster the two variables are PERFECTLY
+COLLINEAR.** Every one of the 24 AVX2 machines has exactly 36 physical cores, and every machine of any other size is
+AVX-512 — zero overlap across all 120 machines. So "the 36-core machines disagree with everything else" and "the AVX2
+machines disagree with the AVX-512 machines" are the *same statement here*, and no comparison on this cluster can
+separate them. Two consequences worth stating plainly:
+
+1. It explains how both accounts fitted the same data without either being careless.
+2. It is mild evidence *against* core count as the mechanism: the 40-core and 64-core machines are different sizes on
+   the same instruction set, and those comparisons **agreed** bit-for-bit. A pure core-count rule would predict they
+   diverge. What actually fits every observation is a **two-class split** (the 36-core/AVX2 group vs the rest), not a
+   per-size rule. This does not change the guard — pinning `--require-cores 64` satisfies either account — but the
+   paper should describe the axis as a two-class split rather than assert core count as the cause.
+
+**The two measurements, both on pinned 64-core machines** (jobs 3363030 / 3363031; the first pair 3363001/2 died in
+4 s on `set -u` vs conda's deactivate hook, fixed):
+
+| measurement | node | wall |
+|---|---|---|
+| RLPD full `rnd30` cell, 30 episodes, shared protocol, one process | pax146, Gold 6438M | **858 s** (832 s in-loop, **27.7 s/episode**) |
+| Diffusion Policy, one `rnd30` episode, CPU only | pax048, Gold 6448Y | **425 s** (390 s in-loop) |
+
+The DP figure is the one that was blocking: **390 s/episode, 1.46× faster than the 568 s login-node figure** that did
+not transfer. Extrapolated pinned pass (shared + `_iso`, per amendment (s)):
+
+- **RLPD:** 210 shared + 180 isolated episodes per run ≈ 4.3 CPU-h; wall ≈ 50 min/run (the `spots60` shared cell,
+  28 min, is the long pole). 16 runs ≈ **69 CPU-hours**.
+- **DP:** 105 shared + 90 isolated episodes per run ≈ 22 CPU-h; wall ≈ 8 h/run, bottlenecked by the shared `spots60`
+  cell (60 × 390 s = 6.5 h **serial and irreducible** — a shared-process cell cannot be sharded without becoming the
+  isolated protocol). 16 runs ≈ **352 CPU-hours**.
+- With 55 machines of the pinned size, all 32 runs fit concurrently: **≈ 8 h wall for the whole pinned pass**, i.e.
+  ordinary parallel work, not a scheduling problem. Note the `_iso` cells are *faster* in wall-clock than the shared
+  ones for DP, because one process per episode parallelises and a shared cell cannot.
+
+Still blocked on the training runs: all 32 `e2e_*` jobs remain PENDING at `--nice=9000` behind 16 place runs and 32
+robomimic A4 jobs, so the pinned pass has nothing of mine to score yet.
