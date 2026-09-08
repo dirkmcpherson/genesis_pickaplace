@@ -348,6 +348,8 @@ class GenesisCanEnv:
             _e = self.end_of_episode()
             info['nested'] = _e['nested']
             info['slide_success'] = _e['slide_success']; info['slide_route'] = _e['slide_route']
+            info['slide_fail_reason'] = _e['slide_fail_reason']; info['slide_fail_frame'] = _e['slide_fail_frame']
+            info['end_of_episode'] = True
         return self._obs(), done, info
 
     def _nested(self):
@@ -364,16 +366,21 @@ class GenesisCanEnv:
                     and tilt_deg(np_(w['goal'].get_quat())) < 20)
 
     def _slide_clauses(self):
-        """amendment (l): the four slide_success clauses evaluated on the CURRENT world state, with the last
-        COMMANDED grip (the controller target is unchanged through the settle, so the command still stands)."""
+        """amendment (l): the four slide_success clauses on the CURRENT world state, with the last COMMANDED grip
+        (the controller target is unchanged through the settle, so the command still stands).
+        Returns (ok, reason); reason names the FIRST clause that failed, so a zero column can be explained."""
         w = self.w
-        if self._last_grip_cmd is None or float(self._last_grip_cmd) >= GRIP_OPEN_CMD or not self._picked:
-            return False
+        if not self._picked:
+            return False, 'not_picked'
+        if self._last_grip_cmd is None or float(self._last_grip_cmd) >= GRIP_OPEN_CMD:
+            return False, 'grip_closed'
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
         if not (c.size and c.shape[0]):
-            return False
+            return False, 'no_contact'
         bp = np_(w['bottle'].get_pos())
-        return bool(in_shelf_footprint(bp) and tilt_deg(np_(w['bottle'].get_quat())) < 20.0)
+        if not (in_shelf_footprint(bp) and tilt_deg(np_(w['bottle'].get_quat())) < 20.0):
+            return False, 'off_shelf_or_tilted'
+        return True, None
 
     def end_of_episode(self):
         """The single post-episode settle (SETTLE_STEPS scene steps, last command held), yielding BOTH the honest
@@ -388,14 +395,16 @@ class GenesisCanEnv:
         solver -- established by the #26 trace ablation)."""
         w = self.w
         slide, route, steps = bool(self._slide_success), self._slide_route, 0
+        reason, fail_frame = None, None
         if not slide:
             held = True
-            for _ in range(SLIDE_SUSTAIN):
+            for f in range(SLIDE_SUSTAIN):
                 for _ in range(3):
                     w['scene'].step()
                 steps += 3
-                if not self._slide_clauses():
-                    held = False
+                ok, why = self._slide_clauses()
+                if not ok:
+                    held, reason, fail_frame = False, why, f
                     break
             if held:
                 slide, route = True, 'settle'
@@ -406,7 +415,8 @@ class GenesisCanEnv:
         touch = float(np.hypot(bp[0] - gp_[0], bp[1] - gp_[1])) <= NESTED_TOUCH_DIST
         nested = bool(self._picked and touch and tilt_deg(np_(w['bottle'].get_quat())) < 20
                       and tilt_deg(np_(w['goal'].get_quat())) < 20)
-        return dict(nested=nested, slide_success=bool(slide), slide_route=route)
+        return dict(nested=nested, slide_success=bool(slide), slide_route=route,
+                    slide_fail_reason=reason, slide_fail_frame=fail_frame)
 
     def _obs(self):
         w = self.w
