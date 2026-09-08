@@ -1,5 +1,8 @@
 # Review guide — where the project stands and how to read the null results (2026-09-07)
 
+> **Terminology — "mode" vs "deterministic" (corrected 2026-09-07).** `--mode mode` selects the *mode* of the action distribution rather than sampling it. For RLPD this is genuinely deterministic: the policy returns `tanh(mean)` and repeats exactly. For the world models (r2dreamer, dv3) it is **not** run-to-run deterministic, because the agent samples its stochastic latent inside `act` and there is no per-episode reseed; a cell reproduces exactly only when the whole episode sequence is replayed with the same RNG stream (verified: 0/30 differences on the §5.1 sequence check). No comparison is biased by this — both arms are evaluated identically — but "deterministic" overstates it for world-model cells, and the word is used below in that looser sense.
+
+
 *Purpose: a single document to review against. Every number below is from a fresh-process evaluation file and is also in the docs of record (`RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md`, `PHASE_RESULTS_2026-09-05.md`, `PHASE_PLAN_2026-09-04.md`, `MORNING_TABLE_2026-09-04.md`, `ROBOMIMIC_LOG_2026-09-06.md`, `DISCRETE_ACTION_REPLAY_2026-09-06.md`, `DV3_DEBUG_2026-09-05.md`, `WM_FIX_LOG_2026-09-03.md`). Where a number is not in my working set I point to the doc instead of restating it. Videos: 16 per-condition reels already sent (random draws across seeds, in-distribution row over out-of-distribution row); matched-start reels (both arms on the same starts, stratified by joint outcome) are being built and sent separately with a joint-outcome index (`REVIEW_REELS_INDEX_2026-09-07.md`).*
 
 ## 1. The claim under review

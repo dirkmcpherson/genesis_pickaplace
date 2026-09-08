@@ -1,4 +1,7 @@
 # Place-phase results — human vs machine demonstrations, r2dreamer (draft skeleton written 2026-09-04 23:40; numbers regenerate)
+
+> **Terminology — "mode" vs "deterministic" (corrected 2026-09-07).** `--mode mode` selects the *mode* of the action distribution rather than sampling it. For RLPD this is genuinely deterministic: the policy returns `tanh(mean)` and repeats exactly. For the world models (r2dreamer, dv3) it is **not** run-to-run deterministic, because the agent samples its stochastic latent inside `act` and there is no per-episode reseed; a cell reproduces exactly only when the whole episode sequence is replayed with the same RNG stream (verified: 0/30 differences on the §5.1 sequence check). No comparison is biased by this — both arms are evaluated identically — but "deterministic" overstates it for world-model cells, and the word is used below in that looser sense.
+
 *Design and registrations: `paper/PHASE_PLAN_2026-09-04.md` (§1–6 and the dated amendments). Data provenance and every job id: `paper/WM_FIX_LOG_2026-09-03.md` (entries from 09-04 09:00 on) and `$LAB/wm_fix_2026-09-03/COMMANDS.log`.*
 
 ## 1. What was run

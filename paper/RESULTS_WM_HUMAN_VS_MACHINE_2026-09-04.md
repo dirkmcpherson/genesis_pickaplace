@@ -1,4 +1,7 @@
 # Human vs machine demonstrations, three learners, one world — what was run and what it shows
+
+> **Terminology — "mode" vs "deterministic" (corrected 2026-09-07).** `--mode mode` selects the *mode* of the action distribution rather than sampling it. For RLPD this is genuinely deterministic: the policy returns `tanh(mean)` and repeats exactly. For the world models (r2dreamer, dv3) it is **not** run-to-run deterministic, because the agent samples its stochastic latent inside `act` and there is no per-episode reseed; a cell reproduces exactly only when the whole episode sequence is replayed with the same RNG stream (verified: 0/30 differences on the §5.1 sequence check). No comparison is biased by this — both arms are evaluated identically — but "deterministic" overstates it for world-model cells, and the word is used below in that looser sense.
+
 *Results of 2026-09-03/04. Written 2026-09-04 05:30 by the WM-fix session. Every number below comes from a fresh-process evaluation file or a cited document; nothing is from training-loop logs.*
 
 ## 1. The question and the design
@@ -24,7 +27,7 @@ Why the arms differ by learner (James, 2026-09-03): the human arm should be the 
 | RLPD (raw human, deterministic) | **0.600** (144/240) | **0.517** (124/240) | +0.083 | **0.485** | 8 v 8 |
 | r2dreamer (raw human, deterministic) | **0.617** (148/240) | **0.608** (146/240) | +0.008 | **0.875** | 8 v 8 |
 | r2dreamer (raw human, sampled) | 0.613 (147/240) | 0.629 (151/240) | −0.017 | 0.641 | 8 v 8 |
-| dv3 (DreamerV3-torch) | not run | not run | — | — | no working configuration found (§7) |
+| dv3 (DreamerV3-torch), state input | **0.700** (42/60) | **0.633** (38/60) | +0.067 | not testable at n = 2 v 2 | **working configuration found 2026-09-07** (§7 item 9) |
 
 **No learner shows a detectable effect of demonstration source on random-start picks.** Point estimates lean slightly human in all three; none approaches significance. The r2dreamer null is the tight one (per-seed spread ≈ 2 picks in 30, so a true 0.10 gap would have been visible at n = 8); the RLPD null is weak (one dead seed per arm). Within-DP, pruning the human data matters far more than its source (+0.27).
 
@@ -93,7 +96,7 @@ The port as found learned the pick and then collapsed to zero. Two compounding d
 6. In-distribution cells differ by file (hold-15 vs the 66 training starts); the WM arm reports both; rnd30 is the only shared cell.
 7. Eval process: DP/RLPD one process per episode; WM one process per IC set with in-process resets. Same predicate, horizon, world, state content.
 8. RLPD carries one dead seed per arm (dHv2raw s65 2/30, dDP s45 0/30); with them excluded the arms sit at 0.68–0.70 vs 0.68–0.74. r2dreamer has none.
-9. dv3: every lever tried on the reach proxy is bimodal across seeds (baseline 1 & 0 of 15; fp32 15 & 0; end-effector actions 11 & 3; both 4 & 15); no pick run exists, so it is excluded as "no working configuration", not silently.
+9. dv3 — **superseded 2026-09-07: a working configuration now exists.** The earlier statement ("every lever tried on the reach proxy is bimodal across seeds — baseline 1 & 0 of 15; fp32 15 & 0; end-effector actions 11 & 3; both 4 & 15 — no pick run exists, so it is excluded as 'no working configuration'") described the PIXEL reach proxy. Given the same state input and the same return clamp that fixed r2dreamer, dv3 learns the pick: gate G2 passed on both human seeds at 0.700 on the out-of-distribution set (registered threshold 0.5), with in-distribution 15/15, 14/15, 15/15, 15/15 across the four runs. Partial comparison at n = 2 v 2: human 0.700 (42/60) vs machine 0.633 (38/60) — directional only, far too small to test; the 4-v-4 completion is running. **Why this matters beyond dv3:** the clamp diagnosis reproduces on an independent port, so it is a property of the reward scale and not of one implementation, and the world-model arm is no longer a single-port result. See `DV3_DEBUG_2026-09-05.md` §8.
 10. The r2dreamer recipe was fixed on the pruned human and machine sets; the raw human set played no role in tuning. The human-vs-machine interpretation still awaits the main session's pre-registration (A37).
 
 ## 8. Reproducing the r2dreamer arm

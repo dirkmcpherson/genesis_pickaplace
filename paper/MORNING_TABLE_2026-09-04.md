@@ -1,5 +1,8 @@
 # Morning table — human vs machine demonstrations, like-to-like across learners (2026-09-04, draft written 23:55 on 09-03; WM rows regenerate)
 
+> **Terminology — "mode" vs "deterministic" (corrected 2026-09-07).** `--mode mode` selects the *mode* of the action distribution rather than sampling it. For RLPD this is genuinely deterministic: the policy returns `tanh(mean)` and repeats exactly. For the world models (r2dreamer, dv3) it is **not** run-to-run deterministic, because the agent samples its stochastic latent inside `act` and there is no per-episode reseed; a cell reproduces exactly only when the whole episode sequence is replayed with the same RNG stream (verified: 0/30 differences on the §5.1 sequence check). No comparison is biased by this — both arms are evaluated identically — but "deterministic" overstates it for world-model cells, and the word is used below in that looser sense.
+
+
 **Design of record (James, 09-03 evening):** human arm = **authentic raw human** `dHv2raw` (N=66 tapes, 14,323–14,484 rows)
 for RLPD / r2dreamer / (dv3); **pruned human** `dH` (N=58, 6,927–6,985 rows) for DP (DP degrades on raw — RESULTS §1);
 machine arm = **the good machine set** `dDP` (frozen, pruned-matched, N=58, 7,476 rows) for every learner. A machine
