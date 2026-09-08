@@ -360,3 +360,23 @@ The headline comparison matches **tapes**, not rows: the machine arm there has *
 **The apparent human advantage exists only where the machine arm has less data, and it reverses once the machine arm has more.** That is the signature of a quantity effect, not a source one. The cleanest single comparison is the middle row — all-success on both sides, comparable volume — and it is indistinguishable from zero.
 
 **This is why the registered dose experiment holds rows constant rather than tapes**, cutting the human arm to machine-matched transitions. Until it reads out, "human demonstrations are better" is not supportable from these rows; the defensible statement is that **increasing machine data changes the sign of the comparison.**
+
+
+### Addendum, 2026-09-08 — how much of the machine set's advantage is OUR selection, measured
+
+Reconstructing attempt order across the 195-tape harvest (72 initial conditions, 64 of them with more than one attempt):
+
+| machine set | Σ demonstrated reward | demonstrated completions | picked |
+|---|---|---|---|
+| **best per start** (the set of record) | **206** | **16** | 70 |
+| **first attempt per start** | **131** | **8** | 63 |
+| random attempt (3 seeds) | 139 / 159 / 150 | 9 / 12 / 10 | 67 / 65 / 68 |
+| **human** (one attempt, no selection) | **118** | **3** | 64 |
+
+**Selection is doing most of the work.** Keeping the best of three lifts total demonstrated reward from 131 to 206, a 57 % gain, and **doubles** demonstrated completions from 8 to 16. The best attempt differs from the first on **24 of 72** starts.
+
+**Measured against the human set, the machine advantage largely collapses once selection is removed:** total reward 131 against 118 — **+11 %, versus +75 % as selected** — and picked 63 against 64, **indistinguishable**. So the machine set's apparent superiority over the human set is substantially a property of **our filtering**, not of the policy that generated it.
+
+**De-selection is the only symmetric fix.** Each human start has exactly one recorded attempt, and re-executing it in a deterministic simulator reproduces the same tape, so there is no human "best of three" to construct. The machine set can be rebuilt as **first-attempt-per-start** from tapes already on disk — the human protocol exactly, one attempt per start, keep whatever happened — with no new harvesting.
+
+**This is load-bearing for the one positive result we have.** The learning-speed effect is measured against the *selected* arm — the one with twice the completions and 57 % more reward — which already makes its direction counterintuitive: better demonstrations, slower ignition. De-selection is diagnostic either way. If the human lead grows, the effect is not about demonstration quality; if it shrinks, part of it was our filtering. **Until it is run, a significant learning-speed result could not be attributed to demonstration source rather than to how we built the set.**
