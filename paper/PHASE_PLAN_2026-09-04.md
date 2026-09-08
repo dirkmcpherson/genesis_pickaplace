@@ -539,3 +539,22 @@ Arising from the two effects established overnight (see `OVERNIGHT_STATE_2026-09
 **New confound, and it is the consequential one: hardware class is partially confounded with ARM in the published 8 v 8.** Mapping cells to nodes shows the machine arm is 8/8 sapphirerapids (AVX-512) while the human arm has two cells on AVX2 broadwell and one on graniterapids. Since CPU class demonstrably flips long-horizon outcomes, arm and instruction set are not independent in that comparison. Its magnitude is being measured directly (same cell on sapphirerapids versus its broadwell record).
 
 **Registered remedy:** re-score **all 64 end-to-end cells on a single pinned CPU model**, pinned by model string read from `/proc/cpuinfo` or explicit node list — never by Slurm feature label, which misreports (`pax001` advertises broadwell and is Cascade Lake). That removes the confound entirely and yields one internally consistent set, reported with `nested_honest`, `placed_v2`, `contact`, `contact_push` and `slide_success` columns. Phase cells need no pinning (3488 episodes bit-exact across classes). The published §5.1 numbers stand as a record of what was measured and are superseded by the pinned re-score for the three-learner table; both are reported, with the difference attributed.
+
+---
+
+## Amendment (u) — ignition speed as a demonstration-source effect (registered 2026-09-08, BEFORE the replication data exists)
+
+**Origin, stated honestly: this is a post hoc observation, not yet a finding.** Learning curves built from training-rollout logs show that on the end-to-end task the human-demonstration arm reaches the pick threshold about **262k environment steps earlier** than the machine arm — per-seed medians 549,998 versus 799,996, exact permutation p = 0.018 on ignition step — while the published final-checkpoint comparison for that same pair is a null. The threshold (0.2), the bin grid (40) and the stage (`picked`) were all chosen after seeing the data, and three phase families were examined, so a Bonferroni correction over three puts it at 0.054. **It is not citable as it stands and must not be written up from the discovery sample.**
+
+**Why it is worth registering rather than discarding.** Every comparison in this project is final-checkpoint, so the entire design is blind to differences in *sample efficiency*. "Demonstration source does not change what a learner ultimately reaches, but human demonstrations get it there sooner" is a coherent, plausible and practically important claim that our tables cannot currently see. It is also the kind of effect that would explain why practitioners believe demonstration source matters while our endpoint comparisons keep returning nulls.
+
+**Pre-registered replication, fixed before the data exists.**
+- **Replication set:** the 16 RLPD end-to-end runs (8 human, 8 machine) currently queued. Diffusion Policy is excluded by construction — it has no online interaction and therefore no ignition.
+- **Statistic:** the environment step at which a run's binned `picked` rate first reaches **0.2 and holds it**, on a **40-bin** grid over the run's own budget. These values are fixed here and may not be tuned.
+- **Stage:** `picked` only. Other stages are exploratory and reported descriptively.
+- **Test:** exact two-sided permutation on per-seed ignition steps, 8 v 8, α 0.05.
+- **Prediction (directional, from the discovery sample):** the human arm ignites earlier. A result in the opposite direction, or a null, disconfirms.
+- **Handling of non-igniting runs:** a run that never reaches threshold is assigned its full budget and flagged; if more than 2 of 8 in either arm fail to ignite the test is reported as inconclusive rather than significant, because the statistic degenerates.
+- **Disconfirm branch:** if the replication returns p > 0.05, the observation is reported as a non-replicating post hoc artefact of the discovery sample and is not carried into the paper's claims.
+
+**Independent of the outcome**, the learning curves themselves are reported descriptively with their training-rollout caveat attached, since their endpoints are not the evaluation statistic.
