@@ -1,5 +1,46 @@
 # Proposal: longer runs, sparse phase rewards, and the end-to-end reward question (2026-09-08)
 
+> **REVISED after `INDEPENDENT_REVIEW_2026-09-08.md` (Codex).** The reviewer found a factual error and a design error in
+> the first draft. Both are conceded and the design below is changed accordingly; the original text is kept underneath the
+> revision so the change is auditable.
+>
+> **Conceded — factual.** The first draft recommended making end-to-end sparse **on `slide_success`**. That predicate as
+> defined in amendment (l) was **WITHDRAWN by amendment (p)**: its `grip_cmd < 0.3` clause passes **2 of 74**
+> demonstrations, because the demonstrated slide is "release fully, re-close to ≈ 0.4, push the can home". The code
+> already refuses it — `full_env.py:286` asserts unless `CONTACT_GRANT_ALLOW_WITHDRAWN=1`, and (p)'s replacement
+> predicate has **clause 5 uncalibrated**. So the draft proposed training on a reward with no currently accepted
+> definition. **No sparse end-to-end arm can be registered until (p) clause 5 is calibrated and accepted.**
+>
+> **Conceded — design.** (a) The draft bundled two interventions, longer training *and* a different reward; with both
+> changed, neither is attributable. (b) The claim that 4e6 "equalises post-ignition training" is **wrong**: it compared a
+> future machine run at 4M against the human arm's *current* 2M budget. Extend both arms and both quantities move — at 4M
+> the human median post-ignition share rises to ≈ 86 %, so the gap persists. 4e6 is a reasonable next checkpoint, not a
+> principled equalisation point, and I withdraw that argument. (c) "Steady state" in `curves/` is a **tail average over a
+> quarter that is itself still improving**; it is a descriptive label, not a converged value, and a registered comparison
+> needs a fixed threshold with a persistence rule and a stated handling of non-igniting seeds. (d) A plateau rule needs a
+> **minimum performance floor** — a collapsed policy also satisfies "improvement < 0.02". (e) Even a crossing would
+> inherit the **demonstration-selection confound** (machine full-task demos are best-of-3 attempts, Σ reward 206 v 118;
+> the human arm keeps every attempt including failures), so it would evidence a dataset-construction difference, not
+> source provenance, until a control isolates it.
+>
+> **Contested, mildly.** The reviewer notes no convergence evidence justifies a broad *pick* re-run. I agree on the
+> evidence — the user asked for pick alongside end-to-end, and I record the tension rather than resolve it silently: pick
+> is cheap and diagnostic, but it should not gate place and slide.
+>
+> ### Revised primary experiment (replaces §2's grid as the first thing to run)
+> **R2 end-to-end, fresh seeds, 4M simulator steps, under the EXISTING staged reward**, with checkpoints saved and
+> evaluated at **both 2M and 4M** on the same registered banks and the pinned hardware protocol. That measures what extra
+> training buys *within* each run and against its own 2M point, with one variable moved. 4 seeds per arm as a feasibility
+> pilot with expansion criteria fixed in advance on feasibility/learnability, not on the sign or significance of the
+> human-machine difference; report every pilot outcome including a one-arm failure. Sparse end-to-end is a **separately
+> registered** comparison, blocked on (p) clause 5. DP needs no duplicate training (more gradient steps add no
+> experience); any RLPD extension needs its own stated question, informed by its in-flight end-to-end runs. Specify
+> replay capacity and demonstration retention over the longer budget rather than assuming they are unchanged.
+
+---
+
+## Original draft (superseded where the revision says so)
+
 **Status: proposal, nothing launched.** Written by the eval-fixes lane at the user's request. It does not modify any
 generated artefact in this directory. Registration must land in `paper/PHASE_PLAN_2026-09-04.md` **before** any job.
 
@@ -44,8 +85,10 @@ go/no-go on the full 8-seed re-run, and say so in the registration.
 | RLPD | 250k decisions (e2e) | **500k** | online, same doubling logic |
 | Diffusion Policy | 100k grad steps | 100k (unchanged) unless it shows the same pattern | offline: more gradient steps do not add experience, so this is not the same intervention |
 
-4e6 is chosen, not doubled arbitrarily: the slowest machine seed ignited at 1.37M, so 4e6 leaves it 66 % of training
-post-ignition, matching the human arm's *current* median of 73 %. It equalises the thing that is currently unequal.
+~~4e6 is chosen, not doubled arbitrarily: the slowest machine seed ignited at 1.37M, so 4e6 leaves it 66 % of training
+post-ignition, matching the human arm's *current* median of 73 %. It equalises the thing that is currently unequal.~~
+**WITHDRAWN (see revision): this compares a future machine run against the human arm's current budget; extending both
+arms moves both quantities. 4e6 stands only as a reasonable next checkpoint.**
 
 **Re-run fresh; do not resume.** The checkpoints contain `agent_state_dict`, `optims_state_dict`, `step` and **no replay
 buffer**, so resuming would be a warm policy with a cold buffer — a different experiment, not a continuation.
@@ -63,7 +106,10 @@ cell: **0.333 proxy versus 0.133 honest, a 2.5× over-count**; and amendment (l)
 statistic of record. The end-to-end runs are therefore optimising a quantity we have shown to be wrong and no longer
 score against.
 
-**Recommendation: make end-to-end sparse on `slide_success`**, so the reward pays what the paper scores. With the
+~~**Recommendation: make end-to-end sparse on `slide_success`**, so the reward pays what the paper scores.~~
+**WITHDRAWN (see revision): `slide_success` per (l) was withdrawn by (p) and the code refuses it; (p)'s replacement has
+an uncalibrated clause 5. The misalignment argument below still stands as motivation for investigating reward design,
+but it does not license this particular reward.** With the
 clamp set to the reward magnitude, as the clamp finding requires (`return_clamp` = maximum attainable return: 1.0 for a
 +1 terminal, 100 for a +100 one).
 
