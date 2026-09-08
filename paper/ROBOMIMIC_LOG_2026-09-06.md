@@ -266,3 +266,6 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
 - **BATCH 1 submitted 17:2x (matrix completion; 434 GB free at submit):** r2d MG200s s7 retrain **3354420**;
   DP MG200s retrains s5 **3354421**, s6 **3354422**, s7 **3354423**; DP MG200s eval-only s1 **3354424**, s2 **3354425**,
   s3 **3354426**, s4 **3354427**. Batches 2-4 (G2b, A2 controls, A4) follow in order, each gated on ≥ 150 GB free.
+- **BATCH 2 (G2b no-demo, gate 442 GB free): 3354437–3354444.** **BATCH 3 (A2 controls, gate 442 GB free, `--nice=5000`):
+  MGall s0-7 3354448–3354455, MG718s s0-7 3354456–3354463, MG200s@300k s0-7 3354464–3354471.** Batch 4 (A4, 32 runs,
+  `--nice=6000`) is staged behind them under the same ≥ 150 GB gate.
