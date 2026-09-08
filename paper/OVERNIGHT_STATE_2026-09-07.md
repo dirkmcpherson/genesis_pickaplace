@@ -296,10 +296,9 @@ The end-to-end agent has been told to stop attempting cluster access and to leav
 
 ## VPN DOWN 22:37 — pinned e2e re-score pickup
 
-> **PARTLY SUPERSEDED — read `### CORRECTION (ISA attribution withdrawn)` at the end of this section BEFORE running
-> anything below.** The pinning design in this section targets AVX2 vs AVX-512; that attribution has been withdrawn.
-> The reconnect order and the loose ends are still correct; the `--nodelist=pax109,pax154` pin and the "verified AVX2
-> nodelist" framing are NOT, and the pinned pass is now on hold behind a sweep verdict.
+> **PARTLY SUPERSEDED — read `### VERDICT: cores` at the end of this section BEFORE running anything below.** The
+> pinning design in this section targets AVX2 vs AVX-512, which is not the guard. The reconnect order and the loose
+> ends are still correct; the `--nodelist=pax109,pax154` pin and the "verified AVX2 nodelist" framing are NOT.
 
 End-to-end (full task) DP+RLPD lane, PHASE_PLAN amendment (n) (+ (s)/(t) responses). The VPN dropped at ~22:37 EDT
 mid-way through the ISA probe; no further cluster access was attempted after that. **Nothing in flight is lost: the 32
@@ -391,7 +390,7 @@ python3 baselines/e2e_table_all.py --strat                                 # the
 
 The verified AVX2 nodes remain `pax109` and `pax154`. Pinning to them is safe even without the probe, because the re-score script re-reads the processor information on arrival and aborts loudly if it lands on the wrong instruction set.
 
-### CORRECTION (ISA attribution withdrawn) — carry this, do not act on it yet
+### CORRECTION (superseded in part by `### VERDICT: cores` below) — machine size, not instruction set
 
 The coordinator withdrew the instruction-set attribution: **divergence tracks physical CORE COUNT, not AVX2 vs
 AVX-512.** The dissociation is clean in both directions — a 40-core Broadwell and a 64-core Sapphire Rapids agree
@@ -437,3 +436,52 @@ Diffusion Policy cost (≈300 CPU-hours) becomes ordinary parallel work.
 4. **Wait for the thread-pinning sweep verdict.** Do not submit the pinned pass before it.
 5. Then take the two measurements the coordinator asked for — one RLPD cell and one DP episode — **on machines of a
    fixed core count** (not a fixed instruction set), and report wall-clock before committing to all 32.
+
+### VERDICT: `cores` — the hold is released, and one claim in the correction above is itself retracted
+
+**The verdict is `cores`.** On reconnect the pinned pass launches with `SWEEP_VERDICT=cores REQUIRE_CORES=<n>`
+(plus `THREADS=<n>`, which costs nothing and removes a free variable). Pick `<n>` with `cluster/hw_probe.sh`.
+
+**There was never a competing sweep.** The thread-pinning probe belongs to the eval-fixes agent, not the
+contact-phase agent; the "pending sweep" line was that agent declining to pre-empt someone else's in-flight result.
+Its own 128-comparison audit never set a thread variable, so in every one of those comparisons the thread count
+simply *was* the physical core count. That is why the audit establishes the core-count rule and is structurally
+incapable of speaking to thread pinning — no contradiction, two agents describing different things.
+
+**Retraction inside the correction above.** The CPU-*family* attribution in that audit came from Slurm's
+`AvailableFeatures`, and those labels are wrong on this cluster — the same defect that made a node advertising
+Broadwell turn out to be Cascade Lake. So "a 40-core Broadwell agrees bit-for-bit with a 64-core Sapphire Rapids"
+is **not usable evidence about instruction sets**, and neither was the original AVX claim, which leaned on the same
+labels. **The instruction-set question is UNRESOLVED, not ruled out.** The section above states that cross-ISA
+agreement as if it were established; it is not, and every occurrence of it in the code has been reworded
+(`7c71ea9`).
+
+**What is established rests only on processor counts, which are reliable:** 53 of 53 same-core-count comparisons
+bit-identical across nodes, labels and code versions, and all 19 disagreements with a 36-core machine on exactly one
+side. So `--require-cores` is the correct guard, sufficient on every comparison on record, and checkable before
+submission. `--require-isa` stays as the diagnostic stamp — it is what makes a later re-check of families against
+`/proc/cpuinfo` possible on cells that already exist.
+
+**Code state (`7c71ea9`, local only — the cluster clone still has the older files):**
+
+- `sbatch_e2e_rescore.sh`: `SWEEP_VERDICT=cores` is the released path (`REQUIRE_CORES` required, `THREADS`
+  recommended, explicit warning if anyone pins to 36). `SWEEP_VERDICT=threads` now **refuses** without a written
+  `THREADS_ONLY_OK=<reason>`, since nothing on record supports a threads-only pin. A bare launch still refuses, so
+  nobody pins on a guess. All three paths verified locally.
+- `hw_probe.sh` flags 36-core machines explicitly and suggests the most common **non-36-core** size for
+  `REQUIRE_CORES`.
+- Wording corrected throughout `eval_e2e.py`, `merge_e2e_iso.py`, `e2e_table_all.py`: guard of record, `--threads`
+  documented as "alongside `--require-cores`, never instead of it", and the `hw_axis` stamp now records that the ISA
+  question is unresolved.
+
+**Reconnect sequence (unchanged where it matters):**
+
+1. Kill the stray login-node probe processes and delete the untrustworthy map — still step one.
+2. Re-sync + commit the lane's code into `$LAB/gp_e2e` (must include `hw_probe.sh` and the removal of
+   `isa_probe.sh`).
+3. `bash cluster/hw_probe.sh` at **PAR=6** → machine-size census → choose `REQUIRE_CORES=<n>`, avoiding 36.
+4. **Two measurements before committing the full pass, both at that fixed core count:** one RLPD cell and one
+   Diffusion Policy episode. Both are genuinely unknown; the DP figure is the one that decides whether the pass is
+   cheap or a scheduling problem (the only DP number on record, 568 s/episode, is from a different machine and does
+   not transfer).
+5. Then the 32-cell pinned pass, and read out with `--cell-root rec` (never mixing `preview` and `record`).
