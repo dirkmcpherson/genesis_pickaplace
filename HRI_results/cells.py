@@ -227,36 +227,80 @@ COMPARISONS = [
               'world-model place cell.'),
 
     # ---------------------------------------------------------------- Genesis: CONTACT
-    dict(id='contact_r2d_bare', expect_seeds=8, group='Contact (matched 11)', learner='world model (r2dreamer)',
-         stat='contact (legacy)', action='mode', human='dH sub-floor (11)',
-         machine='dDP_n11 (11)',
-         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE',
-                    action_mode='mode', statistic='contact',
-                    extra='setting=bnormclamp1ent5_subfloor'),
-         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE',
-                    action_mode='mode', statistic='contact',
-                    extra='setting=bnormclamp1ent5_n11'),
-         provisional='Bare `contact` is the LEGACY predicate and overstates capability by '
-                     '1.5-3x against contact_push; carried only so the published number is '
-                     'reproducible. Both arms are sub-floor (11 demonstrations each).',
-         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. The pinned re-score '
-                           'is PARTIALLY LANDED (2 human / 6 machine seeds of 8 at this build), '
-                           'so these inputs are being overwritten, not merely refined.',
-         note='Read contact_r2d_push instead.'),
+    # Contact and carrycontact re-scores COMPLETED at 8 v 8 (2026-09-08). v2 is the row of
+    # record; the as-recorded row stays visible so the correction can be inspected.
+    dict(id='contact_r2d_bare', expect_seeds=8, group='Contact (matched 11)',
+         learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
+         human='dH sub-floor (11)', machine='dDP_n11 (11)',
+         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE_v2',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_subfloor'),
+         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_v2',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_n11'),
+         provisional='Both arms are sub-floor (11 demonstrations each).', note='LEGACY predicate: overstates capability 1.5-3x against contact_push. Read contact_r2d_push instead.', rescored_from='contact_r2d_bare_asrecorded'),
 
-    dict(id='contact_r2d_push', expect_seeds=8, group='Contact (matched 11)', learner='world model (r2dreamer)',
-         stat='contact_push', action='mode', human='dH sub-floor (11)', machine='dDP_n11 (11)',
-         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE_cp',
-                    action_mode='mode', statistic='contact_push',
-                    extra='setting=bnormclamp1ent5_subfloor'),
-         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_cp',
-                    action_mode='mode', statistic='contact_push',
-                    extra='setting=bnormclamp1ent5_n11'),
-         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. The pinned re-score '
-                           'is PARTIALLY LANDED (2 human / 6 machine seeds of 8 at this build), '
-                           'so these inputs are being overwritten, not merely refined.',
-         note='contact_push is the DISCRIMINATING statistic of the three contact predicates: it '
-              'requires the tool point to push the can, where bare contact does not.'),
+    dict(id='contact_r2d_bare_asrecorded', expect_seeds=8, group='Contact (matched 11)',
+         learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
+         human='dH sub-floor (11)', machine='dDP_n11 (11)',
+         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_subfloor'),
+         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_n11'),
+         provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='LEGACY predicate: overstates capability 1.5-3x against contact_push. Read contact_r2d_push instead.'),
+
+    dict(id='contact_r2d_push', expect_seeds=8, group='Contact (matched 11)',
+         learner='world model (r2dreamer)', stat='contact_push', action='mode',
+         human='dH sub-floor (11)', machine='dDP_n11 (11)',
+         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE_v2',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_subfloor'),
+         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_v2',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n11'),
+         provisional='Both arms are sub-floor (11 demonstrations each).', note='contact_push is the DISCRIMINATING contact predicate: it requires the tool point to push the can, where bare contact does not.', rescored_from='contact_r2d_push_asrecorded'),
+
+    dict(id='contact_r2d_push_asrecorded', expect_seeds=8, group='Contact (matched 11)',
+         learner='world model (r2dreamer)', stat='contact_push', action='mode',
+         human='dH sub-floor (11)', machine='dDP_n11 (11)',
+         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_subfloor'),
+         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n11'),
+         provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='contact_push is the DISCRIMINATING contact predicate: it requires the tool point to push the can, where bare contact does not.'),
+
+    dict(id='carry_r2d_bare', expect_seeds=8, group='Carrycontact (matched 21)',
+         learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
+         human='dH (21)', machine='dDP_n21 (21)',
+         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE_v2',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_v2',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_n21'),
+         provisional='', note='LEGACY predicate; read carry_r2d_push instead.', rescored_from='carry_r2d_bare_asrecorded'),
+
+    dict(id='carry_r2d_bare_asrecorded', expect_seeds=8, group='Carrycontact (matched 21)',
+         learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
+         human='dH (21)', machine='dDP_n21 (21)',
+         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE',
+                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5_n21'),
+         provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='LEGACY predicate; read carry_r2d_push instead.'),
+
+    dict(id='carry_r2d_push', expect_seeds=8, group='Carrycontact (matched 21)',
+         learner='world model (r2dreamer)', stat='contact_push', action='mode',
+         human='dH (21)', machine='dDP_n21 (21)',
+         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE_v2',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_v2',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n21'),
+         provisional='', note='The discriminating contact predicate on the carrycontact scope.', rescored_from='carry_r2d_push_asrecorded'),
+
+    dict(id='carry_r2d_push_asrecorded', expect_seeds=8, group='Carrycontact (matched 21)',
+         learner='world model (r2dreamer)', stat='contact_push', action='mode',
+         human='dH (21)', machine='dDP_n21 (21)',
+         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE',
+                    action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n21'),
+         provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='The discriminating contact predicate on the carrycontact scope.'),
+
 
     dict(id='contact_dp', group='Contact (matched 11)', learner='Diffusion Policy',
          stat='contact_push', action='sampled', human='dH sub-floor (11)', machine='dDP_n11 (11)',
@@ -270,34 +314,6 @@ COMPARISONS = [
          sel_h=dict(source='cluster:phase_clone', phase='contact', learner='RLPD'),
          sel_m=dict(source='cluster:phase_clone', phase='contact', learner='RLPD'),
          empty_reason='Not run (same hold as contact_dp).'),
-
-    # ---------------------------------------------------------------- Genesis: CARRYCONTACT
-    dict(id='carry_r2d_bare', expect_seeds=8, group='Carrycontact (matched 21)',
-         learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
-         human='dH (21)', machine='dDP_n21 (21)',
-         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE',
-                    action_mode='mode', statistic='contact', extra='setting=bnormclamp1ent5'),
-         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE',
-                    action_mode='mode', statistic='contact',
-                    extra='setting=bnormclamp1ent5_n21'),
-         provisional='Legacy bare-contact predicate; see carry_r2d_push. Five polE entries fail '
-                     'to restore in this scope for every arm and are counted as failures.',
-         rescore_in_flight='Carrycontact is last in the re-score queue and has barely started '
-                           '(2 human / 1 machine seed of 8 at this build).',
-         note=''),
-
-    dict(id='carry_r2d_push', expect_seeds=8, group='Carrycontact (matched 21)',
-         learner='world model (r2dreamer)', stat='contact_push', action='mode',
-         human='dH (21)', machine='dDP_n21 (21)',
-         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE_cp',
-                    action_mode='mode', statistic='contact_push',
-                    extra='setting=bnormclamp1ent5'),
-         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_cp',
-                    action_mode='mode', statistic='contact_push',
-                    extra='setting=bnormclamp1ent5_n21'),
-         rescore_in_flight='Carrycontact is last in the re-score queue and has barely started '
-                           '(2 human / 1 machine seed of 8 at this build).',
-         note='The discriminating contact predicate on the carrycontact scope.'),
 
     # ---------------------------------------------------------------- Genesis: END-TO-END by stage
 ] + [

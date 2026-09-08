@@ -101,6 +101,13 @@ def main():
     ap.add_argument('--wm-runs', default=W + '/runs')
     ap.add_argument('--wm-human', default='full_r2d_state_dHfull_all_bnormclampS8ent5_s{s}')
     ap.add_argument('--wm-machine', default='full_r2d_state_dDPfull_bnormclampS8ent5_s{s}')
+    # PHASE_PLAN (v): the arm a learner reads is a NAME TEMPLATE, so the de-confounded machine arm
+    # (dDPfirst / dDPfull_first) can be tabulated against either the human arm (the de-confounded source
+    # contrast) or the selected machine arm (the selection effect on its own). Defaults are the arms of record.
+    ap.add_argument('--rlpd-human',   default='e2e_rlpd_dH_s{s}')
+    ap.add_argument('--rlpd-machine', default='e2e_rlpd_dDP_s{s}')
+    ap.add_argument('--dp-human',     default='e2e_dp_dH_s{s}')
+    ap.add_argument('--dp-machine',   default='e2e_dp_dDP_s{s}')
     ap.add_argument('--sets', default='hold15 rnd30 spots60')
     ap.add_argument('--stages', default=' '.join(ALL_STAGES))
     ap.add_argument('--seeds', default='0-7')
@@ -130,9 +137,18 @@ def main():
     sets = args.sets.split(); stages = args.stages.split()
     learners = [
         ('WM  ', lambda arm, s: os.path.join(args.wm_runs, (args.wm_human if arm == 'dH' else args.wm_machine).format(s=s)), ('sample', 'mode')),
-        ('RLPD', lambda arm, s: os.path.join(args.rlpd_runs, f'e2e_rlpd_{arm}_s{s}'), ('sample', 'mode')),
-        ('DP  ', lambda arm, s: os.path.join(args.dp_runs, f'e2e_dp_{arm}_s{s}'), ('sample',)),
+        ('RLPD', lambda arm, s: os.path.join(args.rlpd_runs, (args.rlpd_human if arm == 'dH' else args.rlpd_machine).format(s=s)), ('sample', 'mode')),
+        ('DP  ', lambda arm, s: os.path.join(args.dp_runs, (args.dp_human if arm == 'dH' else args.dp_machine).format(s=s)), ('sample',)),
     ]
+    defaults = {'wm_human': 'full_r2d_state_dHfull_all_bnormclampS8ent5_s{s}',
+                'wm_machine': 'full_r2d_state_dDPfull_bnormclampS8ent5_s{s}',
+                'rlpd_human': 'e2e_rlpd_dH_s{s}', 'rlpd_machine': 'e2e_rlpd_dDP_s{s}',
+                'dp_human': 'e2e_dp_dH_s{s}', 'dp_machine': 'e2e_dp_dDP_s{s}'}
+    moved = {k: getattr(args, k) for k, v in defaults.items() if getattr(args, k) != v}
+    if moved:
+        # never let a non-default arm be read as the comparison of record
+        print('NON-DEFAULT ARMS -- this is NOT the table of record: ' +
+              ', '.join(f'{k}={v}' for k, v in sorted(moved.items())))
     for iset in sets:
         for learner, path_of, modes in learners:
             for mode in modes:

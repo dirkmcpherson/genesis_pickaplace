@@ -36,11 +36,11 @@ DOC_OF_RECORD = [
     # --- Genesis phases
     dict(id='place_r2d_asrecorded', doc='PHASE_RESULTS §2.y', human=0.703,
          machine=0.647, p=0.227),
-    dict(id='contact_r2d_bare', doc='PHASE_RESULTS §3', human=0.593, machine=0.602, p=0.841),
-    dict(id='contact_r2d_push', doc='PHASE_RESULTS §3 (2026-09-07 re-score)', human=0.346,
+    dict(id='contact_r2d_bare_asrecorded', doc='PHASE_RESULTS §3', human=0.593, machine=0.602, p=0.841),
+    dict(id='contact_r2d_push_asrecorded', doc='PHASE_RESULTS §3 (2026-09-07 re-score)', human=0.346,
          machine=0.366, p=0.31, tol=0.006),
-    dict(id='carry_r2d_bare', doc='PHASE_RESULTS §4', human=0.807, machine=0.796, p=0.348),
-    dict(id='carry_r2d_push', doc='PHASE_RESULTS §3 addendum (re-score)', human=0.285,
+    dict(id='carry_r2d_bare_asrecorded', doc='PHASE_RESULTS §4', human=0.807, machine=0.796, p=0.348),
+    dict(id='carry_r2d_push_asrecorded', doc='PHASE_RESULTS §3 addendum (re-score)', human=0.285,
          machine=0.250, p=0.55, tol=0.006),
 
     # --- Genesis end-to-end
