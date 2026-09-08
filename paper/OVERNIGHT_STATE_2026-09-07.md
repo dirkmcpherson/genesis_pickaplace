@@ -43,3 +43,13 @@ Filesystem hit 100 % and killed every job; 434 GB freed, all finals/selected che
 - The peer's earlier same-node divergence evidence came from **pre-freeze** cells (trees being edited, disk filling), so node and run-condition are confounded there; only the running comparison separates them.
 
 **Load-bearing job to look for first in the morning: sequence check 3355868** — a 30-episode rerun in the record's own order, diffed per episode and on aggregate. It decides whether `PHASE_RESULTS` §5.1's 8v8 end-to-end numbers stand as published, independently of which explanation wins.
+
+## 00:20 — the robomimic headline may reverse; watch this first alongside the sequence check
+
+The A2 quantity control **MGall** (all 3,900 SAC rollouts *including* the 3,182 failures; 536,522 transitions) is scoring **0.74 and 0.60** on its first two seeds — **above MH200's 0.455**, and far above MG200s' 0.147. Provenance verified per run before recording (arm, demo sha, γ, demo_batch, budget reached, 50 episodes, same bank sha).
+
+Registered prediction P2 said MGall would fall **below** MH200 by ≥ 0.15. The first two seeds go the other way, and the registered A2 decision rule is explicit: *if MG718s or MGall reaches MH200 − 0.10, the effect was quantity/coverage, not source.* If that holds at n = 8, then today's headline — "RLPD learns much worse from SAC-generated demonstrations, Δ +0.307, p 0.008" — describes a property of the **200-tape MG subsample** (16.5k rows, drawn only from late checkpoints), not of machine provenance. The falsifier would not have fired against source at all.
+
+**MG718s becomes the decisive arm**: 718 tapes / 59k rows, i.e. *more* rows than MH200's 41k but the same generator, so it separates quantity from provenance where MGall (13× MH200's data) cannot.
+
+Nothing is computed until all 8 seeds of both arms land. But the sensible expectation for the morning is that the robomimic story is **not** settled and the day's strongest-sounding result is the one most likely to move. That is the control working as designed — it was registered before the result, and it is now contradicting it.
