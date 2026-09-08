@@ -30,6 +30,68 @@ def perm(a, b):
     return obs, c / t
 
 
+def core_census(cell_dir):
+    """Physical-core classes of the episodes in one sweep/eval dir -> Counter({cores: n_episodes}).
+    Cells written after 2026-09-08 carry node.cores; older ones carry only the hostname and count as 'unstamped'."""
+    import collections, glob, json, os
+    c = collections.Counter()
+    for f in glob.glob(os.path.join(cell_dir, '*.json')):
+        if os.path.basename(f) in ('sweep.json', 'metrics.json', 'bank_used.json'):
+            continue
+        try:
+            d = json.load(open(f))
+        except Exception:
+            continue
+        n = (d.get('node') or {})
+        if n.get('cores'):
+            c[str(n['cores'])] += 1
+        elif n.get('hostname'):
+            c[_cores_of_host(n['hostname'])] += 1
+        else:
+            c['unstamped'] += 1
+    return c
+
+
+_HOST_CORES = {}
+
+
+def _cores_of_host(host):
+    """Cells written before 2026-09-08 carry only a hostname; resolve it through sinfo when we are on the cluster,
+    so the core-balance check also covers the already-computed cells. Off-cluster it degrades to 'unstamped'."""
+    global _HOST_CORES
+    if not _HOST_CORES:
+        _HOST_CORES = {'_loaded': True}
+        try:
+            import subprocess
+            out = subprocess.run(['sinfo', '-h', '-N', '-o', '%n %c'], capture_output=True, text=True, timeout=20).stdout
+            for line in out.strip().split('\n'):
+                p = line.split()
+                if len(p) == 2:
+                    _HOST_CORES[p[0]] = p[1]
+        except Exception:
+            pass
+    return _HOST_CORES.get(host, 'unstamped')
+
+
+def print_core_report(per_arm):
+    """per_arm: {arm_label: Counter}. Flags a class present on one side only -- the documented divergence pattern."""
+    if not any(per_arm.values()):
+        return
+    print('\n**Node core-count balance** (episodes per physical-core class; a class on one side only is the pattern '
+          'behind every recorded cross-node disagreement):')
+    for arm, c in per_arm.items():
+        if c:
+            print(f'- {arm}: ' + ', '.join(f'{k}-core x{v}' for k, v in sorted(c.items())))
+    classes = [set(c) - {'unstamped'} for c in per_arm.values() if c]
+    if len(classes) > 1:
+        one_sided = set().union(*classes) - set.intersection(*classes)
+        if one_sided:
+            print(f'- **CORE SKEW**: {sorted(one_sided)} present on one side only -- re-run those cells pinned to a '
+                  f'single class before quoting a difference.')
+        else:
+            print('- all arms span the same core classes.')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--root', default='baselines/outputs')
@@ -44,7 +106,8 @@ def main():
             fin_p = os.path.join(sw, 'final', 'sweep.json') if os.path.exists(os.path.join(sw, 'final', 'sweep.json')) else os.path.join(sw, 'final_sweep.json')
             fin_r = load(fin_p, 'rnd')
             s60 = load(os.path.join(sw, 'selected_spots60', 'sweep.json'), 'spots60'); f60 = load(os.path.join(sw, 'final_spots60', 'sweep.json'), 'spots60')
-            rows.append(dict(seed=s, sel_h=sel_h, sel_r=sel_r, fin_r=fin_r, s60=s60, f60=f60, sel_step=(sel_h[3] if sel_h else None)))
+            rows.append(dict(seed=s, run=run, sel_h=sel_h, sel_r=sel_r, fin_r=fin_r, s60=s60, f60=f60,
+                             sel_step=(sel_h[3] if sel_h else None)))
         arms[name] = rows
     print('| arm | seed | selected ckpt | sel hold | sel rnd/30 | LAST rnd/30 | sel spots60 | LAST spots60 |'); print('|---|---|---|---|---|---|---|---|')
     for name, rows in arms.items():
@@ -55,6 +118,15 @@ def main():
             xs = [r[k] for r in rows if r[k] is not None and r[k][1] == r[k][2]]
             tot.append(f'{sum(x[0] for x in xs)}/{sum(x[1] for x in xs)} ({sum(x[0] for x in xs) / max(1, sum(x[1] for x in xs)):.3f}, n={len(xs)})' if xs else '—')
         print(f'| **{name}** | all | | ' + ' | '.join(tot) + ' |')
+    import collections as _c
+    cores = {}
+    for name, rows in arms.items():
+        tot = _c.Counter()
+        for r in rows:
+            for cell in ('selected_spots60', 'final_spots60'):
+                tot += core_census(os.path.join(r['run'], 'sweep', cell))
+        cores[name] = tot
+    print_core_report(cores)
     names = list(arms)
     print()
     for i in range(len(names)):

@@ -41,6 +41,68 @@ def perm(a, b):
     return obs, c / t
 
 
+def core_census(cell_dir):
+    """Physical-core classes of the episodes in one sweep/eval dir -> Counter({cores: n_episodes}).
+    Cells written after 2026-09-08 carry node.cores; older ones carry only the hostname and count as 'unstamped'."""
+    import collections, glob, json, os
+    c = collections.Counter()
+    for f in glob.glob(os.path.join(cell_dir, '*.json')):
+        if os.path.basename(f) in ('sweep.json', 'metrics.json', 'bank_used.json'):
+            continue
+        try:
+            d = json.load(open(f))
+        except Exception:
+            continue
+        n = (d.get('node') or {})
+        if n.get('cores'):
+            c[str(n['cores'])] += 1
+        elif n.get('hostname'):
+            c[_cores_of_host(n['hostname'])] += 1
+        else:
+            c['unstamped'] += 1
+    return c
+
+
+_HOST_CORES = {}
+
+
+def _cores_of_host(host):
+    """Cells written before 2026-09-08 carry only a hostname; resolve it through sinfo when we are on the cluster,
+    so the core-balance check also covers the already-computed cells. Off-cluster it degrades to 'unstamped'."""
+    global _HOST_CORES
+    if not _HOST_CORES:
+        _HOST_CORES = {'_loaded': True}
+        try:
+            import subprocess
+            out = subprocess.run(['sinfo', '-h', '-N', '-o', '%n %c'], capture_output=True, text=True, timeout=20).stdout
+            for line in out.strip().split('\n'):
+                p = line.split()
+                if len(p) == 2:
+                    _HOST_CORES[p[0]] = p[1]
+        except Exception:
+            pass
+    return _HOST_CORES.get(host, 'unstamped')
+
+
+def print_core_report(per_arm):
+    """per_arm: {arm_label: Counter}. Flags a class present on one side only -- the documented divergence pattern."""
+    if not any(per_arm.values()):
+        return
+    print('\n**Node core-count balance** (episodes per physical-core class; a class on one side only is the pattern '
+          'behind every recorded cross-node disagreement):')
+    for arm, c in per_arm.items():
+        if c:
+            print(f'- {arm}: ' + ', '.join(f'{k}-core x{v}' for k, v in sorted(c.items())))
+    classes = [set(c) - {'unstamped'} for c in per_arm.values() if c]
+    if len(classes) > 1:
+        one_sided = set().union(*classes) - set.intersection(*classes)
+        if one_sided:
+            print(f'- **CORE SKEW**: {sorted(one_sided)} present on one side only -- re-run those cells pinned to a '
+                  f'single class before quoting a difference.')
+        else:
+            print('- all arms span the same core classes.')
+
+
 def parse_arm(spec):
     name, rng = spec.split(':'); a, b = rng.split('-'); return name, list(range(int(a), int(b) + 1))
 
@@ -77,6 +139,14 @@ def main():
             cs = [r[k][s] for r in rows if complete((r[k] or {}).get(s))]
             tots.append(f'{sum(c[0] for c in cs)}/{sum(c[1] for c in cs)} ({sum(c[0] for c in cs) / max(1, sum(c[1] for c in cs)):.3f}, n={len(cs)})' if cs else '—')
         print(f'| **{name}** | all | ' + ' | '.join(tots) + ' |')
+    cores = {}
+    for label, (name, rows) in arms.items():
+        import collections as _c
+        tot = _c.Counter()
+        for r in rows:
+            for cell in ('final_sampled', 'final_det15', 'final_sampled_spots60', 'final_det_spots60'):
+                tot += core_census(os.path.join(r['run'], 'sweep', cell))
+        cores[name] = tot
     hn, hr = arms['human']; mn, mr = arms['machine']
     print()
     for lab, k, s in (('SAMPLED rnd30', 'smp', 'rnd'), ('SAMPLED hold15', 'smp', 'hold'), ('deterministic rnd30 (existing)', 'det', 'rnd'),
@@ -92,6 +162,7 @@ def main():
     # Dead seeds: this project's RLPD runs have a documented failure mode where the LAST checkpoint collapses
     # (CONFOUNDS: dHv2raw s65, dDPv2 s55 in the v2 wave). They are NOT dropped -- the registered statistic is the LAST
     # checkpoint -- but they must be visible, because an arm's mean moves ~0.07 on rnd30 depending on whether one lands.
+    print_core_report(cores)
     for label, (name, rows) in arms.items():
         dead = [r['seed'] for r in rows
                 if complete((r['det'] or {}).get('rnd')) and r['det']['rnd'][0] <= 0.1 * r['det']['rnd'][1]]
