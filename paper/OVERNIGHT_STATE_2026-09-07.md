@@ -90,3 +90,21 @@ Consequences: the earlier "pax109 and pax154 are both broadwell and disagree" ar
 **Order dependence is a separate, still-live effect** on its own clean evidence (same node, same code, r=1.0 standalone vs r=3.0 as episode 2). A direct measurement is running that dumps the full post-reset state for both conditions and diffs the following 20 decisions, returning one of three verdicts: incomplete reset (naming the first differing field), hidden solver state, or clean.
 
 **And it reaches the new arms.** `eval_e2e.py` builds one env and loops episodes in sequence, structurally the same as the world-model evaluator on this axis, so the 32 DP/RLPD end-to-end cells inherit any leakage — and worse for comparability, the two arms' policies produce different episode lengths, so the residual pattern differs *between arms within the same table*. If the verdict is "incomplete reset", those 32 evaluations are held, the reset is fixed, and they are re-run.
+
+## 03:10 — core-count mechanism CONFIRMED at scale (128 comparisons)
+
+Independent audit by the contact_push agent, joining every re-scored cell to the SLURM node that produced its record and its re-run (`$W/core_audit2.py`, committed 082c55f):
+
+| record vs re-run | comparisons | bit-identical | differing |
+|---|---|---|---|
+| **same physical core count** | 53 | **53** | **0** |
+| different core count | 75 | 56 | 19 |
+
+- **Same core count is always bit-identical** — across different nodes, different CPU families, and different code versions.
+- **CPU family is ruled out directly**: broadwell-40c agrees with sapphirerapids-64c, and both disagree with broadwell-36c. Every one of the 19 differing comparisons has a 36-core machine on exactly one side; no two non-36-core machines ever disagreed.
+- A core-count change does not *force* divergence (56 of 75 unequal pairs still match) — only episodes near a decision boundary amplify it, which is why the contact scope shows it and carrycontact never does.
+- The earlier "four cells on one node, three differing, one identical" anomaly **dissolves**: those cells' records came from two different machines, and same-core identity holds throughout.
+
+Both the node-identity attribution and the job-geometry framing are now formally withdrawn in that agent's doc. Every current cell is **unpinned**; if the `TI_NUM_THREADS` sweep confirms pinning as the fix, the affected sections are regenerated from pinned cells before any number is quoted.
+
+**Worth keeping for the paper's methods section regardless of the fix:** contact-rich physics results here are bit-reproducible given the same thread count, and can flip outcomes across machines with different core counts over long horizons. That is a concrete, quantified reproducibility statement most robot-learning papers cannot make, and we can make it because the failure was chased rather than absorbed into seed variance.
