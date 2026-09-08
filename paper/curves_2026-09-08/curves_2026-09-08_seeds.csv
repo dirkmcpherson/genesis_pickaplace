@@ -1,0 +1,117 @@
+# Learning curves from ONLINE TRAINING ROLLOUTS (exploring policy, resetting from the TRAINING bank).
+# NOT the evaluation protocol: eval cells use mode/sampled actions on the polE / rnd30 start sets and exist only
+# at the FINAL checkpoint, so a curve endpoint is NOT the table number and must not be compared with it.
+# e2e 'nested_proxy' is the TRAINING PROXY (over-counts the settled predicate ~2.5x); it is never 'nested'.
+family,arm,stage,seed,ignition_step,peak,tail_mean,classification
+place,human,placed_v2,0,62500,0.999,0.992,ignited and held
+place,human,placed_v2,1,62500,0.999,0.996,ignited and held
+place,human,placed_v2,2,87500,0.996,0.992,ignited and held
+place,human,placed_v2,3,87500,0.997,0.987,ignited and held
+place,human,placed_v2,4,87500,0.996,0.988,ignited and held
+place,human,placed_v2,5,62500,0.996,0.988,ignited and held
+place,human,placed_v2,6,87500,0.999,0.991,ignited and held
+place,human,placed_v2,7,62500,0.992,0.989,ignited and held
+place,human,contact,0,,0.122,0.001,never ignited (<0.2 throughout)
+place,human,contact,1,87500,0.248,0.002,ignited then collapsed
+place,human,contact,2,87500,0.415,0.000,ignited then collapsed
+place,human,contact,3,112500,0.378,0.000,ignited then collapsed
+place,human,contact,4,87500,0.365,0.000,ignited then collapsed
+place,human,contact,5,,0.108,0.000,never ignited (<0.2 throughout)
+place,human,contact,6,87500,0.352,0.001,ignited then collapsed
+place,human,contact,7,,0.146,0.001,never ignited (<0.2 throughout)
+place,machine,placed_v2,0,87500,0.993,0.982,ignited and held
+place,machine,placed_v2,1,87500,0.995,0.976,ignited and held
+place,machine,placed_v2,2,112500,0.991,0.979,ignited and held
+place,machine,placed_v2,3,87500,0.991,0.984,ignited and held
+place,machine,placed_v2,4,62500,0.991,0.983,ignited and held
+place,machine,placed_v2,5,87500,0.986,0.975,ignited and held
+place,machine,placed_v2,6,87500,0.996,0.987,ignited and held
+place,machine,placed_v2,7,62500,0.993,0.990,ignited and held
+place,machine,contact,0,,0.088,0.001,never ignited (<0.2 throughout)
+place,machine,contact,1,87500,0.423,0.003,ignited then collapsed
+place,machine,contact,2,,0.157,0.002,never ignited (<0.2 throughout)
+place,machine,contact,3,,0.064,0.000,never ignited (<0.2 throughout)
+place,machine,contact,4,212500,0.201,0.001,ignited then collapsed
+place,machine,contact,5,,0.189,0.017,never ignited (<0.2 throughout)
+place,machine,contact,6,,0.192,0.003,never ignited (<0.2 throughout)
+place,machine,contact,7,,0.105,0.005,never ignited (<0.2 throughout)
+slide,human,contact,0,12500,0.999,0.994,ignited and held
+slide,human,contact,1,12500,0.998,0.997,ignited and held
+slide,human,contact,2,12500,0.999,0.996,ignited and held
+slide,human,contact,3,37500,1.000,0.998,ignited and held
+slide,human,contact,4,12500,1.000,0.999,ignited and held
+slide,human,contact,5,12500,0.997,0.992,ignited and held
+slide,human,contact,6,12500,0.999,0.996,ignited and held
+slide,human,contact,7,12500,0.998,0.996,ignited and held
+slide,human,task_success,0,12500,0.999,0.994,ignited and held
+slide,human,task_success,1,12500,0.998,0.997,ignited and held
+slide,human,task_success,2,12500,0.999,0.996,ignited and held
+slide,human,task_success,3,37500,1.000,0.998,ignited and held
+slide,human,task_success,4,12500,1.000,0.999,ignited and held
+slide,human,task_success,5,12500,0.997,0.992,ignited and held
+slide,human,task_success,6,12500,0.999,0.996,ignited and held
+slide,human,task_success,7,12500,0.998,0.996,ignited and held
+slide,machine,contact,0,12500,0.999,0.996,ignited and held
+slide,machine,contact,1,12500,0.996,0.994,ignited and held
+slide,machine,contact,2,12500,0.998,0.997,ignited and held
+slide,machine,contact,3,12500,0.996,0.992,ignited and held
+slide,machine,contact,4,37500,0.997,0.992,ignited and held
+slide,machine,contact,5,12500,0.998,0.996,ignited and held
+slide,machine,contact,6,37500,0.999,0.998,ignited and held
+slide,machine,contact,7,12500,0.998,0.998,ignited and held
+slide,machine,task_success,0,12500,0.999,0.996,ignited and held
+slide,machine,task_success,1,12500,0.996,0.994,ignited and held
+slide,machine,task_success,2,12500,0.998,0.997,ignited and held
+slide,machine,task_success,3,12500,0.996,0.992,ignited and held
+slide,machine,task_success,4,37500,0.997,0.992,ignited and held
+slide,machine,task_success,5,12500,0.998,0.996,ignited and held
+slide,machine,task_success,6,37500,0.999,0.998,ignited and held
+slide,machine,task_success,7,12500,0.998,0.998,ignited and held
+e2e,human,picked,0,724997,0.528,0.485,ignited and held
+e2e,human,picked,1,474998,0.821,0.608,ignited and held
+e2e,human,picked,2,424998,0.743,0.477,ignited and held
+e2e,human,picked,3,624998,0.824,0.791,ignited and held
+e2e,human,picked,4,424998,0.783,0.550,ignited and held
+e2e,human,picked,5,624998,0.634,0.451,ignited and held
+e2e,human,picked,6,674997,0.709,0.588,ignited and held
+e2e,human,picked,7,474998,0.829,0.702,ignited and held
+e2e,human,contact,0,1174995,0.472,0.426,ignited and held
+e2e,human,contact,1,674997,0.714,0.592,ignited and held
+e2e,human,contact,2,1024996,0.648,0.419,ignited and held
+e2e,human,contact,3,1174995,0.761,0.700,ignited and held
+e2e,human,contact,4,674997,0.730,0.508,ignited and held
+e2e,human,contact,5,824997,0.536,0.410,ignited and held
+e2e,human,contact,6,924996,0.627,0.508,ignited and held
+e2e,human,contact,7,724997,0.767,0.642,ignited and held
+e2e,human,nested_proxy,0,1524994,0.382,0.327,ignited and held
+e2e,human,nested_proxy,1,724997,0.625,0.450,ignited and held
+e2e,human,nested_proxy,2,1224995,0.514,0.352,ignited and held
+e2e,human,nested_proxy,3,1174995,0.628,0.523,ignited and held
+e2e,human,nested_proxy,4,724997,0.557,0.379,ignited and held
+e2e,human,nested_proxy,5,974996,0.387,0.275,ignited and held
+e2e,human,nested_proxy,6,1074996,0.491,0.390,ignited and held
+e2e,human,nested_proxy,7,774997,0.681,0.504,ignited and held
+e2e,machine,picked,0,924996,0.506,0.418,ignited and held
+e2e,machine,picked,1,624998,0.633,0.268,ignited and held
+e2e,machine,picked,2,524998,0.729,0.528,ignited and held
+e2e,machine,picked,3,1374994,0.600,0.568,ignited and held
+e2e,machine,picked,4,874996,0.708,0.594,ignited and held
+e2e,machine,picked,5,924996,0.604,0.598,ignited and held
+e2e,machine,picked,6,724997,0.673,0.551,ignited and held
+e2e,machine,picked,7,574998,0.600,0.466,ignited and held
+e2e,machine,contact,0,1274995,0.456,0.370,ignited and held
+e2e,machine,contact,1,824997,0.541,0.244,ignited and held
+e2e,machine,contact,2,1024996,0.703,0.477,ignited and held
+e2e,machine,contact,3,1474994,0.411,0.349,ignited and held
+e2e,machine,contact,4,1074996,0.660,0.517,ignited and held
+e2e,machine,contact,5,1174995,0.547,0.530,ignited and held
+e2e,machine,contact,6,1174995,0.634,0.516,ignited and held
+e2e,machine,contact,7,1124996,0.533,0.403,ignited and held
+e2e,machine,nested_proxy,0,1524994,0.270,0.249,ignited and held
+e2e,machine,nested_proxy,1,1124996,0.413,0.107,ignited and held
+e2e,machine,nested_proxy,2,1124996,0.519,0.286,ignited and held
+e2e,machine,nested_proxy,3,1574994,0.307,0.231,ignited and held
+e2e,machine,nested_proxy,4,1274995,0.549,0.434,ignited and held
+e2e,machine,nested_proxy,5,1224995,0.500,0.376,ignited and held
+e2e,machine,nested_proxy,6,1224995,0.584,0.450,ignited and held
+e2e,machine,nested_proxy,7,1124996,0.440,0.245,ignited and held
