@@ -14,6 +14,11 @@ PHASE=${PHASE:-place}
 case "$PHASE" in place) PFX=pl; RROOT=baselines/rl/checkpoints/place; DROOT=baselines/outputs/dp_place ;;
                  contact) PFX=sl; RROOT=baselines/rl/checkpoints/contact; DROOT=baselines/outputs/dp_contact ;;
                  *) echo "FATAL: PHASE must be place|contact"; exit 1 ;; esac
+if [ "$PHASE" = contact ] && ! grep -q "slide_fail_reason" baselines/genesis_can_env.py 2>/dev/null; then
+  echo "REFUSING: this checkout predates the slide fix a7de6a0 (no slide_fail_reason). Sync the fixed shared code first;"
+  echo "  contact cells produced by an older evaluator are not reportable (settle-gate bug, coordinator 2026-09-07)."
+  exit 1
+fi
 if [ "${1:-}" != "--no-eval" ]; then
   module load anaconda/2025.06.0 2>/dev/null; conda activate "${CONDA_ENV:-$LAB/condaenv/genesis}" 2>/dev/null
   for A in dH dDP; do for S in $(seq 0 7); do
@@ -22,6 +27,20 @@ if [ "${1:-}" != "--no-eval" ]; then
     D=$DROOT/${PFX}_dp_${A}_s$S
     [ -d "$D/checkpoints/100000/pretrained_model" ] && PHASE=$PHASE KIND=dp CKPT=$D/checkpoints/100000/pretrained_model OUT=$D ARM=$A SEED=$S PAR=${PAR:-2} bash cluster/place_eval_cells.sh 2>&1 | grep -E "HEADLINE|POLE-|# cell|FATAL"
   done; done
+fi
+if [ "$PHASE" = contact ]; then
+  echo; echo "## reportability check (settle-gate bug): every contact cell must carry slide_diag_available=true"
+  python3 - "$RROOT" "$DROOT" <<'PY'
+import glob, json, os, sys
+bad = []; ok = 0
+for root in sys.argv[1:3]:
+    for f in glob.glob(os.path.join(root, '*', 'fresh_eval_*', 'metrics.json')):
+        d = json.load(open(f))
+        (ok := ok + 1) if d.get('slide_diag_available') else bad.append(f)
+print(f'{ok} cell(s) carry the per-clause diagnostics' + (f'; {len(bad)} DO NOT and must be re-run:' if bad else ''))
+for f in bad[:12]:
+    print('  RE-RUN', f)
+PY
 fi
 echo; echo "## $PHASE table (learner x source), polE tag ${POLE_TAG:-polE}"
 python3 baselines/place_table_all.py --phase "$PHASE" --wm-runs "$W/runs" --polE-tag "${POLE_TAG:-polE}"

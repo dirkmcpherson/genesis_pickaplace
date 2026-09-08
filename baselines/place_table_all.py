@@ -17,7 +17,12 @@ polE SAMPLE Δ +2.00 (+0.014), p 0.743 -- so the learner rows added below are co
 import argparse, glob, itertools, json, os
 
 
-def cell(run_dir, bank, mode, key='placed_v2'):
+BANKS = {}   # (bank file, sha12, version) -> {learners} : provenance for the three-learner table
+REASONS = {}  # slide_fail_reason census over every contact cell read (a7de6a0 per-clause diagnostics)
+NODIAG = []   # contact cells produced before the slide fix -- not reportable
+
+
+def cell(run_dir, bank, mode, key='placed_v2', learner_arm=('?', '?')):
     f = os.path.join(run_dir, f'fresh_eval_{bank}_{mode}', 'metrics.json')
     if not os.path.exists(f):
         return None
@@ -27,6 +32,12 @@ def cell(run_dir, bank, mode, key='placed_v2'):
     k = int(round(float(d.get(key, d.get(d.get('success_key', ''), 0.0))) * n))
     rf = int(round(float(d.get('restore_failed', 0.0)) * n))
     extra = int(round(float(d['contact']) * n)) if (key == 'slide_success' and 'contact' in d) else None
+    for r_, c_ in (d.get('slide_fail_reasons') or {}).items():
+        REASONS[r_] = REASONS.get(r_, 0) + int(c_)
+    if 'slide_success' == key and not d.get('slide_diag_available'):
+        NODIAG.append(f)
+    BANKS.setdefault((os.path.basename(d.get('bank_path') or d.get('entry_bank') or '?'),
+                      (d.get('bank_sha256') or 'unstamped')[:12], d.get('bank_version')), set()).add(learner_arm[0])
     return (k, n, rf, d.get('bank_version'), extra)
 
 
@@ -84,7 +95,7 @@ def main():
             rows = {}
             for s in seeds:
                 rd = tmpl[arm].format(s=s)
-                r = {c: cell(rd, c[0], c[1], key=KEY) for c in cells}
+                r = {c: cell(rd, c[0], c[1], key=KEY, learner_arm=(name, arm)) for c in cells}
                 if any(v is not None for v in r.values()):
                     rows[s] = r
                     print(f'| {name} | {arm} | s{s} | ' + ' | '.join(fmt(r[c]) for c in cells) + ' |')
@@ -105,6 +116,30 @@ def main():
             else:
                 stats.append(f'- {name} {c[0]} {c[1].upper()}: incomplete ({len(ha)} v {len(ma)} seeds)')
     print(); print('\n'.join(stats))
+    if REASONS:
+        tot = sum(REASONS.values())
+        print('\n**Why slide_success failed** (per-clause diagnostic, all cells above; a sub-floor pair is read by reason, not rate):')
+        for r_, c_ in sorted(REASONS.items(), key=lambda kv: -kv[1]):
+            print(f'- `{r_}`: {c_} episode(s) ({c_ / max(tot, 1):.1%})')
+    if NODIAG:
+        print(f'\n- **NOT REPORTABLE**: {len(NODIAG)} contact cell(s) lack `slide_diag_available` (evaluator predates the '
+              f'settle-gate fix a7de6a0); re-run them before quoting any rate. First: {NODIAG[0]}')
+    # Bank provenance (coordinator 2026-09-07): the three-learner table must show every row used the same bank version.
+    if BANKS:
+        print('\n**Entry-bank provenance** (file @ sha256[:12] / bank_version -> learners):')
+        for (b, sha, bv), who in sorted(BANKS.items()):
+            print(f'- `{b}` @ `{sha}` / `{bv}` -> {", ".join(sorted(who))}')
+        per_file = {}
+        for (b, sha, bv), who in BANKS.items():
+            per_file.setdefault(b, set()).add((sha, bv))
+        split = {b: v for b, v in per_file.items() if len(v) > 1}
+        if split:
+            print(f'- **BANK MISMATCH**: {split} -- rows were scored on different versions of the same bank name; '
+                  f'do NOT combine them into one table until re-scored.')
+        elif any(sha == 'unstamped' for (_, sha, _) in BANKS):
+            print('- NOTE: some cells predate the bank stamping (2026-09-07); their bank version is not verifiable from the json.')
+        else:
+            print('- all rows above share one bank version per bank file.')
 
 
 if __name__ == '__main__':

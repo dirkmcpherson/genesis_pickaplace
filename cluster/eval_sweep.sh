@@ -165,8 +165,10 @@ for S in sets.split(','):
     if missing: missing_all[S] = missing
 act_sel = ('sampled' if (int(nsmp) > 0 or kind == 'dp') else 'deterministic')
 assert act_sels <= {act_sel}, f'per-episode act_selection {act_sels} disagrees with the sweep flag ({act_sel})'
+import hashlib
+ic_sha = hashlib.sha256(open(icf, 'rb').read()).hexdigest()
 summ = dict(kind=kind, arm=arm or None, seed=seed or None, ckpt=ckpt, ckpt_step=cstep or None, tag=tag or None,
-            max_steps=int(maxs), ic_file=icf, act_selection=act_sel, sets=res, missing=missing_all)
+            max_steps=int(maxs), ic_file=icf, ic_file_sha256=ic_sha, act_selection=act_sel, sets=res, missing=missing_all)
 json.dump(summ, open(os.path.join(out, 'sweep.json'), 'w'), indent=1)
 print(f'SWEEP-RESULT kind={kind} arm={arm or "-"} seed={seed or "-"} ckpt={cstep or os.path.basename(ckpt)} '
       f'tag={tag or "-"} act={act_sel} ' + ' '.join(parts) + f' missing={json.dumps(missing_all) if missing_all else "none"}')

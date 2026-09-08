@@ -106,10 +106,18 @@ if _bad:
              f'(normalised-grip bank, review 2026-09-07); use the rebuilt physical-grip bank (bank_version field)')
 if os.path.basename(args.entry_bank).startswith('polE') and bank_version is None:
     sys.exit(f'FATAL: policy-generated bank {args.entry_bank} has no bank_version field -- evaluate only on the rebuilt bank (review 2026-09-07)')
+import hashlib as _hashlib   # noqa: E402
+# Bank provenance stamped into every cell (coordinator request 2026-09-07 21:40): the three-learner table must be able
+# to SHOW that the DP/RLPD phase rows used the same bank version as the re-scored world-model rows. bank_sha256 is the
+# sha of the SOURCE file as read; bank_used_sha256 is the sha of the pinned per-episode copy this run actually enumerates.
+BANK_PATH = os.path.abspath(args.entry_bank)
+BANK_SHA = _hashlib.sha256(open(BANK_PATH, 'rb').read()).hexdigest()
 BANK_USED = pl.Path(args.out) / 'bank_used.json'
 BANK_USED.parent.mkdir(parents=True, exist_ok=True)
 BANK_USED.write_text(json.dumps([dict(e, uid=int(e['uid'])) for e in _entries_raw]))
-print(f'[eval-place] bank {args.entry_bank}: {len(_entries_raw)} entries, bank_version={bank_version!r}, grip in [0,1] OK -> {BANK_USED}', flush=True)
+BANK_USED_SHA = _hashlib.sha256(BANK_USED.read_bytes()).hexdigest()
+print(f'[eval-place] bank {args.entry_bank}: {len(_entries_raw)} entries, bank_version={bank_version!r}, '
+      f'bank_sha256={BANK_SHA[:16]}, grip in [0,1] OK -> {BANK_USED} (sha {BANK_USED_SHA[:16]})', flush=True)
 
 # ---- env: the private full_env place scope, corrected world ----
 os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant   # FullTaskEnv reads it for the shelf band (BOX_TOP_Z + shelf_dz)
@@ -126,9 +134,24 @@ _want_top = float(BOX_TOP_Z) + float(_sv.VARIANTS[args.sim_variant].get('shelf_d
 assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
 assert env.phase_sparse and env.scope == args.scope and env.action_repeat == REPEAT and env.delta_ref == 'target', vars(env).keys()
 SUCCESS_KEY = 'placed_v2' if args.scope == 'place' else 'slide_success'
+# Slide-evaluator provenance (2026-09-07 settle-gate bug, fixed shared-side as a7de6a0): the fix ships per-clause
+# diagnostics (`slide_fail_reason`), so the presence of that symbol in the shared env IS the version check -- more
+# robust than commit ancestry, which fails while the fix is unpushed or arrives via a different commit. NB the gate bug
+# itself lived in the r2dreamer evaluator (eval_genesis.py:337, `info.get("slide_success") is None`), NOT here: this
+# evaluator has always called end_of_episode() unconditionally, verified on the smokes (settle ran on 11/11 episodes,
+# timeouts included). The gate below exists so contact cells still carry the fail-reason column the coordinator asked for.
+import inspect as _inspect   # noqa: E402
+_gce_src = _inspect.getsource(type(env.genv))
+SLIDE_DIAG = ('slide_fail_reason' in _gce_src)
+GCE_SHA = _hashlib.sha256(open(_inspect.getsourcefile(type(env.genv)), 'rb').read()).hexdigest()
 if args.scope == 'contact':
     assert hasattr(env.genv, 'end_of_episode'), ('this checkout has no GenesisCanEnv.end_of_episode() -- the slide_success '
                                                  'implementation of amendments (j)/(l) must be present (cluster/eval_fixes/slide_success_patch.py)')
+    if not SLIDE_DIAG and not os.environ.get('SLIDE_DIAG_OPTIONAL'):
+        sys.exit('FATAL: this checkout predates the slide fix a7de6a0 (no `slide_fail_reason` in GenesisCanEnv): '
+                 'contact cells must carry the per-clause diagnostics. Sync the fixed shared code and re-run this cell '
+                 '(set SLIDE_DIAG_OPTIONAL=1 only for a deliberately diagnostic-free run).')
+    print(f'[eval-place] slide diagnostics available: {SLIDE_DIAG}; genesis_can_env sha {GCE_SHA[:12]}', flush=True)
 entries = list(env._entries)
 if args.limit:
     entries = entries[:int(args.limit)]
@@ -175,7 +198,7 @@ STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'nested') + (('slide_succe
 counts = {SUCCESS_KEY: 0, 'tipped': 0, 'timeout': 0, 'restore_failed': 0}
 if args.scope == 'contact':
     counts['contact_no_slide'] = 0
-routes = {}       # slide_success route census: 'sustained' (window closed in-episode) vs 'settle' (only in the held continuation)
+routes = {}; reasons = {}   # slide_success route census / per-clause fail-reason census (a7de6a0): 'sustained' (window closed in-episode) vs 'settle' (only in the held continuation)
 n_contact = 0     # bare `contact` grants, reported alongside the statistic of record
 n_nested = 0      # the settled nested read that end_of_episode() returns (continuity column)
 stage_counts = {k: 0 for k in STAGES}
@@ -208,13 +231,18 @@ for k, e in enumerate(entries):
             frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
         done = bool(term or trunc)
     tipped = bool(info.get('tipped'))
-    eoe = None; route = None
+    eoe = None; route = None; fail_reason = None; fail_frame = None
     if args.scope == 'contact':
         # the landed (j)/(l') implementation: ONE post-episode settle (100 scene steps, last command held) that yields both
         # the honest settled `nested` and slide_success's 12-frame held window. Called once, its dict recorded verbatim.
         eoe = env.genv.end_of_episode()
         route = eoe.get('slide_route')
         success = bool(eoe['slide_success']); n_nested += int(bool(eoe['nested']))
+        # per-clause diagnostic (a7de6a0): why the window failed -- for a sub-floor pair the REASON matters more than the rate
+        fail_reason = eoe.get('slide_fail_reason', info.get('slide_fail_reason'))
+        fail_frame = eoe.get('slide_fail_frame', info.get('slide_fail_frame'))
+        if not success:
+            reasons[str(fail_reason)] = reasons.get(str(fail_reason), 0) + 1
     else:
         success = ('placed_v2' in env._granted) or bool(info.get('placed_v2'))
     bare_contact = ('contact' in env._granted) or bool(info.get('contact'))
@@ -241,6 +269,7 @@ for k, e in enumerate(entries):
         vw.release()
     results.append(dict(ep=k, uid=uid, entry_frame=frame, outcome=outcome, steps=t, reward=ep_r, seconds=round(time.time() - t0, 1),
                         video=vid, stages=st, contact=bool(bare_contact), slide_route=route,
+                        slide_fail_reason=fail_reason, slide_fail_frame=fail_frame,
                         **({'nested_settled': bool(eoe['nested'])} if eoe else {})))
     print(f'ep{k}: uid{uid}@{frame} {outcome}' + (f' [{route}]' if route else '')
           + f' ({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)', flush=True)
@@ -252,10 +281,12 @@ except Exception:
     git = 'unknown'
 summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, episodes=len(results), mode=args.mode, seed=args.seed,
                max_steps=args.max_steps, ic_mode='bank', entry_bank=str(args.entry_bank), scope='place', sim_variant=args.sim_variant,
-               scope_arg=args.scope, action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version, delta_cap=env.delta_cap, delta_leash=env.delta_leash,
+               scope_arg=args.scope, action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version,
+               bank_path=BANK_PATH, bank_sha256=BANK_SHA, bank_used_sha256=BANK_USED_SHA, bank_n_entries=len(_entries_raw), delta_cap=env.delta_cap, delta_leash=env.delta_leash,
                **{SUCCESS_KEY: counts[SUCCESS_KEY] / n}, tipped=counts['tipped'] / n, timeout=counts['timeout'] / n,
                restore_failed=counts['restore_failed'] / n, contact=n_contact / n, success_key=SUCCESS_KEY,
-               **({'nested_settled': n_nested / n, 'slide_routes': routes,
+               **({'nested_settled': n_nested / n, 'slide_routes': routes, 'slide_fail_reasons': reasons,
+                   'slide_diag_available': SLIDE_DIAG, 'genesis_can_env_sha256': GCE_SHA,
                    'contact_no_slide': counts.get('contact_no_slide', 0) / n} if args.scope == 'contact' else {}),
                stages={s: stage_counts[s] / n for s in STAGES},
                mean_steps=float(np.mean([r['steps'] for r in results])) if results else 0.0,

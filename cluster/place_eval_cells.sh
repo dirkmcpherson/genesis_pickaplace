@@ -41,6 +41,17 @@ PY
 else
   echo "POLE-DEFERRED: bank $POLE absent"
 fi
+# SLIDE FIX GATE (2026-09-07): the settle-gate fix a7de6a0 ships the per-clause `slide_fail_reason` diagnostics; a
+# contact cell without them is not reportable (coordinator). Refuse EARLY and cleanly so a job that reaches its eval
+# stage before the fix is live simply leaves the cells missing -- place_readout.sh re-runs them afterwards.
+if [ "$PHASE" = contact ] && [ -z "${SLIDE_DIAG_OPTIONAL:-}" ]; then
+  if ! grep -q "slide_fail_reason" baselines/genesis_can_env.py 2>/dev/null; then
+    echo "SLIDE-FIX-MISSING: $(git rev-parse --short HEAD 2>/dev/null) predates a7de6a0 (no slide_fail_reason in baselines/genesis_can_env.py)."
+    echo "  Contact cells are NOT written; re-run them with 'PHASE=contact bash cluster/place_readout.sh' once the fixed code is synced."
+    exit 0
+  fi
+  echo "SLIDE-FIX-OK: slide_fail_reason present (git $(git rev-parse --short HEAD 2>/dev/null))"
+fi
 VF=(); [ "$VIDEO" = 1 ] && VF=(--video)
 [ "${REDO:-0}" = 1 ] && rm -rf "$OUT"/fresh_eval_{holdE,polE}_{sample,mode}
 echo "== place_eval_cells phase=$PHASE kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED modes='$MODES' holdE=$HOLDE polE=$POLE(ok=$POLE_OK) variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR $(date)"
@@ -68,19 +79,23 @@ python3 - "$OUT" "$KIND" "$ARM" "$SEED" "$PHASE" <<'PY'
 import json, os, sys
 out, kind, arm, seed, phase = sys.argv[1:6]
 key = 'placed_v2' if phase == 'place' else 'slide_success'
-parts = []
+parts = []; _loaded = []
 for s in ('holdE', 'polE'):
     for m in ('sample', 'mode'):
         f = os.path.join(out, f'fresh_eval_{s}_{m}', 'metrics.json')
         if os.path.exists(f):
-            d = json.load(open(f)); n = int(d['episodes']); k = int(round(float(d[key]) * n)); rf = int(round(float(d.get('restore_failed', 0.0)) * n))
+            d = json.load(open(f)); _loaded.append(d); n = int(d['episodes']); k = int(round(float(d[key]) * n)); rf = int(round(float(d.get('restore_failed', 0.0)) * n))
             extra = ''
             if phase == 'contact':
                 extra = '[c%d]' % int(round(float(d.get('contact', 0.0)) * n))
             parts.append(f'{s}_{"S" if m == "sample" else "M"}={k}/{n}{extra}' + (f'(rf{rf})' if rf else ''))
         else:
             parts.append(f'{s}_{"S" if m == "sample" else "M"}=—')
-line = f'{phase.upper()}-HEADLINE learner={kind} arm={arm} seed={seed} key={key} ' + ' '.join(parts) + f' out={out}'
+banks = sorted({(os.path.basename(d.get('bank_path') or ''), (d.get('bank_sha256') or '')[:12], d.get('bank_version'))
+                for d in _loaded})
+bstr = ' '.join(f'{b}@{sha}/{bv}' for b, sha, bv in banks if b)
+line = (f'{phase.upper()}-HEADLINE learner={kind} arm={arm} seed={seed} key={key} ' + ' '.join(parts)
+        + (f' banks={bstr}' if bstr else '') + f' out={out}')
 print(line); open(os.path.join(out, f'{phase.upper()}_HEADLINE.txt'), 'w').write(line + '\n')
 PY
 echo "== place_eval_cells done $(date)"
