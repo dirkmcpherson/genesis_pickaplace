@@ -590,3 +590,21 @@ Arising from the two effects established overnight (see `OVERNIGHT_STATE_2026-09
 **What would settle it.** First, the registered RLPD replication, which now has the data it needs: it says whether the effect generalises across learners or is a world-model artefact. Beyond that, **an end-to-end arm whose machine set is built without best-of-3 selection** would separate "how the set was built" from "who produced it". That control should be registered before this becomes a headline rather than an observation.
 
 Standing caveat unchanged: exploratory, one learner, thresholds and grid chosen after seeing the data.
+
+### Amendment (u) — magnitudes corrected; the discovery numbers were contaminated
+
+**The originally reported ~262k-step difference was computed on contaminated flags and is withdrawn.** In the full scope, stage flags are only written when an episode terminates *inside* the adapter; a horizon truncation happens outside it, so a truncated episode logged all-zero flags even when it had picked. On one run, 1,198 of 2,911 episodes were all-zero and every one was exactly the horizon length — 608 of them had in fact scored. Flag-based `picked` read 0.480 against 0.688 by score.
+
+**Corrected by deriving the stages from the accumulated reward stream**, which survives truncation. The effect stands, with smaller and better-behaved magnitudes:
+
+| stage | human | machine | Δ | p |
+|---|---|---|---|---|
+| picked | 424,998 | 574,998 | −156,249 | **0.019** |
+| contact | 824,997 | 949,996 | −187,499 | **0.044** |
+| nested (proxy) | 1,024,996 | 1,224,995 | −249,999 | 0.059 |
+
+**This is a better result than the contaminated one, not merely a smaller one.** The stages now order sensibly — later stages ignite later, and the gap grows along the ladder — which is what a genuine credit-assignment effect should look like. The pick, place and slide curves are unaffected, because each of those tasks terminates *on* its own stage, so their flags were always exact.
+
+**The diagnostic tell, recorded as a standing check rather than an anecdote.** The contamination announced itself: flag-based `picked`, `contact` and `nested` all reported *identical* ignition steps. Three strictly nested stages cannot ignite at the same step. **After computing any per-stage statistic, assert that strictly harder stages differ from easier ones** — when a metric that must vary across nested conditions reports the same value for all of them, it is measuring something other than its name, which is the same failure family as the contact predicate and the nested proxy.
+
+Online performance levels were also understated by the same defect and move up; this affects the curves' captions, not the evaluation cells.
