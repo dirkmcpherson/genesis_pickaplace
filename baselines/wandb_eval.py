@@ -444,12 +444,37 @@ if len(vids) > 1:
         tiled = None
     vids = [v for v in vids if not v.endswith('tiled.mp4')]
 import socket as _socket, subprocess as _sp  # noqa: E402
+
+def _physical_cores():
+    """Physical core count of THIS node (unique (physical id, core id) pairs in /proc/cpuinfo; falls back to the
+    logical count). Stamped into every cell: node class is a known source of cross-node divergence in this project
+    (2026-09-08: 53/53 same-core-count comparisons bit-identical, all 19 disagreements had a 36-core box on one side),
+    so a cell must carry the number rather than needing a later sinfo join against a hostname."""
+    try:
+        pairs, phys, core = set(), None, None
+        for line in open('/proc/cpuinfo'):
+            if line.startswith('physical id'):
+                phys = line.split(':')[1].strip()
+            elif line.startswith('core id'):
+                core = line.split(':')[1].strip()
+                if phys is not None:
+                    pairs.add((phys, core))
+        if pairs:
+            return len(pairs)
+    except Exception:
+        pass
+    try:
+        import os as _o
+        return len(_o.sched_getaffinity(0))
+    except Exception:
+        return None
+
 try:
     _git = _sp.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=str(REPO), capture_output=True,
                    text=True, timeout=5).stdout.strip() or 'unknown'
 except Exception:
     _git = 'unknown'
-_node = dict(hostname=_socket.gethostname(),
+_node = dict(hostname=_socket.gethostname(), cores=_physical_cores(),
              slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
              slurm_partition=os.environ.get('SLURM_JOB_PARTITION'),
              slurm_job_id=os.environ.get('SLURM_JOB_ID'),

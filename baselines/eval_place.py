@@ -60,6 +60,31 @@ if args.kind == 'dp' and args.mode == 'mode':
     sys.exit('FATAL: DP has no deterministic mode (diffusion sampling); run --mode sample')
 
 import numpy as np   # noqa: E402
+
+def _physical_cores():
+    """Physical core count of THIS node (unique (physical id, core id) pairs in /proc/cpuinfo; falls back to the
+    logical count). Stamped into every cell: node class is a known source of cross-node divergence in this project
+    (2026-09-08: 53/53 same-core-count comparisons bit-identical, all 19 disagreements had a 36-core box on one side),
+    so a cell must carry the number rather than needing a later sinfo join against a hostname."""
+    try:
+        pairs, phys, core = set(), None, None
+        for line in open('/proc/cpuinfo'):
+            if line.startswith('physical id'):
+                phys = line.split(':')[1].strip()
+            elif line.startswith('core id'):
+                core = line.split(':')[1].strip()
+                if phys is not None:
+                    pairs.add((phys, core))
+        if pairs:
+            return len(pairs)
+    except Exception:
+        pass
+    try:
+        import os as _o
+        return len(_o.sched_getaffinity(0))
+    except Exception:
+        return None
+
 import torch         # noqa: E402
 torch.manual_seed(args.seed); np.random.seed(args.seed)
 
@@ -301,7 +326,7 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                mean_reward=float(np.mean([r['reward'] for r in results])) if results else 0.0,
                sample_dev_mean=(float(np.mean(_dev)) if _dev else None), sample_dev_max=(float(np.max(_dev)) if _dev else None),
                restore_survival=f'{env.place_survived}/{env.place_attempts}', seconds=round(time.time() - t_all, 1),
-               node=dict(hostname=socket.gethostname(), slurm_job_id=os.environ.get('SLURM_JOB_ID'), slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
+               node=dict(hostname=socket.gethostname(), cores=_physical_cores(), slurm_job_id=os.environ.get('SLURM_JOB_ID'), slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
                          cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES')), git=git, sidecar=str(sc_path),
                per_episode=results)
 (OUT / 'metrics.json').write_text(json.dumps(summary, indent=1))
