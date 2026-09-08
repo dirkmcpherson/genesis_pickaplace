@@ -234,3 +234,22 @@ The slowest machine seed had under a third of its run left after it first picked
 **The budget was never justified as a convergence criterion.** It was registered as "2× the single-phase budget", a doubling heuristic anchored on how long the pick alone took. No stopping rule was registered and no convergence check exists. Any future end-to-end run should either budget *post-ignition* steps or register an explicit stopping rule.
 
 **Related, and registered separately as amendment (u):** the ignition-speed difference itself. It survives changing the threshold definition and appears at two stages — end-to-end `picked` p 0.032 and `contact` p 0.044, place `placed_v2` p 0.075, slide nothing. It remains a post hoc observation pending its pre-registered replication on the queued RLPD runs, and the per-seed raw values are retained so any threshold can be read off without recomputation.
+
+
+### Addendum, 2026-09-08 — the end-to-end runs are NOT converged, and the arms are unequally unconverged
+
+Comparing each seed's final quarter of training against its previous quarter:
+
+| stage | human | machine |
+|---|---|---|
+| picked | +0.055, 5 of 8 seeds still improving | **+0.110, 7 of 8 still improving** |
+| contact | +0.099, 5 of 8 | **+0.127, 7 of 8** |
+| nested (proxy) | +0.090, 6 of 8 | **+0.109, 7 of 8** |
+
+**Both arms are still climbing at the budget, and the machine arm is climbing about twice as fast.** Together with its igniting roughly 250k steps later, this means the published §5.1 null is **a snapshot taken mid-flight while the gap is closing**. "Equivalent at 2e6 steps" is a claim about a budget, not about the learners, and a longer run could plausibly bring the machine arm level or above.
+
+**This must be disclosed whatever we decide about further compute.** The equivalence claim as it stands is conditional on a budget that was itself a heuristic — "2× the single-phase budget", anchored on how long the pick took, with no convergence criterion and no registered stopping rule.
+
+**If the question is settled with compute, the design should be:** fresh runs at 4e6 rather than resumed ones (the checkpoints carry policy and optimiser state but **no replay buffer**, so a resume is a warm policy with a cold buffer — a different experiment); 4e6 chosen because it equalises what is currently unequal, leaving the slowest machine seed 66 % of its training post-ignition against the human arm's current median of 73 %; a **plateau criterion registered in advance** (last-quarter improvement below 0.02 in at least 6 of 8 seeds per arm) so the next budget question is answered by data rather than another heuristic; and a pre-committed reading of a machine overtake, which would be a source effect in the opposite direction to any human advantage. Cost is roughly 200–320 GPU-hours for 16 runs, or a quarter of that for a 4-seed-per-arm pilot that would show qualitatively whether the crossing happens.
+
+**Consequence for the three-learner table:** the learners' end-to-end budgets are already in different units and disclosed as such. If the world model is extended, that disclosure needs revisiting and the other learners ideally get a matched extension — otherwise the table compares learners at incomparable amounts of training.
