@@ -215,3 +215,47 @@ Question (user): could action_repeat 4 be hiding a human-vs-machine effect? The 
 | hold15 MODE / SAMPLE | 60/60 / 59/60 | 60/60 / 60/60 | 0 / −0.017 | 1.000 / 1.000 |
 
 Every seed of both arms learned (0.60–0.73 on rnd30 MODE), so the recipe transfers to the finer clock, and the null is unchanged: the hold was not masking a source effect. Uncompensated by construction and disclosed: 4× more decisions per unit experience and a 4× shorter model context in sim time (batch_length 64 decisions). Cross-clock rates are descriptive only.
+
+## 9. Re-scored cells (2026-09-08) — evaluation fixes, rebuilt banks, and two reproducibility findings
+
+Registered as `PHASE_PLAN_2026-09-04.md` amendment (j) (+ (l) for `slide_success`). Full detail, every number and every
+withdrawal: **`paper/EVAL_FIXES_2026-09-07.md`**. The sections above are NOT rewritten; this records what changed and where
+the figures of record now live.
+
+**Why anything was re-scored** (from `ADVERSARIAL_REVIEW_eval_env_2026-09-07.md`): place-scope evaluation drew bank entries
+with replacement and silently substituted any entry that failed to restore (S1-3); `--dump-entries` wrote the policy's
+grip in `[-1, 1]` while the restore reads physical `[0, 1]`, so 30 of 148 `polE_place` entries restored with the fingers
+commanded more open than measured (S2-4); the full scope reported a training proxy as `nested` and a stale, unearnable
+`placed` (S1-1, S1-2). Cells of record were never overwritten: re-scores live in `fresh_eval_<tag>_<mode>_v2/`.
+
+**§2.y place, matched 39 (statistic of record, polE MODE, 8 v 8):** human **0.703 → 0.715**, machine **0.647 → 0.652**;
+Δ +0.056 (p 0.227) → **+0.063 (p 0.112)**. Registered |Δ| < 0.10 **MET before and after — the conclusion stands, the
+figures move by ~0.01.**
+**polE SAMPLE** (the statistic the three-learner table uses): human 0.688 → 0.708, machine 0.674 → 0.652, so
+Δ **+0.014 (p 0.743) → +0.056 (p 0.206)** — the gap quadruples because the arms move in opposite directions.
+**holdE** (bank never rebuilt, so it isolates the pinning fix): MODE human 1.000 → 0.990, machine 0.990 → 0.962.
+*Reading:* the small net movement in §2.y is two corrections nearly cancelling — restore failures now count as failures
+(40 episodes per arm, symmetric) while the corrected-grip entries restore better — not evidence that either was harmless.
+
+**§2.x, §3 and §4 (polEdDP symmetry, contact-after-release, carrycontact): re-scores RUNNING**, same treatment; results
+will be appended to `EVAL_FIXES` §8 in the same old-versus-new form.
+
+**§5.1 end-to-end: the published aggregates reproduce exactly.** The whole 30-episode cell re-run in order on the record's
+own CPU model gives **0/30 differing episodes** and picked 19/30, contact 13/30, nested 10/30 — Δ +0.000 on all three. Two
+constraints were found while establishing that, and both are properties of the evaluation, not of the environment:
+1. **Long-horizon cells are CPU-class sensitive.** 36-core Xeon E5-2695 v4 (AVX2) nodes reproduce; 40/48/64/96-core
+   AVX-512 nodes do not, at any thread pinning. Perfect separation: of the re-scored cells, 16/16 with a 36-core original
+   moved and 0/176 with any other original did (`EVAL_FIXES` §7.2, §7.7). A cross-class re-run moved `contact` by
+   **+0.100** — the width of the registered equivalence margin.
+   *Consequence for §5.1:* the human arm had 2 of 8 seeds evaluated on that minority class and the machine arm none, so
+   **hardware class is partially confounded with arm in the published 8 v 8**. All 64 end-to-end cells are being re-scored
+   pinned to one class; those figures supersede the mixed-hardware ones.
+2. **World-model cells are "mode" cells, not deterministic ones.** `Dreamer.act` samples the RSSM posterior latent even at
+   `eval=True`, and no evaluator re-seeds between episodes, so a cell reproduces only when re-run as a whole sequence from
+   process start. Pulling one episode out of a recorded sequence and comparing it is invalid.
+
+**New columns now reported for the full scope** (measured on the reproduced §5.1 cell, `dHfull_all` s3 rnd30 MODE):
+`nested_honest` **4/30 = 0.133** against the published `nested` (= the training proxy) **10/30 = 0.333** — a 2.5×
+over-count; `placed_v2` **8/30 = 0.267** where the stale `placed` is 0/30, which **refutes by measurement** the
+"policies carry the can in without releasing" reading in §5.1/`REVIEW_GUIDE` §2.7; `contact_push` 10/30 against
+`contact` 13/30; and `slide_success` (amendment (l)) **2/30 = 0.067**, both grants earned in the held continuation.
