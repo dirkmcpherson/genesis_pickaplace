@@ -13,7 +13,10 @@ json files; a missing cell prints '—' and is excluded from the test; a cell wi
 
 Validated 2026-09-07 against the r2dreamer place cells of record: this script reproduces PHASE_RESULTS_2026-09-05 §2.y
 exactly -- human 832/1184 = 0.703 vs machine-39 766/1184 = 0.647 on polE MODE, Δ +8.25 per seed (+0.056), exact p 0.227;
-polE SAMPLE Δ +2.00 (+0.014), p 0.743 -- so the learner rows added below are computed by the same code path as the WM row."""
+polE SAMPLE Δ +2.00 (+0.014), p 0.743 -- so the learner rows added below are computed by the same code path as the WM row.
+The CONTACT path (--phase contact) was exercised 2026-09-08 on synthetic cells before any real one existed: statistic
+slide_success with bare contact in [c N], per-learner exact permutation tests, restore-failure marking, the fail-reason
+census and the bank-provenance footer (one version per bank file) all render as intended."""
 import argparse, glob, itertools, json, os
 
 

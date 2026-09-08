@@ -3,7 +3,11 @@
 Per run: sweep/selected/sweep.json (selected checkpoint, hold + rnd of record), sweep/final/sweep.json or
 final_sweep.json (LAST), sweep/selected_spots60/sweep.json and sweep/final_spots60/sweep.json (new, cluster/dp_eval_spots60.sh).
 usage: dp_spots60_table.py [--root baselines/outputs] [--arms 'dH:dp_w2final/dH_DP_s{s}:20-29,dDP:dp_w2final/dDP_DP_s{s}:20-29,dHv2raw:dp_v2fullw3/dHv2raw_DP_s{s}:50-57']
-Exact two-sided permutation tests on per-seed spots60 counts for every arm pair (selected checkpoints; LAST where complete)."""
+Exact two-sided permutation tests on per-seed spots60 counts for every arm pair (selected checkpoints; LAST where complete).
+
+Fixture-validated 2026-09-08 (before the real cells landed): 28 synthetic runs across the three arms render the table and
+all three pairwise tests correctly (p = 0.000 on a large planted gap, p = 0.200 on a small one), and a run whose LAST
+checkpoint was pruned shows LAST as missing rather than silently reusing the selected one."""
 import argparse, itertools, json, os
 
 
