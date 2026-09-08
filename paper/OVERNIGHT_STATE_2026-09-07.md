@@ -72,3 +72,21 @@ Read this before the sections above that describe it as open.
 **What this means for us.** Not a code fault, not a physics fault, but a real constraint: **long-horizon end-to-end episodes are node-sensitive, short phase episodes are not.** End-to-end cells must record the node that produced them, and any end-to-end comparison should either hold the node fixed or treat node as a variance source. It plausibly contributes to why the end-to-end arm already had the project's widest minimum detectable effect (≈ 0.21) while the phase arms were tight (carrycontact ≈ 0.03). Whether the *cell-level aggregates* move — and therefore whether `PHASE_RESULTS` §5.1's 8v8 numbers stand as published — is answered by sequence check 3355868, still running; individual episodes flipping does not by itself move an 8-seed aggregate, and both arms' seeds were spread across nodes, so this is noise rather than bias.
 
 **Also settled tonight:** the contact_push agent's geometry hypothesis loses to this one — its own data has the same shape (reruns agree with each other across nodes and code versions; the *record* is the outlier because of where it was made).
+
+## 02:10 — CORRECTION to the 01:15 entry: the axis is PHYSICAL CORE COUNT, and there may be a one-line fix
+
+The 01:15 section above says the axis is "the node" and that CPU family is excluded. **Both statements are wrong** and are superseded here. The agent had not verified the original smoke's node and assumed one; with provenance checked, the split is by **physical core count**:
+
+| nodes | cores / arch | ep0 result |
+|---|---|---|
+| pax109, pax154 | **36**, broadwell | `nested`/32 — reproduces the record (6 runs, both allocations) |
+| pax001 | 40, broadwell | `timeout`/300 |
+| pax030, pax004 | 64, sapphirerapids | `timeout`/300 |
+
+Consequences: the earlier "pax109 and pax154 are both broadwell and disagree" argument dissolves — they agree, and both are 36-core. The order-dependence artefact is explained too: that record came from a 64-core node and was re-run on a 36-core one. And it fits the contact_push agent's cells, whose records came from a 36-core node while its re-runs used 48-, 64- and 40-core nodes.
+
+**Likely mechanism and a cheap fix.** The Genesis/taichi CPU thread count tracks physical cores, so different machines execute different parallel reduction orders, which changes floating-point summation at the 1e-9 level, which a 300-decision contact-rich episode amplifies into an outcome flip. If that is it, **pinning `TI_NUM_THREADS` makes results hardware-independent** and every evaluator simply exports it. A sweep over {4, 8, 36} on 40- and 64-core nodes versus the 36-core baseline is running now. If a pinned value makes a 64-core node return `nested`/32, this entire class of problem goes away — and note it would also mean the contact_push agent's thread-count intuition was right in substance while its "job allocation geometry" version was wrong.
+
+**Order dependence is a separate, still-live effect** on its own clean evidence (same node, same code, r=1.0 standalone vs r=3.0 as episode 2). A direct measurement is running that dumps the full post-reset state for both conditions and diffs the following 20 decisions, returning one of three verdicts: incomplete reset (naming the first differing field), hidden solver state, or clean.
+
+**And it reaches the new arms.** `eval_e2e.py` builds one env and loops episodes in sequence, structurally the same as the world-model evaluator on this axis, so the 32 DP/RLPD end-to-end cells inherit any leakage — and worse for comparability, the two arms' policies produce different episode lengths, so the residual pattern differs *between arms within the same table*. If the verdict is "incomplete reset", those 32 evaluations are held, the reset is fixed, and they are re-run.
