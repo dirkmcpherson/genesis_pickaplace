@@ -288,6 +288,11 @@ The end-to-end agent has been told to stop attempting cluster access and to leav
 
 ## VPN DOWN 22:37 — pinned e2e re-score pickup
 
+> **PARTLY SUPERSEDED — read `### CORRECTION (ISA attribution withdrawn)` at the end of this section BEFORE running
+> anything below.** The pinning design in this section targets AVX2 vs AVX-512; that attribution has been withdrawn.
+> The reconnect order and the loose ends are still correct; the `--nodelist=pax109,pax154` pin and the "verified AVX2
+> nodelist" framing are NOT, and the pinned pass is now on hold behind a sweep verdict.
+
 End-to-end (full task) DP+RLPD lane, PHASE_PLAN amendment (n) (+ (s)/(t) responses). The VPN dropped at ~22:37 EDT
 mid-way through the ISA probe; no further cluster access was attempted after that. **Nothing in flight is lost: the 32
 training jobs (`e2e_rlpd_*` 3355448–63, `e2e_dp_*` 3355464–79) were all PENDING at the drop and keep queuing.**
@@ -377,3 +382,50 @@ python3 baselines/e2e_table_all.py --strat                                 # the
 **One loose end to clear before anything else:** up to 30 probe processes launched with `srun --overlap` may still be alive on the login node, and they were slow enough to make `ssh` itself time out. The first reconnect command kills them. This is shared infrastructure, so it takes priority over restarting the pass.
 
 The verified AVX2 nodes remain `pax109` and `pax154`. Pinning to them is safe even without the probe, because the re-score script re-reads the processor information on arrival and aborts loudly if it lands on the wrong instruction set.
+
+### CORRECTION (ISA attribution withdrawn) — carry this, do not act on it yet
+
+The coordinator withdrew the instruction-set attribution: **divergence tracks physical CORE COUNT, not AVX2 vs
+AVX-512.** The dissociation is clean in both directions — a 40-core Broadwell and a 64-core Sapphire Rapids agree
+bit-for-bit *across* the ISA boundary, while a 36-core Broadwell disagrees with the 40-core Broadwell on the *same*
+ISA. All 53 same-core-count comparisons are bit-identical, and every one of the 19 differing pairs has a 36-core
+machine on exactly one side. The contact-phase agent withdrew its own node-identity claim on the same evidence, and
+its pax053 anomaly dissolves once records are attributed to machine size rather than node name.
+
+**The underlying concern is unchanged:** hardware is partially confounded with arm in the published 8-versus-8, so
+those cells still need re-scoring under one consistent configuration. Only the definition of "consistent" moved.
+
+What changed in the code (committed `6a63823`, local only — the cluster clone still has the ISA-era files, which is
+harmless because the in-job preview path sets no guard):
+
+- `eval_e2e.py --require-cores <n>` (machine physical cores = sockets × cores-per-socket from `/proc/cpuinfo`, which
+  reports the whole node inside a cgroup) and `--threads <n>` (pins OMP/MKL/OpenBLAS/NUMEXPR/Taichi *before* torch
+  and genesis import, then `torch.set_num_threads`). Every episode now stamps cores, sockets, logical CPUs, task
+  affinity, thread count and OMP setting. `--require-isa` is kept as a diagnostic and documented as withdrawn.
+- `--role record` now requires `--require-cores` and/or `--threads`: a cell of record is still pinned by
+  construction, just on the right variable.
+- `merge_e2e_iso.py` fails on a cell spanning core counts or thread counts; `e2e_table_all.py` warns on machine size
+  and offers `--cores N` for the clean within-configuration comparison, printing the per-arm core-count balance.
+- `isa_probe.sh` → **`hw_probe.sh`**: reports cores/sockets/logical/GPU per node, groups by machine size, names the
+  most common size, and defaults to `PAR=6` (PAR=30 saturated the login node).
+
+**HOLD, now mechanical.** `cluster/sbatch_e2e_rescore.sh` refuses to launch until `SWEEP_VERDICT` is set, because the
+thread-pinning sweep decides the mechanism: if fixing the thread count makes everything agree, a thread pin is
+sufficient and is satisfiable on **any** machine (`SWEEP_VERDICT=threads THREADS=<n>`); if it does not, cells must be
+matched by machine size instead (`SWEEP_VERDICT=cores REQUIRE_CORES=<n> THREADS=<n>`), a stricter design. Launching
+before the verdict risks a second set of cells that also has to be thrown away. Verified: it prints `HOLD:` and exits
+1 when unset.
+
+**Scheduling consequence, and it is good.** A core/thread pin needs no `--nodelist` — the guard reads `/proc/cpuinfo`
+on arrival — so the CPU-only pass no longer has to squeeze through two named machines, and the ~570 s/episode
+Diffusion Policy cost (≈300 CPU-hours) becomes ordinary parallel work.
+
+**Revised first steps on reconnect** (replacing the `--nodelist=pax109,pax154` submission above):
+
+1. Clear the stray probe processes and the untrustworthy map (unchanged, still step one).
+2. Re-sync + commit the lane's code into `$LAB/gp_e2e` — it must now include `hw_probe.sh` and the deletion of
+   `isa_probe.sh`.
+3. `bash cluster/hw_probe.sh` at **PAR=6** to get the machine-size census and pick the size to standardise on.
+4. **Wait for the thread-pinning sweep verdict.** Do not submit the pinned pass before it.
+5. Then take the two measurements the coordinator asked for — one RLPD cell and one DP episode — **on machines of a
+   fixed core count** (not a fixed instruction set), and report wall-clock before committing to all 32.
