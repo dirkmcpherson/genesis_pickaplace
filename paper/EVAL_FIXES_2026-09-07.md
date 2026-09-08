@@ -98,6 +98,26 @@ would be a real bug in the patch and blocks the readout.
 
 PENDING.
 
+## 5b. Terminology: "the slide" is `scope='contact'`; `carrycontact` is only a control (user, 2026-09-08)
+
+Three names in these tables sound alike and are not the same measurement. Stating them once, because the overlap is what
+makes the results hard to read:
+
+| name | entry state | what success means | status |
+|---|---|---|---|
+| **`contact` — "the slide"** (§3) | a can **already released, standing on the shelf** | push it into the goal can; scored by **`slide_success`** under amendment (l) | **the result of interest** |
+| `carrycontact` (§4) | the **pick grant** — can still in the gripper | bare `contact` by ANY route, *including carrying the held can into the goal without ever releasing it* | **a control, not a result** |
+| `contact_push` (amendment (g′)) | — | a stricter reading of `contact`: tool on the far side of the can, no gripper–goal contact | diagnostic column |
+
+`carrycontact` exists to answer one question — how much ordinary `contact` credit came from the can never leaving the
+gripper — and it answered it (~69 % of the credit was the held-can route). That measurement is what motivated redefining
+success as `slide_success` in (l). Its own human-vs-machine comparison is therefore **not a claim anyone needs to defend**,
+and it should not be presented beside the slide result as though it were a second finding.
+
+Practical consequence (2026-09-08): the re-score queue was reordered to run the 48 slide cells before the 64 carrycontact
+cells, which had been queued first. The carrycontact re-score is last and can be dropped without affecting §3, the
+three-learner table, or the end-to-end set.
+
 ## 6. `slide_success` (PHASE_PLAN amendment (l), fe09d91) — added to the same re-score
 
 Registered predicate: picked earlier ∧ pick-can↔goal solver contact ∧ gripper commanded open (< 0.3) ∧ pick-can centre in
