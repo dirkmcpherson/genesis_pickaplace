@@ -368,3 +368,52 @@ comparison of record.
 
 **Conclusions unchanged for the whole place phase.** Every verdict that was "equivalent within ±0.10" before the re-score
 is still that afterwards; only figures moved, by ≤ 0.02 per arm.
+
+### 8.4 END-TO-END (§5.1), pinned hardware, 8 v 8 — rnd30 MODE, the statistic of record
+
+Record = the published cells (mixed CPU classes, `placed_v2`/`contact_push`/`nested_honest`/`slide_success` structurally
+absent). Re-scored = all 64 cells pinned to one 64-core class, with the (j) and (l) columns computed.
+
+| stage | human rec → re | machine rec → re | Δ (h−m) | exact p | 95 % CI | **MDE** |
+|---|---|---|---|---|---|---|
+| picked | 0.500 → **0.492** | 0.537 → **0.537** | −0.046 | 0.554 | [−0.195, +0.104] | **0.210** |
+| placed (stale) | 0.000 → 0.000 | 0.008 → 0.008 | −0.008 | 0.467 | — | — |
+| **placed_v2** (new) | — → **0.163** | — → **0.200** | −0.038 | 0.520 | [−0.147, +0.072] | 0.154 |
+| contact | 0.379 → **0.388** | 0.338 → **0.338** | +0.050 | 0.569 | [−0.123, +0.223] | **0.243** |
+| **contact_push** (new) | — → **0.204** | — → **0.212** | −0.008 | 0.942 | [−0.129, +0.112] | 0.169 |
+| nested_proxy (= published `nested`) | 0.163 → **0.138** | 0.192 → **0.192** | −0.054 | 0.300 | [−0.155, +0.046] | 0.141 |
+| **nested_honest** (new) | — → **0.046** | — → **0.104** | −0.058 | **0.087** | [−0.121, +0.004] | 0.088 |
+| **slide_success** (l, statistic of record) | — → **0.042** | — → **0.017** | +0.025 | 0.277 | [−0.013, +0.063] | 0.053 |
+
+**Registered predictions — all met.** (d) P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2): **MET** at picked,
+placed_v2, contact, contact_push. (d) P3 (nested < 0.2 both arms, on the honest predicate): **MET** (0.046 / 0.104).
+(l) |Δ| < 0.10 on `slide_success`: **MET** (0.025). (l) `slide_success` ≤ `nested_honest`: **MET** in both arms.
+**No stage falls outside ±0.10.**
+
+**But the power is the story, and it limits what "no source effect" can mean here.** Five of the seven stages have an
+**MDE larger than the ±0.10 margin they are being tested against** — picked 0.210, contact 0.243, contact_push 0.169,
+placed_v2 0.154, nested_proxy 0.141. Those cells cannot distinguish "no effect" from "an effect the full width of the
+registered margin". Only **`slide_success` (MDE 0.053)** and **`nested_honest` (MDE 0.088)** are powered below the margin,
+and they are the two stages that matter most: the statistic of record, and the honest completion predicate.
+
+**The one result worth watching** is `nested_honest`: machine 0.104 against human 0.046, Δ −0.058, **p 0.087**, CI
+[−0.121, +0.004] — the machine arm completes the task honestly more than twice as often, and this is the closest any
+end-to-end cell comes to a difference. The published proxy understated that gap (0.138 v 0.192, a 1.4× ratio, against
+2.3× on the honest predicate), which is exactly the substitution amendment (j) was written to remove.
+
+**Verdict.** §5.1's conclusion survives as registered — every prediction met, no stage outside the margin — but it should
+be republished as *"no source effect detectable at this sample size, with MDEs above the margin at five of seven stages"*
+rather than as a demonstrated equivalence, and with `nested_honest` flagged as the stage to power properly.
+
+### 8.5 Corroboration of the CPU-class finding — confirmed, but NOT in the form it was reported to me
+Checked independently (`e2e_readout.py`): between the two *independent re-scores* (`_cp`, mixed hardware, and `_v2`,
+pinned) **every one of the seven stages agrees to exactly 0.0000 in both arms** — not three stages, all of them,
+`picked` and `nested_proxy` included. So the claim "contact_push / nested_honest / slide_success moved 0.000 while picked
+and nested_proxy moved" does **not** reproduce; between re-scores nothing moved at all.
+
+What *did* move is **record → re-score**, and there the pattern is the real corroboration: **every stage of the machine
+arm reproduces exactly** (picked 129→129, contact 81→81, nested 46→46), while the **human arm moves** (picked 120→118,
+contact 91→93, nested 39→33). The human arm is precisely where the 36-core originals live (§7.7: seeds s2 and s3 on
+pax109), and the machine arm has none. That is a third independent line of support for the core-class finding — arrived
+at without looking for it — but it is a *record-versus-rescore* asymmetry, not a *rescore-versus-rescore* one, and the
+distinction matters because the second would imply the re-scores disagree with each other, which they do not.
