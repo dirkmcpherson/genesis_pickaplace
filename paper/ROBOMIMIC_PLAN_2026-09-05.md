@@ -225,3 +225,49 @@ open-loop executable. Measured (builder `baselines/robomimic/build_reexec_arms.p
   roughness and magnitude move together; the gripper stays binary in both arms (MG's continuous gripper has no human
   mirror and remains untested); re-executed arms carry no t=0 observation artefact. **Can-Paired good-v-bad is NOT run**
   (it needs a build; the coordinator restricted it to "no build").
+
+## A5. Amendment 2026-09-08 (registered BEFORE the runs): fixed-head control for the BC-RNN row
+*Trigger: the adversarial-review question "does the GMM head interact with MG's action statistics?" — checked against the
+configs that actually ran and the `config` blob inside each `model_epoch_2000.pth`. The answer is stronger than an
+interaction: **the two arms of the BC-RNN row use different policy classes.** PH200 and MH200 ran with
+`algo.gmm.enabled = True`, `num_modes 5`, `low_noise_eval True`; MG200s ran with `algo.gmm.enabled = False`
+(gaussian False, vae False, l2 1.0 → a deterministic MSE head). Everything else is identical (LSTM 2×400,
+`actor_layer_dims []`, lr 1e-4, seq_length 10, batch 100, 2000 epochs, same bank/protocol). Origin:
+`baselines/robomimic/make_bcrnn_config.py:71` `config.algo.gmm.enabled = (dtype != "mg")`, copied deliberately from
+robomimic's own `generate_paper_configs.py` (`if dataset_type == "mg": config.algo.gmm.enabled = False`) to reproduce
+their published per-dataset recipe, and disclosed in that file's docstring. **The defect was not the choice but its
+travel: a fact recorded in the code never reached the results, where it changed an interpretation** — the same shape as
+several defects found on 09-07. Consequence: as published, the BC-RNN row (MH200 0.927 v MG200s 0.393) does not measure
+demonstration source and cannot stand beside RLPD and DP as "three learners measuring one thing".*
+- **Design (head held fixed across arms; nothing else changes):** **G1a `MG200s_gmm`** = MG200s with `gmm.enabled True`
+  (5 modes) and **G1b `MH200_nogmm`** = MH200 with `gmm.enabled False`, 3 seeds each = 6 runs, robomimic's own trainer,
+  2000 epochs, LAST checkpoint (`model_epoch_2000.pth`), scored by `eval_bcrnn_robosuite.py` on `bank_can50` (50 states,
+  deterministic: `low_noise_eval True` for the GMM head, deterministic by construction for the MSE head).
+  Reference cells already on record (same protocol): MH200-GMM 49/45/45 = **0.927**, MG200s-det 22/14/23 = **0.393**,
+  PH200-GMM 46/46/46 = 0.92. Cost: measured 24–27 min/run incl. eval → **≈ 2.6 GPU-h**.
+- **Statistic and its honest limit:** per-seed counts /50 and the 3-seed mean; an exact 3-v-3 permutation has 20 splits,
+  so **p < 0.05 is unattainable by construction** — the decision is on EFFECT SIZE against a ±0.10 band, disclosed as
+  such, and a borderline outcome (|Δ| in 0.08–0.12) is escalated to 8 seeds (+7 GPU-h) rather than argued.
+- **Predictions (registered):** **P-A5-1: `MG200s_gmm` within 0.10 of 0.393** (the head is not the story on machine data
+  — robomimic disabled it there because it did not help, not because it hurt). **P-A5-2: `MH200_nogmm` within 0.10 of
+  0.927** (the head is not the story on human data either). Both are falsifiable in either direction, and the
+  human-arm-switched-off cell is reported whatever it shows: a large move there would say the effect is architectural on
+  both arms rather than only on one.
+- **Decision rules:** (i) both predictions hold → the head is not the story; the BC-RNN row is re-reported head-matched
+  (one head for both arms) and its remaining doubt is exactly the 200-tape-subsample doubt the A2 controls established.
+  (ii) P-A5-1 fails (`MG200s_gmm` moves ≥ 0.10) → the published 0.393 was partly an architecture artefact; **the BC-RNN
+  row as published is withdrawn** and may only be re-reported from head-matched cells. (iii) P-A5-2 fails → the head
+  matters on human data too; same withdrawal, and head choice becomes a variable that must be held fixed in every future
+  row of this leg. (iv) Any outcome where the two arms' best heads differ → the row is reported as two head-matched
+  contrasts, never as one number.
+- **Pre-committed consequences for the CROSS-LEARNER ORDERING** ("imitators lose most, online RL least": BC-RNN Δ 0.53,
+  DP Δ 0.77, RLPD Δ 0.31 on MH200 v MG200s) — decided now, not after the numbers:
+  1. **Under every outcome of A5, the ordering may NOT be quoted as a demonstration-SOURCE ordering.** The A2 controls
+     already withdrew that reading for RLPD (MG718s 0.475 v MH200 0.455, Δ +0.020, p 0.886; MGall 0.610, above the human
+     arm), and the DP and BC-RNN arms have never been run on MG718s/MGall — they inherit the same 200-tape-draw doubt.
+  2. Under (i) the ordering survives only as **"three learners on one 200-tape MG draw versus one 200-tape MH draw"**,
+     with the subsample caveat attached to every use, and it is not evidence about human-vs-machine demonstrations.
+  3. Under (ii) or (iii) the ordering is **withdrawn outright** until BC-RNN is re-run head-matched; a row whose two arms
+     differ in policy class cannot contribute a rank to an ordering of policy classes.
+  4. The ordering is restored as a source claim only by running DP and BC-RNN on MG718s and MGall (≈ 16 DP runs ≈ 32 GPU-h
+     + 6 BC-RNN runs ≈ 2.6 GPU-h) — registered here as the price, so it is not smuggled in by re-interpretation.
