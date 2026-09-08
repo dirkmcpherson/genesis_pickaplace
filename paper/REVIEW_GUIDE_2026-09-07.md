@@ -218,3 +218,19 @@ None of this changes what we do: avoid the minority class, and every comparison 
 **Separately, a comparability defect that touches three phases.** Every world-model phase record is **unstamped** — `bank_version` is absent in all eight families (place, contact and carrycontact × each entry bank) — and the place, contact and carrycontact records were scored on the **raw-grip** entry banks, while all newly produced cells use the **rebuilt** bank. The rebuild moved 30 of 148 `polE_place` entries out of a state where the fingers were commanded more open than they measured, so these are different entry states rather than a renamed file. Consequences: each learner's own human-versus-machine comparison remains internally valid; **no cross-learner table may be assembled from them until the world-model side is re-scored** (144 place cells launched, contact and carrycontact to be scoped); and **§2.y's published place figures, 0.703 v 0.647, were themselves scored on the raw bank** and may move. `holdE` rows are unaffected in content — that bank is human tapes the rebuild did not touch — but they are equally unstamped, and "unstamped" is indistinguishable from "unchanged" without checking, which is how this stayed invisible.
 
 **Rule adopted:** a row is cross-learner comparable only when every cell in it shares an entry-bank version and evaluation protocol, and a **missing stamp counts as unknown, therefore not comparable** — never as a match.
+
+
+### Addendum, 2026-09-08 — the step budget is not neutral between the arms
+
+**The end-to-end equivalence is stated at a fixed step budget that the two arms consume differently.** Because the machine-demonstration arm reaches each stage later, a fixed budget leaves it less training *after* it gets there:
+
+| stage | human (median / worst seed) | machine (median / worst seed) |
+|---|---|---|
+| picked | 73 % / 64 % of the run remaining | **60 % / 31 %** |
+| contact | 56 % / 41 % | **43 % / 26 %** |
+
+The slowest machine seed had under a third of its run left after it first picked. **This is a genuine confound in the comparison, and its direction matters: it runs against the machine arm.** Equalising post-ignition training could only move the machine arm up. Since the observed end-to-end difference already leans slightly machine-ward (picked 0.500 human v 0.537 machine), correcting it **could push the comparison outside the ±0.10 equivalence margin in the machine-favouring direction** — so this does not simply make our null "conservative", it is a live threat to the equivalence claim itself, in the less expected direction.
+
+**The budget was never justified as a convergence criterion.** It was registered as "2× the single-phase budget", a doubling heuristic anchored on how long the pick alone took. No stopping rule was registered and no convergence check exists. Any future end-to-end run should either budget *post-ignition* steps or register an explicit stopping rule.
+
+**Related, and registered separately as amendment (u):** the ignition-speed difference itself. It survives changing the threshold definition and appears at two stages — end-to-end `picked` p 0.032 and `contact` p 0.044, place `placed_v2` p 0.075, slide nothing. It remains a post hoc observation pending its pre-registered replication on the queued RLPD runs, and the per-seed raw values are retained so any threshold can be read off without recomputation.
