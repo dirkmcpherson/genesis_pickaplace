@@ -681,7 +681,12 @@ def make_fig(results, path_png, path_pdf):
     fig.text(0.012, 0.012, '\n'.join(textwrap.wrap(msg, 150)), fontsize=8.0, color='#444',
              va='bottom')
     fig.tight_layout(rect=(0, 0.075, 1, 1))
-    fig.savefig(path_png, dpi=200); fig.savefig(path_pdf)
+    # Deterministic output: matplotlib stamps /CreationDate into the PDF, which makes an
+    # otherwise byte-identical rebuild look changed to git. Suppress it so a rebuild with
+    # unchanged data really is a no-op (the README claims idempotence; this makes it true).
+    fig.savefig(path_png, dpi=200, metadata={'Software': 'HRI_results/make_tables.py'})
+    fig.savefig(path_pdf, metadata={'CreationDate': None,
+                                    'Producer': 'HRI_results/make_tables.py'})
     plt.close(fig)
     return len(ordered)
 

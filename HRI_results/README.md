@@ -16,6 +16,11 @@ $V make_tables.py --prior-sweep # print the full prior-sensitivity table
 $V hri_stats.py                 # self-test the statistics against known published cells
 ```
 
+Rebuilding with unchanged data is a genuine no-op: every output, the PDF included, is
+byte-identical run to run (matplotlib's `/CreationDate` stamp is suppressed, and the posterior is
+grid quadrature rather than MCMC). So `git status` after a rebuild tells you whether the DATA
+moved, not merely that you reran the script.
+
 `--refresh` ships `harvest_cluster.py` to the login node, runs it there and pulls the tidy CSV
 back. The link drops intermittently; a failed refresh leaves the existing CSV in place, the build
 continues from it, and the staleness is printed into `results.md` rather than hidden.
