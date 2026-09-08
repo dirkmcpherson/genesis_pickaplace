@@ -1,5 +1,9 @@
 # Entry point for an independent reviewer (2026-09-08)
 
+> **DISPUTED as of 2026-09-08 midday — do not cite the collinearity claim below until resolved.** Two independent censuses disagree. The end-to-end lane probed 124 machines by reading each one's own processor information and reported that all 24 AVX2 machines have exactly 36 cores, with zero overlap, making the two candidate causes inseparable here. The tables lane reports the opposite: Broadwell at both 36 cores (40 nodes) and 40 cores (7 nodes), and 40-core machines spanning two architectures — which would mean a pinned experiment **can** separate instruction set from core count. Resolution hinges on where each got its architecture labels: Slurm's advertised features are known-wrong on this cluster (a node advertising Broadwell measured as Cascade Lake), so a `/proc/cpuinfo` reading beats a Slurm label. Being resolved.
+>
+> **Separately and more seriously, the hardware account no longer explains the re-score asymmetry at all.** Re-scoring moved **26 of 288** human-arm statistics and **0 of 288** machine-arm ones at *identical* cross-class exposure, none of the 26 discrepant cells has a minority-class original, and three moved under same-architecture, same-core-count re-scores. So there is an unexplained, arm-asymmetric reproduction defect that is **not** the hardware split. Magnitude is material: end-to-end human nested seed 2 moves 9 → 3, shifting that arm's mean from 0.163 to 0.138 and Δ from −0.029 to −0.054. Treat every re-score-derived cell as provisional until the mechanism is named.
+
 *Written for an agent or person auditing this project for robustness. It says where the claims live, what is currently in motion, and — most usefully — where I think we are most likely to be wrong. Adversarial reading is the point; nothing here is defended.*
 
 ## 1. How to watch what is happening
