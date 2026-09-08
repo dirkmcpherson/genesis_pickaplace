@@ -57,7 +57,9 @@ They are routinely confused, including by me. They are not three variants of one
 
 **`carrycontact` has already done its job.** Its purpose was to measure how much ordinary contact credit comes from the can never leaving the gripper — about 69 % — and that measurement is what motivated redefining success as `slide_success` in the first place. Its own human-versus-machine comparison is not a claim anyone needs to defend, and presenting it beside the slide result invites reading it as a second finding.
 
-## The independent generator (robomimic Can) — the source reading is DEAD as of 2026-09-08
+## The independent generator (robomimic Can)
+
+**ORDERING WITHDRAWN 2026-09-08** — the BC-RNN arms used different policy classes and the RLPD source reading was withdrawn by its own quantity control. — the source reading is DEAD as of 2026-09-08
 
 The registered quantity control has read out at full seeds and it overturns the headline. RLPD, 8 seeds, 50 shared starts, last checkpoint, mode:
 

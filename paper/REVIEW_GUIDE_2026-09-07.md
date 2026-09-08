@@ -294,3 +294,18 @@ This is the same defect class as the Slide phase, where the reward paid on bare 
 **A cheap decisive control is registered and running:** hold the head fixed across arms — the machine arm with the mixture head enabled, and the human arm with it disabled — three seeds each, about 2.6 GPU-hours. If the machine arm with a mixture head stays near its published value, the head is not the story and the row reduces to the same 200-tape-subsample doubt the quantity control already established. If it moves substantially, the published figure was partly an architecture artefact.
 
 **Compounding, not replacing, the existing doubt.** The BC-RNN and Diffusion Policy separations both rest on the same 200-tape machine draw that MG718s (0.475, indistinguishable from the human arm) and MGall (0.610, above it) have already undercut. **Two independent reasons now exist to distrust the cross-learner ordering**, and neither has been resolved.
+
+
+### Addendum, 2026-09-08 — the BC-RNN row and the cross-learner ordering are WITHDRAWN
+
+The fixed-head control has read out its first cell and falsified its registered prediction. **The machine arm with a mixture head scores 0.093 against the published deterministic-head 0.393** — a difference of 0.300, three times the registered band. Verified before recording: all three cells evaluated the final checkpoint, all three runs completed, and each configuration carries the mixture head enabled where the copied recipe would have disabled it.
+
+Per rules registered before the run:
+- **The BC-RNN row as published (0.927 against 0.393) is withdrawn** and may only be re-reported from head-matched cells.
+- **The cross-learner ordering is withdrawn outright** until BC-RNN is re-run with the head matched.
+
+**One point runs opposite to the natural assumption and should be stated precisely.** The per-dataset recipe was favourable to the **machine** arm, not the human one. With the head matched at the mixture setting the gap is **0.834**, *larger* than the published cross-head 0.534. So the published row did not inflate the human-versus-machine difference — it compared each arm **at its own recipe optimum**, which is a third quantity, neither a source contrast nor a fixed-architecture one.
+
+**Which head you fix changes the gap by a factor of about 1.6.** That is precisely why the row cannot carry a source interpretation in either direction: the number is a property of the architecture choice as much as of the data. The second head-matched contrast — the human arm with a deterministic head — is still training and completes the picture.
+
+**What this does not change:** the quantity control's withdrawal of the RLPD source claim stands on its own evidence, and the Diffusion Policy separation still rests on the same 200-tape draw. This is a second, independent reason to distrust the cross-learner story, not a replacement for the first.
