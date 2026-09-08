@@ -140,7 +140,14 @@ def main():
             print(f'- **BANK MISMATCH**: {split} -- rows were scored on different versions of the same bank name; '
                   f'do NOT combine them into one table until re-scored.')
         elif any(sha == 'unstamped' for (_, sha, _) in BANKS):
-            print('- NOTE: some cells predate the bank stamping (2026-09-07); their bank version is not verifiable from the json.')
+            stamped = sorted({w for (_, sha, _), who in BANKS.items() if sha != 'unstamped' for w in who})
+            unstamped = sorted({w for (_, sha, _), who in BANKS.items() if sha == 'unstamped' for w in who})
+            print(f'- **BANK VERSION NOT COMPARABLE**: rows from {", ".join(unstamped)} carry no bank stamp (cells written '
+                  f'before 2026-09-07), while {", ".join(stamped)} rows are stamped. The policy-generated banks were '
+                  f'REBUILT on 2026-09-07 (physical-grip fix, review S2-4): an unstamped polE cell was therefore scored '
+                  f'on the RAW-grip bank and a stamped one on the rebuilt bank -- different entry states, not just a '
+                  f'different file name. Do not read these rows as one table until the unstamped learner is re-scored '
+                  f'on the rebuilt bank; the per-learner comparisons above are each internally valid.')
         else:
             print('- all rows above share one bank version per bank file.')
 
