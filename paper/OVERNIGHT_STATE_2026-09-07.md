@@ -1,3 +1,40 @@
+# Overnight state — MORNING BRIEF (2026-09-08 06:20)
+
+*Everything below this brief is the chronological record, including entries later corrected. Read the brief; dip into the chronology only for provenance. Nothing was published, trained on a wrong target, or lost.*
+
+## 1. Decisions waiting for you (nothing else is blocked)
+
+1. **Which human tapes the Slide phase trains on**: 15 (the simulation completed the slide) or ~30 (you performed one, the sim fell 2–4 cm short on 16 of them). Full argument in `PHASE_PLAN` amendment (q), including the asymmetry that machine demonstrations are sim-achievable by construction. Slide's 32 jobs are held pending this.
+2. **Whether to raise end-to-end to 16 v 16** (its detectable-effect threshold is ≈ 0.21, the project's widest).
+3. **Robomimic framing** — but wait for the controls (see §3); the day's strongest result may not survive them.
+
+## 2. Results you already knew that CHANGED overnight
+
+- **The published end-to-end `nested` over-counts by 2.5×.** It is the training proxy (0.333 on the checked cell); the honest settled predicate gives 0.133. DP and RLPD report the honest one, so the three-learner table cannot mix them. The cell itself reproduces exactly (0/30 differences), so this is a definition problem, not a measurement error.
+- **The "policies carry the can without releasing" reading of §5.1 was wrong.** Measured: 8 of 30 episodes did release onto the shelf. I had corrected this once already on weaker evidence; it is now settled.
+- **Hardware class is partially confounded with ARM in the published 8 v 8** — the machine arm is 8/8 AVX-512, the human arm has 2 AVX2 cells. This is the most consequential finding of the night and is why all 64 end-to-end cells are being re-scored on one pinned CPU model (amendment (t)).
+- **My Slide success predicate was wrong and is withdrawn** (amendment (p)): it required an open gripper at contact, which passes **2 of 74** demonstrations, because you slide with the gripper half-closed. The reward change that would have matched it was stopped before landing. The phase's *entry* gate had the same defect and is also corrected (amendment (r)).
+- **"Deterministic mode" is deterministic only given the RNG stream** — the world model samples its latent inside the policy. No comparison is biased, but the word is wrong in four documents.
+- **The robomimic "MG is worthless" reading is dead**: the no-demo control passed at 0.000, so machine demonstrations do help, just less.
+
+## 3. What is new and worth knowing
+
+- **A three-learner robomimic result with the ordering our thesis predicts** — imitators lose most on machine data (BC-RNN 0.53, DP 0.77), online RL least (RLPD 0.31) — **but the quantity control is contradicting the premise**: RLPD on all 3,900 rollouts scores 0.74/0.60 on two seeds, *above* the human arm. If that holds, all three gaps are about the 200-tape subsample, not machine provenance. Decisive controls still landing.
+- **dv3, the second world model, works.** Gate passed 0.700/0.700 human vs 0.633/0.633 machine. The clamp fix reproduces on both ports. `RESULTS` §7 item 9 and `CONFOUNDS` row 44 now say the opposite of the truth and need updating.
+- **A reproducibility finding worth publishing**: our contact-rich results are bit-reproducible within an instruction-set class (53/53) and can flip across AVX2/AVX-512 over long horizons (agreement to 1e-9 at decision 12, outcome flip by 32). Slurm's own feature labels misreport CPUs, so pinning must read `/proc/cpuinfo`.
+- **The carrycontact null survives every predicate** (contact, geometric push, release-based) — a real robustness check — while confirming those policies essentially never release (3 releases in 2368 episodes).
+- **The count reconciliation is closed.** 21/26/16/11/7/14/15/30 are one lineage difference plus one predicate change plus one design choice; the 11+7=18 arithmetic was a coincidence that does not survive a lineage change.
+
+## 4. Running / held
+
+Running: robomimic recovery (72 runs, DP arm complete, controls landing), place 32, end-to-end 32, dv3 4-seed comparison, contact re-score 192 cells, in-distribution evaluations. Held deliberately: Slide 32 (predicate), end-to-end re-score 320 cells (launching now that pinning is prepared).
+
+## 5. Two problems found and fixed that could have cost us quietly
+
+A silent data-loss defect (completed episodes discarded, presenting as absent data — 6 cells recovered, none recomputed) and dead seeds being averaged into arm means without flagging (one shifts an arm by ~0.07, which is the concrete reason the RLPD pick null is the weakest at 0.345).
+
+---
+
 # Overnight state, 2026-09-07 ~23:00 → morning of 09-08
 
 *Read `WHAT_EACH_PHASE_TRAINS_ON_2026-09-07.md` first (what Pick/Place/Slide actually optimise), then this. Corrections of record live in `REVIEW_GUIDE_2026-09-07.md` §8 + addendum.*
