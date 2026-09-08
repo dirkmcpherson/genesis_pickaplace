@@ -259,3 +259,83 @@ The Tufts tunnel dropped. `ip -br addr` shows only wifi and tailscale; `login.pa
 3. Collect the robomimic controls, which are the results that decide whether the three-learner ordering survives.
 
 The end-to-end agent has been told to stop attempting cluster access and to leave its exact command list under this heading.
+
+## VPN DOWN 22:37 — pinned e2e re-score pickup
+
+End-to-end (full task) DP+RLPD lane, PHASE_PLAN amendment (n) (+ (s)/(t) responses). The VPN dropped at ~22:37 EDT
+mid-way through the ISA probe; no further cluster access was attempted after that. **Nothing in flight is lost: the 32
+training jobs (`e2e_rlpd_*` 3355448–63, `e2e_dp_*` 3355464–79) were all PENDING at the drop and keep queuing.**
+
+### State at the drop
+
+- **Local repo: everything of mine is COMMITTED** (last code commit `b7d7fab`). Nothing of this lane exists only in a
+  working tree here.
+- **Cluster clone `$LAB/gp_e2e` (branch `e2e-work`): last COMMIT `aa543eb`, but its working tree also holds the newer
+  files, rsynced successfully at ~22:33, a few minutes before the drop — `eval_e2e.py` (role stamp), `e2e_eval_cells.sh`
+  (ROLE/CELL_DIR), `merge_e2e_iso.py`, `e2e_table_all.py` (--cell-root, role-mixing refusal), `sbatch_e2e_rescore.sh`,
+  `isa_probe.sh`. They are UNCOMMITTED there.** Consequence, and it is the good one: the pending jobs read the eval
+  stage at run time, so any job that starts before someone reconnects will correctly stamp its in-job cells
+  `role: preview`. Re-rsync and commit on reconnect anyway, so the clone's provenance matches the local history.
+- **Loose ends on the login node to clear FIRST:** `cluster/isa_probe.sh` was running with up to 30 concurrent
+  `srun --overlap` probes and was making `ssh` itself time out; I could not confirm the kill landed.
+  `$LAB/gp_e2e/isa_map.json` is absent or partial and must not be trusted.
+
+### The nodelist: NOT established by my probe
+
+The probe never returned a readable result. The only verified AVX2 nodes are the coordinator's own:
+**`pax109,pax154`** (Xeon E5-2695 v4, Broadwell — both reproduce the record bit-for-bit). Known AVX-512: `pax001`
+(Cascade Lake), `pax030` (Sapphire Rapids). Pinning to `pax109,pax154` is safe *without* re-running the probe, because
+`sbatch_e2e_rescore.sh` re-reads `/proc/cpuinfo` on arrival and dies loudly if the node is not AVX2 — never trust
+`--constraint`, which mislabels `pax001` as `broadwell`. Re-run the probe (at **PAR ≤ 6**, not 30) only to widen the
+pool or to answer whether any AVX2 node carries a GPU, which is still unknown.
+
+### Commands on reconnect, in order
+
+```bash
+# 1. clear the stray probe processes (they were saturating the login node)
+ssh pax 'pkill -f isa_probe.sh; pkill -f "overlap -w pax"; rm -f /cluster/tufts/shortlab/jstale02/gp_e2e/isa_map.json'
+
+# 2. re-sync the lane's code into the clone and commit it there (clone was at aa543eb; local is b7d7fab)
+cd ~/workspace/genesis_pickaplace
+rsync -az --relative baselines/eval_e2e.py baselines/merge_e2e_iso.py baselines/e2e_table_all.py \
+    baselines/rl/full_demos.py cluster/e2e_eval_cells.sh cluster/e2e_build_sets.sh cluster/isa_probe.sh \
+    cluster/sbatch_e2e_rescore.sh cluster/sbatch_rlpd_e2e.sh cluster/sbatch_dp_e2e.sh cluster/submit_e2e.sh \
+    pax:/cluster/tufts/shortlab/jstale02/gp_e2e/
+ssh pax 'cd /cluster/tufts/shortlab/jstale02/gp_e2e && git add -A baselines cluster && git -c user.name="Claude Opus 5" \
+    -c user.email="noreply@anthropic.com" commit -m "amendment (n): preview/record split + pinned re-score launcher"'
+
+# 3. see how far the 32 training jobs got
+ssh pax 'squeue -u $USER -o "%.10i %.18j %.9T %.10M %R" | grep e2e_; \
+         ls -d /cluster/tufts/shortlab/jstale02/gp_e2e/baselines/rl/checkpoints/e2e/*/rlpd_final.zip 2>/dev/null | wc -l'
+```
+
+Then, for every run whose TRAINING has finished (the launcher refuses a partial run), submit the pinned CPU-only pass
+that produces the cells of record — both the shared cell (statistic of record, order-matched to PHASE_RESULTS §5.1)
+and the isolated cell (amendment (s) correctness check), written under `<run>/rec/`:
+
+```bash
+ssh pax 'cd /cluster/tufts/shortlab/jstale02/gp_e2e && export GENESIS_PICKAPLACE_ROOT=$PWD && \
+  for A in dH dDP; do for S in $(seq 0 7); do \
+    LEARNER=rlpd ARM=$A SEED=$S sbatch --nodelist=pax109,pax154 -J e2erec_rlpd_${A}_s$S cluster/sbatch_e2e_rescore.sh; \
+  done; done'
+# DP the same with LEARNER=dp (CPU-only, and slow -- see the unknowns below before committing to it)
+```
+
+Readout, once the pinned cells exist (never mix roles — the table refuses):
+
+```bash
+python3 baselines/e2e_table_all.py --cell-root rec --strat                 # cells of record, shared protocol
+python3 baselines/e2e_table_all.py --cell-root rec --cell-suffix _iso --strat   # isolation correctness check
+python3 baselines/e2e_table_all.py --strat                                 # the in-job PREVIEW cells, descriptive only
+```
+
+### What is measured, and what is still unknown
+
+| question | status |
+|---|---|
+| in-job cells marked so no table can pick them up | **DONE** — `role: preview` by default in every metrics.json and headline; `--role record` is refused without `--require-isa`; pinned cells live under `<run>/rec/`; `e2e_table_all.py` refuses any row that mixes roles. Verified locally, not yet exercised on the cluster. |
+| DP evaluation CPU-only | **YES, demonstrated** — a full 300-decision episode ran with no GPU visible (`No accelerated backend detected. Using default cpu`) and produced a sensible result (uid 252: picked, `nested_honest`). **568 s per episode on the AVX-512 login node (Xeon Gold 6346).** |
+| DP CPU cost on an **AVX2** node | **UNKNOWN.** Broadwell E5-2695 v4 is an older core than the Ice Lake part I measured on; I will not extrapolate. Measure one episode before committing to a 16-run DP pass — at ~570 s/episode a full DP run (195 episodes across shared + iso cells) is ≈ 31 h of CPU, so the pass is feasible but wants a real number and probably an array over nodes. |
+| pinned RLPD **cell** wall-clock on AVX2 | **UNKNOWN — never run.** All timings I have are AVX-512 login-node per-episode figures: shared ≈ 28.5 s/episode plus ≈ 30 s process start per cell; isolated ≈ 59 s/episode (2.05×). A full pinned cell on `pax109`/`pax154` is the first thing to measure on reconnect. |
+| node → instruction-set map | **NOT established** (probe killed mid-flight). Verified AVX2: `pax109`, `pax154` only, from the coordinator. |
+| does any AVX2 node have a GPU | **UNKNOWN** — the probe would have answered it; `isa_probe.sh` now records `gpu=` per node and prints the AVX2-with-GPU list. |
