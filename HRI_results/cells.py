@@ -122,6 +122,37 @@ COMPARISONS = [
          empty_reason='Not run. The world model has no spots60 evaluation; the in-distribution '
                       'row exists for DP and RLPD only.'),
 
+    # ------------------------------------------- PRUNING CONTROL (human raw vs human pruned)
+    # Not a source contrast. This is the reference effect size: how much a DATA-HANDLING choice
+    # inside the human arm moves Diffusion Policy, for comparison against every source contrast
+    # above. Both arms here are human-sourced.
+    dict(id='prune_dp_rnd30', group='Pruning control (human pruned vs human raw)',
+         learner='Diffusion Policy', stat='picked', action='sampled',
+         human='dH PRUNED (58)', machine='dHv2raw RAW (66)',
+         sel_h=dict(source='cluster:dp', arm='dH', cell='selected/rnd',
+                    extra_has='wave=dp_w2final'),
+         sel_m=dict(source='cluster:dp', arm='dHv2raw', cell='selected/rnd',
+                    extra_has='wave=dp_v2fullw3'),
+         provisional='The two arms differ in wave AND in demonstration count (58 pruned vs 66 '
+                     'raw), so this is a pruned-set-vs-raw-set contrast, not a controlled '
+                     'pruning-only manipulation. The direction and magnitude are the point.',
+         note='Random starts, selected checkpoint. "Delta" here is pruned minus raw.'),
+
+    dict(id='prune_dp_spots60', group='Pruning control (human pruned vs human raw)',
+         learner='Diffusion Policy', stat='picked', action='sampled',
+         human='dH PRUNED (58)', machine='dHv2raw RAW (66)',
+         sel_h=dict(source='cluster:dp', arm='dH',
+                    cell_in=('selected_spots60/spots60',
+                             'selected_spots60_mixedcore/spots60'),
+                    extra_has='wave=dp_w2final'),
+         sel_m=dict(source='cluster:dp', arm='dHv2raw', cell='selected_spots60/spots60',
+                    extra_has='wave=dp_v2fullw3'),
+         provisional='Same wave/count caveat as prune_dp_rnd30. The human pruned arm here is the '
+                     'ten-seed as-published set (five pinned + five archived mixed-core), '
+                     'matching the in-distribution table this figure was quoted from.',
+         note='IN-TRAINING-DISTRIBUTION starts. This is the cell behind the quoted "raw costs '
+              '0.19": pruned 0.878 against raw 0.688.'),
+
     # ---------------------------------------------------------------- Genesis: PLACE
     dict(id='place_r2d', group='Place (matched 39)', learner='world model (r2dreamer)',
          stat='placed_v2', action='mode', human='dH_place (39)', machine='dDP_place_n39 (39)',
@@ -347,8 +378,12 @@ COMPARISONS = [
          provisional='NEVER READ OUT BEFORE THIS TABLE. Both arms are on the floor at ~541k '
                      'training steps, so the world model has no working configuration on this '
                      'independent task and the cell cannot bear a source comparison.',
-         note='Reported as a learnability failure, not as a null: a p-value on two floored arms '
-              'would be an artefact.'),
+         note='Reported as a LEARNABILITY FAILURE, not as a null, and deliberately not as an '
+              'empty cell: "we ran it and both arms floored" is a stronger and more informative '
+              'statement than "not run". Consequence for the paper: the robomimic leg carries '
+              'RLPD, Diffusion Policy and BC-RNN, but NOT a world model, so it cannot support '
+              'the source-indifference headline on an independent task - on this task the world '
+              'model does not learn at all.'),
 
     dict(id='robo_rlpd_nodemo', group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='no demonstrations (control)',
@@ -359,3 +394,18 @@ COMPARISONS = [
          note='Registered negative control G2b: RLPD with no demonstrations at all. 0/50 on '
               'every seed, so demonstrations of either source are doing real work here.'),
 ]
+
+
+# Rendered under the group heading in results.md.
+GROUP_NOTES = {
+    'robomimic Can':
+        'The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541k '
+        'steps), so this leg is a THREE-learner comparison - RLPD, Diffusion Policy, BC-RNN - '
+        'and not four. The source reading itself is WITHDRAWN by its own registered quantity '
+        'control: at natural size the machine data matches (MG718s) or beats (MGall) the human '
+        'arm.',
+    'Pruning control (human pruned vs human raw)':
+        'Both arms are HUMAN. This is the reference effect size for the table above: a '
+        'data-handling choice inside one source moves Diffusion Policy far more than any '
+        'source difference measured anywhere in this project.',
+}

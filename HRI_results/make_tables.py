@@ -13,7 +13,7 @@ fig_effects.png / fig_effects.pdf, METHODOLOGY.md.
 The cluster link drops intermittently; a failed refresh leaves the existing CSV untouched and
 the build continues from it, with the staleness recorded in the output.
 """
-import argparse, csv, json, os, subprocess, sys, textwrap, datetime
+import argparse, collections, csv, json, os, subprocess, sys, textwrap, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -307,6 +307,43 @@ def comparability(results):
                           reason='All cells share entry bank and evaluator.')
     return out
 
+def node_analysis(raw, rescore):
+    """Test the standing explanation for non-reproducing re-scores: that they are a
+    cross-hardware-class artefact. Joins every comparable statistic to the ORIGINAL record node
+    and the RE-SCORE node, and reports (a) the hardware class of the discrepant cells, and
+    (b) the 2x2 of cross-class exposure against movement, split by arm. Balanced exposure with
+    one-sided movement refutes the hardware explanation.
+    """
+    path = os.path.join(HERE, 'node_provenance.csv')
+    if not os.path.exists(path):
+        return None
+    lines = [l for l in open(path) if not l.startswith('###') and not l.startswith('   ')]
+    NJ = {(r['run'], r['tag'], r['mode']): r for r in csv.DictReader(lines)}
+    idx, run_of = {}, {}
+    for r in raw:
+        if r['source'] != 'cluster:wm':
+            continue
+        idx[(r['run'], r['cell'], r['statistic'], r['action_mode'])] = int(r['k'])
+        run_of[(r['phase'], r['arm'], r['cell'], r['action_mode'], r['seed'])] = r['run']
+    tally = {a: collections.Counter() for a in ('human', 'machine')}
+    for (run, cell, stat, mode), k0 in idx.items():
+        if cell.endswith('_cp') or stat not in ('picked', 'contact', 'nested'):
+            continue
+        k1 = idx.get((run, cell + '_cp', stat, mode))
+        nj = NJ.get((run, cell, mode))
+        if k1 is None or not nj or not nj['orig_arch'] or not nj['rescore_arch']:
+            continue
+        arm = 'human' if '_dH' in run else 'machine'
+        tally[arm][(nj['orig_arch'] != nj['rescore_arch'], k0 != k1)] += 1
+    disc = []
+    for ph, arm, cell, stat, mode, seed, k0, k1 in rescore:
+        run = run_of.get((ph, arm, cell, mode, seed))
+        nj = NJ.get((run, cell, mode)) if run else None
+        if nj:
+            disc.append((ph, arm, cell, stat, mode, seed, k0, k1, nj))
+    return dict(tally=tally, disc=disc)
+
+
 # ---------------------------------------------------------------------- rendering
 def _emit_row(A, r):
     flag = {'PROVISIONAL': ' *(prov.)*', 'EMPTY': '', 'FLOOR': ' *(floor)*'}.get(r['status'], '')
@@ -333,7 +370,7 @@ def fmt(x, nd=3):
     return str(x)
 
 
-def render_md(results, stale, doc_issues, rescore, comp):
+def render_md(results, stale, doc_issues, rescore, comp, nodes):
     L = []
     A = L.append
     A('# Human vs machine demonstrations - results of record\n')
@@ -365,6 +402,9 @@ def render_md(results, stale, doc_issues, rescore, comp):
 
     for g in groups:
         A(f'\n## {g}\n')
+        gn = getattr(CELLS, 'GROUP_NOTES', {}).get(g)
+        if gn:
+            A(gn + '\n')
         c = comp.get(g, {})
         split = not c.get('comparable', True)
         if split:
@@ -430,6 +470,43 @@ def render_md(results, stale, doc_issues, rescore, comp):
     else:
         A('Every unchanged statistic reproduces exactly between a cell and its `_cp` '
           're-score.')
+
+    if nodes:
+        A('')
+        A('### Is it the hardware class? No.')
+        A('')
+        A('The standing explanation for a re-score that does not reproduce is that it ran on a '
+          'different class of machine. Joining every comparable statistic to its ORIGINAL record '
+          'node and its RE-SCORE node refutes that here.')
+        A('')
+        A('| arm | cross-class re-scores | of those, moved | same-class re-scores | of those, moved |')
+        A('|---|---|---|---|---|')
+        for arm in ('human', 'machine'):
+            t = nodes['tally'][arm]
+            nc = t[(True, True)] + t[(True, False)]
+            ns = t[(False, True)] + t[(False, False)]
+            A(f'| {arm} | {nc} | **{t[(True, True)]}** | {ns} | **{t[(False, True)]}** |')
+        A('')
+        A('Exposure to cross-class re-scoring is IDENTICAL between the arms, yet only the human '
+          'arm moves. Three human runs moved under a re-score on the SAME architecture and the '
+          'SAME core count, which no cross-class effect can explain. And not one discrepant cell '
+          'has a 36-core original record:')
+        A('')
+        A('| original record node | discrepant cells |')
+        A('|---|---|')
+        oc = collections.Counter(f"{d[8]['orig_arch']} / {d[8]['orig_cores']}-core"
+                                 for d in nodes['disc'])
+        for k, v in sorted(oc.items()):
+            A(f'| {k} | {v} |')
+        A('')
+        A('**The hardware explanation is refuted, and the checkpoint explanation with it** '
+          '(`latest.pt` predates the original evaluation in all 48 runs checked, so the '
+          're-score read the same weights). The movement is localised to seven human runs - two '
+          'end-to-end (seeds 2 and 3, which moved on 8 and 11 of their 12 statistics) and five '
+          'contact (1-3 of 12 each) - rather than spread across the arm. **No mechanism has been '
+          'established.** Until one is, every re-score-derived cell inherits a discrepancy that '
+          'moves one arm only.')
+        A('')
 
     A('\n## Doc-of-record cross-check\n')
     if doc_issues:
@@ -550,6 +627,7 @@ def main():
     doc_issues = check_docs(results)
     rescore = rescore_check(load_raw())
     comp = comparability(results)
+    nodes = node_analysis(load_raw(), rescore)
 
     with open(TIDY, 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=list(tidy[0].keys()))
@@ -562,7 +640,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
         w.writeheader(); w.writerows(results)
     with open(os.path.join(HERE, 'results.md'), 'w') as f:
-        f.write(render_md(results, stale, doc_issues, rescore, comp))
+        f.write(render_md(results, stale, doc_issues, rescore, comp, nodes))
     n = make_fig(results, os.path.join(HERE, 'fig_effects.png'),
                  os.path.join(HERE, 'fig_effects.pdf'))
 

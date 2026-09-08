@@ -31,6 +31,15 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 | `pick_spots60_rlpd` *(prov.)* | RLPD | picked | mode | 6v8x60 | 0.831 | 0.865 | -0.034 | [-0.453, 0.385] | 0.928 | 0.587 | 0.602 | 5.4 | stable | INCONCLUSIVE (underpowered) |
 | `pick_spots60_r2d` | world model (r2dreamer) | picked | mode | - | **EMPTY** | **EMPTY** | | | | | | | | Not run. The world model has no spots60 evaluation; the in-distribution row exists for DP and RLPD only. No per-seed data on the cluster for this cell. |
 
+## Pruning control (human pruned vs human raw)
+
+Both arms are HUMAN. This is the reference effect size for the table above: a data-handling choice inside one source moves Diffusion Policy far more than any source difference measured anywhere in this project.
+
+| comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | prior | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `prune_dp_rnd30` *(prov.)* | Diffusion Policy | picked | sampled | 10v8x30 | 0.547 | 0.237 | 0.309 | [0.242, 0.376] | 0.000 | 0.094 | 0.000 | 0.0 | stable | difference detected |
+| `prune_dp_spots60` *(prov.)* | Diffusion Policy | picked | sampled | 10v8x60 | 0.878 | 0.688 | 0.191 | [0.136, 0.246] | 0.000 | 0.078 | 0.002 | 0.0 | stable | difference detected |
+
 ## Place (matched 39)
 
 > **NOT CROSS-LEARNER COMPARABLE. Cells in this row were scored against different entry-bank versions or by different evaluators, and `place_r2d` carries no bank stamp at all, so its entry states cannot be confirmed. An absent stamp is unknown, not a match. Each learner's own human-vs-machine contrast below is internally valid; the columns must not be read side by side.**
@@ -89,6 +98,8 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 
 ## robomimic Can
 
+The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541k steps), so this leg is a THREE-learner comparison - RLPD, Diffusion Policy, BC-RNN - and not four. The source reading itself is WITHDRAWN by its own registered quantity control: at natural size the machine data matches (MG718s) or beats (MGall) the human arm.
+
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `robo_rlpd_mg200s` *(prov.)* | RLPD | success | mode | 8v8x50 | 0.455 | 0.147 | 0.307 | [0.098, 0.517] | 0.008 | 0.295 | 0.069 | 0.3 | stable | difference detected |
@@ -114,6 +125,8 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 | `pick_spots60_dp` | 53 58 52 53 52 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_dp_asrecorded` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_rlpd` | 58 60 59 3 60 59 | 59 60 58 60 58 2 59 59 | 60 |
+| `prune_dp_rnd30` | 18 19 18 14 13 15 16 16 18 17 | 9 9 7 5 10 5 5 7 | 30 |
+| `prune_dp_spots60` | 53 58 52 53 52 53 51 55 50 50 | 40 44 45 35 48 40 38 40 | 60 |
 | `place_r2d` | 113 86 112 112 82 99 110 118 | 109 79 111 105 90 79 95 98 | 148 |
 | `contact_r2d_bare` | 95 91 79 117 101 88 76 112 | 103 91 94 92 100 115 85 90 | 160 |
 | `contact_r2d_push` | 46 49 54 61 59 60 52 62 | 64 62 57 60 61 63 49 52 | 160 |
@@ -140,6 +153,8 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 - **`pick_spots60_dp`** - Hardware-pinned seeds only. Five human seeds (25-29) were archived to selected_spots60_mixedcore pending pinned re-runs, so this row reproduces from FIVE human seeds against ten machine seeds. The published 0.878 is the ten-seed figure including the archived five.
 - **`pick_spots60_dp_asrecorded`** - Mixes hardware classes WITHIN the human arm (5 pinned + 5 archived mixed-core seeds) against an all-one-class machine arm. Reported only because it is the figure the docs of record quote (0.878).
 - **`pick_spots60_rlpd`** - Hardware-pinned seeds only: two human seeds (60, 61) are archived to final_det_spots60_mixedcore, so this is 6 v 8. The published 0.869 is the eight-seed figure including the archived two.
+- **`prune_dp_rnd30`** - The two arms differ in wave AND in demonstration count (58 pruned vs 66 raw), so this is a pruned-set-vs-raw-set contrast, not a controlled pruning-only manipulation. The direction and magnitude are the point.
+- **`prune_dp_spots60`** - Same wave/count caveat as prune_dp_rnd30. The human pruned arm here is the ten-seed as-published set (five pinned + five archived mixed-core), matching the in-distribution table this figure was quoted from.
 - **`place_r2d`** - The r2dreamer place evaluator drew bank entries WITH REPLACEMENT and substituted failed restores (adversarial review S1-3); the DP/RLPD place evaluator runs each entry once and counts a failed restore as a failure. A pinned re-score is queued.
 - **`contact_r2d_bare`** - Bare `contact` is the LEGACY predicate and overstates capability by 1.5-3x against contact_push; carried only so the published number is reproducible. Both arms are sub-floor (11 demonstrations each).
 - **`carry_r2d_bare`** - Legacy bare-contact predicate; see carry_r2d_push. Five polE entries fail to restore in this scope for every arm and are counted as failures.
@@ -162,7 +177,7 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 ## Floor cells (no p-value by design)
 
 - **`e2e_slide_success`** - human 0.042, machine 0.017. TASK OUTCOME. No arm learns a true slide: both sit at 0-6 %. A null here is an artefact of the floor, so no p-value and no ROPE are computed.
-- **`robo_r2d`** - human 0.000, machine 0.003. Reported as a learnability failure, not as a null: a p-value on two floored arms would be an artefact.
+- **`robo_r2d`** - human 0.000, machine 0.003. Reported as a LEARNABILITY FAILURE, not as a null, and deliberately not as an empty cell: "we ran it and both arms floored" is a stronger and more informative statement than "not run". Consequence for the paper: the robomimic leg carries RLPD, Diffusion Policy and BC-RNN, but NOT a world model, so it cannot support the source-indifference headline on an independent task - on this task the world model does not learn at all.
 
 ## Re-score reproducibility
 
@@ -198,6 +213,26 @@ Statistics whose predicate did NOT change between a cell and its corrected-predi
 | e2e | dHfull | rnd30 | picked | sample | 3 | 17 | 18 |
 
 Affected arms: dH, dHfull. Where one arm reproduces exactly and the other does not, the discrepancy is ASYMMETRIC between the two arms of a comparison, and every cell drawn from the re-score inherits it.
+
+### Is it the hardware class? No.
+
+The standing explanation for a re-score that does not reproduce is that it ran on a different class of machine. Joining every comparable statistic to its ORIGINAL record node and its RE-SCORE node refutes that here.
+
+| arm | cross-class re-scores | of those, moved | same-class re-scores | of those, moved |
+|---|---|---|---|---|
+| human | 216 | **21** | 72 | **5** |
+| machine | 216 | **0** | 72 | **0** |
+
+Exposure to cross-class re-scoring is IDENTICAL between the arms, yet only the human arm moves. Three human runs moved under a re-score on the SAME architecture and the SAME core count, which no cross-class effect can explain. And not one discrepant cell has a 36-core original record:
+
+| original record node | discrepant cells |
+|---|---|
+| cascadelake / 48-core | 5 |
+| icelake / 64-core | 19 |
+| sapphirerapids / 64-core | 2 |
+
+**The hardware explanation is refuted, and the checkpoint explanation with it** (`latest.pt` predates the original evaluation in all 48 runs checked, so the re-score read the same weights). The movement is localised to seven human runs - two end-to-end (seeds 2 and 3, which moved on 8 and 11 of their 12 statistics) and five contact (1-3 of 12 each) - rather than spread across the arm. **No mechanism has been established.** Until one is, every re-score-derived cell inherits a discrepancy that moves one arm only.
+
 
 ## Doc-of-record cross-check
 

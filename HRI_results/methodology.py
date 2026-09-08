@@ -50,10 +50,15 @@ dict(
     eval_action='SAMPLED, always - diffusion noise, per-episode seed = the initial-condition '
                 'index. No deterministic DP re-score exists.',
     eval_where='baselines/wandb_eval.py:105-108; cluster/eval_sweep.sh:119,124-125',
-    caveat='The frequently quoted in-distribution figure "raw 0.688, a deficit of 0.19 at '
-           'p 0.000" appears exactly once, in paper/CELL_STATUS_2026-09-07.md:28, with no '
-           'per-seed counts, no permutation output and no source document anywhere in the repo. '
-           'It is UNVERIFIED. Cite the rnd30 number above instead, which has all three.'),
+    caveat='TWO CELLS, both real, and they must be carried together rather than reconciled '
+           'into one number. Random starts (`prune_dp_rnd30`): pruned 0.547 v raw 0.237, '
+           'Delta +0.31, CI [+0.24, +0.38], p < 0.001 at 10 v 8 seeds. In training distribution '
+           '(`prune_dp_spots60`): pruned 0.878 v raw 0.688, Delta +0.19, CI [+0.14, +0.25], '
+           'p < 0.001 - this is the cell behind the frequently quoted "raw costs 0.19", and it '
+           'IS backed by per-seed data, which this table now regenerates. Both are in the '
+           'Pruning-control section. Caveat on both: the pruned and raw arms differ in wave and '
+           'in demonstration count (58 v 66), so each is a pruned-set-vs-raw-set contrast rather '
+           'than a controlled pruning-only manipulation.'),
 
 dict(
     name='RLPD (SAC with demonstrations)',
