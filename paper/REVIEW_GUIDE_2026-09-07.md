@@ -160,3 +160,9 @@ Sources: `ADVERSARIAL_REVIEW_statistics_2026-09-07.md` (dd826f6), `..._robomimic
 - `--requeue` was dead code in the wmfix launchers (fixed for new submissions; no run of record was preempted); the G0 gate in `submit_primary.sh` passes at 4/10 where 4/5 is registered; registration commits trailed submissions by seconds (rule: commit before submit).
 
 **What the reviewers tried to break and could not:** every published p/Δ/MDE reproduced to 3 dp (20 cells); the permutation test is exact and two-sided; `restore_failed` counts as failure symmetrically; `polE_contact` is balanced 80/80 by source; `matched_n.py` is a faithful seeded subsample; contract-v1 invariants hold (0 violations over 6 sets); og4 is absent from every phase/full set (three locks); the 8-v-8 end-to-end pool is budget-clean; repo and cluster env copies differ only by the registered scope patch; horizons are matched; the robomimic RLPD numbers reproduce from the run dirs with a clean bank sha and no preemption; the three robomimic env variants are physically identical; the QOS move lost no flags.
+
+### Addendum, 2026-09-07 22:xx — the robomimic no-demo control (G2b) read out, and it narrows the claim
+
+RLPD with a genuinely empty demonstration half (verified per run: `demo_batch 0`, `demo "none"`, budget reached, same bank sha), 8 seeds, 100k decisions, LAST checkpoint: **0/50 on every seed, both action modes — 0.000**. The registered clause (no-demo RLPD ≤ 0.10) passes.
+
+Consequence for wording: MG200s scores 0.147, which is **above** the demo-free floor, so the SAC-generated demonstrations do help RLPD. Of the two readings that were live after the 13:30 result, only one survives: **"MG helps RLPD less than MH does"**, not "MG is worthless to RLPD". Any draft sentence asserting the latter must be struck. This control was registered in the plan and had never been run until tonight; it was found missing by the robomimic/ops adversarial review.
