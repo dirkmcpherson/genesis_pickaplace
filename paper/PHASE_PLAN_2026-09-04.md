@@ -566,3 +566,15 @@ Arising from the two effects established overnight (see `OVERNIGHT_STATE_2026-09
 **2. The registered replication is not executable as written, and is being repaired before the data exists rather than after.** The statistic — the step at which binned `picked` first reaches and holds 0.2 — requires per-episode training-rollout records that RLPD does not currently produce. The 16 queued runs have not started, so the intended fix is to enable that logging before they do. If it cannot be enabled, the fallback is a two-point comparison from the checkpoints that do exist (`ckpt_040` at 100k decisions and the final checkpoint), which is far weaker and must be registered as such. **A registered test that cannot be run will not be left standing**; whichever way this resolves is recorded here before any replication data exists.
 
 **What does not change:** the discovery-sample result, its post hoc status, and the bound that makes it interesting — no learning-speed difference at pick (p 0.505), place (p 0.414) or slide (p 1.000), and a difference only on the long-horizon end-to-end task (p 0.018–0.032 by definition). An effect present everywhere would suggest an artefact; one confined to the task with a long credit-assignment chain is falsifiable.
+
+### Amendment (u) — resolution of the executability problem (same day, still before any replication data)
+
+**Fixed without cancelling anything.** The queued RLPD runs read the trainer at execution time, so per-episode rollout logging was added to jobs that had not yet started — all 16 verified still pending at the time of the edit. Each run now appends one record per finished online rollout with its step and sticky stage flags, **deliberately in the same shape as the world model's records**, so both learners' curves are computed by one code path rather than two conventions reconciled after the fact. Cost is about 0.16 MB per run and no measurable runtime. The change is logging-only: it wraps no environment, consumes no randomness, alters no training dynamics, and swallows its own exceptions so it cannot kill a run.
+
+**A distinction that must be preserved when this is read out.** Because the discovery is a world-model result, the RLPD replication tests whether the effect **generalises across learners** — not merely whether it reproduces. These are different outcomes and must not be reported as one:
+
+- **Reproduces on RLPD** → the effect is a property of learning from demonstrations on this long-horizon task, not of one implementation.
+- **Null on RLPD** → the effect may still be real for the world model. This is a *boundary condition*, not a failure to replicate, and the honest report is "present in the world model, absent in RLPD", which is itself informative about why.
+- **Opposite direction on RLPD** → treat as disconfirming the general claim.
+
+**Diffusion Policy cannot participate at all** — it is offline, produces no rollouts, and its intermediate checkpoints were pruned for disk. Any cross-learner learning-speed figure is therefore a two-learner figure and must say so on its face.
