@@ -41,6 +41,18 @@ Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y,
 
 **Slide is held on a definition, not on compute.** Its success predicate required an open gripper at contact, which passes 2 of 74 human demonstrations because people push the can home with the fingers still partly closed. Both the predicate and the phase's entry gate are corrected; what remains is your decision on which human tapes the phase trains on.
 
+## What the three contact names actually measure
+
+They are routinely confused, including by me. They are not three variants of one thing:
+
+| name | entry state | what counts as success | status |
+|---|---|---|---|
+| **`contact`** — *the slide* (§3) | the can is **already released and standing on the shelf** | push it into the goal; scored by `slide_success` | **the result** |
+| `carrycontact` (§4) | the **pick grant** — the can is still held | bare contact by any route, **including a pure carry with no release** | **a control, not a second finding** |
+| `contact_push` | — | a stricter reading of contact: tool on the far side of the can from the goal, no gripper-to-goal contact | diagnostic column |
+
+**`carrycontact` has already done its job.** Its purpose was to measure how much ordinary contact credit comes from the can never leaving the gripper — about 69 % — and that measurement is what motivated redefining success as `slide_success` in the first place. Its own human-versus-machine comparison is not a claim anyone needs to defend, and presenting it beside the slide result invites reading it as a second finding.
+
 ## The independent generator (robomimic Can) — the source reading is DEAD as of 2026-09-08
 
 The registered quantity control has read out at full seeds and it overturns the headline. RLPD, 8 seeds, 50 shared starts, last checkpoint, mode:
