@@ -385,7 +385,7 @@ absent). Re-scored = all 64 cells pinned to one 64-core class, with the (j) and 
 | **nested_honest** (new) | — → **0.046** | — → **0.104** | −0.058 | **0.087** | [−0.121, +0.004] | 0.088 |
 | **slide_success** (l) — see caveat | — → **0.042** | — → **0.017** | +0.025 | 0.277 | [−0.013, +0.063] | 0.053 |
 
-**Registered predictions — all met.** (d) P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2): **MET** at picked,
+**Registered predictions — all met.** **[CORRECTED 2026-09-08 — this heading is FALSE as written.** The ±0.10 margin **FAILS** on in-distribution `placed_v2`: human 0.083 v machine 0.242, Δ −0.158, with the machine arm above the 0.2 trigger that makes P2 apply. The predictions listed are met on the *random-uniform* cells only. Two further cautions: the `slide_success` entries are 'met' for a predicate the project **withdrew** under (p) and must never be counted among satisfied predictions; and the registered **equivalence procedure (TOST) was never run on any contrast**, so no sentence here rests on the test registered for it.**]** (d) P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2): **MET** at picked,
 placed_v2, contact, contact_push. (d) P3 (nested < 0.2 both arms, on the honest predicate): **MET** (0.046 / 0.104).
 (l) |Δ| < 0.10 on `slide_success`: **MET** (0.025). (l) `slide_success` ≤ `nested_honest`: **MET** in both arms.
 **Caveat on `slide_success`, added 2026-09-08:** the implemented predicate is amendment **(l)**'s — `grip_cmd < 0.3`,
