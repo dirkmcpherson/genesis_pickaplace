@@ -348,3 +348,86 @@ Mirrors amendment (h) exactly, one phase later. `scope='contact'`: the episode s
 - **Evaluation banks.** `holdE_contact` (11 human placed states, in-distribution) and `polE_contact` (160 policy-generated placed states, the discriminating bank). **The bank file used is `polE_contact_physgrip.json`** — the eval-fixes agent's rebuilt physical-grip bank (`bank_version=physgrip_2026-09-07`, sha 219cb48e70d3bf9c, EVAL_FIXES §2). Checked 2026-09-07 21:00 and disclosed: the canonical `polE_contact.json` is currently byte-identical to `polE_contact_rawgrip.json` (grips −0.991…−0.127, no `bank_version`), i.e. the raw normalised-grip original, and the same is true of `polE_place.json` / `polE_place_dDP.json`; the evaluator refuses such a bank by construction, so every polE cell of mine names the `*_physgrip` file explicitly. `spots60` does NOT apply to this phase (it is a pick-scope IC set — can on the table, no entry bank).
 - **Runs.** 8 seeds × 2 arms × 2 learners = 32. RLPD: recipe of record, 250k decisions (= 1e6 sim steps), horizon 600, sampled AND deterministic cells, LAST checkpoint. DP: recipe of record, 100k grad steps, sampled (no deterministic mode exists), LAST checkpoint. Launchers `cluster/sbatch_{rlpd,dp}_contact.sh` + `place_eval_cells.sh PHASE=contact`, `--nice=8000` (behind the robomimic recovery and dv3 G3), the (h)-addendum checkpoint retention, and the 150 GB free-space hold.
 - **Predictions (registered).** P1: |Δ(human − machine)| < 0.10 on polE_contact `slide_success` for BOTH learners (the null of every phase so far, now at n = 11 demos per arm). P2 (from (l′)): both arms' `slide_success` sits well below their bare-`contact` rates, and the `settle` route dominates `sustained`. P3: no floor claim — with 11 demonstrations a failure of either arm is reported as sub-floor, not as a demo-source effect. Disconfirm branch: if one arm alone collapses (< 0.1 where the other is > 0.3) that is reported as a source effect **specific to the sub-floor regime**, and any claim waits for a matched re-run at a higher count, which the human yield cannot supply.
+
+### Amendment (n) — END-TO-END (full task) for Diffusion Policy and RLPD (registered 2026-09-07 21:20, BEFORE any job; the user wants the three-learner full-task table)
+
+The world model already has an 8-v-8 end-to-end result (PHASE_RESULTS_2026-09-05.md §5/§5.1, amendment (d)). This
+amendment runs the SAME comparison for the other two learners so the paper has a learner x source table for the whole
+task, not only for the phases. Design copied from (d) except where stated; recipes are the ones of record and are not
+tuned.
+
+- **Task.** `scope='full'` of `baselines/rl/full_env.py` (the repo copy is byte-identical to `$W/gp_root`'s and to
+  `$LAB/gp_place`'s: md5 896f270be6135c4c2fde62a47125b6b1; `genesis_can_env.py` 6d4f1c32b61dae52b6fe61b71ff84ccd),
+  world `gc_kp4_riser3_shelf6`, reset from the pick-scope initial conditions (`FullTaskEnv.reset` draws a success uid:
+  can on the table, arm at home) for BOTH arms of both learners, horizon 1200 sim steps = 300 decisions at
+  action_repeat 4. Reward = the STAGED sparse ladder `STAGE_REWARD` (picked 1 / placed 1 / contact 2 / nested 4, each
+  paid once; the nested proxy terminates; tips terminate with TIP_PENALTY 0.0) — identical to (d), so the three
+  learners are like-for-like on reward. The user deferred the sparse +100 variant and instructed that the world model
+  not be re-run; DP ignores reward entirely, so this matters only for RLPD.
+- **Sources (74 human vs 72 machine, the (d) sets verbatim).** Human `dHfull_all` = every full-task tape of the 74
+  success uids (`$W/demos_state_full/dHfull_all`, 74 tapes, Sigma recorded reward 118, 64 picks / 10 no-picks); machine
+  `dDPfull` = the 195-tape dDP full-task harvest reduced to ONE tape per IC by highest recorded reward sum
+  (`--one-per-ic-best`, 72 tapes, Sigma 206, 70 picks / 2 no-picks). RLPD trains on those r2dreamer-native segment rows
+  VERBATIM (`baselines/rl/full_demos.py segment_transitions_full`: (state_t, delta action_{t+1}, r_{t+1}, state_{t+1},
+  is_terminal_{t+1}) — the same rows the world model trained on, no re-encoding, staged rewards kept as recorded). DP
+  trains on the SAME tapes as FULL contract-v1 tapes with ABSOLUTE window-end joint targets (`full_demos.py select`
+  matches each segment to its source tape by the recorded rollout `uid` and asserts T == n + 1 on every tape; 74/74 and
+  72/72 matched) converted with `baselines/convert_to_lerobot.py` at fps 7.5. No pruning on either arm, both learners.
+- **Seeds / budgets.** 8 seeds per arm per learner = 32 runs. RLPD 1e6 sim steps = 250 000 decisions (the (h) place
+  budget); DP 100 000 gradient steps (the recipe of record). Only the final checkpoint is kept (RLPD also keeps
+  `ckpt_040` = 100k decisions, the pick-budget read of (h); DP's `training_state` is deleted), and each launcher holds
+  the registered 150 GB free-space floor before it trains.
+- **Evaluation.** LAST checkpoint, fresh process, `baselines/eval_e2e.py` on `FullTaskEnv(scope='full')` in the same
+  world at 1200 sim steps, ONE episode per start, in order. IC sets: `hold15` (training starts, in-distribution,
+  internal — REVIEW_GUIDE §8 item 7: it is not held out), `rnd30` (out-of-distribution random box; reported stratified
+  by training support per `DP_PRUNED_GAP_2026-09-07.md` §0.4), `spots60` (`baselines/eval_ics_spots60.json`, the
+  registered in-training-distribution set of amendment (k)) in job; `rnd300` post hoc on CPU. Action selection:
+  sampled AND deterministic for RLPD; DP is sampled by construction (no deterministic mode for a diffusion policy) —
+  disclosed. **Success-by-stage** columns, every one taken from the env, none re-implemented: `picked`, `placed`
+  (legacy, stale base-world band — reported as stale), `placed_v2` (amendment (j) S1-2, logged in the full scope),
+  `contact`, `contact_push` ((g')), `slide_success` ((l)/(l'), computed by `GenesisCanEnv.end_of_episode()`),
+  `nested_honest` (the settled predicate from the same single end-of-episode settle) and `nested_proxy` (the sticky
+  training proxy the episode terminates on). The evaluator calls `end_of_episode()` exactly once per episode, after the
+  last decision, the way the world-model adapter does.
+- **Statistic of record.** `slide_success` (amendment (l): on the shelf, released, touching the goal) with SAMPLED
+  actions on `spots60` — sampled because the user made sampled actions the statistic of record on 2026-09-07 and DP has
+  no other mode; `spots60` because (k) registered it as the in-training-distribution test set. Per-seed counts, exact
+  two-sided permutation, 8 v 8, per stage and per cell; the minimum detectable effect implied by the observed
+  per-seed spread is reported with every null (the world-model end-to-end MDE is ~0.21). `rnd30` MODE with the §5.1
+  stage columns is reported as the cell comparable with the world-model row of record.
+- **Predictions (registered).** P1 (learnability): for each learner, EACH arm reaches `picked` >= 0.5 on spots60
+  sampled in >= 3 of 8 seeds. P2 (main hypothesis, consistent with pick / place / contact / carrycontact / (d)):
+  |Delta(human - machine)| < 0.10 on the statistic of record for BOTH learners, and at every stage that either arm
+  reaches >= 0.2. P3 (re-derivation of (l) for these learners): `slide_success` <= `contact` in every cell for both
+  arms, and `slide_success` <= `nested_honest` on the rnd30 cells. P4 (re-derivation of (k)): both learners score
+  higher on spots60 than on rnd30.
+- **Disconfirm branches.** (i) If only ONE arm learns the pick for a learner, that is a demo-source effect specific to
+  the long-horizon setting for that learner: reported as such, then a matched control (human successes only, 64 tapes,
+  vs a 64-tape machine subsample) before any claim. (ii) If NEITHER arm picks for a learner, the recipe is not
+  transferable to the full task at this budget — uninformative, and no re-tuning without a new registration. (iii)
+  **The DP idle confound, registered in advance:** DP is trained here on RAW (unpruned) human tapes, and
+  `DP_PRUNED_GAP_2026-09-07.md` shows raw-human DP scores far below pruned-human DP at the pick (rnd 0.204 vs 0.520 in
+  w3), while the machine tapes carry essentially no idle decisions. So if DP shows |Delta| >= 0.10 WITH THE MACHINE
+  AHEAD, that is not read as a source effect: the registered follow-up is a DP human-PRUNED control arm
+  (`prune_full_v1` on the same 74 tapes, 8 seeds) before the word "source" is used. The idle fraction of both sets is
+  measured and reported with the datasets.
+- **Asymmetries disclosed by construction.** (1) The machine set is best-of-3 per start on 89 % of its ICs: Sigma
+  reward 118 vs 206 and 3 vs 16 demonstrated nested completions (REVIEW_GUIDE §8 item 8) — a selection asymmetry in the
+  machine arm's favour on top of the tape-count match. (2) Rows differ (human 29 295 vs machine 32 923 decisions);
+  "matched N" matches tapes, never rows. (3) The machine tapes come from a DP teacher trained on PRUNED human
+  full-task demos; the human tapes are the recorder's follower on the raw joystick streams; both recorded with the
+  plain recorder (no og4 release filter, CONFOUNDS row 50). (4) Budget units differ across learners (DP gradient
+  steps, RLPD decisions, WM sim steps). (5) DP's absolute action parametrisation is converted to the delta MDP only at
+  evaluation (the hold-4 rule of `wandb_eval.py`). (6) The world-model `nested` column of §5/§5.1 is the TRAINING
+  PROXY (REVIEW_GUIDE §8 item 3); these cells report both `nested_proxy` and `nested_honest`, and only the proxy column
+  is comparable with §5.1 until the world-model cells are re-scored. (7) RLPD's online reset distribution is the env's
+  success-uid set for both arms (symmetric).
+- **Jobs.** `cluster/sbatch_rlpd_e2e.sh` / `cluster/sbatch_dp_e2e.sh` (+ `cluster/e2e_eval_cells.sh`, the re-runnable
+  eval stage, and `cluster/e2e_build_sets.sh` for the DP datasets): `-p preempt --qos=preempt --requeue --nice=9000
+  --exclude=pax077 --constraint=l40s|a100|l40|h200`, names `e2e_rlpd_<arm>_s<seed>` / `e2e_dp_<arm>_s<seed>`, 32 jobs,
+  deliberately behind the robomimic recovery, the dv3 G3 gate and the contact-phase runs. Code runs from the private
+  clone `$LAB/gp_e2e` at the commit named in the submission report; the shared checkout and every other agent's tree
+  are untouched. Datasets: RLPD reads `$W/demos_state_full/{dHfull_all,dDPfull}` unchanged; DP reads
+  `$LAB/genesis_pickaplace/baselines/matched_w3/{dHfull_all,dDPfull}` (+ `lerobot/`), built by `full_demos.py select`.
+  Smokes (2k steps / 2k grad steps, a truncated IC set, both learners) precede submission and are logged in the
+  submission report, not here.
