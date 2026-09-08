@@ -95,6 +95,10 @@ ap.add_argument('--ic-index', type=int, default=None)
 ap.add_argument('--arm', default=None, help='recorded into the result JSON (provenance only)')
 ap.add_argument('--ckpt-step', default=None, help='recorded into the result JSON (provenance only)')
 ap.add_argument('--reward', default=None, help='sparse|dense tag, recorded only')
+ap.add_argument('--no-video', action='store_true',
+                help='write NO per-episode mp4s (2026-09-07 disk incident): the rollout is byte-identical -- the env '
+                     'is built exactly as before and every per-episode json field is unchanged; only the frame '
+                     'capture and the tiling/upload are skipped. For bulk numeric re-evals where no reel is wanted.')
 ap.add_argument('--sample-actions', action='store_true',
                 help="SAC/RLPD only (2026-09-07, user: SAMPLED actions are the statistic of record for "
                      "RLPD and r2dreamer): model.predict(deterministic=False), i.e. one draw from the "
@@ -404,7 +408,7 @@ metrics = {}
 _aggs = {}
 _single = len(_ic_sets) == 1
 for _name, _eps in _ic_sets.items():
-    _rec = rec if _single else str(pl.Path(rec) / _name)
+    _rec = None if args.no_video else (rec if _single else str(pl.Path(rec) / _name))
     _a = eval_core.run_eval(env, policy_action, _eps, policy_reset=policy_reset,
                             record_dir=_rec, tag=f'{args.kind}:{_name}')
     _aggs[_name] = _a
@@ -428,7 +432,7 @@ agg = _aggs.get('random') or list(_aggs.values())[0]
 n = max(agg['n'], 1)
 if args.step is not None:
     metrics['eval/train_step'] = args.step
-vids = sorted(str(p) for p in pl.Path(rec).rglob('*.mp4'))
+vids = [] if args.no_video else sorted(str(p) for p in pl.Path(rec).rglob('*.mp4'))
 tiled = None
 if len(vids) > 1:
     import subprocess

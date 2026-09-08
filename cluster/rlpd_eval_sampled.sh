@@ -71,8 +71,8 @@ SPOTS_COMMON=(--ic-file "$SPOTS_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" -
 COMMON=(--ic-file "$IC_FILE" --max-steps "$EVAL_HORIZON" --arm "$ARM" --seed "$SEED" --ckpt-step "$CKPT_TAG" --reward sparse)
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] RUN=$RUN ARM=$ARM SEED=$SEED CK=$CK IC_FILE=$IC_FILE NODE=$NODE_CLASS"
-  echo "[dry] sampled: bash cluster/eval_sweep.sh sac $CK $SW/final_sampled --sets hold,rnd --sample-actions --tag final_sampled ${COMMON[*]}"
-  echo "[dry] det15:   bash cluster/eval_sweep.sh sac $CK $SW/final_det15 --sets hold --tag final_det15 ${COMMON[*]}"
+  echo "[dry] sampled: bash cluster/eval_sweep.sh sac $CK $SW/final_sampled --sets hold,rnd --sample-actions --tag final_sampled --no-video ${COMMON[*]}"
+  echo "[dry] det15:   bash cluster/eval_sweep.sh sac $CK $SW/final_det15 --sets hold --tag final_det15 --no-video ${COMMON[*]}"
   echo "[dry] spots60 sampled: bash cluster/eval_sweep.sh sac $CK $SW/final_sampled_spots60 --sets $SPOTS_SET --sample-actions --tag final_sampled_spots60 ${SPOTS_COMMON[*]}"
   echo "[dry] spots60 det:     bash cluster/eval_sweep.sh sac $CK $SW/final_det_spots60 --sets $SPOTS_SET --tag final_det_spots60 ${SPOTS_COMMON[*]}"
   exit 0
@@ -82,10 +82,10 @@ module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
 python -c 'import stable_baselines3' 2>/dev/null || { echo "FATAL: stable_baselines3 not importable"; exit 1; }
 set +e
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled" --sets hold,rnd --sample-actions --tag final_sampled "${COMMON[@]}" 2>&1 | tee "$SW/final_sampled.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det15" --sets hold --tag final_det15 "${COMMON[@]}" 2>&1 | tee "$SW/final_det15.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled_spots60" --sets "$SPOTS_SET" --sample-actions --tag final_sampled_spots60 "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_sampled_spots60.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det_spots60" --sets "$SPOTS_SET" --tag final_det_spots60 "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_det_spots60.log"
+bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled" --sets hold,rnd --sample-actions --tag final_sampled --no-video "${COMMON[@]}" 2>&1 | tee "$SW/final_sampled.log"
+bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det15" --sets hold --tag final_det15 --no-video "${COMMON[@]}" 2>&1 | tee "$SW/final_det15.log"
+bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled_spots60" --sets "$SPOTS_SET" --sample-actions --tag final_sampled_spots60 --no-video "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_sampled_spots60.log"
+bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det_spots60" --sets "$SPOTS_SET" --tag final_det_spots60 --no-video "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_det_spots60.log"
 python3 - "$SW/final_sampled/sweep.json" "$SW/final_det15/sweep.json" "$ARM" "$SEED" "$CKPT_TAG" "$NODE_CLASS" "$IC_FILE" "$SW/final_sampled_spots60/sweep.json" "$SW/final_det_spots60/sweep.json" "$SPOTS_SET" <<'PY'
 import json, sys
 smp, det, arm, seed, tag, node, icf, smp60, det60, sset = sys.argv[1:11]

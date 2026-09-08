@@ -14,6 +14,7 @@
 #     --arm A --seed S --ckpt-step T --reward R --tag TAG   provenance, recorded in every json
 #     --wandb-run NAME --wandb-project PROJ   best-effort summary push: sweep/<tag>/<set>
 #     --max-jobs J          concurrent worlds (default: SLURM_CPUS_PER_TASK/2, min 1)
+#     --no-video            write no per-episode mp4s (disk); numbers and jsons unchanged
 #     --sample-actions      sac only (2026-09-07): SAMPLED actions (wandb_eval --sample-actions, one draw
 #                           per decision seeded by the episode index k); default = deterministic (of record)
 #   env:
@@ -37,10 +38,11 @@ export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1
 
 KIND=${1:?usage: eval_sweep.sh KIND CKPT OUTDIR [options]}; CKPT=${2:?CKPT}; OUTDIR=${3:?OUTDIR}; shift 3
 SETS="sel,hold,rnd"; ICF=baselines/eval_ics.json; MAXS=1200; ARM=""; SEED=""; CSTEP=""; REWARD=""; TAG=""
-WRUN=""; WPROJ=""; MAXJ=""; SAMPLE_FLAG=()
+WRUN=""; WPROJ=""; MAXJ=""; SAMPLE_FLAG=(); NOVID_FLAG=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --sample-actions) SAMPLE_FLAG=(--sample-actions); shift 1 ;;
+    --no-video) NOVID_FLAG=(--no-video); shift 1 ;;
     --sets) SETS=$2; shift 2 ;;
     --ic-file) ICF=$2; shift 2 ;;
     --max-steps) MAXS=$2; shift 2 ;;
@@ -130,7 +132,7 @@ for S in "${SETLIST[@]}"; do
     _ENV=(env); if [ "$KIND" != "dp" ] || [ "${POLICY_CUDA:-1}" != "1" ]; then _ENV=(env CUDA_VISIBLE_DEVICES=""); fi
     ( "${_ENV[@]}" python baselines/wandb_eval.py --kind "$KIND" --checkpoint "$CKPT" \
         --ic-file "$ICF" --ic-set "$S" --ic-index "$k" --max-steps "$MAXS" --seed "$k" \
-        "${MODE_FLAGS[@]}" "${PROV[@]}" "${SAMPLE_FLAG[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
+        "${MODE_FLAGS[@]}" "${PROV[@]}" "${SAMPLE_FLAG[@]}" "${NOVID_FLAG[@]}" --record-dir "$OUTDIR/v_${S}_${k}" \
         --json "$J" --no-wandb > "$OUTDIR/${S}_${k}.log" 2>&1 ) &
   done
 done

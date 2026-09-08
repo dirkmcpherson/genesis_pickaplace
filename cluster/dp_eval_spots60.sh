@@ -56,9 +56,9 @@ module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
 python -c 'import lerobot' 2>/dev/null || { echo "FATAL: lerobot not importable"; exit 1; }
 set +e
-POLICY_CUDA=0 bash cluster/eval_sweep.sh dp "$SEL_CK" "$SW/selected_spots60" --sets "$SPOTS_SET" --ckpt-step "$SEL" --tag selected_spots60 "${COMMON[@]}" 2>&1 | tee "$SW/selected_spots60.log"
+POLICY_CUDA=0 bash cluster/eval_sweep.sh dp "$SEL_CK" "$SW/selected_spots60" --sets "$SPOTS_SET" --ckpt-step "$SEL" --tag selected_spots60 --no-video "${COMMON[@]}" 2>&1 | tee "$SW/selected_spots60.log"
 if [ "$DO_FIN" = 1 ]; then
-  POLICY_CUDA=0 bash cluster/eval_sweep.sh dp "$FIN_CK" "$SW/final_spots60" --sets "$SPOTS_SET" --ckpt-step "$FIN" --tag final_spots60 "${COMMON[@]}" 2>&1 | tee "$SW/final_spots60.log"
+  POLICY_CUDA=0 bash cluster/eval_sweep.sh dp "$FIN_CK" "$SW/final_spots60" --sets "$SPOTS_SET" --ckpt-step "$FIN" --tag final_spots60 --no-video "${COMMON[@]}" 2>&1 | tee "$SW/final_spots60.log"
 fi
 python3 - "$SW" "$ARM" "$SEED" "$SEL" "$FIN" "$DO_FIN" "$NODE_CLASS" "$SPOTS_SET" <<'PY'
 import json, os, sys
