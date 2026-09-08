@@ -221,32 +221,6 @@ def check_docs(results):
     return out
 
 
-def rescore_check(raw):
-    """Statistics that appear in BOTH a cell and its `_cp` re-score should be identical wherever
-    the predicate is unchanged (picked / contact / nested / placed_v2). A per-seed difference is
-    evaluation non-reproducibility -- a finding about the evaluator, not about the arms.
-    Returns rows of (phase, arm, cell, statistic, act, seed, original, rescored).
-    """
-    idx = {}
-    for r in raw:
-        if r['source'] != 'cluster:wm':
-            continue
-        idx[(r['phase'], r['arm'], r['extra'], r['cell'], r['statistic'],
-             r['action_mode'], r['seed'])] = int(r['k'])
-    out = []
-    for key, k0 in sorted(idx.items()):
-        ph, arm, ex, cell, stat, mode, seed = key
-        if cell.endswith('_cp') or stat not in ('picked', 'contact', 'nested'):
-            # placed_v2 is EXCLUDED: the corrected-predicate re-score redefined it (it is 0 in
-            # every original full-task cell and non-zero after), so a difference there is the
-            # intended predicate change, not a reproducibility failure.
-            continue
-        k1 = idx.get((ph, arm, ex, cell + '_cp', stat, mode, seed))
-        if k1 is not None and k1 != k0:
-            out.append((ph, arm, cell, stat, mode, seed, k0, k1))
-    return out
-
-
 def comparability(results):
     """A row (one phase, several learners) may only be read as ONE table if every cell in it was
     scored against the SAME entry-bank version with the SAME evaluator.  A MISSING bank stamp
@@ -307,44 +281,43 @@ def comparability(results):
                           reason='All cells share entry bank and evaluator.')
     return out
 
-def node_analysis(raw, rescore):
-    """Test the standing explanation for non-reproducing re-scores: that they are a
-    cross-hardware-class artefact. Joins every comparable statistic to the ORIGINAL record node
-    and the RE-SCORE node, and reports (a) the hardware class of the discrepant cells, and
-    (b) the 2x2 of cross-class exposure against movement, split by arm. Balanced exposure with
-    one-sided movement refutes the hardware explanation.
+
+def rescore_check(raw):
+    """Cells whose EPISODES differ between a cell and its `_cp` re-score, read from the
+    per-episode outcomes in node_provenance.csv. Column-level differences with zero differing
+    episodes are structural (a predicate becoming earnable) and are reported separately, never
+    as a reproduction failure.
     """
     path = os.path.join(HERE, 'node_provenance.csv')
     if not os.path.exists(path):
+        return []
+    out = []
+    for r in csv.DictReader(open(path)):
+        if r['run'].startswith('#') or r['moved'] != '1':
+            continue
+        out.append((r['run'], r['cell'], r['arm'], r['ep_diff'], r['episodes'],
+                    r['cols_changed'], r['orig_host'], r['orig_cores'], r['orig_isa']))
+    return out
+
+
+def node_analysis(raw, rescore):
+    """Read the per-cell re-score provenance table (harvest_nodes.py) and tabulate movement
+    against the ORIGINAL record's hardware class. Attribution is per directory, from each
+    evaluation job's own "[eval] wrote <path>" line; see harvest_nodes.py for why a per-run
+    heuristic is wrong here."""
+    path = os.path.join(HERE, 'node_provenance.csv')
+    if not os.path.exists(path):
         return None
-    lines = [l for l in open(path) if not l.startswith('###') and not l.startswith('   ')]
-    NJ = {(r['run'], r['tag'], r['mode']): r for r in csv.DictReader(lines)}
-    idx, run_of = {}, {}
-    for r in raw:
-        if r['source'] != 'cluster:wm':
-            continue
-        idx[(r['run'], r['cell'], r['statistic'], r['action_mode'])] = int(r['k'])
-        run_of[(r['phase'], r['arm'], r['cell'], r['action_mode'], r['seed'])] = r['run']
-    tally = {a: collections.Counter() for a in ('human', 'machine')}
-    for (run, cell, stat, mode), k0 in idx.items():
-        if cell.endswith('_cp') or stat not in ('picked', 'contact', 'nested'):
-            continue
-        k1 = idx.get((run, cell + '_cp', stat, mode))
-        nj = NJ.get((run, cell, mode))
-        if k1 is None or not nj or not nj['orig_arch'] or not nj['rescore_arch']:
-            continue
-        arm = 'human' if '_dH' in run else 'machine'
-        oi, ri = nj.get('orig_isa', ''), nj.get('rescore_isa', '')
-        tally[arm][(bool(oi and ri and oi != ri), k0 != k1)] += 1
-        tally[arm][('isa_seen', oi)] += 1
-        tally[arm][('isa_seen', ri)] += 1
-    disc = []
-    for ph, arm, cell, stat, mode, seed, k0, k1 in rescore:
-        run = run_of.get((ph, arm, cell, mode, seed))
-        nj = NJ.get((run, cell, mode)) if run else None
-        if nj:
-            disc.append((ph, arm, cell, stat, mode, seed, k0, k1, nj))
-    return dict(tally=tally, disc=disc)
+    rows = [r for r in csv.DictReader(open(path)) if not r['run'].startswith('#')]
+    if not rows:
+        return None
+    by_cores = collections.Counter((r['orig_cores'], r['moved'] == '1') for r in rows)
+    by_arm_exp = collections.Counter((r['arm'], r['orig_cores'] == '36') for r in rows)
+    struct = [r for r in rows if r['structural_only'] == '1']
+    movers = [r for r in rows if r['moved'] == '1']
+    isa_of = {r['orig_cores']: r['orig_isa'] for r in rows if r['orig_isa']}
+    return dict(rows=rows, by_cores=by_cores, by_arm_exp=by_arm_exp, struct=struct,
+                movers=movers, isa_of=isa_of)
 
 
 # ---------------------------------------------------------------------- rendering
@@ -458,89 +431,71 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes):
 
     A('\n## Re-score reproducibility\n')
     if rescore:
-        A('Statistics whose predicate did NOT change between a cell and its '
-          'corrected-predicate `_cp` re-score, yet whose per-seed count moved. These are '
-          'evaluation non-reproducibility, not predicate effects:\n')
-        A('| phase | arm | cell | statistic | act | seed | original | re-score |')
-        A('|---|---|---|---|---|---|---|---|')
-        for _row in rescore:
-            A('| ' + ' | '.join(str(x) for x in _row) + ' |')
-        _arms = sorted({x[1] for x in rescore})
+        A('Cells whose EPISODES reached different terminal states between the cell of record and '
+          'its corrected-predicate `_cp` re-score. Column changes with zero differing episodes '
+          'are structural and are excluded here (see below).')
         A('')
-        A('Affected arms: ' + ', '.join(_arms) + '. Where one arm reproduces exactly and '
-          'the other does not, the discrepancy is ASYMMETRIC between the two arms of a '
-          'comparison, and every cell drawn from the re-score inherits it.')
+        A('| run | cell | arm | episodes differing | of | columns affected | original record |')
+        A('|---|---|---|---|---|---|---|')
+        for run, cell, arm, ed, n, cols, oh, oc, oi in rescore:
+            A(f"| `{run}` | {cell} | {arm} | **{ed}** | {n} | {cols or '-'} "
+              f"| {oh} ({oc}-core {oi}) |")
+        A('')
     else:
-        A('Every unchanged statistic reproduces exactly between a cell and its `_cp` '
+        A('Every cell reproduces episode-for-episode between the cell of record and its `_cp` '
           're-score.')
+        A('')
 
     if nodes:
         A('')
-        A('### What distinguishes the runs that did not reproduce')
+        A('### Why some cells did not reproduce: the hardware class, after all')
         A('')
-        A('The standing explanation was a cross-hardware-class re-score. It is refuted, and so '
-          'are the other obvious candidates. What follows is measured, not inferred.')
+        A('**This section corrects an earlier version of itself.** It previously reported that '
+          'the non-reproducing re-scores were NOT a hardware effect and were confined to the '
+          'human arm. That was wrong, and the fault was in the node attribution: cells were '
+          "attributed to the node in the run's `events.out.tfevents` filename, which is the "
+          'TRAINING node, while the evaluations ran as separate CPU jobs. Attributing each cell '
+          'to the job that logged writing THAT directory reverses the finding.')
         A('')
-        A('**It is not the hardware class.** ISA here is read from `/proc/cpuinfo` on each '
-          "machine (the probe log), never from Slurm's `AvailableFeatures`, which are unreliable "
-          'on this cluster. Every node involved in these runs and re-scores - originals and '
-          're-scores alike - is **AVX-512**. There is no AVX2 exposure anywhere in this set, so '
-          'there is no cross-class contrast to explain anything:')
+        A('**Movement separates perfectly on the original record\'s hardware class.** A cell '
+          'counts as moved only when episodes reach different terminal states; see the '
+          'structural note below.')
         A('')
-        A('| arm | cross-ISA re-scores | of those, moved | same-ISA re-scores | of those, moved |')
-        A('|---|---|---|---|---|')
-        for arm in ('human', 'machine'):
-            t = nodes['tally'][arm]
-            nc = t[(True, True)] + t[(True, False)]
-            ns = t[(False, True)] + t[(False, False)]
-            A(f'| {arm} | {nc} | **{t[(True, True)]}** | {ns} | **{t[(False, True)]}** |')
-        A('')
-        A('And not one discrepant cell has a 36-core (AVX2) original record:')
-        A('')
-        A('| original record node | discrepant cells |')
-        A('|---|---|')
-        oc = collections.Counter(f"{d[8]['orig_arch']} / {d[8]['orig_cores']}-core "
-                                 f"({d[8].get('orig_isa') or 'unprobed'})"
-                                 for d in nodes['disc'])
-        for k, v in sorted(oc.items()):
-            A(f'| {k} | {v} |')
-        A('')
-        A('**It is not a restart or a requeue.** Every one of the 48 runs carries exactly one '
-          '`events.out.tfevents` file, the runs that moved and the runs that did not alike.')
-        A('')
-        A('**It is not a changed checkpoint.** `latest.pt` predates the original evaluation in '
-          'all 48 runs, and its SHA-256 was taken for each; the re-score read the same weights.')
-        A('')
-        A('**It is not a selection, bank or initial-condition bug.** For a moved cell the '
-          'episode indices and their IC labels are IDENTICAL between the original and the '
-          're-score (30 of 30, same order). What changed is the ROLLOUT: 14 of 30 episodes '
-          'reached a different terminal state. For an unmoved human cell and for a machine cell '
-          'the same comparison gives 0 of 30. The cell composition is right; the trajectories '
-          'are not reproducible.')
-        A('')
-        A('**What does separate them is time, and then arm.** All 14 moved cells were written '
-          'inside a single window, 2026-09-05 20:31 to 23:29. Outside that window, 0 of 143 '
-          'comparable cells moved. Inside it:')
-        A('')
-        A('| | moved | unmoved |')
+        A('| original record | ISA | cells moved |')
         A('|---|---|---|')
-        A('| human cells in window | **14** | 10 |')
-        A('| machine cells in window | **0** | 25 |')
+        for k in sorted({r['orig_cores'] for r in nodes['rows']}, key=lambda x: (x == '', x)):
+            mv = nodes['by_cores'][(k, True)]; tot = mv + nodes['by_cores'][(k, False)]
+            A(f"| {k}-core | {nodes['isa_of'].get(k, '?')} | **{mv} / {tot}** |")
         A('')
-        A('So the window is necessary but not sufficient, and within the window the split is by '
-          'arm and then by run: the contact human runs separate perfectly on the window '
-          '(everything inside it moved, everything before it did not), while the end-to-end '
-          'human runs split by seed - s2 and s3 moved on every cell, s0 and s1 on none, with '
-          'identical hardware, identical code path and evaluations interleaved in the same '
-          'hours.')
+        hosts = sorted({r['orig_host'] for r in nodes['movers']})
+        A(f"Every mover traces to one of two 36-core AVX2 machines ({', '.join(hosts)}), one "
+          'hosting the eight end-to-end cells and the other the eight contact cells. No other '
+          'hardware class produced a single non-reproducing cell.')
         A('')
-        A('**No mechanism is established.** The nearest sufficient explanation is one this '
-          "table already documents: the world model's policy samples a stochastic latent inside "
-          'its `act` call with no per-episode reseed, so its rollouts are not run-to-run '
-          'deterministic by construction. That predicts divergence - but it does not predict why '
-          'the machine arm never diverges, and that asymmetry is the open question. Until it is '
-          'answered, treat every re-score-derived cell as carrying an error that moves ONE ARM '
-          'ONLY, and prefer the original cells where both exist.')
+        A('**The arm asymmetry is a scheduling accident, not a bias.** No machine-arm cell was '
+          'ever evaluated on the 36-core class at all, so that hardware could only ever have '
+          'moved human-arm cells:')
+        A('')
+        A('| arm | cells on 36-core | cells on other classes |')
+        A('|---|---|---|')
+        for arm in ('human', 'machine'):
+            A(f"| {arm} | {nodes['by_arm_exp'][(arm, True)]} | "
+              f"{nodes['by_arm_exp'][(arm, False)]} |")
+        A('')
+        A('**Re-scoring is therefore not directionally biased.** The earlier alarming reading - '
+          'an unexplained defect moving one arm only - is withdrawn. What remains is the known '
+          'cross-hardware-class confound, which is why affected rows stay provisional pending '
+          'their pinned re-runs.')
+        A('')
+        sc = collections.Counter(c for r in nodes['struct'] for c in r['structural_cols'].split('|') if c)
+        sa = collections.Counter(r['arm'] for r in nodes['struct'])
+        A(f"**Structural column changes are counted separately and are NOT movement.** "
+          f"{len(nodes['struct'])} cells have a column that was structurally zero become "
+          f"non-zero with ZERO differing episodes "
+          f"({', '.join(f'`{k}` x{v}' for k, v in sc.most_common())}). That is the "
+          'corrected-predicate fix making a previously unearnable outcome earnable. It is not '
+          f"arm-directional (human {sa['human']}, machine {sa['machine']}), and counting it as "
+          'movement is what produced the earlier one-sided picture.')
         A('')
 
     A('\n## Doc-of-record cross-check\n')

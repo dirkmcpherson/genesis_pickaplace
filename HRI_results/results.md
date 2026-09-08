@@ -181,74 +181,54 @@ The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541
 
 ## Re-score reproducibility
 
-Statistics whose predicate did NOT change between a cell and its corrected-predicate `_cp` re-score, yet whose per-seed count moved. These are evaluation non-reproducibility, not predicate effects:
+Cells whose EPISODES reached different terminal states between the cell of record and its corrected-predicate `_cp` re-score. Column changes with zero differing episodes are structural and are excluded here (see below).
 
-| phase | arm | cell | statistic | act | seed | original | re-score |
-|---|---|---|---|---|---|---|---|
-| contact | dH | polE | contact | mode | 0 | 95 | 100 |
-| contact | dH | polE | contact | mode | 1 | 91 | 90 |
-| contact | dH | polE | contact | mode | 4 | 101 | 98 |
-| contact | dH | polE | contact | mode | 5 | 88 | 92 |
-| contact | dH | polE | contact | sample | 5 | 94 | 88 |
-| contact | dH | polE | contact | sample | 7 | 107 | 113 |
-| contact | dH | polE | nested | sample | 5 | 1 | 0 |
-| e2e | dHfull | hold15 | contact | mode | 2 | 14 | 11 |
-| e2e | dHfull | hold15 | contact | mode | 3 | 10 | 6 |
-| e2e | dHfull | hold15 | contact | sample | 2 | 13 | 14 |
-| e2e | dHfull | hold15 | contact | sample | 3 | 11 | 6 |
-| e2e | dHfull | hold15 | nested | mode | 3 | 6 | 5 |
-| e2e | dHfull | hold15 | nested | sample | 2 | 10 | 8 |
-| e2e | dHfull | hold15 | nested | sample | 3 | 8 | 6 |
-| e2e | dHfull | hold15 | picked | mode | 2 | 15 | 12 |
-| e2e | dHfull | hold15 | picked | mode | 3 | 15 | 13 |
-| e2e | dHfull | hold15 | picked | sample | 3 | 13 | 12 |
-| e2e | dHfull | rnd30 | contact | mode | 2 | 15 | 14 |
-| e2e | dHfull | rnd30 | contact | mode | 3 | 13 | 16 |
-| e2e | dHfull | rnd30 | contact | sample | 3 | 13 | 14 |
-| e2e | dHfull | rnd30 | nested | mode | 2 | 9 | 3 |
-| e2e | dHfull | rnd30 | nested | sample | 2 | 10 | 13 |
-| e2e | dHfull | rnd30 | nested | sample | 3 | 9 | 10 |
-| e2e | dHfull | rnd30 | picked | mode | 2 | 19 | 18 |
-| e2e | dHfull | rnd30 | picked | mode | 3 | 19 | 18 |
-| e2e | dHfull | rnd30 | picked | sample | 3 | 17 | 18 |
+| run | cell | arm | episodes differing | of | columns affected | original record |
+|---|---|---|---|---|---|---|
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s2` | fresh_eval_hold15_mode | human | **6** | 15 | contact|picked|placed|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s2` | fresh_eval_hold15_sample | human | **7** | 15 | contact|nested|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s2` | fresh_eval_rnd30_mode | human | **14** | 30 | contact|nested|picked|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s2` | fresh_eval_rnd30_sample | human | **16** | 30 | nested|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s3` | fresh_eval_hold15_mode | human | **8** | 15 | contact|nested|picked|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s3` | fresh_eval_hold15_sample | human | **9** | 15 | contact|nested|picked|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s3` | fresh_eval_rnd30_mode | human | **19** | 30 | contact|picked|placed_v2 | pax109 (36-core avx2) |
+| `full_r2d_state_dHfull_all_bnormclampS8ent5_s3` | fresh_eval_rnd30_sample | human | **11** | 30 | contact|nested|picked|placed_v2 | pax109 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s0` | fresh_eval_polE_mode | human | **40** | 160 | contact|placed | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s1` | fresh_eval_polE_mode | human | **36** | 160 | contact|placed | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s1` | fresh_eval_polE_sample | human | **57** | 160 | - | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s4` | fresh_eval_polE_mode | human | **31** | 160 | contact | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s5` | fresh_eval_polE_mode | human | **44** | 160 | contact | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s5` | fresh_eval_polE_sample | human | **47** | 160 | contact|nested|placed | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s7` | fresh_eval_polE_mode | human | **16** | 160 | - | pax070 (36-core avx2) |
+| `s2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s7` | fresh_eval_polE_sample | human | **28** | 160 | contact | pax070 (36-core avx2) |
 
-Affected arms: dH, dHfull. Where one arm reproduces exactly and the other does not, the discrepancy is ASYMMETRIC between the two arms of a comparison, and every cell drawn from the re-score inherits it.
 
-### What distinguishes the runs that did not reproduce
+### Why some cells did not reproduce: the hardware class, after all
 
-The standing explanation was a cross-hardware-class re-score. It is refuted, and so are the other obvious candidates. What follows is measured, not inferred.
+**This section corrects an earlier version of itself.** It previously reported that the non-reproducing re-scores were NOT a hardware effect and were confined to the human arm. That was wrong, and the fault was in the node attribution: cells were attributed to the node in the run's `events.out.tfevents` filename, which is the TRAINING node, while the evaluations ran as separate CPU jobs. Attributing each cell to the job that logged writing THAT directory reverses the finding.
 
-**It is not the hardware class.** ISA here is read from `/proc/cpuinfo` on each machine (the probe log), never from Slurm's `AvailableFeatures`, which are unreliable on this cluster. Every node involved in these runs and re-scores - originals and re-scores alike - is **AVX-512**. There is no AVX2 exposure anywhere in this set, so there is no cross-class contrast to explain anything:
+**Movement separates perfectly on the original record's hardware class.** A cell counts as moved only when episodes reach different terminal states; see the structural note below.
 
-| arm | cross-ISA re-scores | of those, moved | same-ISA re-scores | of those, moved |
-|---|---|---|---|---|
-| human | 0 | **0** | 288 | **26** |
-| machine | 0 | **0** | 288 | **0** |
-
-And not one discrepant cell has a 36-core (AVX2) original record:
-
-| original record node | discrepant cells |
-|---|---|
-| cascadelake / 48-core (avx512) | 5 |
-| icelake / 64-core (unprobed) | 19 |
-| sapphirerapids / 64-core (avx512) | 2 |
-
-**It is not a restart or a requeue.** Every one of the 48 runs carries exactly one `events.out.tfevents` file, the runs that moved and the runs that did not alike.
-
-**It is not a changed checkpoint.** `latest.pt` predates the original evaluation in all 48 runs, and its SHA-256 was taken for each; the re-score read the same weights.
-
-**It is not a selection, bank or initial-condition bug.** For a moved cell the episode indices and their IC labels are IDENTICAL between the original and the re-score (30 of 30, same order). What changed is the ROLLOUT: 14 of 30 episodes reached a different terminal state. For an unmoved human cell and for a machine cell the same comparison gives 0 of 30. The cell composition is right; the trajectories are not reproducible.
-
-**What does separate them is time, and then arm.** All 14 moved cells were written inside a single window, 2026-09-05 20:31 to 23:29. Outside that window, 0 of 143 comparable cells moved. Inside it:
-
-| | moved | unmoved |
+| original record | ISA | cells moved |
 |---|---|---|
-| human cells in window | **14** | 10 |
-| machine cells in window | **0** | 25 |
+| 32-core | ? | **0 / 8** |
+| 36-core | avx2 | **16 / 16** |
+| 48-core | avx512 | **0 / 56** |
+| 64-core | avx512 | **0 / 108** |
+| 96-core | avx512 | **0 / 4** |
 
-So the window is necessary but not sufficient, and within the window the split is by arm and then by run: the contact human runs separate perfectly on the window (everything inside it moved, everything before it did not), while the end-to-end human runs split by seed - s2 and s3 moved on every cell, s0 and s1 on none, with identical hardware, identical code path and evaluations interleaved in the same hours.
+Every mover traces to one of two 36-core AVX2 machines (pax070, pax109), one hosting the eight end-to-end cells and the other the eight contact cells. No other hardware class produced a single non-reproducing cell.
 
-**No mechanism is established.** The nearest sufficient explanation is one this table already documents: the world model's policy samples a stochastic latent inside its `act` call with no per-episode reseed, so its rollouts are not run-to-run deterministic by construction. That predicts divergence - but it does not predict why the machine arm never diverges, and that asymmetry is the open question. Until it is answered, treat every re-score-derived cell as carrying an error that moves ONE ARM ONLY, and prefer the original cells where both exist.
+**The arm asymmetry is a scheduling accident, not a bias.** No machine-arm cell was ever evaluated on the 36-core class at all, so that hardware could only ever have moved human-arm cells:
+
+| arm | cells on 36-core | cells on other classes |
+|---|---|---|
+| human | 16 | 80 |
+| machine | 0 | 96 |
+
+**Re-scoring is therefore not directionally biased.** The earlier alarming reading - an unexplained defect moving one arm only - is withdrawn. What remains is the known cross-hardware-class confound, which is why affected rows stay provisional pending their pinned re-runs.
+
+**Structural column changes are counted separately and are NOT movement.** 49 cells have a column that was structurally zero become non-zero with ZERO differing episodes (`placed_v2` x49). That is the corrected-predicate fix making a previously unearnable outcome earnable. It is not arm-directional (human 19, machine 30), and counting it as movement is what produced the earlier one-sided picture.
 
 
 ## Doc-of-record cross-check
