@@ -11,6 +11,23 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 - **prior** - `stable` means the equivalence verdict survives all three priors and a separate-sigma refit.
 
 
+> ## SUPERSEDED - re-score in flight
+>
+> These rows are computed on inputs that are BEING OVERWRITTEN as you read them. This is not the same as *provisional*: provisional means the number may move when more seeds land, superseded means the cells it is computed from are actively being replaced. **Do not quote these.** They are excluded from the forest plot.
+>
+> | row | statistic | current value | why |
+> |---|---|---|---|
+> | `contact_r2d_bare` | contact (legacy) | 0.593 v 0.602 | Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells were in flight as of 2026-09-08 ~10:30 and land within the hour; these inputs are being overwritten, not merely refined. |
+> | `contact_r2d_push` | contact_push | 0.346 v 0.366 | Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells were in flight as of 2026-09-08 ~10:30 and land within the hour; these inputs are being overwritten, not merely refined. |
+> | `carry_r2d_bare` | contact (legacy) | 0.807 v 0.796 | Carrycontact is last in the 2026-09-08 re-score queue, behind the pinned end-to-end set. |
+> | `carry_r2d_push` | contact_push | 0.285 v 0.250 | Carrycontact is last in the 2026-09-08 re-score queue, behind the pinned end-to-end set. |
+> | `e2e_picked` | picked | 0.500 v 0.537 | The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 ~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2. |
+> | `e2e_contact_push` | contact_push | 0.204 v 0.212 | The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 ~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2. |
+> | `e2e_nested_honest` | nested (honest) | 0.046 v 0.104 | The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 ~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2. |
+> | `e2e_nested_proxy` | nested (training proxy) | 0.163 v 0.192 | The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 ~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2. |
+> | `e2e_slide_success` | slide_success | 0.042 v 0.017 | The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 ~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2. |
+>
+
 ## Pick (rnd30)
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
@@ -55,8 +72,8 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `contact_r2d_bare` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x160 | 0.593 | 0.602 | -0.009 | [-0.091, 0.074] | 0.842 | 0.116 | 0.980 | 172.7 |  | stable | equivalent at +/-0.10 |
-| `contact_r2d_push` | world model (r2dreamer) | contact_push | mode | 8v8x160 | 0.346 | 0.366 | -0.019 | [-0.058, 0.019] | 0.308 | 0.054 | 1.000 | 14390.0 |  | stable | equivalent at +/-0.10 |
+| `contact_r2d_bare` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact (legacy) | mode | 8v8x160 | 0.593 | 0.602 | -0.009 | [-0.091, 0.074] | 0.842 | 0.116 | 0.980 | 172.7 |  | stable | equivalent at +/-0.10 |
+| `contact_r2d_push` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact_push | mode | 8v8x160 | 0.346 | 0.366 | -0.019 | [-0.058, 0.019] | 0.308 | 0.054 | 1.000 | 14390.0 |  | stable | equivalent at +/-0.10 |
 | `contact_dp` | Diffusion Policy | contact_push | sampled | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run. The contact phase was never submitted for DP or RLPD; the 32 slide/contact runs are HELD on the predicate decision (PHASE_PLAN (p)). No per-seed data on the cluster for this cell. |
 | `contact_rlpd` | RLPD | contact_push | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run (same hold as contact_dp). No per-seed data on the cluster for this cell. |
 
@@ -64,18 +81,18 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `carry_r2d_bare` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.807 | 0.796 | 0.011 | [-0.012, 0.034] | 0.348 | 0.032 | 1.000 | 656500.0 |  | stable | equivalent at +/-0.10 |
-| `carry_r2d_push` | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.285 | 0.250 | 0.035 | [-0.073, 0.144] | 0.546 | 0.153 | 0.898 | 31.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive |
+| `carry_r2d_bare` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.807 | 0.796 | 0.011 | [-0.012, 0.034] | 0.348 | 0.032 | 1.000 | 656500.0 |  | stable | equivalent at +/-0.10 |
+| `carry_r2d_push` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.285 | 0.250 | 0.035 | [-0.073, 0.144] | 0.546 | 0.153 | 0.898 | 31.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive |
 
 ## End-to-end (rnd30)
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `e2e_picked` | world model (r2dreamer) | picked | mode | 8v8x30 | 0.500 | 0.537 | -0.037 | [-0.191, 0.116] | 0.643 | 0.216 | 0.795 | 14.0 |  | stable | INCONCLUSIVE (underpowered) |
-| `e2e_contact_push` | world model (r2dreamer) | contact_push | mode | 8v8x30 | 0.204 | 0.212 | -0.008 | [-0.129, 0.112] | 0.942 | 0.169 | 0.906 | 34.6 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=out | equivalent at +/-0.10 |
-| `e2e_nested_honest` | world model (r2dreamer) | nested (honest) | mode | 8v8x30 | 0.046 | 0.104 | -0.058 | [-0.121, 0.004] | 0.087 | 0.088 | 0.901 | 32.6 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=out | equivalent at +/-0.10 |
-| `e2e_nested_proxy` *(prov.)* | world model (r2dreamer) | nested (training proxy) | mode | 8v8x30 | 0.163 | 0.192 | -0.029 | [-0.137, 0.079] | 0.621 | 0.152 | 0.885 | 27.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive |
-| `e2e_slide_success` *(floor)* | world model (r2dreamer) | slide_success | mode | 8v8x30 | 0.042 | 0.017 | 0.025 | [-0.013, 0.063] |  | 0.053 |  |  |  |  | Both arms on the floor; no p-value or ROPE is computed because a null here is an artefact of the floor, not evidence of equivalence. |
+| `e2e_picked` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | picked | mode | 8v8x30 | 0.500 | 0.537 | -0.037 | [-0.191, 0.116] | 0.643 | 0.216 | 0.795 | 14.0 |  | stable | INCONCLUSIVE (underpowered) |
+| `e2e_contact_push` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact_push | mode | 8v8x30 | 0.204 | 0.212 | -0.008 | [-0.129, 0.112] | 0.942 | 0.169 | 0.906 | 34.6 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=out | equivalent at +/-0.10 |
+| `e2e_nested_honest` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | nested (honest) | mode | 8v8x30 | 0.046 | 0.104 | -0.058 | [-0.121, 0.004] | 0.087 | 0.088 | 0.901 | 32.6 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=out | equivalent at +/-0.10 |
+| `e2e_nested_proxy` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | nested (training proxy) | mode | 8v8x30 | 0.163 | 0.192 | -0.029 | [-0.137, 0.079] | 0.621 | 0.152 | 0.885 | 27.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive |
+| `e2e_slide_success` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | slide_success | mode | 8v8x30 | 0.042 | 0.017 | 0.025 | [-0.013, 0.063] |  | 0.053 |  |  |  |  | Both arms on the floor; no p-value or ROPE is computed because a null here is an artefact of the floor, not evidence of equivalence. |
 | `e2e_picked_v2` *(prov.)* | world model (r2dreamer) | picked | mode | 4v5x30 | 0.517 | 0.527 | -0.010 | [-0.266, 0.246] | 0.960 | 0.353 | 0.664 | 7.1 |  | stable | INCONCLUSIVE (underpowered) |
 | `e2e_dp` | Diffusion Policy | picked | sampled | - | **EMPTY** | **EMPTY** | | | | | | | | | Runs queued, not landed. 32 e2e runs (e2e_dp_* / e2e_rlpd_*) sit PENDING at --nice=9000 behind the rest of the queue. No per-seed data on the cluster for this cell. |
 | `e2e_rlpd` | RLPD | picked | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Runs queued, not landed (same batch as e2e_dp). The only e2e metrics on the cluster clone are smoke runs, which are excluded. No per-seed data on the cluster for this cell. |
@@ -147,9 +164,6 @@ The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541
 - **`place_r2d_asrecorded`** - SUPERSEDED by place_r2d. Drew bank entries WITH REPLACEMENT and substituted failed restores; unpinned hardware. Kept visible only so the correction can be inspected.
 - **`place_r2d_sample_asrecorded`** - SUPERSEDED by place_r2d_sample; same defects as place_r2d_asrecorded.
 - **`place_rlpd`** - PARTIAL: the 32-run place batch is still filling, so this is far short of the registered 8 v 8. Scored on the REBUILT physgrip_2026-09-07 entry bank, which is NOT the bank the world-model place cells used.
-- **`contact_r2d_bare`** - Bare `contact` is the LEGACY predicate and overstates capability by 1.5-3x against contact_push; carried only so the published number is reproducible. Both arms are sub-floor (11 demonstrations each).
-- **`carry_r2d_bare`** - Legacy bare-contact predicate; see carry_r2d_push. Five polE entries fail to restore in this scope for every arm and are counted as failures.
-- **`e2e_nested_proxy`** - Training proxy, not a task outcome. Shown only to quantify the gap against nested_honest; never cite it as a success rate. Sourced from the ORIGINAL rnd30 cell because the corrected-predicate re-score does not reproduce it on the human arm -- see the re-score reproducibility section.
 - **`e2e_picked_v2`** - RE-SCORE INCOMPLETE: 4 human v 5 machine seeds have landed.
 - **`robo_rlpd_mg200s`** - THE SOURCE READING IS WITHDRAWN by its own registered quantity control. This gap is a property of the 200-tape draw, not of machine provenance: 89 % of its rows come from the last four SAC checkpoint blocks. See the MG718s and MGall rows.
 - **`robo_dp`** - Rests on the SAME 200-tape draw whose source reading RLPD withdrew, and inherits the same doubt. It has not been run on MG718s or MGall.
@@ -167,7 +181,6 @@ The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541
 
 ## Floor cells (no p-value by design)
 
-- **`e2e_slide_success`** - human 0.042, machine 0.017. TASK OUTCOME. No arm learns a true slide: both sit at 0-6 %. A null here is an artefact of the floor, so no p-value and no ROPE are computed.
 - **`robo_r2d`** - human 0.000, machine 0.003. Reported as a LEARNABILITY FAILURE, not as a null, and deliberately not as an empty cell: "we ran it and both arms floored" is a stronger and more informative statement than "not run". Consequence for the paper: the robomimic leg carries RLPD, Diffusion Policy and BC-RNN, but NOT a world model, so it cannot support the source-indifference headline on an independent task - on this task the world model does not learn at all.
 
 ## What the re-score moved

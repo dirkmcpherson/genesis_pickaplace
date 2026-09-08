@@ -95,6 +95,17 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
 
 ## Rules this directory enforces
 
+- **A row's status says how much to trust it.** Four states, deliberately distinct:
+  | status | meaning |
+  |---|---|
+  | `OK` | computed from settled inputs |
+  | *(prov.)* | the number may move when more seeds land, or a known caveat applies |
+  | **(SUPERSEDED - re-score in flight)** | the cells it is computed from are BEING OVERWRITTEN. Not the same as provisional. **Do not quote.** Listed in a banner at the top of `results.md` and excluded from the forest plot. |
+  | *(floor)* | both arms near zero; no test computed |
+  | `EMPTY` | no data, with the reason |
+  Set `rescore_in_flight='<why>'` on a row in `cells.py` to mark it superseded; clear it when the
+  re-score lands. Every re-score creates a window where the old row is live and known-doomed, so
+  this is a first-class status rather than a note.
 - **A missing number stays missing.** A cell with no data renders as `EMPTY` with the reason.
   Nothing is estimated, interpolated or copied from prose.
 - **Cross-learner comparability is checked, not assumed.** A row may only be read as one table if

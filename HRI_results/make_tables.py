@@ -137,7 +137,8 @@ def build(args):
                    prior_flip='', verdict='', status='', provisional=c.get('provisional', ''),
                    note=c.get('note', ''), source='', bank_stamp='', evaluator='',
                    dead_human=0, dead_machine=0,
-                   rescored_from=c.get('rescored_from', ''))
+                   rescored_from=c.get('rescored_from', ''),
+                   rescore_in_flight=c.get('rescore_in_flight', ''))
 
         for r in h_rows:
             tidy.append(dict(comparison=c['id'], arm_role='human', arm=r['arm'], seed=r['seed'],
@@ -183,7 +184,7 @@ def build(args):
         row['sd_human'] = round(f['sd_a'], 4); row['sd_machine'] = round(f['sd_b'], 4)
 
         if c.get('floor'):
-            row['status'] = 'FLOOR'
+            row['status'] = 'SUPERSEDED' if c.get('rescore_in_flight') else 'FLOOR'
             row['verdict'] = ('Both arms on the floor; no p-value or ROPE is computed because a '
                               'null here is an artefact of the floor, not evidence of equivalence.')
             results.append(row)
@@ -223,7 +224,11 @@ def build(args):
         if c.get('rescored_from') and len(hk) != len(mk):
             row['provisional'] = (row['provisional'] + ' RE-SCORE INCOMPLETE: '
                                   f'{len(hk)} human v {len(mk)} machine seeds have landed.').strip()
-        row['status'] = 'PROVISIONAL' if row['provisional'] else 'OK'
+        # SUPERSEDED is a THIRD state, distinct from both OK and PROVISIONAL. Provisional means
+        # "may move when more seeds land"; superseded means "the inputs to this number are being
+        # overwritten right now". A reader must be able to tell those apart.
+        row['status'] = ('SUPERSEDED' if row['rescore_in_flight']
+                         else 'PROVISIONAL' if row['provisional'] else 'OK')
         results.append(row)
 
     return tidy, results
@@ -362,7 +367,8 @@ def _dead(r):
 
 
 def _emit_row(A, r):
-    flag = {'PROVISIONAL': ' *(prov.)*', 'EMPTY': '', 'FLOOR': ' *(floor)*'}.get(r['status'], '')
+    flag = {'PROVISIONAL': ' *(prov.)*', 'EMPTY': '', 'FLOOR': ' *(floor)*',
+            'SUPERSEDED': ' **(SUPERSEDED - re-score in flight)**'}.get(r['status'], '')
     if r['status'] == 'EMPTY':
         A(f"| `{r['id']}`{flag} | {r['learner']} | {r['statistic']} | {r['action_mode']} "
           f"| - | **EMPTY** | **EMPTY** | | | | | | | | | {r['verdict']} |")
@@ -406,6 +412,21 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy):
       '- **BF01** - interval Bayes factor for |Delta| < 0.10 against |Delta| >= 0.10.\n'
       '- **prior** - `stable` means the equivalence verdict survives all three priors and a '
       'separate-sigma refit.\n')
+
+    sup = [r for r in results if r['status'] == 'SUPERSEDED']
+    if sup:
+        A('\n> ## SUPERSEDED - re-score in flight\n>')
+        A('> These rows are computed on inputs that are BEING OVERWRITTEN as you read them. This '
+          'is not the same as *provisional*: provisional means the number may move when more '
+          'seeds land, superseded means the cells it is computed from are actively being '
+          'replaced. **Do not quote these.** They are excluded from the forest plot.\n>')
+        A('> | row | statistic | current value | why |')
+        A('> |---|---|---|---|')
+        for r in sup:
+            val = (f"{fmt(r['human_rate'])} v {fmt(r['machine_rate'])}"
+                   if r['human_rate'] != '' else '-')
+            A(f"> | `{r['id']}` | {r['statistic']} | {val} | {r['rescore_in_flight']} |")
+        A('>')
 
     groups = []
     for r in results:
@@ -616,6 +637,8 @@ def make_fig(results, path_png, path_pdf):
         return v != '' and v is not None and not (isinstance(v, float) and _math.isnan(v))
     rows = [r for r in results if r['status'] in ('OK', 'PROVISIONAL')
             and _ok(r['ci_lo']) and _ok(r['ci_hi'])]
+    # SUPERSEDED rows are deliberately NOT plotted: their inputs are being overwritten, so
+    # drawing them invites exactly the misreading the status exists to prevent.
     rows = sorted(rows, key=lambda r: ([x['group'] for x in results].index(r['group']),))
     groups, ordered = [], []
     for r in results:
@@ -673,11 +696,15 @@ def make_fig(results, path_png, path_pdf):
               loc='upper center', bbox_to_anchor=(0.5, -0.055 / (fig_h / 10.0)))
     dropped = [r['id'] for r in results if r['status'] in ('OK', 'PROVISIONAL')
                and not (_ok(r['ci_lo']) and _ok(r['ci_hi']))]
+    sup = [r['id'] for r in results if r['status'] == 'SUPERSEDED']
     msg = ('A CI inside the shaded band supports equivalence; a CI wider than the band means '
            'the cell is underpowered, not that the arms match.')
     if dropped:
         msg += ('   Not plotted (no defined interval: every seed in each arm gave the identical '
                 'count): ' + ', '.join(dropped) + '.')
+    if sup:
+        msg += ('   Not plotted (SUPERSEDED - a re-score is overwriting these inputs): '
+                + ', '.join(sup) + '.')
     fig.text(0.012, 0.012, '\n'.join(textwrap.wrap(msg, 150)), fontsize=8.0, color='#444',
              va='bottom')
     fig.tight_layout(rect=(0, 0.075, 1, 1))
@@ -716,7 +743,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(tidy[0].keys()))
         w.writeheader(); w.writerows(tidy)
     fields = list(results[0].keys())
-    for extra in ('dead_human', 'dead_machine', 'rescored_from'):
+    for extra in ('dead_human', 'dead_machine', 'rescored_from', 'rescore_in_flight'):
         if extra not in fields:
             fields.append(extra)
     for r in results:
@@ -737,11 +764,15 @@ def main():
     pv = sum(r['status'] == 'PROVISIONAL' for r in results)
     em = sum(r['status'] == 'EMPTY' for r in results)
     fl = sum(r['status'] == 'FLOOR' for r in results)
+    sp = sum(r['status'] == 'SUPERSEDED' for r in results)
     bad = [g for g, v in comp.items() if not v['comparable']]
     if bad:
         print('NOT CROSS-LEARNER COMPARABLE: ' + '; '.join(bad))
-    print(f'rows: {ok} OK, {pv} provisional, {em} empty, {fl} floor; '
-          f'{len(tidy)} per-seed records; {n} plotted')
+    print(f'rows: {ok} OK, {pv} provisional, {sp} SUPERSEDED (re-score in flight), {em} empty, '
+          f'{fl} floor; {len(tidy)} per-seed records; {n} plotted')
+    if sp:
+        print('SUPERSEDED - re-score overwriting these inputs, do not quote: '
+              + ', '.join(r['id'] for r in results if r['status'] == 'SUPERSEDED'))
     if rescore:
         print(f'RE-SCORE NON-REPRODUCTIONS: {len(rescore)} per-seed cells')
         for _r in rescore:

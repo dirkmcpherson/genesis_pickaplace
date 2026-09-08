@@ -239,6 +239,9 @@ COMPARISONS = [
          provisional='Bare `contact` is the LEGACY predicate and overstates capability by '
                      '1.5-3x against contact_push; carried only so the published number is '
                      'reproducible. Both arms are sub-floor (11 demonstrations each).',
+         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells '
+                           'were in flight as of 2026-09-08 ~10:30 and land within the hour; '
+                           'these inputs are being overwritten, not merely refined.',
          note='Read contact_r2d_push instead.'),
 
     dict(id='contact_r2d_push', group='Contact (matched 11)', learner='world model (r2dreamer)',
@@ -249,6 +252,9 @@ COMPARISONS = [
          sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push',
                     extra='setting=bnormclamp1ent5_n11'),
+         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells '
+                           'were in flight as of 2026-09-08 ~10:30 and land within the hour; '
+                           'these inputs are being overwritten, not merely refined.',
          note='contact_push is the DISCRIMINATING statistic of the three contact predicates: it '
               'requires the tool point to push the can, where bare contact does not.'),
 
@@ -276,6 +282,8 @@ COMPARISONS = [
                     extra='setting=bnormclamp1ent5_n21'),
          provisional='Legacy bare-contact predicate; see carry_r2d_push. Five polE entries fail '
                      'to restore in this scope for every arm and are counted as failures.',
+         rescore_in_flight='Carrycontact is last in the 2026-09-08 re-score queue, behind the '
+                           'pinned end-to-end set.',
          note=''),
 
     dict(id='carry_r2d_push', group='Carrycontact (matched 21)',
@@ -287,6 +295,8 @@ COMPARISONS = [
          sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push',
                     extra='setting=bnormclamp1ent5_n21'),
+         rescore_in_flight='Carrycontact is last in the 2026-09-08 re-score queue, behind the '
+                           'pinned end-to-end set.',
          note='The discriminating contact predicate on the carrycontact scope.'),
 
     # ---------------------------------------------------------------- Genesis: END-TO-END by stage
@@ -299,7 +309,9 @@ COMPARISONS = [
          sel_m=dict(source='cluster:wm', phase='e2e', arm='dDPfull', cell=scell,
                     action_mode='mode', statistic=skey,
                     extra='setting=bnormclampS8ent5'),
-         floor=floor, provisional=prov, note=nt)
+         floor=floor, provisional=prov, note=nt,
+         rescore_in_flight='The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 '
+                           '~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2.')
     for sid, skey, sname, scell, floor, prov, nt in [
         ('picked', 'picked', 'picked', 'rnd30', False, '',
          'Stage 1 of the full task.'),
