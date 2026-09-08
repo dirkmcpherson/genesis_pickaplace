@@ -122,6 +122,41 @@ for fam, hp, mp, stages in FAM:
                                     ignition_step=("" if ign is None else "%.0f" % ign),
                                     peak="%.3f" % peak, tail_mean="%.3f" % (float(np.mean(tail)) if len(tail) else float("nan")),
                                     classification=cls))
+# --- NESTED-STAGE CHECK (rule adopted 2026-09-08 after the truncation defect) ------------------------
+# Strictly nested stages CANNOT be identical: every `nested` episode is a `contact` episode is a `picked`
+# episode, so a statistic that reports the SAME value for all of them is not measuring the stage it is
+# named for. That is exactly how the flag-based end-to-end series failed -- picked, contact and nested all
+# reported ignition at the same step, because all three were really measuring "terminated having reached
+# the stage". Run this after ANY per-stage statistic; it is cheap and it fails loudly.
+NESTED_ORDER = ["picked", "placed_v2", "contact", "contact_push", "nested", "nested_proxy", "slide_success"]
+
+def nested_stage_check(summary_rows):
+    """Return a list of complaints: (family, arm, stage_a, stage_b) whose per-seed values are IDENTICAL."""
+    bad = []
+    by = {}
+    for r in summary_rows:
+        by.setdefault((r["family"], r["arm"]), {}).setdefault(r["stage"], {})[r["seed"]] = r["ignition_step"]
+    for (fam, arm), stages in by.items():
+        present = [s for s in NESTED_ORDER if s in stages]
+        for i in range(len(present)):
+            for j in range(i + 1, len(present)):
+                a, b = present[i], present[j]
+                ka, kb = stages[a], stages[b]
+                shared = set(ka) & set(kb)
+                if len(shared) >= 3 and all(ka[k] == kb[k] for k in shared):
+                    bad.append((fam, arm, a, b, len(shared)))
+    return bad
+
+_bad = nested_stage_check(summary)
+if _bad:
+    print("\n*** NESTED-STAGE CHECK FAILED -- a per-stage statistic is identical across strictly nested stages.")
+    print("*** That means it is measuring something other than the stage it is named for (see the 2026-09-08")
+    print("*** truncation defect). Do NOT report these series until the cause is found.")
+    for fam, arm, a, b, n in _bad:
+        print(f"      {fam} {arm}: {a!r} == {b!r} on all {n} shared seeds")
+else:
+    print("\n[nested-stage check] OK: no strictly-nested stage pair is identical across seeds")
+
 import csv
 hdr = ("# Learning curves from ONLINE TRAINING ROLLOUTS (exploring policy, resetting from the TRAINING bank).\n"
        "# NOT the evaluation protocol: eval cells use mode/sampled actions on the polE / rnd30 start sets and exist only\n"

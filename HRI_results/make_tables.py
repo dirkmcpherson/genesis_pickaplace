@@ -185,7 +185,9 @@ def build(args):
                    dead_human=0, dead_machine=0,
                    rescored_from=c.get('rescored_from', ''),
                    rescore_in_flight=c.get('rescore_in_flight', ''),
-                   incomplete_cells=0, incomplete_detail='', seed_shortfall='')
+                   incomplete_cells=0, incomplete_detail='', seed_shortfall='',
+                   withdrawn=c.get('withdrawn', ''),
+                   effect_size_only=bool(c.get('effect_size_only')))
 
         for r in h_rows:
             tidy.append(dict(comparison=c['id'], arm_role='human', arm=r['arm'], seed=r['seed'],
@@ -201,6 +203,8 @@ def build(args):
             row['bank_stamp'] = '|'.join(sorted(banks))
             row['evaluator'] = '|'.join(sorted({r['evaluator'] for r in h_rows + m_rows}))
 
+        if c.get('withdrawn') and not (len(hk) < 2 or len(mk) < 2):
+            pass    # fall through: a withdrawn row still shows its numbers, marked
         if len(hk) < 2 or len(mk) < 2 or hn is None or mn is None or hn != mn:
             row['status'] = 'EMPTY'
             if not (hk and mk):
@@ -237,9 +241,22 @@ def build(args):
         row['sd_human'] = round(f['sd_a'], 4); row['sd_machine'] = round(f['sd_b'], 4)
 
         if c.get('floor'):
-            row['status'] = 'SUPERSEDED' if c.get('rescore_in_flight') else 'FLOOR'
+            row['status'] = ('WITHDRAWN' if c.get('withdrawn')
+                             else 'SUPERSEDED' if c.get('rescore_in_flight') else 'FLOOR')
             row['verdict'] = ('Both arms on the floor; no p-value or ROPE is computed because a '
                               'null here is an artefact of the floor, not evidence of equivalence.')
+            results.append(row)
+            continue
+
+        if c.get('effect_size_only'):
+            row['status'] = 'WITHDRAWN' if c.get('withdrawn') else 'OK'
+            row['verdict'] = (
+                'EFFECT SIZE ONLY - no p-value is computed. At 3 seeds per arm the exact '
+                'permutation test has 20 distinct splits, so its smallest attainable two-sided '
+                'p is 0.10 and it can never reach 0.05. The registration put the decision on '
+                'effect size for exactly this reason.')
+            if c.get('withdrawn'):
+                row['verdict'] = c['withdrawn']
             results.append(row)
             continue
 
@@ -291,8 +308,23 @@ def build(args):
         # SUPERSEDED is a THIRD state, distinct from both OK and PROVISIONAL. Provisional means
         # "may move when more seeds land"; superseded means "the inputs to this number are being
         # overwritten right now". A reader must be able to tell those apart.
-        row['status'] = ('SUPERSEDED' if row['rescore_in_flight']
+        # WITHDRAWN is a FOURTH state and outranks the others. Provisional and superseded both
+        # mean "this number will be replaced by a re-score of the same quantity". Withdrawn means
+        # the row measured something OTHER than what it claims, so no re-score can repair it --
+        # it needs different runs that do not exist yet.
+        row['status'] = ('WITHDRAWN' if row['withdrawn']
+                         else 'SUPERSEDED' if row['rescore_in_flight']
                          else 'PROVISIONAL' if row['provisional'] else 'OK')
+        if row['withdrawn']:
+            row['verdict'] = row['withdrawn']
+            # A withdrawn row keeps its rates and its per-seed counts so the reader can see what
+            # the discredited comparison actually was, but loses every inferential column: a
+            # p-value or Bayes factor attached to a quantity that is not the one claimed is the
+            # thing most likely to be lifted out of context.
+            for fld in ('perm_p', 'perm_exact', 'mde_80', 'ci_lo', 'ci_hi',
+                        'p_rope', 'p_gt0', 'bf01', 'post_mean', 'post_lo', 'post_hi',
+                        'prior_flip', 'prior_range'):
+                row[fld] = ''
         results.append(row)
 
     return tidy, results
@@ -456,7 +488,8 @@ def _dead(r):
 
 def _emit_row(A, r):
     flag = {'PROVISIONAL': ' *(prov.)*', 'EMPTY': '', 'FLOOR': ' *(floor)*',
-            'SUPERSEDED': ' **(SUPERSEDED - re-score in flight)**'}.get(r['status'], '')
+            'SUPERSEDED': ' **(SUPERSEDED - re-score in flight)**',
+            'WITHDRAWN': ' **(WITHDRAWN)**'}.get(r['status'], '')
     if r['status'] == 'EMPTY':
         A(f"| `{r['id']}`{flag} | {r['learner']} | {r['statistic']} | {r['action_mode']} "
           f"| - | **EMPTY** | **EMPTY** | | | | | | | | | {r['verdict']} |")
@@ -500,6 +533,22 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy, updates):
       '- **BF01** - interval Bayes factor for |Delta| < 0.10 against |Delta| >= 0.10.\n'
       '- **prior** - `stable` means the equivalence verdict survives all three priors and a '
       'separate-sigma refit.\n')
+
+    wdr = [r for r in results if r['status'] == 'WITHDRAWN']
+    if wdr:
+        A('\n> ## WITHDRAWN\n>')
+        A('> These rows did not measure what they claim to measure. That is different from '
+          '*provisional* and from *superseded*, which both mean "a re-score of the same quantity '
+          'will replace this number". **No re-score can repair a withdrawn row** - it needs '
+          'different runs, which do not exist yet. **Do not quote these, in any form.** They are '
+          'excluded from the forest plot.\n>')
+        A('> | row | current value | why it is withdrawn |')
+        A('> |---|---|---|')
+        for r in wdr:
+            val = (f"{fmt(r['human_rate'])} v {fmt(r['machine_rate'])}"
+                   if r['human_rate'] != '' else '-')
+            A(f"> | `{r['id']}` | {val} | {r['withdrawn']} |")
+        A('>')
 
     sup = [r for r in results if r['status'] == 'SUPERSEDED']
     if sup:
@@ -796,15 +845,14 @@ def make_fig(results, path_png, path_pdf):
               loc='upper center', bbox_to_anchor=(0.5, -0.055 / (fig_h / 10.0)))
     dropped = [r['id'] for r in results if r['status'] in ('OK', 'PROVISIONAL')
                and not (_ok(r['ci_lo']) and _ok(r['ci_hi']))]
-    sup = [r['id'] for r in results if r['status'] == 'SUPERSEDED']
+    sup = [r['id'] for r in results if r['status'] in ('SUPERSEDED', 'WITHDRAWN')]
     msg = ('A CI inside the shaded band supports equivalence; a CI wider than the band means '
            'the cell is underpowered, not that the arms match.')
     if dropped:
         msg += ('   Not plotted (no defined interval: every seed in each arm gave the identical '
                 'count): ' + ', '.join(dropped) + '.')
     if sup:
-        msg += ('   Not plotted (SUPERSEDED - a re-score is overwriting these inputs): '
-                + ', '.join(sup) + '.')
+        msg += ('   Not plotted (superseded or withdrawn): ' + ', '.join(sup) + '.')
     fig.text(0.012, 0.012, '\n'.join(textwrap.wrap(msg, 150)), fontsize=8.0, color='#444',
              va='bottom')
     fig.tight_layout(rect=(0, 0.075, 1, 1))
@@ -845,7 +893,8 @@ def main():
         w.writeheader(); w.writerows(tidy)
     fields = list(results[0].keys())
     for extra in ('dead_human', 'dead_machine', 'rescored_from', 'rescore_in_flight',
-                  'incomplete_cells', 'incomplete_detail', 'seed_shortfall'):
+                  'incomplete_cells', 'incomplete_detail', 'seed_shortfall', 'withdrawn',
+                  'effect_size_only'):
         if extra not in fields:
             fields.append(extra)
     for r in results:
@@ -867,11 +916,15 @@ def main():
     em = sum(r['status'] == 'EMPTY' for r in results)
     fl = sum(r['status'] == 'FLOOR' for r in results)
     sp = sum(r['status'] == 'SUPERSEDED' for r in results)
+    wd = sum(r['status'] == 'WITHDRAWN' for r in results)
     bad = [g for g, v in comp.items() if not v['comparable']]
     if bad:
         print('NOT CROSS-LEARNER COMPARABLE: ' + '; '.join(bad))
-    print(f'rows: {ok} OK, {pv} provisional, {sp} SUPERSEDED (re-score in flight), {em} empty, '
-          f'{fl} floor; {len(tidy)} per-seed records; {n} plotted')
+    print(f'rows: {ok} OK, {pv} provisional, {sp} SUPERSEDED (re-score in flight), '
+          f'{wd} WITHDRAWN, {em} empty, {fl} floor; {len(tidy)} per-seed records; {n} plotted')
+    if wd:
+        print('WITHDRAWN - measured something other than what the row claims, not repairable by '
+              're-scoring: ' + ', '.join(r['id'] for r in results if r['status'] == 'WITHDRAWN'))
     if sp:
         print('SUPERSEDED - re-score overwriting these inputs, do not quote: '
               + ', '.join(r['id'] for r in results if r['status'] == 'SUPERSEDED'))

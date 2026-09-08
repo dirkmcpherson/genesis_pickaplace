@@ -11,6 +11,16 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 - **prior** - `stable` means the equivalence verdict survives all three priors and a separate-sigma refit.
 
 
+> ## WITHDRAWN
+>
+> These rows did not measure what they claim to measure. That is different from *provisional* and from *superseded*, which both mean "a re-score of the same quantity will replace this number". **No re-score can repair a withdrawn row** - it needs different runs, which do not exist yet. **Do not quote these, in any form.** They are excluded from the forest plot.
+>
+> | row | current value | why it is withdrawn |
+> |---|---|---|
+> | `robo_bcrnn_mh` | 0.927 v 0.393 | WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it. |
+> | `robo_bcrnn_ph` | 0.920 v 0.393 | WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it. |
+>
+
 > ## SUPERSEDED - re-score in flight
 >
 > These rows are computed on inputs that are BEING OVERWRITTEN as you read them. This is not the same as *provisional*: provisional means the number may move when more seeds land, superseded means the cells it is computed from are actively being replaced. **Do not quote these.** They are excluded from the forest plot.
@@ -60,7 +70,7 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | `place_r2d_asrecorded` *(prov.)* | world model (r2dreamer) | placed_v2 | mode | 8v8x148 | 0.703 | 0.647 | 0.056 | [-0.038, 0.150] | 0.227 | 0.132 | 0.822 | 16.6 |  | stable | inconclusive |
 | `place_r2d_sample` | world model (r2dreamer) | placed_v2 | sampled | 8v8x148 | 0.708 | 0.652 | 0.056 | [-0.027, 0.139] | 0.206 | 0.117 | 0.851 | 20.6 |  | stable | inconclusive |
 | `place_r2d_sample_asrecorded` *(prov.)* | world model (r2dreamer) | placed_v2 | sampled | 8v8x148 | 0.688 | 0.674 | 0.013 | [-0.068, 0.095] | 0.743 | 0.115 | 0.972 | 126.0 |  | stable | equivalent at +/-0.10 |
-| `place_dp` | Diffusion Policy | placed_v2 | sampled | 8v3x148 | 0.616 | 0.484 | 0.132 | [0.093, 0.170] | 0.006 | 0.054 | 0.212 | 1.0 |  **!8v3 of 8v8 registered** | stable | difference detected |
+| `place_dp` | Diffusion Policy | placed_v2 | sampled | 8v7x148 | 0.616 | 0.487 | 0.128 | [0.101, 0.156] | 0.000 | 0.039 | 0.175 | 0.8 |  **!8v7 of 8v8 registered** | stable | difference detected |
 | `place_rlpd` *(prov.)* | RLPD | placed_v2 | mode | 8v6x148 | 0.668 | 0.857 | -0.189 | [-0.500, 0.122] | 0.291 | 0.435 | 0.364 | 2.1 | **1H/0M** **!8v6 of 8v8 registered** | stable | INCONCLUSIVE (underpowered) |
 
 ## Contact (matched 11)
@@ -98,11 +108,26 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 
 ## robomimic Can
 
-The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541k steps), so this leg is a THREE-learner comparison - RLPD, Diffusion Policy, BC-RNN - and not four.
+**No learner in this leg currently supports a demonstration-source claim, and the cross-learner ordering is WITHDRAWN.** It has two independent reasons to be gone, not one, and both are registered controls that fired:
 
-The source reading is WITHDRAWN by its own registered quantity control, but state the result with its qualifier attached, because it cuts both ways: **at their natural full size** machine demonstrations match (MG718s, 718 tapes) or exceed (MGall, 3900) the human arm, while **at matched tape count** this particular 200-tape draw loses badly (0.147 v 0.455). Saying machine demonstrations "match or beat" human ones without the size qualifier overstates the result in the opposite direction to the original error, which is no improvement.
+1. **RLPD** - the quantity control. At their NATURAL FULL SIZE machine demonstrations match (MG718s, 718 tapes) or exceed (MGall, 3900) the human arm; only at MATCHED TAPE COUNT does this particular 200-tape draw lose (0.147 v 0.455). Stating that machine demonstrations "match or beat" human ones WITHOUT the size qualifier overstates the result in the opposite direction to the original error, which is no improvement.
+2. **BC-RNN** - the fixed-head control (A5). The published row compared each arm at its own recipe optimum, so it measured architecture and source together. See below.
+3. **The world model** never learned this task at all (0/400 and 1/400 at ~541k steps), so it cannot enter an ordering either.
 
-**The question this leg does NOT settle:** whether a NEUTRAL 200-tape draw would match the human arm. The MG200s subsample was not neutral - 89 % of its rows come from the last four SAC checkpoint blocks, so it is both small and narrow. If a neutral draw matches, MG200s was a pathological sample; if it still loses, machine demonstrations carry less information each and roughly 3.5x as many are needed to match, which would be a genuine source effect visible only at matched count. A random 200-tape draw from the 718 successes separates these for about 8 GPU-hours and has not been run.
+That leaves Diffusion Policy as the only learner whose robomimic row is neither withdrawn nor self-undermined - and it rests on the SAME 200-tape draw RLPD's control discredited. **The ordering must not be quoted in any form** until BC-RNN is re-run head-matched at adequate seeds.
+
+**The BC-RNN head interaction, 3 seeds per cell, final checkpoint, head forced and confirmed in every config:**
+
+| arm | mixture head | deterministic head | head effect |
+|---|---|---|---|
+| human (MH200) | 0.927 | 0.560 | **+0.367** |
+| machine (MG200s) | 0.093 | 0.393 | **-0.300** |
+
+The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the human arm and hurts the machine arm. The head-matched source gap is **0.834 with mixture heads and 0.167 with deterministic ones - a fivefold difference from an architecture choice alone**. The published 0.534 was neither of those; it was a third quantity, each arm at its own optimum.
+
+**Mechanism: open, and one obvious explanation is REFUTED.** The natural reading - that human data is multi-modal because several operators use several strategies, so a mixture head suits it - was measured and does not hold: ONE operator scores indistinguishably from six (+0.126 against +0.127), and the machine sets are not unimodal either. Human sets do carry about 1.6x more non-Gaussian structure, but the larger unpredicted difference is that machine action spread is **3x** human. The "mixture head suits multi-operator data" story must not be used.
+
+**Still unresolved for the quantity control:** whether a NEUTRAL 200-tape draw would match the human arm. The MG200s subsample is not neutral - 89 % of its rows come from the last four SAC checkpoint blocks. A random 200-tape draw from the 718 successes separates a pathological sample from a real per-demonstration quality gap, for about 8 GPU-hours, and has not been run.
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -111,8 +136,10 @@ The source reading is WITHDRAWN by its own registered quantity control, but stat
 | `robo_rlpd_mgall` | RLPD | success | mode | 8v8x50 | 0.455 | 0.610 | -0.155 | [-0.392, 0.082] | 0.192 | 0.334 | 0.336 | 1.8 | **1H/0M** | stable | INCONCLUSIVE (underpowered) |
 | `robo_rlpd_mg200s_3x` | RLPD | success | mode | 8v8x50 | 0.455 | 0.287 | 0.168 | [-0.091, 0.426] | 0.190 | 0.363 | 0.338 | 1.8 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
 | `robo_dp` *(prov.)* | Diffusion Policy | success | sampled | 8v8x50 | 0.863 | 0.095 | 0.767 | [0.717, 0.818] | 0.000 | 0.070 | 0.000 | 0.0 |  | stable | difference detected |
-| `robo_bcrnn_mh` *(prov.)* | BC-RNN | success | mode | 3v3x50 | 0.927 | 0.393 | 0.533 | [0.359, 0.708] | 0.100 | 0.234 | 0.003 | 0.0 |  | stable | INCONCLUSIVE (underpowered) |
-| `robo_bcrnn_ph` *(prov.)* | BC-RNN | success | mode | 3v3x50 | 0.920 | 0.393 | 0.527 | [0.368, 0.685] | 0.100 | 0.212 | 0.001 | 0.0 |  | stable | INCONCLUSIVE (underpowered) |
+| `robo_bcrnn_mh` **(WITHDRAWN)** | BC-RNN | success | mode | 3v3x50 | 0.927 | 0.393 | 0.533 |  |  |  |  |  |  |  | WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it. |
+| `robo_bcrnn_ph` **(WITHDRAWN)** | BC-RNN | success | mode | 3v3x50 | 0.920 | 0.393 | 0.527 |  |  |  |  |  |  |  | WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it. |
+| `robo_bcrnn_matched_mixture` | BC-RNN | success | mode | 3v3x50 | 0.927 | 0.093 | 0.833 | [0.751, 0.916] |  | 0.111 |  |  |  |  | EFFECT SIZE ONLY - no p-value is computed. At 3 seeds per arm the exact permutation test has 20 distinct splits, so its smallest attainable two-sided p is 0.10 and it can never reach 0.05. The registration put the decision on effect size for exactly this reason. |
+| `robo_bcrnn_matched_deterministic` | BC-RNN | success | mode | 3v3x50 | 0.560 | 0.393 | 0.167 | [-0.044, 0.378] |  | 0.283 |  |  |  |  | EFFECT SIZE ONLY - no p-value is computed. At 3 seeds per arm the exact permutation test has 20 distinct splits, so its smallest attainable two-sided p is 0.10 and it can never reach 0.05. The registration put the decision on effect size for exactly this reason. |
 | `robo_r2d` *(floor)* | world model (r2dreamer) | success | mode | 8v8x50 | 0.000 | 0.003 | -0.003 | [-0.008, 0.003] |  | 0.007 |  |  |  |  | Both arms on the floor; no p-value or ROPE is computed because a null here is an artefact of the floor, not evidence of equivalence. |
 | `robo_rlpd_nodemo` | RLPD | success | mode | 8v8x50 | 0.455 | 0.000 | 0.455 | [0.256, 0.654] | 0.000 | 0.280 | 0.000 | 0.0 | **1H/0M** | stable | difference detected |
 
@@ -135,7 +162,7 @@ The source reading is WITHDRAWN by its own registered quantity control, but stat
 | `place_r2d_asrecorded` | 113 86 112 112 82 99 110 118 | 109 79 111 105 90 79 95 98 | 148 |
 | `place_r2d_sample` | 109 91 109 113 81 109 112 114 | 107 85 110 111 89 89 90 91 | 148 |
 | `place_r2d_sample_asrecorded` | 113 82 110 109 77 103 111 109 | 104 92 112 104 97 88 101 100 | 148 |
-| `place_dp` | 92 89 96 91 94 89 84 94 | 75 72 68 | 148 |
+| `place_dp` | 92 89 96 91 94 89 84 94 | 75 72 68 78 70 73 69 | 148 |
 | `place_rlpd` | 129 30 130 126 4* 129 124 119 | 125 126 127 125 131 127 | 148 |
 | `contact_r2d_bare` | 95 91 79 117 101 88 76 112 | 103 91 94 92 100 115 85 90 | 160 |
 | `contact_r2d_push` | 46 49 54 61 59 60 52 62 | 64 62 57 60 61 63 49 52 | 160 |
@@ -158,6 +185,8 @@ The source reading is WITHDRAWN by its own registered quantity control, but stat
 | `robo_dp` | 41 44 39 46 45 42 43 45 | 6 1 8 2 4 6 6 5 | 50 |
 | `robo_bcrnn_mh` | 49 45 45 | 22 14 23 | 50 |
 | `robo_bcrnn_ph` | 46 46 46 | 22 14 23 | 50 |
+| `robo_bcrnn_matched_mixture` | 49 45 45 | 6 4 4 | 50 |
+| `robo_bcrnn_matched_deterministic` | 33 26 25 | 22 14 23 | 50 |
 | `robo_r2d` | 0 0 0 0 0 0 0 0 | 0 0 0 0 1 0 0 0 | 50 |
 | `robo_rlpd_nodemo` | 27 44 30 1* 20 9 24 27 | 0 0 0 0 0 0 0 0 | 50 |
 
@@ -179,8 +208,6 @@ The source reading is WITHDRAWN by its own registered quantity control, but stat
 - **`e2e_nested_proxy_asrecorded`** - Training proxy, not a task outcome. Shown only to quantify the gap against nested_honest; never cite it as a success rate. SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`robo_rlpd_mg200s`** - THE SOURCE READING IS WITHDRAWN by its own registered quantity control. The gap is a property of THIS 200-tape draw, which is not neutral: 89 % of its rows come from the last four SAC checkpoint blocks, so it is both small and narrow. Whether a NEUTRAL 200-tape draw would match the human arm is UNTESTED, and it is the difference between a pathological sample and a real per-demonstration quality gap. See MG718s / MGall.
 - **`robo_dp`** - Rests on the SAME 200-tape draw whose source reading RLPD withdrew, and inherits the same doubt. It has not been run on MG718s or MGall.
-- **`robo_bcrnn_mh`** - Same 200-tape draw, same inherited doubt. n = 3 seeds: the exact permutation test has only 20 distinct splits, so its smallest attainable two-sided p is 0.10 and it can never reach 0.05.
-- **`robo_bcrnn_ph`** - Same 200-tape draw and same n = 3 floor as robo_bcrnn_mh. BC-RNN is the only learner with a PH200 arm.
 
 ## Empty cells, and why
 

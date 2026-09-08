@@ -103,11 +103,17 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
   | `OK` | computed from settled inputs |
   | *(prov.)* | the number may move when more seeds land, or a known caveat applies |
   | **(SUPERSEDED - re-score in flight)** | the cells it is computed from are BEING OVERWRITTEN. Not the same as provisional. **Do not quote.** Listed in a banner at the top of `results.md` and excluded from the forest plot. |
+  | **(WITHDRAWN)** | the row did not measure what it claims. Provisional and superseded both mean "a re-score of the same quantity will replace this number"; **no re-score can repair a withdrawn row** - it needs different runs, which may not exist yet. Keeps its rates and per-seed counts so the discredited comparison can be inspected, but **every inferential column is blanked**, because a p-value or Bayes factor attached to the wrong quantity is what gets lifted out of context. Banner at the top; excluded from the plot. |
   | *(floor)* | both arms near zero; no test computed |
   | `EMPTY` | no data, with the reason |
-  Set `rescore_in_flight='<why>'` on a row in `cells.py` to mark it superseded; clear it when the
-  re-score lands. Every re-score creates a window where the old row is live and known-doomed, so
-  this is a first-class status rather than a note.
+  Set `rescore_in_flight='<why>'` on a row in `cells.py` to mark it superseded, and clear it when
+  the re-score lands; set `withdrawn='<why>'` to withdraw one. Both are first-class statuses
+  rather than notes, because both recur: every re-score opens a window where the old row is live
+  and known-doomed, and every control that fires can invalidate a row outright.
+- **Some rows carry no p-value by design.** `effect_size_only=True` reports the effect and its CI
+  and suppresses the p-value, for cells where significance is unreachable: at 3 seeds per arm the
+  exact permutation test has 20 distinct splits, so its smallest attainable two-sided p is 0.10.
+  The registration puts those decisions on effect size for exactly that reason.
 - **A missing number stays missing.** A cell with no data renders as `EMPTY` with the reason.
   Nothing is estimated, interpolated or copied from prose.
 - **Cross-learner comparability is checked, not assumed.** A row may only be read as one table if

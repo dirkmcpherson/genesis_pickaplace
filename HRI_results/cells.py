@@ -412,10 +412,9 @@ COMPARISONS = [
                     cell='eval_bank50'),
          sel_m=dict(source='cluster:robomimic', learner='BC-RNN', arm='MG200s',
                     cell='eval_bank50'),
-         provisional='Same 200-tape draw, same inherited doubt. n = 3 seeds: the exact '
-                     'permutation test has only 20 distinct splits, so its smallest attainable '
-                     'two-sided p is 0.10 and it can never reach 0.05.',
-         note='LAST = epoch 2000, deterministic GMM mode.'),
+         withdrawn='WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it.',
+         note='LAST = epoch 2000. Kept visible only so the withdrawn comparison can be '
+              'inspected against the head-matched rows below.'),
 
     dict(id='robo_bcrnn_ph', expect_seeds=3, group='robomimic Can', learner='BC-RNN', stat='success',
          action='mode', human='PH200 (200 proficient-human tapes)',
@@ -424,9 +423,38 @@ COMPARISONS = [
                     cell='eval_bank50'),
          sel_m=dict(source='cluster:robomimic', learner='BC-RNN', arm='MG200s',
                     cell='eval_bank50'),
-         provisional='Same 200-tape draw and same n = 3 floor as robo_bcrnn_mh. BC-RNN is the '
-                     'only learner with a PH200 arm.',
-         note='The registered falsifier contrast; the other learners have no PH200 arm.'),
+         withdrawn='WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it.',
+         note='Same withdrawal as robo_bcrnn_mh: PH200 also runs a mixture head against a '
+              'deterministic-head machine arm.'),
+
+    # --- the registered fixed-head control (A5): the 2x2 that withdraws the row above.
+    # human mixture 0.927 / human deterministic 0.560 / machine mixture 0.093 /
+    # machine deterministic 0.393  ->  head effect +0.367 human, -0.300 machine,
+    # interaction +0.667 with OPPOSITE SIGNS.
+    dict(id='robo_bcrnn_matched_mixture', expect_seeds=3, group='robomimic Can',
+         learner='BC-RNN', stat='success', action='mode',
+         human='MH200, 5-component mixture head', machine='MG200s, 5-component mixture head',
+         sel_h=dict(source='cluster:robomimic', learner='BC-RNN', arm='MH200',
+                    cell='eval_bank50'),
+         sel_m=dict(source='cluster:robomimic', learner='BC-RNN', arm='MG200s_gmm',
+                    cell='eval_bank50'),
+         effect_size_only=True,
+         note='HEAD-MATCHED source gap with MIXTURE heads on both arms. Compare against '
+              'robo_bcrnn_matched_deterministic: the same source contrast measured with '
+              'deterministic heads is FIVE TIMES smaller. The gap is not a property of the '
+              'demonstrations alone.'),
+
+    dict(id='robo_bcrnn_matched_deterministic', expect_seeds=3, group='robomimic Can',
+         learner='BC-RNN', stat='success', action='mode',
+         human='MH200, deterministic head', machine='MG200s, deterministic head',
+         sel_h=dict(source='cluster:robomimic', learner='BC-RNN', arm='MH200_nogmm',
+                    cell='eval_bank50'),
+         sel_m=dict(source='cluster:robomimic', learner='BC-RNN', arm='MG200s',
+                    cell='eval_bank50'),
+         effect_size_only=True,
+         note='HEAD-MATCHED source gap with DETERMINISTIC heads on both arms. 0.167 against '
+              '0.834 for the mixture-head pairing - a fivefold difference produced by an '
+              'architecture choice, not by the demonstrations.'),
 
     dict(id='robo_r2d', expect_seeds=8, group='robomimic Can', learner='world model (r2dreamer)', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG200s (200-tape subsample)',
@@ -459,23 +487,46 @@ COMPARISONS = [
 # Rendered under the group heading in results.md.
 GROUP_NOTES = {
     'robomimic Can':
-        'The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541k '
-        'steps), so this leg is a THREE-learner comparison - RLPD, Diffusion Policy, BC-RNN - '
-        'and not four.\n\n'
-        'The source reading is WITHDRAWN by its own registered quantity control, but state the '
-        'result with its qualifier attached, because it cuts both ways: **at their natural full '
-        'size** machine demonstrations match (MG718s, 718 tapes) or exceed (MGall, 3900) the '
-        'human arm, while **at matched tape count** this particular 200-tape draw loses badly '
-        '(0.147 v 0.455). Saying machine demonstrations "match or beat" human ones without the '
-        'size qualifier overstates the result in the opposite direction to the original error, '
-        'which is no improvement.\n\n'
-        '**The question this leg does NOT settle:** whether a NEUTRAL 200-tape draw would match '
-        'the human arm. The MG200s subsample was not neutral - 89 % of its rows come from the '
-        'last four SAC checkpoint blocks, so it is both small and narrow. If a neutral draw '
-        'matches, MG200s was a pathological sample; if it still loses, machine demonstrations '
-        'carry less information each and roughly 3.5x as many are needed to match, which would '
-        'be a genuine source effect visible only at matched count. A random 200-tape draw from '
-        'the 718 successes separates these for about 8 GPU-hours and has not been run.',
+        '**No learner in this leg currently supports a demonstration-source claim, and the '
+        'cross-learner ordering is WITHDRAWN.** It has two independent reasons to be gone, not '
+        'one, and both are registered controls that fired:\n\n'
+        '1. **RLPD** - the quantity control. At their NATURAL FULL SIZE machine demonstrations '
+        'match (MG718s, 718 tapes) or exceed (MGall, 3900) the human arm; only at MATCHED TAPE '
+        'COUNT does this particular 200-tape draw lose (0.147 v 0.455). Stating that machine '
+        'demonstrations "match or beat" human ones WITHOUT the size qualifier overstates the '
+        'result in the opposite direction to the original error, which is no improvement.\n'
+        '2. **BC-RNN** - the fixed-head control (A5). The published row compared each arm at its '
+        'own recipe optimum, so it measured architecture and source together. See below.\n'
+        '3. **The world model** never learned this task at all (0/400 and 1/400 at ~541k '
+        'steps), so it cannot enter an ordering either.\n\n'
+        'That leaves Diffusion Policy as the only learner whose robomimic row is neither '
+        'withdrawn nor self-undermined - and it rests on the SAME 200-tape draw RLPD\'s control '
+        'discredited. **The ordering must not be quoted in any form** until BC-RNN is re-run '
+        'head-matched at adequate seeds.\n\n'
+        '**The BC-RNN head interaction, 3 seeds per cell, final checkpoint, head forced and '
+        'confirmed in every config:**\n\n'
+        '| arm | mixture head | deterministic head | head effect |\n'
+        '|---|---|---|---|\n'
+        '| human (MH200) | 0.927 | 0.560 | **+0.367** |\n'
+        '| machine (MG200s) | 0.093 | 0.393 | **-0.300** |\n\n'
+        'The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the human arm '
+        'and hurts the machine arm. The head-matched source gap is **0.834 with mixture heads '
+        'and 0.167 with deterministic ones - a fivefold difference from an architecture choice '
+        'alone**. The published 0.534 was neither of those; it was a third quantity, each arm at '
+        'its own optimum.\n\n'
+        '**Mechanism: open, and one obvious explanation is REFUTED.** The natural reading - that '
+        'human data is multi-modal because several operators use several strategies, so a '
+        'mixture head suits it - was measured and does not hold: ONE operator scores '
+        'indistinguishably from six (+0.126 against +0.127), and the machine sets are not '
+        'unimodal either. Human sets do carry about 1.6x more non-Gaussian structure, but the '
+        'larger unpredicted difference is that machine action spread is **3x** human. The '
+        '"mixture head suits multi-operator data" story must not be used.\n\n'
+        '**Still unresolved for the quantity control:** whether a NEUTRAL 200-tape draw would '
+        'match the human arm. The MG200s subsample is not neutral - 89 % of its rows come from '
+        'the last four SAC checkpoint blocks. A random 200-tape draw from the 718 successes '
+        'separates a pathological sample from a real per-demonstration quality gap, for about '
+        '8 GPU-hours, and has not been run.',
+
     'Pruning control (human pruned vs human raw)':
         'Both arms are HUMAN. This is the reference effect size for the table above: a '
         'data-handling choice inside one source moves Diffusion Policy far more than any '
