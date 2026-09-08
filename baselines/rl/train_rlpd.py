@@ -221,6 +221,12 @@ def main():
         assert args.pick_hold_reward == 'off', 'no hold-reward relabel for native tapes (not built)'
         assert args.scope == 'pick', 'contract-v1 tapes are pick-scope recordings'
     PHASE_SCOPES = ('place', 'contact')
+    # PHASE_PLAN amendment (n) 2026-09-07: END-TO-END full task. scope='full' with --demo-format segment reads the
+    # r2dreamer-native FULL-scope demo sets the world model's (d) arm trained on ($W/demos_state_full/{dHfull_all,
+    # dDPfull}) VERBATIM. Unlike a phase scope it resets from the pick-scope ICs (no entry bank), pays the STAGED
+    # sparse ladder (picked 1 / placed 1 / contact 2 / nested 4) and terminates on the nested proxy, so phase_sparse
+    # stays off and nothing about the pick/place/contact paths changes.
+    e2e_segment = (args.scope == 'full' and segment)
     if args.scope in PHASE_SCOPES:
         # PHASE_PLAN amendments (h)/(m): every phase-scope precondition stated, none defaulted
         assert segment, f'scope={args.scope} trains on --demo-format segment (the r2dreamer-native phase segments)'
@@ -230,8 +236,17 @@ def main():
         assert args.pick_shaping == 'off' and args.pick_hold_reward == 'off', 'pick levers are not place levers'
         assert args.eval_freq == 0, 'in-train VideoEvalCallback evaluates the PICK; phase runs are scored post hoc by eval_place.py (pass --eval-freq 0)'
         assert args.train_max_steps == 600, f'phase-scope horizon of record is 600 sim steps (got {args.train_max_steps})'
+    elif e2e_segment:
+        # amendment (n): every end-to-end precondition stated, none defaulted
+        assert args.entry_bank is None, 'scope=full resets from the pick-scope ICs; --entry-bank is a phase lever'
+        assert args.action_mode == 'delta_joint' and args.delta_ref == 'target' and args.action_repeat == 4, (
+            'end-to-end protocol: delta_joint / target / action_repeat 4')
+        assert args.pick_shaping == 'off' and args.pick_hold_reward == 'off', 'pick levers are not end-to-end levers'
+        assert args.eval_freq == 0, ('in-train VideoEvalCallback evaluates the PICK; end-to-end runs are scored by '
+                                     'baselines/eval_e2e.py (pass --eval-freq 0)')
+        assert args.train_max_steps == 1200, f'end-to-end horizon of record is 1200 sim steps (got {args.train_max_steps})'
     else:
-        assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place/contact levers'
+        assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place/contact/full levers'
     if args.demo_shaping == 'auto':
         demo_shaping = native and args.pick_shaping == 'on'
     else:
@@ -311,9 +326,14 @@ def main():
     # perfectly healthy critic -- and a watchdog that cries wolf is how the entropy-
     # backup explosion got waved off in the first place (audit §12). Scale it with the
     # reward semantics, same 2x slack. hold off -> exactly 2.0 (unchanged).
+    # Same argument for the STAGED ladder of scope='full' (amendment (n)): its max episode return is
+    # sum(STAGE_REWARD) = 8, so a 2.0 threshold would fire on every healthy end-to-end critic. Warning threshold
+    # only -- the watchdog prints, it never stops a run -- and no other scope's number changes.
     if hold_reward:
         _max_ret = (1.0 - args.gamma ** args.pick_hold_k) / (1.0 - args.gamma)
         q_watch = 2.0 * _max_ret
+    elif args.scope == 'full':
+        q_watch = 2.0 * float(sum(STAGE_REWARD.values()))
     else:
         q_watch = 2.0
     model = make_rlpd(env, args.seed, args.device, q_watchdog=q_watch,
@@ -345,7 +365,17 @@ def main():
     print(f'[demos] {len(paths)} npz in {args.demo_dir} content_sha256={demo_sha[:16]}... '
           f'format={args.demo_format} terminal_guard={args.demo_terminal_guard} '
           f'demo_shaping={"on" if demo_shaping else "off"}', flush=True)
-    if segment:
+    if e2e_segment:
+        # amendment (n): FULL-scope segments -- staged rewards as recorded, terminals only where the recording
+        # terminated. Same rows the world model trained on; see baselines/rl/full_demos.py.
+        from full_demos import segment_transitions_full, print_segment_census as print_full_census
+        transitions, census = segment_transitions_full(
+            str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
+                                                   delta_cap=env.delta_cap, scope='full'))
+        print_full_census(census, tag=args.demo_dir)
+        assert census['n_transitions'] > 0, 'empty segment demo set'
+        norm = None
+    elif segment:
         from place_demos import segment_transitions, print_segment_census
         transitions, census = segment_transitions(
             str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
