@@ -26,8 +26,8 @@ ALL_STAGES = ('picked', 'placed_v2', 'contact', 'contact_push', 'slide_success',
 WM_ALIAS = {'nested_proxy': 'nested'}   # the WM evaluator's `nested` IS the proxy
 
 
-def cell(run_dir, iset, mode, suffix=''):
-    f = os.path.join(run_dir, f'fresh_eval_{iset}_{mode}{suffix}', 'metrics.json')
+def cell(run_dir, iset, mode, suffix='', root=''):
+    f = os.path.join(run_dir, root, f'fresh_eval_{iset}_{mode}{suffix}', 'metrics.json')
     if not os.path.exists(f):
         return None
     d = json.load(open(f))
@@ -46,7 +46,8 @@ def cell(run_dir, iset, mode, suffix=''):
     return dict(n=n, counts=counts, per_episode=pe, path=f,
                 isolation=d.get('isolation', 'shared_process'),
                 nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'],
-                isas=isas, cpus=d.get('cpu_models') or sorted({str(e.get('cpu_model', 'unknown')) for e in pe}))
+                isas=isas, cpus=d.get('cpu_models') or sorted({str(e.get('cpu_model', 'unknown')) for e in pe}),
+                role=d.get('role', 'legacy'))
 
 
 def strat_counts(c, stage, support_x):
@@ -104,6 +105,10 @@ def main():
     ap.add_argument('--support-x', type=float, default=0.513,
                     help='rnd30 stratification: can x above this is OUT of the training support (DP_PRUNED_GAP §0.4)')
     ap.add_argument('--strat', action='store_true', help='also print the rnd30 in/out-of-support split')
+    ap.add_argument('--cell-root', default='',
+                    help="subdirectory of each run dir holding the cells: '' = the in-job PREVIEW cells (produced "
+                         "wherever the training job landed -- never a number for a table), 'rec' = the pinned "
+                         "CPU-only evaluation pass (the cells of record).")
     ap.add_argument('--isa', default=None, choices=('avx2', 'avx512'),
                     help='restrict every arm to seeds whose cell ran on this instruction-set class -- the clean '
                          'same-class comparison. Cells of another class are dropped from the test and reported.')
@@ -123,10 +128,17 @@ def main():
     for iset in sets:
         for learner, path_of, modes in learners:
             for mode in modes:
-                cells = {arm: [cell(path_of(arm, s), iset, mode, args.cell_suffix) for s in seeds] for arm in ('dH', 'dDP')}
+                cells = {arm: [cell(path_of(arm, s), iset, mode, args.cell_suffix, args.cell_root) for s in seeds] for arm in ('dH', 'dDP')}
                 if not any(c for cs in cells.values() for c in cs):
                     continue
                 n_eps = next(c['n'] for cs in cells.values() for c in cs if c)
+                roles = sorted({c['role'] for cs in cells.values() for c in cs if c})
+                if len(roles) > 1:
+                    print(f'\n### {learner.strip()} | {iset} | {mode} — REFUSED: this row mixes cell roles {roles}. '
+                          f'A `preview` cell is produced wherever its training job happened to land and is not '
+                          f'comparable with a pinned `record` cell (or with the `legacy` world-model cells); '
+                          f're-run the missing side of the pinned pass rather than mixing. Rows skipped.')
+                    continue
                 if args.isa:
                     for arm in ('dH', 'dDP'):
                         dropped = [s for s, c in zip(seeds, cells[arm]) if c and args.isa not in c['isas']]
@@ -145,7 +157,12 @@ def main():
                             for i in c['isas']:
                                 bal[arm][i] = bal[arm].get(i, 0) + 1
                 print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds | '
-                      f'protocol {"/".join(isol)} | isa {",".join(isa_all)} | nodes {len(nodes)}: {",".join(nodes)}')
+                      f'role {"/".join(roles)} | protocol {"/".join(isol)} | isa {",".join(isa_all)} | '
+                      f'nodes {len(nodes)}: {",".join(nodes)}')
+                if roles == ['preview']:
+                    print('  PREVIEW ONLY -- these cells came from the in-job evaluation of training jobs that ran '
+                          'wherever the scheduler put them. Descriptive only; the cells of record are the pinned '
+                          'CPU-only pass (--cell-root rec).')
                 print(f'  isa balance -- human {bal["dH"]} | machine {bal["dDP"]}')
                 if len(isa_all) > 1:
                     print('  NOTE: this comparison spans MORE THAN ONE INSTRUCTION-SET CLASS (AVX2 vs AVX-512). '

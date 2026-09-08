@@ -23,6 +23,7 @@
 # Usage (env):
 #   KIND=sac|dp CKPT=<rlpd_final.zip | .../pretrained_model> OUT=<run dir> ARM=<dH|dDP> SEED=<n> \
 #   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] [REQUIRE_ISA=avx2|avx512] \
+#   [ROLE=preview|record] [CELL_DIR=""|rec] \
 #   [SIM_VARIANT=gc_kp4_riser3_shelf6] [EVAL_SEED=0] [VIDEO_SETS="rnd30"] [LIMIT=n] [REDO=0] [PAR=3] \
 #   bash cluster/e2e_eval_cells.sh
 # IC sets (amendment (n)): hold15 = baselines/eval_ics.json:hold (15 training starts -- in-distribution, NOT held
@@ -38,6 +39,13 @@ SETS=${SETS:-"hold15 rnd30 spots60"}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; PAR=${PAR:-3}
 VIDEO_SETS=${VIDEO_SETS:-"rnd30"}
 ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}; REQUIRE_ISA=${REQUIRE_ISA:-}
+# ROLE: 'preview' (default, so the in-job evaluation of an unpinned training job can never be mistaken for a number)
+# vs 'record', which eval_e2e.py refuses without --require-isa. CELL_DIR puts the pinned pass's cells in their own
+# subdirectory of the run dir, so a preview cell and a cell of record never share a path.
+ROLE=${ROLE:-preview}; CELL_DIR=${CELL_DIR:-}
+CELLS_ROOT="$OUT"; [ -n "$CELL_DIR" ] && CELLS_ROOT="$OUT/$CELL_DIR"
+[ "$ROLE" = record ] && [ -z "$REQUIRE_ISA" ] && { echo "FATAL: ROLE=record needs REQUIRE_ISA (a cell of record is pinned by construction)"; exit 1; }
+mkdir -p "$CELLS_ROOT"
 if [ -z "${MODES:-}" ]; then MODES="sample mode"; [ "$KIND" = dp ] && MODES="sample"; fi
 [ "$KIND" = dp ] && case " $MODES " in *" mode "*) echo "FATAL: dp has no mode cell"; exit 1;; esac
 if [ "$KIND" = sac ]; then [ -f "$CKPT" ] || { echo "FATAL: checkpoint $CKPT missing"; exit 1; }
@@ -65,10 +73,10 @@ for S in $SETS; do
   [ -n "$(ic_file_of "$S")" ] || { echo "FATAL: unknown IC set '$S' (hold15|rnd30|spots60|rnd300)"; exit 1; }
   [ -s "$(ic_file_of "$S")" ] || { echo "FATAL: IC file $(ic_file_of "$S") missing"; exit 1; }
 done
-if [ "${REDO:-0}" = 1 ]; then for S in $SETS; do for M in $MODES; do rm -rf "$OUT/fresh_eval_${S}_${M}" "$OUT/fresh_eval_${S}_${M}_iso"; done; done; fi
+if [ "${REDO:-0}" = 1 ]; then for S in $SETS; do for M in $MODES; do rm -rf "$CELLS_ROOT/fresh_eval_${S}_${M}" "$CELLS_ROOT/fresh_eval_${S}_${M}_iso"; done; done; fi
 CPU_MODEL=$(awk -F': ' '/^model name/{print $2; exit}' /proc/cpuinfo 2>/dev/null)
 CPU_ISA=$(awk '/^flags/{if ($0 ~ /avx512f/) print "avx512"; else if ($0 ~ /avx2/) print "avx2"; else print "pre-avx2"; exit}' /proc/cpuinfo 2>/dev/null)
-echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_isa='${REQUIRE_ISA}' $(date)"
+echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_isa='${REQUIRE_ISA}' $(date)"
 
 eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local D=$1 SET=$2 MODE=$3 IDX=$4 VID=$5
@@ -76,6 +84,7 @@ eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local VF=(); [ -n "$VID" ] && VF=(--video)
   local LF=(); [ -n "${LIMIT:-}" ] && LF=(--limit "$LIMIT")
   local IF=(); [ -n "$REQUIRE_ISA" ] && IF=(--require-isa "$REQUIRE_ISA")
+  IF+=(--role "$ROLE")
   mkdir -p "$D"
   python baselines/eval_e2e.py --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \
       --ic-set "$(ic_set_of "$SET")" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" --max-steps 1200 \
@@ -86,7 +95,7 @@ eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
 # ---- pass 1: the shared-process cells (the PHASE_RESULTS §5.1 protocol) ----------------------------
 for SET in $SETS; do
   for MODE in $MODES; do
-    D="$OUT/fresh_eval_${SET}_${MODE}"
+    D="$CELLS_ROOT/fresh_eval_${SET}_${MODE}"
     if [ -f "$D/metrics.json" ]; then echo "# cell $SET $MODE exists, kept"; continue; fi
     VID=""; case " $VIDEO_SETS " in *" $SET "*) VID=1;; esac
     while [ "$(jobs -rp | wc -l)" -ge "$PAR" ]; do sleep 5; done
@@ -103,7 +112,7 @@ if [ "$ISO" = 1 ]; then
     case " $SETS " in *" $SET "*) ;; *) continue;; esac
     N=$(n_starts_of "$SET"); [ -n "$N" ] && [ "$N" -gt 0 ] || { echo "FATAL: could not count starts for $SET"; continue; }
     for MODE in $MODES; do
-      D="$OUT/fresh_eval_${SET}_${MODE}_iso"
+      D="$CELLS_ROOT/fresh_eval_${SET}_${MODE}_iso"
       if [ -f "$D/metrics.json" ]; then echo "# iso cell $SET $MODE exists, kept"; continue; fi
       echo "# iso cell $SET $MODE: $N fresh processes, one per start $(date -Is)"
       for K in $(seq 0 $((N - 1))); do
@@ -117,9 +126,9 @@ if [ "$ISO" = 1 ]; then
   done
 fi
 
-python3 - "$OUT" "$KIND" "$ARM" "$SEED" "$SETS" "$MODES" "$ISO_SETS" "$ISO" <<'PY'
+python3 - "$CELLS_ROOT" "$KIND" "$ARM" "$SEED" "$SETS" "$MODES" "$ISO_SETS" "$ISO" "$ROLE" <<'PY'
 import json, os, sys
-out, kind, arm, seed, sets, modes, iso_sets, iso = sys.argv[1:9]
+out, kind, arm, seed, sets, modes, iso_sets, iso, role = sys.argv[1:10]
 def row(suffix, keep):
     parts = []
     for s in sets.split():
@@ -137,11 +146,11 @@ def row(suffix, keep):
             elif keep:
                 parts.append(f'{tag}=—')
     return parts
-lines = ['E2E-HEADLINE learner=%s arm=%s seed=%s key=slide_success protocol=shared ' % (kind, arm, seed) + ' '.join(row('', True)) + f' out={out}']
+lines = ['E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=slide_success protocol=shared ' % (kind, arm, seed, role) + ' '.join(row('', True)) + f' out={out}']
 if iso == '1':
     p = row('_iso', True)
     if p:
-        lines.append('E2E-HEADLINE learner=%s arm=%s seed=%s key=slide_success protocol=ISOLATED ' % (kind, arm, seed) + ' '.join(p) + f' out={out}')
+        lines.append('E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=slide_success protocol=ISOLATED ' % (kind, arm, seed, role) + ' '.join(p) + f' out={out}')
 for l in lines:
     print(l)
 open(os.path.join(out, 'E2E_HEADLINE.txt'), 'w').write('\n'.join(lines) + '\n')

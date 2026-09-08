@@ -69,10 +69,19 @@ ap.add_argument('--require-isa', default=None, choices=('avx2', 'avx512'),
                      "reproduces the record bit-for-bit; Cascade Lake / Sapphire Rapids diverge at every thread "
                      "pinning), and Slurm's feature labels LIE about this -- pax001 advertises `broadwell` and is a "
                      "Cascade Lake part -- so the class is read from /proc/cpuinfo here, never from --constraint.")
+ap.add_argument('--role', choices=('preview', 'record'), default='preview',
+                help="'preview' (DEFAULT) = a convenience cell produced wherever the training job happened to land; "
+                     "NEVER a number for a table. 'record' = a cell of the pinned evaluation pass, and it REQUIRES "
+                     "--require-isa, so a cell of record cannot exist without its instruction-set class being pinned "
+                     "by construction (coordinator 2026-09-07: hardware class is partially confounded with arm in "
+                     "the published 8v8, amendment (t); we do not repeat that by accepting a scheduling lottery).")
 ap.add_argument('--arm', default=None); ap.add_argument('--tag', default=None)
 args = ap.parse_args()
 if args.kind == 'dp' and args.mode == 'mode':
     sys.exit('FATAL: DP has no deterministic mode (diffusion sampling); run --mode sample')
+if args.role == 'record' and not args.require_isa:
+    sys.exit('FATAL: --role record without --require-isa. A cell of record must have its instruction-set class '
+             'pinned by construction; run the pinned pass (cluster/sbatch_e2e_rescore.sh) or use --role preview.')
 
 
 def cpu_probe():
@@ -141,7 +150,8 @@ if args.ic_index is not None:
 ISOLATION = 'fresh_process' if args.ic_index is not None else 'shared_process'
 print(f'[eval-e2e] {len(ics)} start(s) from {args.ic_file}:{args.ic_set} (offset {IC_OFFSET}, isolation {ISOLATION}) '
       f'({sum(1 for e in ics if e.get("uid") is not None)} uid starts, {sum(1 for e in ics if e.get("uid") is None)} pose starts) '
-      f'node={socket.gethostname()} pid={os.getpid()} isa={CPU_ISA} avx512f={CPU_AVX512F} cpu="{CPU_MODEL}"', flush=True)
+      f'node={socket.gethostname()} pid={os.getpid()} isa={CPU_ISA} avx512f={CPU_AVX512F} cpu="{CPU_MODEL}" '
+      f'role={args.role}', flush=True)
 
 # ---- env: the full scope of the shared full_env, corrected world ----
 os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
@@ -283,7 +293,7 @@ except Exception:
 summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, episodes=len(results), mode=args.mode, seed=args.seed,
                max_steps=args.max_steps, ic_mode='ic_file', ic_file=str(args.ic_file), ic_set=str(args.ic_set), scope='full',
                sim_variant=args.sim_variant, action_repeat=REPEAT, act_selection=act_selection,
-               isolation=ISOLATION, ic_index=args.ic_index, ic_offset=IC_OFFSET,
+               role=args.role, isolation=ISOLATION, ic_index=args.ic_index, ic_offset=IC_OFFSET,
                nodes=sorted({r['node'] for r in results}), pids=sorted({r['pid'] for r in results}),
                cpu_models=sorted({r['cpu_model'] for r in results}), isa_classes=sorted({r['isa'] for r in results}),
                avx512f=sorted({bool(r['avx512f']) for r in results}), require_isa=args.require_isa,
