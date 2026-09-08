@@ -23,6 +23,8 @@ export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplac
 # task id -> ARM = (PH200 MH200 MG200s)[id / 3], SEED = id % 3 when ARM/SEED are not given explicitly.
 if [ -n "${SLURM_ARRAY_TASK_ID:-}" ] && [ -z "${ARM:-}" ]; then _A=(PH200 MH200 MG200s); ARM=${_A[$((SLURM_ARRAY_TASK_ID / 3))]}; SEED=$((SLURM_ARRAY_TASK_ID % 3)); fi
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; EPOCHS=${EPOCHS:-2000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
+# GMM: recipe (robomimic per-dataset default, what every 09-07 cell used) | on | off -- amendment A5 fixed-head control
+GMM=${GMM:-recipe}
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 NAME=bcrnn_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/bcrnn/$NAME
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
@@ -32,10 +34,10 @@ if [ "${_free:-0}" -lt "$MIN_FREE_GB" ]; then echo "FATAL: only ${_free}G free o
 echo "# disk: ${_free}G free on /cluster/tufts/shortlab"
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED epochs=$EPOCHS out=$OUT restart=${SLURM_RESTART_COUNT:-0}"
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }
-if [ -n "${DRYRUN:-}" ]; then echo "[dry] make_bcrnn_config.py --arm $ARM --seed $SEED --num-epochs $EPOCHS -> $OUT/config.json; robomimic train.py --config $OUT/config.json; eval LAST on bank"; exit 0; fi
+if [ -n "${DRYRUN:-}" ]; then echo "[dry] make_bcrnn_config.py --arm $ARM --seed $SEED --gmm $GMM --num-epochs $EPOCHS -> $OUT/config.json; robomimic train.py --config $OUT/config.json; eval LAST on bank"; exit 0; fi
 if [ -d "$OUT" ]; then echo "# clearing $OUT (restart ${SLURM_RESTART_COUNT:-0})"; rm -rf "$OUT"; fi
 mkdir -p "$OUT/trained" $LAB/robomimic_runs/slurm
-$PY $B/make_bcrnn_config.py --arm $ARM --seed $SEED --num-epochs $EPOCHS --out $OUT/config.json --output-dir $OUT/trained --name $NAME
+$PY $B/make_bcrnn_config.py --arm $ARM --seed $SEED --num-epochs $EPOCHS --out $OUT/config.json --output-dir $OUT/trained --name $NAME --gmm $GMM
 TRAIN_PY=$($PY -c 'import robomimic, os; print(os.path.join(os.path.dirname(robomimic.__file__), "scripts", "train.py"))')
 $PY $TRAIN_PY --config $OUT/config.json 2>&1 | tee $OUT/train.log | grep --line-buffered -E "Epoch [0-9]+0 |finished run|run failed|Traceback|Error" | cut -c1-200
 grep -q "finished run successfully" $OUT/train.log || { echo "FATAL: robomimic train.py did not finish successfully (see $OUT/train.log)"; exit 1; }

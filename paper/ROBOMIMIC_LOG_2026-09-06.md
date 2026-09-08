@@ -347,3 +347,11 @@ PH200 arm.
   Cheap discriminating test (head held fixed across arms, everything else unchanged): (a) MG200s with GMM ON, (b) MH200
   with GMM OFF, 3 seeds each = 6 runs; measured BC-RNN wall clock 24–27 min/run incl. eval → **≈ 2.6 GPU-h**, no new data
   and no code beyond a one-line `--gmm on|off` flag in `make_bcrnn_config.py`. Held pending registration + go.
+- **2026-09-08 08:0x A5 SUBMITTED (fixed-head BC-RNN control; amendment A5 registered first, commit f5340f0).**
+  Code: `make_bcrnn_config.py --gmm recipe|on|off` (default `recipe` = robomimic's per-dataset setting, i.e. what every
+  09-07 cell used) plumbed through `sbatch_bcrnn_robo.sh` as `GMM=`; verified by generating both configs before
+  submitting — `MG200s --gmm on` → `gmm True, modes 5` (recipe would be False), `MH200 --gmm off` → `gmm False`
+  (recipe would be True), filters/RNN/epochs unchanged. Jobs (3 seeds each, gate 406 GB free):
+  **MG200s_gmm 3370075, 3370096, 3370097; MH200_nogmm 3370098, 3370099, 3370100** (run dirs
+  `bcrnn_MG200s_gmm_s<k>`, `bcrnn_MH200_nogmm_s<k>`; LAST = epoch 2000, scored on bank_can50).
+  Reference cells: MH200-GMM 0.927, MG200s-det 0.393, PH200-GMM 0.92. A4's 32 RLPD runs are running alongside (13 R, 10 PD).

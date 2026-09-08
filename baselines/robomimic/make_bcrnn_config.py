@@ -30,6 +30,11 @@ def main():
     ap.add_argument("--output-dir", required=True, help="robomimic train.output_dir")
     ap.add_argument("--name", default=None)
     ap.add_argument("--num-epochs", type=int, default=2000)
+    ap.add_argument("--gmm", choices=["recipe", "on", "off"], default="recipe",
+                    help="policy head. 'recipe' (default) = robomimic's per-dataset setting (GMM on for ph/mh, OFF for mg) "
+                         "-- the setting every 2026-09-07 BC-RNN cell used. 'on'/'off' FORCE the head, which is what "
+                         "amendment A5 (2026-09-08) needs: the two arms of the published row used DIFFERENT policy "
+                         "classes, so a head-matched contrast has to override the recipe explicitly.")
     args = ap.parse_args()
     from robomimic.config import config_factory
     idx = json.loads((DATA_ROOT / "arms" / "arms_index.json").read_text())
@@ -68,12 +73,14 @@ def main():
         config.algo.rnn.hidden_dim = 400
         config.algo.optim_params.policy.learning_rate.initial = 1e-4
         config.algo.actor_layer_dims = ()
-        config.algo.gmm.enabled = (dtype != "mg")
+        gmm_recipe = (dtype != "mg")
+        config.algo.gmm.enabled = gmm_recipe if args.gmm == "recipe" else (args.gmm == "on")
         config.observation.modalities.obs.low_dim = list(STATE_KEYS)
         config.observation.modalities.obs.rgb = []
     out = pl.Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(json.loads(config.dump()), indent=2))
-    print(f"[bcrnn-config] arm {args.arm} src {src} filter_key {args.arm} data {masked} gmm {dtype != 'mg'} epochs {args.num_epochs} -> {out}")
+    print(f"[bcrnn-config] arm {args.arm} src {src} filter_key {args.arm} data {masked} gmm {config.algo.gmm.enabled} "
+          f"(flag={args.gmm}, recipe would be {gmm_recipe}) epochs {args.num_epochs} -> {out}")
 
 
 if __name__ == "__main__":
