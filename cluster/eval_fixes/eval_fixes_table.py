@@ -19,7 +19,7 @@ FAM = [
      [("polE", "contact")], "polE"),
 ]
 E2E = ("END-TO-END (§5.1; amendment (d))", "full_r2d_state_dHfull_all_bnormclampS8ent5_s%d", "full_r2d_state_dDPfull_bnormclampS8ent5_s%d",
-       ["rnd30", "hold15"], ["picked", "placed", "placed_v2", "contact", "contact_push", "nested", "nested_honest"])
+       ["rnd30", "hold15"], ["picked", "placed", "placed_v2", "contact", "contact_push", "nested", "nested_honest", "slide_success"])
 
 
 def load(run, tag, mode, v2):
@@ -135,6 +135,13 @@ for tag in sets:
             if tag == "rnd30" and mode == "mode":
                 ra = sum(x["new"]["nested_honest"] for x in a) / (n_ep * len(a)); rb = sum(x["new"]["nested_honest"] for x in b) / (n_ep * len(b))
                 print(f"- **(d) P3 on nested_honest: human {ra:.3f}, machine {rb:.3f} → nested < 0.2 both arms {'MET' if max(ra, rb) < 0.2 else 'NOT MET'}**")
+                # amendment (l): slide_success is the statistic of record for the end-to-end comparison
+                sa = sum(x["new"]["slide_success"] for x in a) / (n_ep * len(a)); sb = sum(x["new"]["slide_success"] for x in b) / (n_ep * len(b))
+                o, pp = perm([x["new"]["slide_success"] for x in a], [x["new"]["slide_success"] for x in b])
+                print(f"- **(l) STATISTIC OF RECORD slide_success: human {sa:.3f} vs machine {sb:.3f} → Δ {o/n_ep:+.3f}, exact p = {pp:.3f}; "
+                      f"|Δ| < 0.10 {'MET' if abs(o/n_ep) < 0.10 else 'NOT MET'}**")
+                print(f"- **(l) prediction 'slide_success at or below nested_honest': human {sa:.3f} vs {ra:.3f} {'MET' if sa <= ra else 'NOT MET'}; "
+                      f"machine {sb:.3f} vs {rb:.3f} {'MET' if sb <= rb else 'NOT MET'}**")
         print()
 if pending: print(f"\n## pending re-score cells ({len(pending)})\n\n" + "\n".join(f"- {p}" for p in pending))
 print(f"\n## reproduction guard / stamp findings ({len(findings)})\n\n" + ("\n".join(f"- {f}" for f in findings) if findings else "- every end-to-end `_v2` cell reproduced the record's per-episode outcome / steps / contact / nested; every cell carries eval_fixes='j' and a rebuilt bank where applicable"))
