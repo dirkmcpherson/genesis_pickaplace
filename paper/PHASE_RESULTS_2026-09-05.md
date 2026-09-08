@@ -193,6 +193,24 @@ Per-seed rnd30 MODE: picked human [8, 18, 19, 19] vs machine [14, 10, 22, 14] (�
 
 ### 5.1 Eight seeds per arm (of record; wave 1 seeds 0–3 evaluated post hoc, wave 2 seeds 4–7 in-job; identical checkpoint protocol)
 
+> **RE-SCORED 2026-09-08 on pinned hardware, 8 v 8. Every registered prediction is met — but this section must NOT be republished as an equivalence claim.**
+>
+> | stage | human (record → re-scored) | machine (record → re-scored) | Δ | p | MDE |
+> |---|---|---|---|---|---|
+> | picked | 0.500 → **0.492** | 0.537 → 0.537 | −0.046 | 0.554 | **0.210** |
+> | placed_v2 *(new)* | — → 0.163 | — → 0.200 | −0.038 | 0.520 | 0.154 |
+> | contact | 0.379 → **0.388** | 0.338 → 0.338 | +0.050 | 0.569 | **0.243** |
+> | contact_push *(new)* | — → 0.204 | — → 0.212 | −0.008 | 0.942 | 0.169 |
+> | nested (proxy — the published figure) | 0.163 → **0.138** | 0.192 → 0.192 | −0.054 | 0.300 | 0.141 |
+> | **nested_honest** *(new)* | — → **0.046** | — → **0.104** | −0.058 | **0.087** | 0.088 |
+> | slide_success *(l)* | — → 0.042 | — → 0.017 | +0.025 | 0.277 | 0.053 |
+>
+> **Why this is not an equivalence.** No stage falls outside ±0.10 and every registered prediction is met — (d) P2 at picked, placed_v2, contact and contact_push; (d) P3 on the honest predicate; (l)'s margin; and (l)'s ordering, `slide_success ≤ nested_honest`, in both arms. **But five of the seven stages have a minimum detectable effect larger than the margin they are tested against** — 0.210 and 0.243 at picked and contact against a 0.10 margin. Those nulls cannot exclude an effect the full width of the region we would need to rule out. The honest report is "no effect detected, at a power that could not have detected one", not "the arms are equivalent".
+>
+> **The stage to watch is `nested_honest`, and it points the other way.** The machine arm completes the task honestly **2.3× as often** — 0.104 against 0.046, p 0.087 — where the published proxy showed only 1.4×. It is also one of only two stages actually powered below its margin. So replacing the training proxy with the honest predicate both lowers the numbers and **sharpens the one difference that may be real, in the machine arm's favour.**
+>
+> **A reproduction asymmetry that supports the hardware account.** Between record and re-score, the **machine arm reproduces exactly at every stage** (picked 129→129, contact 81→81, nested 46→46) while the **human arm moves** (120→118, 91→93, 39→33) — and the human arm is exactly where the minority-hardware-class originals sit. The two independent re-scores agree with each other to 0.0000 at every stage in both arms; it is the *records* that differ from them, on one arm only.
+
 | cell (8 seeds each) | picked | contact | nested |
 |---|---|---|---|
 | rnd30 MODE, human (all 74 tapes) | 120/240 (0.500) | 91/240 (0.379) | 39/240 (0.163) |
