@@ -10,7 +10,7 @@ Each cell is **human vs machine**, then Δ (human − machine), the exact two-si
 |---|---|---|---|
 | **Pick** (random starts) | 0.520 v 0.467, Δ +0.053, p 0.123, n 10 | 0.600 v 0.517, Δ +0.083, p 0.485 **and** 0.600 v 0.567, Δ +0.033, p 0.646 — two different machine arms, both reproduce | 0.617 v 0.608, Δ +0.008, p 0.875, n 8 |
 | **Pick** (`spots60`, in-training-distribution) | 0.878 v 0.873, Δ +0.005, p 0.845, n 10 | **0.869 v 0.865, Δ +0.004, p 0.873, n 8** | pending |
-| **Place** (matched 39 demos) | pending — 32 runs queued | pending — same 32 runs | 0.703 v 0.647, Δ +0.056, p 0.227, n 8 |
+| **Place** (matched 39 demos) | pending — 32 runs queued | pending — same 32 runs | **0.715 v 0.652, Δ +0.063, p 0.112, n 8** (re-scored; was 0.703 v 0.647) |
 | **Contact** (matched 11, sub-floor) | not run | not run | 0.593 v 0.602, Δ −0.009, p 0.841, n 8 |
 | **Carrycontact** (matched 21) | not run | not run | 0.807 v 0.796, Δ +0.011, p 0.348, n 8 |
 | **End-to-end**, picked | pending — 32 runs queued | pending — same 32 runs | 0.500 v 0.537, Δ −0.037, p 0.643, n 8 |

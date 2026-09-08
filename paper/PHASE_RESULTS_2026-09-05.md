@@ -80,6 +80,17 @@ gate-skipped, so this is a learnability read: contact-from-release is readily le
 
 ### 2.y MATCHED-COUNT machine arm (39 demos) — the place number of record (amendment (e)); read out 2026-09-06
 
+> **REPUBLISHED 2026-09-08 — the figures below are superseded; the finding is not.** They were scored on the superseded raw-grip entry bank and with an evaluator that silently substituted a different start when an entry failed to restore. Re-scored on the rebuilt bank with entry pinning and hardware pinned, 8 v 8, polE MODE:
+>
+> | arm | published | re-scored | movement |
+> |---|---|---|---|
+> | human (39) | 0.703 | **0.715** | +0.013 |
+> | machine (39) | 0.647 | **0.652** | +0.005 |
+>
+> **Δ +0.056 (p 0.227) → +0.063 (p 0.112).** The registered |Δ| < 0.10 is met before and after. Machine-63 (descriptive) 0.736 → 0.726.
+>
+> **Do not read the small movement as evidence that the corrections were negligible — two of them push in opposite directions and happen to nearly cancel.** Restore failures rise from 0 to 5 per cell (exactly symmetric, 40 episodes per arm), so those episodes now count as failures instead of being silently replaced by a different start, which pushes rates *down*; meanwhile the rebuilt bank's corrected grip makes the restored entries slightly more tractable, which pushes them *up*. Netting to +0.013 and +0.005 is a coincidence of the two, not a measure of either.
+
 | arm | demos | holdE MODE | polE SAMPLE | polE MODE |
 |---|---|---|---|---|
 | human | 39 | 104/104 (1.000) | 814/1184 (0.688) | 832/1184 (0.703) |
