@@ -578,3 +578,15 @@ Arising from the two effects established overnight (see `OVERNIGHT_STATE_2026-09
 - **Opposite direction on RLPD** → treat as disconfirming the general claim.
 
 **Diffusion Policy cannot participate at all** — it is offline, produces no rollouts, and its intermediate checkpoints were pruned for disk. Any cross-learner learning-speed figure is therefore a two-learner figure and must say so on its face.
+
+### Amendment (u) — three qualifications that weaken the finding, recorded before any replication
+
+**1. The effect is graded, not a clean dichotomy.** Place trends the same way as end-to-end (human earlier, p 0.075 on the steady-state definition) rather than being null. The honest shape is "clearest end-to-end, weakly in the same direction at place, absent at pick and slide". A graded effect is more plausible than one that switches on, so this is not damaging — but "only on the long-horizon task" overstates it and should not be written.
+
+**2. "Stage in isolation versus stage in a chain" is not a controlled contrast.** The end-to-end `picked` curve is a pick occurring inside the full task, under the staged ladder, from task-start initial conditions. The pick-scope curve is a dedicated task with its own terminal reward, its own initial conditions and its own demonstration sets. Reward, horizon, termination and data all differ, so the comparison currently conflates **chain** with **setting**. The attractive interpretation — that credit assignment over a long chain is where demonstration source matters — is not yet supported by a design that isolates it.
+
+**3. The most serious qualification: the demonstration sets differ in construction exactly where the effect appears.** The end-to-end arms are the human set of all 74 attempts including failures against a machine set of 72 **best-of-3 selected** attempts, Σ reward 206 against 118. The pick arms are matched successes. **So an end-to-end-only speed difference is equally consistent with "best-of-3 selection changes what the machine set teaches early" as with anything about who produced the demonstrations.** The selection confound and the effect coincide precisely — the confound lands on the one comparison that separates and is absent from the ones that do not. This is the leading alternative explanation and must be stated wherever the finding is.
+
+**What would settle it.** First, the registered RLPD replication, which now has the data it needs: it says whether the effect generalises across learners or is a world-model artefact. Beyond that, **an end-to-end arm whose machine set is built without best-of-3 selection** would separate "how the set was built" from "who produced it". That control should be registered before this becomes a headline rather than an observation.
+
+Standing caveat unchanged: exploratory, one learner, thresholds and grid chosen after seeing the data.
