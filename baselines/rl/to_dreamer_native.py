@@ -169,6 +169,7 @@ def main():
     ap.add_argument('--subsample-seed', type=int, default=0)
     ap.add_argument('--reward-from-tape', action='store_true', help='END-TO-END arm (PHASE_PLAN (d)): keep the recorded staged rewards (full scope) instead of one terminal +1')
     ap.add_argument('--one-per-ic-best', action='store_true', help='END-TO-END arm: keep ONE tape per ic_uid -- the highest recorded reward sum (nested > contact > picked > none), ties -> shortest')
+    ap.add_argument('--one-per-ic-first', action='store_true', help="PHASE_PLAN (v) DE-CONFOUNDED arm: keep ONE tape per ic_uid -- the FIRST attempt (lowest rollout uid). No reward term: this is the human arm's protocol (one attempt per start, keep whatever happened).")
     ap.add_argument('--stride1-cap', type=float, default=None, help='PHASE_PLAN (c): re-encode at the SIM rate (action_repeat 1) from sim_states/sim_actions; value = delta cap per sim step (0.00625 = 0.025/4 keeps the per-second cap)')
     ap.add_argument('--one-per-ic', action='store_true', help='PHASE PLAN: keep only the FIRST tape (sorted filename) per ic_uid that has the phase -- harvests carry up to 3 attempts per IC')
     ap.add_argument('--force', action='store_true')
@@ -199,6 +200,21 @@ def main():
                 best[u] = (key, f)
         best_keep = {v[1] for v in best.values()}
         print(f'[to_dreamer_native] --one-per-ic-best: {len(files)} tapes over {len(best)} ICs -> keeping {len(best_keep)}')
+    if args.one_per_ic_first:
+        if args.one_per_ic_best:
+            raise SystemExit('[to_dreamer_native] --one-per-ic-best and --one-per-ic-first are mutually exclusive')
+        first = {}
+        for f in files:
+            z = np.load(f)
+            u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid'])
+            if 'uid' not in z.files:
+                raise SystemExit(f'[to_dreamer_native] --one-per-ic-first needs the rollout uid to order attempts; {f} has none')
+            key = int(z['uid'])                      # attempt order == the sequential rollout uid
+            if u not in first or key < first[u][0]:
+                first[u] = (key, f)
+        best_keep = {v[1] for v in first.values()}
+        nrew = sum(float(np.asarray(np.load(f)['rewards'], np.float32).sum()) for f in sorted(best_keep))
+        print(f'[to_dreamer_native] --one-per-ic-first: {len(files)} tapes over {len(first)} ICs -> keeping {len(best_keep)} (sum reward {nrew:.0f})')
     for f in files:
         z = np.load(f, allow_pickle=True)
         need = ([] if args.state_only else ['images']) + ['actions_delta', 'rewards', 'terminated', 'truncated'] + (['states', 'final_state'] if args.with_state else []) + (['sim_states', 'sim_actions'] if args.stride1_cap is not None else [])
@@ -286,7 +302,7 @@ def main():
         sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(args.stride1_cap if args.stride1_cap is not None else (sorted(cap_seen)[0] if cap_seen else None)), scope=(args.phase or args.scope),
-        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best),
+        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best), one_per_ic_first=bool(args.one_per_ic_first),
         max_tapes=args.max_tapes, subsample_seed=(args.subsample_seed if args.max_tapes is not None else None), subsample_kept=subsample_kept, source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
         n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
