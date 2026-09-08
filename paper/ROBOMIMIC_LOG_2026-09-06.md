@@ -480,3 +480,17 @@ saturated machine actions — is NOT tested by these data and is flagged as an o
   Note what it does NOT explain: `G_re20` and `G_re15only` are nearly equally robust (0.656 v 0.629), so generic
   robustness does not distinguish the re20 tape set from the rest of re15 — it cannot by itself account for a learner
   difference between the two arms (which is in any case shrinking with seeds; see the correction above).
+- **2026-09-08 SCHEDULING decision (not a scientific one): A4's remainder deprioritised, A6 untouched.** Coordinator's
+  call under a saturated GPU cap. Actions taken: the single PENDING A4 job (3354859) reniced 20000 → **50000**; the
+  **9 RUNNING A4 jobs left alone** (41–62 min elapsed of ~60; cancelling a registered experiment is a scientific act and
+  would need recording as such, so it was not done — they release their slots within the hour anyway). **A6's 16 runs
+  remain at nice 4000, ahead of every A4 job, and were not touched.** Net effect: deprioritising A4 frees ~1 slot now
+  and the rest by attrition; it does not accelerate A6 past its existing position.
+- **Can A4 still answer its question? Honest answer: probably not.** Evidence at the time of the decision (mode /50):
+  `re15` 0.080 (n=8, complete), `rough15` 0.034 (n=7), `re20` 0.167 (n=6, falling monotonically as seeds land: 0.33 at
+  n=2 → 0.200 at n=5 → 0.167 at n=6), `rough20` 0.04 (n=1, first seed at the floor). The ε 0.20 pair is heading for
+  control ≈ 0.15 v treatment ≈ 0.04. Even if the control clears the ±0.10 floor threshold and the pair is formally
+  evaluable, the TREATMENT is at the floor at both doses, so the only available conclusion is "the manipulation destroys
+  the data" — already established twice and independently (build-time yields in `REPLAY_YIELD_2026-09-08.md`; the ε 0.15
+  learner pair). **There is no dose at which the treatment survives above the floor, so A4 cannot isolate roughness as a
+  graded variable** — the design property already registered in the A4 addendum, now confirmed empirically at both doses.
