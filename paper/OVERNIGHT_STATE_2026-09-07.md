@@ -151,3 +151,15 @@ The evaluator agent has closed the investigation (committed 14e0cc9). Two indepe
 **Scope, which is reassuring:** phase cells are immune to both effects — short episodes, bank-restored starts, 3488/3488 bit-exact — so the place, carrycontact and contact re-scores are safe to run on any node, and that is most of the held 320 cells. Only long full-scope end-to-end cells need "whole sequence, same CPU model".
 
 **For the paper's methods section:** we can state precisely that contact-rich simulation outcomes here are bit-reproducible within an instruction-set class and can flip across AVX2/AVX-512 over long horizons, with the crossover quantified (agreement to 1e-9 at decision 12, outcome flip by decision 32). Few papers in this area can say anything this specific about their own reproducibility.
+
+## 04:50 — carrycontact re-score COMPLETE (16/16 cells), and the null survives every predicate
+
+Reproduces the record exactly (955/955 human and 942/942 machine contact episodes — a clean validation of the re-score pipeline on a phase scope, as expected since phase cells are immune to the AVX effect).
+
+| predicate | human (21 demos) | machine (21) | Δ | p |
+|---|---|---|---|---|
+| `contact` (published) | 0.807 | 0.796 | +0.011 | 0.348 |
+| `contact_push` (geometric far-side test) | 0.285 | 0.250 | +0.035 | 0.55 |
+| `slide_success` (release-based) | **1/1184** | **2/1184** | — | — |
+
+Two readings. **The demo-source null holds under all three predicates**, so tightening the definition does not create an effect where there was none — that is a real robustness check on the phase result, not a restatement of it. And **the carrycontact policies essentially never release the can**: 3 successful releases in 2368 episodes. That phase measures carrying a held can into the goal, which is exactly why the definition needed changing, and it explains why its null was the tightest in the project (MDE ≈ 0.03) — both arms were being scored on a near-trivial variant.
