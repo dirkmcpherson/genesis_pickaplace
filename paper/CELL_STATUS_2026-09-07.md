@@ -8,7 +8,8 @@ Each cell is **human vs machine**, then Δ (human − machine), the exact two-si
 
 | phase | Diffusion Policy | RLPD | world model (r2dreamer) |
 |---|---|---|---|
-| **Pick** (random starts) | 0.520 v 0.467, Δ +0.053, p 0.123, n 10 | 0.600 v 0.517, Δ +0.083, p 0.485, n 8 | 0.617 v 0.608, Δ +0.008, p 0.875, n 8 |
+| **Pick** (random starts) | 0.520 v 0.467, Δ +0.053, p 0.123, n 10 | 0.600 v 0.567, Δ +0.033, p 0.646, n 8 | 0.617 v 0.608, Δ +0.008, p 0.875, n 8 |
+| **Pick** (`spots60`, in-training-distribution) | 0.878 v 0.873, Δ +0.005, p 0.845, n 10 | **0.869 v 0.865, Δ +0.004, p 0.873, n 8** | pending |
 | **Place** (matched 39 demos) | pending — 32 runs queued | pending — same 32 runs | 0.703 v 0.647, Δ +0.056, p 0.227, n 8 |
 | **Contact** (matched 11, sub-floor) | not run | not run | 0.593 v 0.602, Δ −0.009, p 0.841, n 8 |
 | **Carrycontact** (matched 21) | not run | not run | 0.807 v 0.796, Δ +0.011, p 0.348, n 8 |
@@ -19,6 +20,12 @@ Each cell is **human vs machine**, then Δ (human − machine), the exact two-si
 Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y, contact §3, carrycontact §4, end-to-end §5.1 of `PHASE_RESULTS_2026-09-05.md`.
 
 **A second world-model implementation now exists.** dv3 with state input and the same return clamp reads 0.700 vs 0.633 on the pick, but at two seeds per arm that is not testable; the four-seed completion was running when the link dropped. Its value is that the clamp diagnosis reproduces on an independent port, not the number itself.
+
+**The in-training-distribution row is the strongest null we have.** On `spots60` both learners sit near 0.87 with differences of 0.004 and 0.005 — the arms are indistinguishable *at high performance*, which is a much better null than one taken near a floor where any method looks alike. It is also the set you asked for specifically. Note that the RLPD random-start figure has been revised from 0.517 to 0.567 for the machine arm by the completed re-evaluation, shrinking that gap from 0.083 to 0.033.
+
+**Provisional, for a good reason.** The place agent found both of its comparisons were skewed by machine size — the human pick arm had a seed on a 36-core node and the Diffusion Policy arm had five seeds on 48-core, each against all-64-core machine arms. Rather than disclose the skew it archived those 16 cells and resubmitted them pinned to one size. The numbers above will be re-issued when those land, and are expected to move little given the audit's measured movement of at most 0.058.
+
+**Pruning still matters more than source.** Trained on raw rather than pruned human data, Diffusion Policy drops to 0.688 — a deficit of 0.19 at p 0.000, which is far larger than any source difference anywhere in this project, and it now reproduces in-distribution as well as out.
 
 ## How to read this table honestly
 
