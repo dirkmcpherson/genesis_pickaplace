@@ -342,3 +342,29 @@ enumerated exactly once instead of drawn with replacement):
 So **sampling-with-replacement alone was worth up to 0.029** on a 13-entry bank, with zero restore failures involved — a
 clean measurement of the S1-3 defect in isolation, and the reason holdE cells needed re-running even though their bank is
 byte-identical.
+
+### 8.3 PLACE, symmetry control (§2.x, amendment (i)) and the uncapped machine-63 arm — 8 v 8, complete
+The `polEdDP` bank is the machine-policy-generated entry bank; amendment (i) registered two clauses, both evaluated here
+on the rebuilt bank with pinned entries (`restore_failed` 0 → 24 per arm = the 3 non-surviving entries of 149 × 8 seeds,
+matching the survival check in §2.2 exactly).
+
+| cell | record | re-scored | Δ human−machine (record → re-scored) |
+|---|---|---|---|
+| polEdDP MODE, human v machine-39 | 0.681 v 0.643 | **0.695 v 0.623** | +0.039 (p 0.398) → **+0.072 (p 0.129)** |
+| polEdDP SAMPLE, human v machine-39 | 0.673 v 0.639 | 0.681 v 0.647 | +0.034 (p 0.535) → +0.034 (p 0.431) |
+| polE MODE, human v machine-63 | 0.703 v 0.709 | 0.715 v 0.714 | −0.007 (p 0.878) → **+0.002 (p 0.980)** |
+| polEdDP MODE, human v machine-63 | 0.681 v 0.720 | 0.695 v 0.702 | −0.039 (p 0.374) → −0.007 (p 0.892) |
+
+**(i) clause 1, |Δ| < 0.10 on the machine-policy bank: MET** (0.072 MODE, 0.034 SAMPLE).
+**(i) clause 2, |Δ_polE − Δ_polEdDP| < 0.05 — the bank of origin does not carry the null: MET, and more tightly after the
+re-score**: MODE |0.063 − 0.072| = **0.009** (was 0.017), SAMPLE |0.056 − 0.034| = 0.022.
+So the null is not an artefact of whose policies generated the entry bank, and correcting the bank strengthens that
+conclusion rather than weakening it.
+
+**Uncapped machine-63 arm (descriptive):** now 8 seeds and essentially tied with the human arm on the corrected bank
+(polE MODE 0.715 v 0.714, Δ +0.002). Its record value 0.709 → 0.714. As registered in (e), it stays the disclosed
+secondary — the +0.062 it gained over machine-39 is a demonstration-count effect, and the matched-39 pair is the
+comparison of record.
+
+**Conclusions unchanged for the whole place phase.** Every verdict that was "equivalent within ±0.10" before the re-score
+is still that afterwards; only figures moved, by ≤ 0.02 per arm.
