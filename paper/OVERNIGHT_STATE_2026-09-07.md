@@ -315,8 +315,10 @@ training jobs (`e2e_rlpd_*` 3355448–63, `e2e_dp_*` 3355464–79) were all PEND
   stage at run time, so any job that starts before someone reconnects will correctly stamp its in-job cells
   `role: preview`. Re-rsync and commit on reconnect anyway, so the clone's provenance matches the local history.
 - **Loose ends on the login node to clear FIRST:** `cluster/isa_probe.sh` was running with up to 30 concurrent
-  `srun --overlap` probes and was making `ssh` itself time out; I could not confirm the kill landed.
-  `$LAB/gp_e2e/isa_map.json` is absent or partial and must not be trusted.
+  `srun --overlap` probes and was making `ssh` itself time out. **The kill attempts provably did NOT land** — by then
+  the link was failing at DNS (`ssh: Could not resolve hostname login.pax.tufts.edu`, re-confirmed 23:5x), so those
+  commands never reached the cluster. Assume the probes are still running and clear them first.
+  `$LAB/gp_e2e/isa_map.json` is absent or partial and must not be trusted; delete it rather than read it.
 
 ### The nodelist: NOT established by my probe
 
