@@ -355,3 +355,11 @@ PH200 arm.
   **MG200s_gmm 3370075, 3370096, 3370097; MH200_nogmm 3370098, 3370099, 3370100** (run dirs
   `bcrnn_MG200s_gmm_s<k>`, `bcrnn_MH200_nogmm_s<k>`; LAST = epoch 2000, scored on bank_can50).
   Reference cells: MH200-GMM 0.927, MG200s-det 0.393, PH200-GMM 0.92. A4's 32 RLPD runs are running alongside (13 R, 10 PD).
+- **2026-09-08 09:xx A4 control arm `MH200_re15` COMPLETE (8 seeds) and it FALSIFIES P-A4-3′:** mode [2,8,2,5,2,0,4,9]
+  = **0.080** (sd 0.061; sample 0.060) versus MH200@100k **0.455** — a −0.375 gap, far outside the registered ±0.10
+  neutrality band. These are UNMODIFIED human actions re-executed open-loop; the only differences from MH200 are the
+  tape selection (95 of 200 tapes that survive both re-executions) and the row count (15,702 vs 41,134).
+  Registered decision rule (iii) therefore fires: **the A4 pair may be read only within itself (rough15 v re15), never
+  against MH200@100k.** Note the pattern this adds to the A2 controls — RLPD success tracks demo ROW COUNT across every
+  arm measured so far, independent of source: re15 15.7k rows → 0.080, MG200s 16.5k → 0.147, MH200 41.1k → 0.455,
+  MG718s 59.2k → 0.475, MGall 536.5k → 0.610.
