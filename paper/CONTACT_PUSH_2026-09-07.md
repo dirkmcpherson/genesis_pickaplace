@@ -75,9 +75,9 @@ Two protocol notes carried by amendment (g''): (i) the sweep runs a FROZEN snaps
 
 Disclosure carried by (g'''): the (j)/(l′) evaluator runs ONE post-episode settle (100 scene steps) in the phase scopes, which the cells of record did not. Episode 0 of a re-scored cell must still match the record bit-for-bit on `contact`, `outcome` and `steps` (verified on the smoke cell: uid 252, 12 steps, contact, identical); from episode 1 the settle changes the world state carried into the next restore, so later-episode divergence is expected and is not evidence about `contact_push`. The reproduction verdict is therefore reported as episode-0 identity plus an aggregate-rate comparison (§7).
 
-## 5. Results (PROVISIONAL — unpinned cells; see §7 before quoting)
+## 5. Results (complete: 192/192 cells, 8 seeds per arm everywhere)
 
-Two of the three primary cells are complete at 8 seeds per arm; the end-to-end cells and the sample/holdE companions were still running when the cluster link dropped. Every number below comes from `~/wm_fix_2026-09-03/contact_push_table.py` over the frozen sweep 3354669–76 (raw banks, (j)+(l′) evaluator). **These cells are unpinned** (`TI_NUM_THREADS` not set), so per-episode traces are reproducible only on a machine with the same physical core count; if the pinning sweep succeeds, this section is regenerated from pinned cells.
+The sweep (3354669–76) survived the VPN drop and finished server-side; all 192 cells are in. The provisional figures already circulated (contact 0.346 v 0.366, carrycontact 0.285 v 0.250, `slide_success` ≈ 0) are **unchanged** by the completed sweep — those two cells were already complete when they were quoted. Every number below comes from `~/wm_fix_2026-09-03/contact_push_table.py` over the frozen sweep 3354669–76 (raw banks, (j)+(l′) evaluator). **These cells are unpinned** (`TI_NUM_THREADS` not set), so per-episode traces are reproducible only on a machine with the same physical core count; if the pinning sweep succeeds, this section is regenerated from pinned cells.
 
 ### 5.1 Contact after release (`scope='contact'`, polE_contact 160, MODE — the statistic of record for that phase)
 
@@ -97,19 +97,39 @@ Two of the three primary cells are complete at 8 seeds per arm; the end-to-end c
 
 `contact_push` human − machine **Δ = +0.035, p = 0.546**; `contact` Δ = +0.011, p = 0.348; `slide_success` Δ = −0.001, p = 1.000. Per-seed `contact_push`: human [81, 27, 38, 35, 46, 43, 45, 23] vs machine [24, 48, 32, 33, 50, 20, 50, 39].
 
-### 5.3 End-to-end (rnd30 / hold15) and the sample + holdE companions — PENDING (cells still running)
+### 5.3 End-to-end full task (`scope='full'`), rnd30 MODE = the cell comparable with PHASE_RESULTS §5.1
+
+| cell | arm | episodes | `contact` (record) | `contact` (re-score) | `contact_push` | `slide_success` (l′) (sustained/settle) | failing | gripper–goal | wrong side |
+|---|---|---|---|---|---|---|---|---|---|
+| rnd30 MODE | human | 240 | 91 (0.379) | 93 (0.388) | 49 (**0.204**) | 10 (0.042) (2/8) | 44/93 (0.473) | 8 | 36 |
+| rnd30 MODE | machine | 240 | 81 (0.338) | 81 (0.338) | 51 (**0.212**) | 4 (0.017) (0/4) | 30/81 (0.370) | 10 | 20 |
+| rnd30 SAMPLE | human | 240 | 107 (0.446) | 108 (0.450) | 67 (0.279) | 10 (0.042) (0/10) | 41/108 (0.380) | 4 | 37 |
+| rnd30 SAMPLE | machine | 240 | 86 (0.358) | 86 (0.358) | 57 (0.237) | 4 (0.017) (2/2) | 29/86 (0.337) | 5 | 24 |
+| hold15 MODE | human | 120 | 90 (0.750) | 83 (0.692) | 46 (0.383) | 7 (0.058) (0/7) | 37/83 (0.446) | 12 | 25 |
+| hold15 MODE | machine | 120 | 79 (0.658) | 79 (0.658) | 54 (0.450) | 6 (0.050) (2/4) | 25/79 (0.316) | 10 | 15 |
+| hold15 SAMPLE | human | 120 | 87 (0.725) | 83 (0.692) | 41 (0.342) | 4 (0.033) (0/4) | 42/83 (0.506) | 5 | 37 |
+| hold15 SAMPLE | machine | 120 | 74 (0.617) | 74 (0.617) | 44 (0.367) | 2 (0.017) (0/2) | 30/74 (0.405) | 7 | 23 |
+
+rnd30 MODE: `contact_push` Δ = **−0.008, p = 0.942**; `contact` Δ = +0.050, p = 0.569; `slide_success` Δ = +0.025, p = 0.277. rnd30 SAMPLE: `contact_push` Δ = +0.042, p = 0.467. The null holds on every end-to-end cell, on all three predicates.
+
+**End-to-end is the one place `slide_success` is ever earned** (10/240 human, 4/240 machine on rnd30; 7/120 and 6/120 on hold15) — because only the full task ever releases the can. Even there, **most grants come from the held post-episode settle rather than a sustained in-episode window** (human rnd30 2 of 10 sustained; hold15 0 of 7).
+
+### 5.3b holdE (entry-bank ceiling) companions
+
+Contact-after-release holdE MODE: `contact` 1.000 human / 0.943 machine, `contact_push` 0.295 / 0.170, `slide_success` 0/88 both. Carrycontact holdE MODE: `contact` 1.000 / 0.990, `contact_push` 0.394 / 0.356, `slide_success` 0/104 both. The banks saturate on `contact` and separate only under the stricter predicates.
 
 ### 5.4 S2-4 subsets (bank entries whose restore reproduces the intended grip)
 
 The split tables move nothing. Carrycontact polE MODE on the 113/148 intended-grip subset: human 0.250 vs machine 0.264 `contact_push` (Δ −0.013, p 0.773); on the strict 80/148 subset 0.229 vs 0.258 (Δ −0.029, p 0.580). Contact-after-release on the strict 38/160 subset: 0.253 vs 0.305. The failing fraction is stable across subsets (0.69/0.67 → 0.69/0.67 → 0.71/0.68), so the grip-scale defect is not what drives the geometry result.
 
-## 6. Verdict (provisional, on the two complete cells)
+## 6. Verdict (complete sweep, 8 v 8 everywhere)
 
-1. **The user's question is answered: no, `contact` is not being earned by touching the gripper to the goal can — it is being earned by carrying the can into it.** Gripper–goal contact explains only 51/321 (16%) of the human and 49/302 (16%) of the machine failing episodes at the contact phase, and 87/617 (14%) / 74/646 (11%) at carrycontact. The dominant failure of the stricter test is **wrong side**: at the moment the pick-can touches the goal, the tool point is not behind the can along the can→goal line — the signature of a can still in the grasp being carried into the goal, not a slide.
-2. **The size of that credit is large.** At carrycontact 65–69% of `contact` credit fails `contact_push`; at contact-after-release 39–42%. The difference between the two phases is itself the mechanism: the contact-phase entry states start with the can already released on the shelf, so more of its contacts are genuine pushes.
-3. **`slide_success` (l′) is ~0 in both phase families** (1–2 episodes in 1184–1280 per arm, every one earned only during the post-episode settle, none sustained in-episode). Under the release-based definition the phase policies do not solve the task at all — consistent with (1) and with the user's decision to make release load-bearing.
-4. **The source null survives the stricter predicate.** Human − machine on `contact_push` is −0.020 (p 0.31) at the contact phase and +0.035 (p 0.55) at carrycontact; both inside the registered |Δ| < 0.10 (P1 met on the two complete cells). The failing fraction differs by arm by +0.028 (contact) and −0.040 (carrycontact) — inside the registered 0.05 band, so P2's second clause is met, while **P2's first clause (failing fraction ≤ 0.15) is decisively violated**, at 0.39–0.69. The registered disconfirm branch that applies is the wrong-side one: the contact credit of record includes non-slide contacts, in both arms, and the paper must say so with the fraction per arm.
-5. `contact_push` is not proposed as a statistic of record; (l′) `slide_success` is the user's settled success definition, and `contact_push` is the geometric diagnostic that shows *why* the old predicate needed replacing.
+1. **The user's question is answered: no, `contact` is not credit for touching the gripper to the goal — it is credit for carrying the can into it.** Gripper–goal contact explains 51/321 (16%) of the human and 49/302 (16%) of the machine failing episodes at the contact phase, 87/617 (14%) / 74/646 (11%) at carrycontact, and 8/44 (18%) / 10/30 (33%) end-to-end. The dominant failure is **wrong side**: at the moment the pick-can touches the goal, the tool point is not behind the can along the can→goal line — a can still in the grasp.
+2. **The credit at stake is large and phase-ordered**: 65–69% of `contact` credit fails `contact_push` at carrycontact (entry = the pick grant, can held), 39–42% at contact-after-release (entry = a released can on the shelf), 37–47% end-to-end. The gap between phases is itself the mechanism.
+3. **`slide_success` (l′) is at the floor for the phase policies** (0–2 episodes per 1184–1280 per arm) and low but non-zero end-to-end (0.017–0.058), where the grant usually needs the held settle rather than a sustained in-episode window.
+4. **The source null survives the stricter predicate everywhere.** `contact_push` human − machine: −0.020 (p 0.31) contact phase, +0.035 (p 0.55) carrycontact, −0.008 (p 0.94) end-to-end rnd30 MODE, +0.042 (p 0.47) SAMPLE. All inside the registered |Δ| < 0.10 → **P1 met on every comparison**.
+5. **P2 splits**: its arm-symmetry clause is met at the phases (failing-fraction difference +0.028 contact, −0.040 carrycontact, both inside 0.05) but not end-to-end (+0.103 rnd30 MODE); its ≤ 0.15 clause is **decisively violated** (0.37–0.69). The registered wrong-side disconfirm branch therefore fires: the contact credit of record includes non-slide contacts in both arms, and the paper must state the fraction per arm.
+6. **Recommended framing (answer to the coordinator's question).** Keep all three columns, and do not drop `slide_success`. It is the user's definition of the task, and a target definition should not be abandoned because policies fail it — that would redefine success as whatever was achieved. But it cannot carry the human-vs-machine comparison: at 0–6% it has no discriminating power (an 8v8 permutation on counts of 0–10 has an MDE far above any plausible effect), so quoting a p-value on it invites a false null. The honest presentation is: **`slide_success` reports the task outcome and the finding is that no arm learns a true slide** (with the sustained/settle split shown, since most grants are settle-only); **`contact_push` is the discriminating measure** (0.17–0.45, well off both floor and ceiling) and carries the source comparison; **`contact` is retained as the legacy predicate of record with its failing fraction attached**, so earlier numbers stay interpretable. Reporting `contact` alone would overstate capability by 1.5–3×; reporting only `slide_success` would lose the one measurement that can still discriminate arms.
 
 ## 7. Determinism note — RESOLVED: the axis is the machine's physical core count, not the node and not the CPU family
 
@@ -137,14 +157,18 @@ The split tables move nothing. Carrycontact polE MODE on the 113/148 intended-gr
 
 **Label caveat, important for anyone using the table above as evidence about instruction sets.** The CPU-family column comes from Slurm's `AvailableFeatures`, and on this cluster those labels are unreliable (`pax001` advertises `broadwell` but is a Cascade Lake Gold 6248). The core-count column is trustworthy (`CPUTot` is real); the family column is not, so this audit's "different families agree with each other" observation must be re-checked against `/proc/cpuinfo` model strings before it is cited for or against an instruction-set explanation. The core-count rule itself does not depend on it.
 
-### 7b. Per-cell reproduction of the current sweep (as of the 64 cells finished before the link dropped)
+### 7b. Per-cell reproduction of the complete sweep (192 cells)
 
-9 of 64 cells differ from their record; all 9 are exactly the cells whose record was produced on a 36-core machine:
-5 contact-phase cells `dH_..._subfloor_s{0,1,4,5,7}` polE mode (record `pax070`, 36c) and the 4 end-to-end cells of
-`dHfull_all_s2` (record `pax109`, 36c, post-hoc job 3302999). Every other cell — including all 16 carrycontact polE
-cells, both modes, and every contact-phase cell whose record came from a 48c or 64c machine — is bit-identical.
-Aggregate effect on the two complete primary cells: contact after release, human 0.593 → 0.597 (5 episodes of 1280),
-machine 0.602 → 0.602 (0); carrycontact, both arms unchanged (955/955 and 942/942).
+16 of 192 cells differ from their record, and **every one has a 36-core record node**: 8 contact-phase cells
+`dH_..._subfloor_s{0,1,4,5,7}` (record `pax070`, 36c) and 8 end-to-end cells of `dHfull_all_s2` (record `pax109`, 36c,
+post-hoc job 3302999). Over both sweeps together the audit is now **277 comparisons: same core count 119/119
+bit-identical, no exceptions; different core count 31 differing of 158.** Aggregate effect, always on the human arm
+only (its records are the ones made on 36-core machines — a hardware/arm confound in the cells of record, not in this
+sweep): contact after release 0.593 → 0.597; end-to-end rnd30 0.379 → 0.388, hold15 0.750 → 0.692. Machine arms are
+unchanged in every cell. The movement has no consistent sign, so it reads as noise rather than bias, but it is exactly
+why the operational rule below matters. **Core count is stamped per cell in `~/wm_fix_2026-09-03/core_audit2.py`'s
+output** (`$W/core_audit2.txt`), which joins every cell of record and every re-run to its SLURM node and `CPUTot`;
+the frozen evaluator itself does not yet write the field, so any future sweep should export it into `metrics.json`.
 
 ### 7c. The v1 observation as originally written (superseded by §7, kept for the record)
 
