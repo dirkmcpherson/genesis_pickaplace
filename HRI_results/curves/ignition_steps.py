@@ -3,7 +3,8 @@
 
 Emits the RAW per-seed step at which each curve first reaches a given FRACTION OF ITS OWN STEADY STATE, so any threshold
 can be reported later without recomputing ("step at which we hit 50% of steady-state operation" and similar).
-Steady state = mean of the final quarter of that seed's non-empty bins. Fractions: 0.25 / 0.50 / 0.75 / 0.90, plus the
+"Steady state" here is a TAIL AVERAGE -- the mean of the final quarter of that seed's non-empty bins -- and that quarter
+is itself still improving for the end-to-end runs, so it is NOT a converged value (independent review, 2026-09-08). Fractions: 0.25 / 0.50 / 0.75 / 0.90, plus the
 absolute-0.2 ignition used previously. Nothing is thresholded away: the steady-state value and the raw bin series are
 kept, so a different definition can be applied to this file directly.
 Input: curves_2026-09-08.csv.  Output: ignition_steps.csv."""
@@ -49,7 +50,9 @@ for (fam, arm, stage), rs in sorted(groups.items()):
         out.append(rec)
 
 with open("ignition_steps.csv", "w", newline="") as fh:
-    fh.write("# RAW per-seed ignition steps. steady_state = mean of the final quarter of that seed's bins.\n"
+    fh.write("# RAW per-seed ignition steps. steady_state = TAIL AVERAGE (mean of the final quarter of that seed's bins),\n"
+             "# NOT a converged value: for the end-to-end runs that quarter is still improving. A registered comparison\n"
+             "# should use a fixed performance threshold with an explicit persistence rule (independent review 2026-09-08).\n"
              "# Curves are ONLINE TRAINING ROLLOUTS (see README): these steps describe learning speed during training,\n"
              "# not the evaluation protocol. Keep the raw columns; do not collapse to a single threshold in the source.\n")
     w = csv.DictWriter(fh, fieldnames=list(out[0].keys())); w.writeheader(); w.writerows(out)

@@ -60,8 +60,11 @@ absolute-0.2 crossing — so any threshold ("step at which we hit 50 % of steady
 reported later without recomputing, and a different definition can be applied to that file directly. Do not collapse it
 to a single threshold in the source.
 
-Steady state = mean of the final quarter of that seed's non-empty bins; `bin_width_steps` records the resolution, which
-bounds how finely any of these steps can be read (e2e 50,000 steps per bin).
+`steady_state` is a **tail average** — the mean of the final quarter of that seed's non-empty bins — and for the
+end-to-end runs that quarter is **still improving**, so it is not a converged value (independent review, 2026-09-08). A
+registered comparison should use a fixed performance threshold with an explicit persistence rule and a stated handling of
+non-igniting seeds. `bin_width_steps` records the resolution, which bounds how finely any of these steps can be read
+(e2e 50,000 steps per bin).
 
 ### Step to 50 % of steady state (per-seed medians, 8 v 8)
 

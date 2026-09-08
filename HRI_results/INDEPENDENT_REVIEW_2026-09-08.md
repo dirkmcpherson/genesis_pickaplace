@@ -182,3 +182,83 @@ task outcomes actually measured.
 
 Verification for this note was read-only: document and code inspection plus a standard-library
 CSV count of distinct seeds. No generated artifacts were regenerated or edited.
+
+---
+
+# Response from the eval-fixes lane (2026-09-08)
+
+Appended at the user's request. Point-by-point, marked **accepted** / **accepted, fixed differently** / **contested** /
+**not this lane's**. Where something was changed, the commit is named so the claim can be checked rather than believed.
+Nothing in the reviewer's text above has been altered.
+
+## §1 Longer-runs proposal — accepted in full; the proposal is revised, not defended
+
+| finding | response |
+|---|---|
+| Duration and reward must not move together | **Accepted.** Revised primary experiment (`2f0c55b`): R2 end-to-end, fresh seeds, **4M under the EXISTING staged reward**, checkpoints evaluated at **both 2M and 4M** on the registered banks and pinned hardware. Sparse reward becomes a separately registered comparison. Your 2M/4M-checkpoint design is better than what I proposed and is adopted verbatim. |
+| The "4e6 equalises post-ignition training" argument is incorrect | **Accepted and withdrawn in place**, struck through in the original text rather than quietly deleted. It compared a *future* machine run against the human arm's *current* budget; extend both and both move — at 4M the human median post-ignition share rises to ≈ 86 %. 4e6 now stands only as a reasonable next checkpoint. |
+| `slide_success` has no accepted definition — (l) withdrawn by (p), clause 5 uncalibrated, and the code refuses it | **Accepted; this was a factual error on my part and the most serious one.** Verified independently before conceding: `full_env.py:286` asserts unless `CONTACT_GRANT_ALLOW_WITHDRAWN=1`, and (p) records that (l)'s `grip_cmd < 0.3` clause passes **2 of 74** demonstrations because the demonstrated slide is "release fully, re-close to ≈ 0.4, push home". **No sparse end-to-end arm can be registered until (p) clause 5 is calibrated.** The reward-misalignment *motivation* stands; it does not license that particular reward. |
+| "Steady state" is a tail average over a still-rising quarter | **Accepted and now fixed in the artefacts, not only in prose**: `ignition_steps.csv`'s header and `curves/README.md` state that `steady_state` is a **tail average, not a converged value**, and that a registered comparison needs a fixed threshold with a persistence rule and a stated handling of non-igniting seeds. |
+| A plateau rule needs a minimum performance floor | **Accepted** — a collapsed policy also satisfies "improvement < 0.02". Recorded in the revision. |
+| A crossing would still inherit the demonstration-selection confound | **Accepted**, and it is the interpretation point that matters most: machine full-task demos are best-of-3 attempts (Σ reward 206 v 118, 16 v 3 nested completions) against every human attempt including failures. A crossing would evidence dataset *construction*, not provenance. |
+| Pilot expansion criteria must be fixed in advance on feasibility, not on a favourable sign | **Accepted**, and stated that all pilot outcomes including a one-arm failure get reported. |
+| DP needs no duplicate training; RLPD extension needs its own question | **Accepted.** DP is unchanged in the revision (more gradient steps add no experience). |
+
+**Contested, mildly — pick.** You are right that no convergence evidence justified a broad pick re-run; the user asked
+for it, and I recorded the tension rather than resolving it silently. **New evidence since your review**, which cuts your
+way on the science and against the re-run: pick curves now exist, and the two arms are **indistinguishable in learning
+speed** — ignition medians 162,500 human vs 137,500 machine (Δ +12,500, p 0.505), and 199,999 vs 187,499 on the
+50 %-of-steady-state definition (Δ +3,125, p 0.980), with the machine arm marginally faster if anything. So pick is a
+cheap diagnostic, not a prerequisite, exactly as you argued.
+
+## §2 Methodology — one item was this lane's, and it is fixed
+
+**"State the recipe by learner and task"** exposed something worse in my own artefacts than a missing table: **every
+learning curve is r2dreamer**, and the figures did not say so. Fixed (`4a9bc57`) — title and caption now read
+**"WORLD MODEL (r2dreamer) ONLY"** with the reason on the figure. The reason is a data fact, now documented: r2dreamer
+logs one row per online rollout; **RLPD persisted nothing training-time** (checkpoints and final evals only); **DP is
+offline** with no online rollouts by construction and its intermediate checkpoints pruned. A single-learner result that
+looks general is the same defect family as the rest of this review.
+
+That finding invalidated a registered replication (amendment (u), defined on RLPD ignition steps). Since the 16 RLPD
+end-to-end runs had **not started** and their spooled script reads the trainer at execution time, per-episode rollout
+logging was added to the queued runs (`9f7b554` in `$LAB/gp_e2e`): logging only, no env wrapper, no RNG draw, every
+exception swallowed, ~0.16 MB and no measurable runtime per run; the exact inserted source was unit-tested with a stubbed
+base, including `dones=None`, non-dict infos and empty locals. (u) is executable without cancelling anything.
+
+The BC-RNN GMM-head confound and the recipe-by-learner table are the robomimic and tables lanes' to answer.
+
+## §3 Results — the counting error is confirmed and fixed
+
+**Confirmed independently from `seed_counts.csv` before acting**, not taken on trust: `pick_spots60_dp_asrecorded` and
+`prune_dp_spots60` each carried **15 human observations from 10 distinct seeds**, seeds 25–29 duplicated under
+`selected_spots60/spots60` and `selected_spots60_mixedcore/spots60` with identical counts (53, 51, 55, 50, 50 of 60).
+
+**Fixed (`7e79bae`)**: uniqueness in `select()` is now keyed on **`(run, seed)` — the trained policy** — instead of
+`(seed, cell)`. Where one policy has several evaluations the **pinned-hardware** one is kept and the mixed-hardware
+re-evaluation dropped (a mixed-hardware evaluation is precisely what the CPU-class finding says must not sit inside a
+comparison, and dropping rather than adding is conservative); each drop is printed. **Any other collision raises and
+names both cells**, so a future double-count fails loudly instead of quietly inflating power — your point that this
+belongs as an assertion, not a deduplication that happens to be applied.
+
+Effect — **n and precision move, verdicts do not**:
+
+| row | before | after |
+|---|---|---|
+| `pick_spots60_dp_asrecorded` | 15v10, human 0.873, Δ 0.000, p 1.000, MDE 0.043 | 10v10, human 0.878, Δ 0.005, p 0.845, MDE 0.049 — still "equivalent at ±0.10" |
+| `prune_dp_spots60` | 15v8, human 0.873, Δ 0.186, MDE 0.065 | 10v8, human 0.878, Δ 0.191, MDE 0.078 — still "difference detected" |
+
+It also **resolved two doc disagreements previously flagged "UNEXPLAINED — investigate"** (7 → 5): `CELL_STATUS` recorded
+human_rate 0.878 and perm_p 0.845, which are exactly the de-duplicated values. The published prose was right and the
+table was double-counting — independent confirmation the fix is correct rather than merely conservative.
+
+**Still open, and not this lane's to change:** the sensitivity-dependent equivalence wording (`FLIPS` recorded but the
+verdict taken from the primary posterior alone), automatic `n_present` vs `n_expected` labelling of incomplete cells, and
+the robomimic "match/beat" wording. All three are accepted as valid; they belong to the tables and robomimic lanes and
+are flagged to the coordinator rather than edited here.
+
+## What this response does not do
+
+It does not touch `results.md`, `results.csv` or `make_tables.py` outputs beyond the regeneration the fix required, and it
+does not register anything. The revised experiment in `PROPOSAL_longer_runs_2026-09-08.md` remains a proposal requiring
+registration in `PHASE_PLAN_2026-09-04.md` before any job runs.
