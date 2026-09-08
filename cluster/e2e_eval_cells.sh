@@ -9,12 +9,15 @@
 #   (1) NODE SENSITIVITY -- the same checkpoint/IC/mode/seed/horizon gives `nested`@32 on pax109 and `timeout`@300 on
 #       pax001/pax030/pax154; each node is self-consistent, nodes disagree, and the mechanism is chaotic amplification
 #       over 300 decisions of contact-rich physics (agreement to 1e-9 through decision 12). Short phase episodes are
-#       immune. The axis is now pinned exactly (coordinator, later the same evening): it is AVX2 vs AVX-512, not core
-#       count -- two Broadwell E5-2695 v4 nodes (pax109, pax154) reproduce the record bit-for-bit while Cascade Lake
-#       (pax001) and Sapphire Rapids (pax030) diverge at every thread pinning. Slurm's feature labels LIE about this
-#       (pax001 advertises `broadwell`), so eval_e2e.py reads the model string and flags from /proc/cpuinfo and
-#       stamps cpu_model + isa + avx512f on EVERY episode and their sets on every cell. REQUIRE_ISA=avx2 makes a cell
-#       REFUSE to run on the wrong class (for a pinned post-hoc re-score; pin with --nodelist, never --constraint).
+#       immune. The axis is MACHINE SIZE: physical core count, NOT the instruction set and NOT the node name. The
+#       AVX2-vs-AVX-512 attribution is WITHDRAWN (coordinator, 2026-09-07 late): a 40-core Broadwell and a 64-core
+#       Sapphire Rapids agree bit-for-bit ACROSS the ISA boundary while a 36-core Broadwell disagrees with the 40-core
+#       Broadwell on the SAME ISA; all 53 same-core-count comparisons are bit-identical and every one of the 19
+#       differing pairs has a 36-core machine on exactly one side. eval_e2e.py reads /proc/cpuinfo (never a Slurm
+#       feature label, which mislabels a Cascade Lake node as `broadwell`) and stamps cpu_model, physical cores,
+#       sockets, logical CPUs, task affinity, thread count and isa on EVERY episode. REQUIRE_CORES=<n> and/or
+#       THREADS=<n> make a cell REFUSE to run on the wrong configuration -- and unlike a node pin, they can be
+#       satisfied on ANY machine of the right size, which is what keeps the CPU-only pass ordinary parallel work.
 #   (2) ORDER DEPENDENCE -- in the shared-process protocol state leaks between full-scope episodes (uid 254 scores
 #       r=1.0 standalone but r=3.0 as episode 2 after uid 252). The shared cells inherit it BY DESIGN, because that is
 #       the protocol the world-model rows of PHASE_RESULTS §5.1 were produced under and this table has to sit beside
@@ -22,7 +25,8 @@
 #       coordinator/user pick without a re-run -- and without either choice being made silently.
 # Usage (env):
 #   KIND=sac|dp CKPT=<rlpd_final.zip | .../pretrained_model> OUT=<run dir> ARM=<dH|dDP> SEED=<n> \
-#   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] [REQUIRE_ISA=avx2|avx512] \
+#   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] \
+#   [REQUIRE_CORES=<n>] [THREADS=<n>] [REQUIRE_ISA=avx2|avx512] \
 #   [ROLE=preview|record] [CELL_DIR=""|rec] \
 #   [SIM_VARIANT=gc_kp4_riser3_shelf6] [EVAL_SEED=0] [VIDEO_SETS="rnd30"] [LIMIT=n] [REDO=0] [PAR=3] \
 #   bash cluster/e2e_eval_cells.sh
@@ -39,12 +43,16 @@ SETS=${SETS:-"hold15 rnd30 spots60"}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; PAR=${PAR:-3}
 VIDEO_SETS=${VIDEO_SETS:-"rnd30"}
 ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}; REQUIRE_ISA=${REQUIRE_ISA:-}
+REQUIRE_CORES=${REQUIRE_CORES:-}; THREADS=${THREADS:-}
 # ROLE: 'preview' (default, so the in-job evaluation of an unpinned training job can never be mistaken for a number)
 # vs 'record', which eval_e2e.py refuses without --require-isa. CELL_DIR puts the pinned pass's cells in their own
 # subdirectory of the run dir, so a preview cell and a cell of record never share a path.
 ROLE=${ROLE:-preview}; CELL_DIR=${CELL_DIR:-}
 CELLS_ROOT="$OUT"; [ -n "$CELL_DIR" ] && CELLS_ROOT="$OUT/$CELL_DIR"
-[ "$ROLE" = record ] && [ -z "$REQUIRE_ISA" ] && { echo "FATAL: ROLE=record needs REQUIRE_ISA (a cell of record is pinned by construction)"; exit 1; }
+if [ "$ROLE" = record ] && [ -z "$REQUIRE_CORES" ] && [ -z "$THREADS" ]; then
+  echo "FATAL: ROLE=record needs REQUIRE_CORES and/or THREADS -- a cell of record is pinned by construction, and the"
+  echo "       axis is machine size / thread count (the AVX2-vs-AVX-512 attribution is withdrawn)."; exit 1
+fi
 mkdir -p "$CELLS_ROOT"
 if [ -z "${MODES:-}" ]; then MODES="sample mode"; [ "$KIND" = dp ] && MODES="sample"; fi
 [ "$KIND" = dp ] && case " $MODES " in *" mode "*) echo "FATAL: dp has no mode cell"; exit 1;; esac
@@ -76,7 +84,13 @@ done
 if [ "${REDO:-0}" = 1 ]; then for S in $SETS; do for M in $MODES; do rm -rf "$CELLS_ROOT/fresh_eval_${S}_${M}" "$CELLS_ROOT/fresh_eval_${S}_${M}_iso"; done; done; fi
 CPU_MODEL=$(awk -F': ' '/^model name/{print $2; exit}' /proc/cpuinfo 2>/dev/null)
 CPU_ISA=$(awk '/^flags/{if ($0 ~ /avx512f/) print "avx512"; else if ($0 ~ /avx2/) print "avx2"; else print "pre-avx2"; exit}' /proc/cpuinfo 2>/dev/null)
-echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_isa='${REQUIRE_ISA}' $(date)"
+CPU_CORES=$(python3 -c "
+import re
+t=open('/proc/cpuinfo').read()
+c=re.search(r'^cpu cores\s*:\s*(\d+)', t, re.M)
+s=len(set(re.findall(r'^physical id\s*:\s*(\d+)', t, re.M))) or 1
+print((int(c.group(1))*s) if c else t.count('processor	'))" 2>/dev/null)
+echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) cores=${CPU_CORES:-?} isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_cores='${REQUIRE_CORES}' threads='${THREADS}' require_isa='${REQUIRE_ISA}' $(date)"
 
 eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local D=$1 SET=$2 MODE=$3 IDX=$4 VID=$5
@@ -84,6 +98,8 @@ eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local VF=(); [ -n "$VID" ] && VF=(--video)
   local LF=(); [ -n "${LIMIT:-}" ] && LF=(--limit "$LIMIT")
   local IF=(); [ -n "$REQUIRE_ISA" ] && IF=(--require-isa "$REQUIRE_ISA")
+  [ -n "$REQUIRE_CORES" ] && IF+=(--require-cores "$REQUIRE_CORES")
+  [ -n "$THREADS" ] && IF+=(--threads "$THREADS")
   IF+=(--role "$ROLE")
   mkdir -p "$D"
   python baselines/eval_e2e.py --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \

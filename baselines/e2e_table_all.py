@@ -47,7 +47,9 @@ def cell(run_dir, iset, mode, suffix='', root=''):
                 isolation=d.get('isolation', 'shared_process'),
                 nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'],
                 isas=isas, cpus=d.get('cpu_models') or sorted({str(e.get('cpu_model', 'unknown')) for e in pe}),
-                role=d.get('role', 'legacy'))
+                role=d.get('role', 'legacy'),
+                cores=d.get('core_counts') or sorted({e.get('cpu_cores_physical') for e in pe if e.get('cpu_cores_physical')}),
+                threads=d.get('thread_counts') or sorted({e.get('torch_num_threads') for e in pe if e.get('torch_num_threads')}))
 
 
 def strat_counts(c, stage, support_x):
@@ -109,9 +111,14 @@ def main():
                     help="subdirectory of each run dir holding the cells: '' = the in-job PREVIEW cells (produced "
                          "wherever the training job landed -- never a number for a table), 'rec' = the pinned "
                          "CPU-only evaluation pass (the cells of record).")
+    ap.add_argument('--cores', type=int, default=None,
+                    help='restrict every arm to seeds whose cell ran on a machine with exactly this many physical '
+                         'cores -- the clean same-hardware comparison. Full-scope outcomes track MACHINE SIZE '
+                         '(coordinator 2026-09-07 late; the AVX2-vs-AVX-512 attribution is withdrawn). Cells of '
+                         'another size are dropped from the test and named.')
     ap.add_argument('--isa', default=None, choices=('avx2', 'avx512'),
-                    help='restrict every arm to seeds whose cell ran on this instruction-set class -- the clean '
-                         'same-class comparison. Cells of another class are dropped from the test and reported.')
+                    help='(diagnostic only, the ISA attribution is WITHDRAWN as the divergence axis) restrict every '
+                         'arm to seeds whose cell ran on this instruction-set class.')
     ap.add_argument('--cell-suffix', default='',
                     help="'' = the shared-process cells (the PHASE_RESULTS §5.1 protocol, comparable with the "
                          "published world-model row); '_iso' = the isolated cells (one fresh process per start, "
@@ -139,42 +146,47 @@ def main():
                           f'comparable with a pinned `record` cell (or with the `legacy` world-model cells); '
                           f're-run the missing side of the pinned pass rather than mixing. Rows skipped.')
                     continue
-                if args.isa:
-                    for arm in ('dH', 'dDP'):
-                        dropped = [s for s, c in zip(seeds, cells[arm]) if c and args.isa not in c['isas']]
-                        if dropped:
-                            print(f'  --isa {args.isa}: dropping {arm} seeds {dropped} (other instruction-set class)')
-                        cells[arm] = [(c if (c and args.isa in c['isas']) else None) for c in cells[arm]]
-                    if not any(c for cs in cells.values() for c in cs):
+                for flag, key, label in ((args.cores, 'cores', 'physical cores'), (args.isa, 'isas', 'instruction set')):
+                    if flag is None:
                         continue
+                    for arm in ('dH', 'dDP'):
+                        dropped = [s for s, c in zip(seeds, cells[arm]) if c and flag not in (c[key] or [])]
+                        if dropped:
+                            print(f'  --{key.rstrip("s")} {flag}: dropping {arm} seeds {dropped} (other {label})')
+                        cells[arm] = [(c if (c and flag in (c[key] or [])) else None) for c in cells[arm]]
+                if not any(c for cs in cells.values() for c in cs):
+                    continue
                 nodes = sorted({h for cs in cells.values() for c in cs if c for h in c['nodes']})
                 isol = sorted({c['isolation'] for cs in cells.values() for c in cs if c})
                 isa_all = sorted({i for cs in cells.values() for c in cs if c for i in c['isas']})
+                core_all = sorted({n for cs in cells.values() for c in cs if c for n in (c['cores'] or [])})
+                thr_all = sorted({t for cs in cells.values() for c in cs if c for t in (c['threads'] or [])})
                 bal = {arm: {} for arm in ('dH', 'dDP')}
                 for arm in ('dH', 'dDP'):
                     for c in cells[arm]:
                         if c:
-                            for i in c['isas']:
-                                bal[arm][i] = bal[arm].get(i, 0) + 1
+                            for n in (c['cores'] or ['?']):
+                                bal[arm][n] = bal[arm].get(n, 0) + 1
                 print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds | '
-                      f'role {"/".join(roles)} | protocol {"/".join(isol)} | isa {",".join(isa_all)} | '
-                      f'nodes {len(nodes)}: {",".join(nodes)}')
+                      f'role {"/".join(roles)} | protocol {"/".join(isol)} | cores {core_all} threads {thr_all} | '
+                      f'isa {",".join(isa_all)} | nodes {len(nodes)}: {",".join(nodes)}')
                 if roles == ['preview']:
                     print('  PREVIEW ONLY -- these cells came from the in-job evaluation of training jobs that ran '
                           'wherever the scheduler put them. Descriptive only; the cells of record are the pinned '
                           'CPU-only pass (--cell-root rec).')
-                print(f'  isa balance -- human {bal["dH"]} | machine {bal["dDP"]}')
-                if len(isa_all) > 1:
-                    print('  NOTE: this comparison spans MORE THAN ONE INSTRUCTION-SET CLASS (AVX2 vs AVX-512). '
-                          'Long-horizon full-scope outcomes diverge between the two -- same checkpoint, IC, mode, '
-                          'seed and horizon (coordinator 2026-09-07); node NAME is not the axis and Slurm feature '
-                          'labels are unreliable (a Cascade Lake node advertises `broadwell`), so this is keyed off '
-                          '/proc/cpuinfo. If the balance line above is even across arms this is variance that '
-                          'inflates the MDE; if it is skewed it is BIAS and the arms must be compared within a '
-                          'class (--isa avx2 / --isa avx512).')
+                print(f'  core-count balance -- human {bal["dH"]} | machine {bal["dDP"]}')
+                if len(core_all) > 1 or len(thr_all) > 1:
+                    print('  NOTE: this comparison spans MORE THAN ONE HARDWARE CONFIGURATION (physical cores '
+                          f'{core_all}, per-task threads {thr_all}). Long-horizon full-scope outcomes track MACHINE '
+                          'SIZE -- same checkpoint, IC, mode, seed and horizon give different outcomes on machines of '
+                          'different core counts (coordinator 2026-09-07 late; the earlier AVX2-vs-AVX-512 '
+                          'attribution is WITHDRAWN, and node NAME is not the axis either). If the balance line '
+                          'above is even across arms this is variance that inflates the MDE; if it is skewed it is '
+                          'BIAS and the arms must be compared within one configuration (--cores N).')
                 elif len(nodes) > 1:
-                    print(f'  Cells span {len(nodes)} nodes of ONE instruction-set class ({isa_all[0]}) -- safe to '
-                          f'combine (the divergence axis is the class, not the node name).')
+                    print(f'  Cells span {len(nodes)} nodes of ONE hardware configuration ({core_all} physical '
+                          f'cores, {thr_all} threads) -- safe to combine (the divergence axis is machine size, not '
+                          f'the node name).')
                 print('| stage | human per-seed | human | machine per-seed | machine | Δ | p | MDE |')
                 print('|---|---|---|---|---|---|---|---|')
                 for st in stages:

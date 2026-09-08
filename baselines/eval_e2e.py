@@ -64,11 +64,23 @@ ap.add_argument('--ic-index', type=int, default=None,
                      'single-episode metrics with baselines/merge_e2e_iso.py.')
 ap.add_argument('--device', default='auto', help='policy device for dp (auto = cuda if visible); sac is always cpu')
 ap.add_argument('--require-isa', default=None, choices=('avx2', 'avx512'),
-                help="Fail LOUDLY at startup unless this node's instruction-set class matches. Coordinator "
-                     "2026-09-07: full-scope divergence is pinned to AVX2 vs AVX-512 (Broadwell E5-2695 v4 "
-                     "reproduces the record bit-for-bit; Cascade Lake / Sapphire Rapids diverge at every thread "
-                     "pinning), and Slurm's feature labels LIE about this -- pax001 advertises `broadwell` and is a "
-                     "Cascade Lake part -- so the class is read from /proc/cpuinfo here, never from --constraint.")
+                help="Fail LOUDLY unless this machine's instruction-set class matches. NOTE (coordinator, 2026-09-07 "
+                     "late): the ISA ATTRIBUTION IS WITHDRAWN -- divergence tracks physical CORE COUNT, not AVX2 vs "
+                     "AVX-512. A 40-core Broadwell and a 64-core Sapphire Rapids agree bit-for-bit ACROSS the ISA "
+                     "boundary while a 36-core Broadwell disagrees with the 40-core Broadwell on the SAME ISA; all 53 "
+                     "same-core-count comparisons are bit-identical and all 19 differing pairs have a 36-core machine "
+                     "on exactly one side. This flag is kept as a diagnostic stamp/guard only; the live guards are "
+                     "--require-cores and --threads.")
+ap.add_argument('--require-cores', type=int, default=None,
+                help='Fail LOUDLY unless the MACHINE has exactly this many physical cores (sockets x cores-per-socket '
+                     "read from /proc/cpuinfo, which reports the whole node inside a cgroup -- i.e. machine size, the "
+                     'variable the divergence actually tracks). This is the "match by machine size" design, needed if '
+                     'the thread-pinning sweep finds that fixing threads is NOT sufficient.')
+ap.add_argument('--threads', type=int, default=None,
+                help='Pin the per-task thread count deterministically BEFORE torch/genesis are imported (OMP, MKL, '
+                     'OpenBLAS, NUMEXPR, Taichi, torch). This is the "fixed core and thread count per task" design, '
+                     'and if the sweep finds it sufficient it can be satisfied on ANY node -- which is what makes the '
+                     'CPU-only Diffusion Policy pass ordinary parallel work instead of a two-machine queue.')
 ap.add_argument('--role', choices=('preview', 'record'), default='preview',
                 help="'preview' (DEFAULT) = a convenience cell produced wherever the training job happened to land; "
                      "NEVER a number for a table. 'record' = a cell of the pinned evaluation pass, and it REQUIRES "
@@ -79,37 +91,70 @@ ap.add_argument('--arm', default=None); ap.add_argument('--tag', default=None)
 args = ap.parse_args()
 if args.kind == 'dp' and args.mode == 'mode':
     sys.exit('FATAL: DP has no deterministic mode (diffusion sampling); run --mode sample')
-if args.role == 'record' and not args.require_isa:
-    sys.exit('FATAL: --role record without --require-isa. A cell of record must have its instruction-set class '
-             'pinned by construction; run the pinned pass (cluster/sbatch_e2e_rescore.sh) or use --role preview.')
+if args.role == 'record' and not (args.require_cores or args.threads):
+    sys.exit('FATAL: --role record needs --require-cores and/or --threads. A cell of record must have its hardware '
+             'configuration pinned BY CONSTRUCTION, and the axis is machine size / thread count -- not the '
+             'instruction set, whose attribution was withdrawn. Run the pinned pass '
+             '(cluster/sbatch_e2e_rescore.sh) or use --role preview.')
 
 
 def cpu_probe():
-    """(model string, isa class, avx512f present) read from /proc/cpuinfo -- NEVER from Slurm's feature labels,
-    which mislabel at least one Cascade Lake node as `broadwell` (coordinator 2026-09-07)."""
-    model, flags = 'unknown', set()
+    """Machine description read from /proc/cpuinfo -- NEVER from Slurm's feature labels, which mislabel at least one
+    Cascade Lake node as `broadwell`. Inside a cgroup /proc/cpuinfo still reports the whole NODE, so the core counts
+    below are MACHINE SIZE -- the variable full-scope divergence actually tracks (coordinator, 2026-09-07 late; the
+    earlier AVX2-vs-AVX-512 attribution is withdrawn). The task's own allocation is read from the affinity mask."""
+    model, flags, sockets, cores_per_socket, logical = 'unknown', set(), set(), None, 0
     try:
         with open('/proc/cpuinfo') as fh:
             for line in fh:
-                if line.startswith('model name') and model == 'unknown':
+                if line.startswith('processor'):
+                    logical += 1
+                elif line.startswith('model name') and model == 'unknown':
                     model = line.split(':', 1)[1].strip()
                 elif line.startswith('flags') and not flags:
                     flags = set(line.split(':', 1)[1].split())
+                elif line.startswith('physical id'):
+                    sockets.add(line.split(':', 1)[1].strip())
+                elif line.startswith('cpu cores') and cores_per_socket is None:
+                    cores_per_socket = int(line.split(':', 1)[1].strip())
     except Exception as e:      # never fail an evaluation over a stamp
         print(f'[eval-e2e] WARNING: could not read /proc/cpuinfo ({e}); cpu stamps will say unknown', flush=True)
+    n_sockets = max(len(sockets), 1)
+    cores = (cores_per_socket * n_sockets) if cores_per_socket else (logical or 0)
     avx512f = 'avx512f' in flags
     isa = 'avx512' if any(f.startswith('avx512') for f in flags) else ('avx2' if 'avx2' in flags else 'pre-avx2')
-    return model, isa, avx512f
+    try:
+        affinity = len(os.sched_getaffinity(0))
+    except Exception:
+        affinity = None
+    return dict(cpu_model=model, isa=isa, avx512f=avx512f, cpu_cores_physical=cores, cpu_sockets=n_sockets,
+                cpu_logical=logical, cpu_affinity=affinity)
 
 
-CPU_MODEL, CPU_ISA, CPU_AVX512F = cpu_probe()
+HW = cpu_probe()
+CPU_MODEL, CPU_ISA, CPU_AVX512F = HW['cpu_model'], HW['isa'], HW['avx512f']
 if args.require_isa and CPU_ISA != args.require_isa:
-    sys.exit(f'FATAL: --require-isa {args.require_isa} but this node is {CPU_ISA} ({CPU_MODEL} on '
-             f'{socket.gethostname()}; avx512f={CPU_AVX512F}). Full-scope episodes are instruction-set sensitive; '
-             f'refusing to produce a cell on the wrong class.')
+    sys.exit(f'FATAL: --require-isa {args.require_isa} but this machine is {CPU_ISA} ({CPU_MODEL} on '
+             f'{socket.gethostname()}). NOTE: the ISA attribution is WITHDRAWN as the divergence axis; '
+             f'--require-cores is the live machine-size guard.')
+if args.require_cores is not None and int(HW['cpu_cores_physical']) != int(args.require_cores):
+    sys.exit(f'FATAL: --require-cores {args.require_cores} but this machine has {HW["cpu_cores_physical"]} physical '
+             f'cores ({HW["cpu_sockets"]} socket(s), {CPU_MODEL} on {socket.gethostname()}). Full-scope outcomes '
+             f'track MACHINE SIZE (coordinator 2026-09-07); refusing to produce a cell on the wrong size.')
+if args.threads is not None:
+    # must happen BEFORE torch / genesis / taichi are imported: they read these at import time, and the thread count
+    # changes reduction order, which is the whole point of pinning it.
+    assert args.threads >= 1, args.threads
+    for _v in ('OMP_NUM_THREADS', 'MKL_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'TI_NUM_THREADS'):
+        os.environ[_v] = str(args.threads)
+HW['threads_requested'] = args.threads
+HW['omp_num_threads'] = os.environ.get('OMP_NUM_THREADS')
 
 import numpy as np   # noqa: E402
 import torch         # noqa: E402
+if args.threads is not None:
+    torch.set_num_threads(int(args.threads))
+HW['torch_num_threads'] = int(torch.get_num_threads())
 torch.manual_seed(args.seed); np.random.seed(args.seed)
 
 # ---- sidecar: every action-semantics parameter comes from the checkpoint, never a default ----
@@ -150,7 +195,8 @@ if args.ic_index is not None:
 ISOLATION = 'fresh_process' if args.ic_index is not None else 'shared_process'
 print(f'[eval-e2e] {len(ics)} start(s) from {args.ic_file}:{args.ic_set} (offset {IC_OFFSET}, isolation {ISOLATION}) '
       f'({sum(1 for e in ics if e.get("uid") is not None)} uid starts, {sum(1 for e in ics if e.get("uid") is None)} pose starts) '
-      f'node={socket.gethostname()} pid={os.getpid()} isa={CPU_ISA} avx512f={CPU_AVX512F} cpu="{CPU_MODEL}" '
+      f'node={socket.gethostname()} pid={os.getpid()} cores={HW["cpu_cores_physical"]}p/{HW["cpu_logical"]}l '
+      f'affinity={HW["cpu_affinity"]} threads={HW.get("torch_num_threads")} isa={CPU_ISA} cpu="{CPU_MODEL}" '
       f'role={args.role}', flush=True)
 
 # ---- env: the full scope of the shared full_env, corrected world ----
@@ -277,7 +323,8 @@ for k, ic in enumerate(ics):
     # node-sensitive (same ckpt+IC+seed flips outcome across nodes) and, in the shared-process protocol, ORDER-dependent
     # (state leaks between episodes). `order` is the position within THIS process, so it is 0 for every isolated cell.
     results.append(dict(ep=IC_OFFSET + k, order=k, node=socket.gethostname(), pid=os.getpid(),
-                        cpu_model=CPU_MODEL, isa=CPU_ISA, avx512f=CPU_AVX512F,
+                        **{k: HW[k] for k in ('cpu_model', 'isa', 'avx512f', 'cpu_cores_physical', 'cpu_sockets',
+                                              'cpu_logical', 'cpu_affinity', 'torch_num_threads', 'omp_num_threads')},
                         ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
                         slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
@@ -297,6 +344,11 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                nodes=sorted({r['node'] for r in results}), pids=sorted({r['pid'] for r in results}),
                cpu_models=sorted({r['cpu_model'] for r in results}), isa_classes=sorted({r['isa'] for r in results}),
                avx512f=sorted({bool(r['avx512f']) for r in results}), require_isa=args.require_isa,
+               require_cores=args.require_cores, threads_requested=args.threads,
+               core_counts=sorted({int(r['cpu_cores_physical']) for r in results}),
+               thread_counts=sorted({r.get('torch_num_threads') for r in results}),
+               affinities=sorted({r.get('cpu_affinity') for r in results if r.get('cpu_affinity') is not None}),
+               hw_axis='machine size (physical cores) + per-task thread count; the AVX2-vs-AVX512 attribution is withdrawn',
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n', eval_fixes='j+l-prime',
                slide_success=stage_counts['slide_success'] / n,
                stages={s: stage_counts[s] / n for s in STAGES},
