@@ -40,6 +40,9 @@ run_cell() {   # <run> <kind: phase|full> <bank-or-icset> <tag> <mode>
         --ic-file $LAB/genesis_pickaplace/baselines/eval_ics.json --ic-set $SRC --seed 0 --out $OUT --device cpu > $LOG 2>&1
   fi
   local rc=$?
+  # EVAL_FIXES 7.2: hardware is part of an end-to-end cell's provenance -- record it next to the metrics
+  [ -d "$OUT" ] && printf '{"node": "%s", "cpu_model": "%s", "ncpus_cgroup": %s, "slurm_job": "%s"}\n' \
+      "$(hostname)" "$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | sed 's/^ *//')" "$(nproc)" "${SLURM_JOB_ID:-?}" > $OUT/hardware.json
   echo "# $(date -Is) END rc=$rc $RUN $TAG $MODE $(grep -E '^\[eval\] [0-9]+ episodes|pinned entries' $LOG | tail -2 | tr '\n' ' ')"
   return $rc
 }

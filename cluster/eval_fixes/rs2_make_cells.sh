@@ -40,4 +40,9 @@ for m in mode sample; do for s in 0 1 2 3 4 5 6 7; do
   done
 done; done
 } > $W/rs2_cells.txt
-wc -l $W/rs2_cells.txt
+# amendment (j)/(l) + EVAL_FIXES 7.2/7.6: end-to-end cells are CPU-class sensitive (long horizons amplify AVX2-vs-AVX512
+# rounding differences) and the records were produced on a MIX of classes; phase cells are not (3488 episodes bit-exact).
+# Split so the e2e lanes can be pinned to ONE class and the phase lanes can run anywhere.
+grep -E " full (rnd|hold) " $W/rs2_cells.txt > $W/rs2_cells_e2e.txt
+grep -vE " full (rnd|hold) " $W/rs2_cells.txt > $W/rs2_cells_phase.txt
+wc -l $W/rs2_cells.txt $W/rs2_cells_phase.txt $W/rs2_cells_e2e.txt
