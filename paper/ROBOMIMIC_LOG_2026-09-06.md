@@ -464,3 +464,19 @@ saturated machine actions — is NOT tested by these data and is flagged as an o
   seeds are in**, and if it survives it must be stated with the per-seed spread, since both arms are small and noisy.
   Current A4 state (mode /50): re15 [2,8,2,5,2,0,4,9] = 0.080 (n=8); rough15 [2,–,0,0,1,0,8,1] = 0.034 (n=7);
   re20 = 0.200 (n=5); rough20 none yet.
+- **2026-09-08 tape-robustness probe — re20's tapes ARE generically robust; the two findings connect.**
+  `baselines/robomimic/tape_robustness_probe.py`: every MH200 tape replayed natively once and under **two independent
+  uniform-noise draws at ε 0.15 with seeds 101/202, disjoint from the build's seed 0** (`robomimic_data/tape_robustness.json`):
+  | group (defined by the BUILD's draw) | n | native replay | independent ε 0.15 draws survived |
+  |---|---|---|---|
+  | `G_re20` (survived the harsher ε 0.20 build draw) | 61 | **61/61** | 80/122 = **0.656 per draw** |
+  | `G_re15only` (in re15, not re20) | 35 | **35/35** | 44/70 = **0.629 per draw** |
+  | `G_rest` (the other MH200 tapes) | 104 | **89/104 (0.856)** | 80/208 = **0.385 per draw** |
+  So survival is a **tape property, not draw luck**: tapes selected by ONE perturbed replay survive INDEPENDENT
+  perturbations at 0.63–0.66 per draw versus 0.385 for the rest (+0.25 absolute, +68 % relative), and they also replay
+  natively 100 % versus 85.6 %. This is the same robustness-selection effect `paper/REPLAY_YIELD_2026-09-08.md`
+  documents at build time, so the two are one finding: **replay-based filtering silently selects a well-behaved
+  subpopulation of demonstrations**, and any arm built that way is quality-selected as well as smaller.
+  Note what it does NOT explain: `G_re20` and `G_re15only` are nearly equally robust (0.656 v 0.629), so generic
+  robustness does not distinguish the re20 tape set from the rest of re15 — it cannot by itself account for a learner
+  difference between the two arms (which is in any case shrinking with seeds; see the correction above).
