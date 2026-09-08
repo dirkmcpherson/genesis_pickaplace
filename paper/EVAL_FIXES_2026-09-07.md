@@ -383,11 +383,16 @@ absent). Re-scored = all 64 cells pinned to one 64-core class, with the (j) and 
 | **contact_push** (new) | — → **0.204** | — → **0.212** | −0.008 | 0.942 | [−0.129, +0.112] | 0.169 |
 | nested_proxy (= published `nested`) | 0.163 → **0.138** | 0.192 → **0.192** | −0.054 | 0.300 | [−0.155, +0.046] | 0.141 |
 | **nested_honest** (new) | — → **0.046** | — → **0.104** | −0.058 | **0.087** | [−0.121, +0.004] | 0.088 |
-| **slide_success** (l, statistic of record) | — → **0.042** | — → **0.017** | +0.025 | 0.277 | [−0.013, +0.063] | 0.053 |
+| **slide_success** (l) — see caveat | — → **0.042** | — → **0.017** | +0.025 | 0.277 | [−0.013, +0.063] | 0.053 |
 
 **Registered predictions — all met.** (d) P2 (|Δ| < 0.10 at every stage either arm reaches ≥ 0.2): **MET** at picked,
 placed_v2, contact, contact_push. (d) P3 (nested < 0.2 both arms, on the honest predicate): **MET** (0.046 / 0.104).
 (l) |Δ| < 0.10 on `slide_success`: **MET** (0.025). (l) `slide_success` ≤ `nested_honest`: **MET** in both arms.
+**Caveat on `slide_success`, added 2026-09-08:** the implemented predicate is amendment **(l)**'s — `grip_cmd < 0.3`,
+`GRIP_OPEN_CMD` in `genesis_can_env.py:66` — and **(p) withdrew that clause** because it passes only **2 of 74**
+demonstrations; the (p) replacement (prior `placed_v2` release + an uncalibrated clause 5) is **not** implemented here.
+So this column scores a predicate the demonstrations themselves fail. It is a diagnostic, not the statistic of record,
+until (p) clause 5 is calibrated — and the two (l) predictions above are met *for the withdrawn predicate*.
 **No stage falls outside ±0.10.**
 
 **But the power is the story, and it limits what "no source effect" can mean here.** Five of the seven stages have an
