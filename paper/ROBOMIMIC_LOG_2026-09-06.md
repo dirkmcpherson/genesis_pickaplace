@@ -457,3 +457,10 @@ A third, unpredicted difference is larger than the modality one: the machine nei
 human one (0.36 v 0.11), consistent with the bang-bang/saturated action statistics already documented. A plausible
 revised account — a 5-mode mixture fits tight, structured human actions and wastes capacity/adds variance on wide,
 saturated machine actions — is NOT tested by these data and is flagged as an open question, not a finding.
+- **2026-09-08 CORRECTION to the interim re20 note (before it is built on further):** with 5 of 8 seeds, `MH200_re20`
+  reads [17, 1, 16, 6, 10] = **0.200**, not the ~0.33 its first two seeds suggested; per-seed spread is 1–17 /50. The
+  qualitative direction survives so far (9,806 rows at 0.200 vs 15,702 rows at 0.080) but the magnitude has halved and
+  may move again — the arm is not complete. **The "counterexample to row count" claim should not be used until all 8
+  seeds are in**, and if it survives it must be stated with the per-seed spread, since both arms are small and noisy.
+  Current A4 state (mode /50): re15 [2,8,2,5,2,0,4,9] = 0.080 (n=8); rough15 [2,–,0,0,1,0,8,1] = 0.034 (n=7);
+  re20 = 0.200 (n=5); rough20 none yet.
