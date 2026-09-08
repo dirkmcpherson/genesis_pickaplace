@@ -269,3 +269,6 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
 - **BATCH 2 (G2b no-demo, gate 442 GB free): 3354437–3354444.** **BATCH 3 (A2 controls, gate 442 GB free, `--nice=5000`):
   MGall s0-7 3354448–3354455, MG718s s0-7 3354456–3354463, MG200s@300k s0-7 3354464–3354471.** Batch 4 (A4, 32 runs,
   `--nice=6000`) is staged behind them under the same ≥ 150 GB gate.
+- **BATCH 4 (A4 dose pairs, 32 runs, gate 444 GB free, `--nice=6000`): 3354850–3354881** (MH200_re15 3354850–57,
+  MH200_rough15 3354858–65, MH200_re20 3354866–73, MH200_rough20 3354874–81). All four recovery batches are now queued
+  in the registered priority order; every launcher refuses to start below 100 GB free.
