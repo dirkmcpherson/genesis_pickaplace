@@ -22,6 +22,10 @@ FAM = [
      ["contact", "task_success"]),
     ("e2e",     "full_r2d_state_dHfull_all_bnormclampS8ent5_s%d",       "full_r2d_state_dDPfull_bnormclampS8ent5_s%d",
      ["picked", "contact", "nested"]),
+    # pick (user, 2026-09-08): the stage-1 arms of record. scope='pick' pays +1 and terminates on the pick grant, so
+    # `picked` IS the task; `contact` is incidental and only logged.
+    ("pick",    "s2_r2d_pick_state_dHv2raw_bnormclamp1ent5_s%d",        "s2_r2d_pick_state_dDP_bnormclamp1ent5_s%d",
+     ["picked"]),
 ]
 RENAME = {("e2e", "nested"): "nested_proxy"}     # never call the training proxy `nested` on a plot
 

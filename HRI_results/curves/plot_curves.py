@@ -35,7 +35,7 @@ def perm(a, b, n=200000, seed=0):
 
 print("=== TIME TO IGNITION (first binned step at which the seed's online success reaches 0.2) ===")
 ig_lines = []
-for fam, stage in (("place", "placed_v2"), ("slide", "contact"), ("e2e", "picked")):
+for fam, stage in (("pick", "picked"), ("place", "placed_v2"), ("slide", "contact"), ("e2e", "picked")):
     g = {}
     for r in seeds:
         if r["family"] == fam and r["stage"] == stage and r["ignition_step"]:
@@ -51,7 +51,7 @@ for fam, stage in (("place", "placed_v2"), ("slide", "contact"), ("e2e", "picked
     print("     machine seeds: %s" % np.sort(m).astype(int).tolist())
 
 print("\n=== seed classification (dead-seed check) ===")
-for fam in ("place", "slide", "e2e"):
+for fam in ("pick", "place", "slide", "e2e"):
     for arm in ("human", "machine"):
         sel = [r for r in seeds if r["family"] == fam and r["arm"] == arm]
         if not sel: continue
@@ -62,7 +62,7 @@ for fam in ("place", "slide", "e2e"):
         print("  %-6s %-8s stage=%-12s %s" % (fam, arm, st, cls))
 
 for variant in ("mean", "seeds"):
-    fams = [("place", ["placed_v2", "contact"]), ("slide", ["contact", "task_success"]),
+    fams = [("pick", ["picked"]), ("place", ["placed_v2", "contact"]), ("slide", ["contact", "task_success"]),
             ("e2e", ["picked", "contact", "nested_proxy"])]
     ncol = max(len(s) for _, s in fams)
     fig, axes = plt.subplots(len(fams), ncol, figsize=(4.6 * ncol, 3.5 * len(fams)), squeeze=False)
