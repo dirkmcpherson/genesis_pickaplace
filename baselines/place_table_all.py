@@ -138,6 +138,15 @@ def main():
         print('\n**Entry-bank provenance** (file @ sha256[:12] / bank_version -> learners):')
         for (b, sha, bv), who in sorted(BANKS.items()):
             print(f'- `{b}` @ `{sha}` / `{bv}` -> {", ".join(sorted(who))}')
+        by_sha = {}
+        for (b, sha, bv), who in BANKS.items():
+            if sha != 'unstamped':
+                by_sha.setdefault(sha, set()).update(who)
+        for sha, who in by_sha.items():
+            names = sorted({b for (b, s2, _) in BANKS if s2 == sha})
+            if len(names) > 1:
+                print(f'- the same bank CONTENT (`{sha}`) is read under {len(names)} names {names} by '
+                      f'{", ".join(sorted(who))} -- identical entries, so these rows are directly comparable.')
         per_file = {}
         for (b, sha, bv), who in BANKS.items():
             per_file.setdefault(b, set()).add((sha, bv))
