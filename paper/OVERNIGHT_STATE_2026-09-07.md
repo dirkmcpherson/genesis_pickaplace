@@ -6,7 +6,15 @@
 
 ## 1. Decisions waiting for you (nothing else is blocked)
 
-1. **Which human tapes the Slide phase trains on**: 15 (the simulation completed the slide) or ~30 (you performed one, the sim fell 2–4 cm short on 16 of them). Full argument in `PHASE_PLAN` amendment (q), including the asymmetry that machine demonstrations are sim-achievable by construction. Slide's 32 jobs are held pending this.
+1. **Which human tapes the Slide phase trains on.** This is now properly reconciled, and **your "roughly 18" is not reproducible by any automated criterion — for a good reason.** Every automated count scores the *simulation*; your 18 was a judgement of the *real footage*. The full ladder, on the corrected entry gate (can set down upright on the shelf, held 10 frames, no gripper term), which fires on 48 of 74 tapes, counted by how far the human pushed the can goalward after entry:
+
+   | push ≥ | 0 | 1 cm | 2 cm | 3 cm | 4 cm | 6 cm |
+   |---|---|---|---|---|---|---|
+   | tapes | 46 | 36 | 33 | **30** | **25** | **15** |
+
+   So the registered "~30" is exactly the ≥3 cm set, and the registered "15" is the set the simulation actually completes. **Do not try to match the number 18.** Two entirely unrelated constructions both total exactly 18 and they agree on only 3 uids out of 18 — the count coinciding is a coincidence, twice over. What the bracket means: **15 = the world reproduces the slide; 30 = you performed one.** The gap between them is the world's shortfall, not yours — the simulated tool tracks the real tool to 0.2 cm at set-down and the can simply fails to follow by 2–4 cm.
+
+   **My earlier recommendation (train on the 15) is contested and I no longer lead with it.** Its virtue is symmetry, since machine demonstrations are sim-achievable by construction. Its defect, which I had not weighed, is that selecting human tapes by simulation success filters them toward the geometry this world happens to reproduce, which is a selection effect on the *world*. The honest options are: 15 (symmetric, but biased toward easy geometry), 30 (every demonstrated slide, including tapes whose reward the world can never grant — fine for imitation, a real problem for RL), or **25 at the ≥4 cm cut as the middle that drops only the weakest pushes**. All three sets are enumerated in `paper/slide_per_uid_2026-09-07.txt`. Slide's 32 jobs are held on your call.
 2. **Whether to raise end-to-end to 16 v 16** (its detectable-effect threshold is ≈ 0.21, the project's widest).
 3. **Robomimic framing** — but wait for the controls (see §3); the day's strongest result may not survive them.
 
@@ -32,6 +40,12 @@
 ## 4. Running / held
 
 Running: robomimic recovery (72 runs, DP arm complete, controls landing), place 32, end-to-end 32, dv3 4-seed comparison, contact re-score 192 cells, in-distribution evaluations. Held deliberately: Slide 32 (predicate), end-to-end re-score 320 cells (launching now that pinning is prepared).
+
+## 4a. What to watch, and one trap in the tape labels
+
+All of it is on local disk and now listed in `paper/REVIEW_REELS_INDEX_2026-09-07.md`. The end-to-end human trials are complete at **all 74** — real footage beside the simulated re-execution with a wrist camera and the deviation stamped. Earlier only 47 rendered; the 27 failures were not missing tapes but a new assertion landing in the environment mid-run while the renderer never exported the world variable, which is fixed. There are also **20 slide demonstrations with a synchronised signal graph**, which are the ones to watch for the decision above: 232 releases, re-closes to 0.4 and pushes the can home (the demo that broke the old gripper-based rule), 273 pushes with a fully closed fist, 255 with an open hand, and 259 pushes but the can stops short.
+
+**The trap:** a tape's own `stage` field is stale and will mislead you. The environment only evaluates the nested predicate when an episode runs to its step limit, and 52 of 74 end earlier, so **13 tapes are genuinely nested while their label says they are not** — 232, 233, 237, 247, 251, 273, 275, 294, 299, 302, 304, 317, 330. Read the honest json, never the tape label. This is what caused 232 to be described to you incorrectly earlier today.
 
 ## 4b. The cell matrix you asked about
 
