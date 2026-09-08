@@ -494,3 +494,26 @@ saturated machine actions — is NOT tested by these data and is flagged as an o
   the data" — already established twice and independently (build-time yields in `REPLAY_YIELD_2026-09-08.md`; the ε 0.15
   learner pair). **There is no dose at which the treatment survives above the floor, so A4 cannot isolate roughness as a
   graded variable** — the design property already registered in the A4 addendum, now confirmed empirically at both doses.
+
+## 2026-09-08 — A4 READOUT (floor rule applied per pair, as registered)
+Mode counts /50 on bank_can50, LAST, 100k decisions:
+| arm | counts | n | mean | sd |
+|---|---|---|---|---|
+| `MH200_re15` (control, unmodified actions) | 2,8,2,5,2,0,4,9 | 8 | **0.080** | 0.063 |
+| `MH200_rough15` (ε 0.15, \|Δa\| 0.118 = 43 % of MG's) | 2,0,0,1,0,8,1 | 7 (s1 outstanding) | **0.034** | 0.057 |
+| `MH200_re20` (control, unmodified actions) | 17,1,16,0,6,10,4,8 | 8 | **0.155** | 0.127 |
+| `MH200_rough20` (ε 0.20, \|Δa\| 0.146 = 53 % of MG's) | 2,0,1,1,0,0,0,0 | 8 | **0.010** | 0.015 |
+- **ε 0.15 pair: both arms at/below the floor (0.080, 0.034) → the registered floor rule fires: counts reported, NO
+  significance test, P-A4-2′ NOT EVALUABLE.**
+- **ε 0.20 pair: the control clears the floor (0.155) and the treatment is at it (0.010)**, so the rule's precondition
+  ("both arms floor") is not met and the test is reported: Δ **+0.145**, exact two-sided permutation **p = 0.0047**
+  (n = 8 v 8). **What it licenses is narrow:** the treatment arm is AT the floor, so this measures *the manipulation
+  destroying the data*, not a graded roughness effect — the same conclusion already reached independently at build time
+  (`REPLAY_YIELD_2026-09-08.md`) and by the ε 0.15 pair. It is a third measurement of destruction, not a dose-response.
+- **A4's registered question — does action roughness specifically explain the machine arm's weakness — is answered NO,
+  not by this design.** Confirmed empirically at both doses: there is no perturbation strength at which the treatment
+  arm survives above the floor (ε 0.15 → 0.034, ε 0.20 → 0.010, ε 0.406 → 5/200 tapes at build time), so roughness
+  cannot be varied as a graded variable in this framework. Recorded as a property of the design, per the A4 addendum.
+- Also settled by these numbers: the re20-vs-re15 "counterexample to row count" I flagged at n=2 does **not** survive.
+  Complete: `re20` 0.155 (9,806 rows) v `re15` 0.080 (15,702 rows) — the direction holds but at ±sd 0.127/0.063 with
+  overlapping per-seed ranges (0–17 v 0–9), it is a weak signal, not the 4× effect the first two seeds suggested.
