@@ -295,3 +295,14 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   (16.5k rows, late-checkpoint-only), not of machine provenance. NOT a readout: 2 of 8 seeds, no test computed yet.
 - 19:3x (09-07) DP retrains landed: `dp_MG200s_s5 6/50`, `s6 6/50` (s7 3354423 still training). DP matrix so far
   (LAST, sampled, /50): MH200 41 44 39 46 45 42 43 45; MG200s 6 1 8 2 4 6 6 –. No DP contrast until s7 exists.
+- **20:0x (09-07) DP ARM OF THE MATRIX COMPLETE (amendment A1 statistic: LAST checkpoint, SAMPLED actions, 50-state bank,
+  n = 8 v 8):** MH200 [41,44,39,46,45,42,43,45] = **345/400 = 0.863** (per-seed sd 0.047) vs MG200s [6,1,8,2,4,6,6,5] =
+  **38/400 = 0.095** (sd 0.046); Δ = **+0.767**, exact two-sided permutation **p = 0.00016** (12,870 splits — the minimum
+  attainable at n = 8 v 8, i.e. complete separation). Cells s1-s4 are the eval-only recoveries, s5-s7 retrained after the
+  filesystem incident; all eight carry `bank_sha256 72b75550…` and the LAST checkpoint at 100k grad steps.
+  A1's registered DP prediction ("MG200s below PH200 by ≥ 0.15") cannot be tested as written — the matrix has no PH200
+  DP arm (amendment A3 dropped PH) — but the same-direction MH200-v-MG200s contrast exceeds the 0.15 margin by 5×.
+  Cross-learner picture on the identical arms (bank, LAST): BC-RNN MH 0.927 / MG 0.393 (Δ 0.53); DP MH 0.863 / MG 0.095
+  (Δ 0.77); RLPD MH 0.455 / MG 0.147 (Δ 0.31, mode). All three learners lose on MG200s; the A2/A4 controls (running)
+  decide whether that is quantity, budget, action process, or source — the first two MGall seeds (0.74, 0.60) already
+  argue against the source reading.
