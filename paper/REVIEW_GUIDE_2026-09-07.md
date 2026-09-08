@@ -334,3 +334,29 @@ Interaction **+0.667**, with opposite signs on the two arms. **The matched-head 
 **Supported:** human conditional action distributions carry about 1.6× more non-Gaussian structure. **Refuted:** the machine sets are not unimodal at all, and the operator-diversity story fails outright — **one operator is indistinguishable from six.** Whatever multi-modality human demonstrations have here is *within*-operator, not across operators.
 
 **An unpredicted difference is larger than the modality one:** machine neighbourhood action spread is **3× human**, consistent with the saturated action statistics already documented. A revised account — a five-mode mixture fits tight structured actions and wastes capacity on wide saturated ones — is an open question, not a finding, and any registration should carry a **mode-count ladder** as its discriminator rather than the dead operator-diversity story.
+
+
+### Addendum, 2026-09-08 — the robomimic arms are not equalised on anything, and the dose-response is monotone
+
+**Nothing in this leg is matched on data volume, and "matched tape count" has been misleading shorthand.**
+
+| arm | tapes | successes | rows | rows vs human |
+|---|---|---|---|---|
+| human (MH200) | 200 | 200 | 41,134 | 1.0× |
+| machine (MG200s) | 200 | 200 | 16,501 | **0.40×** |
+| machine (MG718s) | 718 | 718 | 59,222 | 1.44× |
+| machine (MGall) | **3,900** | **718** | 536,522 | **13.0×** |
+
+The headline comparison matches **tapes**, not rows: the machine arm there has **2.5× fewer transitions**, because machine demonstrations are simply shorter — the policy does not dawdle. And the largest arm differs from the human one in two ways at once, carrying 13× the rows **and** including failures, where every human arm is all-success.
+
+**Lined up by data volume, the result is monotone:**
+
+| machine arm | rows vs human | Δ (human − machine) | p |
+|---|---|---|---|
+| MG200s | 0.40× | **+0.307** | 0.008 |
+| MG718s | 1.44× | −0.020 | 0.885 |
+| MGall | 13.0× | −0.155 | 0.192 |
+
+**The apparent human advantage exists only where the machine arm has less data, and it reverses once the machine arm has more.** That is the signature of a quantity effect, not a source one. The cleanest single comparison is the middle row — all-success on both sides, comparable volume — and it is indistinguishable from zero.
+
+**This is why the registered dose experiment holds rows constant rather than tapes**, cutting the human arm to machine-matched transitions. Until it reads out, "human demonstrations are better" is not supportable from these rows; the defensible statement is that **increasing machine data changes the sign of the comparison.**

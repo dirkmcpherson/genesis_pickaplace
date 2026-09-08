@@ -67,7 +67,7 @@ The registered quantity control has read out at full seeds and it overturns the 
 
 | machine arm | tapes | score | vs MH200 (0.455) |
 |---|---|---|---|
-| MG200s (the 200-tape subsample) | 200 | **0.147** | −0.308, p 0.008 |
+| MG200s (200 tapes, but only **0.40× the human rows**) | 200 | **0.147** | −0.308, p 0.008 |
 | MG200s at 3× budget | 200 | 0.287 | −0.168, budget helps +0.140 (p 0.115, n.s.) |
 | MG718s (all successes) | 718 | **0.475** | **+0.020, p 0.886 — indistinguishable** |
 | MGall (all rollouts) | 3900 | **0.610** | **+0.155 — above the human arm** |
