@@ -9,13 +9,26 @@ different class of machine". Emits one row per (run, cell, mode) with:
   * the RE-SCORE node: the cpsc lane job's `host=` stamp, matched to the cell by its latest
     START line before the re-scored metrics.json mtime.
 
-It also prints an arch x core-count census of the cluster, because the claim that instruction
-set and core count are collinear here is itself testable.
+ISA class comes from the /proc/cpuinfo probe ($LAB/gp_e2e/isa_probe.log, avx512f flag read on
+each machine), NEVER from Slurm's AvailableFeatures, which are unreliable on this cluster: nodes
+advertising "broadwell" measure as AVX-512. An earlier version of this script used the Slurm
+labels and produced a false conclusion; see README.
 
 usage: python3 harvest_nodes.py > node_provenance.csv
 """
-import glob, json, os, re, subprocess, sys, csv
+import collections, glob, json, os, re, subprocess, sys, csv
 W = "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03"
+
+# TRUE ISA per machine, read from /proc/cpuinfo by cluster/isa_probe.sh. Slurm labels lie here.
+isa = {}
+try:
+    for ln in open(os.path.join(os.environ.get("LAB", "/cluster/tufts/shortlab/jstale02"),
+                                "gp_e2e", "isa_probe.log")):
+        mm = re.match(r"(pax\d+)\s+(avx2|avx512)\b", ln)
+        if mm:
+            isa[mm.group(1)] = mm.group(2)
+except OSError:
+    pass
 
 # node -> (cores, features)
 node = {}
@@ -31,9 +44,13 @@ c = collections.Counter()
 for n,(cores,feat) in node.items():
     arch = feat.split(',')[0]
     c[(arch, cores)] += 1
-print("### arch x cores census (unique nodes)")
+print("### slurm-label arch x cores census (LABELS ARE UNRELIABLE - for reference only)")
 for k,v in sorted(c.items()):
     print(f"   {k[0]:16s} {k[1]:>3d} cores : {v} nodes")
+ic = collections.Counter((isa[n], node[n][0]) for n in isa if n in node)
+print("### TRUE ISA (from /proc/cpuinfo) x cores")
+for k,v in sorted(ic.items()):
+    print(f"   {k[0]:8s} {k[1]:>3d} cores : {v} nodes")
 
 # --- rescore host per (run, tag, mode): the latest START before the metrics mtime
 starts = []
@@ -71,7 +88,9 @@ for mpath in sorted(glob.glob(os.path.join(W, "runs", "*", "fresh_eval_*_cp", "m
                      rescore_host=rescore_host,
                      rescore_cores=node.get(rescore_host,("",""))[0],
                      rescore_arch=node.get(rescore_host,("",""))[1].split(',')[0] if rescore_host else "",
+                     rescore_isa=isa.get(rescore_host, ""),
                      orig_host=oh, orig_cores=node.get(oh,("",""))[0],
+                     orig_isa=isa.get(oh, ""),
                      orig_arch=node.get(oh,("",""))[1].split(',')[0] if oh else ""))
 w = csv.DictWriter(sys.stdout, fieldnames=list(rows[0].keys()))
 print("### cells"); w.writeheader()

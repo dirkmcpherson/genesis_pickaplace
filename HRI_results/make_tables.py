@@ -334,7 +334,10 @@ def node_analysis(raw, rescore):
         if k1 is None or not nj or not nj['orig_arch'] or not nj['rescore_arch']:
             continue
         arm = 'human' if '_dH' in run else 'machine'
-        tally[arm][(nj['orig_arch'] != nj['rescore_arch'], k0 != k1)] += 1
+        oi, ri = nj.get('orig_isa', ''), nj.get('rescore_isa', '')
+        tally[arm][(bool(oi and ri and oi != ri), k0 != k1)] += 1
+        tally[arm][('isa_seen', oi)] += 1
+        tally[arm][('isa_seen', ri)] += 1
     disc = []
     for ph, arm, cell, stat, mode, seed, k0, k1 in rescore:
         run = run_of.get((ph, arm, cell, mode, seed))
@@ -473,13 +476,18 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes):
 
     if nodes:
         A('')
-        A('### Is it the hardware class? No.')
+        A('### What distinguishes the runs that did not reproduce')
         A('')
-        A('The standing explanation for a re-score that does not reproduce is that it ran on a '
-          'different class of machine. Joining every comparable statistic to its ORIGINAL record '
-          'node and its RE-SCORE node refutes that here.')
+        A('The standing explanation was a cross-hardware-class re-score. It is refuted, and so '
+          'are the other obvious candidates. What follows is measured, not inferred.')
         A('')
-        A('| arm | cross-class re-scores | of those, moved | same-class re-scores | of those, moved |')
+        A('**It is not the hardware class.** ISA here is read from `/proc/cpuinfo` on each '
+          "machine (the probe log), never from Slurm's `AvailableFeatures`, which are unreliable "
+          'on this cluster. Every node involved in these runs and re-scores - originals and '
+          're-scores alike - is **AVX-512**. There is no AVX2 exposure anywhere in this set, so '
+          'there is no cross-class contrast to explain anything:')
+        A('')
+        A('| arm | cross-ISA re-scores | of those, moved | same-ISA re-scores | of those, moved |')
         A('|---|---|---|---|---|')
         for arm in ('human', 'machine'):
             t = nodes['tally'][arm]
@@ -487,25 +495,52 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes):
             ns = t[(False, True)] + t[(False, False)]
             A(f'| {arm} | {nc} | **{t[(True, True)]}** | {ns} | **{t[(False, True)]}** |')
         A('')
-        A('Exposure to cross-class re-scoring is IDENTICAL between the arms, yet only the human '
-          'arm moves. Three human runs moved under a re-score on the SAME architecture and the '
-          'SAME core count, which no cross-class effect can explain. And not one discrepant cell '
-          'has a 36-core original record:')
+        A('And not one discrepant cell has a 36-core (AVX2) original record:')
         A('')
         A('| original record node | discrepant cells |')
         A('|---|---|')
-        oc = collections.Counter(f"{d[8]['orig_arch']} / {d[8]['orig_cores']}-core"
+        oc = collections.Counter(f"{d[8]['orig_arch']} / {d[8]['orig_cores']}-core "
+                                 f"({d[8].get('orig_isa') or 'unprobed'})"
                                  for d in nodes['disc'])
         for k, v in sorted(oc.items()):
             A(f'| {k} | {v} |')
         A('')
-        A('**The hardware explanation is refuted, and the checkpoint explanation with it** '
-          '(`latest.pt` predates the original evaluation in all 48 runs checked, so the '
-          're-score read the same weights). The movement is localised to seven human runs - two '
-          'end-to-end (seeds 2 and 3, which moved on 8 and 11 of their 12 statistics) and five '
-          'contact (1-3 of 12 each) - rather than spread across the arm. **No mechanism has been '
-          'established.** Until one is, every re-score-derived cell inherits a discrepancy that '
-          'moves one arm only.')
+        A('**It is not a restart or a requeue.** Every one of the 48 runs carries exactly one '
+          '`events.out.tfevents` file, the runs that moved and the runs that did not alike.')
+        A('')
+        A('**It is not a changed checkpoint.** `latest.pt` predates the original evaluation in '
+          'all 48 runs, and its SHA-256 was taken for each; the re-score read the same weights.')
+        A('')
+        A('**It is not a selection, bank or initial-condition bug.** For a moved cell the '
+          'episode indices and their IC labels are IDENTICAL between the original and the '
+          're-score (30 of 30, same order). What changed is the ROLLOUT: 14 of 30 episodes '
+          'reached a different terminal state. For an unmoved human cell and for a machine cell '
+          'the same comparison gives 0 of 30. The cell composition is right; the trajectories '
+          'are not reproducible.')
+        A('')
+        A('**What does separate them is time, and then arm.** All 14 moved cells were written '
+          'inside a single window, 2026-09-05 20:31 to 23:29. Outside that window, 0 of 143 '
+          'comparable cells moved. Inside it:')
+        A('')
+        A('| | moved | unmoved |')
+        A('|---|---|---|')
+        A('| human cells in window | **14** | 10 |')
+        A('| machine cells in window | **0** | 25 |')
+        A('')
+        A('So the window is necessary but not sufficient, and within the window the split is by '
+          'arm and then by run: the contact human runs separate perfectly on the window '
+          '(everything inside it moved, everything before it did not), while the end-to-end '
+          'human runs split by seed - s2 and s3 moved on every cell, s0 and s1 on none, with '
+          'identical hardware, identical code path and evaluations interleaved in the same '
+          'hours.')
+        A('')
+        A('**No mechanism is established.** The nearest sufficient explanation is one this '
+          "table already documents: the world model's policy samples a stochastic latent inside "
+          'its `act` call with no per-episode reseed, so its rollouts are not run-to-run '
+          'deterministic by construction. That predicts divergence - but it does not predict why '
+          'the machine arm never diverges, and that asymmetry is the open question. Until it is '
+          'answered, treat every re-score-derived cell as carrying an error that moves ONE ARM '
+          'ONLY, and prefer the original cells where both exist.')
         A('')
 
     A('\n## Doc-of-record cross-check\n')

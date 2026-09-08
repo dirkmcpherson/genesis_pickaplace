@@ -113,16 +113,20 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
   learns it), `contact_push` is the discriminating statistic, bare `contact` is legacy and
   overstates capability 1.5-3x. All three are shown where they exist.
 - **Hardware.** Affected rows are marked provisional and the pinned-seed and as-published
-  versions are shown side by side. Two corrections to the standing account, both from
-  `node_provenance.csv`:
-  - **Instruction set and core count are NOT collinear on this cluster.** Broadwell (AVX2, no
-    AVX-512) appears at both 36 cores (40 nodes) and 40 cores (7 nodes), and 40-core machines
-    span broadwell and cascadelake (AVX-512). So broadwell-36 vs broadwell-40 varies cores at
-    fixed ISA, and broadwell-40 vs cascadelake-40 varies ISA at fixed cores: the mechanism is
-    separable by a pinned experiment, contrary to the "not identifiable" position.
-  - **The non-reproducing re-scores are not a hardware effect.** See "Is it the hardware class?"
-    in `results.md`: cross-class exposure is identical between the arms (216 cross / 72 same
-    each), yet the machine arms moved 0 of 288 comparable statistics and the human arms 26; no
-    discrepant cell has a 36-core original; and three human runs moved under same-architecture,
-    same-core re-scores. The changed-checkpoint explanation is refuted too. **No mechanism is
-    established** - this is an open defect, not a known confound.
+  versions are shown side by side.
+  - **CORRECTION (withdrawn claim).** An earlier version of this README asserted that
+    instruction set and core count are *not* collinear on this cluster, citing Broadwell at both
+    36 and 40 cores. **That was wrong and is withdrawn.** It came from Slurm's
+    `AvailableFeatures`, which are unreliable here: nodes advertising `broadwell` measure as
+    AVX-512. Read directly from `/proc/cpuinfo` on each machine, the picture is unambiguous -
+    **24 AVX2 nodes, every one of them exactly 36 cores, and no 36-core node is AVX-512**. ISA
+    and core count ARE perfectly collinear, the mechanism is not identifiable from observational
+    data, and the standing project position stands. `harvest_nodes.py` now reads the probe and
+    never the Slurm labels.
+  - **The non-reproducing re-scores are not a hardware effect** - and with true ISA the point is
+    sharper than before: every node involved, original and re-score alike, is AVX-512, so there
+    is *no* cross-class exposure to appeal to (0 cross-ISA re-scores; 288 same-ISA per arm, of
+    which the machine arm moved 0 and the human arm 26). Restarts, changed checkpoints and
+    IC/bank selection are all ruled out too. See "What distinguishes the runs that did not
+    reproduce" in `results.md`. **No mechanism is established** - an open defect, not a known
+    confound.
