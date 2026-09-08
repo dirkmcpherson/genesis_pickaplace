@@ -80,6 +80,77 @@ def print_segment_census(c, tag=''):
           f'{len(set(c["uids"]))} distinct ICs', flush=True)
 
 
+# ------------------------------------------------------------------- amendment (o): the offline k_slide boundary
+# The SLIDE grant of (o) is the (l)/(l') clause set: picked earlier AND pick-can/goal solver contact AND grip
+# COMMANDED OPEN (< 0.3) AND can centre in the shelf footprint with tilt < 20 deg, sustained 3 decisions. Offline the
+# tape records the env's STICKY contact flag, not "touching on this frame", so the per-frame contact clause is
+# approximated as (sticky contact) AND (|can_xy - goal_xy| <= NESTED_TOUCH_DIST). DISCLOSED in every manifest this
+# writes (`contact_proxy`): it can only differ from the live predicate for a tape that touches the goal, carries the
+# can away, and then releases it inside the footprint while still within a can-diameter of the goal.
+SLIDE_GRIP_OPEN = 0.3
+SLIDE_TILT_DEG = 20.0
+SLIDE_SUSTAIN_DECISIONS = 3
+
+
+def _slide_geom():
+    """replay_harness predicates, loaded against the CORRECTED world (the caller applies the sim variant first)."""
+    import sys as _s, os as _o
+    _s.path.insert(0, _o.path.join(REPO, 'can_pos_recovery')); _s.path.insert(0, _o.path.join(REPO, 'baselines'))
+    from replay_harness import tilt_deg, in_shelf_footprint, NESTED_TOUCH_DIST
+    return tilt_deg, in_shelf_footprint, float(NESTED_TOUCH_DIST)
+
+
+def k_slide_frame(z, start, sustain=SLIDE_SUSTAIN_DECISIONS):
+    """First decision row at which the (o) clauses have held for `sustain` consecutive rows, at or after `start`.
+    Returns (row, n_rows_satisfying) or (None, 0). Mirrors the env granting when _slide_run reaches SLIDE_SUSTAIN."""
+    tilt_deg, in_shelf_footprint, touch_d = _slide_geom()
+    S = np.asarray(z['states'], np.float64); A = np.asarray(z['actions'], np.float64)
+    picked = np.asarray(z['picked'], bool); contact = np.asarray(z['contact'], bool)
+    n = int(z['n']); run = 0; n_ok = 0
+    for j in range(int(start), n):
+        can = S[j, 8:11]; goal = S[j, 15:17]
+        near = float(np.hypot(can[0] - goal[0], can[1] - goal[1])) <= touch_d
+        ok = bool(picked[j] and contact[j] and near and float(A[j, 6]) < SLIDE_GRIP_OPEN
+                  and in_shelf_footprint(can[:2]) and tilt_deg(S[j, 11:15]) < SLIDE_TILT_DEG)
+        n_ok += int(ok)
+        run = run + 1 if ok else 0
+        if run >= sustain:
+            return j, n_ok
+    return None, n_ok
+
+
+def cmd_phases(args):
+    """Write an augmented phase manifest carrying k_slide next to k_placed_v2/k_contact (amendment (o))."""
+    sys.path.insert(0, os.path.join(REPO, 'baselines')); sys.path.insert(0, os.path.join(REPO, 'can_pos_recovery'))
+    # The (o) clauses are grip / xy-footprint / tilt / contact only -- none depends on the world's shelf HEIGHT, so the
+    # sim variant is applied when genesis is importable (parity with the other builders) and skipped otherwise.
+    try:
+        import sim_variant_hook as svh
+        svh.apply_pre(args.sim_variant)
+        print(f'[phases] sim variant {args.sim_variant} applied')
+    except Exception as e:
+        print(f'[phases] sim variant not applied ({type(e).__name__}); the (o) clauses are height-independent (grip/xy footprint/tilt/contact)')
+    ph = json.load(open(args.phases)); out = {}; n_slide = 0
+    for f in sorted(glob.glob(os.path.join(args.src, '*.npz'))):
+        base = os.path.basename(f); rec = dict(ph.get(base) or {})
+        if not rec:
+            continue
+        if rec.get('k_placed_v2') is not None:
+            z = np.load(f, allow_pickle=True)
+            k, n_ok = k_slide_frame(z, int(rec['k_placed_v2']) + 1)
+            rec['k_slide'] = (int(k) if k is not None else None); rec['n_slide_rows'] = int(n_ok)
+            n_slide += int(k is not None)
+        else:
+            rec['k_slide'] = None; rec['n_slide_rows'] = 0
+        out[base] = rec
+    json.dump(out, open(args.out, 'w'), indent=1)
+    tot = len(out); pv2 = sum(1 for v in out.values() if v.get('k_placed_v2') is not None)
+    kct = sum(1 for v in out.values() if v.get('k_contact') is not None and v.get('k_placed_v2') is not None and v['k_contact'] > v['k_placed_v2'])
+    print(f'[phases] {args.src}: {tot} tapes, placed_v2 {pv2}, contact-after-release (m) {kct}, SLIDE (o) {n_slide} -> {args.out}')
+    ics = sorted({v['uid'] for v in out.values() if v.get('k_slide') is not None})
+    print(f'[phases] (o) slide ICs: {len(ics)} distinct {ics[:14]}{"..." if len(ics) > 14 else ""}')
+
+
 # ----------------------------------------------------------------------------------------------- (2) DP
 def _scalar(x):
     x = np.asarray(x)
@@ -141,7 +212,8 @@ def cmd_cut(args):
         ph = phases.get(base)
         if ph is None:
             z = np.load(f, allow_pickle=True); u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid']); ph = phases.get(str(u))
-        k0key, k1key = (('k_pick', 'k_placed_v2') if args.phase == 'place' else ('k_placed_v2', 'k_contact'))
+        k0key, k1key = {'place': ('k_pick', 'k_placed_v2'), 'contact': ('k_placed_v2', 'k_contact'),
+                        'slide': ('k_placed_v2', 'k_slide')}[args.phase]
         if not ph or ph.get(k0key) is None or ph.get(k1key) is None or not (ph[k1key] > ph[k0key]):
             n_no_phase += 1; continue
         uid = int(ph['uid'])
@@ -184,7 +256,9 @@ def cmd_cut(args):
     rows = [c['rows'] for c in cuts.values()]
     man = dict(set=os.path.basename(os.path.normpath(args.out)), built=time.strftime('%Y-%m-%dT%H:%M:%S'), contract='v1', sim_variant=sv,
                action_repeat=reps.pop(), delta_cap=caps.pop(), scope=args.phase, phase=args.phase,
-               role=f'{args.phase}-phase DP set (PHASE_PLAN amendment {"(h)" if args.phase == "place" else "(m)"})',
+               role=f'{args.phase}-phase DP set (PHASE_PLAN amendment {{"place": "(h)", "contact": "(m)", "slide": "(o)"}}[args.phase])',
+               contact_proxy=('sticky contact AND |can_xy-goal_xy| <= NESTED_TOUCH_DIST' if args.phase == 'slide' else None),
+               slide_clauses=(dict(grip_open=SLIDE_GRIP_OPEN, tilt_deg=SLIDE_TILT_DEG, sustain_decisions=SLIDE_SUSTAIN_DECISIONS) if args.phase == 'slide' else None),
                N=len(written), n_kept=len(written), n_success=len(written), n_fail=0, decisions_total=int(sum(rows)), decisions_p50=float(np.median(rows)),
                decisions_min=int(min(rows)), decisions_max=int(max(rows)), one_per_ic=bool(args.one_per_ic), keep_from=(os.path.abspath(args.keep_from) if args.keep_from else None),
                src=os.path.abspath(args.src), phases_json=os.path.abspath(args.phases), cuts=cuts, chosen=sorted(os.path.basename(p) for p in written),
@@ -228,13 +302,16 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
     c = sub.add_parser('cut'); c.add_argument('--src', required=True); c.add_argument('--phases', required=True); c.add_argument('--out', required=True)
-    c.add_argument('--phase', choices=['place', 'contact'], default='place',
+    c.add_argument('--phase', choices=['place', 'contact', 'slide'], default='place',
                    help="place = [k_pick, k_placed_v2] (default, unchanged); contact = [k_placed_v2, k_contact], the SLIDE "
                         "phase of PHASE_PLAN amendment (m): entry = the released placed-on-shelf state")
     c.add_argument('--keep-from', default=None); c.add_argument('--one-per-ic', action='store_true'); c.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
     c.add_argument('--force', action='store_true'); c.add_argument('--dry-run', action='store_true'); c.set_defaults(fn=cmd_cut)
     k = sub.add_parser('check'); k.add_argument('--raw', required=True); k.add_argument('--segments', required=True); k.set_defaults(fn=cmd_check)
     s = sub.add_parser('census'); s.add_argument('--segments', required=True); s.set_defaults(fn=cmd_census)
+    q = sub.add_parser('phases', help='amendment (o): write a phase manifest augmented with k_slide')
+    q.add_argument('--src', required=True); q.add_argument('--phases', required=True); q.add_argument('--out', required=True)
+    q.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6'); q.set_defaults(fn=cmd_phases)
     args = ap.parse_args(); args.fn(args)
 
 

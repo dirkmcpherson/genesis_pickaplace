@@ -764,10 +764,27 @@ class FullTaskEnv(gym.Env):
                 if terminated:
                     truncated = False
                     return (obs['state'].astype(np.float32), reward, True, False, info)
-        if self.scope in ('contact', 'carrycontact'):
-            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history, eef behind the can)
+        if self.scope == 'carrycontact':
+            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history,
+            # eef behind the can). UNCHANGED by amendment (o): (l)(c) makes carrycontact the explicit "contact by any
+            # route, including still held" control against which the release-based slide statistic is read.
             if info.get('contact'):
                 self._granted.add('contact')
+                return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
+        if self.scope == 'contact':
+            # AMENDMENT (o) 2026-09-07: the SLIDE phase pays WHAT IT SCORES. The grant is the release-based
+            # slide_success clause set of (l)/(l') -- picked earlier AND pick-can/goal solver contact AND grip
+            # COMMANDED OPEN (< GRIP_OPEN_CMD) AND can in the shelf footprint with tilt < 20 deg, sustained
+            # SLIDE_SUSTAIN frames -- computed by GenesisCanEnv's own _slide_clauses/_slide_run and surfaced as
+            # info['slide_success']. Reading that flag (rather than re-deriving the clauses here) is deliberate:
+            # reward and score are ONE definition and cannot drift apart, which is exactly the defect (o) fixes.
+            # Bare `contact` is still logged and still granted -- it just no longer ends the episode, so a policy
+            # that reaches the goal while gripping must go on to RELEASE to be paid (the (m) design paid it for
+            # driving a held can into the goal: smokes contact 5/11 with slide 0/11, reason `grip_closed`).
+            if info.get('contact'):
+                self._granted.add('contact')
+            if info.get('slide_success'):
+                self._granted.add('slide_success')
                 return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
         if self.scope == 'place':
             # PLACED_V2 (release-based, supersedes the mid-lift z-band proxy):
