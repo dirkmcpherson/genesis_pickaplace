@@ -20,7 +20,7 @@
 ## 3. Numbers currently known to be stale or provisional
 
 - **`PHASE_RESULTS` §5.1 (end-to-end) will move.** Those cells were produced on the minority hardware class; the re-score puts everything on the majority class. The only cross-class measurement shows the same cell differing on 24 of 30 episodes, contact shifting by 0.100.
-- **§2.y place (0.703 v 0.647) was scored on the superseded entry bank** and may move; 144 cells are re-scoring now.
+- **§2.y place (0.703 v 0.647) will move, for TWO independent reasons**, and 144 cells are re-scoring now. (a) It was scored on the superseded entry bank, where 30 of 148 entries sat in a state with the fingers commanded more open than measured. (b) **When an entry failed to restore, the evaluator silently substituted a different start rather than counting a failure.** Every place cell of record reports 0 of 148 restore failures; the fixed evaluator reports 5. So the published place rates are inflated by up to five episodes per cell, independently of the bank. The two effects are being separated in the re-score rather than reported as one number.
 - **§3 contact and §4 carrycontact** — same bank problem, re-scoring in the same pass.
 - **In-distribution Diffusion Policy 0.878** currently reproduces from 5 seeds, not the 10 behind the quoted figure; five are archived pending pinned re-runs.
 - **Robomimic Diffusion Policy (0.863 v 0.095) and BC-RNN (0.927 v 0.393)** rest on a 200-tape machine draw whose RLPD equivalent has already been overturned by its own control. Treat both as uncontrolled until run on the larger machine arms.
@@ -34,7 +34,7 @@
 5. **Two initial conditions are unwinnable by construction** (uids 234, 318 — cans lying on their side). Every n=74 denominator carries them.
 6. **Human tapes are replayed on a clock that is not theirs** (a beat artefact between two 40 Hz sources; 2–7 % speed error per demonstration). Disclosed, not fixed.
 7. **Neither world-model port has been validated on a reference task.** No standard-benchmark run exists in any log. "Working configuration" is claimed; "validated implementation" must not be.
-8. **A silent data-loss mode has appeared twice** — completed evaluation cells discarded when a sweep parent is killed, presenting as absent data rather than an error. Both times recovered without recomputation. Assume it may have happened elsewhere and check `n_present == n_expected`.
+8. **Silent substitution is the recurring defect class in this evaluator, now seen twice.** A failed entry restore used to be replaced by a different start instead of being counted (inflating every place rate of record); and separately, **a silent data-loss mode has appeared twice** — completed evaluation cells discarded when a sweep parent is killed, presenting as absent data rather than an error. Both times recovered without recomputation. Assume it may have happened elsewhere and check `n_present == n_expected`.
 
 ## 5. Things that were already caught, as calibration
 

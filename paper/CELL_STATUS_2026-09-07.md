@@ -27,6 +27,8 @@ Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y,
 
 **Pruning still matters more than source.** Trained on raw rather than pruned human data, Diffusion Policy drops to 0.688 — a deficit of 0.19 at p 0.000, which is far larger than any source difference anywhere in this project, and it now reproduces in-distribution as well as out.
 
+**The place rows of record are inflated and are being re-scored.** Two independent defects, not one: the entry bank has been rebuilt (30 of 148 entries changed), and the evaluator used to substitute a different start when an entry failed to restore rather than counting it as a failure — every place cell of record shows 0 restore failures where the fixed evaluator shows 5. Expect the published place figures to fall somewhat for both arms.
+
 ## How to read this table honestly
 
 **The three-learner comparison exists for exactly one phase.** Pick is the only row where all three learners have been run on the same question. Every other Genesis row is a world-model result with two empty columns, and those columns are what the queued runs fill. Until they land, "no source effect across learners" is a claim supported at the pick and nowhere else on this task.
