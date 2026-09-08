@@ -49,3 +49,30 @@ observation worth registering and re-testing, not as a result.
 8/8, slide `contact` 8/8, e2e `picked` 8/8, both arms. (The `contact` column *within place training* shows seeds never
 igniting or collapsing, but contact is not a target of the place task — do not read that as a dead seed.) The dead seeds
 flagged elsewhere in the project belong to the RLPD and pick families, which are not plotted here.
+
+## Standing measurement note (user, 2026-09-08): track ignition STEP, not only ignition likelihood
+
+Every learning-speed claim must be reported from the **raw per-seed step**, not from a collapsed pass/fail rate. Whether a
+seed ignited is a much weaker statement than when it ignited, and the two arms in this project differ on the second while
+being equivalent on the first (below). `ignition_steps.csv` therefore keeps the raw columns — steady-state value, peak,
+final, bin width, and the step at which each seed first reaches **25 / 50 / 75 / 90 % of its own steady state**, plus the
+absolute-0.2 crossing — so any threshold ("step at which we hit 50 % of steady-state operation", or any other) can be
+reported later without recomputing, and a different definition can be applied to that file directly. Do not collapse it
+to a single threshold in the source.
+
+Steady state = mean of the final quarter of that seed's non-empty bins; `bin_width_steps` records the resolution, which
+bounds how finely any of these steps can be read (e2e 50,000 steps per bin).
+
+### Step to 50 % of steady state (per-seed medians, 8 v 8)
+
+| family | stage | human | machine | Δ | perm p |
+|---|---|---|---|---|---|
+| place | placed_v2 | 87,500 | 112,500 | −25,000 | 0.075 |
+| slide | contact | 37,500 | 37,500 | 0 | 1.000 |
+| **e2e** | **picked** | **724,997** | **974,996** | **−243,749** | **0.032** |
+| **e2e** | **contact** | **999,996** | **1,149,996** | **−193,750** | **0.044** |
+
+The end-to-end effect survives the change of definition (absolute 0.2 threshold → 50 % of each seed's own steady state)
+and appears at two stages. Still **not a registered test**: thresholds, grid and stages were chosen after seeing the data,
+and several were examined — it is an exploratory observation to register and re-test, not a result to cite.
+
