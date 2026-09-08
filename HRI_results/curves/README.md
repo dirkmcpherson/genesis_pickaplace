@@ -76,3 +76,26 @@ The end-to-end effect survives the change of definition (absolute 0.2 threshold 
 and appears at two stages. Still **not a registered test**: thresholds, grid and stages were chosen after seeing the data,
 and several were examined — it is an exploratory observation to register and re-test, not a result to cite.
 
+## Consequence for the training budgets: the arms did not get equal post-ignition training
+
+The budgets were not chosen from these curves — they predate them. Phase runs (place / slide / carrycontact / pick) ran
+**1e6 sim steps** (81 launches at `env.steps=1000000`); end-to-end ran **2e6**, registered in `PHASE_PLAN` amendment (d)
+as *"2× the single-phase budget; the pick alone needed ≈ 3–5e5"*. That is a doubling heuristic anchored on how long the
+pick took, not a convergence criterion, and nothing in the registration set a stopping rule.
+
+What the ignition data now shows, at the fixed 2e6 end-to-end budget:
+
+| stage | arm | training left after first reaching the stage (median / worst seed) |
+|---|---|---|
+| picked | human | 73 % / 64 % |
+| picked | machine | **60 % / 31 %** |
+| contact | human | 56 % / 41 % |
+| contact | machine | **43 % / 26 %** |
+
+Because the machine arm ignites later, a *fixed* step budget hands it systematically less post-ignition training — for the
+slowest machine seed, under a third of the run remained after it first picked. The published end-to-end comparison is a
+null, so this did not manufacture a human advantage; but it does mean **the equivalence is stated at a budget the two arms
+consumed differently**, and it runs in the direction of understating the machine arm rather than the human one. Any future
+end-to-end run should either budget by post-ignition steps, adopt an explicit stopping rule, or report learning speed
+alongside the final level — which is the reason for the standing note above.
+
