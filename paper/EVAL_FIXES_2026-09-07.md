@@ -273,3 +273,25 @@ it is not arm-directional (human 19 / machine 30).
 that cannot be reproduced off their own CPU class — which is why the end-to-end re-score pins all 64 cells to one class
 (REQUIRE_CORES=64, enforced in the lane), and why the phase pass is unaffected (no place or carrycontact record was
 produced on a 36-core node).
+
+## 8. Re-scored cells: results
+
+### 8.1 PLACE, polE MODE — the §2.y statistic of record (8 v 8, complete)
+Record = raw-grip bank, entries drawn with replacement and failing entries silently substituted.
+Re-scored = rebuilt physical-grip bank (`physgrip_2026-09-07`, sha `fb48fca7…`), every entry pinned and enumerated once,
+restore failures counted as failures.
+
+| arm | record per-seed | record | re-scored per-seed | re-scored | Δ | restore_failed |
+|---|---|---|---|---|---|---|
+| human (39) | [113, 86, 112, 112, 82, 99, 110, 118] | 832/1184 = **0.703** | [113, 88, 112, 112, 84, 108, 114, 116] | 847/1184 = **0.715** | +0.013 | 0 → 40 |
+| machine-39 (of record) | [109, 79, 111, 105, 90, 79, 95, 98] | 766/1184 = **0.647** | [107, 91, 104, 111, 92, 87, 91, 89] | 772/1184 = **0.652** | +0.005 | 0 → 40 |
+
+**Human − machine: record Δ +0.056 (exact two-sided perm p = 0.227) → re-scored Δ +0.063 (p = 0.112).**
+Registered |Δ| < 0.10: **MET on both**, so §2.y's conclusion is unchanged and its figures move by ~0.01. The machine-63
+descriptive arm (2 of 8 seeds so far) goes 0.736 → 0.726.
+
+Two corrections are folded in here and they push in opposite directions, which is why the net movement is small:
+`restore_failed` rises from 0 to 5 per cell (the S1-3 substitution fix, **symmetric**: 40 episodes in each arm now count as
+failures instead of being replaced by a different start), while the rebuilt bank's corrected grip makes the restored entries
+slightly more tractable. Reporting the raw-grip figures as if they were the pinned physical-grip ones is what the stamps now
+prevent.
