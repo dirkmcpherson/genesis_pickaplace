@@ -293,3 +293,5 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   seeds are ABOVE MH200.** If this holds at n=8, the A2 decision rule fires: "if MG718s or MGall reaches MH200 − 0.10 →
   the effect was quantity/coverage, not source", i.e. the MH200-v-MG200s gap is a property of the 200-tape MG subsample
   (16.5k rows, late-checkpoint-only), not of machine provenance. NOT a readout: 2 of 8 seeds, no test computed yet.
+- 19:3x (09-07) DP retrains landed: `dp_MG200s_s5 6/50`, `s6 6/50` (s7 3354423 still training). DP matrix so far
+  (LAST, sampled, /50): MH200 41 44 39 46 45 42 43 45; MG200s 6 1 8 2 4 6 6 –. No DP contrast until s7 exists.
