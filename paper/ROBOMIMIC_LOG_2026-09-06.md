@@ -276,3 +276,12 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   `DP-RESULT dp_MG200s_s1 1/50`, `s2 8/50`, `s3 2/50`, `s4 4/50` (with the surviving s0 6/50). DP MH200 (all 8, intact):
   41, 44, 39, 46, 45, 42, 43, 45 /50. DP MG200s s5-s7 are retraining (3354421-23); no DP contrast is computed until all
   8 MG200s cells exist. Disk 440 GB free; 8 G2b + 3 A2 running, 21 A2 + 32 A4 pending.
+- **18:3x (09-07) G2b READ-OUT — registered gate PASSES, and it decides the reading of the MG result.** RLPD with NO
+  demonstrations, 8 seeds, 100k decisions, LAST on bank_can50: **mode 0/50 on every seed (0.000), sample 0/50 on every
+  seed** (jobs 3354437–3354444, `rlpd_none_s0-7`). Registered clause "RLPD without demos ≤ 0.10" → **PASS at 0.00**.
+  Verified per run before reading: sidecars show `demo_batch 0`, `demo "none"`, `ckpt_step 100000` (budget reached),
+  evals `episodes 50`, `bank_sha256 72b75550…` — i.e. a genuinely empty demo half, not the old zero-row placeholder.
+  **Consequence for the MH200-v-MG200s result:** MG200s (0.147 mode) is *above* the demo-free floor (0.000), so MG
+  demonstrations are worth something to RLPD — the effect is "MG helps less than MH", not "MG is worth nothing".
+  Both readings were live before this run; only the first is now supported.
+  Standing-rule check on the same runs: 1 archived checkpoint per run (`ckpt_100`) + `rlpd_final.zip`, 25 MB per run.
