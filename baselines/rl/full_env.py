@@ -708,6 +708,9 @@ class FullTaskEnv(gym.Env):
         if info.get('contact_push'):
             # contact_push (2026-09-07): logged grant only -- never rewarded, never terminates (amendment (g))
             self._granted.add('contact_push')
+        if info.get('slide_success'):
+            # slide_success (amendment (l)): logged grant only -- never rewarded, never terminates
+            self._granted.add('slide_success')
         if self.scope == 'touchgoal':
             c = self.genv.w['goal'].get_contacts(self.genv.w['kinova'])
             n_c = int(np.asarray(np_(c['link_a'])).reshape(-1).shape[0])

@@ -97,3 +97,36 @@ would be a real bug in the patch and blocks the readout.
 ## 5. Verdicts
 
 PENDING.
+
+## 6. `slide_success` (PHASE_PLAN amendment (l), fe09d91) — added to the same re-score
+
+Registered predicate: picked earlier ∧ pick-can↔goal solver contact ∧ gripper commanded open (< 0.3) ∧ pick-can centre in
+the shelf footprint with tilt < 20°, **sustained 3 decisions**; statistic of record for the slide phase (`scope='contact'`)
+and end-to-end. Implemented in `cluster/eval_fixes/slide_success_patch.py` across the same four files as (j); logged only —
+no reward, no termination, no training row changes; `contact` and `carrycontact` keep their own statistics.
+
+**The sustain window cannot be measured inside the episode, and this is load-bearing.** Both scopes where `slide_success`
+is the statistic of record terminate at the first frame the predicate could hold: `scope='contact'` returns on the first
+`contact` frame (`full_env.py:766-768`) and `scope='full'` returns on the nested proxy (`:817`), which fires on
+contact ∧ grip commanded open ∧ both upright — at or before slide's clauses. An in-episode counter therefore reaches 1 and
+never 3 decisions, so a literal implementation would report `slide_success = 0` in every cell for a purely mechanical
+reason (the silent-zero failure mode this repo has been bitten by repeatedly).
+
+**Operationalisation (decided and recorded before any job ran).** The window is evaluated over the continuation that
+already exists: the 100-step post-episode settle `_nested()` has always run, during which the last commanded action is
+held (controller targets unchanged). The four clauses must hold continuously over its first 12 frames
+(3 decisions × action_repeat 4; one frame = the 3 scene steps `env.step` takes). `GenesisCanEnv.end_of_episode()` now
+performs that one settle and returns BOTH readings, with the total step budget and the point at which `nested` is measured
+unchanged — so `nested` / `nested_honest` stay bit-identical to (j), and only extra state *reads* occur during the window
+(reads do not perturb the solver; #26 trace ablation). Each grant records its route: `sustained` (earned inside the
+episode, only possible when nothing terminated) or `settle` (earned over the held continuation); route counts are reported
+per cell in `slide_routes`, so the two are never conflated. The DP/RLPD path gets the same predicate for free, because the
+settle lives in `GenesisCanEnv.step`'s own `done` branch (`eval_core` reports it without changing its `nested`).
+
+`success_key` / `outcome` are deliberately NOT switched to `slide_success`: that would break both the (g) reproduction
+guard and the record-vs-re-scored comparison. `slide_success` is a first-class summary field and `stages` column, and the
+comparison tables compute the statistic of record from it.
+
+**Prediction (l), evaluated on these cells:** end-to-end rnd30 `slide_success` at or below `nested_honest` in both arms
+and |Δ(human − machine)| < 0.10; slide phase |Δ| < 0.10 with both arms well below their bare-`contact` rates.
+

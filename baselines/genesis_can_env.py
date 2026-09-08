@@ -58,6 +58,13 @@ REF_TOOL_AT_START = np.array([0.367, 0.011, 0.09])
 # PICK_SUSTAIN-1 frames (~0.3 s) later than before; demos still grant (verified).
 PICK_EEF_DIST = 0.20
 PICK_SUSTAIN = 10
+# --- amendment (l) 2026-09-07: slide_success = the task as demonstrated (can ON THE SHELF, RELEASED, touching the
+# goal), sustained 3 decisions. One decision = action_repeat 4 env frames; one env frame = the 3 scene steps step()
+# takes -> SLIDE_SUSTAIN frames. GRIP_OPEN_CMD is the same threshold the legacy nested proxy uses.
+SLIDE_SUSTAIN_DECISIONS = 3
+SLIDE_SUSTAIN = SLIDE_SUSTAIN_DECISIONS * 4   # env frames
+GRIP_OPEN_CMD = 0.3
+SETTLE_STEPS = 100        # the post-episode settle _nested() has always run (scene steps)
 
 
 def _quat_to_R(q):
@@ -191,6 +198,9 @@ class GenesisCanEnv:
         self._contact_gripper_goal = False   # gripper touched the GOAL while the pick-can touched it
         self._contact_farside = False        # some pick-can/goal contact frame had the TOOL on the far side
         self._contact_farside_wrist = False  # ... the WRIST on the far side (the withdrawn first definition)
+        # slide_success (amendment (l), logged only): sticky; route 'sustained' (in-episode) or 'settle' (held continuation)
+        self._slide_success = False; self._slide_run = 0; self._slide_frame = None; self._slide_route = None
+        self._last_grip_cmd = None   # last COMMANDED grip (physical 0..1); held through the post-episode settle
         self._pick_run = 0   # consecutive frames satisfying the held-can guard
         # Seed with the reset configuration: HARDCODED_START is inside the box by
         # construction, so the very first out-of-box action can be held against it.
@@ -314,6 +324,13 @@ class GenesisCanEnv:
             if dot < 0.0 and not gg_touch and not self._contact_push:
                 self._contact_push = True
                 self._contact_push_frame = self._t
+        # --- slide_success (amendment (l)): all four clauses on THIS frame; sticky once sustained --------------
+        self._last_grip_cmd = float(grip)
+        slide_ok = bool(self._picked and bg_touch and float(grip) < GRIP_OPEN_CMD
+                        and in_shelf_footprint(bp) and tilt_deg(np_(w['bottle'].get_quat())) < 20.0)
+        self._slide_run = self._slide_run + 1 if slide_ok else 0
+        if self._slide_run >= SLIDE_SUSTAIN and not self._slide_success:
+            self._slide_success = True; self._slide_frame = self._t; self._slide_route = 'sustained'
         done = self._t >= self.max_steps
         info = dict(picked=self._picked, placed=self._placed, contact=self._contact,
                     contact_push=self._contact_push, contact_frame=self._contact_frame,
@@ -321,10 +338,16 @@ class GenesisCanEnv:
                     contact_gripper_goal=self._contact_gripper_goal,
                     contact_farside=self._contact_farside,
                     contact_farside_wrist=self._contact_farside_wrist,
+                    slide_success=self._slide_success, slide_ok=slide_ok, slide_run=self._slide_run,
+                    slide_frame=self._slide_frame, slide_route=self._slide_route,
                     t=self._t, uid=self._uid, ws_blocked=ws_blocked,
                     ws_violations=self.ws_violations)
         if done:
-            info['nested'] = self._nested()
+            # ONE post-episode settle yields both the settled `nested` and slide_success's held window (amendment (l));
+            # identical step count and identical nested measurement point as the old info['nested'] = self._nested().
+            _e = self.end_of_episode()
+            info['nested'] = _e['nested']
+            info['slide_success'] = _e['slide_success']; info['slide_route'] = _e['slide_route']
         return self._obs(), done, info
 
     def _nested(self):
@@ -339,6 +362,51 @@ class GenesisCanEnv:
         # tests fail human-validated placements by mm-level physics noise.
         return bool(self._picked and touch and tilt_deg(np_(w['bottle'].get_quat())) < 20
                     and tilt_deg(np_(w['goal'].get_quat())) < 20)
+
+    def _slide_clauses(self):
+        """amendment (l): the four slide_success clauses evaluated on the CURRENT world state, with the last
+        COMMANDED grip (the controller target is unchanged through the settle, so the command still stands)."""
+        w = self.w
+        if self._last_grip_cmd is None or float(self._last_grip_cmd) >= GRIP_OPEN_CMD or not self._picked:
+            return False
+        c = np_(w['bottle'].get_contacts(w['goal'])['position'])
+        if not (c.size and c.shape[0]):
+            return False
+        bp = np_(w['bottle'].get_pos())
+        return bool(in_shelf_footprint(bp) and tilt_deg(np_(w['bottle'].get_quat())) < 20.0)
+
+    def end_of_episode(self):
+        """The single post-episode settle (SETTLE_STEPS scene steps, last command held), yielding BOTH the honest
+        settled `nested` (amendment (j)/S1-1) and slide_success's held window (amendment (l)).
+
+        Why the window lives here: scope='contact' terminates on the first contact frame and scope='full' on the
+        nested proxy, so an in-episode counter can never reach 3 decisions in the two scopes where slide_success is
+        the statistic of record. The clauses are therefore required to hold continuously over the first
+        SLIDE_SUSTAIN frames (3 scene steps each) of this continuation. The step BUDGET and the point at which
+        nested is measured are unchanged (always SETTLE_STEPS steps before the nested read), so nested is bit-identical
+        to the previous _nested() path; only extra state READS happen during the window (reads do not perturb the
+        solver -- established by the #26 trace ablation)."""
+        w = self.w
+        slide, route, steps = bool(self._slide_success), self._slide_route, 0
+        if not slide:
+            held = True
+            for _ in range(SLIDE_SUSTAIN):
+                for _ in range(3):
+                    w['scene'].step()
+                steps += 3
+                if not self._slide_clauses():
+                    held = False
+                    break
+            if held:
+                slide, route = True, 'settle'
+                self._slide_success = True; self._slide_route = route; self._slide_frame = self._t
+        for _ in range(SETTLE_STEPS - steps):
+            w['scene'].step()
+        bp = np_(w['bottle'].get_pos()); gp_ = np_(w['goal'].get_pos())
+        touch = float(np.hypot(bp[0] - gp_[0], bp[1] - gp_[1])) <= NESTED_TOUCH_DIST
+        nested = bool(self._picked and touch and tilt_deg(np_(w['bottle'].get_quat())) < 20
+                      and tilt_deg(np_(w['goal'].get_quat())) < 20)
+        return dict(nested=nested, slide_success=bool(slide), slide_route=route)
 
     def _obs(self):
         w = self.w
