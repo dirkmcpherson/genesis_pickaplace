@@ -299,3 +299,29 @@ like"; the human side has never been row-matched to the machine side. This amend
 - **Disclosures:** `MH80` ⊂ `MH200` ⊂ `MH300` (nested, not independent draws); the seed-0 prefix stopping rule slightly
   disfavours the longest tapes at the boundary (MH200 tape lengths 97/171/1046 min/med/max); all arms share the fixed
   seed-0 subsample nuisance already recorded in review S2-4.
+
+### A4 readout rule — registered 2026-09-08, BEFORE the pair contrast is computed
+*Written while `re15` is complete (0.080) and `rough15` has 3 of 8 seeds in (0/50, 0/50, 1/50), i.e. before the contrast
+exists. Coordinator's instruction, adopted verbatim as the rule of record.*
+- **Floor rule.** If both arms of an A4 pair have a mean at or near the floor (≤ ~0.10 on the bank), the contrast between
+  them is **uninformative, not null**: a comparison of two arms that both fail almost completely has no power to detect
+  anything, and "no difference between rough and re-executed" would imply a finding where there is only a floor.
+  In that case: report the per-seed counts, state plainly that both arms floor, and **attach NO significance test** to
+  the pair. This is the same treatment the project already applies to `slide_success` (0–6 %, reported as a task outcome
+  with no p-value, PHASE_PLAN amendments (l)/(o)); P-A4-2′ is then **not evaluable**, not "met" or "failed".
+- **What the pair still establishes, stated positively:** action edits at the registered roughness destroy the data —
+  measured independently at BUILD time (yields: MG + smoothing 0/200, MH + noise at ε 0.406 5/200, at ε 0.15 98/200;
+  `paper/REPLAY_YIELD_2026-09-08.md`) and at TRAINING time (both arms near the floor). Two independent measurements
+  agreeing that the manipulation is destructive is a cleaner statement than any contrast between the two ruined arms.
+- **A4's original question — does action roughness specifically explain the machine arm's weakness — cannot be answered
+  by this design**, because the manipulation is too destructive to isolate the variable. That is a property of the
+  design, stated explicitly, not an inconclusive-by-chance outcome.
+- **One attribution that is NOT yet settled and must not be asserted:** the pair's floor is not necessarily caused by the
+  manipulation. The CONTROL arm `re15` carries *unmodified* actions and also floors (0.080), and it is small
+  (15,702 rows). **A6's `MH80` (natively collected, 16,406 rows) discriminates:** if `MH80` also floors, the A4 pair's
+  floor is driven mainly by arm SIZE and the manipulation's learner-side effect is unmeasurable at this scale (a
+  stronger statement about the design); if `MH80` is well above the floor, re-execution and/or the edit is the cause.
+  Either way the pair contributes no p-value.
+- **If the roughness question still matters after A6** it needs a gentler manipulation on a full-size arm; the build-time
+  ladder suggests the usable range is narrow or empty (MG survives 3/40 even at the mildest β 0.30 tested; MH survives
+  98/200 at ε 0.15, which is only 43 % of MG's roughness and already floors the learner).

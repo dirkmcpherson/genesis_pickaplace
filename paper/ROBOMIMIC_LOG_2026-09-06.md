@@ -392,3 +392,11 @@ discrete-action line, where re-execution was assumed approximately free):
   added to the mh masked copy (sha now da0b6940…). Jobs (8 seeds each, `--nice=4000`, gate 405 GB free):
   **MH80 3370379–3370386, MH300 3370387–3370394.** Dose curve when they land: human 16.4k / 41.1k / 61.5k rows vs
   machine 16.5k / 59.2k / 536.5k. Replay-yield finding written up standalone: `paper/REPLAY_YIELD_2026-09-08.md`.
+- **2026-09-08 A4 readout rule registered before the contrast exists** (plan §A4 addendum): both arms of the ε 0.15 pair
+  are at/near the floor (`re15` 0.080 complete; `rough15` 0/50, 0/50, 1/50 on its first three seeds), so the pair is
+  reported as **counts with NO significance test** — a null on a floor is an artefact of the floor, the same treatment
+  the project gives `slide_success`. P-A4-2′ becomes **not evaluable**. What the pair does establish, jointly with the
+  build-stage yields, is that the registered action edits are destructive at both build and training time. Explicitly
+  recorded: the floor's cause is not yet attributable — the unmodified control `re15` also floors and is small, so
+  **A6's `MH80` (native, 16,406 rows) is the discriminator** between "size floors RLPD at this scale" and
+  "re-execution/editing floors it".
