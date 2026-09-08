@@ -50,6 +50,36 @@ observation worth registering and re-testing, not as a result.
 igniting or collapsing, but contact is not a target of the place task — do not read that as a dead seed.) The dead seeds
 flagged elsewhere in the project belong to the RLPD and pick families, which are not plotted here.
 
+## CORRECTION (2026-09-08, self-found): the end-to-end series was measuring termination, not the stage
+
+The first version of these curves built every series from the `episode/train_*` flags. For `scope='full'` that is wrong.
+The adapter writes those flags only when an episode terminates **inside** it (nested proxy or tip); a TimeLimit
+truncation happens outside, so a **truncated episode logs all-zero flags even when it picked**. Measured on
+`dHfull_all` s3: **1198 of 2911 episodes all-zero, every one of length exactly 300** (the horizon), and **608 of them
+scored ≥ 1** — they picked. `picked` read **0.480 by flag against 0.688 by score**.
+
+The tell was visible in the output and I missed it first time: flag-based `picked`, `contact` and `nested` all reported
+**identical** ignition steps (−262,499, p 0.018), because all three were really measuring "terminated having reached the
+stage", not the stage.
+
+**Fixed:** end-to-end stages are now derived from `episode/score`, which accumulates the reward stream and survives
+truncation. The staged ladder is picked +1 / placed +1 (stale band, ~never earned) / contact +2 / nested +4, so
+score ≥ 1 → picked, ≥ 3 → contact, ≥ 7 → nested. **`pick`, `place` and `slide` are unaffected** — each terminates on its
+own stage, so a truncated episode there genuinely lacks it and the flag is exact.
+
+**The finding survives the correction, with honest magnitudes** (absolute-0.2 crossing; 8 v 8 per-seed permutation):
+
+| stage | human | machine | Δ | p | was (contaminated) |
+|---|---|---|---|---|---|
+| picked | 424,998 | 574,998 | −156,249 | **0.019** | −262,499, p 0.018 |
+| contact | 824,997 | 949,996 | −187,499 | **0.044** | identical to picked |
+| nested_proxy | 1,024,996 | 1,224,995 | −249,999 | 0.059 | identical to picked |
+
+On the 50 %-of-tail-average definition: picked −156,250 (p 0.033), contact −150,000 (p 0.052).
+
+Online final-quarter levels by score, which the flag series also understated: picked human 0.823 v machine 0.760;
+contact 0.674 v 0.572; nested_proxy 0.355 v 0.292.
+
 ## Standing measurement note (user, 2026-09-08): track ignition STEP, not only ignition likelihood
 
 Every learning-speed claim must be reported from the **raw per-seed step**, not from a collapsed pass/fail rate. Whether a
@@ -72,8 +102,8 @@ non-igniting seeds. `bin_width_steps` records the resolution, which bounds how f
 |---|---|---|---|---|---|
 | place | placed_v2 | 87,500 | 112,500 | −25,000 | 0.075 |
 | slide | contact | 37,500 | 37,500 | 0 | 1.000 |
-| **e2e** | **picked** | **724,997** | **974,996** | **−243,749** | **0.032** |
-| **e2e** | **contact** | **999,996** | **1,149,996** | **−193,750** | **0.044** |
+| **e2e** | **picked** | **549,998** | **774,997** | **−156,250** | **0.033** |
+| **e2e** | **contact** | **874,996** | **1,024,996** | **−150,000** | **0.052** |
 
 **Pick shows no learning-speed difference** (added at the user's request, 2026-09-08): on the absolute-0.2 crossing the
 ignition medians are 162,500 human vs 137,500 machine (Δ mean +12,500, p 0.505); on the 50 %-of-steady-state definition

@@ -29,16 +29,34 @@ FAM = [
 ]
 RENAME = {("e2e", "nested"): "nested_proxy"}     # never call the training proxy `nested` on a plot
 
-def seed_series(run_dir, stage):
+# --- scope='full' ONLY: derive stages from episode/score, not from the log_* flags -----------------
+# In scope='full' the adapter writes the stage flags only when the episode terminates INSIDE it (nested
+# proxy or tip); a TimeLimit truncation happens outside, so a TRUNCATED episode logs all-zero flags even
+# when it picked. Measured on dHfull_all s3: 1198/2911 episodes all-zero, every one of length exactly 300
+# (the horizon), 608 of them with score >= 1 -- picked reads 0.480 by flag against 0.688 by score. The
+# flag series was also degenerate: picked, contact and nested all ignited at the SAME step, because what
+# it really measured was "terminated having reached the stage".
+# episode/score accumulates the reward stream and survives truncation, and the staged ladder is
+# picked +1 / placed +1 (stale band, ~never earned) / contact +2 / nested +4, so:
+SCORE_THRESHOLDS = {"picked": 1.0, "contact": 3.0, "nested": 7.0}
+# pick / place / slide are UNAFFECTED: each terminates on its own stage, so a truncated episode there
+# genuinely did not achieve it and the flag is exact.
+
+def seed_series(run_dir, stage, fam=None):
     f = os.path.join(run_dir, "metrics.jsonl")
     if not os.path.exists(f):
         return None
     steps, vals = [], []
     key = "episode/train_" + stage
+    thr = SCORE_THRESHOLDS.get(stage) if fam == "e2e" else None      # see SCORE_THRESHOLDS above
     for line in open(f):
         try:
             d = json.loads(line)
         except Exception:
+            continue
+        if thr is not None:
+            if "episode/score" in d and "step" in d:
+                steps.append(float(d["step"])); vals.append(float(float(d["episode/score"]) >= thr))
             continue
         if key in d and "step" in d:
             steps.append(float(d["step"])); vals.append(float(d[key]))
@@ -53,7 +71,7 @@ for fam, hp, mp, stages in FAM:
     smax = 0.0
     for pat in (hp, mp):
         for s in range(8):
-            r = seed_series(os.path.join(runs, pat % s), stages[0])
+            r = seed_series(os.path.join(runs, pat % s), stages[0], fam)
             if r is not None:
                 smax = max(smax, r[0].max())
     if smax <= 0:
@@ -65,7 +83,7 @@ for fam, hp, mp, stages in FAM:
             name = RENAME.get((fam, stage), stage)
             per_seed = {}
             for s in range(8):
-                r = seed_series(os.path.join(runs, pat % s), stage)
+                r = seed_series(os.path.join(runs, pat % s), stage, fam)
                 if r is None:
                     continue
                 st, v = r
