@@ -28,6 +28,15 @@ run_cell() {   # <run> <kind: phase|full> <bank-or-icset> <tag> <mode>
   [ -f $LOGDIR/latest.pt ] || { echo "FATAL no checkpoint $LOGDIR/latest.pt"; return 1; }
   [ -f $LOGDIR/fresh_eval_${TAG}_${MODE}/metrics.json ] || { echo "FATAL no cell of record $LOGDIR/fresh_eval_${TAG}_${MODE}/metrics.json"; return 1; }
   [ -f $OUT/metrics.json ] && { echo "skip (done) $RUN $TAG $MODE"; return 0; }
+  # EVAL_FIXES 7.2/7.6 + end-to-end agent alignment: an end-to-end cell is CPU-class sensitive, so it may only be
+  # produced on the agreed class (REQUIRE_CORES=64 logical CPUs, the 55-machine class both lanes use). Refuse rather
+  # than silently emit a cell of record on the wrong hardware -- this fires on a requeue to another node.
+  if [ $KIND = full ]; then
+    local CORES=$(grep -c ^processor /proc/cpuinfo)
+    if [ "$CORES" != "${REQUIRE_CORES:-64}" ]; then
+      echo "# REFUSED $RUN $TAG $MODE: node $(hostname) has $CORES logical CPUs, require ${REQUIRE_CORES:-64}"; return 0
+    fi
+  fi
   rm -rf $OUT
   echo "# $(date -Is) START $RUN $TAG $MODE src=$SRC"
   if [ $KIND = phase ]; then
