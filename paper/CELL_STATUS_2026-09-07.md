@@ -11,8 +11,8 @@ Each cell is **human vs machine**, then Δ (human − machine), the exact two-si
 | **Pick** (random starts) | 0.520 v 0.467, Δ +0.053, p 0.123, n 10 | 0.600 v 0.517, Δ +0.083, p 0.485 **and** 0.600 v 0.567, Δ +0.033, p 0.646 — two different machine arms, both reproduce | 0.617 v 0.608, Δ +0.008, p 0.875, n 8 |
 | **Pick** (`spots60`, in-training-distribution) | **0.893 v 0.873, Δ +0.020, p 0.402** (5 pinned human seeds; all-10-seed version 0.878 v 0.873, p 0.845 — mixes hardware classes) | **0.867 v 0.865, Δ +0.002, p 1.000** (now 8 v 8, all hardware-pinned — the re-runs landed) | not run |
 | **Place** (matched 39 demos) | pending — 32 runs queued | partial — 8 v 3 seeds so far | **0.715 v 0.652, Δ +0.063, p 0.112, n 8** (re-scored; was 0.703 v 0.647) |
-| **Contact** (matched 11, sub-floor) | not run | not run | 0.593 v 0.602, Δ −0.009, p 0.841, n 8 |
-| **Carrycontact** (matched 21) | not run | not run | 0.807 v 0.796, Δ +0.011, p 0.348, n 8 |
+| **Contact** (matched 11, sub-floor) | held on the predicate decision | held on the predicate decision | **BEING RE-SCORED — do not cite.** Old cells: 0.593 v 0.602, p 0.841, n 8 (raw-grip bank, unpinned entries) |
+| **Carrycontact** (matched 21) | not run — and not needed; this is a control | not run | 0.807 v 0.796, p 0.348, n 8 (raw-grip bank; re-score queued last) |
 | **End-to-end**, picked | pending — 32 runs queued | pending — same 32 runs | 0.500 v 0.537, Δ −0.037, p 0.643, n 8 |
 | **End-to-end**, contact | pending | pending | 0.379 v 0.338, Δ +0.042, p 0.639, n 8 |
 | **Slide** | **held** | **held** | not run |
