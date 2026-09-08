@@ -25,8 +25,8 @@ REASONS = {}  # slide_fail_reason census over every contact cell read (a7de6a0 p
 NODIAG = []   # contact cells produced before the slide fix -- not reportable
 
 
-def cell(run_dir, bank, mode, key='placed_v2', learner_arm=('?', '?')):
-    f = os.path.join(run_dir, f'fresh_eval_{bank}_{mode}', 'metrics.json')
+def cell(run_dir, bank, mode, key='placed_v2', learner_arm=('?', '?'), suffix=''):
+    f = os.path.join(run_dir, f'fresh_eval_{bank}_{mode}{suffix}', 'metrics.json')
     if not os.path.exists(f):
         return None
     d = json.load(open(f)); n = int(d['episodes'])
@@ -73,6 +73,11 @@ def main():
                          "key slide_success (the (l') statistic), runs sl_{rlpd,dp}_*, WM s2_r2d_contact_*; bare contact "
                          "is printed beside it.")
     ap.add_argument('--polE-tag', dest='pole_tag', default='polE')
+    ap.add_argument('--wm-suffix', default='',
+                    help="suffix on the WORLD-MODEL cell dir names, e.g. '_v2' for the 2026-09-08 re-score on the "
+                         "rebuilt physical-grip bank with pinned entries (fresh_eval_polE_mode_v2). The re-score was "
+                         "written alongside the originals rather than replacing them, so the default '' still reads "
+                         "the pre-rebuild cells -- pass _v2 to compare like with like.")
     ap.add_argument('--seeds', default='0-7')
     args = ap.parse_args()
     a, b = args.seeds.split('-'); seeds = list(range(int(a), int(b) + 1))
@@ -98,7 +103,8 @@ def main():
             rows = {}
             for s in seeds:
                 rd = tmpl[arm].format(s=s)
-                r = {c: cell(rd, c[0], c[1], key=KEY, learner_arm=(name, arm)) for c in cells}
+                sfx = args.wm_suffix if name == 'r2dreamer' else ''
+                r = {c: cell(rd, c[0], c[1], key=KEY, learner_arm=(name, arm), suffix=sfx) for c in cells}
                 if any(v is not None for v in r.values()):
                     rows[s] = r
                     print(f'| {name} | {arm} | s{s} | ' + ' | '.join(fmt(r[c]) for c in cells) + ' |')
