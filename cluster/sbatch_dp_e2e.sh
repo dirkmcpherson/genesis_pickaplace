@@ -12,6 +12,8 @@
 #   ARM        dH | dDP   (dH -> $DEMO_ROOT/dHfull_all [74], dDP -> $DEMO_ROOT/dDPfull [72]; RAW npz + manifest + lerobot/)
 #   SEED       required     STEPS 100000     DEMO_ROOT /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3
 #   OUT_ROOT   baselines/outputs/dp_e2e  -> $OUT_ROOT/e2e_dp_${ARM}_s${SEED}     PROJ genesis_paper    DRYRUN=1
+#   DEVICE     unset (default; the runs of record use lerobot's own device choice = cuda). Setting DEVICE=cpu adds
+#             --policy.device=cpu so a pipeline smoke can run on an idle CPU node -- never for a reported number.
 #   SAVE_FREQ  STEPS/2 -- DISK RULE (2026-09-07 incident): at most TWO numbered checkpoints exist during a run (one
 #             mid-run resume point for the preempt queue), and after training every checkpoint except the final is
 #             deleted together with the final's training_state -- 949 MB per run at rest. A requeue AFTER the budget
@@ -39,7 +41,7 @@ cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
-ACTION_REPEAT=4; EVAL_HORIZON=1200
+ACTION_REPEAT=4; EVAL_HORIZON=1200; DEVFLAG=(); [ -n "${DEVICE:-}" ] && DEVFLAG=(--policy.device="$DEVICE")
 DEMO_ROOT=${DEMO_ROOT:-/cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3}
 case "$ARM" in
   dH)  SET=dHfull_all; N_EXP=74 ;;
@@ -83,11 +85,15 @@ import json, sys, pathlib as pl
 ds, n_exp, rep, raw = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
 info = json.loads((pl.Path(ds) / 'meta' / 'info.json').read_text())
 man = json.loads((pl.Path(raw) / 'manifest.json').read_text())
-assert info['total_episodes'] == n_exp == man['n_kept'], (info['total_episodes'], n_exp, man['n_kept'])
+# the raw set carries every tape (n_kept == n_exp, gated above); the lerobot dataset holds the tapes long enough to
+# form a DP sample (n_lerobot; convert_to_lerobot drops episodes under MIN_FRAMES -- disclosed, never silent)
+assert int(man['n_kept']) == n_exp, (man['n_kept'], n_exp)
+assert info['total_episodes'] == int(man['n_lerobot']), (info['total_episodes'], man['n_lerobot'])
 assert abs(float(info['fps']) - 30.0 / rep) < 1e-6, (info['fps'], rep)
-assert int(info['total_frames']) == int(man['decisions_total']), (info['total_frames'], man['decisions_total'])
+assert int(info['total_frames']) == int(man['decisions_lerobot']), (info['total_frames'], man['decisions_lerobot'])
 src = json.loads((pl.Path(ds) / 'genesis_source.json').read_text()); assert src.get('contract') == 'v1', src
-print(f'PROVENANCE-OK dataset={ds} total_episodes={info["total_episodes"]} total_frames={info["total_frames"]} fps={info["fps"]}')
+print(f'PROVENANCE-OK dataset={ds} total_episodes={info["total_episodes"]}/{man["n_kept"]} '
+      f'total_frames={info["total_frames"]}/{man["decisions_total"]} fps={info["fps"]} short_tapes={man["short_tapes"]}')
 PY
 REG_KNOBS=(steps="$STEPS" budget_unit=grad_steps batch_size=64 policy=diffusion dataset_root="$DATASET" action_repeat="$ACTION_REPEAT"
            eval_horizon="$EVAL_HORIZON" demo_format=full_tapes demo_sha="$DEMO_SHA" save_freq="$SAVE_FREQ" wave="$WAVE"
@@ -122,7 +128,7 @@ else
   rm -rf "$OUT"
   $LEROBOT_TRAIN --dataset.repo_id="local/${RUN_NAME}" --dataset.root="$DATASET" --policy.type=diffusion --policy.push_to_hub=false \
     --seed="$SEED" --output_dir="$OUT" --batch_size=64 --steps="$STEPS" --save_freq="$SAVE_FREQ" --job_name="$RUN_NAME" \
-    --wandb.enable=true --wandb.project="$PROJ" --wandb.disable_artifact=true
+    --wandb.enable=true --wandb.project="$PROJ" --wandb.disable_artifact=true "${DEVFLAG[@]}"
 fi
 LAST_D=$(ls -d "$OUT"/checkpoints/[0-9]*/ 2>/dev/null | sort -V | tail -1)
 [ -n "$LAST_D" ] && [ -d "$LAST_D/pretrained_model" ] || { echo "FATAL: no numbered checkpoint under $OUT/checkpoints"; exit 1; }

@@ -18,6 +18,8 @@
 #   CKPT_FRACS 0.4,1.0  -- DISK RULE (2026-09-07 incident): ckpt_100 = LAST (statistic of record), ckpt_040 = 100k
 #             decisions (the RLPD pick-budget read); periodic snapshot zips OFF (--ckpt-every 0). 3 x 12 MB per run.
 #   SETS/MODES/VIDEO_SETS  passed to e2e_eval_cells.sh   WAVE e2e   SIM_VARIANT gc_kp4_riser3_shelf6   GAMMA 0.99
+#   DEVICE    cuda (default; the runs of record). 'cpu' exists ONLY so a pipeline smoke can run on an idle CPU node
+#             while the GPU queue is full -- never for a run that produces a number.
 #   DRYRUN=1  prints the plan and exits before any conda/module/training call
 # A requeued (preempted) run restarts CLEAN (the trainer does not resume; same as the place/WM launchers).
 #SBATCH -J e2e_rlpd
@@ -41,7 +43,7 @@ export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 W=${W:-/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03}
 ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-250000}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; GAMMA=${GAMMA:-0.99}
-ACTION_REPEAT=4; TRAIN_HORIZON=1200; EVAL_HORIZON=1200
+ACTION_REPEAT=4; TRAIN_HORIZON=1200; EVAL_HORIZON=1200; DEVICE=${DEVICE:-cuda}
 case "$ARM" in
   dH)  DEMO=${DEMO:-$W/demos_state_full/dHfull_all}; N_EXP=74 ;;
   dDP) DEMO=${DEMO:-$W/demos_state_full/dDPfull};    N_EXP=72 ;;
@@ -88,7 +90,7 @@ TRAIN_ARGS=(--steps "$STEPS" --scope full --demo-format segment --demo-dir "$DEM
   --utd 10 --ensemble-size 10 --subset-size 2 --demo-batch 128
   --demo-shaping off --pick-shaping-terminal-zero on --demo-terminal-guard on --sim-variant "$SIM_VARIANT"
   --ckpt-every 0 --ckpt-fracs "${CKPT_FRACS:-0.4,1.0}"
-  --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper --seed "$SEED" --device cuda)
+  --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper --seed "$SEED" --device "$DEVICE")
 REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=full action_mode=delta_joint delta_ref=target action_repeat="$ACTION_REPEAT"
            train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON" gamma="$GAMMA" backup_entropy=off per_member_ln=off utd=10
            ensemble_size=10 subset_size=2 demo_batch=128 reward=staged_sparse demo_format=segment demo_sha="$DEMO_SHA" wave="$WAVE"

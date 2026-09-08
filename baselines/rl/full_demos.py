@@ -200,6 +200,12 @@ def cmd_select(args):
     sv = svs.pop()
     if args.sim_variant and sv != args.sim_variant:
         sys.exit(f'FATAL: tapes are stamped sim_variant={sv}, expected {args.sim_variant}')
+    # convert_to_lerobot.py drops episodes shorter than its MIN_FRAMES argument, so the DP dataset can hold FEWER
+    # episodes than the raw set. Record exactly how many and which, so the launcher's provenance gate compares the
+    # lerobot dataset against a measured number instead of the tape count (and the drop is disclosed, not silent).
+    short = sorted(k for k, v in chosen.items() if int(v['n']) < args.min_frames)
+    n_lerobot = len(written) - len(short)
+    dec_lerobot = int(sum(int(v['n']) for v in chosen.values() if int(v['n']) >= args.min_frames))
     man = dict(set=os.path.basename(os.path.normpath(args.out)), built=time.strftime('%Y-%m-%dT%H:%M:%S'),
                contract='v1', sim_variant=sv, action_repeat=reps.pop(), delta_cap=caps.pop(), scope='full', phase=None,
                role='end-to-end (full task) DP set (PHASE_PLAN amendment (n)); the SAME tapes the world model and '
@@ -211,6 +217,7 @@ def cmd_select(args):
                idle_frac=(n_idle / n_dec if n_dec else 0.0), idle_frac_prepick=(n_idle_pp / n_pp if n_pp else 0.0),
                idle_eps=IDLE_EPS, one_per_ic_best=bool(m.get('one_per_ic_best')),
                segments=os.path.abspath(args.segments), segments_sha=m.get('src_sha'), src=os.path.abspath(args.src),
+               min_frames=int(args.min_frames), n_lerobot=n_lerobot, decisions_lerobot=dec_lerobot, short_tapes=short,
                chosen=chosen, content_sha256=content_sha(written), builder='baselines/rl/full_demos.py select')
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
     open(os.path.join(args.out, 'episode_list.txt'), 'w').write('\n'.join(sorted(chosen)) + '\n')
@@ -218,6 +225,10 @@ def cmd_select(args):
           f'{int(np.median(rows))}, min {min(rows)}, max {max(rows)}; tape reward {r_total:.0f}; stages {stages}; '
           f'idle {man["idle_frac"]:.3f} overall / {man["idle_frac_prepick"]:.3f} pre-pick; sha '
           f'{man["content_sha256"][:16]})')
+    if short:
+        print(f'[select] DISCLOSED: {len(short)} tape(s) shorter than convert_to_lerobot MIN_FRAMES={args.min_frames} '
+              f'({short}) cannot form a DP training sample -> the lerobot dataset holds {n_lerobot} episodes / '
+              f'{dec_lerobot} decisions. RLPD and the world model train on all {len(written)}.')
 
 
 # ----------------------------------------------------------------------------------------------- (3) check
@@ -263,6 +274,7 @@ def main():
     sub = ap.add_subparsers(dest='cmd', required=True)
     s = sub.add_parser('select'); s.add_argument('--segments', required=True); s.add_argument('--src', required=True)
     s.add_argument('--out', required=True); s.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
+    s.add_argument('--min-frames', type=int, default=4, help='convert_to_lerobot.py MIN_FRAMES: shorter tapes are dropped by the DP converter (recorded in the manifest, never silent)')
     s.add_argument('--force', action='store_true'); s.add_argument('--dry-run', action='store_true')
     s.set_defaults(fn=cmd_select)
     k = sub.add_parser('check'); k.add_argument('--raw', required=True); k.add_argument('--segments', required=True)

@@ -38,9 +38,13 @@ build_one() {   # $1 = set name (dHfull_all | dDPfull), $2 = source tape dir und
   python3 - "$DS" "$DEMO_ROOT/$SET/manifest.json" "$N" <<'PY'
 import json, sys
 i = json.load(open(sys.argv[1] + '/meta/info.json')); m = json.load(open(sys.argv[2]))
-assert i['total_episodes'] == m['n_kept'] == int(sys.argv[3]), (i['total_episodes'], m['n_kept'], sys.argv[3])
-assert abs(i['fps'] - 7.5) < 1e-9 and i['total_frames'] == m['decisions_total'], (i['fps'], i['total_frames'], m['decisions_total'])
-print('LEROBOT-OK %s: episodes %d frames %d fps %s sha %s' % (sys.argv[1], i['total_episodes'], i['total_frames'], i['fps'], m['content_sha256'][:16]))
+# the RAW set is the full tape count; the lerobot dataset can hold FEWER (convert_to_lerobot drops episodes below
+# MIN_FRAMES -- recorded as n_lerobot/decisions_lerobot/short_tapes by full_demos.py select, never silent)
+assert m['n_kept'] == int(sys.argv[3]), (m['n_kept'], sys.argv[3])
+assert i['total_episodes'] == m['n_lerobot'], (i['total_episodes'], m['n_lerobot'])
+assert abs(i['fps'] - 7.5) < 1e-9 and i['total_frames'] == m['decisions_lerobot'], (i['fps'], i['total_frames'], m['decisions_lerobot'])
+print('LEROBOT-OK %s: episodes %d/%d frames %d/%d fps %s short_tapes %s sha %s' % (
+    sys.argv[1], i['total_episodes'], m['n_kept'], i['total_frames'], m['decisions_total'], i['fps'], m['short_tapes'], m['content_sha256'][:16]))
 PY
 }
 build_one dHfull_all src_dHfull_all 74
