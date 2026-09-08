@@ -13,12 +13,13 @@ Rules:
   * the merged summary carries isolation='fresh_process', the set of nodes, pids, CPU model strings and
     instruction-set classes that produced it, and per-episode node/pid/order/cpu stamps as written by eval_e2e.py;
   * a cell whose shards span MORE THAN ONE hardware configuration FAILS. The configuration is (physical core count of
-    the machine, per-task thread count): full-scope outcomes track MACHINE SIZE, not the instruction set -- the
-    AVX2-vs-AVX-512 attribution is WITHDRAWN (coordinator, 2026-09-07 late: a 40-core Broadwell and a 64-core Sapphire
-    Rapids agree bit-for-bit across the ISA boundary, while a 36-core Broadwell disagrees with the 40-core Broadwell on
-    the same ISA; all 53 same-core-count comparisons are bit-identical and all 19 differing pairs have a 36-core
-    machine on exactly one side). Such a cell is not one measurement. This cannot happen in job (all shards share the
-    node) but can happen when a killed cell is resumed elsewhere -- which is exactly when it must be loud;
+    the machine, per-task thread count). Full-scope outcomes are established to track MACHINE SIZE -- 53 of 53
+    same-core-count comparisons bit-identical across nodes, labels and code versions, and all 19 disagreements with a
+    36-core machine on exactly one side (coordinator verdict 2026-09-07: `cores`). That result rests only on processor
+    counts, which are reliable; the instruction-set question is UNRESOLVED, since the CPU-family labels behind both
+    the original AVX claim and its withdrawal are wrong on this cluster. Such a cell is not one measurement. This
+    cannot happen in job (all shards share the node) but can happen when a killed cell is resumed elsewhere -- which
+    is exactly when it must be loud;
   * scalar protocol fields (mode, seed, ic_file, ic_set, max_steps, sim_variant, action_repeat, delta_cap/leash,
     act_selection) must AGREE across every episode, or the merge fails: a cell assembled from processes that ran
     different protocols is not a cell.

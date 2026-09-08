@@ -113,12 +113,13 @@ def main():
                          "CPU-only evaluation pass (the cells of record).")
     ap.add_argument('--cores', type=int, default=None,
                     help='restrict every arm to seeds whose cell ran on a machine with exactly this many physical '
-                         'cores -- the clean same-hardware comparison. Full-scope outcomes track MACHINE SIZE '
-                         '(coordinator 2026-09-07 late; the AVX2-vs-AVX-512 attribution is withdrawn). Cells of '
-                         'another size are dropped from the test and named.')
+                         'cores -- the clean same-hardware comparison, and the GUARD OF RECORD (coordinator verdict '
+                         '2026-09-07: `cores`). Cells of another size are dropped from the test and named.')
     ap.add_argument('--isa', default=None, choices=('avx2', 'avx512'),
-                    help='(diagnostic only, the ISA attribution is WITHDRAWN as the divergence axis) restrict every '
-                         'arm to seeds whose cell ran on this instruction-set class.')
+                    help='(DIAGNOSTIC ONLY -- the instruction-set question is UNRESOLVED, not ruled out: the '
+                         'CPU-family labels behind both the original AVX claim and its withdrawal are wrong on this '
+                         'cluster) restrict every arm to seeds whose cell ran on this instruction-set class. Useful '
+                         'only for a future re-check of families read from /proc/cpuinfo.')
     ap.add_argument('--cell-suffix', default='',
                     help="'' = the shared-process cells (the PHASE_RESULTS §5.1 protocol, comparable with the "
                          "published world-model row); '_iso' = the isolated cells (one fresh process per start, "
@@ -178,11 +179,13 @@ def main():
                 if len(core_all) > 1 or len(thr_all) > 1:
                     print('  NOTE: this comparison spans MORE THAN ONE HARDWARE CONFIGURATION (physical cores '
                           f'{core_all}, per-task threads {thr_all}). Long-horizon full-scope outcomes track MACHINE '
-                          'SIZE -- same checkpoint, IC, mode, seed and horizon give different outcomes on machines of '
-                          'different core counts (coordinator 2026-09-07 late; the earlier AVX2-vs-AVX-512 '
-                          'attribution is WITHDRAWN, and node NAME is not the axis either). If the balance line '
-                          'above is even across arms this is variance that inflates the MDE; if it is skewed it is '
-                          'BIAS and the arms must be compared within one configuration (--cores N).')
+                          'SIZE -- same checkpoint, IC, mode, seed and horizon give different outcomes on machines '
+                          'of different core counts: 53/53 same-core-count comparisons bit-identical, all 19 '
+                          'disagreements with a 36-core machine on exactly one side (coordinator verdict '
+                          '2026-09-07). Node NAME is not the axis; the instruction set is unresolved and is not the '
+                          'guard. If the balance line above is even across arms this is variance that inflates the '
+                          'MDE; if it is skewed it is BIAS and the arms must be compared within one configuration '
+                          '(--cores N).')
                 elif len(nodes) > 1:
                     print(f'  Cells span {len(nodes)} nodes of ONE hardware configuration ({core_all} physical '
                           f'cores, {thr_all} threads) -- safe to combine (the divergence axis is machine size, not '

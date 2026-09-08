@@ -9,15 +9,19 @@
 #   (1) NODE SENSITIVITY -- the same checkpoint/IC/mode/seed/horizon gives `nested`@32 on pax109 and `timeout`@300 on
 #       pax001/pax030/pax154; each node is self-consistent, nodes disagree, and the mechanism is chaotic amplification
 #       over 300 decisions of contact-rich physics (agreement to 1e-9 through decision 12). Short phase episodes are
-#       immune. The axis is MACHINE SIZE: physical core count, NOT the instruction set and NOT the node name. The
-#       AVX2-vs-AVX-512 attribution is WITHDRAWN (coordinator, 2026-09-07 late): a 40-core Broadwell and a 64-core
-#       Sapphire Rapids agree bit-for-bit ACROSS the ISA boundary while a 36-core Broadwell disagrees with the 40-core
-#       Broadwell on the SAME ISA; all 53 same-core-count comparisons are bit-identical and every one of the 19
-#       differing pairs has a 36-core machine on exactly one side. eval_e2e.py reads /proc/cpuinfo (never a Slurm
+#       immune. The axis is MACHINE SIZE: physical core count, NOT the node name. Established on processor counts,
+#       which are reliable: 53 of 53 same-core-count comparisons bit-identical across nodes, labels and code
+#       versions, and every one of the 19 disagreements with a 36-core machine on exactly one side (coordinator
+#       verdict 2026-09-07: `cores`). The instruction-set question is UNRESOLVED rather than ruled out -- the
+#       CPU-family labels behind both the original AVX claim and its withdrawal come from Slurm's AvailableFeatures,
+#       which are wrong on this cluster -- so isa/avx512f are stamped as diagnostics, never used as the guard.
+#       eval_e2e.py reads /proc/cpuinfo (never a Slurm
 #       feature label, which mislabels a Cascade Lake node as `broadwell`) and stamps cpu_model, physical cores,
 #       sockets, logical CPUs, task affinity, thread count and isa on EVERY episode. REQUIRE_CORES=<n> and/or
 #       THREADS=<n> make a cell REFUSE to run on the wrong configuration -- and unlike a node pin, they can be
 #       satisfied on ANY machine of the right size, which is what keeps the CPU-only pass ordinary parallel work.
+#       Use THREADS alongside REQUIRE_CORES, never instead of it: the audit that established the core rule never set
+#       a thread variable (thread count simply WAS the core count there), so it cannot speak to thread pinning.
 #   (2) ORDER DEPENDENCE -- in the shared-process protocol state leaks between full-scope episodes (uid 254 scores
 #       r=1.0 standalone but r=3.0 as episode 2 after uid 252). The shared cells inherit it BY DESIGN, because that is
 #       the protocol the world-model rows of PHASE_RESULTS §5.1 were produced under and this table has to sit beside
@@ -51,7 +55,7 @@ ROLE=${ROLE:-preview}; CELL_DIR=${CELL_DIR:-}
 CELLS_ROOT="$OUT"; [ -n "$CELL_DIR" ] && CELLS_ROOT="$OUT/$CELL_DIR"
 if [ "$ROLE" = record ] && [ -z "$REQUIRE_CORES" ] && [ -z "$THREADS" ]; then
   echo "FATAL: ROLE=record needs REQUIRE_CORES and/or THREADS -- a cell of record is pinned by construction, and the"
-  echo "       axis is machine size / thread count (the AVX2-vs-AVX-512 attribution is withdrawn)."; exit 1
+  echo "       axis is MACHINE SIZE (coordinator verdict 2026-09-07: \`cores\`); prefer REQUIRE_CORES."; exit 1
 fi
 mkdir -p "$CELLS_ROOT"
 if [ -z "${MODES:-}" ]; then MODES="sample mode"; [ "$KIND" = dp ] && MODES="sample"; fi

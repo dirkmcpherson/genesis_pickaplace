@@ -10,32 +10,32 @@
 # PHASE_RESULTS 5.1) and the isolated cell (the correctness check of amendment (s)), written under <run>/rec/ so a
 # preview cell and a cell of record never share a path.
 #
-# THE AXIS IS MACHINE SIZE, NOT THE INSTRUCTION SET (coordinator, 2026-09-07 late; the earlier AVX2-vs-AVX-512
-# attribution is WITHDRAWN). A 40-core Broadwell and a 64-core Sapphire Rapids agree bit-for-bit ACROSS the ISA
-# boundary while a 36-core Broadwell disagrees with the 40-core Broadwell on the SAME ISA; all 53 same-core-count
-# comparisons are bit-identical and every one of the 19 differing pairs has a 36-core machine on exactly one side.
-# Good news for scheduling: a core/thread pin is satisfiable on ANY machine of the right size, so this pass no longer
-# has to squeeze through two named nodes and the CPU-only Diffusion Policy cost becomes ordinary parallel work.
+# THE AXIS IS MACHINE SIZE, AND THE VERDICT IS IN: `cores` (coordinator, 2026-09-07). It rests only on processor
+# counts, which are reliable: 53 of 53 same-core-count comparisons bit-identical across nodes, labels and code
+# versions, and every one of the 19 disagreements had a 36-core machine on exactly one side. The instruction-set
+# question is UNRESOLVED rather than ruled out -- the CPU-family labels behind both the original AVX claim and its
+# withdrawal come from Slurm's AvailableFeatures, which are wrong on this cluster -- so isa/avx512f are stamped as
+# diagnostics and are never the guard. Good news for scheduling: a core pin is satisfiable on ANY machine of the
+# right size, so this pass needs no --nodelist and the CPU-only Diffusion Policy cost becomes ordinary parallel work.
 #
-# *** HOLD: DO NOT LAUNCH UNTIL THE THREAD-PINNING SWEEP REPORTS. *** It decides the mechanism: if fixing the thread
-# count makes everything agree, a thread pin is sufficient (SWEEP_VERDICT=threads, satisfiable anywhere); if it does
-# not, cells must be matched by machine size instead (SWEEP_VERDICT=cores), a stricter design. Launching before the
-# verdict risks producing a second set of cells that also has to be thrown away. This launcher therefore REFUSES to
-# run until SWEEP_VERDICT is set explicitly -- the hold is mechanical, not a comment someone can skim past.
+# The launcher still REFUSES to run until SWEEP_VERDICT is stated explicitly, so nobody pins on a guess. Pass
+# SWEEP_VERDICT=cores with REQUIRE_CORES=<n> (and THREADS=<n> alongside it, which costs nothing and removes one more
+# free variable). SWEEP_VERDICT=threads is accepted only with an explicit written override: the audit that
+# established the core rule never set a thread variable -- thread count simply WAS the core count in all 128
+# comparisons -- so nothing on record shows a thread pin alone is sufficient.
 #
-# Submit, AFTER the verdict (no --nodelist needed; the guard is read from /proc/cpuinfo on arrival):
-#   SWEEP_VERDICT=threads THREADS=8 ...        # thread pin sufficient -> any machine
-#   SWEEP_VERDICT=cores   REQUIRE_CORES=40 THREADS=8 ...   # must also match machine size
+# Pick <n> with cluster/hw_probe.sh, which groups machines by size and flags 36-core machines (the size on one side
+# of every recorded disagreement). Submit:
 #   for A in dH dDP; do for S in $(seq 0 7); do
-#     SWEEP_VERDICT=$V THREADS=$T REQUIRE_CORES=$C LEARNER=rlpd ARM=$A SEED=$S \
+#     SWEEP_VERDICT=cores REQUIRE_CORES=$C THREADS=$T LEARNER=rlpd ARM=$A SEED=$S \
 #       sbatch -J e2erec_rlpd_${A}_s$S cluster/sbatch_e2e_rescore.sh
 #   done; done
 # Env vars:
 #   LEARNER  rlpd | dp        ARM dH | dDP        SEED required
 #   RUN_ROOT default per learner (baselines/rl/checkpoints/e2e | baselines/outputs/dp_e2e)
-#   SWEEP_VERDICT threads|cores  REQUIRED, and gates the launch (see the HOLD above)
-#   THREADS       per-task thread count to pin (both verdicts want it fixed)
-#   REQUIRE_CORES machine physical-core count to demand (required when SWEEP_VERDICT=cores)
+#   SWEEP_VERDICT cores  REQUIRED, and gates the launch. `threads` needs THREADS_ONLY_OK=<reason> as well.
+#   REQUIRE_CORES machine physical-core count to demand (required when SWEEP_VERDICT=cores) -- the guard of record
+#   THREADS       per-task thread count to pin alongside it (recommended; removes one more free variable)
 #   SETS/MODES/ISO/ISO_SETS as e2e_eval_cells.sh   PAR (default = the job's cpus)
 #   DRYRUN=1 prints the plan
 # The pass is CPU only on purpose: RLPD evaluation never needed a GPU, and DP evaluation runs on CPU too (slower),
@@ -59,11 +59,23 @@ LEARNER=${LEARNER:?set LEARNER (rlpd | dp)}; ARM=${ARM:?set ARM (dH | dDP)}; SEE
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 SWEEP_VERDICT=${SWEEP_VERDICT:-}; THREADS=${THREADS:-}; REQUIRE_CORES=${REQUIRE_CORES:-}
 case "$SWEEP_VERDICT" in
-  threads) [ -n "$THREADS" ] || { echo "FATAL: SWEEP_VERDICT=threads needs THREADS=<n>"; exit 1; } ;;
-  cores)   [ -n "$REQUIRE_CORES" ] || { echo "FATAL: SWEEP_VERDICT=cores needs REQUIRE_CORES=<n>"; exit 1; } ;;
-  *) echo "HOLD: the pinned re-score is on hold until the thread-pinning sweep reports its verdict."
-     echo "      Set SWEEP_VERDICT=threads (with THREADS=<n>) or SWEEP_VERDICT=cores (with REQUIRE_CORES=<n>)."
-     echo "      Launching before the verdict risks a second set of cells that also has to be thrown away."
+  cores)
+    [ -n "$REQUIRE_CORES" ] || { echo "FATAL: SWEEP_VERDICT=cores needs REQUIRE_CORES=<n> (see cluster/hw_probe.sh)"; exit 1; }
+    [ "$REQUIRE_CORES" = 36 ] && echo "WARNING: pinning to 36 physical cores -- every recorded disagreement had a 36-core machine on exactly one side."
+    [ -n "$THREADS" ] || echo "NOTE: THREADS unset; the core guard is the one of record, but pinning threads too removes a free variable."
+    ;;
+  threads)
+    [ -n "$THREADS" ] || { echo "FATAL: SWEEP_VERDICT=threads needs THREADS=<n>"; exit 1; }
+    [ -n "${THREADS_ONLY_OK:-}" ] || {
+      echo "FATAL: SWEEP_VERDICT=threads is not supported by any evidence on record. The 128-comparison audit that"
+      echo "       established the core-count rule never set a thread variable -- thread count simply WAS the"
+      echo "       physical core count in every one of those comparisons -- so it cannot show that a thread pin"
+      echo "       alone suffices. The verdict of record is \`cores\`. To override anyway, set"
+      echo "       THREADS_ONLY_OK=<written reason>."; exit 1; }
+    echo "OVERRIDE: threads-only pin, reason: ${THREADS_ONLY_OK}"
+    ;;
+  *) echo "HOLD: state the verdict you are acting on. The verdict of record is \`cores\` (coordinator 2026-09-07):"
+     echo "      SWEEP_VERDICT=cores REQUIRE_CORES=<n> [THREADS=<n>]   (pick <n> with cluster/hw_probe.sh)"
      exit 1 ;;
 esac
 PAR=${PAR:-${SLURM_CPUS_ON_NODE:-8}}

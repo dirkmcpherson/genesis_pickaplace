@@ -64,23 +64,28 @@ ap.add_argument('--ic-index', type=int, default=None,
                      'single-episode metrics with baselines/merge_e2e_iso.py.')
 ap.add_argument('--device', default='auto', help='policy device for dp (auto = cuda if visible); sac is always cpu')
 ap.add_argument('--require-isa', default=None, choices=('avx2', 'avx512'),
-                help="Fail LOUDLY unless this machine's instruction-set class matches. NOTE (coordinator, 2026-09-07 "
-                     "late): the ISA ATTRIBUTION IS WITHDRAWN -- divergence tracks physical CORE COUNT, not AVX2 vs "
-                     "AVX-512. A 40-core Broadwell and a 64-core Sapphire Rapids agree bit-for-bit ACROSS the ISA "
-                     "boundary while a 36-core Broadwell disagrees with the 40-core Broadwell on the SAME ISA; all 53 "
-                     "same-core-count comparisons are bit-identical and all 19 differing pairs have a 36-core machine "
-                     "on exactly one side. This flag is kept as a diagnostic stamp/guard only; the live guards are "
-                     "--require-cores and --threads.")
+                help="Fail LOUDLY unless this machine's instruction-set class matches. DIAGNOSTIC ONLY -- do not "
+                     "use it as the pinning guard. The instruction-set question is UNRESOLVED, not ruled out: the "
+                     "original AVX2-vs-AVX-512 claim AND its later withdrawal both leaned on Slurm's "
+                     "`AvailableFeatures` CPU-family labels, which are wrong on this cluster (a node advertising "
+                     "broadwell is a Cascade Lake part), so neither is usable evidence about instruction sets. What "
+                     "IS established rests only on processor counts, which are reliable -- see --require-cores. The "
+                     "isa/avx512f stamps are kept precisely so that a future re-check of families against "
+                     "/proc/cpuinfo, rather than Slurm's labels, is possible on cells that already exist.")
 ap.add_argument('--require-cores', type=int, default=None,
                 help='Fail LOUDLY unless the MACHINE has exactly this many physical cores (sockets x cores-per-socket '
-                     "read from /proc/cpuinfo, which reports the whole node inside a cgroup -- i.e. machine size, the "
-                     'variable the divergence actually tracks). This is the "match by machine size" design, needed if '
-                     'the thread-pinning sweep finds that fixing threads is NOT sufficient.')
+                     "read from /proc/cpuinfo, which reports the whole node inside a cgroup -- i.e. machine size). "
+                     'THIS IS THE GUARD OF RECORD (coordinator verdict 2026-09-07: `cores`). It rests only on '
+                     'processor counts, which are reliable unlike the CPU-family labels: 53 of 53 same-core-count '
+                     'comparisons were bit-identical across nodes, labels and code versions, and all 19 disagreements '
+                     'had a 36-core machine on exactly one side. Sufficient on every comparison on record, and '
+                     'checkable before submission.')
 ap.add_argument('--threads', type=int, default=None,
                 help='Pin the per-task thread count deterministically BEFORE torch/genesis are imported (OMP, MKL, '
-                     'OpenBLAS, NUMEXPR, Taichi, torch). This is the "fixed core and thread count per task" design, '
-                     'and if the sweep finds it sufficient it can be satisfied on ANY node -- which is what makes the '
-                     'CPU-only Diffusion Policy pass ordinary parallel work instead of a two-machine queue.')
+                     'OpenBLAS, NUMEXPR, Taichi, torch). Use it ALONGSIDE --require-cores, never instead of it: the '
+                     '128-comparison audit that established the core-count rule never set a thread variable, so in '
+                     'every one of those comparisons the thread count simply WAS the physical core count -- the '
+                     'evidence is structurally incapable of showing that a thread pin alone suffices.')
 ap.add_argument('--role', choices=('preview', 'record'), default='preview',
                 help="'preview' (DEFAULT) = a convenience cell produced wherever the training job happened to land; "
                      "NEVER a number for a table. 'record' = a cell of the pinned evaluation pass, and it REQUIRES "
@@ -100,9 +105,11 @@ if args.role == 'record' and not (args.require_cores or args.threads):
 
 def cpu_probe():
     """Machine description read from /proc/cpuinfo -- NEVER from Slurm's feature labels, which mislabel at least one
-    Cascade Lake node as `broadwell`. Inside a cgroup /proc/cpuinfo still reports the whole NODE, so the core counts
-    below are MACHINE SIZE -- the variable full-scope divergence actually tracks (coordinator, 2026-09-07 late; the
-    earlier AVX2-vs-AVX-512 attribution is withdrawn). The task's own allocation is read from the affinity mask."""
+    Cascade Lake node as `broadwell` and which are the reason both the original AVX attribution and its withdrawal
+    are unusable as evidence about instruction sets. Inside a cgroup /proc/cpuinfo still reports the whole NODE, so
+    the core counts below are MACHINE SIZE -- the one variable the divergence is established to track (53/53
+    same-core-count comparisons bit-identical; all 19 disagreements with a 36-core machine on exactly one side). The
+    task's own allocation is read from the affinity mask."""
     model, flags, sockets, cores_per_socket, logical = 'unknown', set(), set(), None, 0
     try:
         with open('/proc/cpuinfo') as fh:
@@ -135,12 +142,13 @@ HW = cpu_probe()
 CPU_MODEL, CPU_ISA, CPU_AVX512F = HW['cpu_model'], HW['isa'], HW['avx512f']
 if args.require_isa and CPU_ISA != args.require_isa:
     sys.exit(f'FATAL: --require-isa {args.require_isa} but this machine is {CPU_ISA} ({CPU_MODEL} on '
-             f'{socket.gethostname()}). NOTE: the ISA attribution is WITHDRAWN as the divergence axis; '
-             f'--require-cores is the live machine-size guard.')
+             f'{socket.gethostname()}). NOTE: --require-isa is a DIAGNOSTIC; the instruction-set question is '
+             f'unresolved (the family labels behind it are unreliable). --require-cores is the guard of record.')
 if args.require_cores is not None and int(HW['cpu_cores_physical']) != int(args.require_cores):
     sys.exit(f'FATAL: --require-cores {args.require_cores} but this machine has {HW["cpu_cores_physical"]} physical '
              f'cores ({HW["cpu_sockets"]} socket(s), {CPU_MODEL} on {socket.gethostname()}). Full-scope outcomes '
-             f'track MACHINE SIZE (coordinator 2026-09-07); refusing to produce a cell on the wrong size.')
+             f'track MACHINE SIZE (coordinator verdict 2026-09-07: `cores`); refusing to produce a cell on the '
+             f'wrong size.')
 if args.threads is not None:
     # must happen BEFORE torch / genesis / taichi are imported: they read these at import time, and the thread count
     # changes reduction order, which is the whole point of pinning it.
@@ -348,7 +356,11 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                core_counts=sorted({int(r['cpu_cores_physical']) for r in results}),
                thread_counts=sorted({r.get('torch_num_threads') for r in results}),
                affinities=sorted({r.get('cpu_affinity') for r in results if r.get('cpu_affinity') is not None}),
-               hw_axis='machine size (physical cores) + per-task thread count; the AVX2-vs-AVX512 attribution is withdrawn',
+               hw_axis=('machine size (physical cores), coordinator verdict `cores` 2026-09-07; established on '
+                        'processor counts alone (53/53 same-core comparisons bit-identical, all 19 disagreements '
+                        'with a 36-core machine on one side). The instruction-set question is UNRESOLVED, not ruled '
+                        'out: the CPU-family labels behind both the original AVX claim and its withdrawal are '
+                        'unreliable on this cluster. isa/avx512f are stamped for a future re-check.'),
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n', eval_fixes='j+l-prime',
                slide_success=stage_counts['slide_success'] / n,
                stages={s: stage_counts[s] / n for s in STAGES},

@@ -3,11 +3,12 @@
 # /proc/cpuinfo ON each node (PHASE_PLAN amendment (n)/(s)/(t), 2026-09-07).
 #
 # Why this exists: long-horizon full-scope episodes diverge with MACHINE SIZE -- same checkpoint, IC, mode, seed and
-# horizon, different physical core count, different outcome. The earlier AVX2-vs-AVX-512 attribution is WITHDRAWN
-# (a 40-core Broadwell and a 64-core Sapphire Rapids agree bit-for-bit across the ISA boundary, while a 36-core
-# Broadwell disagrees with the 40-core Broadwell on the same ISA; all 53 same-core-count comparisons are
-# bit-identical and every one of the 19 differing pairs has a 36-core machine on exactly one side). ISA is still
-# printed, as a diagnostic only.
+# horizon, different physical core count, different outcome. Established on processor counts, which are reliable:
+# 53 of 53 same-core-count comparisons bit-identical across nodes, labels and code versions, and every one of the 19
+# disagreements with a 36-core machine on exactly one side (coordinator verdict 2026-09-07: `cores`). The
+# instruction-set question is UNRESOLVED rather than ruled out: the CPU-family labels behind both the original AVX
+# claim and its withdrawal came from Slurm's AvailableFeatures, which are wrong here. ISA is printed as a diagnostic
+# only, so that a future re-check of families against /proc/cpuinfo remains possible.
 #
 # **Slurm's feature labels are unreliable** (pax001 advertises `AvailableFeatures=broadwell` and is a Cascade Lake
 # part), so nothing here trusts them. But note the good news: a core/thread pin needs no `--nodelist` at all --
@@ -73,9 +74,14 @@ for k, v in sorted(bysize.items(), key=lambda kv: -len(kv[1])):
     isas = sorted({m[n]['isa'] for n in v})
     print(f'  {k:>3} physical cores: {len(v):>3} machines ({gp} with a GPU), isa {isas} -- '
           f'{",".join(sorted(v)[:8])}{"..." if len(v) > 8 else ""}')
-best = max(bysize.items(), key=lambda kv: len(kv[1]))[0] if bysize else None
-print(f'\nMost common machine size: {best} physical cores ({len(bysize.get(best, []))} machines). A pinned pass at '
-      f'that size needs NO --nodelist: eval_e2e.py --require-cores {best} checks /proc/cpuinfo on arrival.')
+if 36 in bysize:
+    print(f'\n!! {len(bysize[36])} machine(s) have 36 physical cores. Every recorded disagreement had a 36-core '
+          f'machine on exactly one side, so do NOT standardise the pinned pass on 36 unless you mean to.')
+cand = {k: v for k, v in bysize.items() if k != 36}
+best = max(cand.items(), key=lambda kv: len(kv[1]))[0] if cand else (max(bysize, key=lambda k: len(bysize[k])) if bysize else None)
+if best is not None:
+    print(f'\nSuggested REQUIRE_CORES: {best} ({len(bysize[best])} machines, the most common NON-36-core size). A '
+          f'pinned pass needs NO --nodelist: eval_e2e.py --require-cores {best} checks /proc/cpuinfo on arrival.')
 PY
 fi
 rm -f "$TMP"
