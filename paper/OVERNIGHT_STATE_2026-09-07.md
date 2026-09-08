@@ -53,3 +53,22 @@ Registered prediction P2 said MGall would fall **below** MH200 by ≥ 0.15. The 
 **MG718s becomes the decisive arm**: 718 tapes / 59k rows, i.e. *more* rows than MH200's 41k but the same generator, so it separates quantity from provenance where MGall (13× MH200's data) cannot.
 
 Nothing is computed until all 8 seeds of both arms land. But the sensible expectation for the morning is that the robomimic story is **not** settled and the day's strongest-sounding result is the one most likely to move. That is the control working as designed — it was registered before the result, and it is now contradicting it.
+
+## 01:15 — SOLVED: the end-to-end reproduction failure is NODE sensitivity, not a bug
+
+Read this before the sections above that describe it as open.
+
+**Result.** The same checkpoint, IC, mode, seed and horizon replayed on four cluster nodes: **pax109 — the node that produced the record — returns `nested` in 32 steps, 3/3 repeats. pax001, pax030 and pax154 all return `timeout` at 300 steps.** Each node is self-consistent; the nodes disagree with each other.
+
+**Ruled out, with the evidence:**
+- *Our patches* — (j)+(l) reverted vs current: reset state and every action and state identical through 12 decisions, and the same full-episode outcome.
+- *Job geometry* (the competing hypothesis): the record ran `-n 8` with sequential evals; the pax109 rerun ran `-n 4`, different geometry, and still reproduced exactly, while pax001/pax030/pax154 under that same 4-core geometry all failed to. Geometry is neither necessary for reproduction nor sufficient for divergence.
+- *CPU family*: pax109 and pax154 are both broadwell, 36 cores, same memory — and they disagree; pax030 is sapphirerapids and agrees with pax154.
+- *Episode order*: the order-dependence hypothesis is dead — uid254 in-sequence still mismatches, and the artefact that suggested it came from inside the disk-full window.
+- *Non-determinism*: the pipeline is deterministic within a node (12/12 decisions identical on repeats; 3488 phase episodes bit-exact).
+
+**Mechanism.** Agreement to 1e-9 at decision 12 with an outcome flip by decision 32 is chaotic amplification of a sub-1e-9 numerical difference over 300 decisions of contact-rich physics. Short phase episodes do not have the horizon to amplify it, which is exactly why 3488 phase episodes reproduced bit-exactly across nodes while long full-scope episodes do not.
+
+**What this means for us.** Not a code fault, not a physics fault, but a real constraint: **long-horizon end-to-end episodes are node-sensitive, short phase episodes are not.** End-to-end cells must record the node that produced them, and any end-to-end comparison should either hold the node fixed or treat node as a variance source. It plausibly contributes to why the end-to-end arm already had the project's widest minimum detectable effect (≈ 0.21) while the phase arms were tight (carrycontact ≈ 0.03). Whether the *cell-level aggregates* move — and therefore whether `PHASE_RESULTS` §5.1's 8v8 numbers stand as published — is answered by sequence check 3355868, still running; individual episodes flipping does not by itself move an 8-seed aggregate, and both arms' seeds were spread across nodes, so this is noise rather than bias.
+
+**Also settled tonight:** the contact_push agent's geometry hypothesis loses to this one — its own data has the same shape (reruns agree with each other across nodes and code versions; the *record* is the outlier because of where it was made).
