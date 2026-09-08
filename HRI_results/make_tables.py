@@ -85,6 +85,26 @@ def select(rows, sel):
     return sorted(out, key=lambda r: (int(r['seed']), r['cell']))
 
 
+def dead_seeds(k, n):
+    """Indices of seeds that produced essentially nothing while the arm as a whole worked.
+
+    A dead seed is a training failure, not a sample of the arm's behaviour, and one of them moves
+    an arm mean by roughly 0.07 in this project, so they are marked rather than silently averaged.
+    Rule: the arm's median rate must be >= 0.20 (otherwise the arm is near a floor and "dead" is
+    meaningless) and the seed's rate must be below 15 % of that median. The threshold is set to
+    separate a collapsed run from a merely weak one: at 0.15 it flags 4/148 and 2/60 and 0/30,
+    and does NOT flag 30/148, which is a degraded seed rather than a dead one.
+    """
+    if not k or not n:
+        return []
+    import statistics
+    rates = [x / n for x in k]
+    med = statistics.median(rates)
+    if med < 0.20:
+        return []
+    return [i for i, r in enumerate(rates) if r < 0.15 * med]
+
+
 def counts(rows):
     k = [int(r['k']) for r in rows]
     n = {int(r['n']) for r in rows}
@@ -115,7 +135,9 @@ def build(args):
                    mde_80='', ci_lo='', ci_hi='', sd_human='', sd_machine='',
                    p_rope='', p_gt0='', bf01='', post_mean='', post_lo='', post_hi='',
                    prior_flip='', verdict='', status='', provisional=c.get('provisional', ''),
-                   note=c.get('note', ''), source='', bank_stamp='', evaluator='')
+                   note=c.get('note', ''), source='', bank_stamp='', evaluator='',
+                   dead_human=0, dead_machine=0,
+                   rescored_from=c.get('rescored_from', ''))
 
         for r in h_rows:
             tidy.append(dict(comparison=c['id'], arm_role='human', arm=r['arm'], seed=r['seed'],
@@ -147,6 +169,10 @@ def build(args):
             continue
 
         row['source'] = h_rows[0]['source'] + ' + ' + m_rows[0]['source']
+        dh, dm = dead_seeds(hk, hn), dead_seeds(mk, mn)
+        row['dead_human'] = len(dh); row['dead_machine'] = len(dm)
+        row['human_counts'] = ' '.join(f'{v}*' if i in dh else str(v) for i, v in enumerate(hk))
+        row['machine_counts'] = ' '.join(f'{v}*' if i in dm else str(v) for i, v in enumerate(mk))
         row['human_rate'] = round(sum(hk) / (hn * len(hk)), 4)
         row['machine_rate'] = round(sum(mk) / (mn * len(mk)), 4)
 
@@ -194,7 +220,10 @@ def build(args):
             row['verdict'] = 'INCONCLUSIVE (underpowered)'
         else:
             row['verdict'] = 'inconclusive'
-        row['status'] = 'PROVISIONAL' if c.get('provisional') else 'OK'
+        if c.get('rescored_from') and len(hk) != len(mk):
+            row['provisional'] = (row['provisional'] + ' RE-SCORE INCOMPLETE: '
+                                  f'{len(hk)} human v {len(mk)} machine seeds have landed.').strip()
+        row['status'] = 'PROVISIONAL' if row['provisional'] else 'OK'
         results.append(row)
 
     return tidy, results
@@ -233,10 +262,13 @@ def comparability(results):
     # entry-bank version to agree on. Pick and end-to-end start from an IC list instead, so an
     # absent bank stamp there is "not applicable", not "unknown".
     BANK_BASED = ('Place', 'Contact', 'Carrycontact')
+    # A superseded as-recorded row is kept visible for comparison but is NOT a cell of record,
+    # so its (older, often unstamped) provenance must not block the row it was superseded by.
+    superseded = {r['rescored_from'] for r in results if r.get('rescored_from')}
     out = {}
     for g in dict.fromkeys(r['group'] for r in results):
         bank_based = g.startswith(BANK_BASED)
-        cells_ = [r for r in results if r['group'] == g and
+        cells_ = [r for r in results if r['group'] == g and r['id'] not in superseded and
                   (r['status'] in ('OK', 'PROVISIONAL', 'FLOOR') or r['bank_stamp'])]
         learners = {r['learner'] for r in cells_}
         stamps = {r['id']: ((r['bank_stamp'] if bank_based else 'n/a (IC list)'),
@@ -278,7 +310,10 @@ def comparability(results):
                                  'nothing contradicts it.')
         else:
             out[g] = dict(comparable=True, single=False, stamps=stamps,
-                          reason='All cells share entry bank and evaluator.')
+                          reason='All cells of record share an entry bank '
+                                 f"({sorted({s[0] for s in stamps.values()})[0]}); superseded "
+                                 'as-recorded rows are excluded from this check and shown only '
+                                 'for comparison.')
     return out
 
 
@@ -321,11 +356,16 @@ def node_analysis(raw, rescore):
 
 
 # ---------------------------------------------------------------------- rendering
+def _dead(r):
+    dh, dm = r.get('dead_human', 0), r.get('dead_machine', 0)
+    return '' if not (dh or dm) else f"**{dh}H/{dm}M**"
+
+
 def _emit_row(A, r):
     flag = {'PROVISIONAL': ' *(prov.)*', 'EMPTY': '', 'FLOOR': ' *(floor)*'}.get(r['status'], '')
     if r['status'] == 'EMPTY':
         A(f"| `{r['id']}`{flag} | {r['learner']} | {r['statistic']} | {r['action_mode']} "
-          f"| - | **EMPTY** | **EMPTY** | | | | | | | | {r['verdict']} |")
+          f"| - | **EMPTY** | **EMPTY** | | | | | | | | | {r['verdict']} |")
         return
     ci = f"[{fmt(r['ci_lo'])}, {fmt(r['ci_hi'])}]" if r['ci_lo'] != '' else ''
     if 'undef.' in ci:
@@ -334,7 +374,7 @@ def _emit_row(A, r):
       f"| {r['n_seeds_human']}v{r['n_seeds_machine']}x{r['episodes_per_seed']} "
       f"| {fmt(r['human_rate'])} | {fmt(r['machine_rate'])} | {fmt(r['delta'])} | {ci} "
       f"| {fmt(r['perm_p'])} | {fmt(r['mde_80'])} | {fmt(r['p_rope'])} "
-      f"| {fmt(r['bf01'], 1)} | {r.get('prior_flip','')} | {r['verdict']} |")
+      f"| {fmt(r['bf01'], 1)} | {_dead(r)} | {r.get('prior_flip','')} | {r['verdict']} |")
 
 
 def fmt(x, nd=3):
@@ -346,7 +386,7 @@ def fmt(x, nd=3):
     return str(x)
 
 
-def render_md(results, stale, doc_issues, rescore, comp, nodes):
+def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy):
     L = []
     A = L.append
     A('# Human vs machine demonstrations - results of record\n')
@@ -373,8 +413,8 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes):
             groups.append(r['group'])
     def _hdr():
         A('| comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | '
-          'MDE | P(ROPE) | BF01 | prior | verdict |')
-        A('|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|')
+          'MDE | P(ROPE) | BF01 | dead | prior | verdict |')
+        A('|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|')
 
     for g in groups:
         A(f'\n## {g}\n')
@@ -428,6 +468,54 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes):
         for r in flo:
             A(f"- **`{r['id']}`** - human {fmt(r['human_rate'])}, machine "
               f"{fmt(r['machine_rate'])}. {r['note']}")
+
+    seedsets = collections.defaultdict(dict)
+    for t in tidy:
+        seedsets[t['comparison']].setdefault(t['arm_role'], set()).add(t['seed'])
+    pairs, partial = [], []
+    for r in results:
+        b = next((x for x in results if x['id'] == r.get('rescored_from')), None)
+        if b is None or not r.get('rescored_from'):
+            continue
+        if r['delta'] == '' or b['delta'] == '':
+            partial.append((r, b, 'the re-score has not produced a testable cell yet'))
+        elif seedsets[r['id']] != seedsets[b['id']]:
+            # a partial re-score compared against a complete record cell would confound the
+            # correction with which seeds happen to have landed
+            have = {k: len(v) for k, v in sorted(seedsets[r['id']].items())}
+            want = {k: len(v) for k, v in sorted(seedsets[b['id']].items())}
+            partial.append((r, b, f're-score incomplete: {have} of {want} seeds, so its movement '
+                                  f'is not yet separable from which seeds have landed'))
+        else:
+            pairs.append((r, b))
+    if pairs or partial:
+        A('\n## What the re-score moved\n')
+        A('Each arm is corrected by the same construction, so per-arm movement looks small and '
+          'reassuring. **It is the movement in the DIFFERENCE that bears on the comparison**, '
+          'and it is not small: symmetric corrections are not symmetric in effect.\n')
+
+    if pairs:
+        A('| cell | human | machine | **Delta** | p |')
+        A('|---|---|---|---|---|')
+        for a, b in pairs:
+            A(f"| `{b['id']}` (as recorded) | {fmt(b['human_rate'])} | {fmt(b['machine_rate'])} "
+              f"| {fmt(b['delta'])} | {fmt(b['perm_p'])} |")
+            A(f"| `{a['id']}` (re-scored, of record) | {fmt(a['human_rate'])} "
+              f"| {fmt(a['machine_rate'])} | {fmt(a['delta'])} | {fmt(a['perm_p'])} |")
+            dh = a['human_rate'] - b['human_rate']; dm = a['machine_rate'] - b['machine_rate']
+            dd = a['delta'] - b['delta']
+            ratio = (f", a {abs(a['delta'] / b['delta']):.1f}x change"
+                     if b['delta'] not in (0, '') and abs(b['delta']) > 1e-9 else "")
+            A(f"| **movement** | {dh:+.3f} | {dm:+.3f} | **{dd:+.3f}**{ratio} | |")
+        A('')
+        A('The arms move by comparable amounts and in opposite directions, so the gap moves by '
+          'more than either arm does. A reader who checks only per-arm movement would conclude '
+          'the correction was harmless.')
+        A('')
+    for a, b, why in partial:
+        A(f"- `{a['id']}` vs `{b['id']}`: movement NOT computed - {why}.")
+    if partial:
+        A('')
 
     A('\n## Re-score reproducibility\n')
     if rescore:
@@ -623,6 +711,9 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(tidy[0].keys()))
         w.writeheader(); w.writerows(tidy)
     fields = list(results[0].keys())
+    for extra in ('dead_human', 'dead_machine', 'rescored_from'):
+        if extra not in fields:
+            fields.append(extra)
     for r in results:
         for k in fields:
             r.setdefault(k, '')
@@ -630,7 +721,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
         w.writeheader(); w.writerows(results)
     with open(os.path.join(HERE, 'results.md'), 'w') as f:
-        f.write(render_md(results, stale, doc_issues, rescore, comp, nodes))
+        f.write(render_md(results, stale, doc_issues, rescore, comp, nodes, tidy))
     n = make_fig(results, os.path.join(HERE, 'fig_effects.png'),
                  os.path.join(HERE, 'fig_effects.pdf'))
 

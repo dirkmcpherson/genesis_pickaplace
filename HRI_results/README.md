@@ -50,6 +50,7 @@ continues from it, and the staleness is printed into `results.md` rather than hi
 | `MDE` | minimum detectable effect at 80 % power, from the observed per-seed spread |
 | `P(ROPE)` | posterior probability that \|Delta\| < 0.10 - the registered equivalence margin |
 | `BF01` | interval Bayes factor for \|Delta\| < 0.10 against \|Delta\| >= 0.10 |
+| `dead` | dead seeds per arm, `<n>H/<n>M`. A seed whose rate is under 15 % of its arm's median while the arm as a whole works: a training failure, not a sample of behaviour. One moves an arm mean by roughly 0.07 here, so they are marked, and starred in the per-seed strings. |
 | `prior` | `stable` if the equivalence verdict survives all three priors and a separate-sigma refit |
 | `verdict` | `equivalent at +/-0.10` needs P(ROPE) >= 0.90; `INCONCLUSIVE (underpowered)` when MDE > 0.20 |
 
@@ -97,6 +98,16 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
   fires, the renderer refuses to put the learners side by side and prints the stamps instead.
 - **Floors get no p-value.** Where both arms sit near zero (`slide_success`; r2dreamer on
   robomimic Can) a null is an artefact of the floor, so no test and no ROPE are computed.
+- **A re-scored cell supersedes, but never replaces, its predecessor.** Where a cell has been
+  re-scored, the re-scored row is the number of record and the as-recorded row stays in the table
+  so the size of the correction is visible. The "What the re-score moved" section reports the
+  movement in **Delta**, not only per arm: corrections that are symmetric by construction are not
+  symmetric in effect, and per-arm movement alone can make a correction look harmless. On place
+  SAMPLE each arm moved about 0.02 while the gap went +0.014 -> +0.056, a 4.1x change. Movement
+  is computed only when both rows cover the identical seed set, so a partly-landed re-score is
+  reported as pending rather than compared.
+- **Superseded rows do not block comparability.** They are shown for comparison but excluded from
+  the entry-bank check, so an old unstamped cell cannot veto the row that replaced it.
 - **Doc disagreements are findings.** Regenerated numbers are checked against the documents of
   record and every mismatch is printed in `results.md`.
 - **Re-scores are checked for reproducibility.** Any statistic whose predicate did not change

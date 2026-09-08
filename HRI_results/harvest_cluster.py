@@ -75,8 +75,11 @@ for mpath in sorted(glob.glob(os.path.join(W, "runs", "*", "fresh_eval_*", "metr
         rest = rest[:-3]
     # eval dir suffix is usually the action mode, but recovery re-evals use their own tag
     # (e.g. fresh_eval_rnd30_recov for dv3); fall back to the mode recorded inside the file.
-    if rest in ("sample", "mode"):
-        mode, tag = rest, ""
+    mm = re.match(r"^(sample|mode)(?:_(.+))?$", rest)
+    if mm:
+        # "mode" -> mode cell; "mode_v2" -> mode cell of the v2 RE-SCORE, tagged _v2 so the
+        # registry can prefer the re-scored cell while the as-recorded one stays selectable.
+        mode, tag = mm.group(1), (mm.group(2) or "")
     else:
         mode, tag = d.get("mode", "?"), rest
     if mode not in ("sample", "mode"):

@@ -156,17 +156,54 @@ COMPARISONS = [
     # ---------------------------------------------------------------- Genesis: PLACE
     dict(id='place_r2d', group='Place (matched 39)', learner='world model (r2dreamer)',
          stat='placed_v2', action='mode', human='dH_place (39)', machine='dDP_place_n39 (39)',
+         sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE_v2',
+                    action_mode='mode', statistic='placed_v2', extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='place', arm='dDP', cell='polE_v2',
+                    action_mode='mode', statistic='placed_v2',
+                    extra='setting=bnormclamp1ent5_n39'),
+         rescored_from='place_r2d_asrecorded',
+         note='NUMBER OF RECORD. The 2026-09-08 re-score on the rebuilt entry bank '
+              '(physgrip_2026-09-07), with entry pinning and hardware pinned. Prefer this over '
+              'the as-recorded row below, which is kept so the size of the correction is '
+              'visible.'),
+
+    dict(id='place_r2d_asrecorded', group='Place (matched 39)',
+         learner='world model (r2dreamer)', stat='placed_v2', action='mode',
+         human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE',
                     action_mode='mode', statistic='placed_v2', extra='setting=bnormclamp1ent5'),
          sel_m=dict(source='cluster:wm', phase='place', arm='dDP', cell='polE',
                     action_mode='mode', statistic='placed_v2',
                     extra='setting=bnormclamp1ent5_n39'),
-         provisional='The r2dreamer place evaluator drew bank entries WITH REPLACEMENT and '
-                     'substituted failed restores (adversarial review S1-3); the DP/RLPD place '
-                     'evaluator runs each entry once and counts a failed restore as a failure. '
-                     'A pinned re-score is queued.',
-         note='Matched-count machine arm (PHASE_PLAN amendment (e)) is the comparison of record; '
-              'the uncapped 63-demo machine arm is a secondary.'),
+         provisional='SUPERSEDED by place_r2d. Drew bank entries WITH REPLACEMENT and '
+                     'substituted failed restores; unpinned hardware. Kept visible only so the '
+                     'correction can be inspected.',
+         note='The 0.703 v 0.647 published in PHASE_RESULTS 2.y.'),
+
+    dict(id='place_r2d_sample', group='Place (matched 39)',
+         learner='world model (r2dreamer)', stat='placed_v2', action='sampled',
+         human='dH_place (39)', machine='dDP_place_n39 (39)',
+         sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE_v2',
+                    action_mode='sample', statistic='placed_v2',
+                    extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='place', arm='dDP', cell='polE_v2',
+                    action_mode='sample', statistic='placed_v2',
+                    extra='setting=bnormclamp1ent5_n39'),
+         rescored_from='place_r2d_sample_asrecorded',
+         note='The sampled cell of the same re-score. This is where the correction moves the '
+              'DIFFERENCE most: see the re-score movement table.'),
+
+    dict(id='place_r2d_sample_asrecorded', group='Place (matched 39)',
+         learner='world model (r2dreamer)', stat='placed_v2', action='sampled',
+         human='dH_place (39)', machine='dDP_place_n39 (39)',
+         sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE',
+                    action_mode='sample', statistic='placed_v2',
+                    extra='setting=bnormclamp1ent5'),
+         sel_m=dict(source='cluster:wm', phase='place', arm='dDP', cell='polE',
+                    action_mode='sample', statistic='placed_v2',
+                    extra='setting=bnormclamp1ent5_n39'),
+         provisional='SUPERSEDED by place_r2d_sample; same defects as place_r2d_asrecorded.',
+         note=''),
 
     dict(id='place_dp', group='Place (matched 39)', learner='Diffusion Policy', stat='placed_v2',
          action='sampled', human='dH_place (39)', machine='dDP_place_n39 (39)',
@@ -283,6 +320,17 @@ COMPARISONS = [
          'artefact of the floor, so no p-value and no ROPE are computed.'),
     ]
 ] + [
+    dict(id='e2e_picked_v2', group='End-to-end (rnd30)',
+         learner='world model (r2dreamer)', stat='picked', action='mode',
+         human='dHfull_all (74)', machine='dDPfull (best-per-IC, 72)',
+         sel_h=dict(source='cluster:wm', phase='e2e', arm='dHfull', cell='rnd30_v2',
+                    action_mode='mode', statistic='picked',
+                    extra='setting=all_bnormclampS8ent5'),
+         sel_m=dict(source='cluster:wm', phase='e2e', arm='dDPfull', cell='rnd30_v2',
+                    action_mode='mode', statistic='picked', extra='setting=bnormclampS8ent5'),
+         rescored_from='e2e_picked',
+         empty_reason='The end-to-end re-score is still running.'),
+
     dict(id='e2e_dp', group='End-to-end (rnd30)', learner='Diffusion Policy', stat='picked',
          action='sampled', human='dHfull_all (74)', machine='dDPfull (72)',
          sel_h=dict(source='cluster:phase_clone', phase='e2e', learner='DiffusionPolicy'),
