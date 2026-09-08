@@ -89,6 +89,15 @@ def main():
             print(f'- {lab}: {hn} {a} vs {mn} {b} -> Δ per-seed count {o:+.2f} (rate {o / denom:+.3f}), exact two-sided perm p = {p:.3f} (n={len(a)} vs {len(b)})')
         else:
             print(f'- {lab}: incomplete ({len(a)} vs {len(b)} complete cells)')
+    # Dead seeds: this project's RLPD runs have a documented failure mode where the LAST checkpoint collapses
+    # (CONFOUNDS: dHv2raw s65, dDPv2 s55 in the v2 wave). They are NOT dropped -- the registered statistic is the LAST
+    # checkpoint -- but they must be visible, because an arm's mean moves ~0.07 on rnd30 depending on whether one lands.
+    for label, (name, rows) in arms.items():
+        dead = [r['seed'] for r in rows
+                if complete((r['det'] or {}).get('rnd')) and r['det']['rnd'][0] <= 0.1 * r['det']['rnd'][1]]
+        if dead:
+            print(f'- DEAD SEEDS in {name}: s{", s".join(str(d) for d in dead)} (LAST-checkpoint collapse; INCLUDED in '
+                  f'every aggregate above, as the registered statistic requires -- per-seed lists show them as ~0)')
     for label, (name, rows) in arms.items():
         pair = [(r['det']['rnd'][0], r['smp']['rnd'][0]) for r in rows if complete((r['det'] or {}).get('rnd')) and complete((r['smp'] or {}).get('rnd'))]
         if pair:
