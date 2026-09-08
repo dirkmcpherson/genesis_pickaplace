@@ -30,17 +30,26 @@ Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y,
 
 **Slide is held on a definition, not on compute.** Its success predicate required an open gripper at contact, which passes 2 of 74 human demonstrations because people push the can home with the fingers still partly closed. Both the predicate and the phase's entry gate are corrected; what remains is your decision on which human tapes the phase trains on.
 
-## The independent generator (robomimic Can)
+## The independent generator (robomimic Can) — the source reading is DEAD as of 2026-09-08
 
-This is a different task with a different machine source — policy rollouts from a reinforcement-learning agent rather than distilled demonstrations — and it behaves nothing like the Genesis task.
+The registered quantity control has read out at full seeds and it overturns the headline. RLPD, 8 seeds, 50 shared starts, last checkpoint, mode:
 
-| learner | human (mixed-skill) | machine (200 rollouts) | Δ | p |
-|---|---|---|---|---|
-| BC-RNN | 0.927 | 0.393 | 0.53 | — |
-| Diffusion Policy | 0.863 | 0.095 | 0.77 | 0.00016 |
-| RLPD | 0.455 | 0.147 | 0.31 | 0.008 |
+| machine arm | tapes | score | vs MH200 (0.455) |
+|---|---|---|---|
+| MG200s (the 200-tape subsample) | 200 | **0.147** | −0.308, p 0.008 |
+| MG200s at 3× budget | 200 | 0.287 | −0.168, budget helps +0.140 (p 0.115, n.s.) |
+| MG718s (all successes) | 718 | **0.475** | **+0.020, p 0.886 — indistinguishable** |
+| MGall (all rollouts) | 3900 | **0.610** | **+0.155 — above the human arm** |
 
-The ordering is the one the thesis predicts: the pure imitators lose most, the learner that interacts with the environment loses least. **Do not write that up yet.** The quantity control — the same learner on all 3,900 rollouts rather than the 200-tape subsample — reads 0.74 and 0.60 on its first two seeds, above the human arm. If that holds, these three gaps are a property of how the subsample was drawn and not of machine provenance, and the ordering means something else entirely. The control was registered before the result precisely so it could overturn it.
+Within the machine arms the differences are large and significant: MGall over MG200s **+0.463 (p 0.0002)**, MG718s over MG200s **+0.328 (p 0.0033)**. **The registered "quantity/coverage, not source" rule fires.**
+
+**What is now true:** the RLPD gap is a property of the 200-tape draw, not of machine provenance. At their natural size, machine demonstrations match or beat human ones on this task. **What does not follow:** that demonstration count alone explains it — see the open question below. The Diffusion Policy (0.863 v 0.095) and BC-RNN (0.927 v 0.393) separations rest on the *same* 200-tape draw and inherit the same doubt until they are run on the larger machine arms.
+
+**The open question, and the experiment that settles it.** The 200-tape subsample was not a neutral draw: 89 % of its rows come from the last four SAC checkpoint blocks, so it is both small and narrow. Two readings survive, and they differ in what the paper can claim:
+- *Sampling artefact*: that particular draw was pathological, and a neutral 200-tape draw would match the human arm.
+- *Per-demonstration quality*: machine demonstrations carry less information each, so ~3.5× as many are needed to match — which would be a genuine source effect visible only at matched count.
+
+**A random 200-tape draw from the 718 successes distinguishes these and costs about 8 GPU-hours.** Until it runs, the honest statement is: at matched tape count the human draw wins on this task; at natural size the machine data does not lose; and we do not yet know which of the two readings is right.
 
 ## What was in flight when the link dropped
 
