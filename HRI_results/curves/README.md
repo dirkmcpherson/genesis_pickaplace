@@ -1,5 +1,9 @@
 # Learning curves (2026-09-08) — ONLINE TRAINING ROLLOUTS, not evaluation
 
+*Placed here at the user's request (2026-09-08). Written by the eval-fixes lane, not by `make_tables.py`: these files are
+self-contained and **nothing here regenerates or edits `results.md`, `results.csv` or `make_tables.py`**, so the tables
+lane keeps sole ownership of those. Regenerate with `learning_curves.py` (on the cluster) then `plot_curves.py` (local).*
+
 Built by `learning_curves.py` (cluster, reads every run's `metrics.jsonl`) + `plot_curves.py` (plots + ignition test).
 Data: `curves_2026-09-08.csv` (per family/arm/stage/step-bin: mean, SE, n_seeds, per-seed values) and
 `curves_2026-09-08_seeds.csv` (per-seed ignition step, peak, tail mean, classification).
