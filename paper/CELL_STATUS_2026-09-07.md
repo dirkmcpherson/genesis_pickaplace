@@ -9,8 +9,8 @@ Each cell is **human vs machine**, then Δ (human − machine), the exact two-si
 | phase | Diffusion Policy | RLPD | world model (r2dreamer) |
 |---|---|---|---|
 | **Pick** (random starts) | 0.520 v 0.467, Δ +0.053, p 0.123, n 10 | 0.600 v 0.517, Δ +0.083, p 0.485 **and** 0.600 v 0.567, Δ +0.033, p 0.646 — two different machine arms, both reproduce | 0.617 v 0.608, Δ +0.008, p 0.875, n 8 |
-| **Pick** (`spots60`, in-training-distribution) | **0.893 v 0.873, Δ +0.020, p 0.402** (5 pinned human seeds; all-10-seed version 0.878 v 0.873, p 0.845 — mixes hardware classes) | **0.867 v 0.865, Δ +0.002, p 1.000** (6 pinned human seeds; all-8 version 0.869 v 0.865) | not run |
-| **Place** (matched 39 demos) | pending — 32 runs queued | pending — same 32 runs | **0.715 v 0.652, Δ +0.063, p 0.112, n 8** (re-scored; was 0.703 v 0.647) |
+| **Pick** (`spots60`, in-training-distribution) | **0.893 v 0.873, Δ +0.020, p 0.402** (5 pinned human seeds; all-10-seed version 0.878 v 0.873, p 0.845 — mixes hardware classes) | **0.867 v 0.865, Δ +0.002, p 1.000** (now 8 v 8, all hardware-pinned — the re-runs landed) | not run |
+| **Place** (matched 39 demos) | pending — 32 runs queued | partial — 8 v 3 seeds so far | **0.715 v 0.652, Δ +0.063, p 0.112, n 8** (re-scored; was 0.703 v 0.647) |
 | **Contact** (matched 11, sub-floor) | not run | not run | 0.593 v 0.602, Δ −0.009, p 0.841, n 8 |
 | **Carrycontact** (matched 21) | not run | not run | 0.807 v 0.796, Δ +0.011, p 0.348, n 8 |
 | **End-to-end**, picked | pending — 32 runs queued | pending — same 32 runs | 0.500 v 0.537, Δ −0.037, p 0.643, n 8 |
@@ -27,7 +27,7 @@ Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y,
 
 **Pruning still matters more than source.** Trained on raw rather than pruned human data, Diffusion Policy drops to 0.688 — a deficit of 0.19 at p 0.000, which is far larger than any source difference anywhere in this project, and it now reproduces in-distribution as well as out.
 
-**The place rows of record are inflated and are being re-scored.** Two independent defects, not one: the entry bank has been rebuilt (30 of 148 entries changed), and the evaluator used to substitute a different start when an entry failed to restore rather than counting it as a failure — every place cell of record shows 0 restore failures where the fixed evaluator shows 5. Expect the published place figures to fall somewhat for both arms.
+**The place row is no longer blocked for cross-learner comparison.** The re-score put the world-model cells on the same entry bank as everything else, so for the first time the place phase can be read across learners once the remaining runs land. **The pre-re-score place figures were inflated**, for two reasons. Two independent defects, not one: the entry bank has been rebuilt (30 of 148 entries changed), and the evaluator used to substitute a different start when an entry failed to restore rather than counting it as a failure — every place cell of record shows 0 restore failures where the fixed evaluator shows 5. Expect the published place figures to fall somewhat for both arms.
 
 **A lesson from the re-score that generalises to every cell here.** On the place phase the two arms moved in *opposite* directions under corrections that are symmetric by construction, so each arm shifted about 0.02 while the gap between them quadrupled, from +0.014 to +0.056. The size of a correction cannot be judged by how far the individual arms move — only by what happens to the difference. Any future re-score should be reported on the difference first.
 
