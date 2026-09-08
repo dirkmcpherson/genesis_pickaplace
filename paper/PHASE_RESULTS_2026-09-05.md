@@ -89,6 +89,17 @@ gate-skipped, so this is a learnability read: contact-from-release is readily le
 >
 > **Δ +0.056 (p 0.227) → +0.063 (p 0.112).** The registered |Δ| < 0.10 is met before and after. Machine-63 (descriptive) 0.736 → 0.726.
 >
+> **polE SAMPLE — the statistic the three-learner table uses — moves much more, and the two arms move in OPPOSITE directions:**
+>
+> | arm | published | re-scored | movement |
+> |---|---|---|---|
+> | human (39) | 0.688 | **0.708** | **+0.020** |
+> | machine (39) | 0.674 | **0.652** | **−0.022** |
+>
+> **Δ +0.014 (p 0.743) → +0.056 (p 0.206).** The registered margin is met both times, so the conclusion holds — **but the gap quadrupled.** This is the sharp form of the caveat above: the corrections are *symmetric by construction* (exactly 40 restore-failure episodes per arm) yet *asymmetric in effect*. "Each arm moved only about 0.02" and "the gap moved 0.042" are both true, and only the second one bears on the comparison. Never judge the size of a correction by how far each arm moved.
+>
+> **The hold-out cells isolate one cause cleanly, which is why they were re-run even though their bank file is byte-identical.** That bank was never rebuilt, so no bank effect and no restore failures are in play, leaving only the entry-pinning fix: MODE human 1.000 → 0.990, machine 0.990 → 0.962; SAMPLE unchanged at 1.000 / 0.962. **Drawing entries with replacement rather than enumerating each once was worth up to 0.029 on its own** on a 13-entry bank. That decomposes the policy-bank movement into its two causes instead of leaving them entangled.
+>
 > **Do not read the small movement as evidence that the corrections were negligible — two of them push in opposite directions and happen to nearly cancel.** Restore failures rise from 0 to 5 per cell (exactly symmetric, 40 episodes per arm), so those episodes now count as failures instead of being silently replaced by a different start, which pushes rates *down*; meanwhile the rebuilt bank's corrected grip makes the restored entries slightly more tractable, which pushes them *up*. Netting to +0.013 and +0.005 is a coincidence of the two, not a measure of either.
 
 | arm | demos | holdE MODE | polE SAMPLE | polE MODE |

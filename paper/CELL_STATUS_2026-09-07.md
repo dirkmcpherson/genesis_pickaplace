@@ -29,6 +29,8 @@ Sources: pick from `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md` §2; place §2.y,
 
 **The place rows of record are inflated and are being re-scored.** Two independent defects, not one: the entry bank has been rebuilt (30 of 148 entries changed), and the evaluator used to substitute a different start when an entry failed to restore rather than counting it as a failure — every place cell of record shows 0 restore failures where the fixed evaluator shows 5. Expect the published place figures to fall somewhat for both arms.
 
+**A lesson from the re-score that generalises to every cell here.** On the place phase the two arms moved in *opposite* directions under corrections that are symmetric by construction, so each arm shifted about 0.02 while the gap between them quadrupled, from +0.014 to +0.056. The size of a correction cannot be judged by how far the individual arms move — only by what happens to the difference. Any future re-score should be reported on the difference first.
+
 ## How to read this table honestly
 
 **The three-learner comparison exists for exactly one phase.** Pick is the only row where all three learners have been run on the same question. Every other Genesis row is a world-model result with two empty columns, and those columns are what the queued runs fill. Until they land, "no source effect across learners" is a claim supported at the pick and nowhere else on this task.
