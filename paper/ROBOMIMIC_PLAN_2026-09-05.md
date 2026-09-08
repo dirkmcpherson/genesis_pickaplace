@@ -325,3 +325,27 @@ exists. Coordinator's instruction, adopted verbatim as the rule of record.*
 - **If the roughness question still matters after A6** it needs a gentler manipulation on a full-size arm; the build-time
   ladder suggests the usable range is narrow or empty (MG survives 3/40 even at the mildest β 0.30 tested; MH survives
   98/200 at ε 0.15, which is only 43 % of MG's roughness and already floors the learner).
+
+### A6 reading rule — registered 2026-09-08, BEFORE the `MH80`/`MH300` cells land: quantity vs SELECTION
+*Trigger: the A4 control arms are a counterexample to a naive row-count account. `MH200_re20` (61 tapes / 9,806 rows)
+reads ~0.33 on its first two seeds while `MH200_re15` (95 tapes / 15,702 rows) completed at 0.080 — FEWER rows, ~4x the
+performance — with near-identical tape sets (60 of 61 shared), per-tape length (146 v 162 median rows) and action
+statistics (|a| 0.1595 v 0.1586, |Δa| 0.0439 v 0.0455, binary gripper both). The only material difference is WHICH tapes
+survived their pair's treatment replay: `re20`'s survived the harsher perturbation. A selection criterion moved
+performance further, and in the opposite direction, than a 60 % difference in data volume did.*
+- **Consequence for the A6 design (strengthening):** `MH80` is a UNIFORM seed-0 subsample with no robustness selection,
+  which is the correct control precisely because of this result — a selected subsample would confound quantity with tape
+  quality. This is recorded as a reason the uniform draw was the right choice, not as pedantry.
+- **Consequence for the machine dose curve (weakening the strongest reading):** the machine arms differ in SELECTION as
+  well as size — MG200s is a 200-tape draw from the successful rollouts (89 % of its rows from the last four SAC
+  checkpoint blocks), MG718s is every success, MGall is everything including 3,182 failures. So "quantity drives
+  performance" may partly be "selection drives performance, and the larger arms happen to be less selected".
+- **Registered readings for A6, decided now:** (a) if `MH80` (uniform, 16,406 rows) lands within 0.10 of MG200s's 0.147,
+  that is evidence for the QUANTITY account — an unselected human arm at machine scale performs like the machine arm.
+  (b) If `MH80` lands well ABOVE MG200s (≥ +0.15), SELECTION is doing work the dose curve currently attributes to volume,
+  and the curve must be re-reported with selection as a named covariate, not as a pure quantity relationship. (c) If
+  `MH80` lands at or below the floor (≤ 0.05) while `MH300` behaves, small arms are simply weak irrespective of source or
+  selection. In every case the tape-count/row-count trade (80 v 200 tapes at matched rows) is disclosed.
+- **Cross-leg note:** (b) is the same trap as the end-to-end best-of-3 confound on the Genesis leg — a selection applied
+  to episodes being read as a property of the data volume. Registered here so the A6 curve cannot be reported as a pure
+  dose relationship after the fact.
