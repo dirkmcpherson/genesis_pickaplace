@@ -311,3 +311,27 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   running, 21 A2 + 32 A4 pending, 430 GB free. Nothing to resubmit on reconnect — all four recovery batches are queued
   with the disk guard; the pickup is to read results with the monitor's job-id ranges (batch 1 3354420-27, G2b
   3354437-44, A2 3354448-71, A4 3354850-81).
+
+## 2026-09-08 07:1x — A2 CONTROLS COMPLETE: the source reading is dead
+All 24 A2 runs COMPLETED (100k / 300k decisions reached, `ckpt_step` = budget; MGall demo sha `f0f3536e…`, MG718s
+`fd80caf7…`, MG200s@300k `3935c6bd…` = the primary arm's own set; bank `72b75550…`, 50 episodes, LAST checkpoint).
+Mode counts /50, n = 8 (sample in brackets), against the primary cells MH200 0.455 and MG200s 0.147:
+- **C1 MGall** [37,30,34,22,14,39,32,36] = **0.610** (sd 0.170; sample 0.570); ≥ 0.5 in **6/8** seeds.
+- **C2 MG718s** [31,17,32,32,27,0,28,23] = **0.475** (sd 0.217; sample 0.477); ≥ 0.5 in **5/8**.
+- **C3 MG200s @ 300k** [0,22,25,4,24,25,12,3] = **0.287** (sd 0.217; sample 0.280); ≥ 0.5 in **2/8**.
+Exact two-sided permutations (mode | sample): MGall v MG200s **+0.463 p 0.0002** | +0.403 p 0.0011; MG718s v MG200s
+**+0.328 p 0.0033** | +0.310 p 0.0042; MGall v MH200 +0.155 p 0.192 | +0.113 p 0.342; **MG718s v MH200 +0.020 p 0.886**
+| +0.020 p 0.888; MG200s@300k v MG200s +0.140 p 0.115; MG200s@300k v MH200 −0.168 p 0.190; MGall v MG718s +0.135 p 0.202.
+**Registered predictions:** P1 MET in its first half (MG718s − MG200s = +0.328 ≥ 0.10) and **FALSIFIED in its second**
+(predicted MG718s < MH200 by ≥ 0.15; measured **+0.020**, p 0.886 — statistically indistinguishable from the human arm).
+P2 MET (|MGall − MG718s| = 0.135 < 0.15 band on the sample cell, 0.135 mode; MGall did NOT sink) but its consequence
+(MGall < MH200 by ≥ 0.15) is **FALSIFIED** — MGall is +0.155 ABOVE MH200. P3: the budget extension moved MG200s
++0.140 (p 0.115) and left it 0.168 below MH200 with 2/8 seeds ≥ 0.5 — G3 still not met at 300k; budget is a partial,
+non-significant contributor, not the explanation.
+**A2 decision rule fires:** "if MG718s or MGall reaches MH200 − 0.10 → the effect was quantity/coverage, not source."
+Both do. **The MH200-v-MG200s ordering is not a demonstration-source effect for RLPD**; it is a property of the
+200-tape MG subsample (16,501 rows, 200 rewarded terminals, 89 % of rows from the last four SAC checkpoint blocks).
+Machine demonstrations at their published size match (MG718s) or exceed (MGall) the human arm.
+Wall clock (sidecar `hours`): MGall 0.77–2.25 h/run (median ~1.04), MG718s 1.00–1.03, MG200s@300k 2.29–6.68 (median ~3.0);
+MH200/MG200s primaries 0.76–1.60. So **8 RLPD seeds ≈ 8–12 GPU-h wall, ~1 h each in parallel** — the cost of the never-run
+PH200 arm.
