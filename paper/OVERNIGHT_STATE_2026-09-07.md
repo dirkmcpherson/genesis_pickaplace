@@ -131,3 +131,13 @@ Two distinct effects, both now explained. Neither is a bug in our environment or
 
 ## What is still outstanding
 The two sequence checks (pax109 and pax154, 30 episodes each) remain the load-bearing answer for whether `PHASE_RESULTS` §5.1's cell-level aggregates stand as published. Everything else on this question is settled.
+
+## 04:05 — investigation closed on mechanism, and one wording consequence for every world-model number
+
+The evaluator agent has closed the investigation (committed 14e0cc9). Two independent causes, neither of them our patches, and it lists what it withdrew with the evidence that killed each: "episode-order dependence of the env" (it was the policy RNG), "hidden solver state" (all 21 post-reset fields bit-identical), and "not a CPU-family split" (rested on an unverified node assumption). Measured confirmation of cause 2: on an identical observation, a re-seeded action is **bit-identical** while an RNG-advanced action differs by **3.75e-2**.
+
+**Wording consequence worth carrying into the paper.** Because `Dreamer.act` samples the RSSM posterior latent even at `eval=True`, our `--mode mode` cells are **deterministic given the RNG stream**, not unconditionally deterministic. Everything we have published as "deterministic actions" is better described as "greedy action selection over a sampled latent, reproducible when the cell is re-run as a whole sequence from process start". This does not bias any comparison — both arms use the same protocol, seed and ordering, and phase cells reproduce 3488/3488 — but "deterministic" as an unqualified word is wrong in `RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04.md`, `MORNING_TABLE_2026-09-04.md`, `PHASE_RESULTS_2026-09-05.md` and `REVIEW_GUIDE_2026-09-07.md`, and should be corrected there before submission.
+
+**Rules that now follow for end-to-end cells:** re-run whole sequences, never single episodes pulled from a sequence; record the node; hold CPU class fixed within a comparison. A per-episode re-seed would make episodes independent but changes every existing number, so it needs its own registration (amendment (s) already produces isolated cells alongside shared ones, which gets the same information without invalidating anything).
+
+**Still outstanding, unchanged:** the paired 30-episode sequence checks on a 36-core and a 64-core node, which decide whether `PHASE_RESULTS` §5.1's aggregates stand. The 320-cell re-score stays held until then.
