@@ -400,3 +400,17 @@ discrete-action line, where re-execution was assumed approximately free):
   recorded: the floor's cause is not yet attributable — the unmodified control `re15` also floors and is small, so
   **A6's `MH80` (native, 16,406 rows) is the discriminator** between "size floors RLPD at this scale" and
   "re-execution/editing floors it".
+- **2026-09-08 A5 first cell: `MG200s_gmm` COMPLETE and P-A5-1 is FALSIFIED.** MG200s trained with the GMM head forced ON
+  (5 modes) scores **6, 4, 4 /50 = 0.093** versus the published deterministic-head MG200s **22, 14, 23 /50 = 0.393** —
+  **Δ −0.300**, three times the registered ±0.10 band, so no escalation to 8 seeds is needed (per A5, a 3-v-3 permutation
+  cannot reach p < 0.05 and the decision is on effect size). Verified before recording: each cell's eval used
+  `model_epoch_2000.pth` (LAST), `finished run successfully` in all three train logs, and `config.json` shows
+  `gmm.enabled True, num_modes 5` (the recipe would have been False).
+  **Registered decision rule (ii) fires: the BC-RNN row as published (MH200 0.927 v MG200s 0.393) is WITHDRAWN** and may
+  only be re-reported from head-matched cells. **Pre-committed ordering consequence (3) fires: the cross-learner ordering
+  is withdrawn outright** until BC-RNN is re-run head-matched.
+  Direction of the artefact, stated precisely: robomimic's per-dataset recipe (GMM off for mg) was *favourable to the
+  machine arm* — with the head matched at GMM the gap is **0.927 − 0.093 = 0.834**, larger than the published cross-head
+  0.534. So the published row did not inflate the human-machine difference; it compared each arm at its own recipe
+  optimum, which is a different quantity again. `MH200_nogmm` (deterministic head on the human arm, 3 seeds, at 1333 /
+  1005 / 639 of 2000 epochs) completes the second head-matched contrast.
