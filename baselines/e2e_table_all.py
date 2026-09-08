@@ -26,8 +26,8 @@ ALL_STAGES = ('picked', 'placed_v2', 'contact', 'contact_push', 'slide_success',
 WM_ALIAS = {'nested_proxy': 'nested'}   # the WM evaluator's `nested` IS the proxy
 
 
-def cell(run_dir, iset, mode):
-    f = os.path.join(run_dir, f'fresh_eval_{iset}_{mode}', 'metrics.json')
+def cell(run_dir, iset, mode, suffix=''):
+    f = os.path.join(run_dir, f'fresh_eval_{iset}_{mode}{suffix}', 'metrics.json')
     if not os.path.exists(f):
         return None
     d = json.load(open(f))
@@ -41,7 +41,9 @@ def cell(run_dir, iset, mode):
         for new, old in WM_ALIAS.items():
             if old in counts:
                 counts[new] = counts[old]
-    return dict(n=n, counts=counts, per_episode=d.get('per_episode'), path=f)
+    return dict(n=n, counts=counts, per_episode=d.get('per_episode'), path=f,
+                isolation=d.get('isolation', 'shared_process'),
+                nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'])
 
 
 def strat_counts(c, stage, support_x):
@@ -99,6 +101,11 @@ def main():
     ap.add_argument('--support-x', type=float, default=0.513,
                     help='rnd30 stratification: can x above this is OUT of the training support (DP_PRUNED_GAP §0.4)')
     ap.add_argument('--strat', action='store_true', help='also print the rnd30 in/out-of-support split')
+    ap.add_argument('--cell-suffix', default='',
+                    help="'' = the shared-process cells (the PHASE_RESULTS §5.1 protocol, comparable with the "
+                         "published world-model row); '_iso' = the isolated cells (one fresh process per start, "
+                         "coordinator 2026-09-07). The world-model runs have shared cells only, so its rows print "
+                         "'—' under _iso until §5.1 is re-scored under isolation.")
     args = ap.parse_args()
     a, b = args.seeds.split('-'); seeds = list(range(int(a), int(b) + 1))
     sets = args.sets.split(); stages = args.stages.split()
@@ -110,11 +117,19 @@ def main():
     for iset in sets:
         for learner, path_of, modes in learners:
             for mode in modes:
-                cells = {arm: [cell(path_of(arm, s), iset, mode) for s in seeds] for arm in ('dH', 'dDP')}
+                cells = {arm: [cell(path_of(arm, s), iset, mode, args.cell_suffix) for s in seeds] for arm in ('dH', 'dDP')}
                 if not any(c for cs in cells.values() for c in cs):
                     continue
                 n_eps = next(c['n'] for cs in cells.values() for c in cs if c)
-                print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds')
+                nodes = sorted({h for cs in cells.values() for c in cs if c for h in c['nodes']})
+                isol = sorted({c['isolation'] for cs in cells.values() for c in cs if c})
+                print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds | '
+                      f'protocol {"/".join(isol)} | nodes {len(nodes)}: {",".join(nodes)}')
+                if len(nodes) > 1:
+                    print('  NOTE: cells produced on MORE THAN ONE compute node. Long-horizon full-scope episodes are '
+                          'node-sensitive (coordinator 2026-09-07): the same checkpoint/IC/seed can flip outcome '
+                          'between nodes. Seeds are spread across nodes, so this is variance, not bias -- but it '
+                          'inflates the MDE and must be stated wherever these numbers appear.')
                 print('| stage | human per-seed | human | machine per-seed | machine | Δ | p | MDE |')
                 print('|---|---|---|---|---|---|---|---|')
                 for st in stages:

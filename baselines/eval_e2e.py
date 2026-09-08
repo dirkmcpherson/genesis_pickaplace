@@ -56,6 +56,12 @@ ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episo
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
+ap.add_argument('--ic-index', type=int, default=None,
+                help='EPISODE ISOLATION (coordinator 2026-09-07): evaluate ONLY the k-th start of the (already '
+                     '--limit-truncated) list, in this process. One process per episode is the only way to make '
+                     'full-scope episodes independent -- Genesis allows one world per process, so a re-init inside '
+                     'the process is not available. cluster/e2e_eval_cells.sh drives the loop and merges the '
+                     'single-episode metrics with baselines/merge_e2e_iso.py.')
 ap.add_argument('--device', default='auto', help='policy device for dp (auto = cuda if visible); sac is always cpu')
 ap.add_argument('--arm', default=None); ap.add_argument('--tag', default=None)
 args = ap.parse_args()
@@ -97,8 +103,14 @@ ics = episodes_from_file(str(REPO / args.ic_file) if not os.path.isabs(args.ic_f
 if args.limit:
     ics = ics[:int(args.limit)]
 assert ics, f'no ICs in {args.ic_file}:{args.ic_set}'
-print(f'[eval-e2e] {len(ics)} starts from {args.ic_file}:{args.ic_set} '
-      f'({sum(1 for e in ics if e.get("uid") is not None)} uid starts, {sum(1 for e in ics if e.get("uid") is None)} pose starts)', flush=True)
+IC_OFFSET = 0
+if args.ic_index is not None:
+    assert 0 <= args.ic_index < len(ics), f'--ic-index {args.ic_index} out of range (n={len(ics)})'
+    IC_OFFSET = int(args.ic_index); ics = [ics[IC_OFFSET]]
+ISOLATION = 'fresh_process' if args.ic_index is not None else 'shared_process'
+print(f'[eval-e2e] {len(ics)} start(s) from {args.ic_file}:{args.ic_set} (offset {IC_OFFSET}, isolation {ISOLATION}) '
+      f'({sum(1 for e in ics if e.get("uid") is not None)} uid starts, {sum(1 for e in ics if e.get("uid") is None)} pose starts) '
+      f'node={socket.gethostname()} pid={os.getpid()}', flush=True)
 
 # ---- env: the full scope of the shared full_env, corrected world ----
 os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
@@ -215,12 +227,16 @@ for k, ic in enumerate(ics):
     routes[str(route)] = routes.get(str(route), 0) + 1
     vid = None
     if args.video and frames:
-        vid = str(OUT / f'ep{k}_uid{uid if uid is not None else "rnd"}_{"slide" if st["slide_success"] else outcome}.mp4')
+        vid = str(OUT / f'ep{IC_OFFSET + k}_uid{uid if uid is not None else "rnd"}_{"slide" if st["slide_success"] else outcome}.mp4')
         vw = cv2.VideoWriter(vid, cv2.VideoWriter_fourcc(*'mp4v'), 30.0 / REPEAT, (frames[0].shape[1], frames[0].shape[0]))
         for fr in frames:
             vw.write(np.ascontiguousarray(fr.astype(np.uint8)))
         vw.release()
-    results.append(dict(ep=k, ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
+    # node / process / order stamps on EVERY episode (coordinator 2026-09-07): long-horizon full-scope episodes are
+    # node-sensitive (same ckpt+IC+seed flips outcome across nodes) and, in the shared-process protocol, ORDER-dependent
+    # (state leaks between episodes). `order` is the position within THIS process, so it is 0 for every isolated cell.
+    results.append(dict(ep=IC_OFFSET + k, order=k, node=socket.gethostname(), pid=os.getpid(),
+                        ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
                         slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
     print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome} slide={int(st["slide_success"])}'
@@ -235,6 +251,8 @@ except Exception:
 summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, episodes=len(results), mode=args.mode, seed=args.seed,
                max_steps=args.max_steps, ic_mode='ic_file', ic_file=str(args.ic_file), ic_set=str(args.ic_set), scope='full',
                sim_variant=args.sim_variant, action_repeat=REPEAT, act_selection=act_selection,
+               isolation=ISOLATION, ic_index=args.ic_index, ic_offset=IC_OFFSET,
+               nodes=sorted({r['node'] for r in results}), pids=sorted({r['pid'] for r in results}),
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n', eval_fixes='j+l-prime',
                slide_success=stage_counts['slide_success'] / n,
                stages={s: stage_counts[s] / n for s in STAGES},
