@@ -285,3 +285,11 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   demonstrations are worth something to RLPD — the effect is "MG helps less than MH", not "MG is worth nothing".
   Both readings were live before this run; only the first is now supported.
   Standing-rule check on the same runs: 1 archived checkpoint per run (`ckpt_100`) + `rlpd_final.zip`, 25 MB per run.
+- **19:0x (09-07) A2 C1 (MGall) FIRST TWO SEEDS — directionally against prediction P2 and against the source reading.**
+  `rlpd_MGall_ctl_s0 mode 37/50 (0.74), sample 33/50`; `s1 mode 30/50 (0.60), sample 35/50`. Compare MH200 0.455 and
+  MG200s 0.147 (both n=8). Provenance verified on both runs before recording: `arm MGall`, demo sha `f0f3536e…`
+  (536,522 transitions / 718 rewarded — the published set incl. 3,182 failed rollouts), gamma 0.99, demo_batch 128,
+  ckpt_step 100000, eval episodes 50, bank `72b75550…`. **Registered P2 predicted MGall < MH200 by ≥ 0.15; the first two
+  seeds are ABOVE MH200.** If this holds at n=8, the A2 decision rule fires: "if MG718s or MGall reaches MH200 − 0.10 →
+  the effect was quantity/coverage, not source", i.e. the MH200-v-MG200s gap is a property of the 200-tape MG subsample
+  (16.5k rows, late-checkpoint-only), not of machine provenance. NOT a readout: 2 of 8 seeds, no test computed yet.
