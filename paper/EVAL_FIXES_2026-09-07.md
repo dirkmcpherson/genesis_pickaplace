@@ -183,7 +183,7 @@ between episodes. Measured (`rng_test.py`, one process, identical observation): 
 **bit-identical** to the reference, action after advancing the RNG differs by **3.75e-2**. Hence uid 254 gives r=1.0 run
 standalone and r=3.0 as episode 2 of a sequence — same node, same code, same IC.
 
-Consequences: (a) `--mode mode` is deterministic **given the RNG stream**, not per-episode; a cell reproduces only when
+Consequences: (a) world-model cells are **mode** cells, not deterministic ones — `--mode mode` fixes the actor's output given the latent, but the latent is sampled, so a cell is reproducible only given the RNG stream; a cell reproduces only when
 re-run **as a whole sequence from process start**, which is why every whole-cell and ep0 comparison reproduces and only
 subset reruns diverge; (b) pulling a single episode out of a recorded sequence and comparing it to that record is invalid —
 an artefact I hit myself with uid 254 and initially mis-read as episode-order dependence of the *env*; (c) the fix is a
@@ -235,7 +235,10 @@ Mapping each of the 64 end-to-end record cells to its producing job and node (rn
 
 Three human cells were produced on hardware classes that no machine cell used, two of them on the AVX2 class shown in §7.2
 to flip long-horizon outcomes. Since CPU class demonstrably changes end-to-end episode outcomes, **hardware class is
-partially confounded with arm in the published 8 v 8**. The size of the effect on a real cell is being measured by re-running
-`dHfull_all` s3 (record: broadwell) on sapphirerapids — RESULT PENDING. Recommendation regardless of that number: re-score
+partially confounded with arm in the published 8 v 8**. Measured on a real cell: `dHfull_all` s3 rnd30 MODE (record: broadwell) re-run
+whole on sapphirerapids gives **24/30 episodes differing**, with aggregates picked 0.633 → 0.600 (−0.033), contact
+0.433 → 0.533 (**+0.100**), nested 0.333 → 0.333 (+0.000), and `slide_success` 0.067 → 0.133. So cross-class movement
+reaches **0.100 on a stage of record** for this cell, while the two same-class re-runs (pax109, pax154) both give 0/30
+and Δ +0.000 on every stage. Recommendation regardless of that number: re-score
 all 64 end-to-end cells on ONE pinned CPU model, which removes the confound and yields one internally consistent set; phase
 cells need no pinning (3488 episodes bit-exact across classes).
