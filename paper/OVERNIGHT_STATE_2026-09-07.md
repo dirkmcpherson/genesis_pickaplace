@@ -189,3 +189,19 @@ Also validated in passing: the within-arm sampled-versus-deterministic differenc
 2. **Hardware class is partially confounded with ARM in the published 8 v 8.** The machine arm is 8/8 AVX-512 sapphirerapids; the human arm has two cells on AVX2 broadwell and one on graniterapids. Given that instruction set demonstrably flips long-horizon outcomes, arm and hardware are not independent in that comparison. This was invisible until cells were mapped to nodes, and it is the single most consequential thing found tonight.
 
 **Remedy, registered as amendment (t) and approved:** re-score all 64 end-to-end cells on one pinned CPU model, pinned by `/proc/cpuinfo` model string or explicit node list (never by Slurm label, which misreports). Phase cells need no pinning. Published §5.1 stands as a record of what was measured, superseded by the pinned re-score for the three-learner table, with both reported and the difference attributed.
+
+## 06:10 — the robomimic DP arm is complete: total separation, and the three-learner picture
+
+DP (LAST checkpoint, sampled, 50-state bank, 8 v 8): mixed-human [41,44,39,46,45,42,43,45] = **0.863** (sd 0.047) versus SAC-generated [6,1,8,2,4,6,6,5] = **0.095** (sd 0.046). Δ **+0.767**, exact permutation **p = 0.00016** — the minimum attainable at this n, i.e. complete separation between the arms.
+
+**All three learners on identical arms:**
+
+| learner | mixed-human | SAC-generated (200 tapes) | Δ |
+|---|---|---|---|
+| BC-RNN (robomimic's own) | 0.927 | 0.393 | 0.53 |
+| Diffusion Policy | 0.863 | 0.095 | **0.77** |
+| RLPD (online) | 0.455 | 0.147 | 0.31 |
+
+Two readings, and they pull in opposite directions. **The ordering is what our Genesis framing predicts**: the two pure imitators lose most (0.53, 0.77) and the learner that interacts with the environment loses least (0.31) — source sensitivity decreasing with online interaction. **But the quantity control is already contradicting the premise**: MGall (all 3,900 rollouts, 536k transitions) is scoring 0.74 and 0.60 on its first two seeds, *above* the human arm, which would make all three gaps a property of the 200-tape subsample rather than of machine provenance.
+
+So the honest state is: a large, clean, three-learner effect on the 200-tape arms, whose cause is not yet established, with the decisive evidence (MGall and MG718s at 8 seeds, plus the action-statistics dose pairs) still landing. Do not write the ordering up as a finding until those controls read out — the control was registered before the result precisely so it can overturn it.
