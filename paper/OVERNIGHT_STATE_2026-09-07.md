@@ -49,6 +49,14 @@
 - **The carrycontact null survives every predicate** (contact, geometric push, release-based) — a real robustness check — while confirming those policies essentially never release (3 releases in 2368 episodes).
 - **The count reconciliation is closed.** 21/26/16/11/7/14/15/30 are one lineage difference plus one predicate change plus one design choice; the 11+7=18 arithmetic was a coincidence that does not survive a lineage change.
 
+## 3b. Morning readouts, 2026-09-08
+
+**The contact re-score is complete (192/192 cells) and the provisional numbers held exactly.** Nothing needed correcting. New: the end-to-end cells under the corrected predicate read **0.204 human vs 0.212 machine** on random starts (p 0.942), so the source null now holds on **all three predicates in every end-to-end cell**. A true release-scored slide is earned *only* in the end-to-end task and never in the phases — and most of those grants come from the post-episode settle rather than a deliberate push, with only 2 of 10 sustained.
+
+**Recommended framing, which I have adopted:** report the three predicates as three different things rather than picking one. `slide_success` is the *task outcome*, and the finding is that no arm learns a true slide. `contact_push` is the *discriminating statistic* that actually carries the human-versus-machine comparison. Bare `contact` stays as the *legacy* predicate with its failing fraction attached, because it overstates capability by 1.5–3× and earlier numbers must remain interpretable. Dropping `slide_success` because policies fail it would redefine success as whatever was achieved; putting a p-value on it would manufacture a null out of a floor effect.
+
+**The hardware confound is real but small.** The audit now covers 277 comparisons and **same core count is bit-identical in 119 of 119, with no exceptions**. Of 192 re-scored cells, 16 differ — every one with a 36-core record node. The movement is human-arm-only (those are the 36-core records), unsigned, and small: contact 0.593→0.597, end-to-end 0.379→0.388, hold-out 0.750→0.692. Machine arms are unchanged everywhere. So this threatens no conclusion; it needs disclosure and a stamped core count, not a re-run.
+
 ## 3a. One registration deviation to disclose
 
 The robomimic leg's **originally registered primary contrast was PH200**, the single-human demonstration set, and it has never been run. What we have instead is MH200, the mixed-skill human set. That substitution was your call and a principled one — our own Genesis dataset is mixed-human, so the mixed-skill set is the honest analogue — but it is a departure from what was registered and belongs in the write-up as such rather than being quietly absent. Running it later costs roughly 8 GPU-hours if we want the registered contrast on the record too.

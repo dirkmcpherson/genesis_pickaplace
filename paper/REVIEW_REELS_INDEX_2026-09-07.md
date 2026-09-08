@@ -230,3 +230,33 @@ Sampled starts: both-succeed [8]; human-only [13, 2, 6]; machine-only [14, 9, 11
 
 Files: `review_matched/full_fresh_eval_hold15_mode_matched.mp4`
 
+
+## Sim-box reels (local disk only — NOT on the cluster, added 2026-09-07 23:0x)
+
+All three sets live on pop-os under `can_pos_recovery/`. Nothing here needs the VPN.
+
+**1. End-to-end human trials, all 74** — `videos_census/<uid>_full_gc_kp4_riser3_shelf6.mp4` (5.1 GB).
+Left = real footage, right = the sim re-execution of that trial's recorded action tape in the world of
+record (w3), plus a wrist cam; max state deviation stamped on the frame. Complete: 74/74. (The first
+pass produced only 47 — the other 27 aborted on `shelf band mismatch` when PHASE_PLAN amendment (j)'s
+new assert landed in `full_env.py` mid-run and the renderer had never exported `GENESIS_SIM_VARIANT`.
+Fixed in `render_census.py`; the 27 were re-rendered clean.)
+
+**2. Slide demos with a synchronised signal graph, 20** — `videos_slide/<uid>_slide.mp4`. The same
+real|sim panels with a graph strip underneath: reward, grip COMMAND (0.3 line marked), can–goal centre
+distance (8.1 cm nested line marked), can tilt, green shading where all slide clauses hold, and a
+cursor tracking playback. Built for the slide-predicate reconciliation; these are the videos to watch
+alongside `paper/slide_per_uid_2026-09-07.txt`.
+Worth watching first: **232** (releases fully, then re-closes to 0.4 and pushes home — the demo that
+broke the withdrawn `grip < 0.3` clause), **273** (pushes with a fully closed fist, finger position
+1.00), **255** (open-hand push; one of only two tapes that passed the withdrawn predicate),
+**259** (fist push where the sim can stops short).
+
+**3. w3 vs og4 flip comparisons, 6** — `videos_census/<uid>_full_gc_kp4_riser3_shelf6_vs_gc_kp4_riser3_shelf6_og4.mp4`
+(243, 262, 308 = tipped→nested wins; 242 = nested both; 236, 276 = the disclosed new-tip losses).
+
+**Caveat for anything watched here:** a tape's `stage` field is stale — the env only evaluates
+`_nested()` when an episode reaches `max_steps`, and 52 of 74 tapes end `adapter_exhausted` instead,
+so 13 w3 tapes are honest-nested while their tape label says otherwise [232 233 237 247 251 273 275
+294 299 302 304 317 330]. Use the honest json
+(`baselines/demos_v2/census_ts5w4_0903/full_gc_kp4_riser3_shelf6_honest.json`), never the tape label.

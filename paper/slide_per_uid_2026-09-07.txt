@@ -1,0 +1,75 @@
+ uid outcome  entry push_cm sim15 push>=3 dist_cm  note
+ 232 NESTED     129     4.3 True  True        6.6  slide completes in sim
+ 233 NESTED     174     3.1 True  True        6.6  slide completes in sim
+ 234 no-pick   None      -  False False      24.2  never picked
+ 235 tipped    None      -  False False      11.5  can never rests upright on shelf
+ 236 contact    115     5.1 True  True        8.4  slide completes in sim
+ 237 NESTED     164     2.2 True  False       6.7  slide completes in sim
+ 239 tipped    None      -  False False      15.5  can never rests upright on shelf
+ 242 contact   None      -  False False       8.4  can never rests upright on shelf
+ 243 tipped      84     7.9 False True       50.2  human pushed 7.9 cm, sim stopped short
+ 244 short      215     0.1 False False       9.2  set down, little or no push
+ 245 tipped    None      -  False False      18.5  can never rests upright on shelf
+ 246 tipped     530     0.0 False False      20.0  set down, little or no push
+ 247 NESTED     312     8.2 False True        7.8  human pushed 8.2 cm, sim stopped short
+ 248 tipped     491    17.2 False True       23.0  human pushed 17.2 cm, sim stopped short
+ 250 contact   None      -  False False       9.5  can never rests upright on shelf
+ 251 NESTED     264     2.8 False False       7.7  set down, little or no push
+ 252 short      264     1.9 False False      16.4  set down, little or no push
+ 254 short      270     0.2 False False      12.0  set down, little or no push
+ 255 NESTED     200     3.6 True  True        6.5  slide completes in sim
+ 256 short      307     4.2 False True       13.0  human pushed 4.2 cm, sim stopped short
+ 257 tipped    None      -  False False      28.6  can never rests upright on shelf
+ 258 tipped    None      -  False False      20.5  can never rests upright on shelf
+ 259 short      181     4.6 False True       10.9  human pushed 4.6 cm, sim stopped short
+ 261 short      290     0.1 False False      19.7  set down, little or no push
+ 262 tipped     140     0.2 False False      26.6  set down, little or no push
+ 263 short      232     0.0 False False      23.2  set down, little or no push
+ 265 short      307     5.1 False True        9.3  human pushed 5.1 cm, sim stopped short
+ 266 short      272     5.3 False True        9.7  human pushed 5.3 cm, sim stopped short
+ 267 tipped    None      -  False False       9.6  can never rests upright on shelf
+ 269 short      406    11.6 False True       17.3  human pushed 11.6 cm, sim stopped short
+ 273 NESTED     226    10.2 True  True        6.6  slide completes in sim
+ 274 tipped     354     6.8 False True       11.6  human pushed 6.8 cm, sim stopped short
+ 275 NESTED     210     6.3 False True        7.6  human pushed 6.3 cm, sim stopped short
+ 276 short      293     4.3 False True       10.7  human pushed 4.3 cm, sim stopped short
+ 277 short      135     7.6 False True       11.1  human pushed 7.6 cm, sim stopped short
+ 278 no-pick   None      -  False False      21.3  never picked
+ 279 short      289     7.6 False True       10.7  human pushed 7.6 cm, sim stopped short
+ 280 tipped    None      -  False False      18.3  can never rests upright on shelf
+ 281 short      150     0.2 False False      12.2  set down, little or no push
+ 283 tipped     228     0.2 False False      15.4  set down, little or no push
+ 284 tipped     213     0.0 False False      18.1  set down, little or no push
+ 286 tipped    None      -  False False       9.0  can never rests upright on shelf
+ 287 tipped    None      -  False False      43.4  can never rests upright on shelf
+ 293 tipped    None      -  False False      36.2  can never rests upright on shelf
+ 294 NESTED    1029     8.4 True  True        6.6  slide completes in sim
+ 295 tipped    None      -  False False       7.8  can never rests upright on shelf
+ 297 tipped     228    28.2 True  True       41.8  slide completes in sim
+ 298 tipped     184     0.0 False False      20.3  set down, little or no push
+ 299 NESTED     514     5.5 True  True        6.6  slide completes in sim
+ 300 NESTED     881     0.2 True  False       8.1  slide completes in sim
+ 301 no-pick   None      -  False False      45.7  never picked
+ 302 NESTED     247    10.4 False True        6.7  human pushed 10.4 cm, sim stopped short
+ 304 NESTED     249     3.8 False True        7.3  human pushed 3.8 cm, sim stopped short
+ 305 NESTED     161     3.7 True  True        6.6  slide completes in sim
+ 306 tipped    None      -  False False      49.2  can never rests upright on shelf
+ 308 tipped     292     7.7 True  True       10.7  slide completes in sim
+ 309 tipped    None      -  False False      34.5  can never rests upright on shelf
+ 311 tipped    None      -  False False      31.4  can never rests upright on shelf
+ 315 tipped    None      -  False False      31.6  can never rests upright on shelf
+ 316 tipped    None      -  False False      40.8  can never rests upright on shelf
+ 317 NESTED     199     6.9 True  True        6.6  slide completes in sim
+ 318 no-pick   None      -  False False      23.2  never picked
+ 319 no-pick   None      -  False False      27.5  never picked
+ 320 tipped    None      -  False False      19.2  can never rests upright on shelf
+ 321 tipped     182     3.3 False True        8.9  human pushed 3.3 cm, sim stopped short
+ 325 contact    219     7.5 True  True       10.3  slide completes in sim
+ 326 tipped     148     5.4 False True       67.4  human pushed 5.4 cm, sim stopped short
+ 327 short      237     2.7 False False       9.1  set down, little or no push
+ 328 short      589     0.2 False False       8.4  set down, little or no push
+ 329 tipped    None      -  False False      41.7  can never rests upright on shelf
+ 330 NESTED     447     1.7 True  False       7.6  slide completes in sim
+ 331 tipped    None      -  False False      35.7  can never rests upright on shelf
+ 333 tipped     319     5.2 False True        8.6  human pushed 5.2 cm, sim stopped short
+ 335 short      165     1.4 False False      10.0  set down, little or no push

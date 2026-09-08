@@ -87,8 +87,14 @@ Decisive evidence, same scorer, same box:
 that reproduces on the machine doing the scoring, and because every reported funnel number already
 comes from it. **Conditional:** if the phase training and evaluation run on the cluster, the binding
 rule is that the bank, the scorer and the runs must share one lineage *and one machine* — this is the
-same cross-machine reproduction question as the open end-to-end determinism bug, and it should be
-settled before anything is re-cut. I am not asserting the census is correct and the cluster wrong;
+same reproduction question as the open end-to-end determinism bug, and it should be
+settled before anything is re-cut. **Refinement received 2026-09-07 late (orchestration session):
+the divergence tracks PHYSICAL CORE COUNT, not the instruction set** — a 40-core Broadwell and a
+64-core Sapphire Rapids agree bit-for-bit across the AVX2/AVX-512 boundary, while a 36-core and a
+40-core Broadwell disagree on the same instruction set, and all 53 same-core-count comparisons are
+identical. So the binding constraint is not "same machine" but "same physical core count", which is
+a stricter and more testable rule and is consistent with what I measured here (this box is a 6-core
+i5-10600K; `dHfull_w3`, recorded elsewhere, re-executes bit-exact 2/74 locally). I am not asserting the census is correct and the cluster wrong;
 I am asserting they differ and that mixing them is what produced four irreconcilable counts.
 
 ## 4. The widened list, and the honest gap to 18
@@ -192,3 +198,82 @@ predicate 12 → 13 and 14 → **15** (census set 232 233 236 237 255 273 294 29
 330, 11 of 15 honest-nested). It recovers 308 of the three fist-push uids; 328 and 333 still fail on
 no-contact-after-entry and tilt. **The corrected entry buys 1 uid, not 7** — recovering all 7 would
 require admitting tapes that settle at 90°.
+
+## 7. The morning decision: 15 vs 18 vs 30 (census lineage, corrected entry gate)
+
+Per-uid table: **`paper/slide_per_uid_2026-09-07.txt`** (74 rows: outcome, entry frame, best goalward
+push after entry, whether the slide completes in sim, settled distance, and a plain-English note).
+
+**The ladder.** Entry (can set down upright on the shelf, sustained 10 frames, no gripper term) fires
+on 48 of 74. Of those, "the human demonstrably pushed the can toward the goal after setting it down",
+by minimum goalward displacement:
+
+| min push | n | NESTED | contact | short | tipped |
+|---|---|---|---|---|---|
+| any (> 0) | 46 | | | | |
+| ≥ 1 cm | 36 | 15 | 2 | 11 | 8 |
+| ≥ 2 cm | 33 | 14 | 2 | 9 | 8 |
+| **≥ 3 cm** | **30** | 12 | 2 | 8 | 8 |
+| ≥ 4 cm | 25 | 8 | 2 | 8 | 7 |
+| ≥ 6 cm | 15 | 6 | 1 | 3 | 5 |
+
+The registered "~30" is exactly the ≥ 3 cm push set. The registered "15" is the sim-completes set
+[232 233 236 237 255 273 294 297 299 300 305 308 317 325 330], 11 of 15 honest-nested.
+
+**Nothing in the ladder lands on 18** — and that is the finding, not a failure. Two *unrelated*
+constructions both total 18:
+
+- the place agent's 11 + 7 = [232 233 236 237 242 255 259 273 297 305 308 309 317 320 321 325 328 333]
+- "human pushed ≥ 3 cm but the sim did not complete" = [243 247 248 256 259 265 266 269 274 275 276
+  277 279 302 304 321 326 333]
+
+**They share 3 uids and disagree about 15 of the 18.** Two different sets of the same size is
+conclusive that hitting the number is numerology. The sets are what matter, and neither is "the 18".
+
+**What to tell the user.** ~18 is a human judgement of the *real* footage; every automated count
+scores the *simulation*. The two bracket it for a reason we already measured: 15 tapes complete the
+slide in sim, and a further 18 show the human pushing ≥ 3 cm with the sim can stopping short — the
+systematic 2–4 cm under-transfer of `SLIDE_ANATOMY_2026-09-07.md`, where the sim tool tracks the real
+tool to 0.2 cm and the can simply does not follow. So 15 = "the world reproduces the slide",
+30 = "the human performed one", and the ~15 in between are the world's shortfall, not the human's.
+
+**Recommendation for the phase set, unchanged and now quantified:** cutting at 15 trains on the tapes
+this world happens to reproduce and biases the phase toward easy geometry; cutting at 30 (≥ 3 cm
+push) keeps every demonstrated slide and lets the learner see the hard ones. If a middle is wanted,
+≥ 4 cm gives 25 and drops the weakest pushes. The choice is the user's; all three sets are in the
+per-uid table.
+
+## 8. Human analogue of the corrected-contact measurement (added after the 09-07 late readout)
+
+The orchestration session re-measured `contact` with the tool point and a far-side test and found
+that in the policy cells only **14–16 %** of episodes earning `contact` do so by gripper contact,
+while **84–86 %** earn it by carrying the can in and parking it against the goal without releasing;
+a true release-scored slide occurs in **0–2 of ~1200 episodes per cell**. The same decomposition on
+the human tapes, census w3 lineage, using the corrected entry gate (can set down upright on the
+shelf, sustained 10 frames):
+
+| | n | share |
+|---|---|---|
+| human tapes earning `contact` | 26 | — |
+| ...contact **after** the can was set down | **14** | **54 %** |
+| ...contact with no prior set-down (carried in) | 12 | 46 % |
+
+uids after a set-down: 232 233 236 237 248 255 273 294 299 305 317 321 325 326.
+uids carried in: 242 250 286 295 297 298 300 308 309 316 320 330.
+
+So the humans earn contact by a genuine set-down-then-push in **54 %** of their contact episodes
+against the policies' 14–16 %, and demonstrate the full release-then-push slide in **15/74 = 20 %**
+of tapes against the policies' ~0.1 %. Two consequences worth carrying into the phase decision:
+
+1. **The policies never learned this slide**, so the human set is not being chosen to match a
+   behaviour the learner already has — it is the only source of the behaviour. That argues against
+   trimming the human set to the 15 the current world happens to reproduce.
+2. **Nearly half of the human `contact` grants are also carry-ins — but the two populations are not
+   equally contaminated.** Bare `contact` conflates the two routes on both sides, at **46 %** carry-in
+   for the human demonstrations against **84–86 %** for the policy episodes. Any cell scored on bare
+   `contact` is therefore comparing populations that are substantially not doing the scored
+   behaviour, and doing so to different degrees. (My first draft of this paragraph said the two were
+   "each roughly half carry-in"; that understates the asymmetry and would leave a reader unprepared
+   for the corrected policy cells halving. Corrected on the orchestration session's challenge.)
+   This is a reason the corrected predicate matters for the human-vs-machine comparison itself, not
+   only for the phase.
