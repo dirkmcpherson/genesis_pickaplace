@@ -126,6 +126,11 @@ def main():
                          'contact: the SLIDE phase of amendment (m) -- reset restores a banked placed_v2 state '
                          '(released, on the shelf), +1 and terminate on the env `contact` predicate (rewards are NOT '
                          'changed by amendment (l): slide_success is the eval statistic, never a training signal)')
+    ap.add_argument('--contact-grant', choices=['bare_contact', 'slide_success', 'prior_release'], default=None,
+                    help="scope=contact ONLY, REQUIRED there (PHASE_PLAN (p), no default exists): which predicate pays "
+                         "+1 and ends the episode. bare_contact = the (m)/world-model-of-record grant; slide_success = "
+                         "the WITHDRAWN (o) reward (refused unless CONTACT_GRANT_ALLOW_WITHDRAWN=1); prior_release = "
+                         "(p)'s corrected predicate, not implemented until its clause-5 threshold is calibrated.")
     ap.add_argument('--entry-bank', default=None,
                     help='scope=place/contact: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
                          'REQUIRED for place (the env default bank is the OLD world)')
@@ -234,6 +239,10 @@ def main():
         assert args.action_mode == 'delta_joint' and args.delta_ref == 'target' and args.action_repeat == 4, (
             'place protocol: delta_joint / target / action_repeat 4')
         assert args.pick_shaping == 'off' and args.pick_hold_reward == 'off', 'pick levers are not place levers'
+        if args.scope == 'contact':
+            assert args.contact_grant, ('scope=contact needs --contact-grant (PHASE_PLAN (p): (l)\'s grip clause is '
+                                        'withdrawn, (o) was stopped, and the corrected predicate awaits calibration -- '
+                                        'there is no correct default and the Slide runs are held)')
         assert args.eval_freq == 0, 'in-train VideoEvalCallback evaluates the PICK; phase runs are scored post hoc by eval_place.py (pass --eval-freq 0)'
         assert args.train_max_steps == 600, f'phase-scope horizon of record is 600 sim steps (got {args.train_max_steps})'
     elif e2e_segment:
@@ -286,6 +295,7 @@ def main():
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
                       entry_bank=args.entry_bank, phase_sparse=(args.scope in PHASE_SCOPES),
+                      contact_grant=args.contact_grant,
                       pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k,
                       pick_shaping=(args.pick_shaping == 'on'),
                       # shaping gamma = the AGENT's discount (Ng invariance needs them
@@ -479,6 +489,7 @@ def main():
                # 2026-09-07: cap/leash travel with the artifact (review: eval integrators must not hard-code them)
                'delta_cap': env.delta_cap, 'delta_leash': env.delta_leash,
                'entry_bank': (os.path.abspath(args.entry_bank) if args.entry_bank else None),
+               'contact_grant': args.contact_grant,
                'phase_sparse': bool(getattr(env, 'phase_sparse', False)),
                'demo_terminal_guard': args.demo_terminal_guard,
                'demo_shaping': ('on' if demo_shaping else 'off'),

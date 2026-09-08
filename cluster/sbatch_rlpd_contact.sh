@@ -43,6 +43,16 @@ set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 W=${W:-/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03}
+# PHASE_PLAN (p) HOLD (2026-09-07): (l)'s grip<0.3 clause is withdrawn (it passes 2 of 74 demonstrations) and
+# amendment (o) was STOPPED before landing, so this phase currently has no correct reward. The 32 Slide jobs are held;
+# this launcher refuses to run rather than train against a withdrawn predicate. Release requires (p)'s calibrated
+# prior-release predicate AND the lineage question (dHfull_w3 vs census, 24/74 streams disagree) being settled.
+if [ -z "${CONTACT_GRANT:-}" ]; then
+  echo "SLIDE-ON-HOLD: refusing to train RLPD contact -- PHASE_PLAN (p) withdrew the grip clause and stopped (o);"
+  echo "  no reward predicate is currently registered as correct. Export CONTACT_GRANT=<bare_contact|prior_release> only"
+  echo "  once the coordinator releases the phase."
+  exit 0
+fi
 ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-250000}; WAVE=${WAVE:-contact}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; GAMMA=${GAMMA:-0.99}
 ACTION_REPEAT=4; TRAIN_HORIZON=600; EVAL_HORIZON=600
@@ -80,7 +90,7 @@ PY
 for b in "$BANK" "$HOLDE"; do [ -s "$b" ] || { echo "FATAL: bank missing/empty: $b"; exit 1; }; done
 python3 -c 'import json,sys; b=json.load(open(sys.argv[1])); n=len(b) if isinstance(b,list) else len(b.get("entries", b)); assert n==39, n; print(f"BANK-OK {sys.argv[1]}: {n} human placed_v2 (released-on-shelf) entries")' "$BANK" || exit 1
 
-TRAIN_ARGS=(--steps "$STEPS" --scope contact --entry-bank "$BANK" --demo-format segment --demo-dir "$DEMO"
+TRAIN_ARGS=(--steps "$STEPS" --scope contact --contact-grant "$CONTACT_GRANT" --entry-bank "$BANK" --demo-format segment --demo-dir "$DEMO"
   --action-mode delta_joint --delta-ref target --action-repeat "$ACTION_REPEAT"
   --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON" --eval-freq 0
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off

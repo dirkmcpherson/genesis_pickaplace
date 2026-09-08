@@ -272,11 +272,23 @@ class FullTaskEnv(gym.Env):
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
-                 entry_bank=None, phase_sparse=False, action_mode='absolute', delta_cap=0.025,
+                 entry_bank=None, phase_sparse=False, contact_grant=None, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True):
         super().__init__()
+        # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
+        # authoritative validation with the full explanation runs below, after the scope fields are set.
+        if scope == 'contact':
+            assert contact_grant in ('bare_contact', 'slide_success', 'prior_release'), (
+                f'scope=contact needs an explicit contact_grant (got {contact_grant!r}) -- PHASE_PLAN (p): (l)\'s grip '
+                'clause is withdrawn, (o) was stopped, and the corrected predicate is uncalibrated, so no default exists.')
+            assert not (contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN')), (
+                'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3, passes 2 of 74 demos); '
+                'set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic.')
+            if contact_grant == 'prior_release':
+                raise NotImplementedError("contact_grant='prior_release' is PHASE_PLAN (p); its clause-5 threshold "
+                                          "(can supported by the shelf, not clamped) is not calibrated yet.")
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
         # STAGE_REWARD 'picked' grant, terminate on the env's hardened picked flag).
@@ -377,6 +389,29 @@ class FullTaskEnv(gym.Env):
             u for u, r in self.genv.placements.items() if r.get('label') == 'success')
         assert scope in ('full', 'pick', 'place', 'contact', 'carrycontact', 'reach', 'touchgoal', 'reach_goal'), f'unknown scope {scope!r}'
         self.phase_sparse = bool(phase_sparse)   # PHASE PLAN: tips terminate only (no penalty) in place/contact
+        # scope='contact' GRANT SELECTOR -- explicit, no default (PHASE_PLAN (p), 2026-09-07). History: (m) paid on bare
+        # `contact`, which pays for driving a HELD can into the goal; (o) would have paid on `slide_success`, but (p)
+        # WITHDREW that predicate's grip clause -- it passes 2 of 74 demonstrations and 44 failures are the grip clause
+        # alone, because the human releases fully and then pushes the can home with the fingers re-closed to ~0.4.
+        # (p)'s replacement (prior release + can supported-not-clamped at contact) is registered but its clause-5
+        # threshold is NOT calibrated yet, so it is deliberately NOT implemented here. A contact-scope env therefore
+        # REFUSES to build unless the caller names the grant it wants, and the withdrawn one needs an explicit override.
+        self.contact_grant = contact_grant
+        if scope == 'contact':
+            _allowed = ('bare_contact', 'slide_success', 'prior_release')
+            assert contact_grant in _allowed, (
+                f'scope=contact needs contact_grant={_allowed} passed EXPLICITLY (got {contact_grant!r}). '
+                'PHASE_PLAN (p): (l)\'s grip<0.3 clause is withdrawn and (o) was stopped before landing; the corrected '
+                'prior-release predicate awaits its clause-5 calibration, so there is currently NO correct default.')
+            if contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN'):
+                raise AssertionError(
+                    'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3): it contradicts the '
+                    'demonstrations (2/74) and would train the arm away from the demonstrated half-closed push. '
+                    'Set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic runs.')
+            if contact_grant == 'prior_release':
+                raise NotImplementedError(
+                    'contact_grant="prior_release" is PHASE_PLAN (p) clause 1-5; clause 5 (can supported by the shelf, '
+                    'not clamped, at contact) must be calibrated from the demonstration traces before it is implemented.')
         # PHASE PLAN: shelf-referenced band follows the WORLD's shelf (sim_variants shelf_dz), not the stale constant.
         import os as _os, sim_variants as _sv
         _vn = _os.environ.get('R2D_SIM_VARIANT') or _os.environ.get('GENESIS_SIM_VARIANT') or 'base'
@@ -772,7 +807,17 @@ class FullTaskEnv(gym.Env):
                 self._granted.add('contact')
                 return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
         if self.scope == 'contact':
-            # AMENDMENT (o) 2026-09-07: the SLIDE phase pays WHAT IT SCORES. The grant is the release-based
+            # PHASE_PLAN (p): the grant is whatever the caller named. 'bare_contact' = the (m)/world-model-of-record
+            # behaviour. 'slide_success' = the WITHDRAWN (o) reward, reachable only under CONTACT_GRANT_ALLOW_WITHDRAWN
+            # and kept so the recorded (o) diagnostic (150-decision episodes, r=0, reason grip_closed) reproduces.
+            # KEPT FROM (o) AND STILL RIGHT (coordinator, 2026-09-07): bare `contact` is logged and granted but does NOT
+            # end the episode when the grant is not bare_contact, so credit for driving a still-carried can into the
+            # goal is not paid; (p)'s prior-release predicate will formalise that.
+            if self.contact_grant == 'bare_contact':
+                if info.get('contact'):
+                    self._granted.add('contact')
+                    return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
+            # AMENDMENT (o) 2026-09-07 [WITHDRAWN by (p)]: the SLIDE phase pays WHAT IT SCORES. The grant is the release-based
             # slide_success clause set of (l)/(l') -- picked earlier AND pick-can/goal solver contact AND grip
             # COMMANDED OPEN (< GRIP_OPEN_CMD) AND can in the shelf footprint with tilt < 20 deg, sustained
             # SLIDE_SUSTAIN frames -- computed by GenesisCanEnv's own _slide_clauses/_slide_run and surfaced as

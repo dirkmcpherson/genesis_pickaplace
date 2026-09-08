@@ -41,6 +41,16 @@ set -eo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 W=${W:-/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03}
+# PHASE_PLAN (p) HOLD (2026-09-07): (l)'s grip<0.3 clause is withdrawn (it passes 2 of 74 demonstrations) and
+# amendment (o) was STOPPED before landing, so this phase currently has no correct reward. The 32 Slide jobs are held;
+# this launcher refuses to run rather than train against a withdrawn predicate. Release requires (p)'s calibrated
+# prior-release predicate AND the lineage question (dHfull_w3 vs census, 24/74 streams disagree) being settled.
+if [ -z "${CONTACT_GRANT:-}" ]; then
+  echo "SLIDE-ON-HOLD: refusing to train DP contact -- PHASE_PLAN (p) withdrew the grip clause and stopped (o);"
+  echo "  no reward predicate is currently registered as correct. Export CONTACT_GRANT=<bare_contact|prior_release> only"
+  echo "  once the coordinator releases the phase."
+  exit 0
+fi
 ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-contact}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 ACTION_REPEAT=4; EVAL_HORIZON=600

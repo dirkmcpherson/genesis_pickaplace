@@ -50,6 +50,7 @@ if [ "$PHASE" = contact ] && [ -z "${SLIDE_DIAG_OPTIONAL:-}" ]; then
     echo "  Contact cells are NOT written; re-run them with 'PHASE=contact bash cluster/place_readout.sh' once the fixed code is synced."
     exit 0
   fi
+  [ -z "${CONTACT_GRANT:-}" ] && { echo "SLIDE-ON-HOLD: contact cells need CONTACT_GRANT (PHASE_PLAN (p)); no cells written."; exit 0; }
   echo "SLIDE-FIX-OK: slide_fail_reason present (git $(git rev-parse --short HEAD 2>/dev/null))"
 fi
 VF=(); [ "$VIDEO" = 1 ] && VF=(--video)
@@ -65,7 +66,7 @@ run_cell() {
   if [ -f "$D/metrics.json" ]; then echo "# cell $SET $MODE exists ($D/metrics.json), kept"; return 0; fi
   mkdir -p "$D"
   python baselines/eval_place.py --kind "$KIND" --checkpoint "$CKPT" --entry-bank "$BANK" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" \
-      --scope "$PHASE" --max-steps 600 --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${VF[@]}" > "$D/eval.log" 2>&1
+      --scope "$PHASE" ${CONTACT_GRANT:+--contact-grant "$CONTACT_GRANT"} --max-steps 600 --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${VF[@]}" > "$D/eval.log" 2>&1
   local rc=$?; echo "# cell $SET $MODE rc=$rc $(date -Is)"; grep -E "^\[eval-place\] [0-9]+ episodes|FATAL|Traceback|Error" "$D/eval.log" | tail -3
   return $rc
 }

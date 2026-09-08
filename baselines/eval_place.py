@@ -41,6 +41,10 @@ ap.add_argument('--scope', choices=('place', 'contact'), default='place',
                      "100-step end-of-episode settle with the last command held. That predicate is NOT reimplemented here: "
                      "GenesisCanEnv.end_of_episode() (the eval-fixes agent's landed (j)/(l') implementation) is called once "
                      "per episode and its dict is recorded verbatim. Bare `contact` is reported alongside for continuity.")
+ap.add_argument('--contact-grant', choices=('bare_contact', 'slide_success', 'prior_release'), default=None,
+                help="--scope contact ONLY, REQUIRED there (PHASE_PLAN (p)): which predicate ends the episode. The "
+                     "SCORE is unaffected (slide_success is read from end_of_episode either way); this selects the "
+                     "termination rule the rollout runs under, and it has no default while (p)'s predicate is uncalibrated.")
 ap.add_argument('--entry-bank', required=True)
 ap.add_argument('--out', required=True)
 ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
@@ -126,7 +130,11 @@ apply_pre(args.sim_variant)
 from full_env import FullTaskEnv   # noqa: E402
 import sim_variants as _sv          # noqa: E402
 from replay_harness import BOX_TOP_Z   # noqa: E402
+if args.scope == 'contact' and not args.contact_grant:
+    sys.exit('FATAL: --scope contact needs --contact-grant (PHASE_PLAN (p): the grip clause of (l) is withdrawn, (o) was '
+             'stopped before landing, and the corrected prior-release predicate awaits its clause-5 calibration).')
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope=args.scope, entry_bank=str(BANK_USED), phase_sparse=True,
+                  contact_grant=args.contact_grant,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
 apply_post(env, args.sim_variant)
@@ -281,7 +289,7 @@ except Exception:
     git = 'unknown'
 summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, episodes=len(results), mode=args.mode, seed=args.seed,
                max_steps=args.max_steps, ic_mode='bank', entry_bank=str(args.entry_bank), scope='place', sim_variant=args.sim_variant,
-               scope_arg=args.scope, action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version,
+               scope_arg=args.scope, contact_grant=args.contact_grant, action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version,
                bank_path=BANK_PATH, bank_sha256=BANK_SHA, bank_used_sha256=BANK_USED_SHA, bank_n_entries=len(_entries_raw), delta_cap=env.delta_cap, delta_leash=env.delta_leash,
                **{SUCCESS_KEY: counts[SUCCESS_KEY] / n}, tipped=counts['tipped'] / n, timeout=counts['timeout'] / n,
                restore_failed=counts['restore_failed'] / n, contact=n_contact / n, success_key=SUCCESS_KEY,
