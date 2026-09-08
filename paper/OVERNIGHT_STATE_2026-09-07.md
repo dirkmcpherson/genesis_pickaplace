@@ -31,6 +31,10 @@
 
 Running: robomimic recovery (72 runs, DP arm complete, controls landing), place 32, end-to-end 32, dv3 4-seed comparison, contact re-score 192 cells, in-distribution evaluations. Held deliberately: Slide 32 (predicate), end-to-end re-score 320 cells (launching now that pinning is prepared).
 
+## 4b. The cell matrix you asked about
+
+`paper/CELL_STATUS_2026-09-07.md` (built offline tonight) is the phase-by-learner table with every cell either carrying its number and source or saying what it is waiting on. The short version: **the three-learner comparison exists at the pick and nowhere else yet** — every other Genesis row is a world-model result with two columns that the queued runs fill. It also carries the robomimic table with its control caveat attached, so the two cannot drift apart.
+
 ## 5. Two problems found and fixed that could have cost us quietly
 
 A silent data-loss defect (completed episodes discarded, presenting as absent data — 6 cells recovered, none recomputed) and dead seeds being averaged into arm means without flagging (one shifts an arm by ~0.07, which is the concrete reason the RLPD pick null is the weakest at 0.345).
