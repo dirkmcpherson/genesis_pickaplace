@@ -15,6 +15,9 @@
 #   BANK      $W/phase_banks/human_place.json   (the HUMAN pick-grant bank for BOTH arms; amendment (h))
 #   HOLDE / POLE   evaluation banks (defaults $W/phase_banks/{holdE,polE}_place.json; polE deferred until rebuilt)
 #   OUT_ROOT  baselines/rl/checkpoints/place    -> $OUT_ROOT/pl_rlpd_${ARM}_s${SEED}
+#   CKPT_FRACS 0.4,1.0  -- DISK RULE (2026-09-07 incident, coordinator): keep only what the protocol reads.
+#             ckpt_100 = LAST (the statistic of record) and ckpt_040 = 100k decisions (the RLPD PICK budget read
+#             registered in amendment (h)); periodic snapshot zips are OFF (--ckpt-every 0). 3 x 12 MB per run.
 #   WAVE      place   SIM_VARIANT gc_kp4_riser3_shelf6   GAMMA 0.99   DRYRUN=1 prints the plan
 # A requeued (preempted) run restarts CLEAN (the trainer does not resume; same as the WM launcher).
 #SBATCH -J pl_rlpd
@@ -79,6 +82,7 @@ TRAIN_ARGS=(--steps "$STEPS" --scope place --entry-bank "$BANK" --demo-format se
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off
   --utd 10 --ensemble-size 10 --subset-size 2 --demo-batch 128
   --demo-shaping off --pick-shaping-terminal-zero on --demo-terminal-guard on --sim-variant "$SIM_VARIANT"
+  --ckpt-every 0 --ckpt-fracs "${CKPT_FRACS:-0.4,1.0}"
   --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper --seed "$SEED" --device cuda)
 REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=place action_mode=delta_joint delta_ref=target action_repeat="$ACTION_REPEAT"
            train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON" gamma="$GAMMA" backup_entropy=off per_member_ln=off utd=10
@@ -109,6 +113,7 @@ out, steps = sys.argv[1], int(sys.argv[2])
 sc = json.load(open(os.path.join(out, 'rlpd_final.action_mode.json')))
 assert sc['scope'] == 'place' and int(sc['steps']) == steps and sc.get('phase_sparse') is True and abs(float(sc['delta_cap']) - 0.025) < 1e-9, sc
 ck = json.load(open(os.path.join(out, 'ckpt_100', 'rlpd_ckpt.action_mode.json')))
+assert not [f for f in os.listdir(out) if f.endswith('_steps.zip')], 'periodic snapshot zips written despite --ckpt-every 0'
 assert int(ck['ckpt_step']) >= steps, ck   # the archive's 100% checkpoint fired at the budget: training reached it
 print(f'TRAIN-OK {out}: budget {steps} decisions reached (ckpt_100 at {ck["ckpt_step"]}), sidecar scope=place phase_sparse cap={sc["delta_cap"]} leash={sc["delta_leash"]}')
 PY

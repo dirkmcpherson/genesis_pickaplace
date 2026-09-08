@@ -13,6 +13,13 @@
 #   SEED       required     STEPS 100000     DEMO_ROOT /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3
 #   HOLDE / POLE  evaluation banks (defaults $W/phase_banks/{holdE,polE}_place.json; polE deferred until rebuilt)
 #   OUT_ROOT   baselines/outputs/dp_place  -> $OUT_ROOT/pl_dp_${ARM}_s${SEED}     PROJ genesis_paper    DRYRUN=1
+#   SAVE_FREQ  STEPS/2 -- DISK RULE (2026-09-07 incident, coordinator: keep only the final checkpoint). ONE lerobot
+#             checkpoint is 2.85 GB (949 MB pretrained_model + 1.9 GB training_state), so the launcher-of-record's
+#             save_freq=STEPS/5 would hold 5 x 2.85 GB x 16 runs = 228 GB. Here: at most TWO numbered checkpoints
+#             exist during a run (one mid-run resume point for the preempt queue), and after training every
+#             checkpoint except the final is deleted AND the final's training_state (optimizer state, which no eval
+#             reads and no finished run resumes from) is deleted -- 949 MB per run at rest, 15 GB for all 16.
+#             A requeue AFTER the budget was reached skips training entirely instead of resuming.
 #SBATCH -J pl_dp
 #SBATCH -p preempt
 #SBATCH --qos=preempt
@@ -47,7 +54,7 @@ OUT_ROOT=${OUT_ROOT:-baselines/outputs/dp_place}
 OUT=$OUT_ROOT/pl_dp_${ARM}_s${SEED}
 RUN_NAME="pl_dp_${ARM}_s${SEED}"
 NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
-SAVE_FREQ=$(( STEPS / 5 )); [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
+SAVE_FREQ=${SAVE_FREQ:-$(( STEPS / 2 ))}; [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
 export GENESIS_SIM_VARIANT=$SIM_VARIANT SIM_VARIANT_FOR_SIDECAR=$SIM_VARIANT
 
 # ---- provenance gates (the sbatch_dp.sh rules: 6-digit rollout stems, contract-v1 manifest, sim_variant, n_kept, fps) ----
@@ -83,6 +90,7 @@ REG_KNOBS=(steps="$STEPS" budget_unit=grad_steps batch_size=64 policy=diffusion 
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS RAW=$RAW (N=$N_SUCCESS sha=$DEMO_SHA) DATASET=$DATASET OUT=$OUT NODE=$NODE_CLASS SAVE_FREQ=$SAVE_FREQ"
   echo "[dry] train: lerobot-train --dataset.repo_id=local/${RUN_NAME} --dataset.root=$DATASET --policy.type=diffusion --policy.push_to_hub=false --seed=$SEED --output_dir=$OUT --batch_size=64 --steps=$STEPS --save_freq=$SAVE_FREQ --job_name=$RUN_NAME --wandb.enable=true --wandb.project=$PROJ --wandb.disable_artifact=true"
+  echo "[dry] prune: keep checkpoints/$(printf %06d $STEPS)/pretrained_model only (drop other numbered ckpts + training_state)"
   echo "[dry] eval : KIND=dp CKPT=$OUT/checkpoints/$(printf %06d $STEPS)/pretrained_model OUT=$OUT ARM=$ARM SEED=$SEED HOLDE=$HOLDE POLE=$POLE bash cluster/place_eval_cells.sh"
   exit 0
 fi
@@ -100,7 +108,12 @@ elif python -c 'import lerobot.scripts.lerobot_train' 2>/dev/null; then LEROBOT_
 else echo "FATAL: lerobot is not importable in this env ($CONDA_PREFIX)"; exit 1; fi
 # ---- train (the launcher of record's invocation + preemption-safe resume, verbatim) ----
 TC="$OUT/checkpoints/last/pretrained_model/train_config.json"
-if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -f "$TC" ]; then
+DONE_CK=$OUT/checkpoints/$(printf %06d "$STEPS")/pretrained_model
+if [ -d "$DONE_CK" ]; then
+  # a requeue AFTER the budget was reached (preempted during the eval stage): never retrain, and never try to
+  # resume a finished run whose training_state was pruned below -- go straight to the evaluation cells.
+  echo "== TRAIN-DONE-ALREADY: $DONE_CK exists; skipping training (requeue #${SLURM_RESTART_COUNT:-0})"
+elif [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -f "$TC" ]; then
   echo "== requeued (restart #${SLURM_RESTART_COUNT}); RESUMING via $TC"
   $LEROBOT_TRAIN --config_path="$TC" --resume=true
 else
@@ -112,6 +125,21 @@ fi
 LAST_D=$(ls -d "$OUT"/checkpoints/[0-9]*/ 2>/dev/null | sort -V | tail -1)
 [ -n "$LAST_D" ] && [ -d "$LAST_D/pretrained_model" ] || { echo "FATAL: no numbered checkpoint under $OUT/checkpoints"; exit 1; }
 [ "$(basename "$LAST_D")" = "$(printf %06d "$STEPS")" ] || { echo "FATAL: last checkpoint $(basename "$LAST_D") != budget $STEPS -- training did not reach its budget; no evaluation of a partial run"; exit 1; }
+# ---- DISK RULE (2026-09-07): keep ONLY the final checkpoint's weights ----------------------
+# Every numbered checkpoint except the final goes; the final's training_state (optimizer, 1.9 GB) goes too --
+# no evaluation reads it and the requeue guard above means a finished run never resumes. Reported in the .out.
+BEFORE_KB=$(du -sk "$OUT" | cut -f1)
+FINAL_N=$(basename "$LAST_D")
+for D in $(ls -d "$OUT"/checkpoints/[0-9]*/ | sort -V); do
+  N=$(basename "$D")
+  [ "$N" = "$FINAL_N" ] && continue
+  echo "== pruning superseded checkpoint $D"; rm -rf "$D"
+done
+[ -d "$LAST_D/training_state" ] && { echo "== pruning $LAST_D/training_state (optimizer state; no eval reads it)"; rm -rf "$LAST_D/training_state"; }
+AFTER_KB=$(du -sk "$OUT" | cut -f1)
+echo "CKPT-PRUNE $OUT: $((BEFORE_KB / 1024)) MB -> $((AFTER_KB / 1024)) MB (kept checkpoints/$FINAL_N/pretrained_model only)"
+[ -d "$LAST_D/pretrained_model" ] || { echo "FATAL: prune removed the final checkpoint -- refusing to continue"; exit 1; }
+
 GIT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
 for D in $(ls -d "$OUT"/checkpoints/[0-9]*/ | sort -V); do
   python3 - "$D" "$ARM" "$SEED" "$RAW" "$DATASET" "$GIT_HASH" "$STEPS" "$PROJ" "$ACTION_REPEAT" "$DEMO_SHA" "$NODE_CLASS" "$SIM_VARIANT" <<'PY'

@@ -176,6 +176,12 @@ def main():
     ap.add_argument('--pick-shaping-terminal-zero', choices=['on', 'off'], default='on',
                     help="phi(terminal)=0 in the env's shaping (Ng et al. episodic form; "
                          "PREREG §2). off reproduces the 08-19 dense runs' phi(s_T)!=0.")
+    ap.add_argument('--ckpt-every', type=int, default=50_000,
+                    help='DECISIONS between periodic snapshot zips (rlpd_<N>_steps.zip). 0 = none, keeping only '
+                         'the --ckpt-fracs archive + rlpd_final.zip. The snapshots duplicate the archive and no '
+                         'stage reads them; 0 is the setting of record for the place runs (disk incident '
+                         '2026-09-07: the shared filesystem hit 0 bytes free and every queued job died). '
+                         'Default 50000 keeps every pre-2026-09-07 run byte-identical.')
     ap.add_argument('--ckpt-fracs', default='0.2,0.4,0.6,0.8,1.0',
                     help='archive model+sidecar at these fractions of --steps into '
                          '<out-dir>/ckpt_<pct>/ (PREREG §5: K=5 archived checkpoints per '
@@ -506,11 +512,16 @@ def main():
 
     run = init_wandb(args, name=args.run_name or out.name, tags=('rlpd',),
                      project=args.project)
-    cbs = [SidecarCheckpointCallback(json.dumps(sidecar), save_freq=50_000,
-                                     save_path=str(out), name_prefix='rlpd'),
-           ArchiveCheckpointCallback([float(f) for f in args.ckpt_fracs.split(',') if f.strip()],
-                                     args.steps, out, sidecar),
-           WandbScalarCallback(run)]
+    cbs = []
+    if args.ckpt_every > 0:
+        cbs.append(SidecarCheckpointCallback(json.dumps(sidecar), save_freq=args.ckpt_every,
+                                             save_path=str(out), name_prefix='rlpd'))
+    else:
+        print('[ckpt] periodic snapshots disabled (--ckpt-every 0): only the '
+              f'{args.ckpt_fracs} archive + rlpd_final.zip are written', flush=True)
+    cbs += [ArchiveCheckpointCallback([float(f) for f in args.ckpt_fracs.split(',') if f.strip()],
+                                      args.steps, out, sidecar),
+            WandbScalarCallback(run)]
     if args.eval_freq:
         cbs.append(VideoEvalCallback(
             run, out, eval_freq=args.eval_freq, max_steps=args.eval_max_steps,
