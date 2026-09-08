@@ -55,8 +55,10 @@ continues from it, and the staleness is printed into `results.md` rather than hi
 | `MDE` | minimum detectable effect at 80 % power, from the observed per-seed spread |
 | `P(ROPE)` | posterior probability that \|Delta\| < 0.10 - the registered equivalence margin |
 | `BF01` | interval Bayes factor for \|Delta\| < 0.10 against \|Delta\| >= 0.10 |
+| `verdict` | `equivalent at +/-0.10` only when ALL of primary / wide / tight / separate-sigma agree. If the reading depends on the prior it says **`equivalent (PRIOR-SENSITIVE)`**, and if it sits just over the line, `(borderline)`. An equivalence claim is the one most likely to be over-read, so its fragility is in the verdict itself, not only in the `prior` column. |
 | `dead` | dead seeds per arm, `<n>H/<n>M`. A seed whose rate is under 15 % of its arm's median while the arm as a whole works: a training failure, not a sample of behaviour. One moves an arm mean by roughly 0.07 here, so they are marked, and starred in the per-seed strings. |
 | `prior` | `stable` if the equivalence verdict survives all three priors and a separate-sigma refit |
+| `!N short` / `!AvB of CvD registered` | **assertion failures, not notes.** `!N short` means N selected cells ran fewer episodes than they declared (`n_present < n_expected`); the second means the row has fewer seeds than its registration specifies. Two independent instances of silently-missing evaluation cells have occurred in this project, both presenting as plausible data, so the pipeline asserts and displays this rather than leaving it to be noticed. |
 | `verdict` | `equivalent at +/-0.10` needs P(ROPE) >= 0.90; `INCONCLUSIVE (underpowered)` when MDE > 0.20 |
 
 ## Why there is a Bayesian column at all
@@ -124,6 +126,10 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
   reported as pending rather than compared.
 - **Superseded rows do not block comparability.** They are shown for comparison but excluded from
   the entry-bank check, so an old unstamped cell cannot veto the row that replaced it.
+- **A stale document is surfaced, not tolerated.** When a doc entry points at an `_asrecorded`
+  row whose re-scored counterpart now differs, the "Documents that need updating" section names
+  the document, what it currently quotes, and the value it should quote instead. The as-recorded
+  row still reproduces the document exactly, so nothing is lost by updating the prose.
 - **Doc disagreements are findings.** Regenerated numbers are checked against the documents of
   record and every mismatch is printed in `results.md`.
 - **Re-scores are checked for reproducibility.** Any statistic whose predicate did not change

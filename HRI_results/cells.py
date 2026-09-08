@@ -17,7 +17,7 @@ R = lambda lo, hi: [str(s) for s in range(lo, hi + 1)]
 
 COMPARISONS = [
     # ---------------------------------------------------------------- Genesis: PICK, random starts
-    dict(id='pick_rnd30_dp', group='Pick (rnd30)', learner='Diffusion Policy', stat='picked',
+    dict(id='pick_rnd30_dp', expect_seeds=10, group='Pick (rnd30)', learner='Diffusion Policy', stat='picked',
          action='sampled', human='dH (pruned, 58)', machine='dDP (58)',
          sel_h=dict(source='cluster:dp_headline', arm='dH', cell='HEADLINE/final/rnd',
                     extra_has='wave=dp_w2final', seeds=R(20, 29)),
@@ -27,7 +27,7 @@ COMPARISONS = [
               'Four of ten sweep dirs per arm were pruned by the disk fix, so the counts come '
               'from sweep/HEADLINE.txt; the six surviving sweep.json seeds agree exactly.'),
 
-    dict(id='pick_rnd30_rlpd', group='Pick (rnd30)', learner='RLPD', stat='picked',
+    dict(id='pick_rnd30_rlpd', expect_seeds=8, group='Pick (rnd30)', learner='RLPD', stat='picked',
          action='mode', human='dHv2raw (raw, 66)', machine='dDPv2 (raw-matched)',
          sel_h=dict(source='cluster:rlpd', arm='dHv2raw', cell='final/rnd',
                     extra_has='wave=rlpd_g99v2fullw3', seeds=R(60, 67)),
@@ -37,7 +37,7 @@ COMPARISONS = [
               'seed per arm (human s65 2/30, machine s55 0/30). This is the CELL_STATUS '
               'comparator; see pick_rnd30_rlpd_frozen for the RESULTS-doc comparator.'),
 
-    dict(id='pick_rnd30_rlpd_frozen', group='Pick (rnd30)', learner='RLPD', stat='picked',
+    dict(id='pick_rnd30_rlpd_frozen', expect_seeds=8, group='Pick (rnd30)', learner='RLPD', stat='picked',
          action='mode', human='dHv2raw (raw, 66)', machine='dDP (frozen, 58)',
          sel_h=dict(source='cluster:rlpd', arm='dHv2raw', cell='final/rnd',
                     extra_has='wave=rlpd_g99v2fullw3', seeds=R(60, 67)),
@@ -47,7 +47,7 @@ COMPARISONS = [
               'printed in RESULTS_WM_HUMAN_VS_MACHINE §2 (0.600 v 0.517). Both pairings '
               'reproduce from the cluster; they are different comparators, not a discrepancy.'),
 
-    dict(id='pick_rnd30_r2d_mode', group='Pick (rnd30)', learner='world model (r2dreamer)',
+    dict(id='pick_rnd30_r2d_mode', expect_seeds=8, group='Pick (rnd30)', learner='world model (r2dreamer)',
          stat='picked', action='mode', human='dHv2raw (raw, 66)', machine='dDP (58)',
          sel_h=dict(source='cluster:wm', arm='dHv2raw', cell='rnd30', action_mode='mode',
                     statistic='picked', extra='setting=bnormclamp1ent5'),
@@ -56,7 +56,7 @@ COMPARISONS = [
          note='LAST, recipe bnormclamp1ent5. "mode" is the world model\'s mode-action cell -- '
               'NOT deterministic: r2dreamer samples a latent inside the policy call.'),
 
-    dict(id='pick_rnd30_r2d_sample', group='Pick (rnd30)', learner='world model (r2dreamer)',
+    dict(id='pick_rnd30_r2d_sample', expect_seeds=8, group='Pick (rnd30)', learner='world model (r2dreamer)',
          stat='picked', action='sampled', human='dHv2raw (raw, 66)', machine='dDP (58)',
          sel_h=dict(source='cluster:wm', arm='dHv2raw', cell='rnd30', action_mode='sample',
                     statistic='picked', extra='setting=bnormclamp1ent5'),
@@ -64,7 +64,7 @@ COMPARISONS = [
                     statistic='picked', extra='setting=bnormclamp1ent5'),
          note='The sampled row. This is the row dv3 must be compared against, not the mode row.'),
 
-    dict(id='pick_rnd30_dv3', group='Pick (rnd30)', learner='world model (dv3)', stat='picked',
+    dict(id='pick_rnd30_dv3', expect_seeds=4, group='Pick (rnd30)', learner='world model (dv3)', stat='picked',
          action='sampled', human='dHv2raw (raw, 66)', machine='dDP (58)',
          sel_h=dict(source='cluster:dv3', arm='dHv2raw', cell='rnd30_recov', statistic='picked'),
          sel_m=dict(source='cluster:dv3', arm='dDP', cell='rnd30_recov', statistic='picked'),
@@ -89,7 +89,7 @@ COMPARISONS = [
          note='Selected checkpoint. In-training-distribution starts: the strongest null in the '
               'project because both arms sit near ceiling rather than near a floor.'),
 
-    dict(id='pick_spots60_dp_asrecorded', group='Pick (spots60, in-distribution)',
+    dict(id='pick_spots60_dp_asrecorded', expect_seeds=10, group='Pick (spots60, in-distribution)',
          learner='Diffusion Policy', stat='picked', action='sampled',
          human='dH (pruned, 58) incl. archived', machine='dDP (58)',
          sel_h=dict(source='cluster:dp', arm='dH',
@@ -103,7 +103,7 @@ COMPARISONS = [
          note='The as-published ten-seed cell, kept next to the pinned-only row so the size of '
               'the hardware term is visible rather than argued about.'),
 
-    dict(id='pick_spots60_rlpd', group='Pick (spots60, in-distribution)', learner='RLPD',
+    dict(id='pick_spots60_rlpd', expect_seeds=8, group='Pick (spots60, in-distribution)', learner='RLPD',
          stat='picked', action='mode', human='dHv2raw (raw, 66)', machine='dDPv2 (raw-matched)',
          sel_h=dict(source='cluster:rlpd', arm='dHv2raw', cell='final_det_spots60/spots60',
                     extra_has='wave=rlpd_g99v2fullw3'),
@@ -154,7 +154,7 @@ COMPARISONS = [
               '0.19": pruned 0.878 against raw 0.688.'),
 
     # ---------------------------------------------------------------- Genesis: PLACE
-    dict(id='place_r2d', group='Place (matched 39)', learner='world model (r2dreamer)',
+    dict(id='place_r2d', expect_seeds=8, group='Place (matched 39)', learner='world model (r2dreamer)',
          stat='placed_v2', action='mode', human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE_v2',
                     action_mode='mode', statistic='placed_v2', extra='setting=bnormclamp1ent5'),
@@ -167,7 +167,7 @@ COMPARISONS = [
               'the as-recorded row below, which is kept so the size of the correction is '
               'visible.'),
 
-    dict(id='place_r2d_asrecorded', group='Place (matched 39)',
+    dict(id='place_r2d_asrecorded', expect_seeds=8, group='Place (matched 39)',
          learner='world model (r2dreamer)', stat='placed_v2', action='mode',
          human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE',
@@ -180,7 +180,7 @@ COMPARISONS = [
                      'correction can be inspected.',
          note='The 0.703 v 0.647 published in PHASE_RESULTS 2.y.'),
 
-    dict(id='place_r2d_sample', group='Place (matched 39)',
+    dict(id='place_r2d_sample', expect_seeds=8, group='Place (matched 39)',
          learner='world model (r2dreamer)', stat='placed_v2', action='sampled',
          human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE_v2',
@@ -193,7 +193,7 @@ COMPARISONS = [
          note='The sampled cell of the same re-score. This is where the correction moves the '
               'DIFFERENCE most: see the re-score movement table.'),
 
-    dict(id='place_r2d_sample_asrecorded', group='Place (matched 39)',
+    dict(id='place_r2d_sample_asrecorded', expect_seeds=8, group='Place (matched 39)',
          learner='world model (r2dreamer)', stat='placed_v2', action='sampled',
          human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:wm', phase='place', arm='dH', cell='polE',
@@ -205,7 +205,7 @@ COMPARISONS = [
          provisional='SUPERSEDED by place_r2d_sample; same defects as place_r2d_asrecorded.',
          note=''),
 
-    dict(id='place_dp', group='Place (matched 39)', learner='Diffusion Policy', stat='placed_v2',
+    dict(id='place_dp', expect_seeds=8, group='Place (matched 39)', learner='Diffusion Policy', stat='placed_v2',
          action='sampled', human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:phase_clone', phase='place', learner='DiffusionPolicy',
                     run_has='_dH_', cell='fresh_eval_polE_sample', statistic='placed_v2'),
@@ -214,7 +214,7 @@ COMPARISONS = [
          empty_reason='DP place runs have not landed. The 32-run place batch is still filling; '
                       'only RLPD cells exist in $LAB/gp_place so far.'),
 
-    dict(id='place_rlpd', group='Place (matched 39)', learner='RLPD', stat='placed_v2',
+    dict(id='place_rlpd', expect_seeds=8, group='Place (matched 39)', learner='RLPD', stat='placed_v2',
          action='mode', human='dH_place (39)', machine='dDP_place_n39 (39)',
          sel_h=dict(source='cluster:phase_clone', phase='place', learner='RLPD',
                     run_has='_dH_', cell='fresh_eval_polE_mode', statistic='placed_v2'),
@@ -227,7 +227,7 @@ COMPARISONS = [
               'world-model place cell.'),
 
     # ---------------------------------------------------------------- Genesis: CONTACT
-    dict(id='contact_r2d_bare', group='Contact (matched 11)', learner='world model (r2dreamer)',
+    dict(id='contact_r2d_bare', expect_seeds=8, group='Contact (matched 11)', learner='world model (r2dreamer)',
          stat='contact (legacy)', action='mode', human='dH sub-floor (11)',
          machine='dDP_n11 (11)',
          sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE',
@@ -239,12 +239,12 @@ COMPARISONS = [
          provisional='Bare `contact` is the LEGACY predicate and overstates capability by '
                      '1.5-3x against contact_push; carried only so the published number is '
                      'reproducible. Both arms are sub-floor (11 demonstrations each).',
-         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells '
-                           'were in flight as of 2026-09-08 ~10:30 and land within the hour; '
-                           'these inputs are being overwritten, not merely refined.',
+         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. The pinned re-score '
+                           'is PARTIALLY LANDED (2 human / 6 machine seeds of 8 at this build), '
+                           'so these inputs are being overwritten, not merely refined.',
          note='Read contact_r2d_push instead.'),
 
-    dict(id='contact_r2d_push', group='Contact (matched 11)', learner='world model (r2dreamer)',
+    dict(id='contact_r2d_push', expect_seeds=8, group='Contact (matched 11)', learner='world model (r2dreamer)',
          stat='contact_push', action='mode', human='dH sub-floor (11)', machine='dDP_n11 (11)',
          sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE_cp',
                     action_mode='mode', statistic='contact_push',
@@ -252,9 +252,9 @@ COMPARISONS = [
          sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push',
                     extra='setting=bnormclamp1ent5_n11'),
-         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. 48 re-scored cells '
-                           'were in flight as of 2026-09-08 ~10:30 and land within the hour; '
-                           'these inputs are being overwritten, not merely refined.',
+         rescore_in_flight='Computed on the OLD raw-grip, unpinned cells. The pinned re-score '
+                           'is PARTIALLY LANDED (2 human / 6 machine seeds of 8 at this build), '
+                           'so these inputs are being overwritten, not merely refined.',
          note='contact_push is the DISCRIMINATING statistic of the three contact predicates: it '
               'requires the tool point to push the can, where bare contact does not.'),
 
@@ -272,7 +272,7 @@ COMPARISONS = [
          empty_reason='Not run (same hold as contact_dp).'),
 
     # ---------------------------------------------------------------- Genesis: CARRYCONTACT
-    dict(id='carry_r2d_bare', group='Carrycontact (matched 21)',
+    dict(id='carry_r2d_bare', expect_seeds=8, group='Carrycontact (matched 21)',
          learner='world model (r2dreamer)', stat='contact (legacy)', action='mode',
          human='dH (21)', machine='dDP_n21 (21)',
          sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE',
@@ -282,11 +282,11 @@ COMPARISONS = [
                     extra='setting=bnormclamp1ent5_n21'),
          provisional='Legacy bare-contact predicate; see carry_r2d_push. Five polE entries fail '
                      'to restore in this scope for every arm and are counted as failures.',
-         rescore_in_flight='Carrycontact is last in the 2026-09-08 re-score queue, behind the '
-                           'pinned end-to-end set.',
+         rescore_in_flight='Carrycontact is last in the re-score queue and has barely started '
+                           '(2 human / 1 machine seed of 8 at this build).',
          note=''),
 
-    dict(id='carry_r2d_push', group='Carrycontact (matched 21)',
+    dict(id='carry_r2d_push', expect_seeds=8, group='Carrycontact (matched 21)',
          learner='world model (r2dreamer)', stat='contact_push', action='mode',
          human='dH (21)', machine='dDP_n21 (21)',
          sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE_cp',
@@ -295,54 +295,47 @@ COMPARISONS = [
          sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push',
                     extra='setting=bnormclamp1ent5_n21'),
-         rescore_in_flight='Carrycontact is last in the 2026-09-08 re-score queue, behind the '
-                           'pinned end-to-end set.',
+         rescore_in_flight='Carrycontact is last in the re-score queue and has barely started '
+                           '(2 human / 1 machine seed of 8 at this build).',
          note='The discriminating contact predicate on the carrycontact scope.'),
 
     # ---------------------------------------------------------------- Genesis: END-TO-END by stage
 ] + [
-    dict(id=f'e2e_{sid}', group='End-to-end (rnd30)', learner='world model (r2dreamer)',
+    # The pinned end-to-end re-score COMPLETED at 8 v 8 on every stage (2026-09-08). The v2 cell
+    # is now the row of record; the as-recorded row is kept beside it so the correction stays
+    # visible -- the same pattern as place and spots60.
+    dict(id=f'e2e_{sid}{suffix}', expect_seeds=8, group='End-to-end (rnd30)',
+         learner='world model (r2dreamer)',
          stat=sname, action='mode', human='dHfull_all (74)', machine='dDPfull (best-per-IC, 72)',
          sel_h=dict(source='cluster:wm', phase='e2e', arm='dHfull', cell=scell,
                     action_mode='mode', statistic=skey,
                     extra='setting=all_bnormclampS8ent5'),
          sel_m=dict(source='cluster:wm', phase='e2e', arm='dDPfull', cell=scell,
-                    action_mode='mode', statistic=skey,
-                    extra='setting=bnormclampS8ent5'),
+                    action_mode='mode', statistic=skey, extra='setting=bnormclampS8ent5'),
          floor=floor, provisional=prov, note=nt,
-         rescore_in_flight='The pinned end-to-end re-score was 2-3 hours out as of 2026-09-08 '
-                           '~10:30 and lands PIECEMEAL, seed by seed; see e2e_picked_v2.')
-    for sid, skey, sname, scell, floor, prov, nt in [
-        ('picked', 'picked', 'picked', 'rnd30', False, '',
-         'Stage 1 of the full task.'),
-        ('contact_push', 'contact_push', 'contact_push', 'rnd30_cp', False, '',
+         **({'rescored_from': f'e2e_{sid}_asrecorded'} if not suffix else {}))
+    for sid, skey, sname, floor, base_prov, nt in [
+        ('picked', 'picked', 'picked', False, '', 'Stage 1 of the full task.'),
+        ('contact_push', 'contact_push', 'contact_push', False, '',
          'The discriminating contact predicate on the full task.'),
-        ('nested_honest', 'nested_honest', 'nested (honest)', 'rnd30_cp', False, '',
-         'The HONEST settled predicate. The published end-to-end nested figure (0.163 v 0.192) '
-         'is the TRAINING PROXY, which over-counts roughly 2.5x; the two are different '
-         'quantities and must not share a row.'),
-        ('nested_proxy', 'nested', 'nested (training proxy)', 'rnd30', False,
+        ('nested_honest', 'nested_honest', 'nested (honest)', False, '',
+         'The HONEST settled predicate. The published end-to-end nested figure is the TRAINING '
+         'PROXY, which over-counts roughly 2.5x; they are different quantities and must not '
+         'share a row.'),
+        ('nested_proxy', 'nested', 'nested (training proxy)', False,
          'Training proxy, not a task outcome. Shown only to quantify the gap against '
-         'nested_honest; never cite it as a success rate. Sourced from the ORIGINAL rnd30 cell '
-         'because the corrected-predicate re-score does not reproduce it on the human arm -- '
-         'see the re-score reproducibility section.',
-         'Reproduces the published 0.163 v 0.192.'),
-        ('slide_success', 'slide_success', 'slide_success', 'rnd30_cp', True, '',
+         'nested_honest; never cite it as a success rate.', ''),
+        ('slide_success', 'slide_success', 'slide_success', True, '',
          'TASK OUTCOME. No arm learns a true slide: both sit at 0-6 %. A null here is an '
          'artefact of the floor, so no p-value and no ROPE are computed.'),
     ]
+    for suffix, scell, prov in (
+        ('', 'rnd30_v2', base_prov),
+        ('_asrecorded', ('rnd30' if sid in ('picked', 'nested_proxy') else 'rnd30_cp'),
+         (base_prov + ' SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only '
+                      'so the correction is visible.').strip()),
+    )
 ] + [
-    dict(id='e2e_picked_v2', group='End-to-end (rnd30)',
-         learner='world model (r2dreamer)', stat='picked', action='mode',
-         human='dHfull_all (74)', machine='dDPfull (best-per-IC, 72)',
-         sel_h=dict(source='cluster:wm', phase='e2e', arm='dHfull', cell='rnd30_v2',
-                    action_mode='mode', statistic='picked',
-                    extra='setting=all_bnormclampS8ent5'),
-         sel_m=dict(source='cluster:wm', phase='e2e', arm='dDPfull', cell='rnd30_v2',
-                    action_mode='mode', statistic='picked', extra='setting=bnormclampS8ent5'),
-         rescored_from='e2e_picked',
-         empty_reason='The end-to-end re-score is still running.'),
-
     dict(id='e2e_dp', group='End-to-end (rnd30)', learner='Diffusion Policy', stat='picked',
          action='sampled', human='dHfull_all (74)', machine='dDPfull (72)',
          sel_h=dict(source='cluster:phase_clone', phase='e2e', learner='DiffusionPolicy'),
@@ -358,36 +351,43 @@ COMPARISONS = [
                       'the cluster clone are smoke runs, which are excluded.'),
 
     # ---------------------------------------------------------------- robomimic Can
-    dict(id='robo_rlpd_mg200s', group='robomimic Can', learner='RLPD', stat='success',
+    dict(id='robo_rlpd_mg200s', expect_seeds=8, group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG200s (200-tape subsample)',
          sel_h=dict(source='cluster:robomimic', learner='RLPD', arm='MH200',
                     cell='eval_bank50_mode'),
          sel_m=dict(source='cluster:robomimic', learner='RLPD', arm='MG200s',
                     cell='eval_bank50_mode'),
          provisional='THE SOURCE READING IS WITHDRAWN by its own registered quantity control. '
-                     'This gap is a property of the 200-tape draw, not of machine provenance: '
-                     '89 % of its rows come from the last four SAC checkpoint blocks. See the '
-                     'MG718s and MGall rows.',
+                     'The gap is a property of THIS 200-tape draw, which is not neutral: 89 % '
+                     'of its rows come from the last four SAC checkpoint blocks, so it is both '
+                     'small and narrow. Whether a NEUTRAL 200-tape draw would match the human '
+                     'arm is UNTESTED, and it is the difference between a pathological sample '
+                     'and a real per-demonstration quality gap. See MG718s / MGall.',
          note='LAST, 50 shared bank starts, 8 seeds.'),
 
-    dict(id='robo_rlpd_mg718s', group='robomimic Can', learner='RLPD', stat='success',
+    dict(id='robo_rlpd_mg718s', expect_seeds=8, group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG718s (all 718 successes)',
          sel_h=dict(source='cluster:robomimic', learner='RLPD', arm='MH200',
                     cell='eval_bank50_mode'),
          sel_m=dict(source='cluster:robomimic', learner='RLPD', arm='MG718s_ctl',
                     cell='eval_bank50_mode'),
-         note='THE CONTROL THAT FIRED. At its natural size the machine arm is indistinguishable '
-              'from the human arm.'),
+         note='THE CONTROL THAT FIRED. At its NATURAL FULL SIZE (718 tapes, ~3.6x the human '
+              'arm) the machine arm is indistinguishable from the human arm. This does not show '
+              'that machine data matches human data per demonstration - only that the source '
+              'penalty seen at 200 tapes disappears once the machine arm is allowed its own '
+              'size.'),
 
-    dict(id='robo_rlpd_mgall', group='robomimic Can', learner='RLPD', stat='success',
+    dict(id='robo_rlpd_mgall', expect_seeds=8, group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MGall (3900 rollouts)',
          sel_h=dict(source='cluster:robomimic', learner='RLPD', arm='MH200',
                     cell='eval_bank50_mode'),
          sel_m=dict(source='cluster:robomimic', learner='RLPD', arm='MGall_ctl',
                     cell='eval_bank50_mode'),
-         note='At full size the machine arm sits ABOVE the human arm.'),
+         note='At FULL SIZE (3900 rollouts, ~19.5x the human arm) the machine arm sits above '
+              'the human arm. Read as a statement about quantity and coverage, not about '
+              'per-demonstration quality: the comparison is not size-matched in this row.'),
 
-    dict(id='robo_rlpd_mg200s_3x', group='robomimic Can', learner='RLPD', stat='success',
+    dict(id='robo_rlpd_mg200s_3x', expect_seeds=8, group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG200s @ 3x budget (300k)',
          sel_h=dict(source='cluster:robomimic', learner='RLPD', arm='MH200',
                     cell='eval_bank50_mode'),
@@ -395,7 +395,7 @@ COMPARISONS = [
                     cell='eval_bank50_mode'),
          note='Budget control: 3x training decisions does not close the 200-tape gap.'),
 
-    dict(id='robo_dp', group='robomimic Can', learner='Diffusion Policy', stat='success',
+    dict(id='robo_dp', expect_seeds=8, group='robomimic Can', learner='Diffusion Policy', stat='success',
          action='sampled', human='MH200 (200 human tapes)', machine='MG200s (200-tape subsample)',
          sel_h=dict(source='cluster:robomimic', learner='DiffusionPolicy', arm='MH200',
                     cell='eval_bank50_sample'),
@@ -406,7 +406,7 @@ COMPARISONS = [
          note='LAST. There is no PH200 DP arm, so the registered A1 prediction is untestable '
               'as written.'),
 
-    dict(id='robo_bcrnn_mh', group='robomimic Can', learner='BC-RNN', stat='success',
+    dict(id='robo_bcrnn_mh', expect_seeds=3, group='robomimic Can', learner='BC-RNN', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG200s (200-tape subsample)',
          sel_h=dict(source='cluster:robomimic', learner='BC-RNN', arm='MH200',
                     cell='eval_bank50'),
@@ -417,7 +417,7 @@ COMPARISONS = [
                      'two-sided p is 0.10 and it can never reach 0.05.',
          note='LAST = epoch 2000, deterministic GMM mode.'),
 
-    dict(id='robo_bcrnn_ph', group='robomimic Can', learner='BC-RNN', stat='success',
+    dict(id='robo_bcrnn_ph', expect_seeds=3, group='robomimic Can', learner='BC-RNN', stat='success',
          action='mode', human='PH200 (200 proficient-human tapes)',
          machine='MG200s (200-tape subsample)',
          sel_h=dict(source='cluster:robomimic', learner='BC-RNN', arm='PH200',
@@ -428,7 +428,7 @@ COMPARISONS = [
                      'only learner with a PH200 arm.',
          note='The registered falsifier contrast; the other learners have no PH200 arm.'),
 
-    dict(id='robo_r2d', group='robomimic Can', learner='world model (r2dreamer)', stat='success',
+    dict(id='robo_r2d', expect_seeds=8, group='robomimic Can', learner='world model (r2dreamer)', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='MG200s (200-tape subsample)',
          sel_h=dict(source='cluster:robomimic', learner='r2dreamer', arm='MH200',
                     cell='eval_bank50_mode'),
@@ -445,7 +445,7 @@ COMPARISONS = [
               'the source-indifference headline on an independent task - on this task the world '
               'model does not learn at all.'),
 
-    dict(id='robo_rlpd_nodemo', group='robomimic Can', learner='RLPD', stat='success',
+    dict(id='robo_rlpd_nodemo', expect_seeds=8, group='robomimic Can', learner='RLPD', stat='success',
          action='mode', human='MH200 (200 human tapes)', machine='no demonstrations (control)',
          sel_h=dict(source='cluster:robomimic', learner='RLPD', arm='MH200',
                     cell='eval_bank50_mode'),
@@ -461,9 +461,21 @@ GROUP_NOTES = {
     'robomimic Can':
         'The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541k '
         'steps), so this leg is a THREE-learner comparison - RLPD, Diffusion Policy, BC-RNN - '
-        'and not four. The source reading itself is WITHDRAWN by its own registered quantity '
-        'control: at natural size the machine data matches (MG718s) or beats (MGall) the human '
-        'arm.',
+        'and not four.\n\n'
+        'The source reading is WITHDRAWN by its own registered quantity control, but state the '
+        'result with its qualifier attached, because it cuts both ways: **at their natural full '
+        'size** machine demonstrations match (MG718s, 718 tapes) or exceed (MGall, 3900) the '
+        'human arm, while **at matched tape count** this particular 200-tape draw loses badly '
+        '(0.147 v 0.455). Saying machine demonstrations "match or beat" human ones without the '
+        'size qualifier overstates the result in the opposite direction to the original error, '
+        'which is no improvement.\n\n'
+        '**The question this leg does NOT settle:** whether a NEUTRAL 200-tape draw would match '
+        'the human arm. The MG200s subsample was not neutral - 89 % of its rows come from the '
+        'last four SAC checkpoint blocks, so it is both small and narrow. If a neutral draw '
+        'matches, MG200s was a pathological sample; if it still loses, machine demonstrations '
+        'carry less information each and roughly 3.5x as many are needed to match, which would '
+        'be a genuine source effect visible only at matched count. A random 200-tape draw from '
+        'the 718 successes separates these for about 8 GPU-hours and has not been run.',
     'Pruning control (human pruned vs human raw)':
         'Both arms are HUMAN. This is the reference effect size for the table above: a '
         'data-handling choice inside one source moves Diffusion Policy far more than any '

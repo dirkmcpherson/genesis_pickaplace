@@ -29,11 +29,13 @@ DOC_OF_RECORD = [
                   'hardware-pinned seeds only, which is the point of the row.'),
     dict(id='pick_spots60_rlpd', doc='CELL_STATUS_2026-09-07', human=0.869, machine=0.865,
          p=0.873,
-         expected='CELL_STATUS quotes the eight-seed human arm; this row is the six '
-                  'hardware-pinned seeds only.'),
+         expected='CELL_STATUS quotes the pre-pinning arm; this row is now the full eight '
+                  'hardware-pinned seeds (the pinned re-runs have landed), so the two differ by '
+                  'the size of the hardware term, 0.869 vs 0.867.'),
 
     # --- Genesis phases
-    dict(id='place_r2d', doc='PHASE_RESULTS §2.y', human=0.703, machine=0.647, p=0.227),
+    dict(id='place_r2d_asrecorded', doc='PHASE_RESULTS §2.y', human=0.703,
+         machine=0.647, p=0.227),
     dict(id='contact_r2d_bare', doc='PHASE_RESULTS §3', human=0.593, machine=0.602, p=0.841),
     dict(id='contact_r2d_push', doc='PHASE_RESULTS §3 (2026-09-07 re-score)', human=0.346,
          machine=0.366, p=0.31, tol=0.006),
@@ -42,8 +44,10 @@ DOC_OF_RECORD = [
          machine=0.250, p=0.55, tol=0.006),
 
     # --- Genesis end-to-end
-    dict(id='e2e_picked', doc='PHASE_RESULTS §5.1', human=0.500, machine=0.537, p=0.643),
-    dict(id='e2e_nested_proxy', doc='PHASE_RESULTS §5.1 (training proxy)', human=0.163,
+    dict(id='e2e_picked_asrecorded', doc='PHASE_RESULTS §5.1', human=0.500,
+         machine=0.537, p=0.643),
+    dict(id='e2e_nested_proxy_asrecorded', doc='PHASE_RESULTS §5.1 (training proxy)',
+         human=0.163,
          machine=0.192, p=0.621),
 
     # --- robomimic Can
@@ -59,3 +63,8 @@ DOC_OF_RECORD = [
     dict(id='robo_bcrnn_ph', doc='ROBOMIMIC_LOG G1 control', human=0.920, machine=0.393),
     dict(id='robo_rlpd_nodemo', doc='ROBOMIMIC_LOG G2b', human=0.455, machine=0.000),
 ]
+
+
+# A doc entry that points at an `_asrecorded` row is, by construction, quoting a cell that has
+# since been re-scored. check_docs() turns each of those into a "document needs updating" line
+# naming the new value of record, so a stale document is surfaced rather than silently tolerated.

@@ -138,6 +138,25 @@ def counts(rows):
     return k, (n.pop() if len(n) == 1 else None)
 
 
+def short_cells(rows):
+    """Selected cells that ran FEWER episodes than they declared they would.
+
+    Two independent instances of silently-missing evaluation cells have occurred in this project
+    (completed evaluations discarded when a sweep parent was killed), and both presented as
+    plausible data rather than as errors. A cell whose n_present < n_expected is an error, so it
+    is asserted here and surfaced on the row rather than left to be noticed.
+    """
+    out = []
+    for r in rows:
+        try:
+            npres, nexp = int(r['n']), int(r['n_expected'])
+        except (ValueError, KeyError, TypeError):
+            continue
+        if nexp and npres < nexp:
+            out.append((r['arm'], r['seed'], npres, nexp))
+    return out
+
+
 # ---------------------------------------------------------------------- build
 def build(args):
     raw = load_raw()
@@ -165,7 +184,8 @@ def build(args):
                    note=c.get('note', ''), source='', bank_stamp='', evaluator='',
                    dead_human=0, dead_machine=0,
                    rescored_from=c.get('rescored_from', ''),
-                   rescore_in_flight=c.get('rescore_in_flight', ''))
+                   rescore_in_flight=c.get('rescore_in_flight', ''),
+                   incomplete_cells=0, incomplete_detail='', seed_shortfall='')
 
         for r in h_rows:
             tidy.append(dict(comparison=c['id'], arm_role='human', arm=r['arm'], seed=r['seed'],
@@ -197,6 +217,12 @@ def build(args):
             continue
 
         row['source'] = h_rows[0]['source'] + ' + ' + m_rows[0]['source']
+        short = short_cells(h_rows) + short_cells(m_rows)
+        row['incomplete_cells'] = len(short)
+        row['incomplete_detail'] = '; '.join(f'{a} s{s}: {p}/{e}' for a, s, p, e in short)
+        exp = c.get('expect_seeds')
+        if exp and (len(hk) != exp or len(mk) != exp):
+            row['seed_shortfall'] = f'{len(hk)}v{len(mk)} of {exp}v{exp} registered'
         dh, dm = dead_seeds(hk, hn), dead_seeds(mk, mn)
         row['dead_human'] = len(dh); row['dead_machine'] = len(dm)
         row['human_counts'] = ' '.join(f'{v}*' if i in dh else str(v) for i, v in enumerate(hk))
@@ -240,14 +266,25 @@ def build(args):
         row['prior_range'] = f"{min(v['p_rope'] for v in alts.values()):.3f}-" \
                              f"{max(list(v['p_rope'] for v in alts.values()) + [b['p_rope']]):.3f}"
 
+        # An equivalence reading that depends on the prior is a WEAKER claim than one that
+        # survives every prior, and the verdict must say so: a reader wanting a clean "no
+        # difference" will otherwise take the two as the same statement. `stable` here means all
+        # of primary / wide / tight / separate-sigma agree on the 0.90 threshold.
+        stable = 'FLIPS' not in row['prior_flip']
         if b['p_rope'] >= 0.90:
-            row['verdict'] = 'equivalent at +/-0.10'
+            row['verdict'] = ('equivalent at +/-0.10' if stable
+                              else 'equivalent (PRIOR-SENSITIVE)')
         elif p < 0.05:
             row['verdict'] = 'difference detected'
         elif f['mde'] > 2 * ROPE:
             row['verdict'] = 'INCONCLUSIVE (underpowered)'
+        elif not stable:
+            row['verdict'] = 'inconclusive (prior-sensitive)'
         else:
             row['verdict'] = 'inconclusive'
+        # near the threshold but not flipping: still worth naming
+        if stable and 0.90 <= b['p_rope'] < 0.93:
+            row['verdict'] += ' (borderline)'
         if c.get('rescored_from') and len(hk) != len(mk):
             row['provisional'] = (row['provisional'] + ' RE-SCORE INCOMPLETE: '
                                   f'{len(hk)} human v {len(mk)} machine seeds have landed.').strip()
@@ -262,6 +299,25 @@ def build(args):
 
 
 # ---------------------------------------------------------------------- doc cross-check
+def doc_updates(results):
+    """Documents quoting an as-recorded cell that has since been re-scored. Each is a document
+    that needs updating, not a data problem: the doc value is right about the old cell and wrong
+    about the current one."""
+    by = {r['id']: r for r in results}
+    out = []
+    for d in DOC_OF_RECORD:
+        if not d['id'].endswith('_asrecorded'):
+            continue
+        rec = by.get(d['id'][: -len('_asrecorded')])
+        old = by.get(d['id'])
+        if (rec and old and rec['delta'] != '' and old['delta'] != ''
+                and (abs(rec['human_rate'] - old['human_rate']) > 5e-4
+                     or abs(rec['machine_rate'] - old['machine_rate']) > 5e-4)):
+            out.append((d['doc'], d['id'], old['human_rate'], old['machine_rate'],
+                        rec['id'], rec['human_rate'], rec['machine_rate'], rec['perm_p']))
+    return out
+
+
 def check_docs(results):
     by = {r['id']: r for r in results}
     out = []
@@ -390,7 +446,12 @@ def node_analysis(raw, rescore):
 # ---------------------------------------------------------------------- rendering
 def _dead(r):
     dh, dm = r.get('dead_human', 0), r.get('dead_machine', 0)
-    return '' if not (dh or dm) else f"**{dh}H/{dm}M**"
+    s = '' if not (dh or dm) else f"**{dh}H/{dm}M**"
+    if r.get('incomplete_cells'):
+        s += f" **!{r['incomplete_cells']} short**"
+    if r.get('seed_shortfall'):
+        s += f" **!{r['seed_shortfall']}**"
+    return s
 
 
 def _emit_row(A, r):
@@ -419,7 +480,7 @@ def fmt(x, nd=3):
     return str(x)
 
 
-def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy):
+def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy, updates):
     L = []
     A = L.append
     A('# Human vs machine demonstrations - results of record\n')
@@ -634,6 +695,18 @@ def render_md(results, stale, doc_issues, rescore, comp, nodes, tidy):
           'movement is what produced the earlier one-sided picture.')
         A('')
 
+    if updates:
+        A('\n## Documents that need updating\n')
+        A('These documents quote a cell that has since been re-scored. The quoted value is right '
+          'about the OLD cell and wrong about the current one; the table row named on the left '
+          'still reproduces the document exactly, so nothing is lost by updating the prose.\n')
+        A('| document | quotes (as recorded) | should now quote | new value | p |')
+        A('|---|---|---|---|---|')
+        for doc, oid, oh, om, rid, rh, rm, rp in updates:
+            A(f'| {doc} | `{oid}` {fmt(oh)} v {fmt(om)} | `{rid}` | **{fmt(rh)} v {fmt(rm)}** '
+              f'| {fmt(rp)} |')
+        A('')
+
     A('\n## Doc-of-record cross-check\n')
     if doc_issues:
         A('Regenerated numbers that differ from the documents of record. Each is a finding, '
@@ -762,6 +835,7 @@ def main():
 
     tidy, results = build(args)
     doc_issues = check_docs(results)
+    updates = doc_updates(results)
     rescore = rescore_check(load_raw())
     comp = comparability(results)
     nodes = node_analysis(load_raw(), rescore)
@@ -770,7 +844,8 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(tidy[0].keys()))
         w.writeheader(); w.writerows(tidy)
     fields = list(results[0].keys())
-    for extra in ('dead_human', 'dead_machine', 'rescored_from', 'rescore_in_flight'):
+    for extra in ('dead_human', 'dead_machine', 'rescored_from', 'rescore_in_flight',
+                  'incomplete_cells', 'incomplete_detail', 'seed_shortfall'):
         if extra not in fields:
             fields.append(extra)
     for r in results:
@@ -780,7 +855,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
         w.writeheader(); w.writerows(results)
     with open(os.path.join(HERE, 'results.md'), 'w') as f:
-        f.write(render_md(results, stale, doc_issues, rescore, comp, nodes, tidy))
+        f.write(render_md(results, stale, doc_issues, rescore, comp, nodes, tidy, updates))
     n = make_fig(results, os.path.join(HERE, 'fig_effects.png'),
                  os.path.join(HERE, 'fig_effects.pdf'))
 
