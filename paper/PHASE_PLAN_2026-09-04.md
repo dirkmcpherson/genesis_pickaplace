@@ -673,3 +673,13 @@ is uncalibrated.
 **Disclosed.** The machine-first set is *not* matched to the human set on rows or on outcome content; it is matched on
 **protocol** (one attempt per start, no selection), which is the axis the confound lives on. Four seeds per learner; the
 existing 8-seed machine-best arms remain the published comparison until this reads out.
+
+**Code state (added at submission, before any (v) run produced a step).** Amendments (j)/(l) added an end-of-episode
+settle to the world-model adapter *after* the end-to-end arms of record had trained. It is logging-only — it runs after
+the terminal observation, reward and termination are taken — but leaving it on would put a **code difference between the
+two arms being compared**, which is the thing this amendment exists to remove. The call is therefore made skippable
+(`R2D_EOE`, default unchanged) and the four (v) world-model runs train with `R2D_EOE=0`, reproducing the training path
+of the human arm of record. Consequence, stated rather than discovered later: those runs' *in-job* evaluations carry no
+`nested_honest` or `slide_success` key, so the (v) world-model cells of record must come from the pinned post-hoc
+re-score, exactly as the arms of record's cells do. RLPD and DP are unaffected — both arms of each are training in the
+same tree, at the same time, on the same code.
