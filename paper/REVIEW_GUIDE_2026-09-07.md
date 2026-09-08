@@ -281,3 +281,16 @@ This is the same defect class as the Slide phase, where the reward paid on bare 
 - **A machine overtake at longer budgets would still inherit the demonstration-selection confound** — the machine set is best-of-3 per start with Σ reward 206 against the human set's 118, which includes every failure. That would be a statement about how the machine set was *built*, not about provenance.
 
 **A data error was also found and is being fixed.** Two published rows carried **15 human observations from 10 distinct seeds**: five seeds appeared twice, with identical counts, under a pinned and a mixed-hardware evaluation of the same trained policy. The pinned evaluation is kept and the mixed-hardware one dropped, consistent with holding hardware class fixed inside a comparison. Uniqueness of `(run, seed)` becomes an assertion in the pipeline rather than a deduplication that happens to be applied.
+
+
+### Addendum, 2026-09-08 — the BC-RNN row compares two different policy classes
+
+**Verified from the configurations that actually ran, and from the config blob inside each trained checkpoint: the human arms used a Gaussian-mixture head with five modes; the machine arm used a deterministic mean-squared-error head.** Everything else is identical — same recurrent architecture, learning rate, sequence length, batch size, epochs, evaluation bank and protocol.
+
+**So the BC-RNN row does not measure demonstration source.** It compares a mixture-head policy trained on human data against a deterministic-head policy trained on machine data. Reported as 0.927 against 0.393, it cannot stand beside the RLPD and Diffusion Policy rows as three learners measuring one thing, and the cross-learner ordering built on it is unsupported as it stands.
+
+**Origin.** The setting was copied deliberately from robomimic's own published configuration generator, which disables the mixture head for machine-generated datasets, in order to reproduce their recipe faithfully. It was recorded in the generating script's docstring but never carried into the results as a confound. This is the same failure shape as several others found today: **a fact recorded in the right place but not carried to where it changed an interpretation.** It is also why a reader would not suspect it — "we reproduced their published configuration" is normally a reason for confidence.
+
+**A cheap decisive control is registered and running:** hold the head fixed across arms — the machine arm with the mixture head enabled, and the human arm with it disabled — three seeds each, about 2.6 GPU-hours. If the machine arm with a mixture head stays near its published value, the head is not the story and the row reduces to the same 200-tape-subsample doubt the quantity control already established. If it moves substantially, the published figure was partly an architecture artefact.
+
+**Compounding, not replacing, the existing doubt.** The BC-RNN and Diffusion Policy separations both rest on the same 200-tape machine draw that MG718s (0.475, indistinguishable from the human arm) and MGall (0.610, above it) have already undercut. **Two independent reasons now exist to distrust the cross-learner ordering**, and neither has been resolved.
