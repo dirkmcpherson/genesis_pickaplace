@@ -264,3 +264,20 @@ This is the same defect class as the Slide phase, where the reward paid on bare 
 **Consequence for any extension.** Simply running longer on the current reward buys more optimisation of the proxy. If the end-to-end arm is extended, the reward should be moved onto `slide_success`, with the real risk stated rather than waved off: the staged ladder is what currently gets the agent to a pick by 550–800k steps, and a sparse target may not ignite at all. That failure is itself reportable **if predicted in advance**, which is the only way it is worth learning.
 
 **A related distinction that should not be blurred: "train longer" is not one intervention.** More environment steps for the world model, and more decisions for RLPD, add *experience*. More gradient steps for Diffusion Policy do not — they are more passes over a fixed set of demonstrations, a different lever entirely. A table that extends all three by "the same amount" would compare incomparable things.
+
+
+### Addendum, 2026-09-08 — corrections from the independent review
+
+**Two statements made earlier today are withdrawn.**
+
+**1. "Move the end-to-end reward onto `slide_success`" — withdrawn, and it was self-contradictory.** That predicate as defined in (l) was **withdrawn by (p)**, because its gripper clause passes 2 of 74 human demonstrations — the demonstrated slide is release fully, re-close to about 0.4, then push. The environment already refuses it without an override flag, and (p)'s replacement has **clause 5 uncalibrated**. So the recommendation was to train against a reward with no accepted definition. **No sparse end-to-end arm can be registered until clause 5 is calibrated**, which puts that calibration on the critical path for more than the Slide phase alone.
+
+**2. "4e6 equalises post-ignition training between the arms" — withdrawn.** The argument compared a *future* machine run against the human arm's *current* budget. Extend both and both move; the human arm's post-ignition share rises to about 86 % at 4M. Four million stands as a reasonable next checkpoint, not as a principled equalisation, and the earlier framing overstated it.
+
+**Further corrections accepted:**
+- Any extension must move **one variable at a time**. A proposal that changed both budget and reward would leave neither attributable.
+- **"Steady state" is a tail average over a quarter that is still rising** — descriptive, not convergence. A registered comparison needs a fixed threshold plus a persistence rule.
+- Any plateau rule needs a **performance floor**: a collapsed policy also satisfies "improvement below 0.02".
+- **A machine overtake at longer budgets would still inherit the demonstration-selection confound** — the machine set is best-of-3 per start with Σ reward 206 against the human set's 118, which includes every failure. That would be a statement about how the machine set was *built*, not about provenance.
+
+**A data error was also found and is being fixed.** Two published rows carried **15 human observations from 10 distinct seeds**: five seeds appeared twice, with identical counts, under a pinned and a mixed-hardware evaluation of the same trained policy. The pinned evaluation is kept and the mixed-hardware one dropped, consistent with holding hardware class fixed inside a comparison. Uniqueness of `(run, seed)` becomes an assertion in the pipeline rather than a deduplication that happens to be applied.
