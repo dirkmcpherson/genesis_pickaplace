@@ -21,6 +21,8 @@ import argparse, glob, itertools, json, os
 
 
 BANKS = {}   # (bank file, sha12, version) -> {learners} : provenance for the three-learner table
+import collections as _collections
+CELLVAR = _collections.Counter()   # which world-model cell variant each row was read from
 REASONS = {}  # slide_fail_reason census over every contact cell read (a7de6a0 per-clause diagnostics)
 NODIAG = []   # contact cells produced before the slide fix -- not reportable
 
@@ -73,11 +75,11 @@ def main():
                          "key slide_success (the (l') statistic), runs sl_{rlpd,dp}_*, WM s2_r2d_contact_*; bare contact "
                          "is printed beside it.")
     ap.add_argument('--polE-tag', dest='pole_tag', default='polE')
-    ap.add_argument('--wm-suffix', default='',
-                    help="suffix on the WORLD-MODEL cell dir names, e.g. '_v2' for the 2026-09-08 re-score on the "
-                         "rebuilt physical-grip bank with pinned entries (fresh_eval_polE_mode_v2). The re-score was "
-                         "written alongside the originals rather than replacing them, so the default '' still reads "
-                         "the pre-rebuild cells -- pass _v2 to compare like with like.")
+    ap.add_argument('--wm-superseded', action='store_true',
+                    help="DELIBERATELY read the SUPERSEDED world-model cells (pre-2026-09-08, scored on the raw-grip "
+                         "polE bank with unpinned entries) instead of the re-scored `_v2` cells. Default: the re-scored "
+                         "cells are used automatically wherever they exist, because a caller who does nothing must get "
+                         "the correct number -- reading the superseded ones is a conscious act and prints a warning.")
     ap.add_argument('--seeds', default='0-7')
     args = ap.parse_args()
     a, b = args.seeds.split('-'); seeds = list(range(int(a), int(b) + 1))
@@ -103,8 +105,18 @@ def main():
             rows = {}
             for s in seeds:
                 rd = tmpl[arm].format(s=s)
-                sfx = args.wm_suffix if name == 'r2dreamer' else ''
-                r = {c: cell(rd, c[0], c[1], key=KEY, learner_arm=(name, arm), suffix=sfx) for c in cells}
+                r = {}
+                for c in cells:
+                    sfx = ''
+                    if name == 'r2dreamer' and not args.wm_superseded:
+                        # prefer the re-scored cell wherever it exists (rebuilt physical-grip bank, pinned entries)
+                        if os.path.exists(os.path.join(rd, f'fresh_eval_{c[0]}_{c[1]}_v2', 'metrics.json')):
+                            sfx = '_v2'; CELLVAR['rescored'] += 1
+                        elif os.path.exists(os.path.join(rd, f'fresh_eval_{c[0]}_{c[1]}', 'metrics.json')):
+                            CELLVAR['not_rescored'] += 1
+                    elif name == 'r2dreamer':
+                        CELLVAR['superseded_forced'] += 1
+                    r[c] = cell(rd, c[0], c[1], key=KEY, learner_arm=(name, arm), suffix=sfx)
                 if any(v is not None for v in r.values()):
                     rows[s] = r
                     print(f'| {name} | {arm} | s{s} | ' + ' | '.join(fmt(r[c]) for c in cells) + ' |')
@@ -125,6 +137,17 @@ def main():
             else:
                 stats.append(f'- {name} {c[0]} {c[1].upper()}: incomplete ({len(ha)} v {len(ma)} seeds)')
     print(); print('\n'.join(stats))
+    if args.wm_superseded and CELLVAR['superseded_forced']:
+        print(f'\n- **WARNING: SUPERSEDED WORLD-MODEL CELLS** ({CELLVAR["superseded_forced"]} read on --wm-superseded). '
+              f'These were scored on the RAW-grip polE bank with unpinned entries and are NOT the figures of record '
+              f'(place: 0.703/0.688 v 0.647/0.674, replaced 2026-09-08 by 0.715/0.708 v 0.652/0.652). Use them only for '
+              f'a deliberate before/after movement comparison, never as a result.')
+    elif CELLVAR['rescored'] or CELLVAR['not_rescored']:
+        msg = f'\n- world-model rows: {CELLVAR["rescored"]} re-scored (`_v2`) cell(s) used automatically'
+        if CELLVAR['not_rescored']:
+            msg += (f'; **{CELLVAR["not_rescored"]} cell(s) have NO re-score and fall back to the pre-rebuild version** '
+                    f'-- those are not comparable with the other learners and are flagged here rather than blended in')
+        print(msg + '.')
     if REASONS:
         tot = sum(REASONS.values())
         print('\n**Why slide_success failed** (per-clause diagnostic, all cells above; a sub-floor pair is read by reason, not rate):')
