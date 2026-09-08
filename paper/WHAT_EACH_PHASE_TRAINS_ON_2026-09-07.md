@@ -40,3 +40,8 @@ Your count of ~18 human episodes that "do the slide well" versus our label of 11
 ## What is unaffected and still running tonight
 
 Pick (all learners), Place (32 runs), end-to-end (32 runs, DP + RLPD), the robomimic recovery (72 runs incl. the action-statistics arms), the dv3 four-seed comparison, the 192-cell contact re-score, and the in-distribution evaluations. The 320-cell evaluator re-score remains held on a separate, unrelated problem: the evaluator does not currently reproduce one of its own end-to-end cells, and an isolation job is running to say whether today's patches caused it.
+
+
+## Addendum 2026-09-08 — end-to-end has the same defect, arrived at by drift
+
+This document identified Slide as the only phase where the reward and the score disagree. That is no longer true. The **end-to-end** staged reward pays its top rung on `nested`, the training proxy (0.333 against 0.133 honest), while the statistic of record became `slide_success` under amendment (l). The scorer was corrected; the reward was not. Both arms optimise the same wrong target, so the comparison stays internally fair, but the end-to-end numbers answer *which demonstrations help a learner maximise the proxy*, not *which help it do the task*.
