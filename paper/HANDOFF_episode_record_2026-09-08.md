@@ -2,6 +2,22 @@
 
 *Self-contained. Written for an agent with code and cluster access. Registered as PHASE_PLAN amendment (w). Half of it is already committed; the remaining two wires are specified below.*
 
+## STOP — read before touching anything
+
+**Experiments are in flight and unattended. Nothing in this brief requires stopping, deleting, or rebuilding any of them.** The task is additive: two logging wires, applied when the long runs are configured. If you find yourself about to remove something, you have misread the task.
+
+**Never do these without explicit human approval:**
+
+- **Do not `scancel` any job.** Running and queued jobs are live experiments: 12 de-confounded `(v)` end-to-end runs, 32 queued end-to-end learner jobs, the A6 dose curve, and 3 place runs. Several represent 10+ hours each. Deprioritising (`scontrol update Nice=`) is reversible and acceptable; cancelling is a scientific act, not a scheduling one.
+- **Do not delete, move, or overwrite datasets.** `matched_w3/*`, `demos_v1/*`, `demos_v2/*`, the frozen demonstration sets and every entry bank are inputs to published numbers. Some cannot be regenerated — intermediate checkpoints for several arms were already pruned for disk and are gone permanently.
+- **Do not overwrite cells of record.** A cell is `metrics.json` plus its sidecars. If you re-score anything, write **new** cells under a suffixed directory and leave the originals intact. Corrections in this project are kept alongside what they corrected, never in place of it — that is how movement stays auditable, and it has already turned up findings that would otherwise have been lost.
+- **Do not purge disk to make space.** A filesystem-full incident previously killed every job cluster-wide. Launchers now refuse to start below a free-space guard. If space is short, report it; do not free it by deleting.
+- **Do not commit, stash, revert or clean the working tree without checking it.** There are ~7 modified tracked files belonging to another lane, marked commit-only-if-asked in `CLAUDE.md`. `git checkout`, `git stash`, `git clean` or a broad `git add -A` would destroy uncommitted work that is not yours.
+- **Do not edit code that queued jobs will execute.** Slurm reads the training script at *execution* time, so editing a shared file changes jobs that have not started while leaving running ones on the old code — putting a code difference **between the arms of a comparison**. This has already happened twice here; once it was caught only by chance.
+- **Do not force-push or reset any cluster clone.** They contain rsynced state that may not exist locally.
+
+**If a step seems to require any of the above, stop and ask.** The cost of waiting is hours; the cost of a wrong deletion is unrecoverable.
+
 ## The problem
 
 In `scope='full'`, the environment's per-step stage flags are written **only when an episode terminates inside the adapter**. A horizon truncation happens outside it, so a truncated episode logs all zeros even though it picked. Measured on `dHfull_all` seed 3: **1,198 of 2,911 episodes all-zero, every one exactly the horizon length (300), and 608 of them had scored.** Pick reads 0.480 by flag against 0.688 by score.
