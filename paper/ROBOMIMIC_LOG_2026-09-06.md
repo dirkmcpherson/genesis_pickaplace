@@ -360,9 +360,15 @@ PH200 arm.
   neutrality band. These are UNMODIFIED human actions re-executed open-loop; the only differences from MH200 are the
   tape selection (95 of 200 tapes that survive both re-executions) and the row count (15,702 vs 41,134).
   Registered decision rule (iii) therefore fires: **the A4 pair may be read only within itself (rough15 v re15), never
-  against MH200@100k.** Note the pattern this adds to the A2 controls — RLPD success tracks demo ROW COUNT across every
-  arm measured so far, independent of source: re15 15.7k rows → 0.080, MG200s 16.5k → 0.147, MH200 41.1k → 0.455,
-  MG718s 59.2k → 0.475, MGall 536.5k → 0.610.
+  against MH200@100k.** **CORRECTION (same day, coordinator's catch — the first version of this entry over-claimed):** `re15` differs from
+  MH200 in TWO ways at once (15,702 vs 41,134 rows AND open-loop re-execution + success-filtering), and this very result
+  shows re-execution is not cheap, so `re15` is NOT a human dose point at 15.7k rows. The sentence "human actions cut to
+  MG200s-scale perform below the machine arm at the same scale" is **STRUCK**: it compared a re-executed human arm with
+  a natively collected machine arm, and re-execution is the larger measured effect of the two. What the data supports:
+  (a) among the **machine** arms, all natively collected and mutually comparable, a clean monotone dose-response —
+  16.5k rows → 0.147, 59.2k → 0.475, 536.5k → 0.610; (b) the **human** side has exactly ONE uncontaminated point,
+  MH200 41.1k → 0.455, which sits on that same curve. Suggestive of one quantity-driven relationship spanning both
+  sources; the clean small-scale human point is missing and is proposed as A6 below.
 
 ## Methodological finding (2026-09-08): open-loop re-execution of recorded demonstrations is NOT free
 Registered prediction P-A4-3′ ("the re-executed control arms are within 0.10 of the native arm") is **FALSIFIED**:
