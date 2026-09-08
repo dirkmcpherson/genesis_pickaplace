@@ -306,3 +306,8 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   (Δ 0.77); RLPD MH 0.455 / MG 0.147 (Δ 0.31, mode). All three learners lose on MG200s; the A2/A4 controls (running)
   decide whether that is quantity, budget, action process, or source — the first two MGall seeds (0.74, 0.60) already
   argue against the source reading.
+- 20:2x (09-07) **VPN/DNS dropped** (`ssh: Could not resolve hostname login.pax.tufts.edu`) — the known intermittent
+  outage, not a cluster fault. Jobs keep running unattended; at the last contact: r2d MG200s s7 retrain + 1 A2 control
+  running, 21 A2 + 32 A4 pending, 430 GB free. Nothing to resubmit on reconnect — all four recovery batches are queued
+  with the disk guard; the pickup is to read results with the monitor's job-id ranges (batch 1 3354420-27, G2b
+  3354437-44, A2 3354448-71, A4 3354850-81).
