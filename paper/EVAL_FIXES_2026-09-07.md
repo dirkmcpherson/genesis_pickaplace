@@ -450,3 +450,45 @@ project keeps being bitten by.
 **Two independent corroborations worth recording**, both from the coordinator's cross-lane check: the two lanes read the
 same bank *content* under different filenames (a naming difference, not a data one), and both independently report **the
 same five restore failures of 148** on that bank — two separately built pipelines failing on the identical five entries.
+
+### 8.7 Replay-verification asymmetry (robomimic's finding applied to Genesis): CHECKED AND DISMISSED — 3 tapes total
+The robomimic leg found that replay-filtering silently selects a well-behaved subpopulation. `record_demos.py --verify`
+does replay-filter (open-loop replay of `actions_delta` from a fresh reset of the same IC; the hardened pick must
+re-occur, `record_demos.py:365`), and the machine-arm harvest commands in that file's header use it. Measured rather than
+argued.
+
+**1. Rejection rate — negligible.** From the harvest manifests, which record the counter directly:
+
+| harvest | rollouts | kept | **rejected_by_verify** |
+|---|---|---|---|
+| `demos_v2/dDPv2` (w3 pick machine source) | 80 | 68 | **1** |
+| `demos_v2/dDPv2_w2` | 70 | 67 | **0** |
+| `demos_v1/dDP` (earlier) | 80 | 64 | **2** |
+| all wm_fix-era full-scope harvests | 362 | 26 | **0** (guard inactive by construction) |
+
+**Three tapes across every harvest ever run** — ~1.4 % of the kept pick set. The coordinator's prediction was right about
+why: our machine tapes are a trained policy rolled out in the same world it is replayed in, deterministically, so the
+replay is near-exact — materially unlike robomimic's cross-checkpoint SAC rollouts under perturbation.
+
+**2. Which arms had the guard active** — from the per-tape `verify` stamp every kept npz carries:
+
+| arm of record | scope | verify stamp |
+|---|---|---|
+| `matched_w3/dDP` (pick, machine) | pick | **`pass` 58/58 — guard ACTIVE** |
+| `matched_w3/dHv2raw` (pick, human) | pick | `n/a` 66/66 — never applied |
+| `matched_w3/dDP_place_n39` (place, machine) | place | `n/a` 39/39 |
+| `matched_w3/dH_place` (place, human) | place | `n/a` 39/39 |
+| `dDPfull` (end-to-end, machine) | full | **structurally impossible** — `--verify` is FATAL with `--scope full` (`record_demos.py:772`) |
+
+So the asymmetry exists in **exactly one arm pair (pick)**, is **symmetric (absent from both arms) at the place phase**,
+and **cannot exist end-to-end**. That also means it does *not* compound with the best-of-3 selection disclosed for the
+end-to-end machine set — the two apply to different arms.
+
+**3. Was an equivalent filter applied to the human sets? No — but they are not unfiltered either, and the distinction is
+narrower than it looks.** Human tapes are produced by re-executing the recorded human command stream in sim
+(`HumanFollower`) and are kept only if that execution reaches the stage. So the human arm is filtered by **one** sim
+execution succeeding; the machine arm by **one execution plus one independent replay**. The asymmetry is the *second,
+independent* check — exactly robomimic's mechanism — and here it removed 1 tape of 69.
+
+**Verdict: checked and dismissed at 1.4 % on one arm pair, zero elsewhere.** Recorded so it is not re-asked. It should
+also get a row in `CONFOUNDS.md` from that file's owner; it is not edited here.
