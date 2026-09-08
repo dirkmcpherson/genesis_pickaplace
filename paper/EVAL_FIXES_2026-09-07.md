@@ -130,49 +130,63 @@ comparison tables compute the statistic of record from it.
 **Prediction (l), evaluated on these cells:** end-to-end rnd30 `slide_success` at or below `nested_honest` in both arms
 and |Δ(human − machine)| < 0.10; slide phase |Δ| < 0.10 with both arms well below their bare-`contact` rates.
 
-## 7. The end-to-end reproduction failure is NODE-dependent (found while smoke-testing (l); investigation 2026-09-07 21:00–22:00)
+## 7. Why an end-to-end cell did not reproduce: TWO independent causes, neither of them the patches (investigated 2026-09-07 21:00–22:15)
 
-**Symptom.** `full_r2d_state_dHfull_all_bnormclampS8ent5_s3`, rnd30 MODE, **episode 0**: the cell of record (job 3303000,
-2026-09-05 23:19) has `nested`, 32 steps, picked+contact; re-running that exact IC with the same checkpoint, mode, seed and
-horizon gave `timeout`, 300 steps, no pick. Episode 0 has no history, so this was not the settle-leak branch pre-stated in §4.
+**Symptom.** `full_r2d_state_dHfull_all_bnormclampS8ent5_s3` rnd30 MODE **episode 0**: cell of record (job 3303000,
+2026-09-05) = `nested`, 32 steps; a rerun = `timeout`, 300 steps, no pick. Episode 0 has no history, so this was not the
+settle-leak branch pre-stated in §4.
 
-**What it is not.** Ruled out by measurement, in this order:
-- *Not the world or the data.* The only files in `$W/gp_root` and `$W/r2dreamer_fix` modified since the record was written
-  are the four this work patches; `trial_placements.json` (world block, `substeps 8`), `replay_harness.py`, `sim_variants.py`,
-  `pick_env.py`, the URDFs, the run's `.hydra/config.yaml` (09-05 14:29) and `latest.pt` (09-05 21:14, distinct md5 per run)
-  are untouched. The ICs compared equal element-wise.
-- *Not non-determinism of the pipeline.* Record vs re-run over the 23 finished contact_push `_cp` cells = **3488 episodes,
-  0 differences** in steps, outcome or contact flag (aggregate 0.7314 vs 0.7314; `$W/repro_check.py`). Two runs of the same
-  episode on one node agree at every one of 12 probed decisions.
-- *Not amendments (j)/(l).* With (j)+(l) reverse-applied on a copy of both trees (contact_push left in), the reset state and
-  **every action and state through 12 decisions are bit-identical to the current trees**, and the full episode ends the same
-  way (`cluster/eval_fixes/rev_apply.py`, `probe_first_steps.py`).
-- *Not episode order.* Withdrawn: the observation that suggested it (uid 254 standalone vs in-sequence) came from a run at
-  16:12, inside the disk-full window. Re-tested post-freeze on one node, uid 252 and uid 254 in sequence both give
-  `timeout/300`, so the record's `tipped/49` for uid 254 is the same node effect, not sequencing.
-- *Not job geometry.* The record ran `-n 8`, one eval at a time; the reruns ran `-n 4`. On pax109 the episode reproduces at
-  **both** `-n 4` (3/3) and `-n 8`, while three other nodes at the record's-different `-n 4` all fail to.
+### 7.1 Excluded by measurement (in this order)
+- *World, data, config, checkpoint.* Only the four patched files changed in `$W/gp_root` / `$W/r2dreamer_fix` since the
+  record; `trial_placements.json` (world block, `substeps 8`), `replay_harness.py`, `sim_variants.py`, `pick_env.py`, the
+  URDFs, the run's `.hydra/config.yaml` (09-05 14:29) and `latest.pt` (09-05 21:14, distinct md5 per run) are untouched;
+  the ICs compare equal element-wise.
+- *Pipeline non-determinism.* Record vs re-run over 23 finished `_cp` cells = **3488 episodes, 0 differences** in steps,
+  outcome or contact flag (0.7314 vs 0.7314; `$W/repro_check.py`).
+- *Amendments (j) and (l).* With (j)+(l) reverse-applied on a copy of both trees (`rev_apply.py`), the reset state and
+  every action/state through 12 decisions are bit-identical to the current trees, **and the full episode ends identically**
+  (`nested`/32/r=7.0 under both). **The patches are exonerated.**
+- *Job geometry.* `-n 4` vs `-n 8` changes nothing on any node tested.
+- *Incomplete reset.* All 21 observable post-reset fields are bit-identical (`reset_probe.py`): qpos, qvel, both cans'
+  pos/quat/vel/ang, the 17-dim obs, contact counts, `_granted`, `_pv2_run`, the adapter's delta targets. The env resets
+  correctly; an earlier "hidden solver state" reading of this probe was wrong and is withdrawn (see 7.3).
 
-**What it is.** The outcome is a function of the **node**:
+### 7.2 Cause 1 — hardware class (explains the ep0 case)
+| node | physical CPUs / arch | ep0 |
+|---|---|---|
+| **pax109** (the record's node), **pax154** | **36**, broadwell | `nested`/32, r=7.0 — reproduces the record (6 runs, `-n 4` and `-n 8`) |
+| pax001 | 80 logical, broadwell | `timeout`/300 (both allocations) |
+| pax030, **pax004** (the node of the first failing rerun) | 64, sapphirerapids | `timeout`/300 |
 
-| node | CPU / features | -n 4 | -n 8 | vs record |
-|---|---|---|---|---|
-| **pax109** (the record's own node) | Xeon E5-2695 v4, broadwell, 36c | `nested`, 32 steps, r=7.0 (3/3 runs) | `nested`, 32 steps | **exact reproduction** |
-| pax154 | broadwell, 36c | `timeout`, 300 steps | pending | diverges |
-| pax001 | broadwell, 40c | `timeout`, 300 steps | pending | diverges |
-| pax030 | sapphirerapids, 64c | `timeout`, 300 steps | — | diverges |
+Each node is self-consistent; nodes of different class disagree. **Not fixable by pinning threads:** `TI_NUM_THREADS` ∈
+{4, 8, 36} on pax001 and 36 on pax030 all still give `timeout`/300, while pax109 gives `nested`/32 at both 4 and 36. So the
+difference is arithmetic-level (vectorisation / FMA contraction differing by CPU model), amplified chaotically over a
+300-decision contact-rich horizon. Short phase episodes (1–19 frames) cannot amplify — which is exactly why the 3488
+phase episodes reproduce bit-exactly across nodes. *An earlier claim in this section that the split was "not a CPU-family
+split" was wrong: it rested on an unverified assumption that the first failing rerun ran on pax154; it ran on pax004.*
 
-Each node is self-consistent; the nodes disagree with each other. It is not a CPU-family split (pax109 and pax154 are both
-broadwell 36-core), and the two nodes agree to 1e-9 on every one of the first 12 decisions before the episode outcome
-diverges by decision 32 — i.e. **chaotic amplification of a sub-1e-9 numerical difference over a long contact-rich horizon**,
-not a structural difference. That also explains why the phase scopes reproduce bit-exactly across nodes: their episodes last
-1–19 frames (mean 2 in the slide cell), far too short to amplify.
+This also explains the neighbouring puzzles: the s0 hold15 record was made on **pax033 (64c)**, so re-running it on pax154
+(36c) legitimately differs; and the contact_push agent's records came from pax070 (36c) while its reruns ran on pax097
+(48c), pax053 (64c) and pax069 (40c).
 
-**Consequences.** (1) Amendments (j) and (l) are exonerated; the physics and the world are not at fault. (2) Long-horizon
-end-to-end cells are reproducible only on the node that produced them, so every such cell must record its node, and any
-re-score of the end-to-end arm must either pin the node or report node as a factor. (3) Short-horizon phase cells are
-unaffected (3488 episodes, zero differences), so the place / carrycontact / contact re-scores are safe to run anywhere.
-(4) Whether the **cell-level aggregates** of `PHASE_RESULTS §5.1` move — as opposed to individual episodes — is measured by
-the 30-episode in-order rerun (`rs2_seqcheck.sbatch`); RESULT PENDING, and it decides whether the published 8 v 8 numbers
-stand as reported.
+### 7.3 Cause 2 — the policy consumes global RNG, so episodes in one process are not independent
+`Dreamer.act` samples the RSSM posterior latent even at `eval=True` (`--mode mode`), and the evaluator never re-seeds
+between episodes. Measured (`rng_test.py`, one process, identical observation): action under a re-seeded RNG is
+**bit-identical** to the reference, action after advancing the RNG differs by **3.75e-2**. Hence uid 254 gives r=1.0 run
+standalone and r=3.0 as episode 2 of a sequence — same node, same code, same IC.
 
+Consequences: (a) `--mode mode` is deterministic **given the RNG stream**, not per-episode; a cell reproduces only when
+re-run **as a whole sequence from process start**, which is why every whole-cell and ep0 comparison reproduces and only
+subset reruns diverge; (b) pulling a single episode out of a recorded sequence and comparing it to that record is invalid —
+an artefact I hit myself with uid 254 and initially mis-read as episode-order dependence of the *env*; (c) the fix is a
+per-episode re-seed (`torch.manual_seed(seed + ep)`), which would make episodes independent and subset reruns
+reproducible — it changes numbers relative to every existing cell, so it needs its own registration, not a silent patch;
+(d) `baselines/eval_e2e.py` (DP/RLPD end-to-end, amendment (n)) has the same single-process sequential structure
+(one env, `for k, ic in enumerate(ics)`, `genv.reset` redirected), so its cells inherit the same property.
+
+### 7.4 What this means for the numbers
+Neither cause is a defect in the environment or in amendments (j)/(l). Both are reproducibility constraints:
+**an end-to-end cell is reproducible as a whole sequence on the same CPU class, and not otherwise.** Every end-to-end cell
+should therefore record its node and be re-run whole. Phase cells are immune on both counts (short episodes, bank-restored
+starts, 3488 episodes bit-exact). Whether the cell-level aggregates of `PHASE_RESULTS §5.1` move is measured by the paired
+30-episode in-order reruns on pax109 (the record's own class) and pax154 — RESULT PENDING.
