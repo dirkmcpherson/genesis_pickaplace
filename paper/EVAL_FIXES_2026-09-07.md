@@ -242,3 +242,34 @@ reaches **0.100 on a stage of record** for this cell, while the two same-class r
 and Δ +0.000 on every stage. Recommendation regardless of that number: re-score
 all 64 end-to-end cells on ONE pinned CPU model, which removes the confound and yields one internally consistent set; phase
 cells need no pinning (3488 episodes bit-exact across classes).
+
+### 7.7 The "re-scoring moves only the human arm" alarm: it is the 36-core class again, and it is a scheduling accident
+A tables-side check reported that re-scoring moved 26 human-arm statistics and 0 machine-arm statistics, with equal
+cross-class exposure, and concluded the hardware account was dead and a directional defect remained. Re-derived here from
+the `_cp` cells directly (`movers2.py`, `contingency.py`, attributing every cell to the job that logged writing that exact
+directory, not to the first matching log):
+
+| record-node class | cells whose `picked`/`contact`/`nested` or per-episode outcome moved | unmoved |
+|---|---|---|
+| **36-core** (Xeon E5-2695 v4, AVX2) | **16** | **0** |
+| 32 / 48 / 64 / 96-core | 0 | 8 / 56 / 108 / 4 |
+
+Perfect separation: 16/16 versus 0/176. The movers' originals are **pax109** (the 8 end-to-end cells, `dHfull_all` s2 and
+s3) and **pax070** (the 8 contact cells, `dH` sub-floor s0/s1/s4/s5/s7) — both the AVX2 class of §7.2. The claim that no
+mover had a 36-core original is inverted; every one does.
+
+*Why it looked arm-directional:* there is no `36-core | MACHINE` row at all — **no machine-arm cell was ever evaluated on
+that class**. Which runs landed on the minority hardware is a scheduler accident, and it happened to be human-arm only.
+
+*The other two candidate explanations are excluded by measurement:* all 16 record jobs are `COMPLETED` (none preempted or
+requeued), and all records date 2026-09-05/06 while all `_cp` re-scores date 2026-09-07 21:0x — uniform across movers and
+non-movers, so no patch boundary separates them.
+
+*A second, benign population was being conflated with the first:* 49 further cells differ **only** in `placed_v2`, moving
+from a structural 0 with **zero** differing episodes. That is amendment (j) fix 4 making an unearnable column earnable, and
+it is not arm-directional (human 19 / machine 30).
+
+**Conclusion: re-scoring is not directionally biased.** The re-scores are right and the affected originals are the ones
+that cannot be reproduced off their own CPU class — which is why the end-to-end re-score pins all 64 cells to one class
+(REQUIRE_CORES=64, enforced in the lane), and why the phase pass is unaffected (no place or carrycontact record was
+produced on a 36-core node).
