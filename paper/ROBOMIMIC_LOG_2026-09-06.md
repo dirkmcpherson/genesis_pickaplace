@@ -240,3 +240,29 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
   100k decisions, LAST on bank_can50 (mode + sample):** MH200_re15 **3351474–3351481**, MH200_rough15 **3351482–3351489**,
   MH200_re20 **3351490–3351497**, MH200_rough20 **3351498–3351499, 3351501–3351506** (out `rlpd_<ARM>_a4_s<k>/`).
   Queue order of ours: 16 dp (matrix) → 8 G2b nodemo → 24 A2 controls (nice 5000) → 32 A4 (nice 6000).
+
+## 2026-09-07 evening — filesystem-full incident and recovery
+- 16:00–17:00 `/cluster/tufts/shortlab` reached 1.9T/1.9T (0 free); every job on the share died. Mine: 32 robo_rlpd_a4,
+  24 robo_rlpd_ctl, 8 robo_rlpd_nodemo, 7 robo_dp, 1 robo_r2d FAILED (queued ones exit 0:53, 0 elapsed). Not a code
+  fault. Coordinator freed 434 GB (77 % used at recovery time).
+- **Inventory of my runs (what survived, verified file by file — including the timestamped-subdir gotcha: our r2dreamer
+  logdir is set explicitly (`logdir=$LOGDIR`) so `latest.pt` sits directly in the run dir; `find -name latest.pt`
+  confirms one per run, no timestamped subdir):**
+  - RLPD: 16 matrix cells intact (MH200 s0-7, MG200s s0-7: `rlpd_final.zip` + both eval metrics + 5 archived ckpts).
+    No A2/A4 dirs existed (those jobs died in the queue). G2b `rlpd_none_s0-7` and the old cancelled `rlpd_PH200_s0-7`
+    held only partial/empty artefacts → deleted.
+  - r2dreamer: 15 cells complete (MH200 s0-7, MG200s s0-6). **MG200s s7 has a `latest.pt` but the run died at step
+    328,899 of 516,701 — a PARTIAL checkpoint, not a scoreable LAST → retrain, not re-eval** (the eval-only shortcut
+    would have silently scored a two-thirds-trained model).
+  - DP: MH200 s0-7 complete (training + eval). MG200s s0 complete; **s1-s4 finished training ("End of training",
+    `last`→100000) but lost their evals → EVAL-ONLY recovery**; s5, s6 (`last`→060000) and s7 (`last`→040000) died
+    mid-training → retrain.
+- **Standing rule implemented (keep only the final checkpoint):** `sbatch_rlpd_robo.sh` now defaults `CKPT_FRACS=1.0`
+  (was 0.2,0.4,0.6,0.8,1.0 — five ~25 MB zips per run scored by nothing, our statistic is LAST);
+  `sbatch_dp_robo.sh` now defaults `SAVE_FREQ=$STEPS` (one ~1 GB checkpoint per run instead of five);
+  r2dreamer already keeps a single overwritten `latest.pt`. All four launchers gained a **pre-flight disk guard**
+  (`MIN_FREE_GB`, default 100 GB: refuse to start rather than half-write a run) and a new eval-only launcher
+  `cluster/robomimic/sbatch_dp_eval_robo.sh` (refuses to score a checkpoint whose step ≠ the run's budget).
+- **BATCH 1 submitted 17:2x (matrix completion; 434 GB free at submit):** r2d MG200s s7 retrain **3354420**;
+  DP MG200s retrains s5 **3354421**, s6 **3354422**, s7 **3354423**; DP MG200s eval-only s1 **3354424**, s2 **3354425**,
+  s3 **3354426**, s4 **3354427**. Batches 2-4 (G2b, A2 controls, A4) follow in order, each gated on ≥ 150 GB free.

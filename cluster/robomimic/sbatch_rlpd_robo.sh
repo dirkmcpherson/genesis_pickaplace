@@ -21,18 +21,25 @@ set -euo pipefail
 LAB=/cluster/tufts/shortlab/jstale02; PY=$LAB/robo_venv/bin/python
 export GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-$LAB/genesis_pickaplace} PYTHONUNBUFFERED=1 MUJOCO_GL=egl OMP_NUM_THREADS=4
 ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; STEPS=${STEPS:-100000}; TAG=${TAG:-}; EVAL_EPISODES=${EVAL_EPISODES:-50}
+# STANDING RULE (2026-09-07, after the filesystem filled to 100% and killed every job): keep only the FINAL
+# checkpoint. Our statistic of record is LAST, so the K=5 archived fractions were pure disk cost.
+CKPT_FRACS=${CKPT_FRACS:-1.0}
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|MG200s_re|MG200s_sm|MG200s_smm|MH200_re|MH200_rough|MH200_re15|MH200_rough15|MH200_re20|MH200_rough20|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DEMO=$LAB/robomimic_data/arms/$ARM/rlpd/transitions.npz; [ "$ARM" = none ] && DEMO=none
 NAME=rlpd_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/rlpd/$NAME   # ARM=none -> rlpd_none_s<k> = G2b no-demo control (demo_batch 0)
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
+MIN_FREE_GB=${MIN_FREE_GB:-100}
+_free=$(df -BG --output=avail /cluster/tufts/shortlab | tail -1 | tr -dc "0-9")
+if [ "${_free:-0}" -lt "$MIN_FREE_GB" ]; then echo "FATAL: only ${_free}G free on /cluster/tufts/shortlab (need ${MIN_FREE_GB}G) -- refusing to start (2026-09-07 filesystem-full incident)"; exit 1; fi
+echo "# disk: ${_free}G free on /cluster/tufts/shortlab"
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED steps=$STEPS demo=$DEMO out=$OUT restart=${SLURM_RESTART_COUNT:-0}"
 [ "$DEMO" = none ] || [ -f "$DEMO" ] || { echo "FATAL: demo file missing: $DEMO (convert_arms.py)"; exit 1; }
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }
-if [ -n "${DRYRUN:-}" ]; then echo "[dry] $PY $B/train_rlpd_robosuite.py --demo $DEMO --arm $ARM --steps $STEPS --seed $SEED --out $OUT --device cuda"; exit 0; fi
+if [ -n "${DRYRUN:-}" ]; then echo "[dry] $PY $B/train_rlpd_robosuite.py --demo $DEMO --arm $ARM --steps $STEPS --seed $SEED --out $OUT --device cuda --ckpt-fracs $CKPT_FRACS"; exit 0; fi
 if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$OUT" ]; then echo "# requeued: clearing partial $OUT and restarting clean"; rm -rf "$OUT"; fi
 mkdir -p "$OUT" $LAB/robomimic_runs/slurm
 nvidia-smi --query-gpu=name --format=csv,noheader | head -1
-$PY $B/train_rlpd_robosuite.py --demo "$DEMO" --arm "$ARM" --steps "$STEPS" --seed "$SEED" --out "$OUT" --device cuda 2>&1 | tee $OUT/train.log | grep --line-buffered -E "^\[|Traceback|Error|Q-WATCHDOG" | cut -c1-220
+$PY $B/train_rlpd_robosuite.py --demo "$DEMO" --arm "$ARM" --steps "$STEPS" --seed "$SEED" --out "$OUT" --device cuda --ckpt-fracs "$CKPT_FRACS" 2>&1 | tee $OUT/train.log | grep --line-buffered -E "^\[|Traceback|Error|Q-WATCHDOG" | cut -c1-220
 [ -f $OUT/rlpd_final.zip ] || { echo "FATAL: no rlpd_final.zip"; exit 1; }
 for MODE in mode sample; do
   CUDA_VISIBLE_DEVICES="" $PY $B/eval_rlpd_robosuite.py --checkpoint $OUT/rlpd_final.zip --mode $MODE --episodes $EVAL_EPISODES --out $OUT/eval_bank50_$MODE 2>&1 | { grep -E "^\[eval|Traceback|Error|FATAL" || true; } | tail -3

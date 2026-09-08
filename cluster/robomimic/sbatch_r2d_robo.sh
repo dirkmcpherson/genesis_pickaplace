@@ -33,6 +33,10 @@ if [ "$ARM" = none ]; then ROWS=0; DEMO_OVR=(); else
 fi
 STEPS=$((ROWS + ONLINE)); MAXSIZE=$((2 * ROWS + ONLINE))
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }
+MIN_FREE_GB=${MIN_FREE_GB:-100}
+_free=$(df -BG --output=avail /cluster/tufts/shortlab | tail -1 | tr -dc "0-9")
+if [ "${_free:-0}" -lt "$MIN_FREE_GB" ]; then echo "FATAL: only ${_free}G free on /cluster/tufts/shortlab (need ${MIN_FREE_GB}G) -- refusing to start (2026-09-07 filesystem-full incident)"; exit 1; fi
+echo "# disk: ${_free}G free on /cluster/tufts/shortlab"
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED prefill_rows=$ROWS online=$ONLINE env.steps=$STEPS buffer.max_size=$MAXSIZE restart=${SLURM_RESTART_COUNT:-0}"
 CMD=("$PY" train.py env=robosuite_can_state seed=$SEED env.steps=$STEPS "${DEMO_OVR[@]}" buffer.max_size=$MAXSIZE logdir=$LOGDIR "$@")
 if [ -n "${DRYRUN:-}" ]; then echo "[dry] cd $R2D && ${CMD[*]}"; exit 0; fi

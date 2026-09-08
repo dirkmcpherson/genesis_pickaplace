@@ -23,8 +23,14 @@ ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; STEPS=${STEPS:-100000}; TAG=${TAG:-
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DATASET=$LAB/robomimic_data/arms/$ARM/lerobot
 NAME=dp_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/dp/$NAME
-SAVE_FREQ=$(( STEPS / 5 )); [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
+# STANDING RULE (2026-09-07, post-filesystem-full): ONE checkpoint per run (the final). A DP checkpoint is ~1 GB;
+# five per run x 24 runs was 51 GB of intermediates nobody scores (our statistic is LAST).
+SAVE_FREQ=${SAVE_FREQ:-$STEPS}; [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
+MIN_FREE_GB=${MIN_FREE_GB:-100}
+_free=$(df -BG --output=avail /cluster/tufts/shortlab | tail -1 | tr -dc "0-9")
+if [ "${_free:-0}" -lt "$MIN_FREE_GB" ]; then echo "FATAL: only ${_free}G free on /cluster/tufts/shortlab (need ${MIN_FREE_GB}G) -- refusing to start (2026-09-07 filesystem-full incident)"; exit 1; fi
+echo "# disk: ${_free}G free on /cluster/tufts/shortlab"
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED steps=$STEPS dataset=$DATASET out=$OUT restart=${SLURM_RESTART_COUNT:-0}"
 [ -f "$DATASET/meta/info.json" ] || { echo "FATAL: lerobot dataset missing: $DATASET (convert_arms.py --targets lerobot)"; exit 1; }
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }

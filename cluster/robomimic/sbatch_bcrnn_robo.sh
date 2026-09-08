@@ -26,6 +26,10 @@ ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; EPOCHS=${EPOCHS:-2000}; TAG=${TAG:-
 case "$ARM" in PH200|MH200|MG200s|MH300|MGall) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 NAME=bcrnn_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/bcrnn/$NAME
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
+MIN_FREE_GB=${MIN_FREE_GB:-100}
+_free=$(df -BG --output=avail /cluster/tufts/shortlab | tail -1 | tr -dc "0-9")
+if [ "${_free:-0}" -lt "$MIN_FREE_GB" ]; then echo "FATAL: only ${_free}G free on /cluster/tufts/shortlab (need ${MIN_FREE_GB}G) -- refusing to start (2026-09-07 filesystem-full incident)"; exit 1; fi
+echo "# disk: ${_free}G free on /cluster/tufts/shortlab"
 echo "# $(date -Is) host=$(hostname) node=${SLURM_NODELIST:-} job=${SLURM_JOB_ID:-} arm=$ARM seed=$SEED epochs=$EPOCHS out=$OUT restart=${SLURM_RESTART_COUNT:-0}"
 [ -f $LAB/robomimic_data/bank_can50.npz ] || { echo "FATAL: bank missing"; exit 1; }
 if [ -n "${DRYRUN:-}" ]; then echo "[dry] make_bcrnn_config.py --arm $ARM --seed $SEED --num-epochs $EPOCHS -> $OUT/config.json; robomimic train.py --config $OUT/config.json; eval LAST on bank"; exit 0; fi
