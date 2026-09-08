@@ -26,6 +26,12 @@ caveat**, or **not usable**. Nothing is deleted anywhere: superseded numbers sta
   completes the task honestly **2.3×** as often. The published proxy hid most of this (1.4×).
 - **End-to-end cells are reproducible only on the same CPU class and only as a whole 30-episode sequence.** All 64 are
   now pinned to one class. Cross-class movement reached **0.100** on `contact` — the width of the margin.
+- **The end-to-end machine demonstrations were chosen by outcome; the human ones were not.** The machine set keeps the
+  **best of up to three attempts** at each start (`--one-per-ic-best`, best ≠ first on 24 of 72 starts); the human set
+  keeps **every** attempt including failures. Selection lifts the machine set's demonstrated reward **+57 %** and
+  **doubles** its completed demonstrations. So no end-to-end number — the `nested_honest` gap and the ignition effect
+  included — currently separates *demonstration source* from *how we filtered tapes*. It is being corrected, not merely
+  disclosed: PHASE_PLAN **(v)** retrains all three learners on a first-attempt-per-start machine set (§4).
 - **Learning curves are world-model only** (`curves/`). RLPD persisted nothing training-time; DP is offline and never can.
   The e2e ignition finding (human ~156k steps earlier to pick, p 0.019) is **exploratory, one learner**, and flat on
   pick/place/slide — that contrast is the interesting part.
@@ -42,14 +48,25 @@ caveat**, or **not usable**. Nothing is deleted anywhere: superseded numbers sta
 | `slide_success` as a **reward** | same reason, and the code refuses it (`full_env.py:286`) |
 | DP `pick_spots60_asrecorded` / `prune_dp_spots60` before commit `7e79bae` | 15 "seeds" were 10 policies double-counted |
 | flag-based end-to-end curves | truncated episodes logged all-zero; rebuilt from `episode/score` |
+| any end-to-end cell as evidence about **demonstration source** | the machine arm's tapes were outcome-selected and the human arm's were not (§2). The numbers are sound as *what these two sets produce*; they do not isolate source until **(v)** lands. |
 
 ## 4. Still running (do not write these up yet)
 
-- **carrycontact** re-score (~20/64) — a *control*, not a result; it exists only to show how much plain `contact` credit
-  came from carrying the can without releasing (~69 %).
-- last **end-to-end** cells (~42/64) and the final 2 slide cells.
+- **PHASE_PLAN (v) — the de-confounded end-to-end arm.** 12 runs, 4 seeds × {world model, RLPD, Diffusion Policy}, on a
+  machine set rebuilt as **first attempt per start** (Σ reward 131 v 206 selected v 118 human; picked 63 v 70 v 64;
+  completions 8 v 16 v 3 — de-selection puts the machine arm *below* the human arm on picked and contact and above it
+  only on completions). Jobs `v1st_wm_s0-3` / `v1st_rlpd_s0-3` / `v1st_dp_s0-3`. Reads out three ways, all registered in
+  advance: whether the source null survives de-selection, whether selection helped the learner at all, and — the
+  decisive one — whether the human **ignition advantage** survives or was substantially our filtering.
+- **carrycontact** re-score — a *control*, not a result; it exists only to show how much plain `contact` credit came
+  from carrying the can without releasing (~69 %).
+- **DONE 2026-09-08:** the pinned **end-to-end** re-score, all 64 cells, and the slide cells.
 
 ---
+
+**If you are auditing prose rather than reading results:** start at `AUDIT_GUIDE_2026-09-08.md`, which gives the
+verification chain, the registration check, the ten traps that have actually fired here, and which phrasings each class of
+result can support.
 
 **If you read only one thing:** place and slide nulls survive the corrections; end-to-end passes every registered
 prediction but is underpowered at five of seven stages; the single result pointing anywhere is `nested_honest`, favouring
