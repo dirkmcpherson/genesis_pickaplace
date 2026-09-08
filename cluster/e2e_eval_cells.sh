@@ -9,8 +9,12 @@
 #   (1) NODE SENSITIVITY -- the same checkpoint/IC/mode/seed/horizon gives `nested`@32 on pax109 and `timeout`@300 on
 #       pax001/pax030/pax154; each node is self-consistent, nodes disagree, and the mechanism is chaotic amplification
 #       over 300 decisions of contact-rich physics (agreement to 1e-9 through decision 12). Short phase episodes are
-#       immune. eval_e2e.py therefore stamps node + pid + order on EVERY episode and the node set on every cell; no
-#       cell may be compared across nodes without saying so.
+#       immune. The axis is now pinned exactly (coordinator, later the same evening): it is AVX2 vs AVX-512, not core
+#       count -- two Broadwell E5-2695 v4 nodes (pax109, pax154) reproduce the record bit-for-bit while Cascade Lake
+#       (pax001) and Sapphire Rapids (pax030) diverge at every thread pinning. Slurm's feature labels LIE about this
+#       (pax001 advertises `broadwell`), so eval_e2e.py reads the model string and flags from /proc/cpuinfo and
+#       stamps cpu_model + isa + avx512f on EVERY episode and their sets on every cell. REQUIRE_ISA=avx2 makes a cell
+#       REFUSE to run on the wrong class (for a pinned post-hoc re-score; pin with --nodelist, never --constraint).
 #   (2) ORDER DEPENDENCE -- in the shared-process protocol state leaks between full-scope episodes (uid 254 scores
 #       r=1.0 standalone but r=3.0 as episode 2 after uid 252). The shared cells inherit it BY DESIGN, because that is
 #       the protocol the world-model rows of PHASE_RESULTS §5.1 were produced under and this table has to sit beside
@@ -18,7 +22,7 @@
 #       coordinator/user pick without a re-run -- and without either choice being made silently.
 # Usage (env):
 #   KIND=sac|dp CKPT=<rlpd_final.zip | .../pretrained_model> OUT=<run dir> ARM=<dH|dDP> SEED=<n> \
-#   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] \
+#   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] [REQUIRE_ISA=avx2|avx512] \
 #   [SIM_VARIANT=gc_kp4_riser3_shelf6] [EVAL_SEED=0] [VIDEO_SETS="rnd30"] [LIMIT=n] [REDO=0] [PAR=3] \
 #   bash cluster/e2e_eval_cells.sh
 # IC sets (amendment (n)): hold15 = baselines/eval_ics.json:hold (15 training starts -- in-distribution, NOT held
@@ -33,7 +37,7 @@ cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"; export GENESIS_PICKAPLACE_ROOT PYTHONUNBU
 SETS=${SETS:-"hold15 rnd30 spots60"}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; PAR=${PAR:-3}
 VIDEO_SETS=${VIDEO_SETS:-"rnd30"}
-ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}
+ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}; REQUIRE_ISA=${REQUIRE_ISA:-}
 if [ -z "${MODES:-}" ]; then MODES="sample mode"; [ "$KIND" = dp ] && MODES="sample"; fi
 [ "$KIND" = dp ] && case " $MODES " in *" mode "*) echo "FATAL: dp has no mode cell"; exit 1;; esac
 if [ "$KIND" = sac ]; then [ -f "$CKPT" ] || { echo "FATAL: checkpoint $CKPT missing"; exit 1; }
@@ -62,17 +66,20 @@ for S in $SETS; do
   [ -s "$(ic_file_of "$S")" ] || { echo "FATAL: IC file $(ic_file_of "$S") missing"; exit 1; }
 done
 if [ "${REDO:-0}" = 1 ]; then for S in $SETS; do for M in $MODES; do rm -rf "$OUT/fresh_eval_${S}_${M}" "$OUT/fresh_eval_${S}_${M}_iso"; done; done; fi
-echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) $(date)"
+CPU_MODEL=$(awk -F': ' '/^model name/{print $2; exit}' /proc/cpuinfo 2>/dev/null)
+CPU_ISA=$(awk '/^flags/{if ($0 ~ /avx512f/) print "avx512"; else if ($0 ~ /avx2/) print "avx2"; else print "pre-avx2"; exit}' /proc/cpuinfo 2>/dev/null)
+echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_isa='${REQUIRE_ISA}' $(date)"
 
 eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local D=$1 SET=$2 MODE=$3 IDX=$4 VID=$5
   local XF=(); [ -n "$IDX" ] && XF=(--ic-index "$IDX")
   local VF=(); [ -n "$VID" ] && VF=(--video)
   local LF=(); [ -n "${LIMIT:-}" ] && LF=(--limit "$LIMIT")
+  local IF=(); [ -n "$REQUIRE_ISA" ] && IF=(--require-isa "$REQUIRE_ISA")
   mkdir -p "$D"
   python baselines/eval_e2e.py --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \
       --ic-set "$(ic_set_of "$SET")" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" --max-steps 1200 \
-      --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${XF[@]}" "${VF[@]}" "${LF[@]}" \
+      --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${XF[@]}" "${VF[@]}" "${LF[@]}" "${IF[@]}" \
       > "$D/eval.log" 2>&1
 }
 
@@ -124,6 +131,7 @@ def row(suffix, keep):
             if os.path.exists(f):
                 d = json.load(open(f)); n = int(d['episodes']); c = d['stage_counts']
                 nodes = ','.join(d.get('nodes') or [d.get('node', {}).get('hostname', '?')])
+                nodes += '/' + ','.join(d.get('isa_classes') or ['?'])
                 parts.append(f'{tag}=slide{c["slide_success"]}/{n}[p{c["picked"]},pv2{c["placed_v2"]},c{c["contact"]},'
                              f'nH{c["nested_honest"]},nP{c["nested_proxy"]}]@{nodes}')
             elif keep:

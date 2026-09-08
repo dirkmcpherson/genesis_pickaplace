@@ -63,10 +63,41 @@ ap.add_argument('--ic-index', type=int, default=None,
                      'the process is not available. cluster/e2e_eval_cells.sh drives the loop and merges the '
                      'single-episode metrics with baselines/merge_e2e_iso.py.')
 ap.add_argument('--device', default='auto', help='policy device for dp (auto = cuda if visible); sac is always cpu')
+ap.add_argument('--require-isa', default=None, choices=('avx2', 'avx512'),
+                help="Fail LOUDLY at startup unless this node's instruction-set class matches. Coordinator "
+                     "2026-09-07: full-scope divergence is pinned to AVX2 vs AVX-512 (Broadwell E5-2695 v4 "
+                     "reproduces the record bit-for-bit; Cascade Lake / Sapphire Rapids diverge at every thread "
+                     "pinning), and Slurm's feature labels LIE about this -- pax001 advertises `broadwell` and is a "
+                     "Cascade Lake part -- so the class is read from /proc/cpuinfo here, never from --constraint.")
 ap.add_argument('--arm', default=None); ap.add_argument('--tag', default=None)
 args = ap.parse_args()
 if args.kind == 'dp' and args.mode == 'mode':
     sys.exit('FATAL: DP has no deterministic mode (diffusion sampling); run --mode sample')
+
+
+def cpu_probe():
+    """(model string, isa class, avx512f present) read from /proc/cpuinfo -- NEVER from Slurm's feature labels,
+    which mislabel at least one Cascade Lake node as `broadwell` (coordinator 2026-09-07)."""
+    model, flags = 'unknown', set()
+    try:
+        with open('/proc/cpuinfo') as fh:
+            for line in fh:
+                if line.startswith('model name') and model == 'unknown':
+                    model = line.split(':', 1)[1].strip()
+                elif line.startswith('flags') and not flags:
+                    flags = set(line.split(':', 1)[1].split())
+    except Exception as e:      # never fail an evaluation over a stamp
+        print(f'[eval-e2e] WARNING: could not read /proc/cpuinfo ({e}); cpu stamps will say unknown', flush=True)
+    avx512f = 'avx512f' in flags
+    isa = 'avx512' if any(f.startswith('avx512') for f in flags) else ('avx2' if 'avx2' in flags else 'pre-avx2')
+    return model, isa, avx512f
+
+
+CPU_MODEL, CPU_ISA, CPU_AVX512F = cpu_probe()
+if args.require_isa and CPU_ISA != args.require_isa:
+    sys.exit(f'FATAL: --require-isa {args.require_isa} but this node is {CPU_ISA} ({CPU_MODEL} on '
+             f'{socket.gethostname()}; avx512f={CPU_AVX512F}). Full-scope episodes are instruction-set sensitive; '
+             f'refusing to produce a cell on the wrong class.')
 
 import numpy as np   # noqa: E402
 import torch         # noqa: E402
@@ -110,7 +141,7 @@ if args.ic_index is not None:
 ISOLATION = 'fresh_process' if args.ic_index is not None else 'shared_process'
 print(f'[eval-e2e] {len(ics)} start(s) from {args.ic_file}:{args.ic_set} (offset {IC_OFFSET}, isolation {ISOLATION}) '
       f'({sum(1 for e in ics if e.get("uid") is not None)} uid starts, {sum(1 for e in ics if e.get("uid") is None)} pose starts) '
-      f'node={socket.gethostname()} pid={os.getpid()}', flush=True)
+      f'node={socket.gethostname()} pid={os.getpid()} isa={CPU_ISA} avx512f={CPU_AVX512F} cpu="{CPU_MODEL}"', flush=True)
 
 # ---- env: the full scope of the shared full_env, corrected world ----
 os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
@@ -236,6 +267,7 @@ for k, ic in enumerate(ics):
     # node-sensitive (same ckpt+IC+seed flips outcome across nodes) and, in the shared-process protocol, ORDER-dependent
     # (state leaks between episodes). `order` is the position within THIS process, so it is 0 for every isolated cell.
     results.append(dict(ep=IC_OFFSET + k, order=k, node=socket.gethostname(), pid=os.getpid(),
+                        cpu_model=CPU_MODEL, isa=CPU_ISA, avx512f=CPU_AVX512F,
                         ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
                         slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
@@ -253,6 +285,8 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                sim_variant=args.sim_variant, action_repeat=REPEAT, act_selection=act_selection,
                isolation=ISOLATION, ic_index=args.ic_index, ic_offset=IC_OFFSET,
                nodes=sorted({r['node'] for r in results}), pids=sorted({r['pid'] for r in results}),
+               cpu_models=sorted({r['cpu_model'] for r in results}), isa_classes=sorted({r['isa'] for r in results}),
+               avx512f=sorted({bool(r['avx512f']) for r in results}), require_isa=args.require_isa,
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n', eval_fixes='j+l-prime',
                slide_success=stage_counts['slide_success'] / n,
                stages={s: stage_counts[s] / n for s in STAGES},

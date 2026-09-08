@@ -10,8 +10,11 @@ form of episode independence; this script glues the single-episode results back 
 Rules:
   * every expected index 0..n-1 must be present, or the merge FAILS (a missing episode is never silently dropped --
     it would change the denominator and therefore the rate);
-  * the merged summary carries isolation='fresh_process', the set of nodes and pids that produced it, and per-episode
-    node/pid/order stamps as written by eval_e2e.py;
+  * the merged summary carries isolation='fresh_process', the set of nodes, pids, CPU model strings and
+    instruction-set classes that produced it, and per-episode node/pid/order/cpu stamps as written by eval_e2e.py;
+  * a cell whose shards span MORE THAN ONE instruction-set class FAILS. Full-scope outcomes are AVX2-vs-AVX-512
+    sensitive (coordinator 2026-09-07), so such a cell is not one measurement. This cannot happen in job (all shards
+    share the node) but can happen when a killed cell is resumed elsewhere -- which is exactly when it must be loud;
   * scalar protocol fields (mode, seed, ic_file, ic_set, max_steps, sim_variant, action_repeat, delta_cap/leash,
     act_selection) must AGREE across every episode, or the merge fails: a cell assembled from processes that ran
     different protocols is not a cell.
@@ -49,6 +52,12 @@ def main():
     if missing:
         sys.exit(f'FATAL: isolated cell {a.cell} is missing episode(s) {missing} of {a.n} -- refusing to merge a '
                  f'short cell (it would change the denominator)')
+    isas = sorted({str(d['per_episode'][0].get('isa', 'unknown')) for _, d in parts})
+    if len(isas) > 1:
+        cpus = sorted({str(d['per_episode'][0].get('cpu_model', '?')) for _, d in parts})
+        sys.exit(f'FATAL: isolated cell {a.cell} spans instruction-set classes {isas} ({cpus}) -- full-scope outcomes '
+                 f'are AVX2-vs-AVX-512 sensitive, so these shards are not one cell. Re-run the cell on one class '
+                 f'(eval_e2e.py --require-isa) or keep the classes as separate cells.')
     base = parts[0][1]
     for k, d in parts[1:]:
         bad = [f for f in MUST_AGREE if d.get(f) != base.get(f)]
@@ -65,6 +74,8 @@ def main():
     out = dict(base)
     out.update(episodes=n, isolation='fresh_process', ic_index=None, ic_offset=0,
                nodes=sorted({e['node'] for e in eps}), pids=sorted({e['pid'] for e in eps}),
+               cpu_models=sorted({str(e.get('cpu_model', 'unknown')) for e in eps}), isa_classes=isas,
+               avx512f=sorted({bool(e.get('avx512f')) for e in eps}),
                slide_success=sc['slide_success'] / n,
                stages={s: sc[s] / n for s in STAGES}, stage_counts=sc,
                outcomes={o: oc[o] / n for o in OUTCOMES}, slide_routes=routes,
@@ -76,7 +87,8 @@ def main():
                per_episode=eps)
     dst = a.out or os.path.join(a.cell, 'metrics.json')
     json.dump(out, open(dst, 'w'), indent=1)
-    print(f'MERGE-OK {dst}: {n} isolated episodes, nodes {out["nodes"]}, {len(out["pids"])} pids, '
+    print(f'MERGE-OK {dst}: {n} isolated episodes, nodes {out["nodes"]}, isa {out["isa_classes"]}, '
+          f'{len(out["pids"])} pids, '
           f'slide_success {sc["slide_success"]}/{n}, picked {sc["picked"]}/{n}, '
           f'nested_honest {sc["nested_honest"]}/{n} [{out["seconds"]:.0f} s of process time]')
 

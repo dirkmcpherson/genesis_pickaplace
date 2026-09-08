@@ -41,9 +41,12 @@ def cell(run_dir, iset, mode, suffix=''):
         for new, old in WM_ALIAS.items():
             if old in counts:
                 counts[new] = counts[old]
-    return dict(n=n, counts=counts, per_episode=d.get('per_episode'), path=f,
+    pe = d.get('per_episode') or []
+    isas = d.get('isa_classes') or sorted({str(e.get('isa', 'unknown')) for e in pe}) or ['unknown']
+    return dict(n=n, counts=counts, per_episode=pe, path=f,
                 isolation=d.get('isolation', 'shared_process'),
-                nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'])
+                nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'],
+                isas=isas, cpus=d.get('cpu_models') or sorted({str(e.get('cpu_model', 'unknown')) for e in pe}))
 
 
 def strat_counts(c, stage, support_x):
@@ -101,6 +104,9 @@ def main():
     ap.add_argument('--support-x', type=float, default=0.513,
                     help='rnd30 stratification: can x above this is OUT of the training support (DP_PRUNED_GAP §0.4)')
     ap.add_argument('--strat', action='store_true', help='also print the rnd30 in/out-of-support split')
+    ap.add_argument('--isa', default=None, choices=('avx2', 'avx512'),
+                    help='restrict every arm to seeds whose cell ran on this instruction-set class -- the clean '
+                         'same-class comparison. Cells of another class are dropped from the test and reported.')
     ap.add_argument('--cell-suffix', default='',
                     help="'' = the shared-process cells (the PHASE_RESULTS §5.1 protocol, comparable with the "
                          "published world-model row); '_iso' = the isolated cells (one fresh process per start, "
@@ -121,15 +127,37 @@ def main():
                 if not any(c for cs in cells.values() for c in cs):
                     continue
                 n_eps = next(c['n'] for cs in cells.values() for c in cs if c)
+                if args.isa:
+                    for arm in ('dH', 'dDP'):
+                        dropped = [s for s, c in zip(seeds, cells[arm]) if c and args.isa not in c['isas']]
+                        if dropped:
+                            print(f'  --isa {args.isa}: dropping {arm} seeds {dropped} (other instruction-set class)')
+                        cells[arm] = [(c if (c and args.isa in c['isas']) else None) for c in cells[arm]]
+                    if not any(c for cs in cells.values() for c in cs):
+                        continue
                 nodes = sorted({h for cs in cells.values() for c in cs if c for h in c['nodes']})
                 isol = sorted({c['isolation'] for cs in cells.values() for c in cs if c})
+                isa_all = sorted({i for cs in cells.values() for c in cs if c for i in c['isas']})
+                bal = {arm: {} for arm in ('dH', 'dDP')}
+                for arm in ('dH', 'dDP'):
+                    for c in cells[arm]:
+                        if c:
+                            for i in c['isas']:
+                                bal[arm][i] = bal[arm].get(i, 0) + 1
                 print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds | '
-                      f'protocol {"/".join(isol)} | nodes {len(nodes)}: {",".join(nodes)}')
-                if len(nodes) > 1:
-                    print('  NOTE: cells produced on MORE THAN ONE compute node. Long-horizon full-scope episodes are '
-                          'node-sensitive (coordinator 2026-09-07): the same checkpoint/IC/seed can flip outcome '
-                          'between nodes. Seeds are spread across nodes, so this is variance, not bias -- but it '
-                          'inflates the MDE and must be stated wherever these numbers appear.')
+                      f'protocol {"/".join(isol)} | isa {",".join(isa_all)} | nodes {len(nodes)}: {",".join(nodes)}')
+                print(f'  isa balance -- human {bal["dH"]} | machine {bal["dDP"]}')
+                if len(isa_all) > 1:
+                    print('  NOTE: this comparison spans MORE THAN ONE INSTRUCTION-SET CLASS (AVX2 vs AVX-512). '
+                          'Long-horizon full-scope outcomes diverge between the two -- same checkpoint, IC, mode, '
+                          'seed and horizon (coordinator 2026-09-07); node NAME is not the axis and Slurm feature '
+                          'labels are unreliable (a Cascade Lake node advertises `broadwell`), so this is keyed off '
+                          '/proc/cpuinfo. If the balance line above is even across arms this is variance that '
+                          'inflates the MDE; if it is skewed it is BIAS and the arms must be compared within a '
+                          'class (--isa avx2 / --isa avx512).')
+                elif len(nodes) > 1:
+                    print(f'  Cells span {len(nodes)} nodes of ONE instruction-set class ({isa_all[0]}) -- safe to '
+                          f'combine (the divergence axis is the class, not the node name).')
                 print('| stage | human per-seed | human | machine per-seed | machine | Δ | p | MDE |')
                 print('|---|---|---|---|---|---|---|---|')
                 for st in stages:
