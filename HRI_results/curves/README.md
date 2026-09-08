@@ -72,9 +72,10 @@ bounds how finely any of these steps can be read (e2e 50,000 steps per bin).
 | **e2e** | **picked** | **724,997** | **974,996** | **−243,749** | **0.032** |
 | **e2e** | **contact** | **999,996** | **1,149,996** | **−193,750** | **0.044** |
 
-**Pick shows no learning-speed difference** (added at the user's request, 2026-09-08): ignition medians 162,500 human vs
-137,500 machine (Δ +12,500, p 0.505) on the absolute-0.2 crossing, and +21,875 (p 0.505) on the 50 %-of-steady-state
-definition — if anything the machine arm is marginally faster, and neither is distinguishable. So the end-to-end effect is
+**Pick shows no learning-speed difference** (added at the user's request, 2026-09-08): on the absolute-0.2 crossing the
+ignition medians are 162,500 human vs 137,500 machine (Δ mean +12,500, p 0.505); on the 50 %-of-steady-state definition
+199,999 vs 187,499 (Δ mean +3,125, p 0.980). If anything the machine arm is marginally faster, and neither is
+distinguishable. So the end-to-end effect is
 not a general property of the human demonstrations: it appears on the long-horizon task and not on the single-stage one.
 
 The end-to-end effect survives the change of definition (absolute 0.2 threshold → 50 % of each seed's own steady state)
