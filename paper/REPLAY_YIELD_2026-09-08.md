@@ -65,10 +65,26 @@ smaller, and demonstration row count is itself a strong driver in this setting (
 (`MH80`, 80 tapes / 16,406 rows, running at the time of writing); `MH80` − `MH200_re15` is then a clean estimate of the
 re-execution cost at matched scale.
 
+## 4b. Replay filtering SELECTS a well-behaved subpopulation (measured, not inferred)
+Keeping only the tapes that survive a perturbed replay is not a neutral filter. Every MH200 tape was replayed natively
+once and under **two independent** uniform-noise draws at ε 0.15 with seeds disjoint from the build's
+(`baselines/robomimic/tape_robustness_probe.py`, `$LAB/robomimic_data/tape_robustness.json`):
+
+| group, defined by the BUILD's draw | n | native replay | independent ε 0.15 draws survived |
+|---|---|---|---|
+| survived the build's harsher ε 0.20 draw | 61 | **61 / 61** | 80 / 122 = **0.656 per draw** |
+| survived ε 0.15 but not ε 0.20 | 35 | **35 / 35** | 44 / 70 = **0.629 per draw** |
+| the remaining tapes | 104 | **89 / 104 = 0.856** | 80 / 208 = **0.385 per draw** |
+
+Survival is therefore a property of the tape, not luck of the draw: tapes selected by *one* perturbed replay survive
+*independent* perturbations at 0.63–0.66 per draw against 0.385 for the rest (+0.25 absolute, +68 % relative), and they
+replay natively 100 % against 85.6 %. Any arm built by replay-filtering is thus **quality-selected as well as smaller**,
+and a comparison against an unfiltered arm confounds three things at once — size, selection and re-execution.
+
 ## 5. What to take from this into other work
 1. **Budget for the build, not just the training.** A "replay the recorded actions with a small modification" design
    loses most of its data before any learning starts — here, between 51 % and 100 % of it depending on the edit.
-2. **What survives is selected and smaller**, and both properties independently depress downstream performance; a
+2. **What survives is selected and smaller** (§4b measures the selection directly), and both properties independently depress downstream performance; a
    re-executed arm is not a drop-in substitute for the arm it came from, and comparisons against native arms are
    confounded unless a size-matched native control is included.
 3. **Reproduction rate depends on the generator's action statistics**, so the same replay design can be cheap for human
