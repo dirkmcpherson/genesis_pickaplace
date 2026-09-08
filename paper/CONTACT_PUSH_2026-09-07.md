@@ -79,26 +79,29 @@ Disclosure carried by (g'''): the (j)/(l′) evaluator runs ONE post-episode set
 
 ## 6. Verdict — RESULTS-PENDING
 
-## 7. Determinism note (conflict with the eval-fixes agent's check — resolved as far as the data allows)
+## 7. Determinism note — RESOLVED: the axis is the machine's physical core count, not the node and not the CPU family
 
-**What I reported, and its exact provenance.** The figure came from the FIRST tool-point sweep, jobs **3350666–74** (submitted 15:08, killed by the disk-full outage at ~17:00; 85 cells finished, preserved as `$W/cpsc_v1_backup/`). It was **not** the withdrawn wrist-based version: the wrist submission 3350229–36 was cancelled with **zero** cells written, so no number of mine has ever come from it. The comparison was **cell of record vs `_cp` re-score** (`runs/<run>/fresh_eval_polE_mode/metrics.json` vs `.../fresh_eval_polE_mode_cp/metrics.json`), on per-episode **`steps`, `outcome` and `stages.contact`** — the same three fields as the eval-fixes agent's `$W/repro_check.py`. So we compared the same quantities, in the same direction; the disagreement is not a units or field mismatch.
+**Provenance of my original figure.** It came from the first tool-point sweep, jobs **3350666–74** (killed by the disk-full outage; 85 cells kept as `$W/cpsc_v1_backup/`), NOT from the withdrawn wrist version (submission 3350229–36 wrote zero cells). The comparison was cell of record vs `_cp` re-score on per-episode `steps`, `outcome`, `stages.contact` — the same three fields as the eval-fixes agent's `$W/repro_check.py`. Same quantities, same direction.
 
-**Re-audited over all 85 v1 cells** (`$W/v1_stamp.py`): 15 cells differ, 70 are bit-identical.
+**Withdrawn:** the attribution to *node identity*, and the framing that the job's allocation geometry (`-n 4` vs 4 evals on a 16-core allocation) was the driver. Both are wrong.
 
-| family | cells compared | mismatching | example |
+**The resolved account** (`$W/core_audit2.py`, every comparison joined to the SLURM node that produced each cell of record and each re-run, with `CPUTot` and CPU family per node; 128 comparisons across both sweeps, all with a resolved record node):
+
+| record vs re-run | comparisons | bit-identical | differing |
 |---|---|---|---|
-| contact after release (`scope='contact'`, polE_contact) | 16 | **11** | `dH_..._subfloor_s0` polE mode 71/160 steps differ; `dDP_..._n11_s7` 99/160 |
-| carrycontact (polE_place + holdE_place) | 32 | 0 | — |
-| end-to-end (rnd30 + hold15) | 33 | **4** (all four cells of `dHfull_all_s2`) | rnd30 mode 22/30 steps, 14/30 outcomes |
-| holdE_contact | 4 | 0 | — |
+| **same physical core count** | 53 | **53** | **0** |
+| different physical core count | 75 | 56 | 19 |
 
-**What I withdraw.** The attribution to compute nodes. It rested on a 4-cells-per-node coincidence, and the re-audit kills it: on pax053, four contact cells started in the same second under the same code and bank, and three diverged while one (`dH_..._subfloor_s3`, 0/160) did not; mismatches also appear under both code versions present during that sweep (9 cells ran the pre-(j) evaluator, 6 the post-(j) one). **There is no evidence that our evaluations are node-dependent, and the claim that they are is withdrawn.** It should not be cited, and no phase number rests on it: the aggregate rates moved by ≤ 0.011 in every affected cell (contact after release: record 0.609 vs re-score 0.613 human, 0.605 vs 0.602 machine).
+- **Same core count reproduces exactly, without exception** (53/53), across different nodes, different CPU families and different code versions ((g) vs (g)+(j)+(l′)).
+- **All 19 differing comparisons have a 36-core machine on exactly one side** — record `pax070`/`pax109` (36c, broadwell) re-run on 48c/64c, or 48c/64c records re-run on `pax070`. No pair of non-36-core machines ever disagreed: broadwell-40c, cascadelake-48c, sapphirerapids-64c and emeraldrapids-64c all agree with each other bit-for-bit. So it is thread count, not microarchitecture: `pax069` (broadwell, 40c) agrees with `pax012` (sapphirerapids, 64c) and both disagree with `pax070` (broadwell, 36c).
+- **A core-count change does not force divergence** (56 of 75 unequal-count comparisons are still bit-identical): only cells with episodes near a decision boundary amplify it, which is why the free-standing-can contact scope shows it and carrycontact (short episodes from a stable grasp) never does.
+- **The two sweeps agree with each other**: `dH_..._subfloor` s0/s4/s7 give identical difference triples in v1 (re-run on 48c/64c) and v3 (re-run on 64c/48c) — (71,40,31), (63,31,23), (52,16,12) — while their record was made on the 36-core `pax070`. The re-score is deterministic; the 36-core cell of record is the outlier.
+- **The `pax053` "three of four" anomaly is resolved and was never anomalous**: those four cells' *records* came from two different machines — s1/s5/s7 from `pax070` (36c, differ) and s3 from `pax119` (48c, identical to the 64c re-run). Same-core-count identity holds there too.
+- **Effect size**: aggregate rates move by ≤ 0.011 (contact after release, human 0.609 → 0.613; machine 0.605 → 0.602); the arm contrast is a difference of two arms evaluated in the same sweep on the same machine mix, so it is far less sensitive than per-episode identity.
 
-**What survives, narrowly.** In the artefacts of that one sweep, 15 of 85 cells are not bit-identical to their cells of record, concentrated in the free-standing-can contact scope. Bank content is ruled out (every v1 cell that stamped a bank hash stamped the ORIGINAL content, `8f9f89d4…`; the canonical file was swapped to the rebuilt physical-grip bank only after those lanes ended). Code version is ruled out as the sole cause (mismatches on both sides of the (j) landing). What remains untested is the run condition: that sweep ran on the shared trees while they were being edited, with four evals per node, on a cluster whose filesystem was filling to 0 bytes free — the outage that killed it.
+**Consequence for these tables (open at the time of writing).** Every cell of this sweep is *unpinned*: the Genesis/taichi CPU thread count follows the machine's physical cores, so a cell's per-episode trace is reproducible only on a machine with the same core count. The eval-fixes agent is sweeping `TI_NUM_THREADS` ∈ {4, 8, 36} on 40- and 64-core nodes against the 36-core baseline; if pinning makes results hardware-independent, this sweep should be re-run pinned before its numbers are quoted, and §5/§6 will be regenerated from the pinned cells. Nothing is re-run until that verdict arrives.
 
-**The discriminating test is the current sweep.** Jobs 3354669–76 re-run every one of those cells from a frozen code copy on a healthy filesystem, and the eval-fixes agent's independent check of its first 23 cells (3488 episodes, same three fields) finds **zero** differences and aggregate success 0.7314 vs 0.7314 — as does my own first v3 cell. If the 11 contact-scope cells reproduce exactly this time, the v1 divergence was an artefact of that sweep's run conditions and nothing about the contact scope is irreproducible; that is the reading the evidence currently points to, and §7b will record the per-cell outcome when the sweep lands.
-
-### 7b. Per-cell reproduction of the current sweep — RESULTS-PENDING
+### 7b. Per-cell reproduction of the current sweep — RESULTS-PENDING (the table above is the audit as of the cells finished so far)
 
 ### 7c. The v1 observation as originally written (superseded by §7, kept for the record)
 
