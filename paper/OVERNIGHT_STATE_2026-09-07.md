@@ -177,3 +177,15 @@ The pick table was including dead seeds in arm means without saying so. They are
 **Why this matters for a result already on the table.** One dead seed moves an arm's random-start mean by about 0.07. The RLPD pick comparison (human 0.600 vs machine 0.517, Δ +0.083, p 0.485) has **exactly one dead seed in each arm**, so the point estimate is roughly unaffected — but the variance is not, and this is the concrete reason that null carries the project's widest minimum detectable effect (0.345, per `REVIEW_GUIDE` §8 item 1). The honest framing for the paper is that the RLPD pick cell is dominated by seed mortality rather than by any demonstration-source effect, and that reporting it as "no difference" without the detectable-effect figure would overstate it.
 
 Also validated in passing: the within-arm sampled-versus-deterministic difference is about one episode in thirty (human −1.00, machine −0.88), so the statistic switch the user requested costs almost nothing in level and does not disturb the comparisons.
+
+# 05:45 — THE ANSWER FOR §5.1, AND THE NIGHT'S MOST CONSEQUENTIAL FINDING
+
+**Good news first: the published end-to-end cell reproduces exactly.** 0/30 episode differences, aggregates identical (picked 19/30, contact 13/30, nested 10/30). Whole-sequence reproduction on a matched CPU model holds.
+
+**But two things about that cell change what it means:**
+
+1. **The published `nested` over-counts by 2.5×.** It is the training proxy (10/30 = 0.333); the honest settled predicate gives **4/30 = 0.133**, with 6 of the 10 proxy-only. DP and RLPD report the honest one, so the three-learner table cannot mix them without correction. Related: `placed_v2` reads 8/30, so **8 episodes did release the can onto the shelf** — this finally settles the "policies carry without releasing" reading in §5.1/§2.7, which was wrong (I corrected it once already on weaker evidence; this measurement closes it).
+
+2. **Hardware class is partially confounded with ARM in the published 8 v 8.** The machine arm is 8/8 AVX-512 sapphirerapids; the human arm has two cells on AVX2 broadwell and one on graniterapids. Given that instruction set demonstrably flips long-horizon outcomes, arm and hardware are not independent in that comparison. This was invisible until cells were mapped to nodes, and it is the single most consequential thing found tonight.
+
+**Remedy, registered as amendment (t) and approved:** re-score all 64 end-to-end cells on one pinned CPU model, pinned by `/proc/cpuinfo` model string or explicit node list (never by Slurm label, which misreports). Phase cells need no pinning. Published §5.1 stands as a record of what was measured, superseded by the pinned re-score for the three-learner table, with both reported and the difference attributed.
