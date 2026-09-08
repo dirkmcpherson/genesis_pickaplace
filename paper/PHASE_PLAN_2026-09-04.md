@@ -624,3 +624,52 @@ This inverts the intuitive order — power first, controls later — and it is t
 A targeted instruction ("deprioritise A4, keep A6") and a blanket one ("robomimic on the backburner") were issued to two different lanes, and the blanket one silently overrode the targeted one, burying the single experiment that had been explicitly protected. It was caught only because the agent holding it queried the arithmetic rather than executing quietly.
 
 **Two standing habits adopted.** When an instruction names a *lane* rather than a job family, state the blast radius back before acting — "that is 17 jobs including the 16 you protected, confirm?" costs one line. And **prefer reversible actions on blanket instructions**: deprioritising was undoable, which is the only reason this was recoverable. The identical error under a "cancel" instruction would have destroyed completed work with nothing to restore.
+
+### Amendment (v) — DE-CONFOUNDED end-to-end machine arm: first-attempt-per-IC, all three learners (registered 2026-09-08, user's top priority, BEFORE any build or run)
+
+**Why.** The end-to-end machine set of record (`dDPfull`) keeps the **highest-reward attempt per IC** from a 195-tape
+harvest (`--one-per-ic-best`), while the human set keeps **every** attempt including failures. Measured from the surviving
+harvest (72 ICs, 64 with >1 attempt; attempt order from the sequential rollout uids):
+
+| machine set | Σ reward | nested demos | picked |
+|---|---|---|---|
+| BEST per IC (of record) | 206 | 16 | 70 |
+| **FIRST attempt per IC** | **131** | **8** | 63 |
+| HUMAN `dHfull_all` | 118 | 3 | 64 |
+
+Selection raises reward **+57 %** and **doubles** demonstrated completions; `best ≠ first` on **24 of 72** ICs. Against the
+human set the gap largely collapses without it (Σ 131 v 118; picked 63 v 64). So any human-vs-machine end-to-end result —
+including the learning-speed effect, the only positive we have — is currently confounded with **how we chose tapes**.
+Selection cannot be matched upward (each human uid has one recorded attempt, deterministic replay reproduces it), so the
+only symmetric fix is to **de-select the machine arm**.
+
+**Set.** `dDPfull_first` = one tape per `ic_uid` from `$W/demos_state_full/src_dDPfull` (195 tapes, 72 ICs), chosen as the
+**lowest rollout uid** = the first attempt (`to_dreamer_native.py --one-per-ic-first`, new flag; deterministic, no reward
+term). Built in all three formats by the existing `e2e_build_sets.sh` path so it is row-for-row comparable with the sets of
+record. Human arm unchanged (`dHfull_all`).
+
+**Arms and budget.** Three learners — r2dreamer, RLPD, Diffusion Policy — **4 seeds** on `dDPfull_first` each, at the same
+budgets as their sets of record (WM 2e6 sim steps, RLPD 250k decisions, DP 100k grad steps). This is a **pilot**: 4 seeds
+cannot support an equivalence claim (exact permutation floor p = 0.029), and expansion to 8 is gated on feasibility, not on
+the sign of any difference.
+
+**Statistic.** Unchanged from (d)/(l): rnd30 (random-uniform starts) as the cell of record, all stages reported, exact
+two-sided permutation on per-seed counts, pinned to one CPU class. `slide_success` remains a diagnostic while (p) clause 5
+is uncalibrated.
+
+**Predictions (registered).**
+- **P1 — the source null survives de-selection.** |Δ(human − machine-first)| < 0.10 at every stage either arm reaches
+  ≥ 0.2 on rnd30. If it does, the end-to-end null is a statement about demonstration source and not about tape choice.
+- **P2 — the selection contrast is positive.** machine-best ≥ machine-first on final-stage rates (world model, where both
+  arms exist at 8 and 4 seeds). If machine-first ≥ machine-best, then best-of-3 selection did not help the learner even
+  though it improved the data, which is itself reportable.
+- **P3 — learning speed, the decisive one.** The human arm currently ignites ~156k steps before machine-best on `picked`
+  (p 0.019). Registered readings, fixed in advance: **(a)** the human advantage persists or grows against machine-first →
+  the effect is not explained by selection and survives as the project's one positive result; **(b)** it shrinks toward
+  zero → the effect was substantially our filtering, and no source claim can rest on it; **(c)** it reverses → report as
+  such. No outcome is treated as confirmatory of a source effect on its own, because the sets still differ in idle
+  fraction (36.5 % v 0.7 %) and in whether failures are included.
+
+**Disclosed.** The machine-first set is *not* matched to the human set on rows or on outcome content; it is matched on
+**protocol** (one attempt per start, no selection), which is the axis the confound lives on. Four seeds per learner; the
+existing 8-seed machine-best arms remain the published comparison until this reads out.
