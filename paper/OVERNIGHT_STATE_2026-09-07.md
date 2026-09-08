@@ -2,6 +2,8 @@
 
 *Everything below this brief is the chronological record, including entries later corrected. Read the brief; dip into the chronology only for provenance. Nothing was published, trained on a wrong target, or lost.*
 
+**Before anything else: the VPN dropped at 22:37 and the cluster is unreachable from this box.** Nothing submitted was lost and jobs kept running, but the first thing to do on reconnect is kill up to 30 stray probe processes on the shared login node — they were slow enough to make `ssh` itself time out. Details and the full command list are in the last section of this document.
+
 ## 1. Decisions waiting for you (nothing else is blocked)
 
 1. **Which human tapes the Slide phase trains on**: 15 (the simulation completed the slide) or ~30 (you performed one, the sim fell 2–4 cm short on 16 of them). Full argument in `PHASE_PLAN` amendment (q), including the asymmetry that machine demonstrations are sim-achievable by construction. Slide's 32 jobs are held pending this.
