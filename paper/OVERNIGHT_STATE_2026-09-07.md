@@ -2,7 +2,7 @@
 
 *Everything below this brief is the chronological record, including entries later corrected. Read the brief; dip into the chronology only for provenance. Nothing was published, trained on a wrong target, or lost.*
 
-**Before anything else: the VPN dropped at 22:37 and the cluster is unreachable from this box.** Nothing submitted was lost and jobs kept running, but the first thing to do on reconnect is kill up to 30 stray probe processes on the shared login node — they were slow enough to make `ssh` itself time out. Details and the full command list are in the last section of this document.
+**Before anything else: the VPN dropped at 22:37 and the cluster is unreachable from this box.** Nothing submitted was lost and jobs kept running. **The first thing to do on reconnect is kill roughly 30 stray probe processes on the shared login node — and it is now confirmed they are still there.** The attempt to kill them never reached the cluster: the link had already failed at hostname resolution, so those commands went nowhere. They are ours, they were slow enough to make connections time out on their own, and they are running on infrastructure other people share, so clearing them comes before any science. Details and the full command list are in the last section of this document.
 
 ## 1. Decisions waiting for you (nothing else is blocked)
 
@@ -48,6 +48,10 @@
 - **A reproducibility finding worth publishing**: our contact-rich results are bit-reproducible within an instruction-set class (53/53) and can flip across AVX2/AVX-512 over long horizons (agreement to 1e-9 at decision 12, outcome flip by 32). Slurm's own feature labels misreport CPUs, so pinning must read `/proc/cpuinfo`.
 - **The carrycontact null survives every predicate** (contact, geometric push, release-based) — a real robustness check — while confirming those policies essentially never release (3 releases in 2368 episodes).
 - **The count reconciliation is closed.** 21/26/16/11/7/14/15/30 are one lineage difference plus one predicate change plus one design choice; the 11+7=18 arithmetic was a coincidence that does not survive a lineage change.
+
+## 3a. One registration deviation to disclose
+
+The robomimic leg's **originally registered primary contrast was PH200**, the single-human demonstration set, and it has never been run. What we have instead is MH200, the mixed-skill human set. That substitution was your call and a principled one — our own Genesis dataset is mixed-human, so the mixed-skill set is the honest analogue — but it is a departure from what was registered and belongs in the write-up as such rather than being quietly absent. Running it later costs roughly 8 GPU-hours if we want the registered contrast on the record too.
 
 ## 4. Running / held
 
