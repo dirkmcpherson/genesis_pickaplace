@@ -119,12 +119,15 @@ def main():
                          'mirrored by the demo encoder, the in-train eval, and '
                          'wandb_eval --action-mode auto (the silent-default rule).')
     # --- shared-with-SACfD flags (mirror train_sacfd_full) ---
-    ap.add_argument('--scope', choices=['full', 'pick', 'place'], default='pick',
+    ap.add_argument('--scope', choices=['full', 'pick', 'place', 'contact'], default='pick',
                     help='pick: +1 and terminate on the pick (phase-1 paper core); place: PHASE_PLAN amendment (h) '
                          '(2026-09-07) -- reset restores a banked pick-grant entry (--entry-bank), +1 and terminate '
-                         'on placed_v2, tips terminate without penalty (phase_sparse), demos = --demo-format segment')
+                         'on placed_v2, tips terminate without penalty (phase_sparse), demos = --demo-format segment; '
+                         'contact: the SLIDE phase of amendment (m) -- reset restores a banked placed_v2 state '
+                         '(released, on the shelf), +1 and terminate on the env `contact` predicate (rewards are NOT '
+                         'changed by amendment (l): slide_success is the eval statistic, never a training signal)')
     ap.add_argument('--entry-bank', default=None,
-                    help='scope=place: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
+                    help='scope=place/contact: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
                          'REQUIRED for place (the env default bank is the OLD world)')
     ap.add_argument('--action-mode', choices=['absolute', 'delta_joint'],
                     default='delta_joint',
@@ -217,17 +220,18 @@ def main():
             f'delta_ref=target); got action_mode={args.action_mode} delta_ref={args.delta_ref}')
         assert args.pick_hold_reward == 'off', 'no hold-reward relabel for native tapes (not built)'
         assert args.scope == 'pick', 'contract-v1 tapes are pick-scope recordings'
-    if args.scope == 'place':
-        # PHASE_PLAN amendment (h): every place-scope precondition stated, none defaulted
-        assert segment, 'scope=place trains on --demo-format segment (the r2dreamer-native place segments)'
-        assert args.entry_bank and os.path.exists(args.entry_bank), f'scope=place needs --entry-bank (got {args.entry_bank})'
+    PHASE_SCOPES = ('place', 'contact')
+    if args.scope in PHASE_SCOPES:
+        # PHASE_PLAN amendments (h)/(m): every phase-scope precondition stated, none defaulted
+        assert segment, f'scope={args.scope} trains on --demo-format segment (the r2dreamer-native phase segments)'
+        assert args.entry_bank and os.path.exists(args.entry_bank), f'scope={args.scope} needs --entry-bank (got {args.entry_bank})'
         assert args.action_mode == 'delta_joint' and args.delta_ref == 'target' and args.action_repeat == 4, (
             'place protocol: delta_joint / target / action_repeat 4')
         assert args.pick_shaping == 'off' and args.pick_hold_reward == 'off', 'pick levers are not place levers'
-        assert args.eval_freq == 0, 'in-train VideoEvalCallback evaluates the PICK; place runs are scored post hoc by eval_place.py (pass --eval-freq 0)'
-        assert args.train_max_steps == 600, f'place-scope horizon of record is 600 sim steps (got {args.train_max_steps})'
+        assert args.eval_freq == 0, 'in-train VideoEvalCallback evaluates the PICK; phase runs are scored post hoc by eval_place.py (pass --eval-freq 0)'
+        assert args.train_max_steps == 600, f'phase-scope horizon of record is 600 sim steps (got {args.train_max_steps})'
     else:
-        assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place levers'
+        assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place/contact levers'
     if args.demo_shaping == 'auto':
         demo_shaping = native and args.pick_shaping == 'on'
     else:
@@ -266,7 +270,7 @@ def main():
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
-                      entry_bank=args.entry_bank, phase_sparse=(args.scope == 'place'),
+                      entry_bank=args.entry_bank, phase_sparse=(args.scope in PHASE_SCOPES),
                       pick_hold_reward=hold_reward, pick_hold_k=args.pick_hold_k,
                       pick_shaping=(args.pick_shaping == 'on'),
                       # shaping gamma = the AGENT's discount (Ng invariance needs them
@@ -282,13 +286,14 @@ def main():
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
-    if args.scope == 'place':
+    if args.scope in PHASE_SCOPES:
         import sim_variants as _sv
         from replay_harness import BOX_TOP_Z as _BT
         _want = float(_BT) + float(_sv.VARIANTS[args.sim_variant].get('shelf_dz', 0.0)) if args.sim_variant != 'base' else float(_BT)
         assert env.phase_sparse and abs(env.shelf_top_z - _want) < 1e-9, (env.phase_sparse, env.shelf_top_z, _want)
-        print(f'[env] place scope: entry bank {args.entry_bank} ({len(env._entries)} entries), shelf_top_z {env.shelf_top_z:.3f}, '
-              f'phase_sparse (tips terminate, no penalty), +1 on placed_v2', flush=True)
+        print(f'[env] {args.scope} scope: entry bank {args.entry_bank} ({len(env._entries)} entries), shelf_top_z '
+              f'{env.shelf_top_z:.3f}, phase_sparse (tips terminate, no penalty), +1 on '
+              f'{"placed_v2" if args.scope == "place" else "contact"}', flush=True)
     assert env.pick_shaping_terminal_zero == (args.pick_shaping_terminal_zero == 'on')
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
@@ -344,7 +349,7 @@ def main():
         from place_demos import segment_transitions, print_segment_census
         transitions, census = segment_transitions(
             str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
-                                                    delta_cap=env.delta_cap, phase='place', terminal_reward=1.0))
+                                                    delta_cap=env.delta_cap, phase=args.scope, terminal_reward=1.0))
         print_segment_census(census, tag=args.demo_dir)
         assert census['n_transitions'] > 0, 'empty segment demo set'
         norm = None

@@ -95,8 +95,8 @@ def content_sha(paths):
     return h.hexdigest()
 
 
-def cut_one(z, k0, k1):
-    """FULL contract-v1 tape (np.load'ed) -> dict of the [k0, k1] place segment in contract-v1 layout."""
+def cut_one(z, k0, k1, phase_name='place'):
+    """FULL contract-v1 tape (np.load'ed) -> dict of the [k0, k1] phase segment in contract-v1 layout."""
     n_tape = int(z['n']); rep = int(z['action_repeat'])
     assert 0 <= k0 < k1 < n_tape, (k0, k1, n_tape)
     n = k1 - k0 + 1
@@ -116,9 +116,9 @@ def cut_one(z, k0, k1):
     for k in z.files:   # every scalar stamp travels (act_mode, action_repeat, delta_cap, delta_leash, delta_ref, sim_variant, ...)
         if k not in out and np.asarray(z[k]).shape == ():
             out[k] = z[k]
-    out['label'] = np.str_('success'); out['stage'] = np.str_('placed_v2'); out['end_reason'] = np.str_('terminated')
-    out['scope'] = np.str_('place'); out['phase'] = np.str_('place'); out['k_entry'] = np.int64(k0); out['k_grant'] = np.int64(k1)
-    assert bool(out['picked'][0]) if 'picked' in out else True, 'row k_pick must be the pick grant (picked True)'
+    out['label'] = np.str_('success'); out['stage'] = np.str_(phase_name); out['end_reason'] = np.str_('terminated')
+    out['scope'] = np.str_(phase_name); out['phase'] = np.str_(phase_name); out['k_entry'] = np.int64(k0); out['k_grant'] = np.int64(k1)
+    assert bool(out['picked'][0]) if 'picked' in out else True, 'the entry row must be past the pick (picked True)'
     return out
 
 
@@ -141,7 +141,8 @@ def cmd_cut(args):
         ph = phases.get(base)
         if ph is None:
             z = np.load(f, allow_pickle=True); u = int(z['ic_uid']) if 'ic_uid' in z.files else int(z['uid']); ph = phases.get(str(u))
-        if not ph or ph.get('k_pick') is None or ph.get('k_placed_v2') is None:
+        k0key, k1key = (('k_pick', 'k_placed_v2') if args.phase == 'place' else ('k_placed_v2', 'k_contact'))
+        if not ph or ph.get(k0key) is None or ph.get(k1key) is None or not (ph[k1key] > ph[k0key]):
             n_no_phase += 1; continue
         uid = int(ph['uid'])
         if args.one_per_ic:
@@ -151,9 +152,9 @@ def cmd_cut(args):
         if keep_T is not None:
             if uid not in keep_T:
                 n_not_kept += 1; continue
-            assert keep_T[uid] == ph['k_placed_v2'] - ph['k_pick'] + 2, (base, uid, keep_T[uid], ph)
-        plan.append((f, uid, int(ph['k_pick']), int(ph['k_placed_v2'])))
-    print(f'[cut] {len(files)} tapes in {args.src}: {n_no_phase} never reached placed_v2, {n_dup} duplicate-IC skipped, '
+            assert keep_T[uid] == ph[k1key] - ph[k0key] + 2, (base, uid, keep_T[uid], ph)
+        plan.append((f, uid, int(ph[k0key]), int(ph[k1key])))
+    print(f'[cut] phase={args.phase}: {len(files)} tapes in {args.src}: {n_no_phase} never reached the phase boundary, {n_dup} duplicate-IC skipped, '
           f'{n_not_kept} not in the matched set, {len(plan)} cut')
     if keep_T is not None:
         assert len(plan) == len(keep_T), (len(plan), len(keep_T))
@@ -169,7 +170,7 @@ def cmd_cut(args):
         z = np.load(f, allow_pickle=True)
         assert str(_scalar(z['scope'])) == 'full' and str(_scalar(z['contract'])) == 'v1', f
         svs.add(str(_scalar(z['sim_variant']))); reps.add(int(z['action_repeat'])); caps.add(round(float(z['delta_cap']), 6))
-        ep = cut_one(z, k0, k1)
+        ep = cut_one(z, k0, k1, phase_name=args.phase)
         stem = os.path.basename(f).replace('.npz', '')[-6:]   # the recorder's 6-digit rollout index (merged dirs prefix the source dir)
         assert stem.isdigit() and len(stem) == 6, (f, stem)
         dst = os.path.join(args.out, f'{stem}.npz')
@@ -182,14 +183,15 @@ def cmd_cut(args):
         sys.exit(f'FATAL: tapes are stamped sim_variant={sv}, expected {args.sim_variant}')
     rows = [c['rows'] for c in cuts.values()]
     man = dict(set=os.path.basename(os.path.normpath(args.out)), built=time.strftime('%Y-%m-%dT%H:%M:%S'), contract='v1', sim_variant=sv,
-               action_repeat=reps.pop(), delta_cap=caps.pop(), scope='place', phase='place', role='place-phase DP set (PHASE_PLAN amendment (h))',
+               action_repeat=reps.pop(), delta_cap=caps.pop(), scope=args.phase, phase=args.phase,
+               role=f'{args.phase}-phase DP set (PHASE_PLAN amendment {"(h)" if args.phase == "place" else "(m)"})',
                N=len(written), n_kept=len(written), n_success=len(written), n_fail=0, decisions_total=int(sum(rows)), decisions_p50=float(np.median(rows)),
                decisions_min=int(min(rows)), decisions_max=int(max(rows)), one_per_ic=bool(args.one_per_ic), keep_from=(os.path.abspath(args.keep_from) if args.keep_from else None),
                src=os.path.abspath(args.src), phases_json=os.path.abspath(args.phases), cuts=cuts, chosen=sorted(os.path.basename(p) for p in written),
                content_sha256=content_sha(written), builder='baselines/rl/place_demos.py cut')
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
     open(os.path.join(args.out, 'episode_list.txt'), 'w').write('\n'.join(man['chosen']) + '\n')
-    print(f'[cut] wrote {len(written)} place tapes -> {args.out} (rows total {sum(rows)}, p50 {int(np.median(rows))}, '
+    print(f'[cut] wrote {len(written)} {args.phase} tapes -> {args.out} (rows total {sum(rows)}, p50 {int(np.median(rows))}, '
           f'min {min(rows)}, max {max(rows)}; sha {man["content_sha256"][:16]})')
 
 
@@ -226,6 +228,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
     c = sub.add_parser('cut'); c.add_argument('--src', required=True); c.add_argument('--phases', required=True); c.add_argument('--out', required=True)
+    c.add_argument('--phase', choices=['place', 'contact'], default='place',
+                   help="place = [k_pick, k_placed_v2] (default, unchanged); contact = [k_placed_v2, k_contact], the SLIDE "
+                        "phase of PHASE_PLAN amendment (m): entry = the released placed-on-shelf state")
     c.add_argument('--keep-from', default=None); c.add_argument('--one-per-ic', action='store_true'); c.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
     c.add_argument('--force', action='store_true'); c.add_argument('--dry-run', action='store_true'); c.set_defaults(fn=cmd_cut)
     k = sub.add_parser('check'); k.add_argument('--raw', required=True); k.add_argument('--segments', required=True); k.set_defaults(fn=cmd_check)

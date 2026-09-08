@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""PLACE-phase evaluator for RLPD (SB3 SAC .zip) and Diffusion Policy (lerobot dir) checkpoints from an ENTRY
+"""PHASE evaluator (place / contact) for RLPD (SB3 SAC .zip) and Diffusion Policy (lerobot dir) checkpoints from an ENTRY
 BANK -- the r2dreamer place protocol (PHASE_PLAN_2026-09-04 §1/§4, eval_genesis.py --entry-bank), same env, same
 predicates, same metrics.json layout, so `phase_table`-style readers work across learners.
 
@@ -33,6 +33,14 @@ sys.path.insert(0, str(REPO / 'baselines')); sys.path.insert(0, str(REPO / 'base
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 ap.add_argument('--kind', choices=('sac', 'dp'), required=True)
 ap.add_argument('--checkpoint', required=True)
+ap.add_argument('--scope', choices=('place', 'contact'), default='place',
+                help="place (default, unchanged): entry = the pick grant, success = placed_v2. contact = the SLIDE phase "
+                     "(PHASE_PLAN amendment (m)): entry = a banked placed_v2 state (released, on the shelf), success = "
+                     "`slide_success` of amendments (l)/(l') -- picked earlier and pick-can/goal contact and grip_cmd < 0.3 "
+                     "and can in the shelf footprint with tilt < 20, evaluated over the first 12 frames of the existing "
+                     "100-step end-of-episode settle with the last command held. That predicate is NOT reimplemented here: "
+                     "GenesisCanEnv.end_of_episode() (the eval-fixes agent's landed (j)/(l') implementation) is called once "
+                     "per episode and its dict is recorded verbatim. Bare `contact` is reported alongside for continuity.")
 ap.add_argument('--entry-bank', required=True)
 ap.add_argument('--out', required=True)
 ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
@@ -110,13 +118,17 @@ apply_pre(args.sim_variant)
 from full_env import FullTaskEnv   # noqa: E402
 import sim_variants as _sv          # noqa: E402
 from replay_harness import BOX_TOP_Z   # noqa: E402
-env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='place', entry_bank=str(BANK_USED), phase_sparse=True,
+env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope=args.scope, entry_bank=str(BANK_USED), phase_sparse=True,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
 apply_post(env, args.sim_variant)
 _want_top = float(BOX_TOP_Z) + float(_sv.VARIANTS[args.sim_variant].get('shelf_dz', 0.0))
 assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
-assert env.phase_sparse and env.scope == 'place' and env.action_repeat == REPEAT and env.delta_ref == 'target', vars(env).keys()
+assert env.phase_sparse and env.scope == args.scope and env.action_repeat == REPEAT and env.delta_ref == 'target', vars(env).keys()
+SUCCESS_KEY = 'placed_v2' if args.scope == 'place' else 'slide_success'
+if args.scope == 'contact':
+    assert hasattr(env.genv, 'end_of_episode'), ('this checkout has no GenesisCanEnv.end_of_episode() -- the slide_success '
+                                                 'implementation of amendments (j)/(l) must be present (cluster/eval_fixes/slide_success_patch.py)')
 entries = list(env._entries)
 if args.limit:
     entries = entries[:int(args.limit)]
@@ -159,8 +171,13 @@ else:
 # ---- episodes: one per entry, in order ----
 import cv2   # noqa: E402
 OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
-STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'nested')
-counts = dict(placed_v2=0, tipped=0, timeout=0, restore_failed=0)
+STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'nested') + (('slide_success',) if args.scope == 'contact' else ())
+counts = {SUCCESS_KEY: 0, 'tipped': 0, 'timeout': 0, 'restore_failed': 0}
+if args.scope == 'contact':
+    counts['contact_no_slide'] = 0
+routes = {}       # slide_success route census: 'sustained' (window closed in-episode) vs 'settle' (only in the held continuation)
+n_contact = 0     # bare `contact` grants, reported alongside the statistic of record
+n_nested = 0      # the settled nested read that end_of_episode() returns (continuity column)
 stage_counts = {k: 0 for k in STAGES}
 results = []
 t_all = time.time()
@@ -175,7 +192,7 @@ for k, e in enumerate(entries):
             raise
         counts['restore_failed'] += 1
         results.append(dict(ep=k, uid=uid, entry_frame=frame, outcome='restore_failed', steps=0, reward=0.0, seconds=round(time.time() - t0, 1),
-                            video=None, stages={s: False for s in STAGES}))
+                            video=None, stages={s: False for s in STAGES}, slide_route=None))
         print(f'ep{k}: uid{uid}@{frame} restore_failed (counted as failure)', flush=True)
         continue
     policy_reset()
@@ -190,11 +207,28 @@ for k, e in enumerate(entries):
         if args.video:
             frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
         done = bool(term or trunc)
-    success = ('placed_v2' in env._granted) or bool(info.get('placed_v2'))
     tipped = bool(info.get('tipped'))
-    outcome = 'placed_v2' if success else ('tipped' if tipped else 'timeout')
-    counts[outcome] += 1
+    eoe = None; route = None
+    if args.scope == 'contact':
+        # the landed (j)/(l') implementation: ONE post-episode settle (100 scene steps, last command held) that yields both
+        # the honest settled `nested` and slide_success's 12-frame held window. Called once, its dict recorded verbatim.
+        eoe = env.genv.end_of_episode()
+        route = eoe.get('slide_route')
+        success = bool(eoe['slide_success']); n_nested += int(bool(eoe['nested']))
+    else:
+        success = ('placed_v2' in env._granted) or bool(info.get('placed_v2'))
+    bare_contact = ('contact' in env._granted) or bool(info.get('contact'))
+    n_contact += int(bare_contact)
+    if args.scope == 'contact':
+        outcome = 'slide_success' if success else ('contact_no_slide' if bare_contact else ('tipped' if tipped else 'timeout'))
+    else:
+        outcome = 'placed_v2' if success else ('tipped' if tipped else 'timeout')
+    counts[outcome] = counts.get(outcome, 0) + 1
+    if success and route:
+        routes[route] = routes.get(route, 0) + 1
     gr = set(env._granted) | {s for s in STAGES if bool(info.get(s))}
+    if success:
+        gr.add(SUCCESS_KEY)
     st = {s: bool(s in gr) for s in STAGES}
     for s in STAGES:
         stage_counts[s] += int(st[s])
@@ -205,8 +239,11 @@ for k, e in enumerate(entries):
         for fr in frames:
             vw.write(np.ascontiguousarray(fr.astype(np.uint8)))
         vw.release()
-    results.append(dict(ep=k, uid=uid, entry_frame=frame, outcome=outcome, steps=t, reward=ep_r, seconds=round(time.time() - t0, 1), video=vid, stages=st))
-    print(f'ep{k}: uid{uid}@{frame} {outcome} ({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)', flush=True)
+    results.append(dict(ep=k, uid=uid, entry_frame=frame, outcome=outcome, steps=t, reward=ep_r, seconds=round(time.time() - t0, 1),
+                        video=vid, stages=st, contact=bool(bare_contact), slide_route=route,
+                        **({'nested_settled': bool(eoe['nested'])} if eoe else {})))
+    print(f'ep{k}: uid{uid}@{frame} {outcome}' + (f' [{route}]' if route else '')
+          + f' ({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)', flush=True)
 
 n = max(len(results), 1)
 try:
@@ -215,8 +252,11 @@ except Exception:
     git = 'unknown'
 summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, episodes=len(results), mode=args.mode, seed=args.seed,
                max_steps=args.max_steps, ic_mode='bank', entry_bank=str(args.entry_bank), scope='place', sim_variant=args.sim_variant,
-               action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version, delta_cap=env.delta_cap, delta_leash=env.delta_leash,
-               placed_v2=counts['placed_v2'] / n, tipped=counts['tipped'] / n, timeout=counts['timeout'] / n, restore_failed=counts['restore_failed'] / n,
+               scope_arg=args.scope, action_repeat=REPEAT, act_selection=act_selection, bank_version=bank_version, delta_cap=env.delta_cap, delta_leash=env.delta_leash,
+               **{SUCCESS_KEY: counts[SUCCESS_KEY] / n}, tipped=counts['tipped'] / n, timeout=counts['timeout'] / n,
+               restore_failed=counts['restore_failed'] / n, contact=n_contact / n, success_key=SUCCESS_KEY,
+               **({'nested_settled': n_nested / n, 'slide_routes': routes,
+                   'contact_no_slide': counts.get('contact_no_slide', 0) / n} if args.scope == 'contact' else {}),
                stages={s: stage_counts[s] / n for s in STAGES},
                mean_steps=float(np.mean([r['steps'] for r in results])) if results else 0.0,
                mean_reward=float(np.mean([r['reward'] for r in results])) if results else 0.0,
@@ -226,7 +266,8 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                          cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES')), git=git, sidecar=str(sc_path),
                per_episode=results)
 (OUT / 'metrics.json').write_text(json.dumps(summary, indent=1))
-print(f'\n[eval-place] {len(results)} episodes ({args.mode}, {os.path.basename(args.entry_bank)}): placed_v2 {counts["placed_v2"]}/{len(results)} '
-      f'({summary["placed_v2"]:.3f})  tipped {counts["tipped"]}  timeout {counts["timeout"]}  restore_failed {counts["restore_failed"]}  '
+print(f'\n[eval-place] {len(results)} episodes ({args.mode}, {os.path.basename(args.entry_bank)}): {SUCCESS_KEY} {counts[SUCCESS_KEY]}/{len(results)} '
+      f'({summary[SUCCESS_KEY]:.3f})' + (f' [routes {routes}] contact {n_contact} nested {n_nested}' if args.scope == 'contact' else '')
+      + f'  tipped {counts["tipped"]}  timeout {counts["timeout"]}  restore_failed {counts["restore_failed"]}  '
       f'mean_steps {summary["mean_steps"]:.0f}' + (f'  sample_dev_mean {summary["sample_dev_mean"]:.4f}' if _dev else '') + f'  [{summary["seconds"]:.0f} s]', flush=True)
 print(f'[eval-place] wrote {OUT}/metrics.json' + (f' + {len([r for r in results if r["video"]])} mp4s' if args.video else ''), flush=True)

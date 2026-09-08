@@ -1,5 +1,5 @@
 #!/bin/bash
-# PLACE-phase evaluation cells for one finished RLPD or DP run (PHASE_PLAN amendment (h), 2026-09-07); the re-runnable
+# PHASE evaluation cells (place | contact) for one finished RLPD or DP run (PHASE_PLAN amendments (h)/(m), 2026-09-07); the re-runnable
 # eval stage of cluster/sbatch_{rlpd,dp}_place.sh (in-job) and the post-hoc path (e.g. once the rebuilt polE bank lands).
 #   cells: fresh_eval_{holdE,polE}_{sample,mode}/metrics.json under $OUT (r2dreamer layout: phase_table.py reads them)
 #   sac: MODES="sample mode"; dp: MODES="sample" (no deterministic mode for a diffusion policy)
@@ -15,7 +15,13 @@ set -uo pipefail
 cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"; export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 W=${W:-/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03}
 : "${KIND:?KIND sac|dp}"; : "${CKPT:?CKPT}"; : "${OUT:?OUT}"; : "${ARM:?ARM}"; : "${SEED:?SEED}"
-HOLDE=${HOLDE:-$W/phase_banks/holdE_place.json}; POLE=${POLE:-$W/phase_banks/polE_place.json}
+PHASE=${PHASE:-place}
+case "$PHASE" in place|contact) ;; *) echo "FATAL: PHASE must be place|contact (got $PHASE)"; exit 1 ;; esac
+# polE banks: the eval-fixes agent's REBUILT physical-grip banks (bank_version=physgrip_2026-09-07) are the
+# *_physgrip.json files; the canonical polE_*.json names currently hold the raw-grip originals (checked 2026-09-07
+# 21:00: polE_place/polE_place_dDP/polE_contact all have no bank_version), and eval_place.py refuses those by design.
+HOLDE=${HOLDE:-$W/phase_banks/holdE_${PHASE}.json}
+POLE=${POLE:-$W/phase_banks/polE_$([ "$PHASE" = place ] && echo place || echo contact)_physgrip.json}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; VIDEO=${VIDEO:-1}; PAR=${PAR:-4}
 if [ -z "${MODES:-}" ]; then MODES="sample mode"; [ "$KIND" = dp ] && MODES="sample"; fi
 [ "$KIND" = dp ] && case " $MODES " in *" mode "*) echo "FATAL: dp has no mode cell"; exit 1;; esac
@@ -37,7 +43,7 @@ else
 fi
 VF=(); [ "$VIDEO" = 1 ] && VF=(--video)
 [ "${REDO:-0}" = 1 ] && rm -rf "$OUT"/fresh_eval_{holdE,polE}_{sample,mode}
-echo "== place_eval_cells kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED modes='$MODES' holdE=$HOLDE polE=$POLE(ok=$POLE_OK) variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR $(date)"
+echo "== place_eval_cells phase=$PHASE kind=$KIND ckpt=$CKPT out=$OUT arm=$ARM seed=$SEED modes='$MODES' holdE=$HOLDE polE=$POLE(ok=$POLE_OK) variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR $(date)"
 CELLS=()
 for MODE in $MODES; do
   CELLS+=("holdE|$HOLDE|$MODE")
@@ -48,7 +54,7 @@ run_cell() {
   if [ -f "$D/metrics.json" ]; then echo "# cell $SET $MODE exists ($D/metrics.json), kept"; return 0; fi
   mkdir -p "$D"
   python baselines/eval_place.py --kind "$KIND" --checkpoint "$CKPT" --entry-bank "$BANK" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" \
-      --max-steps 600 --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${VF[@]}" > "$D/eval.log" 2>&1
+      --scope "$PHASE" --max-steps 600 --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${VF[@]}" > "$D/eval.log" 2>&1
   local rc=$?; echo "# cell $SET $MODE rc=$rc $(date -Is)"; grep -E "^\[eval-place\] [0-9]+ episodes|FATAL|Traceback|Error" "$D/eval.log" | tail -3
   return $rc
 }
@@ -58,19 +64,23 @@ for C in "${CELLS[@]}"; do
   run_cell "$SET" "$BANK" "$MODE" &
 done
 wait
-python3 - "$OUT" "$KIND" "$ARM" "$SEED" <<'PY'
+python3 - "$OUT" "$KIND" "$ARM" "$SEED" "$PHASE" <<'PY'
 import json, os, sys
-out, kind, arm, seed = sys.argv[1:5]
+out, kind, arm, seed, phase = sys.argv[1:6]
+key = 'placed_v2' if phase == 'place' else 'slide_success'
 parts = []
 for s in ('holdE', 'polE'):
     for m in ('sample', 'mode'):
         f = os.path.join(out, f'fresh_eval_{s}_{m}', 'metrics.json')
         if os.path.exists(f):
-            d = json.load(open(f)); n = int(d['episodes']); k = int(round(float(d['placed_v2']) * n)); rf = int(round(float(d.get('restore_failed', 0.0)) * n))
-            parts.append(f'{s}_{"S" if m == "sample" else "M"}={k}/{n}' + (f'(rf{rf})' if rf else ''))
+            d = json.load(open(f)); n = int(d['episodes']); k = int(round(float(d[key]) * n)); rf = int(round(float(d.get('restore_failed', 0.0)) * n))
+            extra = ''
+            if phase == 'contact':
+                extra = '[c%d]' % int(round(float(d.get('contact', 0.0)) * n))
+            parts.append(f'{s}_{"S" if m == "sample" else "M"}={k}/{n}{extra}' + (f'(rf{rf})' if rf else ''))
         else:
             parts.append(f'{s}_{"S" if m == "sample" else "M"}=—')
-line = f'PLACE-HEADLINE learner={kind} arm={arm} seed={seed} ' + ' '.join(parts) + f' out={out}'
-print(line); open(os.path.join(out, 'PLACE_HEADLINE.txt'), 'w').write(line + '\n')
+line = f'{phase.upper()}-HEADLINE learner={kind} arm={arm} seed={seed} key={key} ' + ' '.join(parts) + f' out={out}'
+print(line); open(os.path.join(out, f'{phase.upper()}_HEADLINE.txt'), 'w').write(line + '\n')
 PY
 echo "== place_eval_cells done $(date)"
