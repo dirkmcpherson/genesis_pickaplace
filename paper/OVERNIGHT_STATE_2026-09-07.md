@@ -339,3 +339,15 @@ python3 baselines/e2e_table_all.py --strat                                 # the
 | pinned RLPD **cell** wall-clock on AVX2 | **UNKNOWN — never run.** All timings I have are AVX-512 login-node per-episode figures: shared ≈ 28.5 s/episode plus ≈ 30 s process start per cell; isolated ≈ 59 s/episode (2.05×). A full pinned cell on `pax109`/`pax154` is the first thing to measure on reconnect. |
 | node → instruction-set map | **NOT established** (probe killed mid-flight). Verified AVX2: `pax109`, `pax154` only, from the coordinator. |
 | does any AVX2 node have a GPU | **UNKNOWN** — the probe would have answered it; `isa_probe.sh` now records `gpu=` per node and prints the AVX2-with-GPU list. |
+
+### Answers that came back before the link dropped (and one new cost problem)
+
+**Preview marking is done.** In-job evaluation cells are stamped `role: preview` by default, the record role is refused unless the instruction-set check is enabled, pinned cells are written to their own subdirectory, and the table builder refuses any row that mixes roles. So no table can silently blend preview cells with cells of record.
+
+**Diffusion Policy can be evaluated with no GPU** — demonstrated on a full 300-decision episode with a sensible result. That was the hoped-for answer, but it comes with a bill: **568 seconds per episode**, measured on an AVX-512 machine. A 60-start cell is therefore about 9.5 hours, and the Diffusion Policy share of the pinned end-to-end pass is on the order of 300 CPU-hours. It is parallelisable and the cluster has the cores, so this is a scheduling question rather than a blocker, but it is worth your judgement in the morning: **the pinned re-score may cost more than the confound it removes is worth for the Diffusion Policy arm specifically.** The world-model and RLPD arms are far cheaper per episode.
+
+**The RLPD wall-clock on a pinned AVX2 node is unknown**, because that measurement never ran. All existing timings are from AVX-512 hardware, roughly 30 to 60 seconds per episode, and extrapolating them to older silicon would be a guess. The same is true of the Diffusion Policy cost on AVX2, which matters more given the figure above. The right first move on reconnect is to measure one cell of each rather than commit to all 32 runs blind.
+
+**One loose end to clear before anything else:** up to 30 probe processes launched with `srun --overlap` may still be alive on the login node, and they were slow enough to make `ssh` itself time out. The first reconnect command kills them. This is shared infrastructure, so it takes priority over restarting the pass.
+
+The verified AVX2 nodes remain `pax109` and `pax154`. Pinning to them is safe even without the probe, because the re-score script re-reads the processor information on arrival and aborts loudly if it lands on the wrong instruction set.
