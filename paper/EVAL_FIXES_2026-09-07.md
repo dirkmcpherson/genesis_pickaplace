@@ -130,3 +130,49 @@ comparison tables compute the statistic of record from it.
 **Prediction (l), evaluated on these cells:** end-to-end rnd30 `slide_success` at or below `nested_honest` in both arms
 and |Δ(human − machine)| < 0.10; slide phase |Δ| < 0.10 with both arms well below their bare-`contact` rates.
 
+## 7. The end-to-end reproduction failure is NODE-dependent (found while smoke-testing (l); investigation 2026-09-07 21:00–22:00)
+
+**Symptom.** `full_r2d_state_dHfull_all_bnormclampS8ent5_s3`, rnd30 MODE, **episode 0**: the cell of record (job 3303000,
+2026-09-05 23:19) has `nested`, 32 steps, picked+contact; re-running that exact IC with the same checkpoint, mode, seed and
+horizon gave `timeout`, 300 steps, no pick. Episode 0 has no history, so this was not the settle-leak branch pre-stated in §4.
+
+**What it is not.** Ruled out by measurement, in this order:
+- *Not the world or the data.* The only files in `$W/gp_root` and `$W/r2dreamer_fix` modified since the record was written
+  are the four this work patches; `trial_placements.json` (world block, `substeps 8`), `replay_harness.py`, `sim_variants.py`,
+  `pick_env.py`, the URDFs, the run's `.hydra/config.yaml` (09-05 14:29) and `latest.pt` (09-05 21:14, distinct md5 per run)
+  are untouched. The ICs compared equal element-wise.
+- *Not non-determinism of the pipeline.* Record vs re-run over the 23 finished contact_push `_cp` cells = **3488 episodes,
+  0 differences** in steps, outcome or contact flag (aggregate 0.7314 vs 0.7314; `$W/repro_check.py`). Two runs of the same
+  episode on one node agree at every one of 12 probed decisions.
+- *Not amendments (j)/(l).* With (j)+(l) reverse-applied on a copy of both trees (contact_push left in), the reset state and
+  **every action and state through 12 decisions are bit-identical to the current trees**, and the full episode ends the same
+  way (`cluster/eval_fixes/rev_apply.py`, `probe_first_steps.py`).
+- *Not episode order.* Withdrawn: the observation that suggested it (uid 254 standalone vs in-sequence) came from a run at
+  16:12, inside the disk-full window. Re-tested post-freeze on one node, uid 252 and uid 254 in sequence both give
+  `timeout/300`, so the record's `tipped/49` for uid 254 is the same node effect, not sequencing.
+- *Not job geometry.* The record ran `-n 8`, one eval at a time; the reruns ran `-n 4`. On pax109 the episode reproduces at
+  **both** `-n 4` (3/3) and `-n 8`, while three other nodes at the record's-different `-n 4` all fail to.
+
+**What it is.** The outcome is a function of the **node**:
+
+| node | CPU / features | -n 4 | -n 8 | vs record |
+|---|---|---|---|---|
+| **pax109** (the record's own node) | Xeon E5-2695 v4, broadwell, 36c | `nested`, 32 steps, r=7.0 (3/3 runs) | `nested`, 32 steps | **exact reproduction** |
+| pax154 | broadwell, 36c | `timeout`, 300 steps | pending | diverges |
+| pax001 | broadwell, 40c | `timeout`, 300 steps | pending | diverges |
+| pax030 | sapphirerapids, 64c | `timeout`, 300 steps | — | diverges |
+
+Each node is self-consistent; the nodes disagree with each other. It is not a CPU-family split (pax109 and pax154 are both
+broadwell 36-core), and the two nodes agree to 1e-9 on every one of the first 12 decisions before the episode outcome
+diverges by decision 32 — i.e. **chaotic amplification of a sub-1e-9 numerical difference over a long contact-rich horizon**,
+not a structural difference. That also explains why the phase scopes reproduce bit-exactly across nodes: their episodes last
+1–19 frames (mean 2 in the slide cell), far too short to amplify.
+
+**Consequences.** (1) Amendments (j) and (l) are exonerated; the physics and the world are not at fault. (2) Long-horizon
+end-to-end cells are reproducible only on the node that produced them, so every such cell must record its node, and any
+re-score of the end-to-end arm must either pin the node or report node as a factor. (3) Short-horizon phase cells are
+unaffected (3488 episodes, zero differences), so the place / carrycontact / contact re-scores are safe to run anywhere.
+(4) Whether the **cell-level aggregates** of `PHASE_RESULTS §5.1` move — as opposed to individual episodes — is measured by
+the 30-episode in-order rerun (`rs2_seqcheck.sbatch`); RESULT PENDING, and it decides whether the published 8 v 8 numbers
+stand as reported.
+
