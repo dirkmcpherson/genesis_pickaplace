@@ -1,4 +1,4 @@
-# Learning curves (2026-09-08) — ONLINE TRAINING ROLLOUTS, not evaluation
+# Learning curves (2026-09-08) — WORLD MODEL (r2dreamer) ONLY, ONLINE TRAINING ROLLOUTS, not evaluation
 
 *Placed here at the user's request (2026-09-08). Written by the eval-fixes lane, not by `make_tables.py`: these files are
 self-contained and **nothing here regenerates or edits `results.md`, `results.csv` or `make_tables.py`**, so the tables
@@ -105,3 +105,21 @@ consumed differently**, and it runs in the direction of understating the machine
 end-to-end run should either budget by post-ignition steps, adopt an explicit stopping rule, or report learning speed
 alongside the final level — which is the reason for the standing note above.
 
+## Why there is no per-learner breakdown (user, 2026-09-08)
+
+Every curve here is **r2dreamer**. That is not a plotting choice — it is what the three learners persist:
+
+| learner | training-time record on disk | curve possible? |
+|---|---|---|
+| **r2dreamer (R2)** | `metrics.jsonl`, one row per online rollout episode with `episode/train_{picked,placed_v2,contact,nested}` | **yes — this is what is plotted** |
+| **RLPD** | none. The place runs keep `ckpt_040`, `ckpt_100`, `rlpd_final.zip` and final eval dirs; there is no `monitor.csv`, `progress.csv` or wandb run directory on the RLPD side | only by **evaluating saved checkpoints** — `ckpt_040` (100k decisions) and `ckpt_100` (LAST) exist for place, so a **2-point** curve per seed is reachable at real compute cost (16 extra evaluations per phase) |
+| **Diffusion Policy** | wandb offline log with the **training loss**; checkpoints pruned to `100000` and `last` to save disk | **no success curve.** DP is offline: there are no online rollouts by construction, and the intermediate checkpoints that would give success-vs-gradient-step were deleted. Loss-vs-step is available but is not comparable with the other two |
+
+So the three learners cannot share an x-axis even in principle — sim steps, decisions and gradient steps — which is the same
+non-commensurability already disclosed for their budgets. The per-learner comparison **does** exist for the final numbers
+(`results.md`: `place_r2d`, `place_rlpd`, `place_dp` and their pick/slide equivalents); it is the *curves* that are
+single-learner, and the figures now say so in the title and caption rather than implying generality.
+
+If a per-learner learning-speed comparison is wanted for the paper, the cheapest honest version is the RLPD 2-point curve
+(ckpt_040 vs ckpt_100) alongside R2 evaluated at the matching two points — stated in each learner's own budget units, with
+DP represented by its single final point and no interpolation.

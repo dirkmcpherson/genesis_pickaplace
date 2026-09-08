@@ -17,7 +17,9 @@ def read(fn):
     return rows
 
 curves, seeds = read("curves_2026-09-08.csv"), read("curves_2026-09-08_seeds.csv")
-CAVEAT = ("TRAINING ROLLOUTS (exploring policy, resetting from the TRAINING bank) — NOT the evaluation protocol.\n"
+CAVEAT = ("WORLD MODEL (r2dreamer) ONLY — RLPD persists no training-time metrics and DP is offline (no online rollouts),\n"
+          "so neither can produce this curve without new compute; the per-learner comparison exists for FINAL numbers only.\n"
+          "TRAINING ROLLOUTS (exploring policy, resetting from the TRAINING bank) — NOT the evaluation protocol.\n"
           "Endpoints are NOT the table numbers: eval uses mode/sampled actions on the polE / rnd30 start sets, final "
           "checkpoint only.\nDo not compare against PHASE_RESULTS §2.y / §3 / §5.1 or the HRI_results tables.")
 COL = {"human": "#1f77b4", "machine": "#d62728"}
@@ -90,7 +92,7 @@ for variant in ("mean", "seeds"):
             ax.set_title("%s — %s%s" % (fam, stage, "  [TRAINING PROXY]" if stage == "nested_proxy" else ""), fontsize=10)
             ax.set_xlabel("env step (training)"); ax.set_ylabel("online rollout success")
             ax.set_ylim(-0.02, 1.02); ax.grid(alpha=0.25); ax.legend(fontsize=7, loc="upper left")
-    fig.suptitle("Learning curves — ONLINE TRAINING ROLLOUTS, not evaluation" +
+    fig.suptitle("Learning curves, WORLD MODEL (r2dreamer) only — ONLINE TRAINING ROLLOUTS, not evaluation" +
                  ("  (per-seed traces)" if variant == "seeds" else "  (mean ± SE across 8 seeds)"), fontsize=12)
     fig.text(0.5, 0.005, CAVEAT, ha="center", va="bottom", fontsize=8, color="#333333")
     fig.tight_layout(rect=[0, 0.075, 1, 0.97])
