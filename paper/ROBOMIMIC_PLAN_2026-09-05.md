@@ -271,3 +271,31 @@ demonstration source and cannot stand beside RLPD and DP as "three learners meas
      differ in policy class cannot contribute a rank to an ordering of policy classes.
   4. The ordering is restored as a source claim only by running DP and BC-RNN on MG718s and MGall (≈ 16 DP runs ≈ 32 GPU-h
      + 6 BC-RNN runs ≈ 2.6 GPU-h) — registered here as the price, so it is not smuggled in by re-interpretation.
+
+## A6. Amendment 2026-09-08 (registered BEFORE the runs): row-matched human arms — a two-source dose curve
+*Trigger: the A2 controls withdrew the source reading (MG718s 0.475 v MH200 0.455, p 0.886; MGall 0.610) and left a
+suggestive quantity relationship with only ONE uncontaminated human point. The user's original ask was "test like against
+like"; the human side has never been row-matched to the machine side. This amendment converts an absence of evidence
+("no detectable source effect") into a positive account, or refutes it.*
+- **Arms:** **`MH80`** = a uniform seed-0 permutation of MH200's 200 tapes, taking the prefix whose cumulative row count
+  is closest to MG200s's 16,501 → **80 tapes / 16,406 rows** (error 95 rows = 0.6 %), natively collected, NOT re-executed,
+  built by the same `make_arms.py`/`convert_arms.py` path and cut rule as every other arm. **`MH300`** = the §3 secondary
+  arm, already built (300 tapes / 61,548 rows), giving a human point beside MG718s's 59,222. RLPD, 100k decisions,
+  8 seeds each = 16 runs ≈ 16 GPU-h; LAST on bank_can50, mode primary / sample secondary, exact two-sided permutation.
+- **Resulting dose curve (rows → mode success):** human 16.4k / 41.1k / 61.5k vs machine 16.5k / 59.2k / 536.5k, with
+  the machine side already measured at 0.147 / 0.475 / 0.610 and the human side at 0.455 for 41.1k.
+- **Predictions:** **P-A6-1: `MH80` within 0.10 of MG200s's 0.147** (i.e. ∈ [0.05, 0.25]) — at matched rows the human
+  arm is no better than the machine arm, and the MH200-v-MG200s gap is quantity, not source. **P-A6-2: `MH300` within
+  0.10 of MG718s's 0.475 AND ≥ MH200's 0.455** (monotone in rows). **P-A6-3 (secondary, the re-execution isolation):
+  `MH80` (16,406 rows, native) − `MH200_re15` (15,702 rows, re-executed) ≥ +0.10** → re-execution costs at least that
+  much at matched scale; if |Δ| < 0.10 the `re15` collapse was mostly size and re-execution is comparatively cheap.
+- **Decision rules:** (i) P-A6-1 and P-A6-2 both hold → the leg's central claim becomes affirmative: *RLPD performance on
+  this task is governed by demonstration row count, and the human and machine dose curves coincide*; the MH200-v-MG200s
+  ordering is fully explained by quantity. (ii) `MH80` exceeds MG200s by ≥ 0.15 → at matched rows human data IS better;
+  a source effect survives at small scale, and A2's conclusion narrows to "large machine sets compensate", not "source
+  is irrelevant". (iii) `MH80` ≤ 0.05 or `MH300` < MH200 (non-monotone) → the row-count account fails and the pattern is
+  reported as unexplained. (iv) Any outcome: the tape mismatch (80 v 200 at matched rows) is disclosed — rows and tapes
+  cannot both be matched, and rows are the axis the learner consumes.
+- **Disclosures:** `MH80` ⊂ `MH200` ⊂ `MH300` (nested, not independent draws); the seed-0 prefix stopping rule slightly
+  disfavours the longest tapes at the boundary (MH200 tape lengths 97/171/1046 min/med/max); all arms share the fixed
+  seed-0 subsample nuisance already recorded in review S2-4.

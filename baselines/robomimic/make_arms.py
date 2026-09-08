@@ -26,7 +26,7 @@ import numpy as np
 sys.path.insert(0, str(pl.Path(__file__).resolve().parent))
 from robo_common import HDF5, DATA_ROOT, sha256_file  # noqa: E402
 
-ARMS = ("PH200", "MH200", "MG200s", "MH300", "MGall", "PH200pb", "MG718s")
+ARMS = ("PH200", "MH200", "MG200s", "MH300", "MGall", "PH200pb", "MG718s", "MH80")
 
 
 def demo_stats(f, names):
@@ -44,6 +44,7 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=str(DATA_ROOT / "arms"))
     ap.add_argument("--no-masked-copies", action="store_true")
+    ap.add_argument("--row-target", type=int, default=16501, help="A6 MH80 row target (default = MG200s's row count)")
     ap.add_argument("--only", default=None, help="write ONLY this arm's manifest/mask (others left untouched); e.g. MG718s (amendment A2)")
     args = ap.parse_args()
     import h5py
@@ -84,6 +85,17 @@ def main():
         assert len(pick) == 200 and len(set(pick)) == 200
         arms["MH200"] = dict(src="mh", demos=pick, stats=demo_stats(f, pick), per_operator={op: q for (op, _), q in zip(sorted(ops.items()), quota)})
         arms["MH300"] = dict(src="mh", demos=mh, stats=demo_stats(f, mh))
+        # amendment A6 (2026-09-08): row-matched human arm. Uniform permutation (its own generator, so MH200/MG200s
+        # draws above are byte-identical to the 09-06 build), prefix minimising |cum_rows - target|.
+        st200 = {s2["demo"]: s2 for s2 in arms["MH200"]["stats"]}
+        order = np.random.default_rng(args.seed).permutation(len(pick))
+        rows = np.array([st200[pick[i]]["rows_kept"] for i in order]); cum = np.cumsum(rows)
+        k = int(np.argmin(np.abs(cum - args.row_target))) + 1
+        keep = sorted([pick[i] for i in order[:k]], key=lambda s2: int(s2.split("_")[1]))
+        arms["MH80"] = dict(src="mh", demos=keep, stats=[st200[d] for d in keep],
+                            note=f"amendment A6: MH200 row-matched to {args.row_target} rows; uniform seed-{args.seed} permutation, "
+                                 f"prefix minimising |cum_rows - target| -> {k} tapes / {int(cum[k-1])} rows (err {int(abs(cum[k-1]-args.row_target))})",
+                            row_target=int(args.row_target), rows_selected=int(cum[k - 1]))
     # --- MG200s / MGall ---
     with h5py.File(HDF5["mg"], "r") as f:
         mg = sorted(f["data"].keys(), key=lambda s: int(s.split("_")[1]))

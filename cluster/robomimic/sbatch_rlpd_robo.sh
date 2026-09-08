@@ -24,7 +24,7 @@ ARM=${ARM:?set ARM}; SEED=${SEED:?set SEED}; STEPS=${STEPS:-100000}; TAG=${TAG:-
 # STANDING RULE (2026-09-07, after the filesystem filled to 100% and killed every job): keep only the FINAL
 # checkpoint. Our statistic of record is LAST, so the K=5 archived fractions were pure disk cost.
 CKPT_FRACS=${CKPT_FRACS:-1.0}
-case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|MG200s_re|MG200s_sm|MG200s_smm|MH200_re|MH200_rough|MH200_re15|MH200_rough15|MH200_re20|MH200_rough20|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
+case "$ARM" in PH200|MH200|MG200s|MH300|MGall|PH200pb|MG718s|MH80|MG200s_re|MG200s_sm|MG200s_smm|MH200_re|MH200_rough|MH200_re15|MH200_rough15|MH200_re20|MH200_rough20|none) ;; *) echo "FATAL: ARM=$ARM"; exit 1 ;; esac
 DEMO=$LAB/robomimic_data/arms/$ARM/rlpd/transitions.npz; [ "$ARM" = none ] && DEMO=none
 NAME=rlpd_${ARM}${TAG:+_$TAG}_s${SEED}; OUT=$LAB/robomimic_runs/rlpd/$NAME   # ARM=none -> rlpd_none_s<k> = G2b no-demo control (demo_batch 0)
 B=$GENESIS_PICKAPLACE_ROOT/baselines/robomimic
