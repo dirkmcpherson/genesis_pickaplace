@@ -422,3 +422,31 @@ contact 91→93, nested 39→33). The human arm is precisely where the 36-core o
 pax109), and the machine arm has none. That is a third independent line of support for the core-class finding — arrived
 at without looking for it — but it is a *record-versus-rescore* asymmetry, not a *rescore-versus-rescore* one, and the
 distinction matters because the second would imply the re-scores disagree with each other, which they do not.
+
+### 8.6 Hardware provenance in the re-scored cells: recorded, now verifiable from the cell itself
+Raised by the coordinator: the `_v2` cells stamped bank version and entry pinning but **no node or core field**, so the
+hardware pin — the axis §7.2 spent the day establishing — could not be checked from a cell. The data existed; it was in a
+`hardware.json` sidecar written beside each `metrics.json`, which no consumer reads. Recorded but not where it could be
+checked, which is the same failure shape as the defects this document is about.
+
+**Closed by route 1 (metadata edit, no re-score).** Audit first (`cluster/eval_fixes/hw_audit.py`): **276 of 276 `_v2`
+cells had the sidecar; 0 had the field**. Back-filled `node`, `cpu_model`, `ncpus_cgroup` and `slurm_job` into every
+`metrics.json` (`hw_backfill.py` — additive, atomic, idempotent, and it refuses to write if any pre-existing value would
+change; none did).
+
+**And the audit proves the pin held, which was the actual question:** all **48 end-to-end `_v2` cells ran on one CPU
+model — Xeon Gold 6438M** (the 64-core class). The phase cells span two models (6438M ×208, Gold 6248 ×68) **by design**,
+since §7.2 established phase cells are hardware-insensitive and §2.2's 3488-episode check measured that directly.
+
+**So it cannot recur:** `eval_genesis.py` now writes `node`, `cpu_model`, `ncpus_machine` and `slurm_job` into the summary
+of every cell it produces, read from `/proc/cpuinfo` rather than a Slurm label (§7.2: `pax001` advertises `broadwell` and
+is a Cascade Lake part).
+
+One naming correction made in the same pass: the back-filled core count is the **job allocation**, not the machine's core
+count, so it is named `ncpus_cgroup` and carries an `hw_note` saying `cpu_model` is the field that identifies the class.
+A field called `cpu_cores` reading 16 on a 64-core machine is precisely the kind of plausible-but-wrong value this
+project keeps being bitten by.
+
+**Two independent corroborations worth recording**, both from the coordinator's cross-lane check: the two lanes read the
+same bank *content* under different filenames (a naming difference, not a data one), and both independently report **the
+same five restore failures of 148** on that bank — two separately built pipelines failing on the identical five entries.
