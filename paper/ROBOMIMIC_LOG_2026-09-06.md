@@ -363,3 +363,20 @@ PH200 arm.
   against MH200@100k.** Note the pattern this adds to the A2 controls — RLPD success tracks demo ROW COUNT across every
   arm measured so far, independent of source: re15 15.7k rows → 0.080, MG200s 16.5k → 0.147, MH200 41.1k → 0.455,
   MG718s 59.2k → 0.475, MGall 536.5k → 0.610.
+
+## Methodological finding (2026-09-08): open-loop re-execution of recorded demonstrations is NOT free
+Registered prediction P-A4-3′ ("the re-executed control arms are within 0.10 of the native arm") is **FALSIFIED**:
+`MH200_re15` — *unmodified* human actions replayed open-loop from `reset_to({model, states[0]})`, tapes kept only where
+the replay still succeeds — scores **0.080** (mode, 8 seeds) against MH200's **0.455**. Stated precisely, because the
+same care the correction above demands applies here: the two arms differ in re-execution AND in size (15,702 vs 41,134
+rows, 95 vs 200 tapes), so **the −0.375 is an upper bound on the cost of re-execution, not a clean estimate of it** —
+the components are not separable with the data in hand (A6 below would separate them).
+What IS clean, and is the transferable lesson for any work that plans to replay or retime demonstrations (including our
+discrete-action line, where re-execution was assumed approximately free):
+- **Human tapes:** 185/200 (93 %) reproduce their success when replayed open-loop with the ORIGINAL actions.
+- **Machine (SAC) tapes:** 114/200 (57 %) do — the same env, the same replay code.
+- **Any action edit collapses reproducibility:** MG + causal-EMA smoothing to human roughness → **0/200**; MG + EMA with
+  magnitude restored → 0/200; MG at milder smoothing (β 0.30) → 3/40. Human tapes + uniform noise at the registered
+  roughness (ε 0.406) → 5/200; at ε 0.20 → 63/200; at ε 0.15 → 98/200.
+- So a "replay the recorded actions with a small modification" design loses most of its data at the build stage, and
+  what survives is a selected, smaller set whose learner performance is far below the native arm's. Budget for both.
