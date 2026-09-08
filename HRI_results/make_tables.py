@@ -75,13 +75,40 @@ def select(rows, sel):
                 break
         if ok:
             out.append(r)
-    # one row per seed; a duplicate seed within a selector is a registry bug, so fail loudly
-    seen = {}
+    # ---- one row per TRAINED POLICY -------------------------------------------------------------
+    # The uniqueness key used to be (seed, cell), which let TWO EVALUATIONS OF THE SAME TRAINED SEED
+    # pass as independent observations whenever the cell names differed -- e.g. seeds 25-29 of the DP
+    # spots60 arm appeared under both `selected_spots60/spots60` and `selected_spots60_mixedcore/spots60`
+    # with identical counts (53, 51, 55, 50, 50 of 60), inflating n from 10 to 15 in two published rows
+    # (independent review, 2026-09-08). Two evaluations of one policy are not two samples of the arm.
+    #
+    # Rule now: a policy is identified by (run, seed). Where one policy has several evaluations, keep the
+    # PINNED-hardware one and drop mixed-hardware re-evaluations -- a mixed-hardware evaluation is exactly
+    # what the 2026-09-08 CPU-class finding says must not sit inside a comparison (EVAL_FIXES 7.2/7.6), and
+    # dropping rather than adding observations is the conservative direction. Any OTHER collision is a
+    # registry bug and still fails loudly, so a future double-count cannot quietly inflate power.
+    MIXED = 'mixedcore'      # marker for a deliberately mixed-hardware re-evaluation
+    seen, dropped = {}, []
     for r in out:
-        key = (r['seed'], r['cell'])
-        if key in seen:
-            raise SystemExit(f'duplicate seed {key} for selector {sel}')
-        seen[key] = r
+        key = (r['run'], r['seed'])
+        if key not in seen:
+            seen[key] = r
+            continue
+        prev = seen[key]
+        cand = [prev, r]
+        pinned = [x for x in cand if MIXED not in x['cell']]
+        mixed = [x for x in cand if MIXED in x['cell']]
+        if len(pinned) == 1 and len(mixed) == 1:
+            seen[key] = pinned[0]
+            dropped.append((key, mixed[0]['cell'], pinned[0]['cell']))
+            continue
+        raise SystemExit(
+            f'duplicate trained policy {key} for selector {sel}: cells {prev["cell"]!r} and {r["cell"]!r}. '
+            'Two evaluations of one trained seed are not two seeds; pick one per the stated protocol.')
+    if dropped:
+        for key, drop_cell, keep_cell in dropped:
+            print(f'[select] {key}: dropped mixed-hardware evaluation {drop_cell!r}, kept pinned {keep_cell!r}')
+    out = list(seen.values())
     return sorted(out, key=lambda r: (int(r['seed']), r['cell']))
 
 

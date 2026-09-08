@@ -44,7 +44,7 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `pick_spots60_dp` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
-| `pick_spots60_dp_asrecorded` *(prov.)* | Diffusion Policy | picked | sampled | 15v10x60 | 0.873 | 0.873 | 0.000 | [-0.031, 0.031] | 1.000 | 0.043 | 1.000 | 672900.0 |  | stable | equivalent at +/-0.10 |
+| `pick_spots60_dp_asrecorded` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
 | `pick_spots60_rlpd` *(prov.)* | RLPD | picked | mode | 8v8x60 | 0.867 | 0.865 | 0.002 | [-0.355, 0.359] | 1.000 | 0.502 | 0.668 | 7.2 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
 | `pick_spots60_r2d` | world model (r2dreamer) | picked | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run. The world model has no spots60 evaluation; the in-distribution row exists for DP and RLPD only. No per-seed data on the cluster for this cell. |
 
@@ -55,7 +55,7 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `prune_dp_rnd30` *(prov.)* | Diffusion Policy | picked | sampled | 10v8x30 | 0.547 | 0.237 | 0.309 | [0.242, 0.376] | 0.000 | 0.094 | 0.000 | 0.0 |  | stable | difference detected |
-| `prune_dp_spots60` *(prov.)* | Diffusion Policy | picked | sampled | 15v8x60 | 0.873 | 0.688 | 0.186 | [0.140, 0.232] | 0.000 | 0.065 | 0.001 | 0.0 |  | stable | difference detected |
+| `prune_dp_spots60` *(prov.)* | Diffusion Policy | picked | sampled | 10v8x60 | 0.878 | 0.688 | 0.191 | [0.136, 0.246] | 0.000 | 0.078 | 0.002 | 0.0 |  | stable | difference detected |
 
 ## Place (matched 39)
 
@@ -124,10 +124,10 @@ The world model is present in this row but at the FLOOR (0/400 and 1/400 at ~541
 | `pick_rnd30_r2d_sample` | 16 20 20 18 19 16 18 20 | 20 17 19 19 20 20 16 20 | 30 |
 | `pick_rnd30_dv3` | 21 21 | 19 19 | 30 |
 | `pick_spots60_dp` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
-| `pick_spots60_dp_asrecorded` | 53 58 52 53 52 53 53 51 51 55 55 50 50 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
+| `pick_spots60_dp_asrecorded` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_rlpd` | 58 59 58 60 59 3* 60 59 | 59 60 58 60 58 2* 59 59 | 60 |
 | `prune_dp_rnd30` | 18 19 18 14 13 15 16 16 18 17 | 9 9 7 5 10 5 5 7 | 30 |
-| `prune_dp_spots60` | 53 58 52 53 52 53 53 51 51 55 55 50 50 50 50 | 40 44 45 35 48 40 38 40 | 60 |
+| `prune_dp_spots60` | 53 58 52 53 52 53 51 55 50 50 | 40 44 45 35 48 40 38 40 | 60 |
 | `place_r2d` | 113 88 112 112 84 108 114 116 | 107 91 104 111 92 87 91 89 | 148 |
 | `place_r2d_asrecorded` | 113 86 112 112 82 99 110 118 | 109 79 111 105 90 79 95 98 | 148 |
 | `place_r2d_sample` | 109 91 109 113 81 109 112 114 | 107 85 110 111 89 89 90 91 | 148 |
@@ -259,12 +259,10 @@ Regenerated numbers that differ from the documents of record. Each is a finding,
 
 | comparison | field | doc | doc value | regenerated | understood? |
 |---|---|---|---|---|---|
-| `pick_spots60_dp_asrecorded` | human_rate | CELL_STATUS_2026-09-07 | 0.878 | 0.8733 | **UNEXPLAINED - investigate** |
-| `pick_spots60_dp_asrecorded` | perm_p | CELL_STATUS_2026-09-07 | 0.845 | 1.0 | **UNEXPLAINED - investigate** |
 | `pick_spots60_rlpd` | human_rate | CELL_STATUS_2026-09-07 | 0.869 | 0.8667 | CELL_STATUS quotes the eight-seed human arm; this row is the six hardware-pinned seeds only. |
 | `pick_spots60_rlpd` | perm_p | CELL_STATUS_2026-09-07 | 0.873 | 1.0 | CELL_STATUS quotes the eight-seed human arm; this row is the six hardware-pinned seeds only. |
 | `place_r2d` | human_rate | PHASE_RESULTS §2.y | 0.703 | 0.7154 | **UNEXPLAINED - investigate** |
 | `place_r2d` | machine_rate | PHASE_RESULTS §2.y | 0.647 | 0.652 | **UNEXPLAINED - investigate** |
 | `place_r2d` | perm_p | PHASE_RESULTS §2.y | 0.227 | 0.112 | **UNEXPLAINED - investigate** |
 
-2 of 7 are differences we already understand (the reason is given). 5 are not.
+2 of 5 are differences we already understand (the reason is given). 3 are not.
