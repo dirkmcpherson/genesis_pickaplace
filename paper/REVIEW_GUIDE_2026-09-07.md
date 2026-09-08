@@ -309,3 +309,28 @@ Per rules registered before the run:
 **Which head you fix changes the gap by a factor of about 1.6.** That is precisely why the row cannot carry a source interpretation in either direction: the number is a property of the architecture choice as much as of the data. The second head-matched contrast — the human arm with a deterministic head — is still training and completes the picture.
 
 **What this does not change:** the quantity control's withdrawal of the RLPD source claim stands on its own evidence, and the Diffusion Policy separation still rests on the same 200-tape draw. This is a second, independent reason to distrust the cross-learner story, not a replacement for the first.
+
+
+### Addendum, 2026-09-08 — the head-matched control completes: a large data x architecture interaction, and a refuted mechanism
+
+**The control is complete at 3 seeds per cell, and the interaction is large.**
+
+| arm | mixture head | deterministic head | head effect |
+|---|---|---|---|
+| human (MH200) | **0.927** | **0.560** | **+0.367** |
+| machine (MG200s) | **0.093** | **0.393** | **−0.300** |
+
+Interaction **+0.667**, with opposite signs on the two arms. **The matched-head source gap is 0.834 with mixture heads and 0.167 with deterministic ones — a five-fold difference produced by an architecture choice.** The published 0.534 was neither: it compared each arm at its own recipe optimum, a third quantity again. **The BC-RNN row and the cross-learner ordering remain withdrawn**; an interaction of this size is exactly why a cross-head comparison cannot carry a source interpretation.
+
+**The mechanism I proposed was tested and is largely refuted.** I suggested human demonstrations are multi-modal because several operators use several strategies, while machine demonstrations come from one converged policy. Measured over 1,200 anchors per arm, comparing local action structure against a matched unimodal null:
+
+| arm | excess non-Gaussian structure | neighbourhood action spread |
+|---|---|---|
+| human, 1 operator | +0.126 | 0.120 |
+| human, 6 operators | +0.127 | 0.103 |
+| machine (200 tapes) | +0.080 | 0.362 |
+| machine (718 tapes) | +0.081 | 0.344 |
+
+**Supported:** human conditional action distributions carry about 1.6× more non-Gaussian structure. **Refuted:** the machine sets are not unimodal at all, and the operator-diversity story fails outright — **one operator is indistinguishable from six.** Whatever multi-modality human demonstrations have here is *within*-operator, not across operators.
+
+**An unpredicted difference is larger than the modality one:** machine neighbourhood action spread is **3× human**, consistent with the saturated action statistics already documented. A revised account — a five-mode mixture fits tight structured actions and wastes capacity on wide saturated ones — is an open question, not a finding, and any registration should carry a **mode-count ladder** as its discriminator rather than the dead operator-diversity story.
