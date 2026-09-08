@@ -82,10 +82,24 @@ module load anaconda/2025.06.0
 conda activate "${CONDA_ENV:-/cluster/tufts/shortlab/jstale02/condaenv/genesis}"
 python -c 'import stable_baselines3' 2>/dev/null || { echo "FATAL: stable_baselines3 not importable"; exit 1; }
 set +e
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled" --sets hold,rnd --sample-actions --tag final_sampled --no-video "${COMMON[@]}" 2>&1 | tee "$SW/final_sampled.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det15" --sets hold --tag final_det15 --no-video "${COMMON[@]}" 2>&1 | tee "$SW/final_det15.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_sampled_spots60" --sets "$SPOTS_SET" --sample-actions --tag final_sampled_spots60 --no-video "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_sampled_spots60.log"
-bash cluster/eval_sweep.sh sac "$CK" "$SW/final_det_spots60" --sets "$SPOTS_SET" --tag final_det_spots60 --no-video "${SPOTS_COMMON[@]}" 2>&1 | tee "$SW/final_det_spots60.log"
+# run_sweep <outdir> <logfile> <args...>: run the sweep and, if sweep.json is missing afterwards, run it ONCE more.
+# eval_sweep.sh skips every per-episode json that already exists, so the retry costs seconds and only redoes the
+# aggregation. Why (2026-09-07): on the first finished runs the det_hold15 cell had all 15 episode jsons but no
+# sweep.json, no error and no EXIT-trap line -- its parent shell was killed between `wait` and the aggregation, and the
+# cell was silently lost (headline read det_hold15=MISSING) while every episode had actually been computed.
+run_sweep() {
+  local OUT_D=$1 LOG=$2; shift 2
+  bash cluster/eval_sweep.sh sac "$CK" "$OUT_D" "$@" 2>&1 | tee "$LOG"
+  if [ ! -f "$OUT_D/sweep.json" ]; then
+    echo "SWEEP-REAGGREGATE $OUT_D: no sweep.json after the first pass; re-running (episodes are kept)"
+    bash cluster/eval_sweep.sh sac "$CK" "$OUT_D" "$@" 2>&1 | tee -a "$LOG"
+    [ -f "$OUT_D/sweep.json" ] || echo "SWEEP-STILL-MISSING $OUT_D"
+  fi
+}
+run_sweep "$SW/final_sampled" "$SW/final_sampled.log" --sets hold,rnd --sample-actions --tag final_sampled --no-video "${COMMON[@]}"
+run_sweep "$SW/final_det15" "$SW/final_det15.log" --sets hold --tag final_det15 --no-video "${COMMON[@]}"
+run_sweep "$SW/final_sampled_spots60" "$SW/final_sampled_spots60.log" --sets "$SPOTS_SET" --sample-actions --tag final_sampled_spots60 --no-video "${SPOTS_COMMON[@]}"
+run_sweep "$SW/final_det_spots60" "$SW/final_det_spots60.log" --sets "$SPOTS_SET" --tag final_det_spots60 --no-video "${SPOTS_COMMON[@]}"
 python3 - "$SW/final_sampled/sweep.json" "$SW/final_det15/sweep.json" "$ARM" "$SEED" "$CKPT_TAG" "$NODE_CLASS" "$IC_FILE" "$SW/final_sampled_spots60/sweep.json" "$SW/final_det_spots60/sweep.json" "$SPOTS_SET" <<'PY'
 import json, sys
 smp, det, arm, seed, tag, node, icf, smp60, det60, sset = sys.argv[1:11]
