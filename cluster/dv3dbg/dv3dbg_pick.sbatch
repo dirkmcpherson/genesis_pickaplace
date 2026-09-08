@@ -32,6 +32,12 @@ LOGDIR=$W/runs/$NAME
 RESTARTS=${SLURM_RESTART_COUNT:-0}
 if [ -e "$LOGDIR" ] && [ "$RESTARTS" -eq 0 ]; then echo "FATAL: $LOGDIR exists"; exit 2; fi
 [ -f "$DEMODIR/repeat.json" ] || { echo "FATAL: $DEMODIR has no repeat.json"; exit 2; }
+# disk guard (2026-09-07 incident: /cluster/tufts/shortlab hit 100% and killed every job on the cluster).
+# Standing rule: never start when the project filesystem has < 150 GB free. dv3 keeps only latest.pt (overwritten),
+# so a run costs ~250 MB total (203 MB checkpoint + ~37 MB train_eps) and no periodic checkpoints accumulate.
+FREE_G=$(df -BG --output=avail /cluster/tufts/shortlab | tail -1 | tr -dc '0-9')
+echo "# free space on /cluster/tufts/shortlab: ${FREE_G}G"
+[ "$FREE_G" -ge 150 ] || { echo "FATAL: only ${FREE_G}G free (< 150G) — not starting"; exit 5; }
 export GENESIS_PICKAPLACE_ROOT=$W/gp_root MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONUNBUFFERED=1
 export GENESIS_SIM_VARIANT=gc_kp4_riser3_shelf6
 cd $TREE
