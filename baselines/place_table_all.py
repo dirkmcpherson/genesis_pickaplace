@@ -17,19 +17,26 @@ polE SAMPLE Δ +2.00 (+0.014), p 0.743 -- so the learner rows added below are co
 import argparse, glob, itertools, json, os
 
 
-def cell(run_dir, bank, mode):
+def cell(run_dir, bank, mode, key='placed_v2'):
     f = os.path.join(run_dir, f'fresh_eval_{bank}_{mode}', 'metrics.json')
     if not os.path.exists(f):
         return None
     d = json.load(open(f)); n = int(d['episodes'])
     if n == 0:
         return None
-    k = int(round(float(d.get('placed_v2', 0.0)) * n)); rf = int(round(float(d.get('restore_failed', 0.0)) * n))
-    return (k, n, rf, d.get('bank_version'))
+    k = int(round(float(d.get(key, d.get(d.get('success_key', ''), 0.0))) * n))
+    rf = int(round(float(d.get('restore_failed', 0.0)) * n))
+    extra = int(round(float(d['contact']) * n)) if (key == 'slide_success' and 'contact' in d) else None
+    return (k, n, rf, d.get('bank_version'), extra)
 
 
 def fmt(c):
-    return '—' if c is None else (f'{c[0]}/{c[1]}' + (f' (rf {c[2]})' if c[2] else ''))
+    if c is None:
+        return '—'
+    t = f'{c[0]}/{c[1]}'
+    if len(c) > 4 and c[4] is not None:
+        t += f' [c {c[4]}]'
+    return t + (f' (rf {c[2]})' if c[2] else '')
 
 
 def perm(a, b):
@@ -47,15 +54,28 @@ def main():
     ap.add_argument('--dp-runs', default='baselines/outputs/dp_place')
     ap.add_argument('--wm-human', default='s2_r2d_place_state_dH_bnormclamp1ent5_s{s}')
     ap.add_argument('--wm-machine', default='s2_r2d_place_state_dDP_bnormclamp1ent5_n39_s{s}')
+    ap.add_argument('--phase', choices=('place', 'contact'), default='place',
+                    help="place: key placed_v2, runs pl_{rlpd,dp}_*, WM s2_r2d_place_*. contact (SLIDE, amendment (m)): "
+                         "key slide_success (the (l') statistic), runs sl_{rlpd,dp}_*, WM s2_r2d_contact_*; bare contact "
+                         "is printed beside it.")
     ap.add_argument('--polE-tag', dest='pole_tag', default='polE')
     ap.add_argument('--seeds', default='0-7')
     args = ap.parse_args()
     a, b = args.seeds.split('-'); seeds = list(range(int(a), int(b) + 1))
+    KEY = 'placed_v2' if args.phase == 'place' else 'slide_success'
+    if args.phase == 'contact':
+        if args.wm_human == ap.get_default('wm_human'): args.wm_human = 's2_r2d_contact_state_dH_bnormclamp1ent5_subfloor_s{s}'
+        if args.wm_machine == ap.get_default('wm_machine'): args.wm_machine = 's2_r2d_contact_state_dDP_bnormclamp1ent5_n11_s{s}'
+        if args.rlpd_runs == ap.get_default('rlpd_runs'): args.rlpd_runs = 'baselines/rl/checkpoints/contact'
+        if args.dp_runs == ap.get_default('dp_runs'): args.dp_runs = 'baselines/outputs/dp_contact'
     learners = [('r2dreamer', {'human': os.path.join(args.wm_runs, args.wm_human), 'machine': os.path.join(args.wm_runs, args.wm_machine)}, ('sample', 'mode')),
-                ('RLPD', {'human': os.path.join(args.rlpd_runs, 'pl_rlpd_dH_s{s}'), 'machine': os.path.join(args.rlpd_runs, 'pl_rlpd_dDP_s{s}')}, ('sample', 'mode')),
-                ('DP', {'human': os.path.join(args.dp_runs, 'pl_dp_dH_s{s}'), 'machine': os.path.join(args.dp_runs, 'pl_dp_dDP_s{s}')}, ('sample',))]
+                ('RLPD', {'human': os.path.join(args.rlpd_runs, f'{"pl" if args.phase == "place" else "sl"}_rlpd_dH_s{{s}}'),
+                          'machine': os.path.join(args.rlpd_runs, f'{"pl" if args.phase == "place" else "sl"}_rlpd_dDP_s{{s}}')}, ('sample', 'mode')),
+                ('DP', {'human': os.path.join(args.dp_runs, f'{"pl" if args.phase == "place" else "sl"}_dp_dH_s{{s}}'),
+                        'machine': os.path.join(args.dp_runs, f'{"pl" if args.phase == "place" else "sl"}_dp_dDP_s{{s}}')}, ('sample',))]
     cells = [('holdE', 'sample'), ('holdE', 'mode'), (args.pole_tag, 'sample'), (args.pole_tag, 'mode')]
     hdr = ' | '.join(f'{b_} {"S" if m == "sample" else "M"}' for b_, m in cells)
+    print(f'*statistic: {KEY}' + (' (bare contact in [c N]); PHASE_PLAN (m)/(l\')' if KEY == 'slide_success' else '; PHASE_PLAN (h)') + '*\n')
     print(f'| learner | arm | seed | {hdr} |'); print('|---|---|---|' + '---|' * len(cells))
     stats = []
     for name, tmpl, modes in learners:
@@ -64,7 +84,7 @@ def main():
             rows = {}
             for s in seeds:
                 rd = tmpl[arm].format(s=s)
-                r = {c: cell(rd, *c) for c in cells}
+                r = {c: cell(rd, c[0], c[1], key=KEY) for c in cells}
                 if any(v is not None for v in r.values()):
                     rows[s] = r
                     print(f'| {name} | {arm} | s{s} | ' + ' | '.join(fmt(r[c]) for c in cells) + ' |')
