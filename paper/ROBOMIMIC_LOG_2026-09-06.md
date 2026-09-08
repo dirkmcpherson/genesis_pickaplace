@@ -272,3 +272,7 @@ r2dreamer copy `$LAB/robomimic_r2d/`, venvs `$LAB/robo_venv` + `$LAB/r2d_venv_ro
 - **BATCH 4 (A4 dose pairs, 32 runs, gate 444 GB free, `--nice=6000`): 3354850–3354881** (MH200_re15 3354850–57,
   MH200_rough15 3354858–65, MH200_re20 3354866–73, MH200_rough20 3354874–81). All four recovery batches are now queued
   in the registered priority order; every launcher refuses to start below 100 GB free.
+- 18:0x (09-07) Recovery batch 1, eval-only cells landed (DP, LAST checkpoint, sampled actions, 50-state bank):
+  `DP-RESULT dp_MG200s_s1 1/50`, `s2 8/50`, `s3 2/50`, `s4 4/50` (with the surviving s0 6/50). DP MH200 (all 8, intact):
+  41, 44, 39, 46, 45, 42, 43, 45 /50. DP MG200s s5-s7 are retraining (3354421-23); no DP contrast is computed until all
+  8 MG200s cells exist. Disk 440 GB free; 8 G2b + 3 A2 running, 21 A2 + 32 A4 pending.
