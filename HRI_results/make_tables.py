@@ -911,6 +911,15 @@ def main():
     import methodology
     methodology.write(os.path.join(HERE, 'METHODOLOGY.md'))
 
+    import claims, verification
+    cv = claims.write(os.path.join(HERE, 'CLAIMS_LEDGER.md'), results)
+    verification.write(os.path.join(HERE, 'VERIFICATION.md'), results, tidy)
+    try:
+        import registrations
+        registrations.write(os.path.join(HERE, 'REGISTRATIONS.md'))
+    except ImportError:
+        cv = cv
+
     ok = sum(r['status'] == 'OK' for r in results)
     pv = sum(r['status'] == 'PROVISIONAL' for r in results)
     em = sum(r['status'] == 'EMPTY' for r in results)
@@ -932,6 +941,10 @@ def main():
         print(f'RE-SCORE NON-REPRODUCTIONS: {len(rescore)} per-seed cells')
         for _r in rescore:
             print('   ', _r)
+    if cv:
+        print(f'CLAIMS-LEDGER RULE VIOLATIONS: {len(cv)}')
+        for v in cv:
+            print('   ', v)
     if doc_issues:
         print(f'DOC DISAGREEMENTS: {len(doc_issues)}')
         for d in doc_issues:

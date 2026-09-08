@@ -21,16 +21,6 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 > | `robo_bcrnn_ph` | 0.920 v 0.393 | WITHDRAWN by its own registered fixed-head control (amendment A5). This row compared each arm AT ITS OWN RECIPE OPTIMUM - the human arm with a 5-component mixture head, the machine arm with a deterministic one - so it measured the head choice and the demonstration source together, and cannot be attributed to source. Head-matched cells at adequate seeds do not exist yet, so no re-score can repair it. |
 >
 
-> ## SUPERSEDED - re-score in flight
->
-> These rows are computed on inputs that are BEING OVERWRITTEN as you read them. This is not the same as *provisional*: provisional means the number may move when more seeds land, superseded means the cells it is computed from are actively being replaced. **Do not quote these.** They are excluded from the forest plot.
->
-> | row | statistic | current value | why |
-> |---|---|---|---|
-> | `carry_r2d_bare` | contact (legacy) | 0.807 v 0.796 | Carrycontact is last in the re-score queue and has barely started (2 human / 1 machine seed of 8 at this build). |
-> | `carry_r2d_push` | contact_push | 0.285 v 0.250 | Carrycontact is last in the re-score queue and has barely started (2 human / 1 machine seed of 8 at this build). |
->
-
 ## Pick (rnd30)
 
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
@@ -49,6 +39,7 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 | `pick_spots60_dp` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
 | `pick_spots60_dp_asrecorded` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
 | `pick_spots60_rlpd` *(prov.)* | RLPD | picked | mode | 8v8x60 | 0.867 | 0.865 | 0.002 | [-0.355, 0.359] | 1.000 | 0.502 | 0.668 | 7.2 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
+| `pick_spots60_rlpd_sampled` | RLPD | picked | sampled | 8v8x60 | 0.858 | 0.842 | 0.017 | [-0.334, 0.367] | 0.557 | 0.493 | 0.612 | 5.7 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
 | `pick_spots60_r2d` | world model (r2dreamer) | picked | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run. The world model has no spots60 evaluation; the in-distribution row exists for DP and RLPD only. No per-seed data on the cluster for this cell. |
 
 ## Pruning control (human pruned vs human raw)
@@ -68,6 +59,7 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | `place_r2d_asrecorded` *(prov.)* | world model (r2dreamer) | placed_v2 | mode | 8v8x148 | 0.703 | 0.647 | 0.056 | [-0.038, 0.150] | 0.227 | 0.132 | 0.822 | 16.6 |  | stable | inconclusive |
 | `place_r2d_sample` | world model (r2dreamer) | placed_v2 | sampled | 8v8x148 | 0.708 | 0.652 | 0.056 | [-0.027, 0.139] | 0.206 | 0.117 | 0.851 | 20.6 |  | stable | inconclusive |
 | `place_r2d_sample_asrecorded` *(prov.)* | world model (r2dreamer) | placed_v2 | sampled | 8v8x148 | 0.688 | 0.674 | 0.013 | [-0.068, 0.095] | 0.743 | 0.115 | 0.972 | 126.0 |  | stable | equivalent at +/-0.10 |
+| `place_symmetry_r2d` | world model (r2dreamer) | placed_v2 | mode | 8v8x149 | 0.696 | 0.623 | 0.072 | [-0.022, 0.166] | 0.129 | 0.132 | 0.704 | 8.5 |  | stable | inconclusive |
 | `place_dp` | Diffusion Policy | placed_v2 | sampled | 8v7x148 | 0.616 | 0.487 | 0.128 | [0.101, 0.156] | 0.000 | 0.039 | 0.175 | 0.8 |  **!8v7 of 8v8 registered** | stable | difference detected |
 | `place_rlpd` *(prov.)* | RLPD | placed_v2 | mode | 8v6x148 | 0.668 | 0.857 | -0.189 | [-0.500, 0.122] | 0.291 | 0.435 | 0.364 | 2.1 | **1H/0M** **!8v6 of 8v8 registered** | stable | INCONCLUSIVE (underpowered) |
 
@@ -90,8 +82,6 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | `carry_r2d_bare_asrecorded` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.807 | 0.796 | 0.011 | [-0.012, 0.034] | 0.348 | 0.032 | 1.000 | 656500.0 |  | stable | equivalent at +/-0.10 |
 | `carry_r2d_push` | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.265 | 0.242 | 0.024 | [-0.083, 0.131] | 0.724 | 0.150 | 0.935 | 51.8 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=in | equivalent (PRIOR-SENSITIVE) |
 | `carry_r2d_push_asrecorded` | world model (r2dreamer) | contact_push | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | No per-seed data on the cluster for this cell. |
-| `carry_r2d_bare` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.807 | 0.796 | 0.011 | [-0.012, 0.034] | 0.348 | 0.032 | 1.000 | 656500.0 |  | stable | equivalent at +/-0.10 |
-| `carry_r2d_push` **(SUPERSEDED - re-score in flight)** | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.285 | 0.250 | 0.035 | [-0.073, 0.144] | 0.546 | 0.153 | 0.898 | 31.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive (prior-sensitive) |
 
 ## End-to-end (rnd30)
 
@@ -160,12 +150,14 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 | `pick_spots60_dp` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_dp_asrecorded` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_rlpd` | 58 59 58 60 59 3* 60 59 | 59 60 58 60 58 2* 59 59 | 60 |
+| `pick_spots60_rlpd_sampled` | 57 59 60 58 57 4* 58 59 | 59 57 57 58 56 1* 58 58 | 60 |
 | `prune_dp_rnd30` | 18 19 18 14 13 15 16 16 18 17 | 9 9 7 5 10 5 5 7 | 30 |
 | `prune_dp_spots60` | 53 58 52 53 52 53 51 55 50 50 | 40 44 45 35 48 40 38 40 | 60 |
 | `place_r2d` | 113 88 112 112 84 108 114 116 | 107 91 104 111 92 87 91 89 | 148 |
 | `place_r2d_asrecorded` | 113 86 112 112 82 99 110 118 | 109 79 111 105 90 79 95 98 | 148 |
 | `place_r2d_sample` | 109 91 109 113 81 109 112 114 | 107 85 110 111 89 89 90 91 | 148 |
 | `place_r2d_sample_asrecorded` | 113 82 110 109 77 103 111 109 | 104 92 112 104 97 88 101 100 | 148 |
+| `place_symmetry_r2d` | 122 91 110 101 75 104 110 116 | 106 79 107 104 88 86 85 88 | 149 |
 | `place_dp` | 92 89 96 91 94 89 84 94 | 75 72 68 78 70 73 69 | 148 |
 | `place_rlpd` | 129 30 130 126 4* 129 124 119 | 125 126 127 125 131 127 | 148 |
 | `contact_r2d_bare` | 97 88 64 108 97 93 79 117 | 104 90 94 99 88 112 86 93 | 160 |
@@ -174,8 +166,6 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 | `carry_r2d_bare` | 114 124 123 119 116 120 123 119 | 118 117 115 118 124 117 117 117 | 148 |
 | `carry_r2d_bare_asrecorded` | 116 124 120 120 115 121 123 116 | 117 119 114 119 123 115 116 119 | 148 |
 | `carry_r2d_push` | 81 30 31 25 46 41 41 19 | 35 44 35 34 46 18 37 37 | 148 |
-| `carry_r2d_bare` | 116 124 120 120 115 121 123 116 | 117 119 114 119 123 115 116 119 | 148 |
-| `carry_r2d_push` | 81 27 38 35 46 43 45 23 | 24 48 32 33 50 20 50 39 | 148 |
 | `e2e_picked` | 8 18 18 18 18 9 11 18 | 14 10 22 14 19 19 15 16 | 30 |
 | `e2e_picked_asrecorded` | 8 18 19 19 18 9 11 18 | 14 10 22 14 19 19 15 16 | 30 |
 | `e2e_contact_push` | 3 6 12 6 1 6 4 11 | 5 6 11 5 5 4 11 4 | 30 |
@@ -336,6 +326,8 @@ These documents quote a cell that has since been re-scored. The quoted value is 
 | document | quotes (as recorded) | should now quote | new value | p |
 |---|---|---|---|---|
 | PHASE_RESULTS §2.y | `place_r2d_asrecorded` 0.703 v 0.647 | `place_r2d` | **0.715 v 0.652** | 0.112 |
+| PHASE_RESULTS §3 | `contact_r2d_bare_asrecorded` 0.593 v 0.602 | `contact_r2d_bare` | **0.581 v 0.598** | 0.690 |
+| PHASE_RESULTS §4 | `carry_r2d_bare_asrecorded` 0.807 v 0.796 | `carry_r2d_bare` | **0.809 v 0.796** | 0.281 |
 | PHASE_RESULTS §5.1 | `e2e_picked_asrecorded` 0.500 v 0.537 | `e2e_picked` | **0.492 v 0.537** | 0.553 |
 | PHASE_RESULTS §5.1 (training proxy) | `e2e_nested_proxy_asrecorded` 0.163 v 0.192 | `e2e_nested_proxy` | **0.138 v 0.192** | 0.300 |
 
@@ -348,9 +340,7 @@ Regenerated numbers that differ from the documents of record. Each is a finding,
 |---|---|---|---|---|---|
 | `pick_spots60_rlpd` | human_rate | CELL_STATUS_2026-09-07 | 0.869 | 0.8667 | CELL_STATUS quotes the pre-pinning arm; this row is now the full eight hardware-pinned seeds (the pinned re-runs have landed), so the two differ by the size of the hardware term, 0.869 vs 0.867. |
 | `pick_spots60_rlpd` | perm_p | CELL_STATUS_2026-09-07 | 0.873 | 1.0 | CELL_STATUS quotes the pre-pinning arm; this row is now the full eight hardware-pinned seeds (the pinned re-runs have landed), so the two differ by the size of the hardware term, 0.869 vs 0.867. |
-| `contact_r2d_bare` | human_rate | PHASE_RESULTS §3 | 0.593 | 0.5805 | **UNEXPLAINED - investigate** |
-| `contact_r2d_bare` | machine_rate | PHASE_RESULTS §3 | 0.602 | 0.5984 | **UNEXPLAINED - investigate** |
-| `contact_r2d_bare` | perm_p | PHASE_RESULTS §3 | 0.841 | 0.6895 | **UNEXPLAINED - investigate** |
-| `contact_r2d_push` | perm_p | PHASE_RESULTS §3 (2026-09-07 re-score) | 0.31 | 0.5694 | **UNEXPLAINED - investigate** |
+| `contact_r2d_push_asrecorded` | no regenerated value | PHASE_RESULTS §3 (2026-09-07 re-score) |  |  | **UNEXPLAINED - investigate** |
+| `carry_r2d_push_asrecorded` | no regenerated value | PHASE_RESULTS §3 addendum (re-score) |  |  | **UNEXPLAINED - investigate** |
 
-2 of 6 are differences we already understand (the reason is given). 4 are not.
+2 of 4 are differences we already understand (the reason is given). 2 are not.

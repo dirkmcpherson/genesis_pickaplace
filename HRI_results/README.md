@@ -38,6 +38,9 @@ continues from it, and the staleness is printed into `results.md` rather than hi
 | `seed_counts_raw.csv` | every per-seed count the harvester found (the raw data layer) |
 | `seed_counts.csv` | just the per-seed counts used by the table, with provenance paths |
 | `results.csv` / `results.md` | the results table |
+| `CLAIMS_LEDGER.md` | **start here to audit a sentence.** Per-claim: supporting cells, strength, the caveat that must travel with it, the sentence that would be wrong, and for unsupported claims the experiment that would license them. Generated from `claims.py`. |
+| `VERIFICATION.md` | per-row provenance: the exact cluster file each count came from, the bank version, the hardware class, the regenerating script, and the KNOWN-STALE paths. Generated from `verification.py`. |
+| `REGISTRATIONS.md` | every registered prediction with its outcome. Generated from `registrations.py`. |
 | `fig_effects.png` / `.pdf` | forest plot |
 | `METHODOLOGY.md` | how each learner was made to work |
 | `AUDIT_GUIDE_2026-09-08.md` | **how to check writing against the evidence**: the three-hop provenance chain, the registration check, the traps that have fired, and what phrasing each class of result supports |
@@ -62,6 +65,28 @@ continues from it, and the staleness is printed into `results.md` rather than hi
 | `prior` | `stable` if the equivalence verdict survives all three priors and a separate-sigma refit |
 | `!N short` / `!AvB of CvD registered` | **assertion failures, not notes.** `!N short` means N selected cells ran fewer episodes than they declared (`n_present < n_expected`); the second means the row has fewer seeds than its registration specifies. Two independent instances of silently-missing evaluation cells have occurred in this project, both presenting as plausible data, so the pipeline asserts and displays this rather than leaving it to be noticed. |
 | `verdict` | `equivalent at +/-0.10` needs P(ROPE) >= 0.90; `INCONCLUSIVE (underpowered)` when MDE > 0.20 |
+
+## Companion documents
+
+Written by a different lane and complementary, not duplicative: `AUDIT_GUIDE_2026-09-08.md` is
+the deliberately number-free *procedure* for auditing a claim; `WHAT_STANDS_2026-09-08.md` is a
+hand-written one-page summary of what to rely on today. The three generated documents above are
+the machine-checked layer underneath them - if a sentence in either disagrees with
+`results.md`, `results.md` wins, because it is regenerated from the cluster and they are not.
+
+## The record is not clean
+
+`REGISTRATIONS.md` exists so that no writer can describe it as clean. Of the registered
+predictions tracked there: **11 failed, 6 are not evaluable, 1 was demoted because it implements
+a withdrawn definition, and 3 were withdrawn by a later control** - against 9 met, several of
+which are met but underpowered. Two specific traps for a writer:
+
+- **"All registered predictions were met" is false**, and appears in two documents that a third
+  corrects. The end-to-end margin fails on the in-distribution `placed_v2` cell (0.083 v 0.242),
+  in the machine arm's favour.
+- **The registered TOST equivalence procedure was never run**, on any contrast. Every
+  equivalence-flavoured sentence rests on something other than the test that was registered for
+  it.
 
 ## Why there is a Bayesian column at all
 
