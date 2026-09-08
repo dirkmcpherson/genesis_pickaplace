@@ -386,3 +386,9 @@ discrete-action line, where re-execution was assumed approximately free):
   roughness (ε 0.406) → 5/200; at ε 0.20 → 63/200; at ε 0.15 → 98/200.
 - So a "replay the recorded actions with a small modification" design loses most of its data at the build stage, and
   what survives is a selected, smaller set whose learner performance is far below the native arm's. Budget for both.
+- **2026-09-08 A6 SUBMITTED (registered first, commit 2b15cd9).** `MH80` built with the same tooling: uniform seed-0
+  permutation of MH200's tapes, prefix minimising |cum_rows − 16,501| → **80 tapes / 16,406 rows** (0.6 % off MG200s's
+  row count), verified ⊂ MH200 and MH200 itself unchanged (200 tapes / 41,134 rows); rlpd + r2d + lerobot built; mask
+  added to the mh masked copy (sha now da0b6940…). Jobs (8 seeds each, `--nice=4000`, gate 405 GB free):
+  **MH80 3370379–3370386, MH300 3370387–3370394.** Dose curve when they land: human 16.4k / 41.1k / 61.5k rows vs
+  machine 16.5k / 59.2k / 536.5k. Replay-yield finding written up standalone: `paper/REPLAY_YIELD_2026-09-08.md`.
