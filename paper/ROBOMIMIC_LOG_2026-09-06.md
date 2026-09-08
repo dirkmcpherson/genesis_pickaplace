@@ -335,3 +335,15 @@ Machine demonstrations at their published size match (MG718s) or exceed (MGall) 
 Wall clock (sidecar `hours`): MGall 0.77–2.25 h/run (median ~1.04), MG718s 1.00–1.03, MG200s@300k 2.29–6.68 (median ~3.0);
 MH200/MG200s primaries 0.76–1.60. So **8 RLPD seeds ≈ 8–12 GPU-h wall, ~1 h each in parallel** — the cost of the never-run
 PH200 arm.
+- **2026-09-08 07:4x — BC-RNN GMM-head confound CONFIRMED, and it is stronger than "an interaction".** Checked the
+  configs that actually ran (`robomimic_runs/bcrnn/bcrnn_<ARM>_s<k>/config.json`) and, independently, the `config` blob
+  inside `model_epoch_2000.pth`: **PH200 and MH200 ran with `algo.gmm.enabled = True`, num_modes 5, low_noise_eval True;
+  MG200s ran with `algo.gmm.enabled = False`** (gaussian False, vae False, l2 1.0 → a deterministic MSE head). Everything
+  else is identical across arms (RNN LSTM 2×400, actor_layer_dims [], lr 1e-4, seq_length 10, batch 100, 2000 epochs).
+  Origin: `make_bcrnn_config.py:71` `config.algo.gmm.enabled = (dtype != "mg")`, copied deliberately from robomimic's own
+  `generate_paper_configs.py` (`if dataset_type == "mg": config.algo.gmm.enabled = False`) and disclosed in that file's
+  docstring — but never carried into the results as a confound. **So the BC-RNN row (MH200 0.927 v MG200s 0.393) compares
+  two different policy classes on two different datasets; it is not a like-for-like demonstration-source contrast.**
+  Cheap discriminating test (head held fixed across arms, everything else unchanged): (a) MG200s with GMM ON, (b) MH200
+  with GMM OFF, 3 seeds each = 6 runs; measured BC-RNN wall clock 24–27 min/run incl. eval → **≈ 2.6 GPU-h**, no new data
+  and no code beyond a one-line `--gmm on|off` flag in `make_bcrnn_config.py`. Held pending registration + go.
