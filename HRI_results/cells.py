@@ -89,20 +89,6 @@ COMPARISONS = [
          note='Selected checkpoint. In-training-distribution starts: the strongest null in the '
               'project because both arms sit near ceiling rather than near a floor.'),
 
-    dict(id='pick_spots60_dp_asrecorded', expect_seeds=10, group='Pick (spots60, in-distribution)',
-         learner='Diffusion Policy', stat='picked', action='sampled',
-         human='dH (pruned, 58) incl. archived', machine='dDP (58)',
-         sel_h=dict(source='cluster:dp', arm='dH',
-                    cell_in=('selected_spots60/spots60', 'selected_spots60_mixedcore/spots60'),
-                    extra_has='wave=dp_w2final'),
-         sel_m=dict(source='cluster:dp', arm='dDP', cell='selected_spots60/spots60',
-                    extra_has='wave=dp_w2final'),
-         provisional='Mixes hardware classes WITHIN the human arm (5 pinned + 5 archived '
-                     'mixed-core seeds) against an all-one-class machine arm. Reported only '
-                     'because it is the figure the docs of record quote (0.878).',
-         note='The as-published ten-seed cell, kept next to the pinned-only row so the size of '
-              'the hardware term is visible rather than argued about.'),
-
     dict(id='pick_spots60_rlpd', expect_seeds=8, group='Pick (spots60, in-distribution)', learner='RLPD',
          stat='picked', action='mode', human='dHv2raw (raw, 66)', machine='dDPv2 (raw-matched)',
          sel_h=dict(source='cluster:rlpd', arm='dHv2raw', cell='final_det_spots60/spots60',
@@ -285,9 +271,9 @@ COMPARISONS = [
     dict(id='contact_r2d_push_asrecorded', expect_seeds=8, group='Contact (matched 11)',
          learner='world model (r2dreamer)', stat='contact_push', action='mode',
          human='dH sub-floor (11)', machine='dDP_n11 (11)',
-         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE',
+         sel_h=dict(source='cluster:wm', phase='contact', arm='dH', cell='polE_cp',
                     action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_subfloor'),
-         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE',
+         sel_m=dict(source='cluster:wm', phase='contact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n11'),
          provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='contact_push is the DISCRIMINATING contact predicate: it requires the tool point to push the can, where bare contact does not.'),
 
@@ -321,9 +307,9 @@ COMPARISONS = [
     dict(id='carry_r2d_push_asrecorded', expect_seeds=8, group='Carrycontact (matched 21)',
          learner='world model (r2dreamer)', stat='contact_push', action='mode',
          human='dH (21)', machine='dDP_n21 (21)',
-         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE',
+         sel_h=dict(source='cluster:wm', phase='carrycontact', arm='dH', cell='polE_cp',
                     action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5'),
-         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE',
+         sel_m=dict(source='cluster:wm', phase='carrycontact', arm='dDP', cell='polE_cp',
                     action_mode='mode', statistic='contact_push', extra='setting=bnormclamp1ent5_n21'),
          provisional='SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.', note='The discriminating contact predicate on the carrycontact scope.'),
 

@@ -222,6 +222,42 @@ SET_CONSTRUCTION = [
 ]
 
 
+# ---------------------------------------------------------------------------------------------
+# STATIC NOTES - retired rows whose evidence must not retire with them.
+#
+# THE GENERAL RULE. An as-recorded row exists to show WHAT A CORRECTION CHANGED. When an upstream
+# fix makes such a row unreproducible - because the pre-correction data no longer flows through
+# the pipeline - the row is removed AND its movement is recorded here as a static, dated note.
+# Deleting the row on its own would quietly erase the evidence of a correction, which is exactly
+# backwards: a project that cannot explain why a published number changed has lost the argument
+# before it starts.
+#
+# These notes are STATIC BY CONSTRUCTION. They are not recomputed from data, they carry no live
+# cells, and they must not be regenerated or "checked" against the current table - the inputs are
+# gone from the pipeline on purpose. The numbers remain recoverable from git and from the cell
+# matrix; what is recorded here is the reading.
+STATIC_NOTES = [
+dict(id='pick_spots60_dp_asrecorded', retired='2026-09-08',
+     was='The as-recorded counterpart of `pick_spots60_dp`: the in-distribution Diffusion Policy '
+         'cell computed over the human arm INCLUDING its five archived mixed-hardware seeds '
+         '(25-29), against the pinned-only row.',
+     why_retired='An upstream de-duplication now drops mixed-hardware evaluations before this '
+                 'directory\'s selectors see them, so the pre-correction state can no longer be '
+                 'assembled from the harvest. The row had become a duplicate of the live one.',
+     movement='Human arm: 5 pinned seeds 0.8933 -> 10 pinned seeds 0.8783 (machine 0.8733 '
+              'throughout; p 0.4023 -> 0.8448). The 10-seed PINNED figure is 0.8783 and the '
+              '10-seed MIXED-HARDWARE figure was also 0.8783, at p 0.8448 both.',
+     reading='**The hardware class made no difference to this cell at all.** Seeds 25-29 return '
+             'the counts `53 51 55 50 50` on the archived mixed-hardware evaluation AND on the '
+             'pinned re-run - byte-identical per seed, not merely equal in aggregate. So this is '
+             'a duplicate-evaluation control, and it bounds the hardware term at zero here. It '
+             'also corrects an earlier reading of my own: the 0.893-versus-0.878 gap was a '
+             'FIVE-SEED SMALL-SAMPLE effect, not a hardware effect, and I had provisionally '
+             'attributed it to hardware.',
+     recover='git show c3fa952:HRI_results/results.csv (5v10 pinned and 10v10 as-recorded rows '
+             'side by side); the current row is at results.csv `pick_spots60_dp`.'),
+]
+
 ROPE = 0.10
 STRENGTH_ORDER = ['established', 'supported-but-underpowered', 'directional-only',
                   'withdrawn', 'not-supported']
@@ -291,6 +327,22 @@ def write(path, results):
             L += [f"**What would license this claim.** {c['licence']}", '']
         if c.get('wrong'):
             L += [f"**Do NOT write.** {c['wrong']}", '']
+
+    if STATIC_NOTES:
+        L += ['## Retired rows - static notes', '',
+              'An as-recorded row exists to show what a correction changed. When an upstream fix '
+              'makes one unreproducible, the row is removed and its movement is recorded here '
+              'instead, so the evidence of the correction does not retire with it.', '',
+              '**These notes are static by construction.** They carry no live cells, they are '
+              'not recomputed, and they must not be regenerated or checked against the current '
+              'table - the inputs no longer flow through the pipeline, on purpose.', '']
+        for n in STATIC_NOTES:
+            L += [f"### `{n['id']}` - retired {n['retired']}", '',
+                  f"- **What it was:** {n['was']}",
+                  f"- **Why it was retired:** {n['why_retired']}",
+                  f"- **The movement it recorded:** {n['movement']}",
+                  f"- **Reading:** {n['reading']}",
+                  f"- **Recover the original rows:** `{n['recover']}`", '']
 
     L += ['## Properties of the demonstration sets themselves', '',
           'These are not evaluation cells, so they have no row in `results.csv`, but they bound '

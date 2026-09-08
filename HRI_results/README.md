@@ -159,6 +159,12 @@ convergence to diagnose. Assumptions are stated plainly at the top of `hri_stats
   reported as pending rather than compared.
 - **Superseded rows do not block comparability.** They are shown for comparison but excluded from
   the entry-bank check, so an old unstamped cell cannot veto the row that replaced it.
+- **A correction never erases its own evidence.** An as-recorded row exists to show what a
+  correction changed. When an upstream fix makes such a row unreproducible - the pre-correction
+  data no longer flows through the pipeline - the row is removed AND its movement is recorded as
+  a dated **static note** in `CLAIMS_LEDGER.md` (`STATIC_NOTES` in `claims.py`). Static notes
+  carry no live cells and are never recomputed; the originals stay recoverable from git. Deleting
+  such a row on its own would quietly delete the evidence that a published number moved.
 - **A stale document is surfaced, not tolerated.** When a doc entry points at an `_asrecorded`
   row whose re-scored counterpart now differs, the "Documents that need updating" section names
   the document, what it currently quotes, and the value it should quote instead. The as-recorded

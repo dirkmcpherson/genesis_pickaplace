@@ -149,6 +149,10 @@ def _binom_loglik_grid(k, n, theta):
     return c + k * _log_sigmoid(theta) + (n - k) * _log_sigmoid(-theta)
 
 
+_LOGLIK_CACHE = {}
+_PRIOR_ROPE_CACHE = {}
+
+
 def bayes_equivalence(a_k, a_n, b_k, b_n, rope=0.10, prior='primary',
                       n_mu=201, n_sigma=71, n_gh=32, sep_sigma=False):
     """Hierarchical (seed random-effects) posterior for Delta = r_human - r_machine.
@@ -171,10 +175,19 @@ def bayes_equivalence(a_k, a_n, b_k, b_n, rope=0.10, prior='primary',
     theta = mu[:, None, None] + sig[None, :, None] * gh_x[None, None, :]
 
     def arm_loglik(ks, n):
+        # The marginal log-likelihood surface depends only on the DATA and the (mu, sigma, GH)
+        # grid -- never on the prior. It was being recomputed for every prior variant and for the
+        # separate-sigma refit: four identical passes per arm, which was the whole cost of a
+        # rebuild. Cache it. Identical inputs, identical outputs, no numerical change.
+        key = (tuple(sorted(ks)), float(n), n_mu, n_sigma, n_gh, float(sig[-1]))
+        hit = _LOGLIK_CACHE.get(key)
+        if hit is not None:
+            return hit
         out = np.zeros((n_mu, n_sigma))
         for k in ks:
             out += logsumexp(log_gh_w[None, None, :] + _binom_loglik_grid(k, float(n), theta),
                              axis=2)
+        _LOGLIK_CACHE[key] = out
         return out
 
     # population-averaged rate r(mu, sigma) = E_eps[logistic(mu + sigma eps)]
@@ -224,10 +237,18 @@ def bayes_equivalence(a_k, a_n, b_k, b_n, rope=0.10, prior='primary',
         return d, w / w.sum()
 
     d_post, w_post = accumulate(True)
-    d_pri, w_pri = accumulate(False)
+
+    # The PRIOR mass in the ROPE is data-independent: it depends only on the prior and the grid,
+    # so it is identical for every comparison and was being recomputed ~45 times per prior. Only
+    # the scalar is needed (for BF01), so cache that.
+    pkey = (mu_sd, sig_scale, rope, n_mu, n_sigma, n_gh, bool(sep_sigma))
+    p_rope_prior = _PRIOR_ROPE_CACHE.get(pkey)
+    if p_rope_prior is None:
+        d_pri, w_pri = accumulate(False)
+        p_rope_prior = float(w_pri[np.abs(d_pri) < rope].sum())
+        _PRIOR_ROPE_CACHE[pkey] = p_rope_prior
 
     p_rope = float(w_post[np.abs(d_post) < rope].sum())
-    p_rope_prior = float(w_pri[np.abs(d_pri) < rope].sum())
     p_gt0 = float(w_post[d_post > 0].sum())
 
     def odds(p):

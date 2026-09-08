@@ -266,7 +266,28 @@ def write(path):
               f"Set at `{a['eval_where']}`", '']
         if a.get('caveat'):
             L += ['### Caveat', '', a['caveat'], '']
-    L += ['## What "deterministic" means, per learner', '',
+    L += ['## Why the significance tests are exact, not approximate', '',
+          'Every p-value in `results.md` is an EXACT two-sided permutation test: it enumerates '
+          'every possible split of the pooled per-seed counts and counts how many are at least '
+          'as extreme as the observed one. Nothing is approximated and no distributional '
+          'assumption is made about the seeds.', '',
+          'That is affordable only because the designs are small, and the cost is the reason it '
+          'is worth stating:', '',
+          '| design | distinct splits enumerated |', '|---|---|',
+          '| 3 v 3 (BC-RNN) | 20 |', '| 8 v 8 (most cells) | 12,870 |',
+          '| 10 v 10 (Diffusion Policy pick) | 184,756 |', '',
+          'The 10-versus-10 cells are the reason a full rebuild takes minutes rather than '
+          'seconds. Two consequences a reader should take from this. First, no p-value here '
+          'rests on a normal approximation or on a chi-square, so none of them can be wrong in '
+          'the way an approximate test can be wrong at n = 8. Second, the enumeration also fixes '
+          'the SMALLEST ATTAINABLE p-value: at 3 v 3 there are only 20 splits, so the smallest '
+          'two-sided p is 0.10 and such a cell can never reach 0.05 whatever the effect - which '
+          'is why the BC-RNN head-matched rows are reported as effect sizes and carry no '
+          'p-value at all. A test that cannot reject is reported as such rather than as a null.',
+          '',
+          '`hri_stats.py` falls back to Monte-Carlo sampling above 400,000 splits; no cell in '
+          'this table reaches that, so every reported p is exact.', '',
+          '## What "deterministic" means, per learner', '',
           'The project distinguishes these carefully and the table uses the same words:', '',
           '| learner | eval cell | genuinely repeatable? |', '|---|---|---|',
           '| RLPD | deterministic | **yes** - tanh of the mean |',

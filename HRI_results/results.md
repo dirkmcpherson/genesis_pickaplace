@@ -37,7 +37,6 @@ Every row is **human arm vs machine arm**. Delta = human - machine on the succes
 | comparison | learner | statistic | act | n | human | machine | Delta | 95% CI | p | MDE | P(ROPE) | BF01 | dead | prior | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `pick_spots60_dp` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
-| `pick_spots60_dp_asrecorded` *(prov.)* | Diffusion Policy | picked | sampled | 10v10x60 | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | 1.000 | 74030.0 |  | stable | equivalent at +/-0.10 |
 | `pick_spots60_rlpd` *(prov.)* | RLPD | picked | mode | 8v8x60 | 0.867 | 0.865 | 0.002 | [-0.355, 0.359] | 1.000 | 0.502 | 0.668 | 7.2 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
 | `pick_spots60_rlpd_sampled` | RLPD | picked | sampled | 8v8x60 | 0.858 | 0.842 | 0.017 | [-0.334, 0.367] | 0.557 | 0.493 | 0.612 | 5.7 | **1H/1M** | stable | INCONCLUSIVE (underpowered) |
 | `pick_spots60_r2d` | world model (r2dreamer) | picked | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run. The world model has no spots60 evaluation; the in-distribution row exists for DP and RLPD only. No per-seed data on the cluster for this cell. |
@@ -70,7 +69,7 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | `contact_r2d_bare` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x160 | 0.581 | 0.598 | -0.018 | [-0.106, 0.070] | 0.690 | 0.124 | 0.967 | 106.0 |  | stable | equivalent at +/-0.10 |
 | `contact_r2d_bare_asrecorded` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x160 | 0.593 | 0.602 | -0.009 | [-0.091, 0.074] | 0.842 | 0.116 | 0.980 | 172.7 |  | stable | equivalent at +/-0.10 |
 | `contact_r2d_push` *(prov.)* | world model (r2dreamer) | contact_push | mode | 8v8x160 | 0.350 | 0.362 | -0.013 | [-0.055, 0.030] | 0.569 | 0.060 | 1.000 | 11760.0 |  | stable | equivalent at +/-0.10 |
-| `contact_r2d_push_asrecorded` | world model (r2dreamer) | contact_push | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | No per-seed data on the cluster for this cell. |
+| `contact_r2d_push_asrecorded` *(prov.)* | world model (r2dreamer) | contact_push | mode | 8v8x160 | 0.346 | 0.366 | -0.019 | [-0.058, 0.019] | 0.308 | 0.054 | 1.000 | 14390.0 |  | stable | equivalent at +/-0.10 |
 | `contact_dp` | Diffusion Policy | contact_push | sampled | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run. The contact phase was never submitted for DP or RLPD; the 32 slide/contact runs are HELD on the predicate decision (PHASE_PLAN (p)). No per-seed data on the cluster for this cell. |
 | `contact_rlpd` | RLPD | contact_push | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | Not run (same hold as contact_dp). No per-seed data on the cluster for this cell. |
 
@@ -81,7 +80,7 @@ Both arms are HUMAN. This is the reference effect size for the table above: a da
 | `carry_r2d_bare` | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.809 | 0.796 | 0.013 | [-0.010, 0.035] | 0.281 | 0.032 | 1.000 | 556400.0 |  | stable | equivalent at +/-0.10 |
 | `carry_r2d_bare_asrecorded` *(prov.)* | world model (r2dreamer) | contact (legacy) | mode | 8v8x148 | 0.807 | 0.796 | 0.011 | [-0.012, 0.034] | 0.348 | 0.032 | 1.000 | 656500.0 |  | stable | equivalent at +/-0.10 |
 | `carry_r2d_push` | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.265 | 0.242 | 0.024 | [-0.083, 0.131] | 0.724 | 0.150 | 0.935 | 51.8 |  | FLIPS: primary=in, sep_sigma=out, tight=in, wide=in | equivalent (PRIOR-SENSITIVE) |
-| `carry_r2d_push_asrecorded` | world model (r2dreamer) | contact_push | mode | - | **EMPTY** | **EMPTY** | | | | | | | | | No per-seed data on the cluster for this cell. |
+| `carry_r2d_push_asrecorded` *(prov.)* | world model (r2dreamer) | contact_push | mode | 8v8x148 | 0.285 | 0.250 | 0.035 | [-0.073, 0.144] | 0.546 | 0.153 | 0.898 | 31.7 |  | FLIPS: primary=out, sep_sigma=out, tight=in, wide=out | inconclusive (prior-sensitive) |
 
 ## End-to-end (rnd30)
 
@@ -148,7 +147,6 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 | `pick_rnd30_r2d_sample` | 16 20 20 18 19 16 18 20 | 20 17 19 19 20 20 16 20 | 30 |
 | `pick_rnd30_dv3` | 21 21 | 19 19 | 30 |
 | `pick_spots60_dp` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
-| `pick_spots60_dp_asrecorded` | 53 58 52 53 52 53 51 55 50 50 | 50 53 49 55 52 53 54 55 52 51 | 60 |
 | `pick_spots60_rlpd` | 58 59 58 60 59 3* 60 59 | 59 60 58 60 58 2* 59 59 | 60 |
 | `pick_spots60_rlpd_sampled` | 57 59 60 58 57 4* 58 59 | 59 57 57 58 56 1* 58 58 | 60 |
 | `prune_dp_rnd30` | 18 19 18 14 13 15 16 16 18 17 | 9 9 7 5 10 5 5 7 | 30 |
@@ -163,9 +161,11 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 | `contact_r2d_bare` | 97 88 64 108 97 93 79 117 | 104 90 94 99 88 112 86 93 | 160 |
 | `contact_r2d_bare_asrecorded` | 95 91 79 117 101 88 76 112 | 103 91 94 92 100 115 85 90 | 160 |
 | `contact_r2d_push` | 54 46 41 63 61 60 61 62 | 61 59 60 57 55 64 53 55 | 160 |
+| `contact_r2d_push_asrecorded` | 46 49 54 61 59 60 52 62 | 64 62 57 60 61 63 49 52 | 160 |
 | `carry_r2d_bare` | 114 124 123 119 116 120 123 119 | 118 117 115 118 124 117 117 117 | 148 |
 | `carry_r2d_bare_asrecorded` | 116 124 120 120 115 121 123 116 | 117 119 114 119 123 115 116 119 | 148 |
 | `carry_r2d_push` | 81 30 31 25 46 41 41 19 | 35 44 35 34 46 18 37 37 | 148 |
+| `carry_r2d_push_asrecorded` | 81 27 38 35 46 43 45 23 | 24 48 32 33 50 20 50 39 | 148 |
 | `e2e_picked` | 8 18 18 18 18 9 11 18 | 14 10 22 14 19 19 15 16 | 30 |
 | `e2e_picked_asrecorded` | 8 18 19 19 18 9 11 18 | 14 10 22 14 19 19 15 16 | 30 |
 | `e2e_contact_push` | 3 6 12 6 1 6 4 11 | 5 6 11 5 5 4 11 4 | 30 |
@@ -192,7 +192,6 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 
 - **`pick_rnd30_dv3`** - n = 2 v 2 (G3 seeds 2/3 still running); the permutation test floor at this n is p = 0.333, so it has no power. dv3 cells are SAMPLED (the sidecar "deterministic" label is a known mislabel) and belong against the r2dreamer SAMPLED row, 0.613 v 0.629.
 - **`pick_spots60_dp`** - Hardware-pinned seeds only. Five human seeds (25-29) were archived to selected_spots60_mixedcore pending pinned re-runs, so this row reproduces from FIVE human seeds against ten machine seeds. The published 0.878 is the ten-seed figure including the archived five.
-- **`pick_spots60_dp_asrecorded`** - Mixes hardware classes WITHIN the human arm (5 pinned + 5 archived mixed-core seeds) against an all-one-class machine arm. Reported only because it is the figure the docs of record quote (0.878).
 - **`pick_spots60_rlpd`** - Hardware-pinned seeds only: two human seeds (60, 61) are archived to final_det_spots60_mixedcore, so this is 6 v 8. The published 0.869 is the eight-seed figure including the archived two.
 - **`prune_dp_rnd30`** - The two arms differ in wave AND in demonstration count (58 pruned vs 66 raw), so this is a pruned-set-vs-raw-set contrast, not a controlled pruning-only manipulation. The direction and magnitude are the point.
 - **`prune_dp_spots60`** - Same wave/count caveat as prune_dp_rnd30. The human pruned arm here is the ten-seed as-published set (five pinned + five archived mixed-core), matching the in-distribution table this figure was quoted from.
@@ -202,7 +201,9 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 - **`contact_r2d_bare`** - Both arms are sub-floor (11 demonstrations each).
 - **`contact_r2d_bare_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`contact_r2d_push`** - Both arms are sub-floor (11 demonstrations each).
+- **`contact_r2d_push_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`carry_r2d_bare_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
+- **`carry_r2d_push_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`e2e_picked_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`e2e_contact_push_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
 - **`e2e_nested_honest_asrecorded`** - SUPERSEDED by the pinned re-score, which has landed at 8 v 8; kept only so the correction is visible.
@@ -214,8 +215,6 @@ The interaction is **+0.667 with OPPOSITE SIGNS**: the mixture head helps the hu
 ## Empty cells, and why
 
 - **`pick_spots60_r2d`** (world model (r2dreamer), Pick (spots60, in-distribution)) - Not run. The world model has no spots60 evaluation; the in-distribution row exists for DP and RLPD only. No per-seed data on the cluster for this cell.
-- **`contact_r2d_push_asrecorded`** (world model (r2dreamer), Contact (matched 11)) - No per-seed data on the cluster for this cell.
-- **`carry_r2d_push_asrecorded`** (world model (r2dreamer), Carrycontact (matched 21)) - No per-seed data on the cluster for this cell.
 - **`contact_dp`** (Diffusion Policy, Contact (matched 11)) - Not run. The contact phase was never submitted for DP or RLPD; the 32 slide/contact runs are HELD on the predicate decision (PHASE_PLAN (p)). No per-seed data on the cluster for this cell.
 - **`contact_rlpd`** (RLPD, Contact (matched 11)) - Not run (same hold as contact_dp). No per-seed data on the cluster for this cell.
 - **`e2e_dp`** (Diffusion Policy, End-to-end (rnd30)) - Runs queued, not landed. 32 e2e runs (e2e_dp_* / e2e_rlpd_*) sit PENDING at --nice=9000 behind the rest of the queue. No per-seed data on the cluster for this cell.
@@ -242,9 +241,15 @@ Each arm is corrected by the same construction, so per-arm movement looks small 
 | `contact_r2d_bare_asrecorded` (as recorded) | 0.593 | 0.602 | -0.009 | 0.842 |
 | `contact_r2d_bare` (re-scored, of record) | 0.581 | 0.598 | -0.018 | 0.690 |
 | **movement** | -0.012 | -0.003 | **-0.009**, a 2.1x change | |
+| `contact_r2d_push_asrecorded` (as recorded) | 0.346 | 0.366 | -0.019 | 0.308 |
+| `contact_r2d_push` (re-scored, of record) | 0.350 | 0.362 | -0.013 | 0.569 |
+| **movement** | +0.004 | -0.003 | **+0.007**, a 0.6x change | |
 | `carry_r2d_bare_asrecorded` (as recorded) | 0.807 | 0.796 | 0.011 | 0.348 |
 | `carry_r2d_bare` (re-scored, of record) | 0.809 | 0.796 | 0.013 | 0.281 |
 | **movement** | +0.003 | +0.001 | **+0.002**, a 1.2x change | |
+| `carry_r2d_push_asrecorded` (as recorded) | 0.285 | 0.250 | 0.035 | 0.546 |
+| `carry_r2d_push` (re-scored, of record) | 0.265 | 0.242 | 0.024 | 0.724 |
+| **movement** | -0.020 | -0.008 | **-0.012**, a 0.7x change | |
 | `e2e_picked_asrecorded` (as recorded) | 0.500 | 0.537 | -0.037 | 0.643 |
 | `e2e_picked` (re-scored, of record) | 0.492 | 0.537 | -0.046 | 0.553 |
 | **movement** | -0.008 | +0.000 | **-0.008**, a 1.2x change | |
@@ -262,9 +267,6 @@ Each arm is corrected by the same construction, so per-arm movement looks small 
 | **movement** | +0.000 | +0.000 | **+0.000**, a 1.0x change | |
 
 The arms move by comparable amounts and in opposite directions, so the gap moves by more than either arm does. A reader who checks only per-arm movement would conclude the correction was harmless.
-
-- `contact_r2d_push` vs `contact_r2d_push_asrecorded`: movement NOT computed - the re-score has not produced a testable cell yet.
-- `carry_r2d_push` vs `carry_r2d_push_asrecorded`: movement NOT computed - the re-score has not produced a testable cell yet.
 
 
 ## Re-score reproducibility
@@ -327,7 +329,9 @@ These documents quote a cell that has since been re-scored. The quoted value is 
 |---|---|---|---|---|
 | PHASE_RESULTS §2.y | `place_r2d_asrecorded` 0.703 v 0.647 | `place_r2d` | **0.715 v 0.652** | 0.112 |
 | PHASE_RESULTS §3 | `contact_r2d_bare_asrecorded` 0.593 v 0.602 | `contact_r2d_bare` | **0.581 v 0.598** | 0.690 |
+| PHASE_RESULTS §3 (2026-09-07 re-score) | `contact_r2d_push_asrecorded` 0.346 v 0.366 | `contact_r2d_push` | **0.350 v 0.362** | 0.569 |
 | PHASE_RESULTS §4 | `carry_r2d_bare_asrecorded` 0.807 v 0.796 | `carry_r2d_bare` | **0.809 v 0.796** | 0.281 |
+| PHASE_RESULTS §3 addendum (re-score) | `carry_r2d_push_asrecorded` 0.285 v 0.250 | `carry_r2d_push` | **0.265 v 0.242** | 0.724 |
 | PHASE_RESULTS §5.1 | `e2e_picked_asrecorded` 0.500 v 0.537 | `e2e_picked` | **0.492 v 0.537** | 0.553 |
 | PHASE_RESULTS §5.1 (training proxy) | `e2e_nested_proxy_asrecorded` 0.163 v 0.192 | `e2e_nested_proxy` | **0.138 v 0.192** | 0.300 |
 
@@ -340,7 +344,5 @@ Regenerated numbers that differ from the documents of record. Each is a finding,
 |---|---|---|---|---|---|
 | `pick_spots60_rlpd` | human_rate | CELL_STATUS_2026-09-07 | 0.869 | 0.8667 | CELL_STATUS quotes the pre-pinning arm; this row is now the full eight hardware-pinned seeds (the pinned re-runs have landed), so the two differ by the size of the hardware term, 0.869 vs 0.867. |
 | `pick_spots60_rlpd` | perm_p | CELL_STATUS_2026-09-07 | 0.873 | 1.0 | CELL_STATUS quotes the pre-pinning arm; this row is now the full eight hardware-pinned seeds (the pinned re-runs have landed), so the two differ by the size of the hardware term, 0.869 vs 0.867. |
-| `contact_r2d_push_asrecorded` | no regenerated value | PHASE_RESULTS §3 (2026-09-07 re-score) |  |  | **UNEXPLAINED - investigate** |
-| `carry_r2d_push_asrecorded` | no regenerated value | PHASE_RESULTS §3 addendum (re-score) |  |  | **UNEXPLAINED - investigate** |
 
-2 of 4 are differences we already understand (the reason is given). 2 are not.
+2 of 2 are differences we already understand (the reason is given). 0 are not.

@@ -23,7 +23,6 @@ For each sentence the paper might write: the cells that support it, the strength
 | `pick_rnd30_rlpd` | 0.600 | 0.567 | 0.033 | [-0.212, 0.279] | 0.646 | **0.345** (> margin) | INCONCLUSIVE (underpowered) |
 | `pick_rnd30_r2d_mode` | 0.617 | 0.608 | 0.008 | [-0.047, 0.064] | 0.875 | 0.078 | equivalent at +/-0.10 |
 | `pick_rnd30_r2d_sample` | 0.613 | 0.629 | -0.017 | [-0.075, 0.041] | 0.641 | 0.081 | equivalent at +/-0.10 |
-| `pick_spots60_dp_asrecorded` | 0.878 | 0.873 | 0.005 | [-0.030, 0.040] | 0.845 | 0.049 | equivalent at +/-0.10 |
 | `pick_spots60_rlpd` | 0.867 | 0.865 | 0.002 | [-0.355, 0.359] | 1.000 | **0.502** (> margin) | INCONCLUSIVE (underpowered) |
 | `pick_spots60_rlpd_sampled` | 0.858 | 0.842 | 0.017 | [-0.334, 0.367] | 0.557 | **0.493** (> margin) | INCONCLUSIVE (underpowered) |
 
@@ -186,6 +185,20 @@ For each sentence the paper might write: the cells that support it, the strength
 **What would license this claim.** A matched-budget curve comparison with the arms equalised on post-ignition training, for more than one learner. Ask the curves lane for its current state before writing any speed sentence.
 
 **Do NOT write.** Any sentence about one source training faster, citing this table. The cells here are final-checkpoint scores and carry no timing information at all.
+
+## Retired rows - static notes
+
+An as-recorded row exists to show what a correction changed. When an upstream fix makes one unreproducible, the row is removed and its movement is recorded here instead, so the evidence of the correction does not retire with it.
+
+**These notes are static by construction.** They carry no live cells, they are not recomputed, and they must not be regenerated or checked against the current table - the inputs no longer flow through the pipeline, on purpose.
+
+### `pick_spots60_dp_asrecorded` - retired 2026-09-08
+
+- **What it was:** The as-recorded counterpart of `pick_spots60_dp`: the in-distribution Diffusion Policy cell computed over the human arm INCLUDING its five archived mixed-hardware seeds (25-29), against the pinned-only row.
+- **Why it was retired:** An upstream de-duplication now drops mixed-hardware evaluations before this directory's selectors see them, so the pre-correction state can no longer be assembled from the harvest. The row had become a duplicate of the live one.
+- **The movement it recorded:** Human arm: 5 pinned seeds 0.8933 -> 10 pinned seeds 0.8783 (machine 0.8733 throughout; p 0.4023 -> 0.8448). The 10-seed PINNED figure is 0.8783 and the 10-seed MIXED-HARDWARE figure was also 0.8783, at p 0.8448 both.
+- **Reading:** **The hardware class made no difference to this cell at all.** Seeds 25-29 return the counts `53 51 55 50 50` on the archived mixed-hardware evaluation AND on the pinned re-run - byte-identical per seed, not merely equal in aggregate. So this is a duplicate-evaluation control, and it bounds the hardware term at zero here. It also corrects an earlier reading of my own: the 0.893-versus-0.878 gap was a FIVE-SEED SMALL-SAMPLE effect, not a hardware effect, and I had provisionally attributed it to hardware.
+- **Recover the original rows:** `git show c3fa952:HRI_results/results.csv (5v10 pinned and 10v10 as-recorded rows side by side); the current row is at results.csv `pick_spots60_dp`.`
 
 ## Properties of the demonstration sets themselves
 

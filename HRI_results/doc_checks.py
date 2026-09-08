@@ -21,7 +21,7 @@ DOC_OF_RECORD = [
     dict(id='pick_rnd30_dv3', doc='RESULTS §7 item 9', human=0.700, machine=0.633, p=0.333),
 
     # --- Genesis pick, in-distribution
-    dict(id='pick_spots60_dp_asrecorded', doc='CELL_STATUS_2026-09-07', human=0.878,
+    dict(id='pick_spots60_dp', doc='CELL_STATUS_2026-09-07', human=0.878,
          machine=0.873, p=0.845),
     dict(id='pick_spots60_dp', doc='CELL_STATUS_2026-09-07', human=0.878, machine=0.873,
          p=0.845,
