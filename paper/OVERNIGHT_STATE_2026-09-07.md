@@ -242,3 +242,20 @@ DP (LAST checkpoint, sampled, 50-state bank, 8 v 8): mixed-human [41,44,39,46,45
 Two readings, and they pull in opposite directions. **The ordering is what our Genesis framing predicts**: the two pure imitators lose most (0.53, 0.77) and the learner that interacts with the environment loses least (0.31) — source sensitivity decreasing with online interaction. **But the quantity control is already contradicting the premise**: MGall (all 3,900 rollouts, 536k transitions) is scoring 0.74 and 0.60 on its first two seeds, *above* the human arm, which would make all three gaps a property of the 200-tape subsample rather than of machine provenance.
 
 So the honest state is: a large, clean, three-learner effect on the 200-tape arms, whose cause is not yet established, with the decisive evidence (MGall and MG718s at 8 seeds, plus the action-statistics dose pairs) still landing. Do not write the ordering up as a finding until those controls read out — the control was registered before the result precisely so it can overturn it.
+
+---
+
+## VPN DOWN 22:37 EDT (recorded 22:47)
+
+The Tufts tunnel dropped. `ip -br addr` shows only wifi and tailscale; `login.pax.tufts.edu` no longer resolves, because the tunnel supplies that DNS. Last successful cluster access was 22:37.
+
+**Nothing is lost.** Everything already submitted keeps running on the cluster: robomimic recovery and its controls, the place runs, the end-to-end runs, dv3, the contact re-score, the in-distribution evaluations. Slurm does not care that this box went away, and the launchers carry `--requeue`.
+
+**What is blocked until you reconnect:** monitoring, any new submission, and rsync. Concretely that means the pinned end-to-end re-score under amendment (t) had been *prepared* but not launched, and the ISA probe that establishes which nodes are AVX2 was still running when the link dropped.
+
+**On reconnect, in this order:**
+1. Re-run the ISA probe if its log is incomplete, since the pinned nodelist must come from `/proc/cpuinfo` and not from Slurm's feature labels, which are wrong on this cluster.
+2. Launch the 256 phase cells on any nodes (they are hardware-insensitive) and the 64 end-to-end cells on the verified nodelist.
+3. Collect the robomimic controls, which are the results that decide whether the three-learner ordering survives.
+
+The end-to-end agent has been told to stop attempting cluster access and to leave its exact command list under this heading.
