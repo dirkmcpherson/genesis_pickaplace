@@ -608,3 +608,19 @@ Standing caveat unchanged: exploratory, one learner, thresholds and grid chosen 
 **The diagnostic tell, recorded as a standing check rather than an anecdote.** The contamination announced itself: flag-based `picked`, `contact` and `nested` all reported *identical* ignition steps. Three strictly nested stages cannot ignite at the same step. **After computing any per-stage statistic, assert that strictly harder stages differ from easier ones** — when a metric that must vary across nested conditions reports the same value for all of them, it is measuring something other than its name, which is the same failure family as the contact predicate and the nested proxy.
 
 Online performance levels were also understated by the same defect and move up; this affects the curves' captions, not the evaluation cells.
+
+### Amendment (u) — the selection control is a PREREQUISITE for any seed increase, not a follow-up
+
+Ordering decision, recorded before either is run. The learning-speed effect currently says: human demonstrations reach each stage about 156k steps sooner, measured on a machine set assembled by **keeping the best of up to three attempts per initial condition** (Σ demonstrated reward 206 against 118; 16 demonstrated completions against 3) versus a human set that keeps **every** attempt including failures.
+
+**If more seeds sharpened that to p < 0.01, we still would not know whether we had measured who produced the data or how we filtered it.** More power on a confounded comparison buys precision about the wrong quantity. And a significant result that later turns out to be about our own set construction is *worse* than the null, because by then it would be published.
+
+**Therefore: the end-to-end arm built from a machine set WITHOUT best-of-3 selection must run before, not after, any increase in seeds.** If the effect survives the selection control, additional seeds are worth spending on it. If it does not, the seeds would have been spent establishing an artefact with confidence.
+
+This inverts the intuitive order — power first, controls later — and it is the right way round whenever the candidate finding sits exactly where a known confound sits, which is the case here.
+
+### Operational note — lane-level instructions and job-level instructions compose badly
+
+A targeted instruction ("deprioritise A4, keep A6") and a blanket one ("robomimic on the backburner") were issued to two different lanes, and the blanket one silently overrode the targeted one, burying the single experiment that had been explicitly protected. It was caught only because the agent holding it queried the arithmetic rather than executing quietly.
+
+**Two standing habits adopted.** When an instruction names a *lane* rather than a job family, state the blast radius back before acting — "that is 17 jobs including the 16 you protected, confirm?" costs one line. And **prefer reversible actions on blanket instructions**: deprioritising was undoable, which is the only reason this was recoverable. The identical error under a "cancel" instruction would have destroyed completed work with nothing to restore.
