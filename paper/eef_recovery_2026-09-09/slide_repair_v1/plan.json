@@ -1,0 +1,11 @@
+{
+  "uid": 242,
+  "source": "pilot/242_eef_delta.npz",
+  "purpose": "Recover final slide in separate real-derived repaired category, preserving source tape and physical world.",
+  "control": "Same EEF controller with zero extension, unclipped IK targets in both modes.",
+  "repair": "After last supported robot-can contact following physical release in baseline, insert up to 20 world-XY EEF increments of 0.5 mm toward the live goal. Hold recorded wrist orientation and grip. Stop after three supported can-goal contact frames or support/tilt violation; resume original absolute tool trajectory and withdrawal.",
+  "max_extension_m": 0.01,
+  "max_added_duration_s": 0.6,
+  "validation": "Physical sequence scorer plus p99 IK thresholds 0.1 mm / 0.1 deg, then independent saved-action replay, then video review. No frozen bank replacement.",
+  "code_sha256": "2acbc7c4c2fce9e5219aa7517e34cf16d67f47941ef88e0b2cf7025396498d3b"
+}

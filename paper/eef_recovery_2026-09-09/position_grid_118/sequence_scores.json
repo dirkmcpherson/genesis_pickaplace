@@ -1,0 +1,128 @@
+[
+  {
+    "candidate": "candidate_00",
+    "offset": [
+      -0.01,
+      -0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.30150231457858906
+  },
+  {
+    "candidate": "candidate_01",
+    "offset": [
+      -0.01,
+      0.0
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.29689605445988376
+  },
+  {
+    "candidate": "candidate_02",
+    "offset": [
+      -0.01,
+      0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.30588520677034653
+  },
+  {
+    "candidate": "candidate_03",
+    "offset": [
+      0.0,
+      -0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.7666391167454569
+  },
+  {
+    "candidate": "candidate_04",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.3183402188402986
+  },
+  {
+    "candidate": "candidate_05",
+    "offset": [
+      0.0,
+      0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.2992274702267493
+  },
+  {
+    "candidate": "candidate_06",
+    "offset": [
+      0.01,
+      -0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.26942447872861336
+  },
+  {
+    "candidate": "candidate_07",
+    "offset": [
+      0.01,
+      0.0
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.3054040915920082
+  },
+  {
+    "candidate": "candidate_08",
+    "offset": [
+      0.01,
+      0.01
+    ],
+    "picked": false,
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.31047775327969657
+  }
+]

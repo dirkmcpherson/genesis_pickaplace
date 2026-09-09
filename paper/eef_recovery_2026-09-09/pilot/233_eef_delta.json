@@ -1,0 +1,65 @@
+{
+  "uid": 233,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+  ],
+  "full_tape": true,
+  "frames": 926,
+  "source_frames": 926,
+  "threads": 1,
+  "elapsed_s": 34.172090889071114,
+  "fk_reset_error": [
+    7.134554541599059e-08,
+    6.227298969888051e-09,
+    -1.490043233243199e-08,
+    -1.8642667151582602e-07,
+    1.816299396030455e-08,
+    2.022296402516575e-07
+  ],
+  "before_settle": {
+    "picked": true,
+    "contact": true,
+    "slide_success": false
+  },
+  "endpoint": {
+    "nested": true,
+    "slide_success": false,
+    "slide_route": null,
+    "slide_fail_reason": "grip_closed",
+    "slide_fail_frame": 0
+  },
+  "tracking_xyz_m_p50_p95_p99": [
+    0.003897999681066012,
+    0.006539557110954369,
+    0.007816838041482529
+  ],
+  "command_xyz_m_p99": 3.74629075481391e-05,
+  "command_rotation_rad_p99": 0.00024270090201377616,
+  "joint_command_difference_rad_p99": 0.0003359449965358863,
+  "source_sha256": "a9556c805e196be2f301b41107d1eb0295066e4720293ef1d3631d392d531d31",
+  "stage_columns": [
+    "picked",
+    "placed",
+    "contact",
+    "contact_push",
+    "slide_ok",
+    "slide_success"
+  ],
+  "contact_columns": [
+    "can_shelf",
+    "can_robot",
+    "can_goal"
+  ],
+  "code_sha256": {
+    "can_pos_recovery/eef_recovery_probe.py": "d13a062dd365ab015bbe1de877b94e027c85c5709f0ad27580730ffa15fb306c",
+    "baselines/eef_delta_control.py": "54c7cdcaea5c75848a5d36b506803685ee14f91449bfa5189670393fd12f2f90",
+    "baselines/genesis_can_env.py": "b093bb135f93b5dfc52b5a0887024ccee0403ec3114a5c583c87cba08076db96",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "gen3_lite_2f_robotiq_85.urdf": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853"
+  }
+}

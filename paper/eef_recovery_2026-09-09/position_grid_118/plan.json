@@ -1,0 +1,45 @@
+{
+  "uid": 118,
+  "mode": "joint",
+  "full_post_hook": true,
+  "offsets_m": [
+    [
+      -0.01,
+      -0.01
+    ],
+    [
+      -0.01,
+      0.0
+    ],
+    [
+      -0.01,
+      0.01
+    ],
+    [
+      0.0,
+      -0.01
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.01
+    ],
+    [
+      0.01,
+      -0.01
+    ],
+    [
+      0.01,
+      0.0
+    ],
+    [
+      0.01,
+      0.01
+    ]
+  ],
+  "purpose": "Development-only initial-position transfer after correcting the missing post-build hook. Preserve all candidates; acceptance requires supported release followed by robot push into goal contact. No gripper or motion changes.",
+  "action_after_readout": "Replay a physically complete candidate using EEF deltas and independently verify; if none qualifies, report failure rather than treating picked or nested alone as recovery."
+}

@@ -1,0 +1,47 @@
+{
+  "uid": 242,
+  "mode": "joint",
+  "full_post_hook": true,
+  "offsets_m": [
+    [
+      -0.01,
+      -0.01
+    ],
+    [
+      -0.01,
+      0.0
+    ],
+    [
+      -0.01,
+      0.01
+    ],
+    [
+      0.0,
+      -0.01
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.01
+    ],
+    [
+      0.01,
+      -0.01
+    ],
+    [
+      0.01,
+      0.0
+    ],
+    [
+      0.01,
+      0.01
+    ]
+  ],
+  "purpose": "Prioritize the final slide: trial already picks, releases onto shelf, and pushes but finishes short of goal contact. Correct initial XY only within the prior recovery uncertainty; do not change the recorded arm/grip stream or physics.",
+  "acceptance_rule_sha256": "cfaaf690a1945b0d62257e661b4b929a592ba2ed201f036ad6df272d0dd6fec6",
+  "acceptance": "picked; upright shelf support within 4 mm of rest height; robot-free supported release for 3 frames; later robot contact causes >=10 mm movement toward goal, >=80% shelf support and no >8 mm lift or >=20 degree tilt during push; supported upright can-goal contact for 3 frames; final shelf-supported upright cans with surface gap <=2 mm. Development filter, not frozen evaluator.",
+  "next": "For any complete candidate, independently replay using EEF delta actions; reject EEF failure or excessive IK error; visually verify successful sequence before admitting to a separate bank."
+}

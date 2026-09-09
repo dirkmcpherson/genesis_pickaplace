@@ -1,0 +1,65 @@
+{
+  "uid": 118,
+  "mode": "joint",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "can_pos": [
+    0.45527451076639014,
+    -0.016690558938488587,
+    0.113
+  ],
+  "full_tape": true,
+  "frames": 1760,
+  "source_frames": 1760,
+  "threads": 1,
+  "elapsed_s": 55.20156059798319,
+  "fk_reset_error": [
+    -2.97485084344018e-08,
+    1.2803723278831391e-07,
+    -2.9210029978132823e-08,
+    3.2617231081802906e-08,
+    -7.394172841396442e-08,
+    2.4800267197006226e-07
+  ],
+  "before_settle": {
+    "picked": false,
+    "contact": false,
+    "slide_success": false
+  },
+  "endpoint": {
+    "nested": false,
+    "slide_success": false,
+    "slide_route": null,
+    "slide_fail_reason": "not_picked",
+    "slide_fail_frame": 0
+  },
+  "tracking_xyz_m_p50_p95_p99": [
+    0.003015161469060689,
+    0.02576311097320556,
+    0.02763090519228411
+  ],
+  "command_xyz_m_p99": 0.0,
+  "command_rotation_rad_p99": 0.0,
+  "joint_command_difference_rad_p99": 0.0,
+  "source_sha256": "843e06d2a5c15ccfb620a655a8b19359b45a435a7636ce09d8b64345435df269",
+  "stage_columns": [
+    "picked",
+    "placed",
+    "contact",
+    "contact_push",
+    "slide_ok",
+    "slide_success"
+  ],
+  "contact_columns": [
+    "can_shelf",
+    "can_robot",
+    "can_goal"
+  ],
+  "code_sha256": {
+    "can_pos_recovery/eef_recovery_probe.py": "d13a062dd365ab015bbe1de877b94e027c85c5709f0ad27580730ffa15fb306c",
+    "baselines/eef_delta_control.py": "54c7cdcaea5c75848a5d36b506803685ee14f91449bfa5189670393fd12f2f90",
+    "baselines/genesis_can_env.py": "b093bb135f93b5dfc52b5a0887024ccee0403ec3114a5c583c87cba08076db96",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "gen3_lite_2f_robotiq_85.urdf": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853"
+  }
+}

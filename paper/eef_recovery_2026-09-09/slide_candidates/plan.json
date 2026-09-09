@@ -1,0 +1,15 @@
+{
+  "uids": [
+    302,
+    304,
+    275
+  ],
+  "selection": "Existing anatomy_slide w3 ledger: upright shelf setdowns with small final gap, previously labeled picked. Candidate selection only; fresh raw joint replay establishes the control.",
+  "mode": "joint",
+  "full_post_hook": true,
+  "can_offset": [
+    0,
+    0
+  ],
+  "acceptance": "eef_task_sequence.py development rule including symmetric final 2 mm gap tolerance; successful controls get independent EEF validation."
+}

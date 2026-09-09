@@ -1,0 +1,84 @@
+{
+  "uid": 304,
+  "mode": "joint",
+  "variant": "gc_kp4_riser3_shelf6",
+  "can_pos": [
+    0.4658,
+    0.1336,
+    0.113
+  ],
+  "source_can_pos": [
+    0.4658,
+    0.1336,
+    0.113
+  ],
+  "can_offset_xy": [
+    0.0,
+    0.0
+  ],
+  "full_tape": true,
+  "frames": 2080,
+  "source_frames": 2080,
+  "threads": 1,
+  "elapsed_s": 77.04040432500187,
+  "ik_respect_joint_limit": true,
+  "variant_post_hook": true,
+  "actual_arm_kp": [
+    800.0,
+    800.0,
+    600.0,
+    400.0,
+    240.0,
+    240.0
+  ],
+  "fk_reset_error": [
+    7.134554541599059e-08,
+    6.227298969888051e-09,
+    -1.490043233243199e-08,
+    -1.8642667151582602e-07,
+    1.816299396030455e-08,
+    2.022296402516575e-07
+  ],
+  "before_settle": {
+    "picked": true,
+    "contact": false,
+    "slide_success": false
+  },
+  "endpoint": {
+    "nested": true,
+    "slide_success": false,
+    "slide_route": null,
+    "slide_fail_reason": "no_contact",
+    "slide_fail_frame": 0
+  },
+  "tracking_xyz_m_p50_p95_p99": [
+    0.0005791474047374092,
+    0.0057752782518460015,
+    0.007506625843783251
+  ],
+  "command_xyz_m_p99": 0.0,
+  "command_rotation_rad_p99": 0.0,
+  "joint_command_difference_rad_p99": 0.0,
+  "source_sha256": "d330f5d40a5788af689c269f8fe82fa51eef7752d25da8764eaee9718cce7ecc",
+  "stage_columns": [
+    "picked",
+    "placed",
+    "contact",
+    "contact_push",
+    "slide_ok",
+    "slide_success"
+  ],
+  "contact_columns": [
+    "can_shelf",
+    "can_robot",
+    "can_goal"
+  ],
+  "code_sha256": {
+    "can_pos_recovery/eef_recovery_probe.py": "c5f5e21559b0464a5d54948e2213a748534d02b9bea1a0025eb2040d68ea2b58",
+    "baselines/eef_delta_control.py": "86251ad011848031bc0f310770ba9d3c99ea60d4ade2de22991cfa3189b2788f",
+    "baselines/genesis_can_env.py": "b093bb135f93b5dfc52b5a0887024ccee0403ec3114a5c583c87cba08076db96",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "gen3_lite_2f_robotiq_85.urdf": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853"
+  }
+}

@@ -357,3 +357,17 @@ The RLPD cells were not missing — they live under `baselines/rl/checkpoints/e2
 **Supported sentence:** *the composition of a demonstration set matters in proportion to how much a learner imitates it.* **Not supported:** any statement that machine demonstrations are better, or that source affects end-to-end performance.
 
 Caveats: the de-confounded arm has 4 seeds (its remaining 4 are training), the human arm 7, and the Diffusion Policy rows are preview cells rather than the pinned pass.
+
+## 5.4 The human slide count is 15, not 21 (user, eyes on tape, 2026-09-09)
+
+**Corrected count of record: the human full-task set contains 15 genuine slides, not the 21 `contact` grants previously carried.** The settled predicate of amendment (x) returns 15 of 64, the per-uid census ladder returned 15 by an independent route, and the user has since **watched the tapes and confirmed all 15 are real**. The 21 is superseded.
+
+**What the extra 6 were.** Bare `contact` conflates a set-down-then-push slide with carrying the can in and parking it against the goal. On the human side that conflation runs at 12 of 26 in the census — the same defect measured at 84–86 % on policy episodes. `contact` therefore **overstates real human slides by roughly 40 %**.
+
+**Three consequences.**
+
+1. **The staged reward's arithmetic was built on the inflated count.** The human total of 118 is `64 picked + 21 contact×2 + 3 nested×4`. Under the corrected predicate the human set demonstrates fewer completions than that total implies, which widens the gap against the machine set's 206 — and reinforces that the gap is *set construction*, not demonstrator skill.
+2. **Matched-success slide sets are capped at 15 per arm**, which is **below the 20-demo floor** this project registered. Any slide comparison built this way is sub-floor by our own standard and must be reported as such, exactly as the earlier 11-versus-11 contact pair was.
+3. **It sharpens the real2sim target.** 15 of 64 is the yield the recovery work must improve; every additional recovered slide raises a ceiling that currently binds the whole phase.
+
+**Method note worth keeping.** An automated count (21) was corrected by a human watching the footage (15), after two independent automated methods had already agreed on 15. This is the third time on this project that eyes on the raw data have settled something statistics could not — the goal-position fit and the world-selection choice being the others.

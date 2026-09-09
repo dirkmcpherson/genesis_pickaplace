@@ -1,0 +1,44 @@
+[
+  {
+    "uid": 275,
+    "candidate": "275",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 991,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.008347928320936518
+  },
+  {
+    "uid": 302,
+    "candidate": "302",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 979,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.0049178309935078435
+  },
+  {
+    "uid": 304,
+    "candidate": "304",
+    "offset": [
+      0.0,
+      0.0
+    ],
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 1017,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.01245430371610795
+  }
+]
