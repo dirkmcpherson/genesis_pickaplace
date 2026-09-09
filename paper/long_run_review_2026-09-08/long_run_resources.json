@@ -1,0 +1,41 @@
+{
+  "runs": [
+    {
+      "run": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_bnormclampS8ent5_s0",
+      "last_step": 1999968,
+      "fps": [
+        93.84680815227827,
+        94.70106267149667,
+        93.92590045759152
+      ]
+    },
+    {
+      "run": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_bnormclampS8ent5_s1",
+      "last_step": 1999972,
+      "fps": [
+        91.91980199315029,
+        94.13102576118615,
+        91.60744668691187
+      ]
+    },
+    {
+      "run": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_bnormclampS8ent5_s2",
+      "last_step": 811961,
+      "fps": [
+        66.68137010993982,
+        67.73956917680589,
+        67.59272966707674
+      ]
+    },
+    {
+      "run": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_bnormclampS8ent5_s3",
+      "last_step": 921525,
+      "fps": [
+        82.2349830471097,
+        79.23260420205055,
+        82.3828068119568
+      ]
+    }
+  ],
+  "accounting": "3377166|FAILED|05:20:53|2-00:00:00|\n3377166.batch|FAILED|05:20:53||27722732K\n3377166.extern|COMPLETED|05:20:53||0\n3377167|FAILED|05:24:58|2-00:00:00|\n3377167.batch|FAILED|05:24:58||27894492K\n3377167.extern|COMPLETED|05:24:58||0\n3377168|RUNNING|02:45:19|2-00:00:00|\n3377168.batch|RUNNING|02:45:19||\n3377168.extern|RUNNING|02:45:19||\n3377169|RUNNING|02:44:01|2-00:00:00|\n3377169.batch|RUNNING|02:44:01||\n3377169.extern|RUNNING|02:44:01||\n"
+}

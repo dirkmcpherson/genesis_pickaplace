@@ -380,3 +380,24 @@ Reconstructing attempt order across the 195-tape harvest (72 initial conditions,
 **De-selection is the only symmetric fix.** Each human start has exactly one recorded attempt, and re-executing it in a deterministic simulator reproduces the same tape, so there is no human "best of three" to construct. The machine set can be rebuilt as **first-attempt-per-start** from tapes already on disk — the human protocol exactly, one attempt per start, keep whatever happened — with no new harvesting.
 
 **This is load-bearing for the one positive result we have.** The learning-speed effect is measured against the *selected* arm — the one with twice the completions and 57 % more reward — which already makes its direction counterintuitive: better demonstrations, slower ignition. De-selection is diagnostic either way. If the human lead grows, the effect is not about demonstration quality; if it shrinks, part of it was our filtering. **Until it is run, a significant learning-speed result could not be attributed to demonstration source rather than to how we built the set.**
+
+### Addendum, 2026-09-08 — the dose curve completes, and it INVERTS the original claim
+
+Row-matched human arms, 8 seeds each, mode, same bank and protocol:
+
+| arm | rows | score |
+|---|---|---|
+| human MH80 | 16,406 | **0.050** |
+| machine MG200s | 16,501 | **0.148** |
+| human MH200 | 41,134 | 0.455 |
+| machine MG718s | 59,222 | 0.475 |
+| human MH300 | 61,548 | **0.450** |
+| machine MGall | 536,522 | 0.610 |
+
+**At matched data volume the machine arm BEATS the human arm: 0.148 against 0.050, Δ −0.098, exact permutation p = 0.024.** The original headline — human demonstrations outperform machine ones — is now fully inverted. It was a data-volume artefact: machine demonstrations are about 2.5× shorter, so matching on *tapes* gave the machine arm 40 % of the rows.
+
+**Registered verdicts.** P-A6-1 (MH80 within 0.10 of MG200s ⇒ the gap is quantity): **MET**, at 0.098, barely inside the margin. P-A6-2: the volume clause is met (MH300 within 0.025 of MG718s) but the ordering clause **fails by 0.005** (0.450 against MH200's 0.455). P-A6-3 (re-execution isolation, MH80 − re15 ≥ +0.10): **NOT MET** — 0.050 against 0.080, so **re-execution costs nothing and the earlier −0.375 was almost entirely arm size.** That upper bound is withdrawn.
+
+**Human performance plateaus between 41k and 61.5k rows** (0.455 → 0.450, p 0.986) while the machine arm continues to 0.610 at 536k. So on this task, more machine data keeps helping after more human data has stopped.
+
+**Caveat that must travel with the matched-row comparison:** the human arm at 16.4k rows is near the floor — three of eight seeds score zero — so this is a low-performance contrast. The machine arm at the same volume is not floored, and the test is significant, but the finding is "human data at machine-matched volume fails to ignite reliably", not "human data is worse everywhere".
