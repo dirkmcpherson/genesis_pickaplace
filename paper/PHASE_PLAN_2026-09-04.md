@@ -713,3 +713,25 @@ jobs). The single-node A100 proposal is superseded without having been submitted
 Exact seeds, release digest, node blocks, analyses and interruption policy are in
 [LONG_RUN_REGISTRATION_2026-09-08.md](LONG_RUN_REGISTRATION_2026-09-08.md).
 Only new jobs use the isolated release; existing jobs and their paths stay untouched.
+
+---
+
+## Amendment (x) — `slide_success`, settled definition (user decision, 2026-09-09)
+
+**Both earlier definitions failed the same way: they inferred "released" from the GRIPPER.** (l) required `grip_cmd < 0.3`, which passes **2 of 74** human demonstrations, because people release fully, re-close to about 0.4 and push the can home with the fingers partly shut. (p) replaced it with a displacement clause whose threshold was never calibrated. Release is a fact about **where the can's weight is**, not about the hand.
+
+**Definition — three state conditions, no free threshold:**
+
+1. **Released** — the can stays put while the tool moves away from it. A held can tracks the tool; a released one does not. No gripper term, and no dependence on the tool point, which is what made the old `contact` clause vacuous (ee = wrist).
+2. **Pushed** — after release, the can gets closer to the goal. Carrying is already excluded by requiring release *first*, so no far-side geometric test is needed to rule it out.
+3. **Arrived** — at the end the can is within the nested proximity of the goal and is not tipped.
+
+Constants are the metrics of record or noise floors, not tuned: proximity 0.081 m (can diameter + 15 mm), stillness 2 mm, tool motion 10 mm, sustained 10 frames, goalward gain 10 mm.
+
+**Measured on the human set: 64 tapes → released 64, pushed 64, arrived 15, `slide_success` = 15.** That **independently reproduces the 15 sim-completing tapes** the per-uid census ladder found by a different route — two methods, same set.
+
+**Conditions 1 and 2 are non-binding on human demonstrations and that is the design.** Every human tape releases and every one nudges the can goalward at some point, so the discriminating condition here is arrival. They exist to bite on **policies**, which earn ordinary `contact` by carrying the can in and never releasing — 84–86 % of policy grants against 46 % of human ones.
+
+**The reward moves with the definition** (user, 2026-09-09): breaking comparability touches only the slide and end-to-end sliding comparisons, neither of which is functional for sliding, so nothing is lost. This also closes the reward-versus-score mismatch, where the end-to-end ladder pays its top rung on the `nested` training proxy while the statistic of record sits elsewhere.
+
+**Implementation:** `can_pos_recovery/slide_predicate.py` (classifier, writes per-tape json) and `can_pos_recovery/slide_reels.sh` (builds `slide_successes.m3u` / `slide_failures.m3u` from the existing real-versus-sim census renders; nothing re-rendered). Applies unchanged to a larger set as real2sim recovery adds tapes.
