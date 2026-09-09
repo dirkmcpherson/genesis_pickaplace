@@ -72,3 +72,19 @@ Across all four scopes (end-to-end, pick, place, contact) that is ≈ 6 GB for R
 - **Correction (2026-09-09):** the 'blocked' curve cells above are blocked only *retrospectively* — finished runs did not log the stages. **All four stages, settle included, are registerable inline on every episode with no extra simulation and no reward change** (amendment (w) correction): the environment already tracks them in a sticky set, and predicate (x) reads the final state rather than simulating a settle. Future runs carry every curve.
 
 - **Missing:** the two (w) wires; a standing decision on milestone cadence; and the rebuilt matched datasets, which supersede every source comparison above.
+
+## 6. Dataset convention — which set each learner trains on (user, 2026-09-09)
+
+**{Diffusion Policy} trains on the PRUNED human set, `dHfull_pruned`, not the raw one.** This is a standing requirement, not a per-run choice.
+
+| set | tapes | decisions | idle frac | used by |
+|---|---|---|---|---|
+| `dHfull_all` (raw human) | 74 | 29,221 | **0.244** | {RLPD}, {r2dreamer} |
+| `dHfull_pruned` (pruned human) | 64 | 23,307 | **0.199** | **{Diffusion Policy}** |
+| `dDPfull_first` (machine, first attempt) | 72 | 36,834 | **0.000** | all three |
+
+**Why it matters for this learner specifically.** Diffusion Policy is pure imitation — it copies what it is shown, including the arm holding still. A quarter of the raw human set's decisions are idle against zero in the machine set, so the raw pairing trains one arm to pause and the other never to. Online learners can explore past that; an imitator cannot. Pruning is also the largest single effect measured anywhere in this project: **−0.19 for {Diffusion Policy}, p 0.000**, far larger than any demonstration-source difference.
+
+**The registered trigger has fired.** Amendment (n) disconfirm branch (iii) required the human-pruned control once the machine arm led by 0.10 or more. Measured on the de-selected sets: **{Diffusion Policy} rnd30 sampled, human 0.167 v machine 0.333, a gap of 0.166** — so this control is now mandatory before any source claim for that learner, not optional.
+
+**Note the pruning is partial.** `dHfull_pruned` still carries 0.199 idle against the raw 0.244, so it removes about a fifth of the idle decisions and 10 tapes. It narrows the asymmetry rather than closing it, and the residual must be disclosed alongside any pruned-arm result.
