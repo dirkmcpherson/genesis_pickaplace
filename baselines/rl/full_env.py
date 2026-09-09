@@ -54,7 +54,22 @@ sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from replay_harness import (tilt_deg, in_shelf_footprint, BOX_TOP_Z,  # noqa: E402
                             BOX_POS, HARDCODED_START, gripper_targets)
 
-STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
+# Amendment (x) ladder, gated (2026-09-09). The OLD ladder pays its second rung on
+# `placed`, which the corrected predicate shows is essentially NEVER granted; its third
+# on bare `contact`, which counts carrying the can in and parking it (84-86% of policy
+# grants, 12 of 26 human ones); and its top on the `nested` TRAINING PROXY, which
+# over-counts the settled predicate ~2.5x. The demonstration tapes have been relabelled
+# onto the corrected predicates, so leaving the env on the old ladder hands a learner one
+# objective from its demo buffer and a different one from the environment.
+#
+# All four new rungs are ALREADY granted by this env -- this only changes which grants pay.
+# Per-episode ceiling is unchanged at 8.0, so the registered return clamp needs no revision.
+#
+# DEFAULT OFF: evaluation jobs are running against this file and the rung names drive
+# which stages enter `_granted`, so switching unconditionally would alter cells in flight.
+_STAGE_REWARD_OLD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
+_STAGE_REWARD_X   = dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0)
+STAGE_REWARD = _STAGE_REWARD_X if os.environ.get('FULLENV_REWARD_X', '') == '1' else _STAGE_REWARD_OLD
 PLACE_ENTRY_BANK = REPO / 'baselines' / 'pick_entry_states.json'
 
 # --- reward-density lever (2026-08-14): ONE definition of the honest pick condition -
@@ -210,12 +225,6 @@ def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
 
 
 
-# Amendment (w) episode record. DEFAULT OFF: e2e jobs are queued against this file, and
-# changing shared code mid-experiment would put a code difference BETWEEN arms. Future runs
-# opt in with FULLENV_EPISODE_RECORD=1; with it unset behaviour is unchanged in every respect.
-EPISODE_RECORD = os.environ.get('FULLENV_EPISODE_RECORD', '') == '1'
-
-
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
@@ -278,23 +287,11 @@ class FullTaskEnv(gym.Env):
 
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
-                 entry_bank=None, phase_sparse=False, contact_grant=None, action_mode='absolute', delta_cap=0.025,
+                 entry_bank=None, phase_sparse=False, action_mode='absolute', delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True):
         super().__init__()
-        # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
-        # authoritative validation with the full explanation runs below, after the scope fields are set.
-        if scope == 'contact':
-            assert contact_grant in ('bare_contact', 'slide_success', 'prior_release'), (
-                f'scope=contact needs an explicit contact_grant (got {contact_grant!r}) -- PHASE_PLAN (p): (l)\'s grip '
-                'clause is withdrawn, (o) was stopped, and the corrected predicate is uncalibrated, so no default exists.')
-            assert not (contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN')), (
-                'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3, passes 2 of 74 demos); '
-                'set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic.')
-            if contact_grant == 'prior_release':
-                raise NotImplementedError("contact_grant='prior_release' is PHASE_PLAN (p); its clause-5 threshold "
-                                          "(can supported by the shelf, not clamped) is not calibrated yet.")
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
         # STAGE_REWARD 'picked' grant, terminate on the env's hardened picked flag).
@@ -395,29 +392,6 @@ class FullTaskEnv(gym.Env):
             u for u, r in self.genv.placements.items() if r.get('label') == 'success')
         assert scope in ('full', 'pick', 'place', 'contact', 'carrycontact', 'reach', 'touchgoal', 'reach_goal'), f'unknown scope {scope!r}'
         self.phase_sparse = bool(phase_sparse)   # PHASE PLAN: tips terminate only (no penalty) in place/contact
-        # scope='contact' GRANT SELECTOR -- explicit, no default (PHASE_PLAN (p), 2026-09-07). History: (m) paid on bare
-        # `contact`, which pays for driving a HELD can into the goal; (o) would have paid on `slide_success`, but (p)
-        # WITHDREW that predicate's grip clause -- it passes 2 of 74 demonstrations and 44 failures are the grip clause
-        # alone, because the human releases fully and then pushes the can home with the fingers re-closed to ~0.4.
-        # (p)'s replacement (prior release + can supported-not-clamped at contact) is registered but its clause-5
-        # threshold is NOT calibrated yet, so it is deliberately NOT implemented here. A contact-scope env therefore
-        # REFUSES to build unless the caller names the grant it wants, and the withdrawn one needs an explicit override.
-        self.contact_grant = contact_grant
-        if scope == 'contact':
-            _allowed = ('bare_contact', 'slide_success', 'prior_release')
-            assert contact_grant in _allowed, (
-                f'scope=contact needs contact_grant={_allowed} passed EXPLICITLY (got {contact_grant!r}). '
-                'PHASE_PLAN (p): (l)\'s grip<0.3 clause is withdrawn and (o) was stopped before landing; the corrected '
-                'prior-release predicate awaits its clause-5 calibration, so there is currently NO correct default.')
-            if contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN'):
-                raise AssertionError(
-                    'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3): it contradicts the '
-                    'demonstrations (2/74) and would train the arm away from the demonstrated half-closed push. '
-                    'Set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic runs.')
-            if contact_grant == 'prior_release':
-                raise NotImplementedError(
-                    'contact_grant="prior_release" is PHASE_PLAN (p) clause 1-5; clause 5 (can supported by the shelf, '
-                    'not clamped, at contact) must be calibrated from the demonstration traces before it is implemented.')
         # PHASE PLAN: shelf-referenced band follows the WORLD's shelf (sim_variants shelf_dz), not the stale constant.
         import os as _os, sim_variants as _sv
         _vn = _os.environ.get('R2D_SIM_VARIANT') or _os.environ.get('GENESIS_SIM_VARIANT') or 'base'
@@ -690,27 +664,6 @@ class FullTaskEnv(gym.Env):
             phi = 0.0 if (terminated and self.pick_shaping_terminal_zero) else self._pick_phi()
             total_reward += self._pick_gamma * phi - self._pick_phi_prev
             self._pick_phi_prev = phi
-        if (terminated or truncated) and EPISODE_RECORD:
-            # Amendment (w): ONE episode record, emitted from the SINGLE exit path that
-            # both termination and truncation reach. `self._granted` is already sticky and
-            # cumulative -- a stage enters it the first time the env's own predicate flips
-            # and never leaves -- so this reports what the episode actually reached.
-            #
-            # Why it is needed: the per-step stage flags are written only when an episode
-            # terminates INSIDE the adapter, so a horizon truncation logged all zeros even
-            # for an episode that had picked (1198/2911 episodes on one run, every one at
-            # exactly the horizon, 608 of them having scored). That left the accumulated
-            # reward as the only truncation-proof channel, which is why `placed_v2` and the
-            # slide predicate have no full-scope curves: they are not reward rungs.
-            #
-            # LOGGING ONLY. No simulation is advanced, no state mutated, no reward term
-            # added; the reward ladder is untouched so runs stay comparable with existing
-            # arms. Scalars only -- no containers -- so no logger can choke on the type.
-            info = dict(info)
-            info['episode_end'] = True
-            for _stage in ('picked', 'placed_v2', 'contact',
-                           'contact_push', 'slide_success', 'nested'):
-                info['ep_' + _stage] = bool(_stage in self._granted)
         return obs, total_reward, terminated, truncated, info
 
     def _step_once(self, action):
@@ -767,6 +720,18 @@ class FullTaskEnv(gym.Env):
                 elif self.scope == 'pick' and stage == 'picked' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
+        # 2026-09-09 FIX: the env COMPUTES self._contact_push (genesis_can_env step()
+        # reads tool_pos() on every contact frame and sets it when the tool is on the far
+        # side of the pick-can with no gripper-goal touch) but never puts it into `info`.
+        # full_env only ever read info['contact_push'], so the key was never present and
+        # the grant never fired: contact_push reported EXACTLY 0.000 in full scope while
+        # `contact` read 0.533 and `slide_success` 0.267 on the same cell. That is an
+        # absence, not a measurement -- and contact_push is the discriminating statistic.
+        # Reading the attribute directly is safe: under the old ladder this grant is
+        # logged-only (never rewarded, never terminating), so nothing about training or
+        # episode length changes; it only makes the statistic observable.
+        if not info.get('contact_push') and getattr(self.genv, '_contact_push', False):
+            info['contact_push'] = True
         if info.get('contact_push'):
             # contact_push (2026-09-07): logged grant only -- never rewarded, never terminates (amendment (g))
             self._granted.add('contact_push')
@@ -826,37 +791,10 @@ class FullTaskEnv(gym.Env):
                 if terminated:
                     truncated = False
                     return (obs['state'].astype(np.float32), reward, True, False, info)
-        if self.scope == 'carrycontact':
-            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history,
-            # eef behind the can). UNCHANGED by amendment (o): (l)(c) makes carrycontact the explicit "contact by any
-            # route, including still held" control against which the release-based slide statistic is read.
+        if self.scope in ('contact', 'carrycontact'):
+            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history, eef behind the can)
             if info.get('contact'):
                 self._granted.add('contact')
-                return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
-        if self.scope == 'contact':
-            # PHASE_PLAN (p): the grant is whatever the caller named. 'bare_contact' = the (m)/world-model-of-record
-            # behaviour. 'slide_success' = the WITHDRAWN (o) reward, reachable only under CONTACT_GRANT_ALLOW_WITHDRAWN
-            # and kept so the recorded (o) diagnostic (150-decision episodes, r=0, reason grip_closed) reproduces.
-            # KEPT FROM (o) AND STILL RIGHT (coordinator, 2026-09-07): bare `contact` is logged and granted but does NOT
-            # end the episode when the grant is not bare_contact, so credit for driving a still-carried can into the
-            # goal is not paid; (p)'s prior-release predicate will formalise that.
-            if self.contact_grant == 'bare_contact':
-                if info.get('contact'):
-                    self._granted.add('contact')
-                    return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
-            # AMENDMENT (o) 2026-09-07 [WITHDRAWN by (p)]: the SLIDE phase pays WHAT IT SCORES. The grant is the release-based
-            # slide_success clause set of (l)/(l') -- picked earlier AND pick-can/goal solver contact AND grip
-            # COMMANDED OPEN (< GRIP_OPEN_CMD) AND can in the shelf footprint with tilt < 20 deg, sustained
-            # SLIDE_SUSTAIN frames -- computed by GenesisCanEnv's own _slide_clauses/_slide_run and surfaced as
-            # info['slide_success']. Reading that flag (rather than re-deriving the clauses here) is deliberate:
-            # reward and score are ONE definition and cannot drift apart, which is exactly the defect (o) fixes.
-            # Bare `contact` is still logged and still granted -- it just no longer ends the episode, so a policy
-            # that reaches the goal while gripping must go on to RELEASE to be paid (the (m) design paid it for
-            # driving a held can into the goal: smokes contact 5/11 with slide 0/11, reason `grip_closed`).
-            if info.get('contact'):
-                self._granted.add('contact')
-            if info.get('slide_success'):
-                self._granted.add('slide_success')
                 return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
         if self.scope == 'place':
             # PLACED_V2 (release-based, supersedes the mid-lift z-band proxy):
