@@ -1,0 +1,89 @@
+{
+  "uid": 233,
+  "scope": "can",
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "baseline_trace_exact": null,
+  "contact_treatment": {
+    "scope": "can",
+    "selected_geom_indices": [
+      14
+    ],
+    "selected_before": [
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "selected_after": [
+      [
+        0.03999999910593033,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "effective_finger_can_timeconst_s": 0.029999999329447746,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "strict_sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 753,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.1192949298326898
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.1852949298326898,
+    "gain_m": 0.19346440608408466
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 25.56,
+  "final_tilt_deg": 0.002562348960724204,
+  "max_independent_inward_curl_deg": [
+    23.094707489013672,
+    23.094680786132812
+  ],
+  "all_contact_penetration_mm": {
+    "median": 9.412879589945078,
+    "p95": 10.00062027014792,
+    "max": 10.090542957186699
+  },
+  "all_contact_force_N": {
+    "median": 61.62896919250488,
+    "p95": 67.89718818664551,
+    "max": 80.05764770507812
+  },
+  "carry_penetration_mm": {
+    "median": 9.627201594412327,
+    "p95": 10.019052773714066,
+    "max": 10.090542957186699
+  },
+  "carry_max_contact_force_N": {
+    "median": 63.15951919555664,
+    "p95": 68.55243682861328,
+    "max": 80.05764770507812
+  },
+  "carry_scene_samples": 1424,
+  "contact_scene_samples": 1906,
+  "qualification": "Penetration is solver contact overlap, not measured pad compression or can strain. Contact-dependent sample populations change between treatments; quantiles are descriptive. Separation after pickup alone is not successful shelf release."
+}

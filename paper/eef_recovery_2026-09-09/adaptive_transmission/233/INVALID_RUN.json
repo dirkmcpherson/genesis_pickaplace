@@ -1,0 +1,5 @@
+{
+  "status": "invalid integration run, not a transmission experiment",
+  "reason": "Rigid-only simulator fast path bypassed substep_pre_coupling; transmission_stats substep_calls=0. Fixed by wrapping rigid_solver.substep and asserting callback count for every scene.step.",
+  "next_run": "../233_active"
+}

@@ -1,0 +1,204 @@
+{
+  "uid": 113,
+  "recorded_eef_arm_and_grip_commands_identical": true,
+  "mount_identical_to_yaw_corrected_baseline": true,
+  "comparisons": [
+    {
+      "label": "baseline",
+      "first_pick_s": 8.52,
+      "first_tip60_s": 13.379999999999999,
+      "first_upright_support_s": null,
+      "relative_can_displacement_8p01_to_13p02_mm": 22.16454143550783,
+      "max_inward_curl_deg": [
+        0.0009528113296255469,
+        0.0009750094613991678
+      ],
+      "samples": [
+        {
+          "time_s": 8.01,
+          "can_xyz_m": [
+            0.42992863059043884,
+            -0.14244264364242554,
+            0.12578418850898743
+          ],
+          "tilt_deg": 8.889912381745804,
+          "contacts": [
+            0,
+            5,
+            0
+          ]
+        },
+        {
+          "time_s": 13.02,
+          "can_xyz_m": [
+            0.4947802722454071,
+            -0.17376349866390228,
+            0.2732156813144684
+          ],
+          "tilt_deg": 9.7507186529411,
+          "contacts": [
+            0,
+            3,
+            0
+          ]
+        },
+        {
+          "time_s": 14.01,
+          "can_xyz_m": [
+            0.38086238503456116,
+            -0.2655303180217743,
+            0.08288484066724777
+          ],
+          "tilt_deg": 89.9998906877704,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time_s": 18.0,
+          "can_xyz_m": [
+            0.05926842615008354,
+            -0.5635605454444885,
+            0.032693661749362946
+          ],
+          "tilt_deg": 89.99998760783494,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time_s": 21.0,
+          "can_xyz_m": [
+            0.05926936864852905,
+            -0.5635624527931213,
+            0.03268369659781456
+          ],
+          "tilt_deg": 90.00072130911818,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "first_pick_s": 8.549999999999999,
+      "first_tip60_s": null,
+      "first_upright_support_s": null,
+      "relative_can_displacement_8p01_to_13p02_mm": 198.29418890525073,
+      "max_inward_curl_deg": [
+        12.092576026916504,
+        12.097524642944336
+      ],
+      "samples": [
+        {
+          "time_s": 8.01,
+          "can_xyz_m": [
+            0.43349361419677734,
+            -0.14315488934516907,
+            0.12417180836200714
+          ],
+          "tilt_deg": 13.728092567401738,
+          "contacts": [
+            0,
+            2,
+            0
+          ]
+        },
+        {
+          "time_s": 13.02,
+          "can_xyz_m": [
+            0.4888068735599518,
+            -0.1463264375925064,
+            0.10048588365316391
+          ],
+          "tilt_deg": 0.0025719430517106077,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time_s": 14.01,
+          "can_xyz_m": [
+            0.48880717158317566,
+            -0.1463267058134079,
+            0.10048593580722809
+          ],
+          "tilt_deg": 0.0025632847193074065,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time_s": 18.0,
+          "can_xyz_m": [
+            0.488807737827301,
+            -0.14632666110992432,
+            0.10048581659793854
+          ],
+          "tilt_deg": 0.0025623909207435533,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "time_s": 21.0,
+          "can_xyz_m": [
+            0.488808274269104,
+            -0.14632648229599,
+            0.10048588365316391
+          ],
+          "tilt_deg": 0.002562886708134855,
+          "contacts": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.17786992445034572
+  },
+  "transmission_stats": {
+    "target": [
+      0.09,
+      -0.09,
+      0.20984,
+      0.20984
+    ],
+    "substep_calls": 100496,
+    "max_abs_torque": [
+      3.6652399723074605,
+      3.6956664900610616,
+      0.6507206489660966,
+      0.6852459068414356
+    ],
+    "max_abs_velocity": [
+      1.0055484771728516,
+      1.0055477619171143,
+      1.2919925451278687,
+      1.2922128438949585
+    ]
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 9.959999999999999,
+  "interpretation": "Candidate curls but loses the can during carry and it comes to rest upright on the starting table. Absence of tipping is not a recovery. Large relative displacement reflects a dropped can, not a held slip measurement."
+}

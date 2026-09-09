@@ -1,0 +1,27 @@
+{
+  "trials": [
+    233,
+    113
+  ],
+  "treatments": [
+    "none",
+    "fingers",
+    "can"
+  ],
+  "geom_timeconst_baseline_s": 0.02,
+  "geom_timeconst_softened_s": 0.04,
+  "effective_finger_can_pair_timeconst_softened_s": 0.03,
+  "fixed": "Adaptive transmission parameters, joint limits, original EEF/arm/grip commands, recorded clocks, corrected early yaw, initial positions, contact impedance/friction/damping ratio, shelf and goal.",
+  "scope": "Initial mechanism comparison, not a recovery-rate estimate. Single predefined softness level. No mesh deformation; solver penetration is a contact-compression proxy. Soft can affects its table, shelf and goal contacts too.",
+  "baseline_repeats": "Needed for new contact penetration/force observations; saved trajectories must reproduce previous adaptive baseline.",
+  "diagnostics": [
+    "callback counts",
+    "source identity",
+    "retention/separation",
+    "upright supported release",
+    "strict physical sequence",
+    "supplied unchanged slide metric",
+    "contact penetration and force",
+    "real-image seating comparison for 233"
+  ]
+}

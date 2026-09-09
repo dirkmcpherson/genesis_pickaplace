@@ -4,7 +4,7 @@ All camera fits use the original three cap poses. Rim annotations are observatio
 for evaluation only, recorded before inspecting the simulated can projection.
 """
 from pathlib import Path
-import hashlib, json, sys
+import argparse, hashlib, json, sys
 import cv2, numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -22,8 +22,13 @@ rim_clicks={
 }
 pilot=json.loads((R/'233/rigid_cap_camera_pilot.json').read_text())
 checks=json.loads((R/'233/cap_camera_sensitivity.json').read_text())['unused_pose_annotations']
-trace_path=R.parent/'timestamp_full_pool/233/collection/233_eef_delta.npz'
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--trace',type=Path,default=R.parent/'timestamp_full_pool/233/collection/233_eef_delta.npz')
+parser.add_argument('--out-prefix',type=Path,default=R/'233/can_seating_comparison')
+args=parser.parse_args()
+trace_path=args.trace
 meta=json.loads(trace_path.with_suffix('.json').read_text())
+assert meta['uid']==233,'This reference annotation set is specific to trial 233'
 source_path=Path(meta['timing_reconstruction']['source'])
 source=np.load(source_path); trace=np.load(trace_path); tr=trace['trajectory']
 trace_times=source['t_frame'][0]+(np.arange(len(tr))+1)*.03
@@ -103,10 +108,10 @@ for row,check in enumerate(checks):
   manual_outer_rim_points_px=observed.tolist(),manual_point_sensitivity_scale_px=5,real_rim_ellipse=realellipse,
   sim_can_from_tool=relative.tolist(),predictions=predictions,nominal=nominal))
 fig.suptitle('233: object seating/placement comparison without fitting can positions\nRed simulated top rim; orange bottom rim; yellow observed top center; cyan predicted caps\nFaint lines: declared lens alternatives, not confidence bounds. Hidden rims remain drawn.',fontsize=10)
-fig.tight_layout(rect=[0,0,1,.94]);fig.savefig(R/'233/can_seating_comparison.png',dpi=160);plt.close(fig)
+fig.tight_layout(rect=[0,0,1,.94]);fig.savefig(args.out_prefix.with_suffix('.png'),dpi=160);plt.close(fig)
 report=dict(uid=233,records=records,trace=str(trace_path),trace_sha256=hashlib.sha256(trace_path.read_bytes()).hexdigest(),
  source=str(source_path),source_sha256=hashlib.sha256(source_path.read_bytes()).hexdigest(),
  scope='No object pose fitting. Simulated can/tool transform attached to real FK tool, using interpolated translation and quaternion SLERP. Camera fits only original cap annotations. Rim points annotated before seeing can projections. Lens alternatives are assumptions, not confidence bounds. Cap-relative image differences subtract mean cap projection error, not a 3D geometry correction.',
  cylinder_dimensions_m=dict(radius=.033,height=.101))
-(R/'233/can_seating_comparison.json').write_text(json.dumps(report,indent=2))
+args.out_prefix.with_suffix('.json').write_text(json.dumps(report,indent=2))
 print(json.dumps([dict(label=r['label'],nominal=r['nominal'],cap_relative_error_range_px=[min(p['cap_relative_error_norm_px'] for p in r['predictions']),max(p['cap_relative_error_norm_px'] for p in r['predictions'])]) for r in records],indent=2))

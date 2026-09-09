@@ -1,0 +1,42 @@
+{
+  "uid": 233,
+  "actions_eef_exactly_unchanged": true,
+  "actions_joint_exactly_unchanged": true,
+  "source_grip_exactly_unchanged": true,
+  "max_inward_curl_deg": [
+    18.358543395996094,
+    18.358469009399414
+  ],
+  "distal_near_lower_limit_frames": 502,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 748,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.001749803807128067
+  },
+  "real_image_comparison": [
+    {
+      "time_s": 13.997250384,
+      "baseline_cap_relative_rim_error_px": 29.28803631704333,
+      "candidate_cap_relative_rim_error_px": 14.446751964876993
+    },
+    {
+      "time_s": 15.99532277,
+      "baseline_cap_relative_rim_error_px": 25.86188928710354,
+      "candidate_cap_relative_rim_error_px": 13.588719440853641
+    },
+    {
+      "time_s": 21.997206992,
+      "baseline_cap_relative_rim_error_px": 15.589923098231269,
+      "candidate_cap_relative_rim_error_px": 34.51996983024999
+    },
+    {
+      "time_s": 24.996601886,
+      "baseline_cap_relative_rim_error_px": 26.987670749668396,
+      "candidate_cap_relative_rim_error_px": 43.26718290249683
+    }
+  ],
+  "interpretation": "Inward curl and closer loaded-can projection demonstrated. Placement projection worsens and strict completion is lost; no adoption. Joint lower-limit saturation is substantial and current bounds came from the original mimic model, not measured adaptive travel."
+}

@@ -1,0 +1,51 @@
+{
+  "parameters": {
+    "actuator_stiffness": 80.0,
+    "actuator_force_limit": 100.0,
+    "distal_moment_ratio": 0.2,
+    "return_stiffness": 2.0,
+    "proximal_damping": 1.0,
+    "distal_damping": 0.02
+  },
+  "remaining_equalities": [
+    "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+  ],
+  "finger_dof_indices": [
+    7,
+    6,
+    9,
+    8
+  ],
+  "kp_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "kv_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "damping_readback": [
+    1.0,
+    1.0,
+    0.019999999552965164,
+    0.019999999552965164
+  ],
+  "substep_dt_s": 0.00125,
+  "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets.",
+  "urdf": {
+    "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+    "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+    "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_transmission/233/gen3_lite_2f_adaptive_candidate.urdf",
+    "candidate_sha256": "8c0385fc878f4ce278c226fa7973edd55ad94a6b01b8a0136e641394557d7c0d",
+    "removed_mimics": [
+      "right_finger_tip_joint",
+      "left_finger_tip_joint"
+    ]
+  },
+  "variant": "gc_kp4_riser3_shelf6",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz"
+}

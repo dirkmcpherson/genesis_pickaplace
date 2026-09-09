@@ -1,0 +1,25 @@
+{
+  "max_energy_gradient_error": 1.2336570875959296e-08,
+  "blocked_proximal_inward_tip_torque": [
+    -1.9717440000000008,
+    -1.9717440000000008
+  ],
+  "unloaded_equilibria_checked_motor_percent": [
+    0,
+    30,
+    60,
+    90,
+    100
+  ],
+  "right_distal_point_gap_change_for_negative_0p1rad_m": -0.007843246574443852,
+  "urdf": {
+    "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+    "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+    "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_transmission/gen3_lite_2f_adaptive_candidate.urdf",
+    "candidate_sha256": "8c0385fc878f4ce278c226fa7973edd55ad94a6b01b8a0136e641394557d7c0d",
+    "removed_mimics": [
+      "right_finger_tip_joint",
+      "left_finger_tip_joint"
+    ]
+  }
+}

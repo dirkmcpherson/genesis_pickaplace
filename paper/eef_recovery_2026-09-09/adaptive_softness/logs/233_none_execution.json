@@ -1,0 +1,16 @@
+{
+  "uid": 233,
+  "scope": "none",
+  "returncode": 0,
+  "elapsed_s": 78.24610471725464,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_softness/233_none",
+    "--soft-contact",
+    "none",
+    "--record-contact"
+  ]
+}
