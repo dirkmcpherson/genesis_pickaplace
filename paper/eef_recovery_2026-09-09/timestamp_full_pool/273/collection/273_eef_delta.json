@@ -1,0 +1,64 @@
+{
+  "uid": 273,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4782,
+    0.0982,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/273/source.npz",
+  "source_sha256": "662851413c729f717b42507d146e69e02e751b755502bb7aba3e04747b86b776",
+  "parent_trace_sha256": "673ae78be14acd01c459cef1abf8fd14339cf83550323c2ab4fbe5b0052da42a",
+  "frames": 1520,
+  "source_frames": 1520,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 912,
+    "push_start": 1181,
+    "contact_start": 1222,
+    "final_surface_gap_m": -0.00021562284205471627,
+    "push_toward_goal_m": 0.07762901639602847,
+    "support_fraction": 0.8636363636363636
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 3.7104961835555313e-16,
+  "command_rotation_rad_p99": 9.484484978985344e-16,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/273_timed.npz",
+    "sha256": "bd5eb4acf873fb2aa25b55b215e97e0d04ab9ed6f54a4f47d69c77ad14f6acec",
+    "original_frames": 1469,
+    "original_span_s": 45.55900716781616,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 45.6,
+    "endpoint_overrun_s": 0.04099283218383931,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

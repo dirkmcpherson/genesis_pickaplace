@@ -1,0 +1,191 @@
+[
+  {
+    "uid": 237,
+    "reviewed": true,
+    "source_sha256": "03c16ab724a807606d9b09e1107487b2abb7200ba838e462e97cf0b206760d98",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/237_timed.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/237_timed_phases.jpg",
+    "note": "Pickup/carry, upright supported release, later slide with solver goal contact, upright endpoint with hand separated; final goal contact absent and gap 0.548 mm within unchanged scorer tolerance",
+    "scope": "Six selected measured-pose phase frames, not every frame of video"
+  },
+  {
+    "uid": 317,
+    "reviewed": true,
+    "source_sha256": "732a982443ceaa1fbc0141f78832f43bc52bac21e4af29882dc4300a1e4100e8",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/317/317_timed.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/317/317_timed_phases.jpg",
+    "note": "Carry, upright supported shelf release, later hand recontact and slide into solver goal contact, hand separated at upright endpoint; no solver goal contact in final sample",
+    "scope": "Six selected measured-pose phase frames; full video retained"
+  },
+  {
+    "uid": 242,
+    "reviewed": true,
+    "source_sha256": "36e6d741c15b497fdec1f8e155ee1ef5e29e7807905ad2b043d10a0506f22972",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/visual_review/242/242_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/visual_review/242/242_phases.jpg",
+    "note": "Can is carried to shelf, hand separates, hand later approaches again, and the can ends upright near the goal with the hand withdrawn. Passes the supplied proximity metric; endpoint solver goal contact is not implied by the visual proximity.",
+    "scope": "Six rendered measured-pose frames at 0, 30, 55, 72, 88 and 100 percent of the available video; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 232,
+    "reviewed": true,
+    "source_sha256": "698e7a9ef236417824975d8c9ac7e5db409d15cd1e7b1e2408b46afcfa1ea1bf",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/232/232_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/232/phases.jpg",
+    "note": "Carry, shelf set-down and later goalward movement visible. Endpoint retains both hand and goal contact.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 233,
+    "reviewed": true,
+    "source_sha256": "ffac44936050a7ee354827a2e9ddd4d37a062001dee489b183fd58885cbc41af",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/233/233_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/233/phases.jpg",
+    "note": "Carry and late approach to goal visible; endpoint upright with hand withdrawn.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 247,
+    "reviewed": true,
+    "source_sha256": "52c263cacd276aed8f6dc5daecfd401934ca76f7db2f6d788ef889007515ec88",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/247/247_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/247/phases.jpg",
+    "note": "Carry and shelf set-down visible; late goalward movement ends upright with hand withdrawn.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 248,
+    "reviewed": true,
+    "source_sha256": "76c6b6d81aac849bab75007afa70f133cc2b11d159ea6ffcc842e496b6d0f5cd",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/248/248_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/248/phases.jpg",
+    "note": "Carry and shelf set-down visible; endpoint remains tilted about 16 degrees with hand and goal contact. Meets supplied metric; not a fully unloaded upright endpoint.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 251,
+    "reviewed": true,
+    "source_sha256": "bf8b8517ff4710bf2c94809522c6403a2c8ba2b4ce3528442426623b7b68dddf",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/251/251_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/251/phases.jpg",
+    "note": "Carry and set-down visible; later movement closes the gap. Endpoint upright and hand separated.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 255,
+    "reviewed": true,
+    "source_sha256": "6ded028909dcecd26cb31b07cad372cb8c9232817780db6308cc3e519dbd97d9",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/255/255_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/255/phases.jpg",
+    "note": "Carry, released shelf state and goalward movement visible. Endpoint retains hand and goal contact.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 256,
+    "reviewed": true,
+    "source_sha256": "25de76194405c682977ac05cf85c490ef1b5ecd9619308cd8fec2cd06689b5e7",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/256/256_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/256/phases.jpg",
+    "note": "Carry and shelf approach visible, with intermediate lean; endpoint upright near goal and hand withdrawn.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 273,
+    "reviewed": true,
+    "source_sha256": "2bfaa5bfd9457f57a7d307ae782435ba0a6d82fed4f6a884dd5afa92ef21c9bc",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/273/273_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/273/phases.jpg",
+    "note": "Carry, separated shelf state and later near-goal state visible. Endpoint upright with hand withdrawn.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 275,
+    "reviewed": true,
+    "source_sha256": "18a0bcf0f2bda1a6ee4e10c5e5e1fdf5a988203668d084f2451d14bc8a0dadaa",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/275/275_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/275/phases.jpg",
+    "note": "Carry, set-down and later goalward movement visible. Endpoint upright with hand separated, leaving a visible gap within the arrival tolerance.",
+    "scope": "Six selected phase frames inspected, not every video frame; rendering measured poses does not rerun physics."
+  },
+  {
+    "uid": 294,
+    "reviewed": true,
+    "source_sha256": "410911f2ac6ead7763de81de401a911aeecdc4d890b6f16655fc3b80816cdf36",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/294/294_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/294/phases.jpg",
+    "note": "Long initial dwell, then carried can and separated shelf state visible; endpoint near goal with hand contact retained.",
+    "scope": "Six selected phase frames inspected; not every video frame."
+  },
+  {
+    "uid": 299,
+    "reviewed": true,
+    "source_sha256": "e8d93de2dd81c0fc18d45f7ad0f9998dbc5f206bba5d8e7d8a4981cde7efae72",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/299/299_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/299/phases.jpg",
+    "note": "Carry, shelf approach and late goalward displacement visible; endpoint upright with hand withdrawn.",
+    "scope": "Six selected phase frames inspected; not every video frame."
+  },
+  {
+    "uid": 300,
+    "reviewed": true,
+    "source_sha256": "db2e8e60023e4ff259b6e34cf0ebdfff6a7ac29ebe0272be572236450fcc467a",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/300/300_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/300/phases.jpg",
+    "note": "Long initial dwell and subsequent shelf interaction visible; endpoint near goal with hand and goal contacts retained. Six overview frames do not resolve the full carry interval.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 302,
+    "reviewed": true,
+    "source_sha256": "48d8427e63d569daa1ff749512336b68615cd7ee09caf5888c82ab754fb545ed",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/302/302_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/302/phases.jpg",
+    "note": "Carry, supported shelf state and late goalward movement visible. Endpoint upright near goal with hand separated.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 304,
+    "reviewed": true,
+    "source_sha256": "70b0e32db2725f33427f32833296ef3b13dbd3a92f65d32f46d7e1605cca3107",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/304/304_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/304/phases.jpg",
+    "note": "Carry and separated shelf state visible, followed by goalward movement. Endpoint upright and hand separated, with a visible gap within arrival tolerance.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 305,
+    "reviewed": true,
+    "source_sha256": "58ca84759d299e9ee35da882c948a50bffba54240953ec4fd143368d53fa9783",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/305/305_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/305/phases.jpg",
+    "note": "Carry, set-down and later goalward movement visible. Endpoint upright with hand separated.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 309,
+    "reviewed": true,
+    "source_sha256": "50e9ed5124390b0fbd79fe5a90f363ad61f16702ae226ab12ad7671c400cd95c",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/309/309_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/309/phases.jpg",
+    "note": "Carry and shelf set-down visible; late movement closes the distance. Endpoint upright near goal with hand withdrawn.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 328,
+    "reviewed": true,
+    "source_sha256": "615b67c904543bdd43e6ee973f61fbd9096e837967ca72603b0eee415b76ee2d",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/328/328_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/328/phases.jpg",
+    "note": "Carry, shelf approach and late near-goal state visible. Endpoint upright and hand separated.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  },
+  {
+    "uid": 330,
+    "reviewed": true,
+    "source_sha256": "509b648142f69ae4276d2186405baa498d7c76b5ce3b1b6a8cf9ac3dae1b1f86",
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/330/330_timestamp.mp4",
+    "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/330/phases.jpg",
+    "note": "Carry and separated shelf state visible, followed by goalward movement. Endpoint tilted about 13 degrees with hand contact retained and 80.46 mm center distance; qualifies narrowly under the unchanged 81 mm metric.",
+    "scope": "Six selected phase frames inspected; full video retained, not watched frame by frame."
+  }
+]

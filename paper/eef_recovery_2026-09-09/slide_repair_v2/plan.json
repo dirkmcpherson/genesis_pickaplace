@@ -1,0 +1,10 @@
+{
+  "reason": "v1 reached physical goal contact only on its final extension frame, then withdrew. Preserve 10 mm translation bound but allow up to 10 zero-delta contact-settling frames (0.3 s). Separately test whether precision IK preserves placement-only successes lost by coarse IK.",
+  "tests": [
+    "242 original position: v1 extension plus settling hold, no IK refinement",
+    "242 corrected position candidate07: no motion repair, double-precision FK-based local IK refinement"
+  ],
+  "maximum_added_duration_s": 0.9,
+  "maximum_added_translation_m": 0.01,
+  "validation": "Same unchanged physical sequence scorer; successful saved EEF actions must independently reproduce completion."
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "uid": 243,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 276,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.00666094454871545
+    }
+  },
+  {
+    "uid": 235,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 550,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.16028319758322615
+    }
+  },
+  {
+    "uid": 257,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.12085243824402284
+    }
+  },
+  {
+    "uid": 245,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 2185,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.03197823490756521
+    }
+  },
+  {
+    "uid": 308,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "final_not_retained",
+      "release_start": 858,
+      "push_start": 1208,
+      "contact_start": 1211,
+      "final_surface_gap_m": 6.638449036840133e-05,
+      "push_toward_goal_m": 0.010450147031601582,
+      "support_fraction": 0.8333333333333334
+    }
+  },
+  {
+    "uid": 233,
+    "returncode": 0,
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 644,
+      "push_start": 784,
+      "contact_start": 820,
+      "final_surface_gap_m": -0.00016324596572202255,
+      "push_toward_goal_m": 0.04234509818735969,
+      "support_fraction": 0.8974358974358975
+    }
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "uid": 317,
+  "returncode": 0,
+  "array_comparison": {
+    "trajectory": true,
+    "actions_eef": true,
+    "observations": true
+  }
+}

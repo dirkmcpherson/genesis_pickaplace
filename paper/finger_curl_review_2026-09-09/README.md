@@ -61,3 +61,11 @@ Accessed 2026-09-09. Primary manufacturer material, including a manufacturer-aut
 3. [Kinova API end-effector identifiers](https://docs.kinovarobotics.com/ref/autogen/Enums/ProductConfiguration.html). The L31/Gen3 lite two-finger gripper has its own identity, distinct from the Robotiq 2F-85 and 2F-140. The repository filename containing `robotiq_85` must not guide hardware-mechanism assumptions.
 
 **Revised inference:** the curled grasp is supported by manufacturer illustrations as well as the user's hardware observation. A fixed-coupling simulation is not sufficient evidence of fidelity for that configuration. The specific passive transmission/compliance mechanism is still unresolved by the primary sources inspected, and any causal explanation of replay failures remains to be tested. The earlier conclusion that contact physics alone was the remaining gripper problem was too strong.
+
+## Recorded finger-channel audit
+
+A later check of every joint_states message in 118, 233 and 235 found four finger
+names, but both distal values follow the fixed mimic equation with exactly zero
+residual throughout all three recordings. These channels cannot independently
+measure the passive curl. The bags carry one gripper motor; the upstream driver
+maps its feedback into a joint angle. See the [telemetry and free-tip diagnostic](../eef_recovery_2026-09-09/free_tip_probe/README.md).

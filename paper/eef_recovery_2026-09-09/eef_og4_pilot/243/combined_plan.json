@@ -1,0 +1,6 @@
+{
+  "uid": 243,
+  "status": "Development candidate; og4 achieves supported release but misses goal by 6.66 mm.",
+  "change": "Apply the same last-contact 30 mm-bound repair to the already filtered EEF trace; do not apply grip filtering twice.",
+  "admission": "Grip-plus-slide-repaired data; verify independently and visually before any admission."
+}

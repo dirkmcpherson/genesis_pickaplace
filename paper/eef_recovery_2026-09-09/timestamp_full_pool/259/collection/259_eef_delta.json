@@ -1,0 +1,62 @@
+{
+  "uid": 259,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4381,
+    -0.2,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/259/source.npz",
+  "source_sha256": "4a00ce4ac6169e1e23564274218ec316bbcf15ec0a9134aaf6f0d692e0e9b30d",
+  "parent_trace_sha256": "04f3c067efeb1d2bc1d3e460dfdc29d4bf570ae5c7a6e708cf3c2f11e7e422ca",
+  "frames": 1324,
+  "source_frames": 1324,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.09254345957473545
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 7.448802375434542e-16,
+  "command_rotation_rad_p99": 2.6892921413118342e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/259_timed.npz",
+    "sha256": "9b44e8d1264a1229f4b46c09e5216246d5533286a25266ab9dcd0ffcd93ebdf7",
+    "original_frames": 1209,
+    "original_span_s": 39.667497873306274,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 39.72,
+    "endpoint_overrun_s": 0.05250212669372445,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

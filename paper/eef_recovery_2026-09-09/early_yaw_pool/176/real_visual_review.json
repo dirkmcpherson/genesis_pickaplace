@@ -1,0 +1,6 @@
+{
+  "uid": 176,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/real_review_sampling.json",
+  "observations": "Selected real frames show shelf manipulation and a late hand approach near the cans. A person's gloved hand obscures the final camera sample.",
+  "limitations": "Sparse phase review, without calibrated camera/bag alignment. The final sample cannot independently establish real endpoint retention; no distal-angle calibration."
+}

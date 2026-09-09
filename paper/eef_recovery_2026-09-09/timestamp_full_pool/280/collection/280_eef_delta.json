@@ -1,0 +1,62 @@
+{
+  "uid": 280,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4467,
+    -0.0241,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/280/source.npz",
+  "source_sha256": "e54fcd466a36952458a88e1bcceef34323110eed58a0ad07ffa07c3d299f804a",
+  "parent_trace_sha256": "37201f4f788a8c0ac412405000b4fadba231cb797290c564f6fe725a1a9a9443",
+  "frames": 717,
+  "source_frames": 717,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.17780394925126145
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 3.7390009836129505e-16,
+  "command_rotation_rad_p99": 1.050276483747089e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/280_timed.npz",
+    "sha256": "f956aba0109473d32d50ffd85adf81f5e62d0f5327eb95c499710cf1d2fce472",
+    "original_frames": 725,
+    "original_span_s": 21.47539448738098,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 21.509999999999998,
+    "endpoint_overrun_s": 0.034605512619016565,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

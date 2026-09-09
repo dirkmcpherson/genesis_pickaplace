@@ -1,0 +1,41 @@
+{
+  "uid": 124,
+  "day": "12-16",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4890814217716864,
+    -0.035709599887710226,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 3927,
+  "source_sha256": "7953a1508a2e67f6527d9890f438a3bca404555e1b9ac36b0d50126cc203f023",
+  "initial_pose_provenance": "archived pre-only outcome-fitted world position",
+  "source_matches_archived_episode": true,
+  "decision_dt_s": 0.01,
+  "fine_interval_control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/124/collection/124_eef_delta.npz",
+  "timing_reconstruction": {
+    "method": "Separate linear interpolation of raw joint_states and base_feedback motor measurements at their bag receipt timestamps",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/124/raw_measurements.npz",
+    "sha256": "8dc24c792deb19a1e751803613858bb783dc146c70c71bef9e9a5bc57b3ce0cc",
+    "decision_dt_s": 0.01,
+    "replay_duration_s": 39.27,
+    "paired_window_mean_timing": {
+      "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+      "original_span_s": 39.257630586624146,
+      "original_frames": 1518,
+      "replay_duration_s": 39.27,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/124_timed.npz",
+      "decision_dt_s": 0.01
+    },
+    "start_and_end": "Same sample times and endpoint as the 10 ms window-mean control",
+    "limitation": "Bag receipt timestamps are not hardware acquisition times; these are measured positions, not original hardware commands"
+  }
+}

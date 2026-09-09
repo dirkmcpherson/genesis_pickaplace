@@ -1,0 +1,9 @@
+{
+  "uids": [
+    124,
+    185
+  ],
+  "selection": "Two diagnosed failure modes: no recontact (124), recontact and near goal then retreat (185). Outcome-selected diagnostic, not an unbiased rate estimate.",
+  "comparison": "Full world, day-specific yaw, identical fitted IC and EEF precision controller. Only source sampling/clock changes to archived 30 ms per measurement.",
+  "admission": "No automatic admission; independent action replay and visual review required for any completion."
+}

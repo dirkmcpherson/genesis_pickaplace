@@ -1,0 +1,1132 @@
+{
+  "note": "Overlapping diagnostic categories, not disjoint counts; picked flag can be invalid under initial shelf overlap.",
+  "days": {
+    "12-16": {
+      "n": 49,
+      "metric_pass": 3,
+      "initial_overlap": 6,
+      "tip_over_60": 32,
+      "upright_supported_short": 11,
+      "never_picked_flag": 4,
+      "records": [
+        {
+          "uid": 113,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.6971634280557826,
+          "final_tilt_deg": 90.00005156224125,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "113",
+            "n": 1047,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.6971634280557826,
+            "gain_m": 0.08374779450616734
+          },
+          "first_tilt_over_60_frame": 445,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 118,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.35525580464918505,
+          "final_tilt_deg": 0.0025667001829521806,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "118",
+            "n": 427,
+            "released": true,
+            "release_frame": 0,
+            "pushed": false,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.35525580464918505,
+            "gain_m": 0.005957486905572851
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": null
+        },
+        {
+          "uid": 120,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.26489982074653234,
+          "final_tilt_deg": 90.00007085285031,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "120",
+            "n": 1038,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.26489982074653234,
+            "gain_m": 0.033903983363503504
+          },
+          "first_tilt_over_60_frame": 2510,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 121,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.6624112410250691,
+          "final_tilt_deg": 90.00051016137952,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "121",
+            "n": 369,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.6624112410250691,
+            "gain_m": 0.2451867775743368
+          },
+          "first_tilt_over_60_frame": 1170,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 122,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.38287640205029055,
+          "final_tilt_deg": 89.99999322108775,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "122",
+            "n": 289,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.38287640205029055,
+            "gain_m": 0.18199198328678023
+          },
+          "first_tilt_over_60_frame": 557,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 124,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1236698015329398,
+          "final_tilt_deg": 0.0025664550837594187,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "124",
+            "n": 328,
+            "released": true,
+            "release_frame": 15,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1236698015329398,
+            "gain_m": 0.1511686003021409
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 1019
+        },
+        {
+          "uid": 126,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.2698753561626086,
+          "final_tilt_deg": 90.00002910549584,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "126",
+            "n": 322,
+            "released": true,
+            "release_frame": 14,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.2698753561626086,
+            "gain_m": 0.13843251822921454
+          },
+          "first_tilt_over_60_frame": 954,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 128,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1447495736537144,
+          "final_tilt_deg": 0.002570902421582603,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "128",
+            "n": 433,
+            "released": true,
+            "release_frame": 14,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1447495736537144,
+            "gain_m": 0.16792946025152097
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 580
+        },
+        {
+          "uid": 129,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.16401458568756905,
+          "final_tilt_deg": 90.00002912711852,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "129",
+            "n": 358,
+            "released": true,
+            "release_frame": 15,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.16401458568756905,
+            "gain_m": 0.04910120245131472
+          },
+          "first_tilt_over_60_frame": 968,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 130,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.168477517311381,
+          "final_tilt_deg": 89.99998290640853,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "130",
+            "n": 330,
+            "released": true,
+            "release_frame": 26,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.168477517311381,
+            "gain_m": 0.14873577253275314
+          },
+          "first_tilt_over_60_frame": 764,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 131,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.18951815870998778,
+          "final_tilt_deg": 0.0025636012071238146,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "131",
+            "n": 372,
+            "released": true,
+            "release_frame": 3,
+            "pushed": false,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.18951815870998778,
+            "gain_m": 0.0
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 742
+        },
+        {
+          "uid": 132,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1425292236918212,
+          "final_tilt_deg": 0.0025632646709194723,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "132",
+            "n": 461,
+            "released": true,
+            "release_frame": 108,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1425292236918212,
+            "gain_m": 0.0732479290822175
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 1028
+        },
+        {
+          "uid": 137,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.2337306645255038,
+          "final_tilt_deg": 90.00007423046466,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "137",
+            "n": 491,
+            "released": true,
+            "release_frame": 21,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.2337306645255038,
+            "gain_m": 0.0833842806858246
+          },
+          "first_tilt_over_60_frame": 1211,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 138,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3503102464549593,
+          "final_tilt_deg": 89.9818677006659,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "138",
+            "n": 778,
+            "released": true,
+            "release_frame": 7,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3503102464549593,
+            "gain_m": 0.08198379250684729
+          },
+          "first_tilt_over_60_frame": 788,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 139,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.17194113738494826,
+          "final_tilt_deg": 89.99992231897168,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "139",
+            "n": 475,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.17194113738494826,
+            "gain_m": 0.07120979746981307
+          },
+          "first_tilt_over_60_frame": 1353,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 140,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1067845535173204,
+          "final_tilt_deg": 0.2798421458672346,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "140",
+            "n": 346,
+            "released": true,
+            "release_frame": 5,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1067845535173204,
+            "gain_m": 0.18593379983554947
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 1324
+        },
+        {
+          "uid": 141,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.16787595467612826,
+          "final_tilt_deg": 0.0025639544728452736,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "141",
+            "n": 469,
+            "released": true,
+            "release_frame": 1,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.16787595467612826,
+            "gain_m": 0.1171169210995942
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 721
+        },
+        {
+          "uid": 143,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.42362814246082503,
+          "final_tilt_deg": 90.00001948635291,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "143",
+            "n": 1123,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.42362814246082503,
+            "gain_m": 0.15892378189068793
+          },
+          "first_tilt_over_60_frame": 3345,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 144,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.7954386736640038,
+          "final_tilt_deg": 90.00006713679801,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "144",
+            "n": 1409,
+            "released": true,
+            "release_frame": 0,
+            "pushed": false,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.7954386736640038,
+            "gain_m": 0.008805447167401448
+          },
+          "first_tilt_over_60_frame": 3576,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 145,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.21610309883942933,
+          "final_tilt_deg": 89.99987512017132,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "145",
+            "n": 1526,
+            "released": true,
+            "release_frame": 6,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.21610309883942933,
+            "gain_m": 0.03245771504260281
+          },
+          "first_tilt_over_60_frame": 1088,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "initial_geometry_overlap"
+        },
+        {
+          "uid": 146,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.2371991764165918,
+          "final_tilt_deg": 90.00006193876156,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "146",
+            "n": 396,
+            "released": true,
+            "release_frame": 65,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.2371991764165918,
+            "gain_m": 0.1092477937306855
+          },
+          "first_tilt_over_60_frame": 1053,
+          "first_upright_shelf_support_after_pick_flag": 1046,
+          "tip_diagnostic": "tipped_after_upright_shelf_support"
+        },
+        {
+          "uid": 148,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.656959776577244,
+          "final_tilt_deg": 89.99988591201414,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "148",
+            "n": 877,
+            "released": true,
+            "release_frame": 8,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.656959776577244,
+            "gain_m": 0.253098252723459
+          },
+          "first_tilt_over_60_frame": 1462,
+          "first_upright_shelf_support_after_pick_flag": 1223,
+          "tip_diagnostic": "tipped_after_upright_shelf_support"
+        },
+        {
+          "uid": 149,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.21467341422266692,
+          "final_tilt_deg": 0.0025628564175083526,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "149",
+            "n": 436,
+            "released": true,
+            "release_frame": 17,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.21467341422266692,
+            "gain_m": 0.027912486070476195
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": null
+        },
+        {
+          "uid": 151,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.07450860944404615,
+          "final_tilt_deg": 90.0001364676276,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "151",
+            "n": 435,
+            "released": true,
+            "release_frame": 6,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.07450860944404615,
+            "gain_m": 0.10409885022259566
+          },
+          "first_tilt_over_60_frame": 600,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "initial_geometry_overlap"
+        },
+        {
+          "uid": 153,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.1113405207312298,
+          "final_tilt_deg": 90.00001768954868,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "153",
+            "n": 387,
+            "released": true,
+            "release_frame": 4,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1113405207312298,
+            "gain_m": 0.21753846942020486
+          },
+          "first_tilt_over_60_frame": 943,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "initial_geometry_overlap"
+        },
+        {
+          "uid": 154,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3462163057139365,
+          "final_tilt_deg": 90.00002102397416,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "154",
+            "n": 323,
+            "released": true,
+            "release_frame": 5,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3462163057139365,
+            "gain_m": 0.18531962342327576
+          },
+          "first_tilt_over_60_frame": 501,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 156,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1278578190919617,
+          "final_tilt_deg": 90.00001116306156,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "156",
+            "n": 1361,
+            "released": true,
+            "release_frame": 50,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1278578190919617,
+            "gain_m": 0.27993759465294354
+          },
+          "first_tilt_over_60_frame": 2626,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 157,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.18314260650963599,
+          "final_tilt_deg": 90.0000426469549,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "157",
+            "n": 435,
+            "released": true,
+            "release_frame": 3,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.18314260650963599,
+            "gain_m": 0.11018594774196475
+          },
+          "first_tilt_over_60_frame": 472,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 158,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.11565648253570798,
+          "final_tilt_deg": 89.9999709382441,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "158",
+            "n": 385,
+            "released": true,
+            "release_frame": 14,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.11565648253570798,
+            "gain_m": 0.08367002083457321
+          },
+          "first_tilt_over_60_frame": 766,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 160,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.4823338677492007,
+          "final_tilt_deg": 89.99990981726069,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "160",
+            "n": 451,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.4823338677492007,
+            "gain_m": 0.0756935956949174
+          },
+          "first_tilt_over_60_frame": 577,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 161,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.20885367811756458,
+          "final_tilt_deg": 179.99743594133375,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "161",
+            "n": 559,
+            "released": true,
+            "release_frame": 10,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.20885367811756458,
+            "gain_m": 0.07126611733994345
+          },
+          "first_tilt_over_60_frame": 1045,
+          "first_upright_shelf_support_after_pick_flag": 754,
+          "tip_diagnostic": "initial_geometry_overlap"
+        },
+        {
+          "uid": 162,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.06587733779255478,
+          "final_tilt_deg": 0.00256262830194766,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "162",
+            "n": 369,
+            "released": true,
+            "release_frame": 11,
+            "pushed": true,
+            "arrived": true,
+            "slide_success": true,
+            "final_dist": 0.06587733779255478,
+            "gain_m": 0.19300701470573428
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 840
+        },
+        {
+          "uid": 164,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.08710445078011873,
+          "final_tilt_deg": 89.9999948261872,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "164",
+            "n": 520,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.08710445078011873,
+            "gain_m": 0.2624855079932176
+          },
+          "first_tilt_over_60_frame": 1139,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 165,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.1531877482105572,
+          "final_tilt_deg": 0.005466770261438979,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "165",
+            "n": 358,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.1531877482105572,
+            "gain_m": 0.18961178969694956
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 356
+        },
+        {
+          "uid": 166,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.13772396231486922,
+          "final_tilt_deg": 0.002563282586507633,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "166",
+            "n": 424,
+            "released": true,
+            "release_frame": 16,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.13772396231486922,
+            "gain_m": 0.06340233080970685
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 1060
+        },
+        {
+          "uid": 167,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.08091713253767314,
+          "final_tilt_deg": 0.002562474838720991,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "167",
+            "n": 503,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": true,
+            "slide_success": true,
+            "final_dist": 0.08091713253767314,
+            "gain_m": 0.3232435666088279
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 970
+        },
+        {
+          "uid": 168,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.09430416769978239,
+          "final_tilt_deg": 0.002562648924201644,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "168",
+            "n": 304,
+            "released": true,
+            "release_frame": 9,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.09430416769978239,
+            "gain_m": 0.18395546108635683
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 804
+        },
+        {
+          "uid": 169,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.17741488761101232,
+          "final_tilt_deg": 89.99999255120461,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "169",
+            "n": 393,
+            "released": true,
+            "release_frame": 2,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.17741488761101232,
+            "gain_m": 0.046718858865342605
+          },
+          "first_tilt_over_60_frame": 915,
+          "first_upright_shelf_support_after_pick_flag": 621,
+          "tip_diagnostic": "tipped_after_upright_shelf_support"
+        },
+        {
+          "uid": 170,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.17277761085646276,
+          "final_tilt_deg": 90.00000128755377,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "170",
+            "n": 887,
+            "released": true,
+            "release_frame": 39,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.17277761085646276,
+            "gain_m": 0.27480222624096756
+          },
+          "first_tilt_over_60_frame": 2886,
+          "first_upright_shelf_support_after_pick_flag": 1476,
+          "tip_diagnostic": "tipped_after_upright_shelf_support"
+        },
+        {
+          "uid": 171,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3423721006865483,
+          "final_tilt_deg": 0.0025632232939634975,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "171",
+            "n": 461,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3423721006865483,
+            "gain_m": 0.24922503862896206
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 806
+        },
+        {
+          "uid": 172,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.13642841589986573,
+          "final_tilt_deg": 0.002562404859852175,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "172",
+            "n": 294,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.13642841589986573,
+            "gain_m": 0.1834288069474456
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 697
+        },
+        {
+          "uid": 173,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.35218001310206604,
+          "final_tilt_deg": 89.99999674216815,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "173",
+            "n": 356,
+            "released": true,
+            "release_frame": 29,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.35218001310206604,
+            "gain_m": 0.09861529016229123
+          },
+          "first_tilt_over_60_frame": 601,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 174,
+          "initial_overlap": true,
+          "final_center_distance_m": 0.27153015823586313,
+          "final_tilt_deg": 89.99995773304028,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "174",
+            "n": 626,
+            "released": true,
+            "release_frame": 31,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.27153015823586313,
+            "gain_m": 0.15918578810541734
+          },
+          "first_tilt_over_60_frame": 1146,
+          "first_upright_shelf_support_after_pick_flag": 989,
+          "tip_diagnostic": "initial_geometry_overlap"
+        },
+        {
+          "uid": 175,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3899229407999162,
+          "final_tilt_deg": 89.99998142242832,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "175",
+            "n": 519,
+            "released": true,
+            "release_frame": 4,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3899229407999162,
+            "gain_m": 0.3005619105828157
+          },
+          "first_tilt_over_60_frame": 1006,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 176,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.06583617244563401,
+          "final_tilt_deg": 0.00256345604842548,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "176",
+            "n": 621,
+            "released": true,
+            "release_frame": 1,
+            "pushed": true,
+            "arrived": true,
+            "slide_success": true,
+            "final_dist": 0.06583617244563401,
+            "gain_m": 0.21981175783655266
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 605
+        },
+        {
+          "uid": 177,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.131125405726287,
+          "final_tilt_deg": 90.00000220658825,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "177",
+            "n": 944,
+            "released": true,
+            "release_frame": 6,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.131125405726287,
+            "gain_m": 0.0763688228858565
+          },
+          "first_tilt_over_60_frame": 341,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 179,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3631494537671309,
+          "final_tilt_deg": 89.99296452353721,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "179",
+            "n": 397,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3631494537671309,
+            "gain_m": 0.08846720561716281
+          },
+          "first_tilt_over_60_frame": 760,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 180,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.15536872881060237,
+          "final_tilt_deg": 89.995513186865,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "180",
+            "n": 239,
+            "released": true,
+            "release_frame": 0,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.15536872881060237,
+            "gain_m": 0.11443393600271295
+          },
+          "first_tilt_over_60_frame": 330,
+          "first_upright_shelf_support_after_pick_flag": null,
+          "tip_diagnostic": "no_prior_upright_shelf_support"
+        },
+        {
+          "uid": 181,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.14439886269179988,
+          "final_tilt_deg": 13.049936885986728,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "181",
+            "n": 284,
+            "released": true,
+            "release_frame": 5,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.14439886269179988,
+            "gain_m": 0.0851016013450191
+          },
+          "first_tilt_over_60_frame": null,
+          "first_upright_shelf_support_after_pick_flag": 730
+        }
+      ]
+    },
+    "12-17": {
+      "n": 5,
+      "metric_pass": 0,
+      "initial_overlap": 0,
+      "tip_over_60": 1,
+      "upright_supported_short": 3,
+      "never_picked_flag": 1,
+      "records": [
+        {
+          "uid": 183,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.3117359274524132,
+          "final_tilt_deg": 0.0025734787071907657,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "183",
+            "n": 746,
+            "released": true,
+            "release_frame": 0,
+            "pushed": false,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.3117359274524132,
+            "gain_m": 0.0064194773318069775
+          }
+        },
+        {
+          "uid": 184,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.09250815141959892,
+          "final_tilt_deg": 90.00004946095423,
+          "final_supported_upright": false,
+          "metric": {
+            "uid": "184",
+            "n": 806,
+            "released": true,
+            "release_frame": 26,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.09250815141959892,
+            "gain_m": 0.1771097510414516
+          }
+        },
+        {
+          "uid": 185,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.10826792662349773,
+          "final_tilt_deg": 0.00256388154914008,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "185",
+            "n": 354,
+            "released": true,
+            "release_frame": 32,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.10826792662349773,
+            "gain_m": 0.23025926554500836
+          }
+        },
+        {
+          "uid": 189,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.12229643349273799,
+          "final_tilt_deg": 7.205916802957893,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "189",
+            "n": 268,
+            "released": true,
+            "release_frame": 39,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.12229643349273799,
+            "gain_m": 0.12159729523193062
+          }
+        },
+        {
+          "uid": 190,
+          "initial_overlap": false,
+          "final_center_distance_m": 0.09800489538957412,
+          "final_tilt_deg": 0.0025631109614021887,
+          "final_supported_upright": true,
+          "metric": {
+            "uid": "190",
+            "n": 485,
+            "released": true,
+            "release_frame": 127,
+            "pushed": true,
+            "arrived": false,
+            "slide_success": false,
+            "final_dist": 0.09800489538957412,
+            "gain_m": 0.1882152973422847
+          }
+        }
+      ]
+    }
+  },
+  "dec16_tipped_endpoint_diagnostics": {
+    "no_prior_upright_shelf_support": 23,
+    "initial_geometry_overlap": 5,
+    "tipped_after_upright_shelf_support": 4
+  }
+}

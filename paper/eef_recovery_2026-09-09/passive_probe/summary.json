@@ -1,0 +1,194 @@
+[
+  {
+    "uid": 233,
+    "treatment": "collection",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 715,
+      "push_start": 798,
+      "contact_start": 822,
+      "final_surface_gap_m": -0.00026888020919806077,
+      "push_toward_goal_m": 0.021915053718127034,
+      "support_fraction": 0.8888888888888888
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      0.04334736615419388,
+      0.04122509807348251
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      0.04334736615419388,
+      0.04122509807348251
+    ],
+    "max_residual_frame": 554,
+    "contact_at_max": [
+      0,
+      7,
+      0
+    ],
+    "residual_at_max_deg": [
+      0.04334736615419388,
+      0.03930111974477768
+    ]
+  },
+  {
+    "uid": 233,
+    "treatment": "233_tc0.1",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 713,
+      "push_start": 798,
+      "contact_start": 823,
+      "final_surface_gap_m": -0.00018720188956017347,
+      "push_toward_goal_m": 0.02192251698088839,
+      "support_fraction": 0.8928571428571429
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      0.3306118845939636,
+      0.25716984272003174
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      0.3306118845939636,
+      0.25716984272003174
+    ],
+    "max_residual_frame": 474,
+    "contact_at_max": [
+      0,
+      6,
+      0
+    ],
+    "residual_at_max_deg": [
+      0.3306118845939636,
+      0.24675850570201874
+    ]
+  },
+  {
+    "uid": 233,
+    "treatment": "233_tc0.3",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 713,
+      "push_start": 799,
+      "contact_start": 824,
+      "final_surface_gap_m": -0.00015219816469529135,
+      "push_toward_goal_m": 0.021645872057634904,
+      "support_fraction": 0.9642857142857143
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      2.903001308441162,
+      2.1190545558929443
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      2.903001308441162,
+      2.1190545558929443
+    ],
+    "max_residual_frame": 348,
+    "contact_at_max": [
+      0,
+      4,
+      0
+    ],
+    "residual_at_max_deg": [
+      2.903001308441162,
+      2.005709648132324
+    ]
+  },
+  {
+    "uid": 235,
+    "treatment": "collection",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.0065772268245945925
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      0.027242207899689674,
+      0.026202311739325523
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      0.027242207899689674,
+      0.026202311739325523
+    ],
+    "max_residual_frame": 186,
+    "contact_at_max": [
+      0,
+      14,
+      0
+    ],
+    "residual_at_max_deg": [
+      0.027242207899689674,
+      0.026202311739325523
+    ]
+  },
+  {
+    "uid": 235,
+    "treatment": "235_tc0.1",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.06774727908043454
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      0.047575678676366806,
+      0.03636050969362259
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      0.047575678676366806,
+      0.03636050969362259
+    ],
+    "max_residual_frame": 164,
+    "contact_at_max": [
+      0,
+      9,
+      0
+    ],
+    "residual_at_max_deg": [
+      -0.047575678676366806,
+      0.03455990180373192
+    ]
+  },
+  {
+    "uid": 235,
+    "treatment": "235_tc0.3",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.06849524597240483
+    },
+    "picked": true,
+    "max_abs_residual_deg": [
+      0.16569867730140686,
+      0.23856398463249207
+    ],
+    "max_abs_during_robot_can_contact_deg": [
+      0.16569867730140686,
+      0.23856398463249207
+    ],
+    "max_residual_frame": 262,
+    "contact_at_max": [
+      0,
+      8,
+      0
+    ],
+    "residual_at_max_deg": [
+      0.13813886046409607,
+      0.23856398463249207
+    ]
+  }
+]

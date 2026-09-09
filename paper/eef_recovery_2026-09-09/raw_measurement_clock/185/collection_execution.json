@@ -1,0 +1,24 @@
+{
+  "uid": 185,
+  "mode": "collection",
+  "returncode": 0,
+  "metric": {
+    "uid": "185",
+    "n": 354,
+    "released": true,
+    "release_frame": 32,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.11067513371299574,
+    "gain_m": 0.23109937410515796
+  },
+  "strict_contact_diagnostic": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 2895,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.04467513371299574
+  }
+}

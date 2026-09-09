@@ -1,0 +1,26 @@
+{
+  "uid": 233,
+  "mode": "verification",
+  "returncode": 0,
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.0658630506554439,
+    "gain_m": 0.2148998619010022
+  },
+  "strict_contact_diagnostic": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 2222,
+    "push_start": 2499,
+    "contact_start": 2572,
+    "final_surface_gap_m": -0.0001369493445561032,
+    "push_toward_goal_m": 0.021175086582704224,
+    "support_fraction": 0.9512195121951219
+  }
+}

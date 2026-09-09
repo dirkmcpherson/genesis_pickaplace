@@ -1,0 +1,67 @@
+{
+  "uid": 233,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/fine_interval/233/source.npz",
+  "source_sha256": "a9556c805e196be2f301b41107d1eb0295066e4720293ef1d3631d392d531d31",
+  "parent_trace_sha256": "9d178c63ccf47c83b56df39cc496bedc7b088156c9ac3d37227eda00ad818fa3",
+  "frames": 2884,
+  "source_frames": 2884,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 2223,
+    "push_start": 2502,
+    "contact_start": 2575,
+    "final_surface_gap_m": -0.00024336811908988454,
+    "push_toward_goal_m": 0.022417504659025603,
+    "support_fraction": 0.9024390243902439
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "real-derived EEF replay",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.01,
+  "physics_dt_s": 0.01,
+  "physics_steps_per_action": 1,
+  "command_xyz_m_p99": 4.986181302124848e-16,
+  "command_rotation_rad_p99": 2.1055010962140883e-15,
+  "code_sha256": {
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_replay.py": "f9eac9e819d444815c18233ce9f140e070c9ca32e1eb5e3f5fa6d5701995465d",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_sequence.py": "2a1f640c5ab250fa8a7dd6335ecd30e6cecde7338674151d2482573d932f6b38",
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_env.py": "2ccf05b0b3f959808c1340ad95ce76f542ba07523a8d6de791215e1a5aab74ce"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/233_timed.npz",
+    "sha256": "90c4cf727ad2bbf7ffb34ac22adf2ccb7255709ef1e11ef8cf9d9e5cf2ab5056",
+    "original_frames": 926,
+    "original_span_s": 28.822158098220825,
+    "decision_dt_s": 0.01,
+    "replay_duration_s": 28.84,
+    "endpoint_overrun_s": 0.017841901779174663,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

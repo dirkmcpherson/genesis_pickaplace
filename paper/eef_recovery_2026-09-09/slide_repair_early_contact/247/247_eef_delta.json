@@ -1,0 +1,48 @@
+{
+  "uid": 247,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4822,
+    -0.1827,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/247/collection/247_eef_delta.npz",
+  "source_sha256": "d936ffb01eed803fce3168b51d005a27dba2fa5bd150c3efeae32b08e646b712",
+  "parent_trace_sha256": "027c3dac59199d98d6126f37dcda495747578bc4d086a171cb6552a4b8250082",
+  "frames": 1767,
+  "source_frames": 1737,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.010000000000000005,
+  "insert_after": 1669,
+  "repair_note": "extension_limit",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 1389,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.006631842840078367
+  },
+  "precision_ik": true,
+  "hold_contact": true,
+  "action_replay_verification": false,
+  "provenance": "real-derived bounded final-slide repair",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 8.045279661023685e-16,
+  "command_rotation_rad_p99": 2.892898250138092e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5f44dcbcadf67ffbd6c34d505b944d989227ca49b2f8061d69672afde52f908b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  }
+}

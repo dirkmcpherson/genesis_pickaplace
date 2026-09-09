@@ -1,0 +1,11 @@
+{
+  "uids": [
+    233,
+    234,
+    235
+  ],
+  "physics": "unchanged w3",
+  "correction_234": "upright quaternion and z from prior isolated probe; archived xy",
+  "grip": "unfiltered measured grip, jointly resampled with arm using bag times",
+  "outcome": "unchanged full sequence scorer; retain all failures; no bank admission"
+}

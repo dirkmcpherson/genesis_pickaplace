@@ -135,3 +135,10 @@ so any of it can be killed and resumed.
 - **Participant identity is not recoverable.** No field anywhere (`config.yaml` byte-identical across
   all 224 except `data_dir`; `user_NNN` is a trial counter). Four sessions on four consecutive days is
   the only grouping the data supports.
+
+## Active full-world follow-up
+
+The separate `paper/eef_recovery_2026-09-09/early_yaw_pool/` now declares all 89
+early candidates for timestamp-based EEF replay with both hooks and built-world
+yaw/gain/shelf readback. This is distinct from the 74-trial December-18 timing
+census. Old winner poses remain outcome-fitted; old labels are not inherited.

@@ -1,0 +1,16 @@
+{
+  "uid": 273,
+  "source_sha256": "2bfaa5bfd9457f57a7d307ae782435ba0a6d82fed4f6a884dd5afa92ef21c9bc",
+  "sampled_trace_frames": [
+    0,
+    456,
+    837,
+    1095,
+    1338,
+    1519
+  ],
+  "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
+  "visual_review_completed": true,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun",
+  "review_note": "Carry, separated shelf state and later near-goal state visible. Endpoint upright with hand withdrawn."
+}

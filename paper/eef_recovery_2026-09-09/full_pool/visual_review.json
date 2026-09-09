@@ -1,0 +1,58 @@
+[
+  {
+    "uid": 232,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/232/232_verified.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/232/232_verified.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 233,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/233/233_verified.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/233/233_verified.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 255,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/255/255_verified.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/255/255_verified.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 273,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/273/273_verified.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/273/273_verified.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 294,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/294/294_collection.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/294/294_collection.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 299,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/299/299_collection.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/299/299_collection.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 300,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/300/300_collection.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/300/300_collection.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  },
+  {
+    "uid": 305,
+    "approved": true,
+    "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/305/305_collection.mp4",
+    "contact_sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/305/305_collection.jpg",
+    "note": "Inspected six phase frames showing pick/carry, supported shelf release, later push and final can arrangement. Full-length saved measured-pose video retained; visual inspection complements solver contacts and independent action replay."
+  }
+]

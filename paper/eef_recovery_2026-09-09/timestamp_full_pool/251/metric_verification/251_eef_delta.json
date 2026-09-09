@@ -1,0 +1,62 @@
+{
+  "uid": 251,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4728,
+    0.1039,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/251/collection/251_eef_delta.npz",
+  "source_sha256": "43675f38f6296a098b98e8ef6b8f75e41313c26d2b627d8d55b793ac0e8cc797",
+  "parent_trace_sha256": "bf8b8517ff4710bf2c94809522c6403a2c8ba2b4ce3528442426623b7b68dddf",
+  "frames": 1516,
+  "source_frames": 1516,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "saved_actions_only",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 1133,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.009883335329086779
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": true,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 3.6104924762606166e-16,
+  "command_rotation_rad_p99": 7.422547025247732e-16,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/251_timed.npz",
+    "sha256": "3e2eb8d50b8e5a6b725942f3bf4ba1325f0797134b95c8505b88cbe2affb47cc",
+    "original_frames": 1584,
+    "original_span_s": 45.449952840805054,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 45.48,
+    "endpoint_overrun_s": 0.030047159194943163,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

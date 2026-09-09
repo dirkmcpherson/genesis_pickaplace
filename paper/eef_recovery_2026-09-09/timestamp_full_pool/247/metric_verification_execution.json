@@ -1,0 +1,21 @@
+{
+  "uid": 247,
+  "returncode": 0,
+  "verified": true,
+  "array_comparison": {
+    "trajectory": true,
+    "actions_eef": true,
+    "observations": true
+  },
+  "metric": {
+    "uid": "247",
+    "n": 451,
+    "released": true,
+    "release_frame": 59,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06775210698402967,
+    "gain_m": 0.1258827710017338
+  }
+}

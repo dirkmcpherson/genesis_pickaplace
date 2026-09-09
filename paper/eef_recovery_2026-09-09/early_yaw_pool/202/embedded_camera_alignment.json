@@ -1,0 +1,42 @@
+{
+  "matches": [
+    {
+      "sim_frame": 0,
+      "desired_bag_time_s": 0.06859591484069824,
+      "camera_bag_time_s": 0.080975873,
+      "time_error_s": 0.012379958159301763
+    },
+    {
+      "sim_frame": 471,
+      "desired_bag_time_s": 14.198595914840698,
+      "camera_bag_time_s": 14.213902998,
+      "time_error_s": 0.015307083159301627
+    },
+    {
+      "sim_frame": 867,
+      "desired_bag_time_s": 26.078595914840697,
+      "camera_bag_time_s": 26.080893765,
+      "time_error_s": 0.0022978501593016176
+    },
+    {
+      "sim_frame": 1134,
+      "desired_bag_time_s": 34.088595914840695,
+      "camera_bag_time_s": 34.080643827,
+      "time_error_s": -0.007952087840692457
+    },
+    {
+      "sim_frame": 1386,
+      "desired_bag_time_s": 41.6485959148407,
+      "camera_bag_time_s": 41.647135758,
+      "time_error_s": -0.001460156840700222
+    },
+    {
+      "sim_frame": 1575,
+      "desired_bag_time_s": 47.3185959148407,
+      "camera_bag_time_s": 47.310776815,
+      "time_error_s": -0.007819099840702393
+    }
+  ],
+  "video_fps": 30.15225804832997,
+  "limitation": "Video plays ordered frames at median frame rate; NPZ retains exact timestamps. Receipt-time matching does not calibrate hardware/camera acquisition delays."
+}

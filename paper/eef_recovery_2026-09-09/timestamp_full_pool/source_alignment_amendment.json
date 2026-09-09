@@ -1,0 +1,11 @@
+{
+  "resolved": [
+    254,
+    295,
+    300
+  ],
+  "cause": "ROS1 to_sec adds integer seconds and fractional nanoseconds; combined division differs at rare window boundaries",
+  "validation": "ros1_timed/validation.json",
+  "existing_71": "Exact source sample matches retained; existing timestamp rounding differs at submicrosecond scale",
+  "frozen_inputs": "unchanged"
+}

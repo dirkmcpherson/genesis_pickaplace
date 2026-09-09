@@ -1,0 +1,52 @@
+{
+  "uid": 234,
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4351,
+    -0.1741,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 989,
+  "source_sha256": "11fae56d5dc4da6328b38b4873ca9782f9d8c368e5e56c04968c8d343d786659",
+  "archived_can_pos": [
+    0.4351,
+    -0.1741,
+    0.085
+  ],
+  "archived_can_quat": [
+    0.7071067811865476,
+    0.5,
+    0.4999999999999999,
+    0.0
+  ],
+  "initial_pose_correction": {
+    "uids": [
+      234,
+      318
+    ],
+    "change": "Set quaternion wxyz to [1,0,0,0] and center z to standard upright 0.113 m; retain archived xy, all arm/grip commands, world and timing.",
+    "evidence": "real_start_frames.jpg; frame 0 of real_videos_480p/{234,318}_real.mp4, compared with 233",
+    "limitations": "Upright orientation is visually supported; z uses existing sim support geometry, xy remains unvalidated; no frozen placement changes.",
+    "max_extension": 0,
+    "polish_ik": true
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/234_timed.npz",
+    "sha256": "82d5b133404915837645730c5338383f88e396a9e23666977a8b20882a7b36f5",
+    "original_frames": 900,
+    "original_span_s": 29.634264707565308,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 29.669999999999998,
+    "endpoint_overrun_s": 0.035735292434690535,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

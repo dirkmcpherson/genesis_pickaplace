@@ -1,0 +1,15 @@
+{
+  "uids": [
+    235,
+    243,
+    245,
+    257,
+    308,
+    233
+  ],
+  "selection": "Five known no-supported-release failures plus successful control 233; development cohort, not held out.",
+  "transform": "Reuse HumanFollower._filter_grip at each 0.03-second raw tape waypoint, gain4/deadband0.05. Preserve all arm targets, poses and physics. Different sampling cadence from original recorder; no equivalence claim to its earlier census.",
+  "variant": "gc_kp4_riser3_shelf6_og4",
+  "filter_source_sha256": "7e2725f64465246c0f8653c4f7793bb572af19694824d7a5f39489f7d458dd6b",
+  "status": "Disclosed grip-repaired real-derived demonstrations; no frozen-bank replacement."
+}

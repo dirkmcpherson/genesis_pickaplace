@@ -69,4 +69,6 @@ Across all four scopes (end-to-end, pick, place, contact) that is ≈ 6 GB for R
 - **Periodic saving exists in all three**: RLPD `--ckpt-every`, Diffusion Policy `save_freq`, world-model milestone checkpoints (the latter built with online-step accounting and content hashes by the Codex lane).
 - **Evaluators exist** for every stage: `contact_push`, `nested_honest` and `slide_success` all compute today, and the settled predicate is `can_pos_recovery/slide_predicate.py`.
 - **A curve builder exists** (`HRI_results/curves/learning_curves.py`) with the nested-stage assertion.
+- **Correction (2026-09-09):** the 'blocked' curve cells above are blocked only *retrospectively* — finished runs did not log the stages. **All four stages, settle included, are registerable inline on every episode with no extra simulation and no reward change** (amendment (w) correction): the environment already tracks them in a sticky set, and predicate (x) reads the final state rather than simulating a settle. Future runs carry every curve.
+
 - **Missing:** the two (w) wires; a standing decision on milestone cadence; and the rebuilt matched datasets, which supersede every source comparison above.

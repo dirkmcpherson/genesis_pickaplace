@@ -1,0 +1,16 @@
+{
+  "uid": 300,
+  "source_sha256": "db2e8e60023e4ff259b6e34cf0ebdfff6a7ac29ebe0272be572236450fcc467a",
+  "sampled_trace_frames": [
+    0,
+    1503,
+    2754,
+    3606,
+    4407,
+    5006
+  ],
+  "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
+  "visual_review_completed": true,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun",
+  "review_note": "Long initial dwell and subsequent shelf interaction visible; endpoint near goal with hand and goal contacts retained. Six overview frames do not resolve the full carry interval."
+}

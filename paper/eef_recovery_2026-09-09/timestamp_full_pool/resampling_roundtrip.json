@@ -1,0 +1,523 @@
+{
+  "interpretation": "Interpolation back to source times measures information lost by the 30ms command grid; not actual PD tracking error and not physical fidelity proof",
+  "records": [
+    {
+      "uid": 232,
+      "max_joint_roundtrip_error_rad": 0.006771743294042176,
+      "p99_joint_roundtrip_error_rad": 0.0036009329297813698,
+      "max_grip_roundtrip_error_motor_points": 0.43056080132999597,
+      "worst_joint_source_frame": 182
+    },
+    {
+      "uid": 233,
+      "max_joint_roundtrip_error_rad": 0.007192634839064294,
+      "p99_joint_roundtrip_error_rad": 0.0042585406748397725,
+      "max_grip_roundtrip_error_motor_points": 0.36035548166390186,
+      "worst_joint_source_frame": 401
+    },
+    {
+      "uid": 234,
+      "max_joint_roundtrip_error_rad": 0.006762588231238986,
+      "p99_joint_roundtrip_error_rad": 0.005013487494237583,
+      "max_grip_roundtrip_error_motor_points": 0.715432880791468,
+      "worst_joint_source_frame": 398
+    },
+    {
+      "uid": 235,
+      "max_joint_roundtrip_error_rad": 0.007103292045984588,
+      "p99_joint_roundtrip_error_rad": 0.004843071393157289,
+      "max_grip_roundtrip_error_motor_points": 0.4206377596441868,
+      "worst_joint_source_frame": 230
+    },
+    {
+      "uid": 236,
+      "max_joint_roundtrip_error_rad": 0.00549449903363497,
+      "p99_joint_roundtrip_error_rad": 0.003678954310309462,
+      "max_grip_roundtrip_error_motor_points": 0.3937948328664689,
+      "worst_joint_source_frame": 49
+    },
+    {
+      "uid": 237,
+      "max_joint_roundtrip_error_rad": 0.00819589276988908,
+      "p99_joint_roundtrip_error_rad": 0.005764959371665866,
+      "max_grip_roundtrip_error_motor_points": 0.36014106122522804,
+      "worst_joint_source_frame": 33
+    },
+    {
+      "uid": 239,
+      "max_joint_roundtrip_error_rad": 0.00723385572575852,
+      "p99_joint_roundtrip_error_rad": 0.004299048258282137,
+      "max_grip_roundtrip_error_motor_points": 0.5010689118447686,
+      "worst_joint_source_frame": 320
+    },
+    {
+      "uid": 242,
+      "max_joint_roundtrip_error_rad": 0.00732488407719778,
+      "p99_joint_roundtrip_error_rad": 0.004460134546013339,
+      "max_grip_roundtrip_error_motor_points": 0.3338346462458759,
+      "worst_joint_source_frame": 498
+    },
+    {
+      "uid": 243,
+      "max_joint_roundtrip_error_rad": 0.0053120109204316535,
+      "p99_joint_roundtrip_error_rad": 0.004107509019672729,
+      "max_grip_roundtrip_error_motor_points": 0.411640671343001,
+      "worst_joint_source_frame": 16
+    },
+    {
+      "uid": 244,
+      "max_joint_roundtrip_error_rad": 0.007141962187998452,
+      "p99_joint_roundtrip_error_rad": 0.003935352875544531,
+      "max_grip_roundtrip_error_motor_points": 0.4255015710041148,
+      "worst_joint_source_frame": 226
+    },
+    {
+      "uid": 245,
+      "max_joint_roundtrip_error_rad": 0.00687423864446246,
+      "p99_joint_roundtrip_error_rad": 0.0030838514148820175,
+      "max_grip_roundtrip_error_motor_points": 0.4432217127256557,
+      "worst_joint_source_frame": 852
+    },
+    {
+      "uid": 246,
+      "max_joint_roundtrip_error_rad": 0.006292879548016828,
+      "p99_joint_roundtrip_error_rad": 0.0032535467930918448,
+      "max_grip_roundtrip_error_motor_points": 0.4732146289535706,
+      "worst_joint_source_frame": 46
+    },
+    {
+      "uid": 247,
+      "max_joint_roundtrip_error_rad": 0.005733890980999634,
+      "p99_joint_roundtrip_error_rad": 0.003110465838791563,
+      "max_grip_roundtrip_error_motor_points": 0.4008116215766506,
+      "worst_joint_source_frame": 265
+    },
+    {
+      "uid": 248,
+      "max_joint_roundtrip_error_rad": 0.005577878781922507,
+      "p99_joint_roundtrip_error_rad": 0.002469214763704224,
+      "max_grip_roundtrip_error_motor_points": 0.43668262806292546,
+      "worst_joint_source_frame": 1117
+    },
+    {
+      "uid": 250,
+      "max_joint_roundtrip_error_rad": 0.007683343154972544,
+      "p99_joint_roundtrip_error_rad": 0.0044603018974450626,
+      "max_grip_roundtrip_error_motor_points": 0.4182189393773754,
+      "worst_joint_source_frame": 335
+    },
+    {
+      "uid": 251,
+      "max_joint_roundtrip_error_rad": 0.007578065913400378,
+      "p99_joint_roundtrip_error_rad": 0.0026876625270414235,
+      "max_grip_roundtrip_error_motor_points": 0.3819645765733526,
+      "worst_joint_source_frame": 1125
+    },
+    {
+      "uid": 252,
+      "max_joint_roundtrip_error_rad": 0.007294647952896138,
+      "p99_joint_roundtrip_error_rad": 0.003987046933090438,
+      "max_grip_roundtrip_error_motor_points": 0.4063847785562871,
+      "worst_joint_source_frame": 1079
+    },
+    {
+      "uid": 254,
+      "max_joint_roundtrip_error_rad": 0.011100025107331657,
+      "p99_joint_roundtrip_error_rad": 0.0039315264139003275,
+      "max_grip_roundtrip_error_motor_points": 0.44356403759652707,
+      "worst_joint_source_frame": 1065
+    },
+    {
+      "uid": 255,
+      "max_joint_roundtrip_error_rad": 0.0045721402599412375,
+      "p99_joint_roundtrip_error_rad": 0.003099013275956402,
+      "max_grip_roundtrip_error_motor_points": 0.4138155010551652,
+      "worst_joint_source_frame": 274
+    },
+    {
+      "uid": 256,
+      "max_joint_roundtrip_error_rad": 0.0059546987597941525,
+      "p99_joint_roundtrip_error_rad": 0.004065242829038779,
+      "max_grip_roundtrip_error_motor_points": 0.4246388613938379,
+      "worst_joint_source_frame": 279
+    },
+    {
+      "uid": 257,
+      "max_joint_roundtrip_error_rad": 0.004923557296817371,
+      "p99_joint_roundtrip_error_rad": 0.0034006171729809884,
+      "max_grip_roundtrip_error_motor_points": 0.3472828047104528,
+      "worst_joint_source_frame": 74
+    },
+    {
+      "uid": 258,
+      "max_joint_roundtrip_error_rad": 0.006204732187826911,
+      "p99_joint_roundtrip_error_rad": 0.0036250044598253174,
+      "max_grip_roundtrip_error_motor_points": 0.4963709270497283,
+      "worst_joint_source_frame": 78
+    },
+    {
+      "uid": 259,
+      "max_joint_roundtrip_error_rad": 0.006320394835242382,
+      "p99_joint_roundtrip_error_rad": 0.0038139672671970337,
+      "max_grip_roundtrip_error_motor_points": 0.4530922752840567,
+      "worst_joint_source_frame": 94
+    },
+    {
+      "uid": 261,
+      "max_joint_roundtrip_error_rad": 0.006203669545613022,
+      "p99_joint_roundtrip_error_rad": 0.003305100568920077,
+      "max_grip_roundtrip_error_motor_points": 0.4460007091637017,
+      "worst_joint_source_frame": 349
+    },
+    {
+      "uid": 262,
+      "max_joint_roundtrip_error_rad": 0.007421290143892367,
+      "p99_joint_roundtrip_error_rad": 0.004363866171034391,
+      "max_grip_roundtrip_error_motor_points": 0.3258632747948269,
+      "worst_joint_source_frame": 779
+    },
+    {
+      "uid": 263,
+      "max_joint_roundtrip_error_rad": 0.007526025665099523,
+      "p99_joint_roundtrip_error_rad": 0.003958924229314431,
+      "max_grip_roundtrip_error_motor_points": 0.4301235675732116,
+      "worst_joint_source_frame": 109
+    },
+    {
+      "uid": 265,
+      "max_joint_roundtrip_error_rad": 0.005376359826045896,
+      "p99_joint_roundtrip_error_rad": 0.0023207851413270144,
+      "max_grip_roundtrip_error_motor_points": 0.521121810056087,
+      "worst_joint_source_frame": 2371
+    },
+    {
+      "uid": 266,
+      "max_joint_roundtrip_error_rad": 0.005384033662926724,
+      "p99_joint_roundtrip_error_rad": 0.0023865427850693582,
+      "max_grip_roundtrip_error_motor_points": 0.40752859727291835,
+      "worst_joint_source_frame": 1733
+    },
+    {
+      "uid": 267,
+      "max_joint_roundtrip_error_rad": 0.005807588908490202,
+      "p99_joint_roundtrip_error_rad": 0.0033963455669333174,
+      "max_grip_roundtrip_error_motor_points": 0.4501111174516552,
+      "worst_joint_source_frame": 912
+    },
+    {
+      "uid": 269,
+      "max_joint_roundtrip_error_rad": 0.008000215472055094,
+      "p99_joint_roundtrip_error_rad": 0.0033823212626767677,
+      "max_grip_roundtrip_error_motor_points": 0.424975468392077,
+      "worst_joint_source_frame": 1867
+    },
+    {
+      "uid": 273,
+      "max_joint_roundtrip_error_rad": 0.004590086244534053,
+      "p99_joint_roundtrip_error_rad": 0.0032553297215309977,
+      "max_grip_roundtrip_error_motor_points": 0.4120755696133358,
+      "worst_joint_source_frame": 995
+    },
+    {
+      "uid": 274,
+      "max_joint_roundtrip_error_rad": 0.005462053586089866,
+      "p99_joint_roundtrip_error_rad": 0.0034575451445404545,
+      "max_grip_roundtrip_error_motor_points": 0.4392649652196745,
+      "worst_joint_source_frame": 429
+    },
+    {
+      "uid": 275,
+      "max_joint_roundtrip_error_rad": 0.005620482236265323,
+      "p99_joint_roundtrip_error_rad": 0.0033745280372805522,
+      "max_grip_roundtrip_error_motor_points": 0.45609536910082227,
+      "worst_joint_source_frame": 105
+    },
+    {
+      "uid": 276,
+      "max_joint_roundtrip_error_rad": 0.00455184493475258,
+      "p99_joint_roundtrip_error_rad": 0.0025379566243242443,
+      "max_grip_roundtrip_error_motor_points": 0.4096482199126896,
+      "worst_joint_source_frame": 1459
+    },
+    {
+      "uid": 277,
+      "max_joint_roundtrip_error_rad": 0.00489034489973772,
+      "p99_joint_roundtrip_error_rad": 0.0028813076467565576,
+      "max_grip_roundtrip_error_motor_points": 0.495687640331548,
+      "worst_joint_source_frame": 698
+    },
+    {
+      "uid": 278,
+      "max_joint_roundtrip_error_rad": 0.005943962076074172,
+      "p99_joint_roundtrip_error_rad": 0.0027751122132216133,
+      "max_grip_roundtrip_error_motor_points": 0.47472188207629884,
+      "worst_joint_source_frame": 668
+    },
+    {
+      "uid": 279,
+      "max_joint_roundtrip_error_rad": 0.004177523791628834,
+      "p99_joint_roundtrip_error_rad": 0.002143999175713862,
+      "max_grip_roundtrip_error_motor_points": 0.44517686949446045,
+      "worst_joint_source_frame": 1957
+    },
+    {
+      "uid": 280,
+      "max_joint_roundtrip_error_rad": 0.0038746229456885217,
+      "p99_joint_roundtrip_error_rad": 0.0027289864145595005,
+      "max_grip_roundtrip_error_motor_points": 0.4723926352781618,
+      "worst_joint_source_frame": 113
+    },
+    {
+      "uid": 281,
+      "max_joint_roundtrip_error_rad": 0.005534554959281346,
+      "p99_joint_roundtrip_error_rad": 0.00343684866102992,
+      "max_grip_roundtrip_error_motor_points": 0.4529197294002927,
+      "worst_joint_source_frame": 193
+    },
+    {
+      "uid": 283,
+      "max_joint_roundtrip_error_rad": 0.006999306309120046,
+      "p99_joint_roundtrip_error_rad": 0.002696212846373933,
+      "max_grip_roundtrip_error_motor_points": 0.40186944965859794,
+      "worst_joint_source_frame": 111
+    },
+    {
+      "uid": 284,
+      "max_joint_roundtrip_error_rad": 0.00477380230297042,
+      "p99_joint_roundtrip_error_rad": 0.0019041473546130014,
+      "max_grip_roundtrip_error_motor_points": 0.5765765764123607,
+      "worst_joint_source_frame": 61
+    },
+    {
+      "uid": 286,
+      "max_joint_roundtrip_error_rad": 0.004844172683942105,
+      "p99_joint_roundtrip_error_rad": 0.002150934866911147,
+      "max_grip_roundtrip_error_motor_points": 0.5241090198826726,
+      "worst_joint_source_frame": 2493
+    },
+    {
+      "uid": 287,
+      "max_joint_roundtrip_error_rad": 0.0061529851222217324,
+      "p99_joint_roundtrip_error_rad": 0.0025779435236691806,
+      "max_grip_roundtrip_error_motor_points": 0.33090897004672826,
+      "worst_joint_source_frame": 3530
+    },
+    {
+      "uid": 293,
+      "max_joint_roundtrip_error_rad": 0.007296858499075576,
+      "p99_joint_roundtrip_error_rad": 0.003138552249555091,
+      "max_grip_roundtrip_error_motor_points": 0.5237272380179618,
+      "worst_joint_source_frame": 601
+    },
+    {
+      "uid": 294,
+      "max_joint_roundtrip_error_rad": 0.0058281667382713565,
+      "p99_joint_roundtrip_error_rad": 0.0033414324099664047,
+      "max_grip_roundtrip_error_motor_points": 0.5734274547819496,
+      "worst_joint_source_frame": 4740
+    },
+    {
+      "uid": 295,
+      "max_joint_roundtrip_error_rad": 0.005909980184151675,
+      "p99_joint_roundtrip_error_rad": 0.0028573607803794596,
+      "max_grip_roundtrip_error_motor_points": 0.40939594427558745,
+      "worst_joint_source_frame": 4489
+    },
+    {
+      "uid": 297,
+      "max_joint_roundtrip_error_rad": 0.0033659129879399785,
+      "p99_joint_roundtrip_error_rad": 0.002833507400428193,
+      "max_grip_roundtrip_error_motor_points": 0.3740213427643937,
+      "worst_joint_source_frame": 1076
+    },
+    {
+      "uid": 298,
+      "max_joint_roundtrip_error_rad": 0.005821899426359689,
+      "p99_joint_roundtrip_error_rad": 0.003620494546187184,
+      "max_grip_roundtrip_error_motor_points": 0.39118773039438537,
+      "worst_joint_source_frame": 72
+    },
+    {
+      "uid": 299,
+      "max_joint_roundtrip_error_rad": 0.006645681041976048,
+      "p99_joint_roundtrip_error_rad": 0.004345787687319203,
+      "max_grip_roundtrip_error_motor_points": 0.56442247124982,
+      "worst_joint_source_frame": 1323
+    },
+    {
+      "uid": 300,
+      "max_joint_roundtrip_error_rad": 0.006799265436129964,
+      "p99_joint_roundtrip_error_rad": 0.0037194012859016524,
+      "max_grip_roundtrip_error_motor_points": 0.5239620379899852,
+      "worst_joint_source_frame": 4024
+    },
+    {
+      "uid": 301,
+      "max_joint_roundtrip_error_rad": 0.0052913073836201585,
+      "p99_joint_roundtrip_error_rad": 0.003722932254411208,
+      "max_grip_roundtrip_error_motor_points": 0.5597693002064013,
+      "worst_joint_source_frame": 1486
+    },
+    {
+      "uid": 302,
+      "max_joint_roundtrip_error_rad": 0.004936495844303113,
+      "p99_joint_roundtrip_error_rad": 0.003060473794066574,
+      "max_grip_roundtrip_error_motor_points": 0.4230478541909193,
+      "worst_joint_source_frame": 1093
+    },
+    {
+      "uid": 304,
+      "max_joint_roundtrip_error_rad": 0.006033036546680304,
+      "p99_joint_roundtrip_error_rad": 0.0034104737064427604,
+      "max_grip_roundtrip_error_motor_points": 0.588939098093082,
+      "worst_joint_source_frame": 1534
+    },
+    {
+      "uid": 305,
+      "max_joint_roundtrip_error_rad": 0.006689813725930138,
+      "p99_joint_roundtrip_error_rad": 0.003181497217425296,
+      "max_grip_roundtrip_error_motor_points": 0.45408288516333073,
+      "worst_joint_source_frame": 29
+    },
+    {
+      "uid": 306,
+      "max_joint_roundtrip_error_rad": 0.005664998980109637,
+      "p99_joint_roundtrip_error_rad": 0.003682039136544114,
+      "max_grip_roundtrip_error_motor_points": 0.37828893068206604,
+      "worst_joint_source_frame": 54
+    },
+    {
+      "uid": 308,
+      "max_joint_roundtrip_error_rad": 0.005807938938057866,
+      "p99_joint_roundtrip_error_rad": 0.0032104669313941115,
+      "max_grip_roundtrip_error_motor_points": 0.414111516803473,
+      "worst_joint_source_frame": 48
+    },
+    {
+      "uid": 309,
+      "max_joint_roundtrip_error_rad": 0.010682462777809265,
+      "p99_joint_roundtrip_error_rad": 0.0034976386045227517,
+      "max_grip_roundtrip_error_motor_points": 0.5855511789485348,
+      "worst_joint_source_frame": 1297
+    },
+    {
+      "uid": 311,
+      "max_joint_roundtrip_error_rad": 0.008009216758071425,
+      "p99_joint_roundtrip_error_rad": 0.004866392457377855,
+      "max_grip_roundtrip_error_motor_points": 0.6782620568390456,
+      "worst_joint_source_frame": 78
+    },
+    {
+      "uid": 315,
+      "max_joint_roundtrip_error_rad": 0.006164697976679401,
+      "p99_joint_roundtrip_error_rad": 0.0034632740552117385,
+      "max_grip_roundtrip_error_motor_points": 0.5129295011723514,
+      "worst_joint_source_frame": 391
+    },
+    {
+      "uid": 316,
+      "max_joint_roundtrip_error_rad": 0.006105224188556635,
+      "p99_joint_roundtrip_error_rad": 0.003885738319431547,
+      "max_grip_roundtrip_error_motor_points": 0.6837891424424787,
+      "worst_joint_source_frame": 60
+    },
+    {
+      "uid": 317,
+      "max_joint_roundtrip_error_rad": 0.005479326593548883,
+      "p99_joint_roundtrip_error_rad": 0.0037960246276003964,
+      "max_grip_roundtrip_error_motor_points": 0.42098470602185145,
+      "worst_joint_source_frame": 823
+    },
+    {
+      "uid": 318,
+      "max_joint_roundtrip_error_rad": 0.006700623055928778,
+      "p99_joint_roundtrip_error_rad": 0.0041556651692823045,
+      "max_grip_roundtrip_error_motor_points": 0.426418616841687,
+      "worst_joint_source_frame": 68
+    },
+    {
+      "uid": 319,
+      "max_joint_roundtrip_error_rad": 0.005816816309539452,
+      "p99_joint_roundtrip_error_rad": 0.003768870406555203,
+      "max_grip_roundtrip_error_motor_points": 0.3565551193828398,
+      "worst_joint_source_frame": 792
+    },
+    {
+      "uid": 320,
+      "max_joint_roundtrip_error_rad": 0.007638427020348226,
+      "p99_joint_roundtrip_error_rad": 0.002412416254535238,
+      "max_grip_roundtrip_error_motor_points": 0.38639575036928875,
+      "worst_joint_source_frame": 594
+    },
+    {
+      "uid": 321,
+      "max_joint_roundtrip_error_rad": 0.006314867376726596,
+      "p99_joint_roundtrip_error_rad": 0.003780633325430113,
+      "max_grip_roundtrip_error_motor_points": 0.43622867334732973,
+      "worst_joint_source_frame": 1533
+    },
+    {
+      "uid": 325,
+      "max_joint_roundtrip_error_rad": 0.005912185878325316,
+      "p99_joint_roundtrip_error_rad": 0.00269793358931653,
+      "max_grip_roundtrip_error_motor_points": 0.5473858595954901,
+      "worst_joint_source_frame": 1338
+    },
+    {
+      "uid": 326,
+      "max_joint_roundtrip_error_rad": 0.006346331024360108,
+      "p99_joint_roundtrip_error_rad": 0.00343984300364012,
+      "max_grip_roundtrip_error_motor_points": 0.4068975823540484,
+      "worst_joint_source_frame": 917
+    },
+    {
+      "uid": 327,
+      "max_joint_roundtrip_error_rad": 0.00376432864839904,
+      "p99_joint_roundtrip_error_rad": 0.002500320079355813,
+      "max_grip_roundtrip_error_motor_points": 0.38774887246344747,
+      "worst_joint_source_frame": 174
+    },
+    {
+      "uid": 328,
+      "max_joint_roundtrip_error_rad": 0.005920239999622323,
+      "p99_joint_roundtrip_error_rad": 0.0037496924429803458,
+      "max_grip_roundtrip_error_motor_points": 0.5177172147005749,
+      "worst_joint_source_frame": 252
+    },
+    {
+      "uid": 329,
+      "max_joint_roundtrip_error_rad": 0.003308742424262181,
+      "p99_joint_roundtrip_error_rad": 0.002426549901775812,
+      "max_grip_roundtrip_error_motor_points": 0.4083426490425204,
+      "worst_joint_source_frame": 73
+    },
+    {
+      "uid": 330,
+      "max_joint_roundtrip_error_rad": 0.005884785825438499,
+      "p99_joint_roundtrip_error_rad": 0.0030629325649872874,
+      "max_grip_roundtrip_error_motor_points": 0.5339515579524559,
+      "worst_joint_source_frame": 244
+    },
+    {
+      "uid": 331,
+      "max_joint_roundtrip_error_rad": 0.005720650061160182,
+      "p99_joint_roundtrip_error_rad": 0.0027259222402051964,
+      "max_grip_roundtrip_error_motor_points": 0.44966928701855835,
+      "worst_joint_source_frame": 2119
+    },
+    {
+      "uid": 333,
+      "max_joint_roundtrip_error_rad": 0.009310000447562139,
+      "p99_joint_roundtrip_error_rad": 0.0026809374746912355,
+      "max_grip_roundtrip_error_motor_points": 0.5354540631695812,
+      "worst_joint_source_frame": 1352
+    },
+    {
+      "uid": 335,
+      "max_joint_roundtrip_error_rad": 0.006431550112681261,
+      "p99_joint_roundtrip_error_rad": 0.002629936806461481,
+      "max_grip_roundtrip_error_motor_points": 0.5501665450217956,
+      "worst_joint_source_frame": 102
+    }
+  ]
+}

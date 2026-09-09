@@ -1,0 +1,9 @@
+{
+  "uid": 202,
+  "reviewed": true,
+  "source_sha256": "e405225b54b22d9088658f3b2c739170af88a56e4257988d6d8245e576a9bdc1",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/202/202_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/202/202_phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Carry and shelf manipulation visible, followed by separated shelf states and renewed hand approach. Endpoint upright near goal with hand contact retained. Earlier carried goal contact is visible; the supplied metric pass does not by itself establish a distinct supported contact slide."
+}

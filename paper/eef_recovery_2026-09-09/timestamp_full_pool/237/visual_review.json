@@ -1,0 +1,13 @@
+{
+  "uid": 237,
+  "approved": true,
+  "scope": "Six selected measured-pose phase frames, not every frame of video",
+  "note": "Pickup/carry, upright supported release, later slide with solver goal contact, upright endpoint with hand separated; final goal contact absent and gap 0.548 mm within unchanged scorer tolerance",
+  "final_contact_counts": [
+    5,
+    0,
+    0
+  ],
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/237_timed.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/237_timed_phases.jpg"
+}

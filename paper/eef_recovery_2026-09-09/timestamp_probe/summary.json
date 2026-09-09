@@ -1,0 +1,49 @@
+[
+  {
+    "uid": 233,
+    "picked": true,
+    "final_tilt_deg": 0.0025626386842066157,
+    "final_can_z": 0.2204860895872116,
+    "shelf_contact_frames": 255,
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 740,
+      "push_start": 834,
+      "contact_start": 860,
+      "final_surface_gap_m": -0.00018504899352476956,
+      "push_toward_goal_m": 0.02363847635736336,
+      "support_fraction": 0.9310344827586207
+    }
+  },
+  {
+    "uid": 234,
+    "picked": true,
+    "final_tilt_deg": 89.99997321543056,
+    "final_can_z": 0.20282702147960663,
+    "shelf_contact_frames": 277,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.02777577606397924
+    }
+  },
+  {
+    "uid": 235,
+    "picked": true,
+    "final_tilt_deg": 89.99994760177778,
+    "final_can_z": 0.20282703638076782,
+    "shelf_contact_frames": 397,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.08026332262964186
+    }
+  }
+]

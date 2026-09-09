@@ -1,0 +1,60 @@
+[
+  {
+    "uid": 233,
+    "sequence": {
+      "complete": false,
+      "reason": "not_picked",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.14011007819774532
+    },
+    "picked": false,
+    "tip_min_rad": [
+      -0.5000004172325134,
+      -0.5000007152557373
+    ],
+    "tip_max_rad": [
+      0.21404817700386047,
+      0.21401841938495636
+    ],
+    "max_abs_mimic_residual_contact_deg": [
+      16.19230079650879,
+      17.240201950073242
+    ],
+    "max_abs_mimic_residual_no_can_contact_deg": [
+      24.784713745117188,
+      24.88800048828125
+    ],
+    "final_tilt_deg": 0.0025689328308164455
+  },
+  {
+    "uid": 235,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.2627514971402738
+    },
+    "picked": true,
+    "tip_min_rad": [
+      -0.5,
+      -0.5000001192092896
+    ],
+    "tip_max_rad": [
+      0.21059033274650574,
+      0.2123318761587143
+    ],
+    "max_abs_mimic_residual_contact_deg": [
+      16.770971298217773,
+      22.245325088500977
+    ],
+    "max_abs_mimic_residual_no_can_contact_deg": [
+      33.149391174316406,
+      33.18937683105469
+    ],
+    "final_tilt_deg": 0.0025630774028718648
+  }
+]

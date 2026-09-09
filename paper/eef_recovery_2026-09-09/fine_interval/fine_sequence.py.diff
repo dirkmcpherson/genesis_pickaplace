@@ -1,0 +1,37 @@
+--- can_pos_recovery/eef_task_sequence.py
++++ paper/eef_recovery_2026-09-09/fine_interval/fine_sequence.py
+@@ -6,7 +6,7 @@
+ import numpy as np
+ 
+ 
+-def sustained_starts(mask, length=3):
++def sustained_starts(mask, length=9):
+     mask = np.asarray(mask, dtype=bool)
+     if len(mask) < length:
+         return np.array([], dtype=int)
+@@ -40,7 +40,7 @@
+     result['release_start'] = int(release_starts[0])
+     result['reason'] = 'no_supported_push_to_contact'
+     for touch in touch_starts:
+-        earlier_release = release_starts[release_starts + 3 <= touch]
++        earlier_release = release_starts[release_starts + 9 <= touch]
+         if not len(earlier_release):
+             continue
+         # At least one fully separated shelf-supported interval must precede
+@@ -48,14 +48,14 @@
+         # threshold or count contact while the can is still carried.
+         release = int(earlier_release[0])
+         candidates = np.flatnonzero(support & (contacts[:, 1] > 0))
+-        candidates = candidates[(candidates >= release + 3) & (candidates < touch)]
++        candidates = candidates[(candidates >= release + 9) & (candidates < touch)]
+         for push in candidates:
+             toward = goals[push, :2] - can[push, :2]
+             norm = np.linalg.norm(toward)
+             if norm < 1e-8:
+                 continue
+             movement = float(np.dot(can[touch, :2] - can[push, :2], toward/norm))
+-            interval = slice(push, touch+3)
++            interval = slice(push, touch+9)
+             support_fraction = float(support[interval].mean())
+             # Allow brief contact-solver flicker, but not a lift-and-carry.
+             stays_low = bool(np.all(np.abs(can[interval, 2] - shelf_rest_z) <= .008))

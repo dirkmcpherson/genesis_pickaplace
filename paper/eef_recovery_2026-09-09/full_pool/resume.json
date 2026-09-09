@@ -1,0 +1,16 @@
+{
+  "original_exit_code": 143,
+  "cause": "SIGTERM; external cause not established",
+  "completed_before_interruption": 67,
+  "resume_uids": [
+    327,
+    328,
+    329,
+    330,
+    331,
+    333,
+    335
+  ],
+  "workers": 3,
+  "note": "Original logs retained; no completed physics replay rerun; same placements, runner, controller, scorer and engine."
+}

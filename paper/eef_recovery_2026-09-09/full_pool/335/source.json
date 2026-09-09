@@ -1,0 +1,19 @@
+{
+  "uid": 335,
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4524,
+    0.1313,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 1249,
+  "source_sha256": "8efa87f5eb04a5abb2e0d2e40eebe50ce662328a3b4b06504afc6c76ceb6faf4"
+}

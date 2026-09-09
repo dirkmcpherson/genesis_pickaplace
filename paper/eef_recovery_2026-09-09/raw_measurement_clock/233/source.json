@@ -1,0 +1,41 @@
+{
+  "uid": 233,
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 2884,
+  "source_sha256": "8f5a90175714c4cc08bd5bc125709816823eb2264019c3a264f068da4a3a8d50",
+  "decision_dt_s": 0.01,
+  "fine_interval_control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+  "timing_reconstruction": {
+    "method": "Separate linear interpolation of raw joint_states and base_feedback motor measurements at their bag receipt timestamps",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/233/raw_measurements.npz",
+    "sha256": "0429e1677232e8936a186c64128bea0a7aa6a3eeb828ca4d0c3d08b30817b95f",
+    "decision_dt_s": 0.01,
+    "replay_duration_s": 28.84,
+    "paired_window_mean_timing": {
+      "method": "linear interpolation of matched bag-window means at action-start times",
+      "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/233_timed.npz",
+      "sha256": "90c4cf727ad2bbf7ffb34ac22adf2ccb7255709ef1e11ef8cf9d9e5cf2ab5056",
+      "original_frames": 926,
+      "original_span_s": 28.822158098220825,
+      "decision_dt_s": 0.01,
+      "replay_duration_s": 28.84,
+      "endpoint_overrun_s": 0.017841901779174663,
+      "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+    },
+    "start_and_end": "Same sample times and endpoint as the 10 ms window-mean control",
+    "limitation": "Bag receipt timestamps are not hardware acquisition times; these are measured positions, not original hardware commands"
+  }
+}

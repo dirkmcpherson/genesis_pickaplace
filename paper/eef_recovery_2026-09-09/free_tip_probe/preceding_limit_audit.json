@@ -1,0 +1,38 @@
+[
+  {
+    "uid": 233,
+    "carry_mask": "picked, robot contact, no shelf contact, can center z > 0.18m",
+    "carry_frames": 386,
+    "tip_min_rad": [
+      -0.22376257181167603,
+      -0.2234988659620285
+    ],
+    "tip_max_rad": [
+      -0.004859067499637604,
+      -0.015156733803451061
+    ],
+    "limits_rad": [
+      -0.5,
+      0.21
+    ],
+    "minimum_limit_margin_rad": 0.21485906839370728
+  },
+  {
+    "uid": 235,
+    "carry_mask": "picked, robot contact, no shelf contact, can center z > 0.18m",
+    "carry_frames": 350,
+    "tip_min_rad": [
+      -0.24018587172031403,
+      -0.2391900271177292
+    ],
+    "tip_max_rad": [
+      -0.17978264391422272,
+      -0.17802417278289795
+    ],
+    "limits_rad": [
+      -0.5,
+      0.21
+    ],
+    "minimum_limit_margin_rad": 0.25981414318084717
+  }
+]

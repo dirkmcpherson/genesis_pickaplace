@@ -1,0 +1,61 @@
+{
+  "uid": 308,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6_og4",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4841,
+    0.0833,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/eef_og4_pilot/308/terminal_hold/action_plan.npz",
+  "source_sha256": "c7516127bfdca9e84b8ec708275d23ea0807766939e26382e164a1bdb5646093",
+  "parent_trace_sha256": "7cf2bd78a733c302b1608b1cffc54938e6c0a8879a1c80f6b2b9e78e57a7f2b3",
+  "frames": 1365,
+  "source_frames": 1355,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "saved_actions_only",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 858,
+    "push_start": 1208,
+    "contact_start": 1211,
+    "final_surface_gap_m": 8.530194922180823e-05,
+    "push_toward_goal_m": 0.010450147031601582,
+    "support_fraction": 0.8333333333333334
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "action_replay_verification": false,
+  "provenance": "og4 plus 0.3-second stationary terminal hold",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.3184488130618695e-16,
+  "command_rotation_rad_p99": 1.5688401337927762e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "b7c3ec05e5f84316f57f06a6ea409ad1d63861b7bbc39111f4738258b2e081ea",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "action_plan_execution": true,
+  "terminal_hold_frames": 10,
+  "grip_transform": {
+    "gain": 4,
+    "deadband": 0.05,
+    "cadence_s": 0.03,
+    "implementation": "record_demos.HumanFollower._filter_grip",
+    "source_sha256": "7e2725f64465246c0f8653c4f7793bb572af19694824d7a5f39489f7d458dd6b",
+    "changed_frames": 505
+  }
+}

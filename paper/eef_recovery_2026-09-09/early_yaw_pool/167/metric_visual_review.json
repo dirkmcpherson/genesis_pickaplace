@@ -1,0 +1,9 @@
+{
+  "uid": 167,
+  "reviewed": true,
+  "source_sha256": "1b3ee73409e49aad7d5604b83edbb3b6a1fc5cef8b94a2b234ab7676c6be71b0",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/167/167_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/167/167_phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Carry, shelf set-down and hand withdrawal visible; later movement brings can within the arrival tolerance. Endpoint upright with hand separated and visible residual gap; 80.917 mm center distance is only 0.083 mm inside the threshold."
+}

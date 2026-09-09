@@ -1,0 +1,71 @@
+{
+  "uid": 124,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4890814217716864,
+    -0.035709599887710226,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/124/source.npz",
+  "source_sha256": "7953a1508a2e67f6527d9890f438a3bca404555e1b9ac36b0d50126cc203f023",
+  "parent_trace_sha256": "200c92ad24696ab277dd1ba63e2cd6972b761028bbf48d1d6815ce8cb6a0eedb",
+  "frames": 3927,
+  "source_frames": 3927,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.06254001710287119
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "real-derived EEF replay",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.01,
+  "physics_dt_s": 0.01,
+  "physics_steps_per_action": 1,
+  "command_xyz_m_p99": 4.041272810440265e-16,
+  "command_rotation_rad_p99": 1.7153738974638873e-15,
+  "code_sha256": {
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_replay.py": "f9eac9e819d444815c18233ce9f140e070c9ca32e1eb5e3f5fa6d5701995465d",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_sequence.py": "2a1f640c5ab250fa8a7dd6335ecd30e6cecde7338674151d2482573d932f6b38",
+    "paper/eef_recovery_2026-09-09/fine_interval/fine_env.py": "2ccf05b0b3f959808c1340ad95ce76f542ba07523a8d6de791215e1a5aab74ce"
+  },
+  "timing_reconstruction": {
+    "method": "Separate linear interpolation of raw joint_states and base_feedback motor measurements at their bag receipt timestamps",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/124/raw_measurements.npz",
+    "sha256": "8dc24c792deb19a1e751803613858bb783dc146c70c71bef9e9a5bc57b3ce0cc",
+    "decision_dt_s": 0.01,
+    "replay_duration_s": 39.27,
+    "paired_window_mean_timing": {
+      "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+      "original_span_s": 39.257630586624146,
+      "original_frames": 1518,
+      "replay_duration_s": 39.27,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/124_timed.npz",
+      "decision_dt_s": 0.01
+    },
+    "start_and_end": "Same sample times and endpoint as the 10 ms window-mean control",
+    "limitation": "Bag receipt timestamps are not hardware acquisition times; these are measured positions, not original hardware commands"
+  }
+}

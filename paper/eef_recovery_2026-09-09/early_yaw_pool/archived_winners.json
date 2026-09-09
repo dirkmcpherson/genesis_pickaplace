@@ -1,0 +1,1850 @@
+{
+ "113": {
+  "uid": 113,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4162839879333279,
+   -0.1489231279701776,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "118": {
+  "uid": 118,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.45527451076639014,
+   -0.016690558938488587,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "120": {
+  "uid": 120,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.3955329672134078,
+   -0.24807785670363702,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "121": {
+  "uid": 121,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5165599568643755,
+   0.042342040387745354,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "122": {
+  "uid": 122,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4702118936416827,
+   -0.09224273840816273,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "124": {
+  "uid": 124,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4890814217716864,
+   -0.035709599887710226,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "126": {
+  "uid": 126,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.3837725867515613,
+   -0.30485016251250663,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "128": {
+  "uid": 128,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.49611109043111223,
+   -0.03553265356879434,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "129": {
+  "uid": 129,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4916860007659213,
+   -0.20732014133400678,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "130": {
+  "uid": 130,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.37504139697017813,
+   -0.2982653979489345,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "131": {
+  "uid": 131,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5764154079974361,
+   -0.06747411217104896,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "132": {
+  "uid": 132,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4839481057522712,
+   -0.2017166624430623,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "137": {
+  "uid": 137,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.42782545189022814,
+   -0.3144749336281556,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "138": {
+  "uid": 138,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4931176107138659,
+   -0.05147437379553241,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "139": {
+  "uid": 139,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.44918152161092456,
+   -0.18681699990144768,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "140": {
+  "uid": 140,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4839912968373999,
+   -0.062429659014135164,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "141": {
+  "uid": 141,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4337087967008818,
+   -0.1811302954271694,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "143": {
+  "uid": 143,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.35201329419785754,
+   -0.30293449610435913,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "144": {
+  "uid": 144,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5081472231603821,
+   -0.023458719944392713,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "145": {
+  "uid": 145,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5193374655630785,
+   -0.0628058852622898,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "146": {
+  "uid": 146,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4359922642042625,
+   -0.13664054717904273,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "148": {
+  "uid": 148,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.504543710414452,
+   0.05558161700313901,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "149": {
+  "uid": 149,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5118629732614258,
+   -0.04532593198914094,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "151": {
+  "uid": 151,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5581434651596322,
+   -0.09048200875886356,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "153": {
+  "uid": 153,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5317336539911679,
+   0.06404944605833485,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "154": {
+  "uid": 154,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4692530253935308,
+   0.018692149578498997,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "156": {
+  "uid": 156,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5038259784914736,
+   0.11033791721632888,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "157": {
+  "uid": 157,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.46752047923790996,
+   -0.011683688423550031,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "158": {
+  "uid": 158,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47670638636816043,
+   -0.18248491871464578,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "160": {
+  "uid": 160,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4709638483490364,
+   0.1052825668773866,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "161": {
+  "uid": 161,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5682163911432807,
+   -0.12799027024006338,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "162": {
+  "uid": 162,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4149262225957138,
+   -0.22333110430891728,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "164": {
+  "uid": 164,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4926171738132531,
+   0.07504334952117042,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "165": {
+  "uid": 165,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.45846668789662537,
+   -0.014959374436014099,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "166": {
+  "uid": 166,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4956133452636919,
+   -0.1769076387041944,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "167": {
+  "uid": 167,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4940414993586777,
+   0.12509819284342308,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "168": {
+  "uid": 168,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5066305380617165,
+   0.0027824666317321136,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "169": {
+  "uid": 169,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4840468950719599,
+   -0.1691010366323131,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "170": {
+  "uid": 170,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47764691448825886,
+   0.13678019247320677,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "171": {
+  "uid": 171,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47582416072616796,
+   0.17268927191955577,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "172": {
+  "uid": 172,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.46481296202301975,
+   0.013246257457624672,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "173": {
+  "uid": 173,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.45463697750675963,
+   -0.12727462166556902,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "174": {
+  "uid": 174,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5198959063508531,
+   0.11061497508394394,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "175": {
+  "uid": 175,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.496046794145133,
+   0.16362778383404145,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "176": {
+  "uid": 176,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47904450831041695,
+   -0.014811645555972697,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "177": {
+  "uid": 177,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5082253752347068,
+   -0.21127334128797914,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "179": {
+  "uid": 179,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4771279986804532,
+   0.18030741578311943,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "180": {
+  "uid": 180,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.49689081508311894,
+   -0.01576389424299514,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "181": {
+  "uid": 181,
+  "day": "12-16",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw16",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4765676519641368,
+   -0.12558116587702367,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "184": {
+  "uid": 184,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4526401987582113,
+   -0.11781561001949543,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "185": {
+  "uid": 185,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.3829913455644619,
+   -0.30214632253903834,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "189": {
+  "uid": 189,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4831845184095622,
+   -0.06892941471878966,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "190": {
+  "uid": 190,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4295938063533877,
+   -0.2699608779133547,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "191": {
+  "uid": 191,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4765890907821123,
+   -0.12268573820236525,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "192": {
+  "uid": 192,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4126975414747691,
+   -0.26369193156297244,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "193": {
+  "uid": 193,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.518356359278704,
+   0.032582968762982584,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "194": {
+  "uid": 194,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47809352796670834,
+   -0.1103826089195112,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "196": {
+  "uid": 196,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5944020793945453,
+   -0.13007891237095237,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "197": {
+  "uid": 197,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.461500347291337,
+   -0.14054869899631353,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "198": {
+  "uid": 198,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.39576360826758017,
+   -0.2762399627811758,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "200": {
+  "uid": 200,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5044085092960332,
+   0.0261014632353224,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "201": {
+  "uid": 201,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5260232765902131,
+   -0.04672577841496138,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "202": {
+  "uid": 202,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.475972543865367,
+   -0.06867425679825624,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "203": {
+  "uid": 203,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.46617019212376254,
+   -0.24750353267561065,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "204": {
+  "uid": 204,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4652016340218137,
+   -0.10119002967500913,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "206": {
+  "uid": 206,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.6065364981540414,
+   0.044899360909428525,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "207": {
+  "uid": 207,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4742353177224902,
+   -0.1641313409825914,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "208": {
+  "uid": 208,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.48436516829393933,
+   0.10060830316450074,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "209": {
+  "uid": 209,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4777154112204348,
+   0.0015140723060939158,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "210": {
+  "uid": 210,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4669334101685064,
+   -0.15916116112019316,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "211": {
+  "uid": 211,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4645818507824884,
+   -0.0202663917885684,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "contact",
+  "success_rate": null
+ },
+ "212": {
+  "uid": 212,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.48073493246580173,
+   0.10146328843490188,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "213": {
+  "uid": 213,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.44081178397595033,
+   0.003694044436356625,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "214": {
+  "uid": 214,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.47701177647259624,
+   -0.1858559052820029,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "215": {
+  "uid": 215,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5118465641616745,
+   -0.033504093840027005,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "216": {
+  "uid": 216,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5013535738456729,
+   0.12952925767867096,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "217": {
+  "uid": 217,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.490342328766258,
+   -0.024007158214613293,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "218": {
+  "uid": 218,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4975632292710389,
+   -0.170867200424479,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "219": {
+  "uid": 219,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5124052596042136,
+   -0.018568893029470124,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "220": {
+  "uid": 220,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5215917821406452,
+   0.07983953982200978,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "221": {
+  "uid": 221,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4893297624636436,
+   -0.008767593491550022,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "222": {
+  "uid": 222,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5287007305780489,
+   -0.27341995892702226,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "224": {
+  "uid": 224,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5021999038218612,
+   0.04376779607245635,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "225": {
+  "uid": 225,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.46131349407840977,
+   -0.11307787982424732,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "226": {
+  "uid": 226,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.3766356586465272,
+   -0.2917123335890296,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "nested",
+  "success_rate": null
+ },
+ "229": {
+  "uid": 229,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.5163723740149836,
+   -0.10256570906691956,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "230": {
+  "uid": 230,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.4375372115788382,
+   -0.21864446661167133,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ },
+ "231": {
+  "uid": 231,
+  "day": "12-17",
+  "sim_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "status": "ok",
+  "label": "success",
+  "can_pos": [
+   0.376750119573179,
+   -0.24343801003708276,
+   0.113
+  ],
+  "can_quat": [
+   1,
+   0,
+   0,
+   0
+  ],
+  "search": "recover_early_2026-09-08",
+  "stage": "picked",
+  "success_rate": null
+ }
+}

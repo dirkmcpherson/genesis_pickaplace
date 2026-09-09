@@ -1,0 +1,9 @@
+{
+  "uid": 176,
+  "reviewed": true,
+  "source_sha256": "dd8c171e3b1194a3517c93e4a9688ebd657faa8b3e61a20db56bf172337e56c1",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/176_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/176_phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Shelf placement, hand separation, later near-goal state and hand withdrawal visible. Strict physical diagnostic confirms 48.90 mm goalward displacement after release with 99.68 percent support. Endpoint upright and hand separated; earlier solver goal contact, no endpoint solver goal contact."
+}

@@ -1,0 +1,13 @@
+{
+  "genesis_version": "0.2.1",
+  "module": "/home/james/workspace/Genesis/genesis/__init__.py",
+  "engine_commit": "f41427d2c3b334a6b0bdb92471867dc7b079bd2d",
+  "launcher": "/home/james/workspace/genesis_sim2real/venv/bin/python",
+  "scope": "Full pool collection, verification and bounded slide repair; separate passive probe changes physics as labeled",
+  "code_sha256": {
+    "can_pos_recovery/collect_eef_pool.py": "da452d6eb66acdc8d23e793f69a71a6c4e85fc4adb15456da7e86538fc19564b",
+    "can_pos_recovery/repair_eef_slide.py": "5f44dcbcadf67ffbd6c34d505b944d989227ca49b2f8061d69672afde52f908b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  }
+}

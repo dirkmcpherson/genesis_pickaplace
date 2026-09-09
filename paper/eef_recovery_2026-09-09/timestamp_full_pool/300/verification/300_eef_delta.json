@@ -1,0 +1,64 @@
+{
+  "uid": 300,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4032,
+    -0.1838,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/300/collection/300_eef_delta.npz",
+  "source_sha256": "5004dd1cac9b0dfd4466ea3bb75f7f6e0cb889e4735835a51bb61fbee08d2b7d",
+  "parent_trace_sha256": "db2e8e60023e4ff259b6e34cf0ebdfff6a7ac29ebe0272be572236450fcc467a",
+  "frames": 5007,
+  "source_frames": 5007,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "saved_actions_only",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 3759,
+    "push_start": 4380,
+    "contact_start": 4881,
+    "final_surface_gap_m": -0.0005346099678560645,
+    "push_toward_goal_m": 0.010022014019459029,
+    "support_fraction": 1.0
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": true,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 5.533046292834929e-15,
+  "command_rotation_rad_p99": 1.0042971080934845e-14,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/ros1_timed/300_timed.npz",
+    "sha256": "b3e65154bca7458411ffa143e34c672c6f7a3b8e495817bb455c3c6f1db5fcff",
+    "original_frames": 4771,
+    "original_span_s": 150.1595299243927,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 150.21,
+    "endpoint_overrun_s": 0.05047007560730776,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

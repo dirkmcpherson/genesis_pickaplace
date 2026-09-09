@@ -1,0 +1,372 @@
+[
+  {
+    "uid": 232,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 233,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 234,
+    "sequence_reason": "not_picked",
+    "diagnostic": "not_picked"
+  },
+  {
+    "uid": 235,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 236,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 237,
+    "sequence_reason": "final_not_retained",
+    "diagnostic": "final_not_retained"
+  },
+  {
+    "uid": 239,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 242,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 243,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 244,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_robot_reengagement_after_release"
+  },
+  {
+    "uid": 245,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 246,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 247,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 248,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 250,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_robot_reengagement_after_release"
+  },
+  {
+    "uid": 251,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 252,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 254,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 255,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 256,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 257,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 258,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 259,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 261,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 262,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 263,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_robot_reengagement_after_release"
+  },
+  {
+    "uid": 265,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 266,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 267,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 269,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 273,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 274,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 275,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 276,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 277,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 278,
+    "sequence_reason": "not_picked",
+    "diagnostic": "not_picked"
+  },
+  {
+    "uid": 279,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 280,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 281,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 283,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 284,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 286,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 287,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 293,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 294,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 295,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 297,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 298,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 299,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 300,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 301,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 302,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 304,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 305,
+    "sequence_reason": "complete",
+    "diagnostic": "complete"
+  },
+  {
+    "uid": 306,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 308,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 309,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 311,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 315,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 316,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 317,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 318,
+    "sequence_reason": "not_picked",
+    "diagnostic": "not_picked"
+  },
+  {
+    "uid": 319,
+    "sequence_reason": "not_picked",
+    "diagnostic": "not_picked"
+  },
+  {
+    "uid": 320,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 321,
+    "sequence_reason": "not_picked",
+    "diagnostic": "not_picked"
+  },
+  {
+    "uid": 325,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 326,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "goal_contact_but_support_or_motion_rule_failed"
+  },
+  {
+    "uid": 327,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 328,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 329,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  },
+  {
+    "uid": 330,
+    "sequence_reason": "no_supported_push_to_contact",
+    "diagnostic": "no_goal_contact_after_release"
+  },
+  {
+    "uid": 331,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 333,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_sustained_upright_separation"
+  },
+  {
+    "uid": 335,
+    "sequence_reason": "no_supported_release",
+    "diagnostic": "no_upright_shelf_contact"
+  }
+]

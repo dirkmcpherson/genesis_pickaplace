@@ -1,0 +1,16 @@
+{
+  "uid": 248,
+  "source_sha256": "76c6b6d81aac849bab75007afa70f133cc2b11d159ea6ffcc842e496b6d0f5cd",
+  "sampled_trace_frames": [
+    0,
+    900,
+    1653,
+    2163,
+    2643,
+    3001
+  ],
+  "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
+  "visual_review_completed": true,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun",
+  "review_note": "Carry and shelf set-down visible; endpoint remains tilted about 16 degrees with hand and goal contact. Meets supplied metric; not a fully unloaded upright endpoint."
+}

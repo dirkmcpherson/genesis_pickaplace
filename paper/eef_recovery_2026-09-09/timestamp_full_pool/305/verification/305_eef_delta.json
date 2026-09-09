@@ -1,0 +1,64 @@
+{
+  "uid": 305,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.452,
+    -0.0309,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/305/collection/305_eef_delta.npz",
+  "source_sha256": "a9811de085c74efc71680abbb968209a98482a5f3182cd6bc5bed8bff729e655",
+  "parent_trace_sha256": "58ca84759d299e9ee35da882c948a50bffba54240953ec4fd143368d53fa9783",
+  "frames": 1308,
+  "source_frames": 1308,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "saved_actions_only",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 705,
+    "push_start": 1027,
+    "contact_start": 1185,
+    "final_surface_gap_m": -0.00019814406281973285,
+    "push_toward_goal_m": 0.03876187559622337,
+    "support_fraction": 0.9875776397515528
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": true,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.591417397647887e-16,
+  "command_rotation_rad_p99": 1.2776351414583258e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/305_timed.npz",
+    "sha256": "7ec54a81d632814187467581a85685da4a7b2fba834d16f97685c17e53dee833",
+    "original_frames": 1262,
+    "original_span_s": 39.19414472579956,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 39.24,
+    "endpoint_overrun_s": 0.04585527420044144,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

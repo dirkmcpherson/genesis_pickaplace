@@ -1,0 +1,47 @@
+{
+  "cohort": "74 December-18 sources",
+  "finished": 74,
+  "baseline_counts_matched_upright_IC": {
+    "complete": 8,
+    "no_supported_release": 27,
+    "no_supported_push_to_contact": 35,
+    "final_not_retained": 1,
+    "not_picked": 3
+  },
+  "timestamp_counts": {
+    "complete": 10,
+    "no_supported_release": 27,
+    "no_supported_push_to_contact": 33,
+    "not_picked": 4
+  },
+  "complete_uids": [
+    232,
+    233,
+    237,
+    255,
+    273,
+    294,
+    299,
+    300,
+    305,
+    317
+  ],
+  "independent_replay_verified": [
+    232,
+    233,
+    237,
+    255,
+    273,
+    294,
+    299,
+    300,
+    305,
+    317
+  ],
+  "newly_complete": [
+    237,
+    317
+  ],
+  "world_and_no_og4_checks_passed": 74,
+  "all_complete_traces_independently_verified": true
+}

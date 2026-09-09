@@ -1,0 +1,1918 @@
+{
+  "declared": 74,
+  "finished": 74,
+  "counts": {
+    "complete": 8,
+    "not_picked": 5,
+    "no_supported_release": 25,
+    "no_supported_push_to_contact": 35,
+    "final_not_retained": 1
+  },
+  "diagnostics": {
+    "complete": 8,
+    "not_picked": 5,
+    "no_upright_shelf_contact": 9,
+    "goal_contact_but_support_or_motion_rule_failed": 8,
+    "final_not_retained": 1,
+    "no_goal_contact_after_release": 24,
+    "no_sustained_upright_separation": 16,
+    "no_robot_reengagement_after_release": 3
+  },
+  "acceptance": "Numerical census only; complete is not visual bank acceptance",
+  "records": [
+    {
+      "uid": 232,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 477,
+        "push_start": 761,
+        "contact_start": 816,
+        "final_surface_gap_m": -0.0004832129105619559,
+        "push_toward_goal_m": 0.037981493310116056,
+        "support_fraction": 0.9310344827586207
+      },
+      "frames": 919,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.038356631994247437,
+      "observation_shape": [
+        920,
+        17
+      ],
+      "command_xyz_m_p99": 3.7576527997340267e-16,
+      "final_tilt_deg": 0.0025658437958394724,
+      "final_goal_z_m": 0.21993248164653778,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 918,
+      "min_gap_during_supported_robot_contact_m": -0.001376496680564887,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 233,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 715,
+        "push_start": 798,
+        "contact_start": 822,
+        "final_surface_gap_m": -0.00026888020919806077,
+        "push_toward_goal_m": 0.021915053718127034,
+        "support_fraction": 0.8888888888888888
+      },
+      "frames": 926,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04334736615419388,
+      "observation_shape": [
+        927,
+        17
+      ],
+      "command_xyz_m_p99": 4.477065448323251e-16,
+      "final_tilt_deg": 0.0025637770641931926,
+      "final_goal_z_m": 0.2199283093214035,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 851,
+      "min_gap_during_supported_robot_contact_m": -0.0006874028232022461,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 234,
+      "status": "not_picked",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.13224427648984557
+      },
+      "frames": 900,
+      "picked": false,
+      "mimic_max_deviation_deg": 0.012369899079203606,
+      "observation_shape": [
+        901,
+        17
+      ],
+      "command_xyz_m_p99": 4.579733014048066e-16,
+      "final_tilt_deg": 89.99989229665786,
+      "final_goal_z_m": 0.2199253886938095,
+      "diagnostic": "not_picked"
+    },
+    {
+      "uid": 235,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0065772268245945925
+      },
+      "frames": 884,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.027242207899689674,
+      "observation_shape": [
+        885,
+        17
+      ],
+      "command_xyz_m_p99": 4.443768215431279e-16,
+      "final_tilt_deg": 89.99999956017567,
+      "final_goal_z_m": 0.21992596983909607,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 236,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 448,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.028667201809326984
+      },
+      "frames": 679,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04197663441300392,
+      "observation_shape": [
+        680,
+        17
+      ],
+      "command_xyz_m_p99": 4.78978950833576e-16,
+      "final_tilt_deg": 0.002564145656728399,
+      "final_goal_z_m": 0.21992667019367218,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 609,
+      "min_gap_during_supported_robot_contact_m": 0.020867849423663626
+    },
+    {
+      "uid": 237,
+      "status": "final_not_retained",
+      "sequence": {
+        "complete": false,
+        "reason": "final_not_retained",
+        "release_start": 591,
+        "push_start": 684,
+        "contact_start": 711,
+        "final_surface_gap_m": 0.009405546699558773,
+        "push_toward_goal_m": 0.019260674418440173,
+        "support_fraction": 0.8333333333333334
+      },
+      "frames": 803,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04470401257276535,
+      "observation_shape": [
+        804,
+        17
+      ],
+      "command_xyz_m_p99": 4.196428670474638e-16,
+      "final_tilt_deg": 0.00256443048716775,
+      "final_goal_z_m": 0.21992985904216766,
+      "diagnostic": "final_not_retained",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 744,
+      "min_gap_during_supported_robot_contact_m": 0.0017533241541523165
+    },
+    {
+      "uid": 239,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.09058668973321163
+      },
+      "frames": 2757,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.032874125987291336,
+      "observation_shape": [
+        2758,
+        17
+      ],
+      "command_xyz_m_p99": 6.207017994694541e-16,
+      "final_tilt_deg": 89.99998477009605,
+      "final_goal_z_m": 0.2198885977268219,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 242,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 583,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.002898244627868557
+      },
+      "frames": 1031,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.035385072231292725,
+      "observation_shape": [
+        1032,
+        17
+      ],
+      "command_xyz_m_p99": 3.581100898282925e-16,
+      "final_tilt_deg": 0.0025625527804146574,
+      "final_goal_z_m": 0.21992649137973785,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 901,
+      "min_gap_during_supported_robot_contact_m": 0.002895340468803076
+    },
+    {
+      "uid": 243,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.23831495954065096
+      },
+      "frames": 572,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.027544017881155014,
+      "observation_shape": [
+        573,
+        17
+      ],
+      "command_xyz_m_p99": 3.73324377486161e-16,
+      "final_tilt_deg": 90.00001217573937,
+      "final_goal_z_m": 0.21993014216423035,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 244,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 842,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.014039432410208372
+      },
+      "frames": 1048,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.029550811275839806,
+      "observation_shape": [
+        1049,
+        17
+      ],
+      "command_xyz_m_p99": 4.066383569626266e-16,
+      "final_tilt_deg": 0.002564725943998633,
+      "final_goal_z_m": 0.21992745995521545,
+      "diagnostic": "no_robot_reengagement_after_release",
+      "goal_contact_after_release": false
+    },
+    {
+      "uid": 245,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1213473351550996
+      },
+      "frames": 3324,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.02807207591831684,
+      "observation_shape": [
+        3325,
+        17
+      ],
+      "command_xyz_m_p99": 4.877275727001001e-15,
+      "final_tilt_deg": 89.99995332834571,
+      "final_goal_z_m": 0.219930037856102,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 246,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2094,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.12189293211982616
+      },
+      "frames": 2623,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04329955577850342,
+      "observation_shape": [
+        2624,
+        17
+      ],
+      "command_xyz_m_p99": 4.314042134139425e-16,
+      "final_tilt_deg": 90.00003310231622,
+      "final_goal_z_m": 0.2199278324842453,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 2265,
+      "min_gap_during_supported_robot_contact_m": 0.047855621312026184
+    },
+    {
+      "uid": 247,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1389,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.011314438526172074
+      },
+      "frames": 1737,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04365835338830948,
+      "observation_shape": [
+        1738,
+        17
+      ],
+      "command_xyz_m_p99": 7.708218393810722e-16,
+      "final_tilt_deg": 0.002563193576081267,
+      "final_goal_z_m": 0.2199282944202423,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1707,
+      "min_gap_during_supported_robot_contact_m": 0.011134166151388195
+    },
+    {
+      "uid": 248,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2662,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0005874148655108102
+      },
+      "frames": 3063,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.025857387110590935,
+      "observation_shape": [
+        3064,
+        17
+      ],
+      "command_xyz_m_p99": 3.621345946556874e-16,
+      "final_tilt_deg": 12.900157209861167,
+      "final_goal_z_m": 0.22021715342998505,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 2960,
+      "min_gap_during_supported_robot_contact_m": -0.004155038854926366
+    },
+    {
+      "uid": 250,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2799,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02812938933523952
+      },
+      "frames": 3351,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04493154212832451,
+      "observation_shape": [
+        3352,
+        17
+      ],
+      "command_xyz_m_p99": 5.446917706916792e-16,
+      "final_tilt_deg": 0.002563178645914707,
+      "final_goal_z_m": 0.21992693841457367,
+      "diagnostic": "no_robot_reengagement_after_release",
+      "goal_contact_after_release": false
+    },
+    {
+      "uid": 251,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1192,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.010271475444680614
+      },
+      "frames": 1584,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04086288437247276,
+      "observation_shape": [
+        1585,
+        17
+      ],
+      "command_xyz_m_p99": 3.7341307954279784e-16,
+      "final_tilt_deg": 0.0025623683050896785,
+      "final_goal_z_m": 0.21992561221122742,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1474,
+      "min_gap_during_supported_robot_contact_m": 0.010271031495605015
+    },
+    {
+      "uid": 252,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1140,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.19111691057933383
+      },
+      "frames": 1543,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0345488041639328,
+      "observation_shape": [
+        1544,
+        17
+      ],
+      "command_xyz_m_p99": 4.0195262573418104e-16,
+      "final_tilt_deg": 0.0025624599043667096,
+      "final_goal_z_m": 0.21992821991443634,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1387,
+      "min_gap_during_supported_robot_contact_m": 0.08372385219962283
+    },
+    {
+      "uid": 254,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1125,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.054288930059679996
+      },
+      "frames": 1614,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.039922453463077545,
+      "observation_shape": [
+        1615,
+        17
+      ],
+      "command_xyz_m_p99": 3.785600779332834e-16,
+      "final_tilt_deg": 0.002562414531842168,
+      "final_goal_z_m": 0.21992677450180054,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1405,
+      "min_gap_during_supported_robot_contact_m": 0.05429244367239314
+    },
+    {
+      "uid": 255,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 793,
+        "push_start": 1150,
+        "contact_start": 1258,
+        "final_surface_gap_m": -0.0003872353519904781,
+        "push_toward_goal_m": 0.04553845941790477,
+        "support_fraction": 0.954954954954955
+      },
+      "frames": 1374,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0297915767878294,
+      "observation_shape": [
+        1375,
+        17
+      ],
+      "command_xyz_m_p99": 3.678244255323591e-16,
+      "final_tilt_deg": 0.002789333904543127,
+      "final_goal_z_m": 0.21993443369865417,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1373,
+      "min_gap_during_supported_robot_contact_m": -0.005522689237960975,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 256,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1922,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.022037485024481107
+      },
+      "frames": 2194,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.035268958657979965,
+      "observation_shape": [
+        2195,
+        17
+      ],
+      "command_xyz_m_p99": 4.0765905100439607e-16,
+      "final_tilt_deg": 39.43597283582172,
+      "final_goal_z_m": 0.21993102133274078,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1993,
+      "min_gap_during_supported_robot_contact_m": 0.041036109805179924
+    },
+    {
+      "uid": 257,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.24448143597087946
+      },
+      "frames": 1008,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0297915767878294,
+      "observation_shape": [
+        1009,
+        17
+      ],
+      "command_xyz_m_p99": 3.9929417218560857e-16,
+      "final_tilt_deg": 89.99998180656375,
+      "final_goal_z_m": 0.21992838382720947,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 258,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.13028769868157478
+      },
+      "frames": 1252,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.02939200960099697,
+      "observation_shape": [
+        1253,
+        17
+      ],
+      "command_xyz_m_p99": 4.0625549754133053e-16,
+      "final_tilt_deg": 89.99994750402496,
+      "final_goal_z_m": 0.21992437541484833,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 259,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 678,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.028097501398207464
+      },
+      "frames": 1209,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0443364642560482,
+      "observation_shape": [
+        1210,
+        17
+      ],
+      "command_xyz_m_p99": 6.709019050292758e-16,
+      "final_tilt_deg": 0.0025627039634739013,
+      "final_goal_z_m": 0.2199254035949707,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1159,
+      "min_gap_during_supported_robot_contact_m": 0.02673971684890815
+    },
+    {
+      "uid": 261,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.09343264528505932
+      },
+      "frames": 1412,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.033968236297369,
+      "observation_shape": [
+        1413,
+        17
+      ],
+      "command_xyz_m_p99": 8.139292279170723e-16,
+      "final_tilt_deg": 89.98721581118791,
+      "final_goal_z_m": 0.21992847323417664,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 262,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 610,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.30093831209864647
+      },
+      "frames": 937,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03448391705751419,
+      "observation_shape": [
+        938,
+        17
+      ],
+      "command_xyz_m_p99": 8.915125229479185e-16,
+      "final_tilt_deg": 0.004816931215627758,
+      "final_goal_z_m": 0.2199285924434662,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 921,
+      "min_gap_during_supported_robot_contact_m": 0.07727513909090641
+    },
+    {
+      "uid": 263,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 892,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.16965732757678628
+      },
+      "frames": 1051,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0313258059322834,
+      "observation_shape": [
+        1052,
+        17
+      ],
+      "command_xyz_m_p99": 4.689700797664656e-16,
+      "final_tilt_deg": 0.002563014692745569,
+      "final_goal_z_m": 0.21992848813533783,
+      "diagnostic": "no_robot_reengagement_after_release",
+      "goal_contact_after_release": false
+    },
+    {
+      "uid": 265,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1289,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.026727975694879946
+      },
+      "frames": 2928,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04308205470442772,
+      "observation_shape": [
+        2929,
+        17
+      ],
+      "command_xyz_m_p99": 6.554475937616781e-16,
+      "final_tilt_deg": 0.0025623909207435533,
+      "final_goal_z_m": 0.21992827951908112,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 2848,
+      "min_gap_during_supported_robot_contact_m": 0.026719347439736307
+    },
+    {
+      "uid": 266,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1106,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.030760493349592827
+      },
+      "frames": 1791,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04321673884987831,
+      "observation_shape": [
+        1792,
+        17
+      ],
+      "command_xyz_m_p99": 6.760504154714004e-16,
+      "final_tilt_deg": 0.002563517041671194,
+      "final_goal_z_m": 0.2199297398328781,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1705,
+      "min_gap_during_supported_robot_contact_m": 0.030758287059348202
+    },
+    {
+      "uid": 267,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.040659518703837313
+      },
+      "frames": 1772,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.034741755574941635,
+      "observation_shape": [
+        1773,
+        17
+      ],
+      "command_xyz_m_p99": 5.324529805217085e-16,
+      "final_tilt_deg": 90.00000946777729,
+      "final_goal_z_m": 0.21992123126983643,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 269,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1734,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.11491991836685259
+      },
+      "frames": 4857,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.027459919452667236,
+      "observation_shape": [
+        4858,
+        17
+      ],
+      "command_xyz_m_p99": 4.587607368046217e-16,
+      "final_tilt_deg": 0.0025624365781534973,
+      "final_goal_z_m": 0.2199290245771408,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 4782,
+      "min_gap_during_supported_robot_contact_m": 0.019667496238018348
+    },
+    {
+      "uid": 273,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 874,
+        "push_start": 1129,
+        "contact_start": 1168,
+        "final_surface_gap_m": -0.00024713019905714395,
+        "push_toward_goal_m": 0.08106671397061409,
+        "support_fraction": 0.8809523809523809
+      },
+      "frames": 1469,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.028665876016020775,
+      "observation_shape": [
+        1470,
+        17
+      ],
+      "command_xyz_m_p99": 3.7746785902562814e-16,
+      "final_tilt_deg": 0.0025624802435134718,
+      "final_goal_z_m": 0.21993017196655273,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1222,
+      "min_gap_during_supported_robot_contact_m": -0.0036297382138690826,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 274,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1399,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.019984217520440592
+      },
+      "frames": 1888,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03730222210288048,
+      "observation_shape": [
+        1889,
+        17
+      ],
+      "command_xyz_m_p99": 7.568222608831589e-16,
+      "final_tilt_deg": 89.99997193344501,
+      "final_goal_z_m": 0.2199280709028244,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1717,
+      "min_gap_during_supported_robot_contact_m": 0.09300693958205716
+    },
+    {
+      "uid": 275,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 991,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.008347928320936518
+      },
+      "frames": 1445,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04405130445957184,
+      "observation_shape": [
+        1446,
+        17
+      ],
+      "command_xyz_m_p99": 4.506425933156864e-16,
+      "final_tilt_deg": 0.0025626723907025894,
+      "final_goal_z_m": 0.2199244648218155,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1344,
+      "min_gap_during_supported_robot_contact_m": 0.008348572135114099
+    },
+    {
+      "uid": 276,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1220,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04118915097880706
+      },
+      "frames": 1460,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.033043600618839264,
+      "observation_shape": [
+        1461,
+        17
+      ],
+      "command_xyz_m_p99": 5.11046947805447e-16,
+      "final_tilt_deg": 0.0025623668827148382,
+      "final_goal_z_m": 0.21992936730384827,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1443,
+      "min_gap_during_supported_robot_contact_m": 0.039533900230650426
+    },
+    {
+      "uid": 277,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 510,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04406570798105518
+      },
+      "frames": 854,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.040500886738300323,
+      "observation_shape": [
+        855,
+        17
+      ],
+      "command_xyz_m_p99": 4.578555292208809e-16,
+      "final_tilt_deg": 0.0025624589087399957,
+      "final_goal_z_m": 0.21992778778076172,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 820,
+      "min_gap_during_supported_robot_contact_m": 0.04406157216539314
+    },
+    {
+      "uid": 278,
+      "status": "not_picked",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14265948168275652
+      },
+      "frames": 669,
+      "picked": false,
+      "mimic_max_deviation_deg": 0.007423561532050371,
+      "observation_shape": [
+        670,
+        17
+      ],
+      "command_xyz_m_p99": 5.355370518111926e-16,
+      "final_tilt_deg": 0.0025671525467646627,
+      "final_goal_z_m": 0.21992814540863037,
+      "diagnostic": "not_picked"
+    },
+    {
+      "uid": 279,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1390,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04031992164595448
+      },
+      "frames": 2000,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.029767243191599846,
+      "observation_shape": [
+        2001,
+        17
+      ],
+      "command_xyz_m_p99": 4.3378465737297897e-16,
+      "final_tilt_deg": 0.0025624479568206156,
+      "final_goal_z_m": 0.21992963552474976,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1929,
+      "min_gap_during_supported_robot_contact_m": 0.04031629962772483
+    },
+    {
+      "uid": 280,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.4444794438510901
+      },
+      "frames": 725,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.033651914447546005,
+      "observation_shape": [
+        726,
+        17
+      ],
+      "command_xyz_m_p99": 4.447997912851324e-16,
+      "final_tilt_deg": 90.00004370733615,
+      "final_goal_z_m": 0.21992743015289307,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 281,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 727,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.05573015038375928
+      },
+      "frames": 1041,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03763263300061226,
+      "observation_shape": [
+        1042,
+        17
+      ],
+      "command_xyz_m_p99": 4.448067701213926e-16,
+      "final_tilt_deg": 0.0025635626790247662,
+      "final_goal_z_m": 0.21992802619934082,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 927,
+      "min_gap_during_supported_robot_contact_m": 0.054204410085203644
+    },
+    {
+      "uid": 283,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1383363065358599
+      },
+      "frames": 1321,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.027350209653377533,
+      "observation_shape": [
+        1322,
+        17
+      ],
+      "command_xyz_m_p99": 5.062272043136393e-16,
+      "final_tilt_deg": 90.00002494634478,
+      "final_goal_z_m": 0.2199276089668274,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 284,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 856,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.12794155829993342
+      },
+      "frames": 1314,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0273190476000309,
+      "observation_shape": [
+        1315,
+        17
+      ],
+      "command_xyz_m_p99": 3.883864108352116e-16,
+      "final_tilt_deg": 90.01027004368486,
+      "final_goal_z_m": 0.21992939710617065,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 893,
+      "min_gap_during_supported_robot_contact_m": 0.045739247684859444
+    },
+    {
+      "uid": 286,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.01477542714958291
+      },
+      "frames": 3752,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04242187738418579,
+      "observation_shape": [
+        3753,
+        17
+      ],
+      "command_xyz_m_p99": 3.7158134446783386e-16,
+      "final_tilt_deg": 90.00003882670462,
+      "final_goal_z_m": 0.2199287712574005,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 287,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.23852632782874694
+      },
+      "frames": 4619,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.042643215507268906,
+      "observation_shape": [
+        4620,
+        17
+      ],
+      "command_xyz_m_p99": 5.922279562841026e-16,
+      "final_tilt_deg": 0.002562715483171986,
+      "final_goal_z_m": 0.21992625296115875,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 293,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.23916697439719864
+      },
+      "frames": 6142,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03341541811823845,
+      "observation_shape": [
+        6143,
+        17
+      ],
+      "command_xyz_m_p99": 9.14856728833745e-16,
+      "final_tilt_deg": 90.0000055456779,
+      "final_goal_z_m": 0.2199281007051468,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 294,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 3993,
+        "push_start": 5016,
+        "contact_start": 5282,
+        "final_surface_gap_m": -0.00026140346310632445,
+        "push_toward_goal_m": 0.049702876805405936,
+        "support_fraction": 0.9888475836431226
+      },
+      "frames": 5364,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04587496444582939,
+      "observation_shape": [
+        5365,
+        17
+      ],
+      "command_xyz_m_p99": 9.198041150169037e-14,
+      "final_tilt_deg": 0.004884664147550229,
+      "final_goal_z_m": 0.21993257105350494,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 5363,
+      "min_gap_during_supported_robot_contact_m": -0.003562193963208747,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 295,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.016098917770629495
+      },
+      "frames": 6233,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04438833147287369,
+      "observation_shape": [
+        6234,
+        17
+      ],
+      "command_xyz_m_p99": 6.685931771284639e-16,
+      "final_tilt_deg": 89.99991499680321,
+      "final_goal_z_m": 0.2199285924434662,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 297,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 917,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.01055254158368478
+      },
+      "frames": 1138,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0448540635406971,
+      "observation_shape": [
+        1139,
+        17
+      ],
+      "command_xyz_m_p99": 4.0472704674452483e-16,
+      "final_tilt_deg": 0.0025626731018053243,
+      "final_goal_z_m": 0.21992447972297668,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1003,
+      "min_gap_during_supported_robot_contact_m": 0.0188456151188022
+    },
+    {
+      "uid": 298,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 778,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.014992797769915966
+      },
+      "frames": 1042,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04091709852218628,
+      "observation_shape": [
+        1043,
+        17
+      ],
+      "command_xyz_m_p99": 4.073129534179765e-16,
+      "final_tilt_deg": 0.0025638566721579935,
+      "final_goal_z_m": 0.21992772817611694,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 974,
+      "min_gap_during_supported_robot_contact_m": 0.015006881962750476
+    },
+    {
+      "uid": 299,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 2182,
+        "push_start": 2513,
+        "contact_start": 2520,
+        "final_surface_gap_m": -9.549159987157219e-05,
+        "push_toward_goal_m": 0.012379834912308988,
+        "support_fraction": 0.8
+      },
+      "frames": 2613,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03251084312796593,
+      "observation_shape": [
+        2614,
+        17
+      ],
+      "command_xyz_m_p99": 6.304574006116338e-16,
+      "final_tilt_deg": 0.0025624954622100043,
+      "final_goal_z_m": 0.21992790699005127,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 2548,
+      "min_gap_during_supported_robot_contact_m": -0.0031542818641383114,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 300,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 3558,
+        "push_start": 4138,
+        "contact_start": 4634,
+        "final_surface_gap_m": -0.000529822584351386,
+        "push_toward_goal_m": 0.017763049557730136,
+        "support_fraction": 1.0
+      },
+      "frames": 4771,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.041263092309236526,
+      "observation_shape": [
+        4772,
+        17
+      ],
+      "command_xyz_m_p99": 4.304696412691794e-15,
+      "final_tilt_deg": 0.018033961033117583,
+      "final_goal_z_m": 0.21993890404701233,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 4770,
+      "min_gap_during_supported_robot_contact_m": -0.003047396641657693,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 301,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0944086919954844
+      },
+      "frames": 1652,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03933345526456833,
+      "observation_shape": [
+        1653,
+        17
+      ],
+      "command_xyz_m_p99": 3.3855633485253846e-15,
+      "final_tilt_deg": 89.99997372233196,
+      "final_goal_z_m": 0.21992765367031097,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 302,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 979,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0049178309935078435
+      },
+      "frames": 1164,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.042321983724832535,
+      "observation_shape": [
+        1165,
+        17
+      ],
+      "command_xyz_m_p99": 4.518651511686375e-16,
+      "final_tilt_deg": 0.0025623665982397754,
+      "final_goal_z_m": 0.2199261635541916,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1159,
+      "min_gap_during_supported_robot_contact_m": 0.003866002741071614
+    },
+    {
+      "uid": 304,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1017,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.01245430371610795
+      },
+      "frames": 2080,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03679294511675835,
+      "observation_shape": [
+        2081,
+        17
+      ],
+      "command_xyz_m_p99": 4.974851477983726e-16,
+      "final_tilt_deg": 0.0025624115449079782,
+      "final_goal_z_m": 0.2199283391237259,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 2007,
+      "min_gap_during_supported_robot_contact_m": 0.012454481137247272
+    },
+    {
+      "uid": 305,
+      "status": "complete",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 695,
+        "push_start": 995,
+        "contact_start": 1145,
+        "final_surface_gap_m": -0.0001850389691715748,
+        "push_toward_goal_m": 0.039494204182715736,
+        "support_fraction": 0.9869281045751634
+      },
+      "frames": 1262,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.0412265919148922,
+      "observation_shape": [
+        1263,
+        17
+      ],
+      "command_xyz_m_p99": 4.637638634656275e-16,
+      "final_tilt_deg": 0.0025625466646375444,
+      "final_goal_z_m": 0.21992728114128113,
+      "diagnostic": "complete",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1194,
+      "min_gap_during_supported_robot_contact_m": -0.0006507846704344872,
+      "action_verification": {
+        "complete": true,
+        "trajectory_identical": true,
+        "actions_identical": true,
+        "observations_identical": true
+      }
+    },
+    {
+      "uid": 306,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.389493129367672
+      },
+      "frames": 2529,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.035320185124874115,
+      "observation_shape": [
+        2530,
+        17
+      ],
+      "command_xyz_m_p99": 4.768456840430479e-16,
+      "final_tilt_deg": 89.99999244061507,
+      "final_goal_z_m": 0.21992740035057068,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 308,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.047938256680244554
+      },
+      "frames": 1355,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.028808029368519783,
+      "observation_shape": [
+        1356,
+        17
+      ],
+      "command_xyz_m_p99": 4.321122359322732e-16,
+      "final_tilt_deg": 9.51926043943162,
+      "final_goal_z_m": 0.2198883593082428,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 309,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.27696904871837774
+      },
+      "frames": 1754,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.027389483526349068,
+      "observation_shape": [
+        1755,
+        17
+      ],
+      "command_xyz_m_p99": 4.729928537893913e-16,
+      "final_tilt_deg": 89.97737599784753,
+      "final_goal_z_m": 0.21992795169353485,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 311,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1302422207167281
+      },
+      "frames": 1301,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.031499121338129044,
+      "observation_shape": [
+        1302,
+        17
+      ],
+      "command_xyz_m_p99": 5.986078041718114e-16,
+      "final_tilt_deg": 0.0025661403682022397,
+      "final_goal_z_m": 0.2199285924434662,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 315,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.23776030518828095
+      },
+      "frames": 3891,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03411295264959335,
+      "observation_shape": [
+        3892,
+        17
+      ],
+      "command_xyz_m_p99": 5.090468161174606e-16,
+      "final_tilt_deg": 89.99996214511694,
+      "final_goal_z_m": 0.21992726624011993,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 316,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1121,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.029285106764210145
+      },
+      "frames": 1880,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04017261043190956,
+      "observation_shape": [
+        1881,
+        17
+      ],
+      "command_xyz_m_p99": 1.3653937842860002e-15,
+      "final_tilt_deg": 0.006917936672109118,
+      "final_goal_z_m": 0.21992899477481842,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1879,
+      "min_gap_during_supported_robot_contact_m": 0.029238012803204275
+    },
+    {
+      "uid": 317,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 755,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.35258220800039214
+      },
+      "frames": 1447,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03184191510081291,
+      "observation_shape": [
+        1448,
+        17
+      ],
+      "command_xyz_m_p99": 7.944795835717469e-16,
+      "final_tilt_deg": 90.00003872484176,
+      "final_goal_z_m": 0.21992821991443634,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1111,
+      "min_gap_during_supported_robot_contact_m": 0.05742811248549659
+    },
+    {
+      "uid": 318,
+      "status": "not_picked",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14398378770656525
+      },
+      "frames": 1518,
+      "picked": false,
+      "mimic_max_deviation_deg": 0.0011839704820886254,
+      "observation_shape": [
+        1519,
+        17
+      ],
+      "command_xyz_m_p99": 9.178138806672607e-16,
+      "final_tilt_deg": 90.00011131925591,
+      "final_goal_z_m": 0.21992778778076172,
+      "diagnostic": "not_picked"
+    },
+    {
+      "uid": 319,
+      "status": "not_picked",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.20887926966414444
+      },
+      "frames": 2682,
+      "picked": false,
+      "mimic_max_deviation_deg": 0.000956226431299001,
+      "observation_shape": [
+        2683,
+        17
+      ],
+      "command_xyz_m_p99": 1.2906620294095354e-15,
+      "final_tilt_deg": 0.0025623774082699576,
+      "final_goal_z_m": 0.21992893517017365,
+      "diagnostic": "not_picked"
+    },
+    {
+      "uid": 320,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.18626136104707047
+      },
+      "frames": 2659,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04153202846646309,
+      "observation_shape": [
+        2660,
+        17
+      ],
+      "command_xyz_m_p99": 9.463836583353583e-16,
+      "final_tilt_deg": 89.99997023098511,
+      "final_goal_z_m": 0.21992765367031097,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 321,
+      "status": "not_picked",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15384161601596444
+      },
+      "frames": 1715,
+      "picked": false,
+      "mimic_max_deviation_deg": 0.026832396164536476,
+      "observation_shape": [
+        1716,
+        17
+      ],
+      "command_xyz_m_p99": 8.203202172482271e-15,
+      "final_tilt_deg": 0.0025626017061061213,
+      "final_goal_z_m": 0.21992912888526917,
+      "diagnostic": "not_picked"
+    },
+    {
+      "uid": 325,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 949,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.3145980527550604
+      },
+      "frames": 1460,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.032564204186201096,
+      "observation_shape": [
+        1461,
+        17
+      ],
+      "command_xyz_m_p99": 4.484050470211362e-16,
+      "final_tilt_deg": 90.00005879035413,
+      "final_goal_z_m": 0.21992941200733185,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 1371,
+      "min_gap_during_supported_robot_contact_m": 0.05924408172551446
+    },
+    {
+      "uid": 326,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 560,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.014215866362235097
+      },
+      "frames": 966,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03329845145344734,
+      "observation_shape": [
+        967,
+        17
+      ],
+      "command_xyz_m_p99": 8.172269722807794e-16,
+      "final_tilt_deg": 90.00022502030367,
+      "final_goal_z_m": 0.21992723643779755,
+      "diagnostic": "goal_contact_but_support_or_motion_rule_failed",
+      "goal_contact_after_release": true,
+      "last_supported_robot_contact": 870,
+      "min_gap_during_supported_robot_contact_m": 0.04015751878622789
+    },
+    {
+      "uid": 327,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 990,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.025330439369071353
+      },
+      "frames": 1374,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04293648898601532,
+      "observation_shape": [
+        1375,
+        17
+      ],
+      "command_xyz_m_p99": 3.7286275293287155e-16,
+      "final_tilt_deg": 0.002562519499032564,
+      "final_goal_z_m": 0.21992942690849304,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 1224,
+      "min_gap_during_supported_robot_contact_m": 0.02532431684091782
+    },
+    {
+      "uid": 328,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2350,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02176095269848534
+      },
+      "frames": 2767,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.029410365968942642,
+      "observation_shape": [
+        2768,
+        17
+      ],
+      "command_xyz_m_p99": 6.190802826640283e-16,
+      "final_tilt_deg": 0.0025662512899576303,
+      "final_goal_z_m": 0.21992629766464233,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 2671,
+      "min_gap_during_supported_robot_contact_m": 0.0217602067353138
+    },
+    {
+      "uid": 329,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1938402653732038
+      },
+      "frames": 1419,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04067377373576164,
+      "observation_shape": [
+        1420,
+        17
+      ],
+      "command_xyz_m_p99": 4.592102783600398e-16,
+      "final_tilt_deg": 89.9999776477175,
+      "final_goal_z_m": 0.21992672979831696,
+      "diagnostic": "no_upright_shelf_contact"
+    },
+    {
+      "uid": 330,
+      "status": "no_supported_push_to_contact",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1816,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.017351006634328675
+      },
+      "frames": 2671,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.04276914894580841,
+      "observation_shape": [
+        2672,
+        17
+      ],
+      "command_xyz_m_p99": 3.7238012298709097e-16,
+      "final_tilt_deg": 0.002562419652292678,
+      "final_goal_z_m": 0.2199295312166214,
+      "diagnostic": "no_goal_contact_after_release",
+      "goal_contact_after_release": false,
+      "last_supported_robot_contact": 2579,
+      "min_gap_during_supported_robot_contact_m": 0.01778473384633912
+    },
+    {
+      "uid": 331,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2934275285752068
+      },
+      "frames": 2868,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.03763818368315697,
+      "observation_shape": [
+        2869,
+        17
+      ],
+      "command_xyz_m_p99": 3.727643099401679e-16,
+      "final_tilt_deg": 89.99949362352397,
+      "final_goal_z_m": 0.2199283093214035,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 333,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.028570132588048566
+      },
+      "frames": 4070,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.041558925062417984,
+      "observation_shape": [
+        4071,
+        17
+      ],
+      "command_xyz_m_p99": 5.134268439027141e-16,
+      "final_tilt_deg": 89.99993153020013,
+      "final_goal_z_m": 0.2199280560016632,
+      "diagnostic": "no_sustained_upright_separation"
+    },
+    {
+      "uid": 335,
+      "status": "no_supported_release",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.035896859745432386
+      },
+      "frames": 1249,
+      "picked": true,
+      "mimic_max_deviation_deg": 0.028606537729501724,
+      "observation_shape": [
+        1250,
+        17
+      ],
+      "command_xyz_m_p99": 3.7341307954279784e-16,
+      "final_tilt_deg": 90.00001007132565,
+      "final_goal_z_m": 0.21993033587932587,
+      "diagnostic": "no_upright_shelf_contact"
+    }
+  ]
+}

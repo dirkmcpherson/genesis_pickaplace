@@ -1,0 +1,44 @@
+[
+  {
+    "uid": 124,
+    "fixed_clock_status": "finished",
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.0671648905367071
+    },
+    "timestamp_sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 1120,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.057669801532939796
+    }
+  },
+  {
+    "uid": 185,
+    "fixed_clock_status": "finished",
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 909,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.04084047006825692
+    },
+    "timestamp_sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 961,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.04226792662349772
+    }
+  }
+]

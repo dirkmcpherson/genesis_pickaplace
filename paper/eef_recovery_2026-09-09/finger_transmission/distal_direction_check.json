@@ -1,0 +1,102 @@
+{
+  "method": "Exact URDF joint transforms and mean of distal-most 5 percent vendor mesh vertices; gripper symmetry plane y=0",
+  "result": "At fixed right proximal angles 0.3,0.5,0.7 rad, positive distal residual moves distal end outward; negative moves inward",
+  "records": [
+    {
+      "base_angle_rad": 0.3,
+      "positions": [
+        {
+          "tip_residual_deg": -5,
+          "distal_end_gripper_xyz": [
+            -9.931441882418699e-05,
+            -0.023463584374284918,
+            0.16299282957584485
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.023463584374284918
+        },
+        {
+          "tip_residual_deg": 0,
+          "distal_end_gripper_xyz": [
+            -9.931470056581818e-05,
+            -0.027246222909843246,
+            0.1629161277246653
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.027246222909843246
+        },
+        {
+          "tip_residual_deg": 5,
+          "distal_end_gripper_xyz": [
+            -9.931619221271456e-05,
+            -0.031007782356954262,
+            0.16251003907607614
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.031007782356954262
+        }
+      ]
+    },
+    {
+      "base_angle_rad": 0.5,
+      "positions": [
+        {
+          "tip_residual_deg": -5,
+          "distal_end_gripper_xyz": [
+            -9.93137498729582e-05,
+            -0.03625392982674708,
+            0.16317494606811084
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.03625392982674708
+        },
+        {
+          "tip_residual_deg": 0,
+          "distal_end_gripper_xyz": [
+            -9.931493075088498e-05,
+            -0.04002366261334083,
+            0.1628534617258109
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.04002366261334083
+        },
+        {
+          "tip_residual_deg": 5,
+          "distal_end_gripper_xyz": [
+            -9.931731398093358e-05,
+            -0.043751031221933065,
+            0.16220464686751862
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.043751031221933065
+        }
+      ]
+    },
+    {
+      "base_angle_rad": 0.7,
+      "positions": [
+        {
+          "tip_residual_deg": -5,
+          "distal_end_gripper_xyz": [
+            -9.932104764876206e-05,
+            -0.048879012339486064,
+            0.16118818638588164
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.048879012339486064
+        },
+        {
+          "tip_residual_deg": 0,
+          "distal_end_gripper_xyz": [
+            -9.932312270616565e-05,
+            -0.052620015656554026,
+            0.16062326900577414
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.052620015656554026
+        },
+        {
+          "tip_residual_deg": 5,
+          "distal_end_gripper_xyz": [
+            -9.932638751558938e-05,
+            -0.05629754753270609,
+            0.15973445138413284
+          ],
+          "distance_to_gripper_symmetry_plane_m": 0.05629754753270609
+        }
+      ]
+    }
+  ]
+}

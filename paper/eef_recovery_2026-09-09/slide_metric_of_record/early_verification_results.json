@@ -1,0 +1,44 @@
+[
+  {
+    "uid": 162,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "162",
+      "n": 369,
+      "released": true,
+      "release_frame": 11,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06587733779255478,
+      "gain_m": 0.19300701470573428
+    }
+  },
+  {
+    "uid": 167,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "167",
+      "n": 503,
+      "released": true,
+      "release_frame": 0,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.08091713253767314,
+      "gain_m": 0.3232435666088279
+    }
+  }
+]

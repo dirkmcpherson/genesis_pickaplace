@@ -1,0 +1,49 @@
+[
+  {
+    "name": "gripper_base_joint",
+    "type": "fixed",
+    "parent": "dummy_link",
+    "child": "gripper_base_link",
+    "mimic": null
+  },
+  {
+    "name": "right_finger_bottom_joint",
+    "type": "revolute",
+    "parent": "gripper_base_link",
+    "child": "right_finger_prox_link",
+    "mimic": null
+  },
+  {
+    "name": "right_finger_tip_joint",
+    "type": "revolute",
+    "parent": "right_finger_prox_link",
+    "child": "right_finger_dist_link",
+    "mimic": {
+      "joint": "right_finger_bottom_joint",
+      "multiplier": "-0.676",
+      "offset": "0.149"
+    }
+  },
+  {
+    "name": "left_finger_bottom_joint",
+    "type": "revolute",
+    "parent": "gripper_base_link",
+    "child": "left_finger_prox_link",
+    "mimic": {
+      "joint": "right_finger_bottom_joint",
+      "multiplier": "-1.0",
+      "offset": "0.0"
+    }
+  },
+  {
+    "name": "left_finger_tip_joint",
+    "type": "revolute",
+    "parent": "left_finger_prox_link",
+    "child": "left_finger_dist_link",
+    "mimic": {
+      "joint": "right_finger_bottom_joint",
+      "multiplier": "-0.676",
+      "offset": "0.149"
+    }
+  }
+]

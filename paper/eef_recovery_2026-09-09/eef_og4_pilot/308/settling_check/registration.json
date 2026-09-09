@@ -1,0 +1,3 @@
+{
+  "reason": "The 0.3-second candidate passes but still has 7.3-degree tilt and robot contact. Test 3 seconds of unchanged final target/grip to observe further settling or instability; no threshold changes."
+}

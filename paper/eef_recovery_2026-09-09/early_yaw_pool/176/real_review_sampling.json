@@ -1,0 +1,12 @@
+{
+  "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_176/cam_dev_video4/output.mp4",
+  "camera_time_s": [
+    0.0,
+    22.5,
+    41.266666666666666,
+    54.0,
+    66.0,
+    75.03333333333333
+  ],
+  "clock_alignment": "Fractions of camera duration; no calibrated camera-to-bag time alignment"
+}

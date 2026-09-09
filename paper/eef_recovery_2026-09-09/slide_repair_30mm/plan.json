@@ -1,0 +1,17 @@
+{
+  "uids": [
+    237,
+    242,
+    247,
+    248,
+    251,
+    275,
+    297,
+    302
+  ],
+  "selection": "Exactly the eight candidates from the completed 10 mm sweep; retain all outcomes.",
+  "change": "Only maximum extra EEF translation increases from 10 to 30 mm. Same last-contact insertion, 0.5 mm steps toward live goal, support guard, three-contact-frame stop, <=0.3 s hold, original suffix and grip.",
+  "source": "full_pool unchanged-motion collections",
+  "admission": "Motion-repaired real-derived data, not unaltered human demonstrations. Independent action replay and visual review required. No frozen-bank replacement.",
+  "code_sha256": "b7c3ec05e5f84316f57f06a6ea409ad1d63861b7bbc39111f4738258b2e081ea"
+}

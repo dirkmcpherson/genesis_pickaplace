@@ -1,0 +1,50 @@
+{
+  "uid": 193,
+  "day": "12-17",
+  "variant": "gc_kp4_riser3_shelf6_yaw17",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.516,
+    0.032582968762982584,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 4346,
+  "source_sha256": "b9243f575bc692c11ef6a08bec276ec6339be588892964539235b30ff1f456a2",
+  "initial_pose_provenance": "Archived fitted position with disclosed minimum shelf-clearance correction",
+  "source_matches_archived_episode": true,
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 130.3247516155243,
+    "original_frames": 4853,
+    "replay_duration_s": 130.38,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/193_timed.npz",
+    "decision_dt_s": 0.03
+  },
+  "initial_pose_correction": {
+    "reason": "Remove 1.356 mm initial overlap with modeled shelf, retaining 1 mm clearance",
+    "original_can_pos": [
+      0.518356359278704,
+      0.032582968762982584,
+      0.113
+    ],
+    "corrected_can_pos": [
+      0.516,
+      0.032582968762982584,
+      0.113
+    ],
+    "delta_m": [
+      -0.0023563592787040344,
+      0,
+      0
+    ],
+    "basis": "Geometric nonpenetration in current model; not a measured real position or outcome-selected sweep",
+    "unchanged": "Arm/grip measurement stream, timestamp reconstruction, full world and yaw"
+  }
+}

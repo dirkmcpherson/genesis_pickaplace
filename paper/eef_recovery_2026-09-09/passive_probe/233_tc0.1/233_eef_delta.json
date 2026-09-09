@@ -1,0 +1,324 @@
+{
+  "uid": 233,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/233/source.npz",
+  "source_sha256": "a9556c805e196be2f301b41107d1eb0295066e4720293ef1d3631d392d531d31",
+  "parent_trace_sha256": "26982929385804bcdc84fbe52c085d46a81ce3acf43d6d2b1151c90a89c68452",
+  "frames": 926,
+  "source_frames": 926,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 713,
+    "push_start": 798,
+    "contact_start": 823,
+    "final_surface_gap_m": -0.00018720188956017347,
+    "push_toward_goal_m": 0.02192251698088839,
+    "support_fraction": 0.8928571428571429
+  },
+  "precision_ik": true,
+  "hold_contact": false,
+  "action_replay_verification": false,
+  "provenance": "experimental distal-compliance replay; not a validated real hand model",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.477065448323251e-16,
+  "command_rotation_rad_p99": 1.36572624752887e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5f44dcbcadf67ffbd6c34d505b944d989227ca49b2f8061d69672afde52f908b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "physics_treatment": {
+    "status": "uncalibrated exploratory surrogate; not bank accepted",
+    "distal_mimic_timeconst_s": 0.1,
+    "distal_kp": 0.0,
+    "distal_kv": 0.0,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/233/source.npz",
+    "wrapper_sha256": "4e8663a32ae8944a599a4aaaf909d0fd4211497dda7086dbcf42971d7369aa1d",
+    "equality_names": [
+      "mimic_left_finger_tip_joint_to_right_finger_bottom_joint",
+      "mimic_right_finger_tip_joint_to_right_finger_bottom_joint"
+    ],
+    "equality_indices": [
+      0,
+      2
+    ],
+    "equality_before": [
+      [
+        [
+          0.019999999552965164,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.019999999552965164,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.019999999552965164,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    ],
+    "equality_after": [
+      [
+        [
+          0.10000000149011612,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.019999999552965164,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.10000000149011612,
+          1.0,
+          0.8999999761581421,
+          0.949999988079071,
+          0.0010000000474974513,
+          0.5,
+          2.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    ],
+    "distal_dof_indices": [
+      9,
+      8
+    ],
+    "distal_kp_readback": [
+      0.0,
+      0.0
+    ],
+    "distal_kv_readback": [
+      0.0,
+      0.0
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "uid": 235,
+  "control": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/235/collection/235_eef_delta.json",
+  "purpose": "Two exploratory initial XY shifts along horizontal tool approach axis at baseline first pickup, +/-10 mm. Preserve table height, raw motion, grip and original physics. Test grasp-depth contribution to toppling on release. Both outcomes retained; no measured-position claim.",
+  "axis_xy": [
+    0.9688145092753854,
+    0.24778709937665086
+  ],
+  "axis_frame": 183,
+  "offset_m": [
+    -0.01,
+    0.01
+  ]
+}

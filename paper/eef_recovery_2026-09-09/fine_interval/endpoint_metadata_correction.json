@@ -1,0 +1,30 @@
+{
+  "reason": "Inherited 30 ms endpoint-overrun field was stale after 10 ms resampling. No command array, duration, physics or outcome changed.",
+  "records": [
+    {
+      "path": "paper/eef_recovery_2026-09-09/fine_interval/233/source.json",
+      "before": 0.037841901779174236,
+      "after": 0.017841901779174663
+    },
+    {
+      "path": "paper/eef_recovery_2026-09-09/fine_interval/233/collection/233_eef_delta.json",
+      "before": 0.037841901779174236,
+      "after": 0.017841901779174663
+    },
+    {
+      "path": "paper/eef_recovery_2026-09-09/fine_interval/233/verification/233_eef_delta.json",
+      "before": 0.037841901779174236,
+      "after": 0.017841901779174663
+    },
+    {
+      "path": "paper/eef_recovery_2026-09-09/fine_interval/235/source.json",
+      "before": 0.03479773521423368,
+      "after": 0.014797735214234109
+    },
+    {
+      "path": "paper/eef_recovery_2026-09-09/fine_interval/235/collection/235_eef_delta.json",
+      "before": 0.03479773521423368,
+      "after": 0.014797735214234109
+    }
+  ]
+}

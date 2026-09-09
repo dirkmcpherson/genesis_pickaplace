@@ -1,0 +1,23 @@
+[
+  {
+    "uid": 233,
+    "old_duration_s": 27.779999999999998,
+    "bag_span_s": 28.822158098220825,
+    "new_duration_s": 28.86,
+    "endpoint_overrun_s": 0.037841901779174236
+  },
+  {
+    "uid": 234,
+    "old_duration_s": 27.0,
+    "bag_span_s": 29.634264707565308,
+    "new_duration_s": 29.669999999999998,
+    "endpoint_overrun_s": 0.035735292434690535
+  },
+  {
+    "uid": 235,
+    "old_duration_s": 26.52,
+    "bag_span_s": 29.785202264785767,
+    "new_duration_s": 29.82,
+    "endpoint_overrun_s": 0.03479773521423368
+  }
+]

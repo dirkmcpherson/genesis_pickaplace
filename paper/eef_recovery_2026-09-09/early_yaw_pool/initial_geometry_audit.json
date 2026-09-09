@@ -1,0 +1,729 @@
+{
+  "geometry": "Upright cylinder radius .033 m, height .101 m; full-world solid shelf AABB",
+  "shelf_min": [
+    0.55,
+    -0.5625,
+    0.05
+  ],
+  "shelf_max": [
+    0.95,
+    0.1875,
+    0.17
+  ],
+  "declared": 89,
+  "overlap_uids": [
+    131,
+    145,
+    151,
+    153,
+    161,
+    174,
+    193,
+    196,
+    201,
+    206,
+    220,
+    222
+  ],
+  "limitation": "Geometric collision check of the current model, not a measurement of real initial positions or proof that the real shelf has the same solid volume. Keep trials for recalibration, not permanent exclusion.",
+  "records": [
+    {
+      "uid": 113,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 100.71601206667216,
+      "source_metadata_sha256": "16828a7d195f3a72c34cd4c16fe4b4bd5e1768a8ccedfe4c3e63b929a0d8adf1",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 213,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 118,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 61.725489233609906,
+      "source_metadata_sha256": "3c7021b30fea0bd1846b328b09f5933d0979bc145628474f7e8a04ba19c3ec60",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 552,
+      "picked_flag_seen": false
+    },
+    {
+      "uid": 120,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 121.46703278659224,
+      "source_metadata_sha256": "37d61226f65c373875c4210de5cfba47cf060753d3cd27b147cd5aaf1d25594b",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 525,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 121,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 0.44004313562454045,
+      "source_metadata_sha256": "d2f93058644b05dbb4dec19303afc9baee650dd75f4fb650e0c120fda9253d5b",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 644,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 122,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 46.78810635831734,
+      "source_metadata_sha256": "174646dd9b338a2179109786223d772dfa1128dd516dd51f09ef1e3dcaba8d36",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 400,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 124,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 27.918578228313645,
+      "source_metadata_sha256": "b27598d769b525a6a0b0bd437f1eb43cde02d10d46b67f21fa2137ad7ffb0166",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 624,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 126,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 133.22741324843875,
+      "source_metadata_sha256": "a1881ac1222adf008d2f3f8533820a8c746b248d2e75b400f415d3920a8af8b5",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 482,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 128,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 20.888909568887808,
+      "source_metadata_sha256": "b9b90e0a94658469ade9fd4917ef4594ceda3de5f06d2a7e621ed966cf1b96da",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 780,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 129,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 25.31399923407876,
+      "source_metadata_sha256": "d846fff712bc44fcd0675f10e02e5cd415336f9be1eaa8cb9bde0f458ef5c8e3",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 552,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 130,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 141.95860302982192,
+      "source_metadata_sha256": "685e462466ec1855e48f265867fbf027142ddbcbd77ad5f3ba410f7c7b4ee99b",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 305,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 131,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -59.41540799743603,
+      "source_metadata_sha256": "3f1464269698a0a71b34acb32c57f6480683e2489c31ed81b8e1e7e2ec4d2543",
+      "first_recorded_can_z_m": 0.17953582108020782,
+      "total_sampled_robot_contact_frames": 0,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 132,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 33.05189424772884,
+      "source_metadata_sha256": "abeded9aac0be5ea7aeb8b20ad15297fd2d011967af875a0d98bc3a5b1d6f783",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 814,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 137,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 89.1745481097719,
+      "source_metadata_sha256": "c176b2803fa0fe2c8d63b156acf6321e00322e4fa695849913e5900b0b1fcf50",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 323,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 138,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 23.88238928613415,
+      "source_metadata_sha256": "51425df0df7a92481f78976e494457565e11cb5b08de32c1d622e88586144acb",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 1168,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 139,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 67.81847838907548,
+      "source_metadata_sha256": "1be1e000df630939e4164a9c80ffbedb80ab718200f56bca6e17fcd01e6e9d3f",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 432,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 140,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 33.008703162600156,
+      "source_metadata_sha256": "3248f9b96c88049fc90977ad639b0116f8a86223fb7919077c3b5d4c55fbf779",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 949,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 141,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 83.29120329911824,
+      "source_metadata_sha256": "f19d981608971fde2e7654c4596613acfc97ff9ee5f7fe90b625c7c9b34c04f4",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 988,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 143,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 164.9867058021425,
+      "source_metadata_sha256": "00e7969e8a20b8722762e3e80927f390e029d0de36a404433600ac410fe953a7",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 568,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 144,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 8.852776839617965,
+      "source_metadata_sha256": "b135bf16325457bb689e7cb4cb7ab9d9ba18571a8622ecb2b3c959d06a919bef",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 360,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 145,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -2.3374655630784282,
+      "source_metadata_sha256": "afde1d29db12315e7fa5d4f23499e0cd0f3a0f7a10ef6e544358493b4428b15a",
+      "first_recorded_can_z_m": 0.10682850331068039,
+      "total_sampled_robot_contact_frames": 733,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 146,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 81.00773579573753,
+      "source_metadata_sha256": "206c270a9abbe26f2113b89eaea359ef36f25deefcc543763b43ac6de58bddc4",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 495,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 148,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 12.456289585548037,
+      "source_metadata_sha256": "f6fa540cb32db9209f5f8aee7dfdacb667d88d512ed09824d738ab92c70c0354"
+    },
+    {
+      "uid": 149,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 5.137026738574218,
+      "source_metadata_sha256": "b6fae70c2e0dcd45ee651f0e1f0be21f677137e41d7d4b31509cc9ceb2c73af3"
+    },
+    {
+      "uid": 151,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -41.14346515963216,
+      "source_metadata_sha256": "f0eff8e3ff269ebc766daccef100cfc3184066763ea491bf41160ddf96beea63"
+    },
+    {
+      "uid": 153,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -14.733653991167856,
+      "source_metadata_sha256": "b844a9dbc849550dd7f66a69d3c7b94e8f9d3270be04e20bd15d18fea5eb3d36"
+    },
+    {
+      "uid": 154,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 47.74697460646923,
+      "source_metadata_sha256": "a1b8a175fb4f8c8ff8dcc578374cf4d61fe8b75d22b1c036bc51c4549e36cef5"
+    },
+    {
+      "uid": 156,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 13.174021508526451,
+      "source_metadata_sha256": "a8575810f2fe74f866ac5a3da4dbae3a3b97a502bb0b94b8d9b21d35449a0ede"
+    },
+    {
+      "uid": 157,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 49.47952076209008,
+      "source_metadata_sha256": "445550c5b5670d97e10751b1f7af7e8ed2d7712484b2c1a04d8e1a138ee1f9b7"
+    },
+    {
+      "uid": 158,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 40.29361363183961,
+      "source_metadata_sha256": "a9c32b7d7f1e92b1330c25915a9eded5971aa5558c3ed5a03b94deb2c8ed61be"
+    },
+    {
+      "uid": 160,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 46.03615165096367,
+      "source_metadata_sha256": "99a962d9e9c034e4d15aa3c881aa9dfbf72ce67723d288df3f12fb5451d8bb39"
+    },
+    {
+      "uid": 161,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -51.21639114328067,
+      "source_metadata_sha256": "231dd1bab7f395b68c97167f4e47b3b04e29bb183cbdeaedfbe05b41f78958eb"
+    },
+    {
+      "uid": 162,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 102.07377740428622,
+      "source_metadata_sha256": "94efde9a29bd4a4d04281164b30e1a6c8751d0ab9770efeb5efc22dc95f20ab2"
+    },
+    {
+      "uid": 164,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 24.382826186746946,
+      "source_metadata_sha256": "c16eac5cf925a7ec83518439530d0379522012848037a4cf7e9f85b3ee864208"
+    },
+    {
+      "uid": 165,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 58.533312103374676,
+      "source_metadata_sha256": "adcdb6e48ae5f2d6d289c9ac653962cccc809945cb9309c09b551772f34fd67e"
+    },
+    {
+      "uid": 166,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 21.38665473630816,
+      "source_metadata_sha256": "c14c73af24609d5667218433e1ea1ad951b27592f690f20d787db11c8c1275ab"
+    },
+    {
+      "uid": 167,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 22.95850064132235,
+      "source_metadata_sha256": "472b064907ab9861ebcaa94d857be0d89c1221f9d31f849760d59359d299f82b"
+    },
+    {
+      "uid": 168,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 10.369461938283504,
+      "source_metadata_sha256": "a2c5b1f20874fb4c1eca9fd9d58d68c691961c6ca557a8679133444b78387d7d"
+    },
+    {
+      "uid": 169,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 32.953104928040126,
+      "source_metadata_sha256": "a6acd8fbf7b99903a15703446628ca23a78796029b311ab07347bf4d431fdaac"
+    },
+    {
+      "uid": 170,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 39.353085511741185,
+      "source_metadata_sha256": "1321859d0cd563b5713f8d7f9dedca34eeefc1cadd86d0b9ab1b0281e1735a6b"
+    },
+    {
+      "uid": 171,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 41.17583927383209,
+      "source_metadata_sha256": "32048a4a88b5f4a4751b244f433bc41037e48364e86c30fa1030213845ab28fc"
+    },
+    {
+      "uid": 172,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 52.18703797698029,
+      "source_metadata_sha256": "1e238768260e56797989250724bb7626a47264eddac10bcfb560d589aca05e59"
+    },
+    {
+      "uid": 173,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 62.36302249324041,
+      "source_metadata_sha256": "290b26a5c49ca32bc215410d6fa38ffe11f56fda67492b41c5aa82d13d24bf96"
+    },
+    {
+      "uid": 174,
+      "day": "12-16",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -2.8959063508531004,
+      "source_metadata_sha256": "075372b5fb26796252559f2b1256c3010fc30bb3459eb50fa661b170e04c0c90"
+    },
+    {
+      "uid": 175,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 20.95320585486707,
+      "source_metadata_sha256": "befe0cb45d17487332e957b17bbb10f74b987dbd8836c2fe5c28da941ebef44a"
+    },
+    {
+      "uid": 176,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 37.95549168958309,
+      "source_metadata_sha256": "6fdaa599c9a9b89cbfc4c34fc619ec92ed2b03905038a3322f7b1d0905118a5f"
+    },
+    {
+      "uid": 177,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 8.774624765293254,
+      "source_metadata_sha256": "2a677b03cab83515b0bcf08d61951ff757cc53ce738f3a89388d18e22d4404a3"
+    },
+    {
+      "uid": 179,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 39.872001319546854,
+      "source_metadata_sha256": "44648bf314b67580239fbc3ab38f2c68a6754a0ad5c95cd4e68765f95844440c"
+    },
+    {
+      "uid": 180,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 20.1091849168811,
+      "source_metadata_sha256": "ff4a2dc5c54564993ace4b9fb23198ef9cfe180de725d3dbb273e9ed82ae6178"
+    },
+    {
+      "uid": 181,
+      "day": "12-16",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 40.432348035863235,
+      "source_metadata_sha256": "ee3856b5a88298f0f8f697977e470e371f531a60d796a54506ae4c0ee9710f65"
+    },
+    {
+      "uid": 183,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 21.23860585267659,
+      "source_metadata_sha256": "8c59072389fc5d3d70ea2fa9486725fea9ee6ff3b81736d534b173c2f9e1e899",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 211,
+      "picked_flag_seen": false
+    },
+    {
+      "uid": 184,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 64.35980124178872,
+      "source_metadata_sha256": "97aa9f9647cf361f14233c48b60a3beca759eb8b2f47a1af5e7f661262755812",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 775,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 185,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 134.00865443553815,
+      "source_metadata_sha256": "9e8344978b2ae12826941df4cb7ff9e512afe6625892cf8f402fd5937d47a67c",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 651,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 189,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 33.81548159043782,
+      "source_metadata_sha256": "6a3f52f99e78a4161879df61adfba7754da3a52b35a0e6bd6b326181dbfe536a",
+      "first_recorded_can_z_m": 0.10490675270557404,
+      "total_sampled_robot_contact_frames": 610,
+      "picked_flag_seen": true
+    },
+    {
+      "uid": 190,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 87.40619364661237,
+      "source_metadata_sha256": "c5b3ee55b5692092340289d82198b63ae78db3f961c21515304ba0f6c17d1797"
+    },
+    {
+      "uid": 191,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 40.41090921788773,
+      "source_metadata_sha256": "772bd31c019c4c9e0746b2c0b0ebc1e32282983792380d6b572b8ebfcc7b6450"
+    },
+    {
+      "uid": 192,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 104.30245852523093,
+      "source_metadata_sha256": "b77e21fd0b476e207b0349b479239209bbcb72355074d912e201904f159dca54"
+    },
+    {
+      "uid": 193,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -1.3563592787040057,
+      "source_metadata_sha256": "229b8e5bd41d888dd228ea41d788300f955be1163f90c85cd61a19b7d0863964"
+    },
+    {
+      "uid": 194,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 38.9064720332917,
+      "source_metadata_sha256": "97a36d73058ca3b95eba6fc4e791b1c1c55ff1c1ca7e1498803b4185869b9427"
+    },
+    {
+      "uid": 196,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -77.40207939454521,
+      "source_metadata_sha256": "276bb416c81b84ba094c77e2a4d3564fffa5792f11be28fa0b3133a5f8b3e741"
+    },
+    {
+      "uid": 197,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 55.499652708663056,
+      "source_metadata_sha256": "38037701755abc65804d7b1383c87c75c93f510b8b6b88c3bb47091699063070"
+    },
+    {
+      "uid": 198,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 121.23639173241988,
+      "source_metadata_sha256": "169db9e4ead78b4d0168ef3f03443c716d8b224ac0f5dfb2d5a67f434a25c8b7"
+    },
+    {
+      "uid": 200,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 12.59149070396684,
+      "source_metadata_sha256": "1e57f4e345d84dec3efc0af520e34bea1591e493df2e79eda89ad0ed9aa4b53d"
+    },
+    {
+      "uid": 201,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -9.023276590213042,
+      "source_metadata_sha256": "6f1d095433de103245da69ed1bf4b24c0e1eb9e256f6683bbe5a066f6a87f7a6"
+    },
+    {
+      "uid": 202,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 41.02745613463302,
+      "source_metadata_sha256": "ecfc4d0428fcfc7be42302e07bf8c0db039a3b5c35da9a3d9b8ff7e1fe953a19"
+    },
+    {
+      "uid": 203,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 50.8298078762375,
+      "source_metadata_sha256": "124829bd8de5f61da6db949e9d3e913a48ae8dde2b95e71437f00208460b7e75"
+    },
+    {
+      "uid": 204,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 51.798365978186354,
+      "source_metadata_sha256": "892e0910fe2a0c7dce19a4091f102c5faaeda0696113a2792f2e888c0b5e7052"
+    },
+    {
+      "uid": 206,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -89.53649815404138,
+      "source_metadata_sha256": "5037e4fcb551f0d460e429b8860bef592c454f32fd7459ffc1ed5dc5fe9ea5b0"
+    },
+    {
+      "uid": 207,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 42.76468227750982,
+      "source_metadata_sha256": "092e04cce341c9541201bee589fa68f4499e5fdfbc3cc8c5bd8549f0f61fa98a"
+    },
+    {
+      "uid": 208,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 32.634831706060716,
+      "source_metadata_sha256": "a36de706c9257379abf00ba07d061b06c7dc4512df7171b3e47c8ff5ef18c103"
+    },
+    {
+      "uid": 209,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 39.284588779565226,
+      "source_metadata_sha256": "cd0d93c5a2197004c9b005bd591221d300815c9a05b47278a29bef9da0b20add"
+    },
+    {
+      "uid": 210,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 50.066589831493616,
+      "source_metadata_sha256": "26ddac354997c0d03e3f11574fb9b3d88663c38f85d0636e4cae3129fecb5d1d"
+    },
+    {
+      "uid": 211,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 52.41814921751162,
+      "source_metadata_sha256": "0fb9aa5948dc5bdb39a1c8bdadb85b3d51b846b8436eb76445eec47549f1259e"
+    },
+    {
+      "uid": 212,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 36.26506753419831,
+      "source_metadata_sha256": "b7c92209e38beec2a901cf57916ef148236df359b491d3ca8ed8ac6b389ef076"
+    },
+    {
+      "uid": 213,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 76.18821602404971,
+      "source_metadata_sha256": "16fc6e47e279910a082e736a41b761308a64a888346bdab619425bb8c72b0a8e"
+    },
+    {
+      "uid": 214,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 39.988223527403804,
+      "source_metadata_sha256": "3a842b4dcaa9d8172b51150645c2670bbaad8726d5bc4399e2f2d27e38eb6a61"
+    },
+    {
+      "uid": 215,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 5.153435838325532,
+      "source_metadata_sha256": "5967606eeecf9ae381ed005afe8953c80d09d5904a3578cf53c102a328779a14"
+    },
+    {
+      "uid": 216,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 15.646426154327125,
+      "source_metadata_sha256": "befe1ecac74c40fa85c23b55ccd37f661f4caa0c9a4a5741f0eb7abd589e070b"
+    },
+    {
+      "uid": 217,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 26.657671233742047,
+      "source_metadata_sha256": "9069ffa6f9339f9e103502157f66efb30a1ee3c67a9f2219405544fe1fb0de7e"
+    },
+    {
+      "uid": 218,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 19.436770728961132,
+      "source_metadata_sha256": "d762cf2db071c2568445c4b3a38c0fe36de0873bafa1d74da2d06affe0c1ab36"
+    },
+    {
+      "uid": 219,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 4.594740395786473,
+      "source_metadata_sha256": "87b049c7f7fd71a5db75c596b40a8cff49fb05e654a99fdf2cfda4ff4849413a"
+    },
+    {
+      "uid": 220,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -4.591782140645123,
+      "source_metadata_sha256": "cb08083b133bae01d9f1e844332b3072b32673f19b237e1051eeac7f3c45a808"
+    },
+    {
+      "uid": 221,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 27.670237536356417,
+      "source_metadata_sha256": "4d1ccba8dc7fc727b9e4442f27a7e4506151b02cad7e3452b17aa2f659133a8a"
+    },
+    {
+      "uid": 222,
+      "day": "12-17",
+      "initial_shelf_overlap": true,
+      "xy_clearance_mm": -11.700730578048852,
+      "source_metadata_sha256": "342670ffb942adf6831c8177fe7c6b59184790ef08ce5f02c9a98559f53c8ab3"
+    },
+    {
+      "uid": 224,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 14.80009617813885,
+      "source_metadata_sha256": "a5bcfa207a4e248a45fae993902c1b0fd3690274a77c6adb748308d8759728b0"
+    },
+    {
+      "uid": 225,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 55.686505921590275,
+      "source_metadata_sha256": "7edbf0aa2ed1dddf31148c716d64eced3f5ce1c429494640168d1590c3afa412"
+    },
+    {
+      "uid": 226,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 140.36434135347284,
+      "source_metadata_sha256": "2494a6033ccc78738329763942ee9b8bbd0ad62a14aa2f4d098bd2a92c4dd4a3"
+    },
+    {
+      "uid": 229,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 0.6276259850164501,
+      "source_metadata_sha256": "73a2597bf0bd0956b55a6a9336b45f5f8fdb93de545edf33439927af6af2e088"
+    },
+    {
+      "uid": 230,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 79.46278842116186,
+      "source_metadata_sha256": "760f1c0e61b32712ffc54bb90b8959d0e7aed7517446b9d029294055308579ee"
+    },
+    {
+      "uid": 231,
+      "day": "12-17",
+      "initial_shelf_overlap": false,
+      "xy_clearance_mm": 140.24988042682105,
+      "source_metadata_sha256": "7d684ae08be535babb3a3d43e7ed2655ca37a79e669c75fd645a411d273545e4"
+    }
+  ]
+}

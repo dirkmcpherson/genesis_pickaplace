@@ -1,0 +1,49 @@
+{
+  "uid": 248,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4381,
+    0.1,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/248/collection/248_eef_delta.npz",
+  "source_sha256": "262b432470d45397a08ee7481f9fb847f6c05c79e9953a9f3aea6f264300c4ff",
+  "parent_trace_sha256": "51926df5dfc5976832db8287d75f2f02d0768ecfa8e75e9a426a21c2f9812330",
+  "frames": 3077,
+  "source_frames": 3063,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.007000000000000003,
+  "insert_after": 2950,
+  "repair_note": "contact_reached",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 2662,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.0067009001632784004
+  },
+  "extension_bound_m": 0.03,
+  "precision_ik": true,
+  "hold_contact": true,
+  "action_replay_verification": false,
+  "provenance": "real-derived bounded final-slide repair",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 3.7271612236779276e-16,
+  "command_rotation_rad_p99": 7.53187084567504e-16,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "b7c3ec05e5f84316f57f06a6ea409ad1d63861b7bbc39111f4738258b2e081ea",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  }
+}

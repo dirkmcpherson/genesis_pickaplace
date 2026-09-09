@@ -1,0 +1,62 @@
+{
+  "uid": 319,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.3827,
+    0.0212,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/319/source.npz",
+  "source_sha256": "b8aaf33116ee8ec806f4e7429d9059b82230a1060798a0219ae1258f06b1b611",
+  "parent_trace_sha256": "934c74a9dff6020f712be13b6a40e7a6d76e01e4edd56d1c90a6ebffa55657e6",
+  "frames": 2639,
+  "source_frames": 2639,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.2097125118767102
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "timestamp-resampled real measurements; development timing probe",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 1.3059090732815552e-15,
+  "command_rotation_rad_p99": 4.8901419308041954e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/319_timed.npz",
+    "sha256": "e35ff80126fe3c1e9ef1b81522c9caa097d33471d64370651cc6ad9dff3de5be",
+    "original_frames": 2682,
+    "original_span_s": 79.11462473869324,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 79.17,
+    "endpoint_overrun_s": 0.0553752613067644,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

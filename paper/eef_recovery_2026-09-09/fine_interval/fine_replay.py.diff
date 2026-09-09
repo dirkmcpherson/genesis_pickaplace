@@ -1,0 +1,45 @@
+--- can_pos_recovery/repair_eef_slide.py
++++ paper/eef_recovery_2026-09-09/fine_interval/fine_replay.py
+@@ -10,7 +10,7 @@
+ from pathlib import Path
+ import sys
+ 
+-REPO = Path(__file__).resolve().parents[1]
++REPO = Path(__file__).resolve().parents[3]
+ sys.path[:0] = [str(REPO/'baselines'), str(REPO/'can_pos_recovery')]
+ 
+ 
+@@ -35,17 +35,21 @@
+     import torch
+     torch.set_num_threads(1)
+     from eef_delta_control import ArmKinematics, EEFDeltaController, FKPrecisionRefiner, from_genesis, pose_delta, to_genesis
+-    from eef_task_sequence import score_sequence, sustained_starts
+-    from genesis_can_env import GenesisCanEnv
++    from fine_sequence import score_sequence, sustained_starts
++    from fine_env import GenesisCanEnv
+     from replay_harness import STATIC_BOTTLE_POSITION, BOX_SIZE, tilt_deg
+     from sim_variant_hook import apply_pre, apply_post
+ 
++    if a.max_extension or a.hold_contact:
++        raise ValueError('Fine-interval experiment permits recorded-path reconstruction only')
+     source = np.load(a.source)
+     meta = json.loads(a.source.with_suffix('.json').read_text())
++    if meta.get('decision_dt_s', meta.get('timing_reconstruction', {}).get('decision_dt_s')) != .01:
++        raise ValueError('Expected an explicitly declared 10 ms source')
+     input_is_plan = meta.get('source_kind') == 'unexecuted_eef_action_plan'
+     used_code_sha256 = {str(path.relative_to(REPO)):hashlib.sha256(path.read_bytes()).hexdigest()
+                        for path in [Path(__file__),REPO/'baselines/eef_delta_control.py',
+-                                    REPO/'can_pos_recovery/eef_task_sequence.py']}
++                                    Path(__file__).with_name('fine_sequence.py'),Path(__file__).with_name('fine_env.py')]}
+     if not meta.get('variant_post_hook', True):
+         raise ValueError('Full world configuration required')
+     uid, variant = meta['uid'], meta['variant']
+@@ -162,7 +166,7 @@
+                              ('real-derived bounded final-slide repair' if extension else 'real-derived EEF replay')),
+                  observation_schema='GenesisCanEnv 17-vector; N+1 observations paired with N actions',
+                  action_schema='world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100',
+-                 decision_dt_s=.03,
++                 decision_dt_s=.01, physics_dt_s=.01, physics_steps_per_action=1,
+                  command_xyz_m_p99=float(np.quantile(np.linalg.norm(errors[:,:3],axis=1),.99)),
+                  command_rotation_rad_p99=float(np.quantile(np.linalg.norm(errors[:,3:],axis=1),.99)),
+                  code_sha256=used_code_sha256)

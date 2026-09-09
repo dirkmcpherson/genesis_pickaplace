@@ -1,0 +1,61 @@
+{
+  "uid": 247,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4822,
+    -0.1827,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/247/collection/247_eef_delta.npz",
+  "source_sha256": "d936ffb01eed803fce3168b51d005a27dba2fa5bd150c3efeae32b08e646b712",
+  "parent_trace_sha256": "027c3dac59199d98d6126f37dcda495747578bc4d086a171cb6552a4b8250082",
+  "frames": 1773,
+  "source_frames": 1737,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.018000000000000013,
+  "insert_after": 1707,
+  "repair_note": "contact_reached",
+  "sequence": {
+    "complete": false,
+    "reason": "final_not_retained",
+    "release_start": 1389,
+    "push_start": 1621,
+    "contact_start": 1741,
+    "final_surface_gap_m": 0.004077750546478284,
+    "push_toward_goal_m": 0.08609801311896798,
+    "support_fraction": 0.967479674796748
+  },
+  "extension_bound_m": 0.03,
+  "precision_ik": true,
+  "hold_contact": true,
+  "action_replay_verification": false,
+  "provenance": "planned relative-suffix final-slide repair",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 7.266679031990252e-16,
+  "command_rotation_rad_p99": 2.8287807786230686e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "b7c3ec05e5f84316f57f06a6ea409ad1d63861b7bbc39111f4738258b2e081ea",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "source_kind": "unexecuted_eef_action_plan",
+  "parent_generation": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/slide_repair_30mm/247/247_eef_delta.npz",
+  "parent_generation_sha256": "167ad0236dabd5c825b52be2982a64d535ea23c002bea9f1b8d6a53e3298995c",
+  "suffix_offset_m": [
+    -0.013145566505898154,
+    -0.012294648338886355,
+    0.0
+  ],
+  "changed_action_index": 1744,
+  "source_frame_at_change": 1708
+}

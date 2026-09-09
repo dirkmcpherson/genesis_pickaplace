@@ -1,0 +1,9 @@
+{
+  "uid": 162,
+  "reviewed": true,
+  "source_sha256": "afbabc785896d586a66f6a1e36316b0a6be358e10c1b317452bd2ad1a807c9c5",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/162/162_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/162/162_phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Carry and shelf placement visible; can already touches goal in a selected late shelf frame. Endpoint upright near goal with hand withdrawn. Supplied metric pass does not establish a separate supported recontact-and-slide phase."
+}

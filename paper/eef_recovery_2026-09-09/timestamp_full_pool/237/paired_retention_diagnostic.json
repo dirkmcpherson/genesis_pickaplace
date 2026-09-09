@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "fixed",
+    "frames": 803,
+    "duration_s": 24.09,
+    "sequence": {
+      "complete": false,
+      "reason": "final_not_retained",
+      "release_start": 591,
+      "push_start": 684,
+      "contact_start": 711,
+      "final_surface_gap_m": 0.009405546699558773,
+      "push_toward_goal_m": 0.019260674418440173,
+      "support_fraction": 0.8333333333333334
+    },
+    "last_goal_contact_frame": 739,
+    "final_gap_mm": 9.405546699558773,
+    "can_motion_after_last_goal_contact_mm": 10.913118238115432,
+    "goal_motion_after_last_goal_contact_mm": 0.00531117166246986,
+    "final_tilt_deg": 0.00256443048716775
+  },
+  {
+    "mode": "timestamp",
+    "frames": 900,
+    "duration_s": 27.0,
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 671,
+      "push_start": 781,
+      "contact_start": 804,
+      "final_surface_gap_m": 0.0005478832324798122,
+      "push_toward_goal_m": 0.01380929113212293,
+      "support_fraction": 0.9615384615384616
+    },
+    "last_goal_contact_frame": 840,
+    "final_gap_mm": 0.5478832324798122,
+    "can_motion_after_last_goal_contact_mm": 1.6071152013648566,
+    "goal_motion_after_last_goal_contact_mm": 0.004946130502503365,
+    "final_tilt_deg": 0.0025623968946565335
+  }
+]

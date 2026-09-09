@@ -1,0 +1,48 @@
+{
+  "uid": 276,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4684,
+    0.1412,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/full_pool/276/source.npz",
+  "source_sha256": "dba7b35aef662285acfec65077035eec65c43563bbdf6a32810220d33cdf68d1",
+  "parent_trace_sha256": "576a84ce020323f0c6c830a639ef05cf79905c919f4461387be89328df434156",
+  "frames": 1460,
+  "source_frames": 1460,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 1220,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.04118915097880706
+  },
+  "precision_ik": true,
+  "hold_contact": false,
+  "action_replay_verification": false,
+  "provenance": "real-derived EEF replay",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 5.11046947805447e-16,
+  "command_rotation_rad_p99": 1.9117034979568554e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5f44dcbcadf67ffbd6c34d505b944d989227ca49b2f8061d69672afde52f908b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  }
+}

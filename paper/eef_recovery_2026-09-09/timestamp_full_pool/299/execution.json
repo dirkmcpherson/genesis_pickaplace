@@ -1,0 +1,14 @@
+{
+  "uid": 299,
+  "returncode": 0,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 2318,
+    "push_start": 2686,
+    "contact_start": 2694,
+    "final_surface_gap_m": -0.0002192157402022693,
+    "push_toward_goal_m": 0.010250909908231604,
+    "support_fraction": 0.8181818181818182
+  }
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "uid": 207,
+    "reference_frames": 1003,
+    "new_frames": 1002,
+    "max_joint_diff": 0.0512,
+    "max_grip_diff": 0.0259
+  }
+]

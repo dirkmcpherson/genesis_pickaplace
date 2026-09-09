@@ -1,0 +1,30 @@
+{
+  "uid": 281,
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4526,
+    -0.163,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 1022,
+  "source_sha256": "7af4ea406d4042039f6d1c5aab1230075dbd58313d7c24c2f600c2177d640788",
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/281_timed.npz",
+    "sha256": "483bc17a8a951205235d3ff8aed159e892a0c8c96fe18526cb9d2db78389869c",
+    "original_frames": 1041,
+    "original_span_s": 30.60315704345703,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 30.66,
+    "endpoint_overrun_s": 0.05684295654296889,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  }
+}

@@ -1,0 +1,233 @@
+[
+  {
+    "uid": 242,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "242",
+      "n": 272,
+      "released": true,
+      "release_frame": 8,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07003620991346073,
+      "gain_m": 0.31155047612004183
+    }
+  },
+  {
+    "uid": 247,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "247",
+      "n": 451,
+      "released": true,
+      "release_frame": 59,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06775210698402967,
+      "gain_m": 0.1258827710017338
+    }
+  },
+  {
+    "uid": 248,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "248",
+      "n": 751,
+      "released": true,
+      "release_frame": 10,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06839256465666482,
+      "gain_m": 0.33462118734196544
+    }
+  },
+  {
+    "uid": 251,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "251",
+      "n": 379,
+      "released": true,
+      "release_frame": 21,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07588333532908678,
+      "gain_m": 0.30522396279613506
+    }
+  },
+  {
+    "uid": 256,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "256",
+      "n": 552,
+      "released": true,
+      "release_frame": 9,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06964114982404723,
+      "gain_m": 0.16520369890635783
+    }
+  },
+  {
+    "uid": 275,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "275",
+      "n": 308,
+      "released": true,
+      "release_frame": 11,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07563658337176744,
+      "gain_m": 0.17612255120514977
+    }
+  },
+  {
+    "uid": 302,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "302",
+      "n": 305,
+      "released": true,
+      "release_frame": 11,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07021342355657155,
+      "gain_m": 0.18503829979746578
+    }
+  },
+  {
+    "uid": 304,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "304",
+      "n": 537,
+      "released": true,
+      "release_frame": 4,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07562609484522992,
+      "gain_m": 0.3345715154702743
+    }
+  },
+  {
+    "uid": 309,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "309",
+      "n": 446,
+      "released": true,
+      "release_frame": 0,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07414901429186561,
+      "gain_m": 0.20603795531009636
+    }
+  },
+  {
+    "uid": 328,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "328",
+      "n": 655,
+      "released": true,
+      "release_frame": 41,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.07167612007549702,
+      "gain_m": 0.3376946123988808
+    }
+  },
+  {
+    "uid": 330,
+    "returncode": 0,
+    "verified": true,
+    "array_comparison": {
+      "trajectory": true,
+      "actions_eef": true,
+      "observations": true
+    },
+    "metric": {
+      "uid": "330",
+      "n": 665,
+      "released": true,
+      "release_frame": 32,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.08046336364982164,
+      "gain_m": 0.1779322733537016
+    }
+  }
+]

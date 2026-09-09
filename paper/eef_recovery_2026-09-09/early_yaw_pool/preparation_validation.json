@@ -1,0 +1,12 @@
+{
+  "cohort": "December 16/17, 89 candidates",
+  "by_day": {
+    "12-16": 49,
+    "12-17": 40
+  },
+  "source_corrections": [
+    207
+  ],
+  "seed_rotation_checks": 89,
+  "world_positions_not_rotated_twice": true
+}

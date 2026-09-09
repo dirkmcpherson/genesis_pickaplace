@@ -1,0 +1,30 @@
+{
+  "uid": 131,
+  "day": "12-16",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.5764154079974361,
+    -0.06747411217104896,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 1486,
+  "source_sha256": "252952e990dd0f793166c0e9fd2b3d7028ea9e769b519c119232522d1acc630d",
+  "initial_pose_provenance": "archived pre-only outcome-fitted world position",
+  "source_matches_archived_episode": true,
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 44.540781021118164,
+    "original_frames": 1661,
+    "replay_duration_s": 44.58,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/131_timed.npz",
+    "decision_dt_s": 0.03
+  }
+}

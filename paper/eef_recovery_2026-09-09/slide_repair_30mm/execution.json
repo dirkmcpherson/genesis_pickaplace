@@ -1,0 +1,122 @@
+[
+  {
+    "uid": 237,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "final_not_retained",
+      "release_start": 591,
+      "push_start": 684,
+      "contact_start": 711,
+      "final_surface_gap_m": 0.004848262437221917,
+      "push_toward_goal_m": 0.019260674418440173,
+      "support_fraction": 0.8333333333333334
+    },
+    "extension_m": 0.014000000000000009,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 242,
+    "returncode": 0,
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 583,
+      "push_start": 835,
+      "contact_start": 912,
+      "final_surface_gap_m": -1.9615875515716086e-05,
+      "push_toward_goal_m": 0.018785504650537566,
+      "support_fraction": 1.0
+    },
+    "extension_m": 0.006500000000000002,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 247,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "final_not_retained",
+      "release_start": 1389,
+      "push_start": 1621,
+      "contact_start": 1741,
+      "final_surface_gap_m": 0.004077750546478284,
+      "push_toward_goal_m": 0.08609801311896798,
+      "support_fraction": 0.967479674796748
+    },
+    "extension_m": 0.018000000000000013,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 251,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 1192,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.004109168244246494
+    },
+    "extension_m": 0.030000000000000023,
+    "repair_note": "extension_limit"
+  },
+  {
+    "uid": 275,
+    "returncode": 0,
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 991,
+      "push_start": 1269,
+      "contact_start": 1367,
+      "final_surface_gap_m": -0.0001885907187693242,
+      "push_toward_goal_m": 0.0708805098184387,
+      "support_fraction": 0.9504950495049505
+    },
+    "extension_m": 0.012500000000000008,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 248,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 2662,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.0067009001632784004
+    },
+    "extension_m": 0.007000000000000003,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 297,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 917,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.008635481531924824
+    },
+    "extension_m": 0.009500000000000005,
+    "repair_note": "contact_reached"
+  },
+  {
+    "uid": 302,
+    "returncode": 0,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 979,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.008418658628410833
+    },
+    "extension_m": 0.030000000000000023,
+    "repair_note": "extension_limit"
+  }
+]

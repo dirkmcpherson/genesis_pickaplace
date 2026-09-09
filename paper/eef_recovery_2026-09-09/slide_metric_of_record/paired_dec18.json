@@ -1,0 +1,27 @@
+{
+  "fixed_count": {
+    "released": 72,
+    "pushed": 72,
+    "arrived": 19,
+    "slide_success": 19
+  },
+  "timestamp_count": {
+    "released": 74,
+    "pushed": 74,
+    "arrived": 21,
+    "slide_success": 21
+  },
+  "gained": [
+    256,
+    309,
+    317,
+    328,
+    330
+  ],
+  "lost": [
+    244,
+    297,
+    298
+  ],
+  "limitations": "Archived fixed pool retains bad initial orientations for 234/318; neither is a metric success. The 64 legacy tapes are a different processed cohort. Metric changes are not new simulated recoveries."
+}

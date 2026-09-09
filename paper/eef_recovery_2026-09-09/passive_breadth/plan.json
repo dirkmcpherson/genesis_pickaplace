@@ -1,0 +1,65 @@
+{
+  "selection": "Deterministic SHA256 rank passive-breadth-2026-09-09:<uid> within fixed-clock outcome strata, before treatment outcomes",
+  "strata": {
+    "pickup_failure": [
+      278,
+      319,
+      321
+    ],
+    "placement_failure": [
+      286,
+      293,
+      309,
+      311,
+      315
+    ],
+    "slide_failure": [
+      246,
+      248,
+      254,
+      256,
+      259
+    ],
+    "complete": [
+      233,
+      273,
+      305
+    ]
+  },
+  "population_counts": {
+    "complete": 8,
+    "placement_failure": 27,
+    "slide_failure": 36,
+    "pickup_failure": 3
+  },
+  "uids": [
+    233,
+    246,
+    248,
+    254,
+    256,
+    259,
+    273,
+    278,
+    286,
+    293,
+    305,
+    309,
+    311,
+    315,
+    319,
+    321
+  ],
+  "source": "timestamp_full_pool sources; wait for all 74 controls to finish before starting",
+  "treatment": "Existing tc0.3 distal mimic surrogate, zero distal kp/kv; all other physics and commands unchanged",
+  "purpose": "Broader diagnostic of contact-dependent distal freedom, not calibration or automatic bank admission",
+  "controls": "Full timestamp control for each selected UID, including prior upright correction for 234/318",
+  "parameters": "One previously declared value only; no search or outcome-selected retuning",
+  "outcomes": [
+    "unchanged sequence score",
+    "pickup and upright release",
+    "signed distal mimic residual during contact and without contact",
+    "control regressions"
+  ],
+  "workers": 2
+}

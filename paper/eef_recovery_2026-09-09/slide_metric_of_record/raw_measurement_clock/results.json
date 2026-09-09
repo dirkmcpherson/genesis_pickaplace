@@ -1,0 +1,199 @@
+{
+  "pool": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock",
+  "count": 4,
+  "predicate_sha256": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+  "counts": {
+    "released": 4,
+    "pushed": 4,
+    "arrived": 1,
+    "slide_success": 1
+  },
+  "success_uids": [
+    233
+  ],
+  "tip_mapping_disagreements": [],
+  "records": [
+    {
+      "uid": 124,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/124/collection/124_eef_delta.npz",
+      "source_sha256": "9a00aa2af1434f79293891e69be92b5d21c064abf27f945fca25f03047f7b86f",
+      "source_dt_s": 0.01,
+      "scoring_dt_s": 0.12,
+      "final_partial_interval": true,
+      "mapping": "post-action observations; measured URDF tool xyz; physical tilt >60 degrees",
+      "metric": {
+        "uid": "124",
+        "n": 328,
+        "released": true,
+        "release_frame": 15,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.1285400171028712,
+        "gain_m": 0.15245363694993608
+      },
+      "legacy_tip_proxy_metric": {
+        "uid": "124",
+        "n": 328,
+        "released": true,
+        "release_frame": 15,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.1285400171028712,
+        "gain_m": 0.15245363694993608
+      },
+      "strict_contact_diagnostic": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.06254001710287119
+      },
+      "final_tilt_deg": 0.002565293881563762,
+      "final_solver_contacts": [
+        5,
+        2,
+        0
+      ]
+    },
+    {
+      "uid": 185,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/185/collection/185_eef_delta.npz",
+      "source_sha256": "5f7103526e3b6d8f631826fc4b4048491f2cb72bc5ec558cc04b8a165ba863ea",
+      "source_dt_s": 0.01,
+      "scoring_dt_s": 0.12,
+      "final_partial_interval": true,
+      "mapping": "post-action observations; measured URDF tool xyz; physical tilt >60 degrees",
+      "metric": {
+        "uid": "185",
+        "n": 354,
+        "released": true,
+        "release_frame": 32,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11067513371299574,
+        "gain_m": 0.23109937410515796
+      },
+      "legacy_tip_proxy_metric": {
+        "uid": "185",
+        "n": 354,
+        "released": true,
+        "release_frame": 32,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11067513371299574,
+        "gain_m": 0.23109937410515796
+      },
+      "strict_contact_diagnostic": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2895,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04467513371299574
+      },
+      "final_tilt_deg": 0.0025634297455290078,
+      "final_solver_contacts": [
+        5,
+        0,
+        0
+      ]
+    },
+    {
+      "uid": 233,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/233/collection/233_eef_delta.npz",
+      "source_sha256": "b718b70893d8b039e2aca095857bf70e45748b0fa858d4e9d95c45ac77369644",
+      "source_dt_s": 0.01,
+      "scoring_dt_s": 0.12,
+      "final_partial_interval": true,
+      "mapping": "post-action observations; measured URDF tool xyz; physical tilt >60 degrees",
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.0658630506554439,
+        "gain_m": 0.2148998619010022
+      },
+      "legacy_tip_proxy_metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.0658630506554439,
+        "gain_m": 0.2148998619010022
+      },
+      "strict_contact_diagnostic": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 2222,
+        "push_start": 2499,
+        "contact_start": 2572,
+        "final_surface_gap_m": -0.0001369493445561032,
+        "push_toward_goal_m": 0.021175086582704224,
+        "support_fraction": 0.9512195121951219
+      },
+      "final_tilt_deg": 0.002562828401915394,
+      "final_solver_contacts": [
+        5,
+        0,
+        0
+      ]
+    },
+    {
+      "uid": 235,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/raw_measurement_clock/235/collection/235_eef_delta.npz",
+      "source_sha256": "8089c9db1e086b34236e4b696a1a00991a63a63beabb81355b31f1d22c0e7282",
+      "source_dt_s": 0.01,
+      "scoring_dt_s": 0.12,
+      "final_partial_interval": true,
+      "mapping": "post-action observations; measured URDF tool xyz; physical tilt >60 degrees",
+      "metric": {
+        "uid": "235",
+        "n": 249,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09055218642926414,
+        "gain_m": 0.2798643084381239
+      },
+      "legacy_tip_proxy_metric": {
+        "uid": "235",
+        "n": 249,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09055218642926414,
+        "gain_m": 0.2798643084381239
+      },
+      "strict_contact_diagnostic": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.024552186429264142
+      },
+      "final_tilt_deg": 89.99996065927618,
+      "final_solver_contacts": [
+        5,
+        0,
+        0
+      ]
+    }
+  ]
+}

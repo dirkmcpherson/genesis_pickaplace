@@ -735,3 +735,13 @@ Constants are the metrics of record or noise floors, not tuned: proximity 0.081 
 **The reward moves with the definition** (user, 2026-09-09): breaking comparability touches only the slide and end-to-end sliding comparisons, neither of which is functional for sliding, so nothing is lost. This also closes the reward-versus-score mismatch, where the end-to-end ladder pays its top rung on the `nested` training proxy while the statistic of record sits elsewhere.
 
 **Implementation:** `can_pos_recovery/slide_predicate.py` (classifier, writes per-tape json) and `can_pos_recovery/slide_reels.sh` (builds `slide_successes.m3u` / `slide_failures.m3u` from the existing real-versus-sim census renders; nothing re-rendered). Applies unchanged to a larger set as real2sim recovery adds tapes.
+
+### Amendment (w) — correction: ALL FOUR stages are registerable inline, settle included
+
+An earlier statement in this amendment, and in `MUST_HAVE_RESULTS.md`, implied that settle-dependent stages could not be logged during training without perturbing it. **That is too strong and is corrected here (user, 2026-09-09).**
+
+**Nothing prevents registering pick / place / can-contact / can-settle on every episode.** The environment already tracks all of them in a sticky set that a stage enters the first time its predicate fires and never leaves. The information exists at every step; it was simply never emitted. The curves cannot be rebuilt *retrospectively* for runs already finished, because those runs did not log it — but that is a property of the old logs, not a limitation of the measurement.
+
+**The settle caveat dissolves under amendment (x).** It applied to the environment's `nested` check, which simulates 100 settle steps and would change training if run inline. Predicate (x) simulates nothing: it reads the **final state** — can within 0.081 m of the goal, upright. The one thing a final-frame read misses is *at rest*, since the state vector carries no velocities; that is recoverable from the trajectory itself as can displacement below ~2 mm across the last few frames. Both are free and inline.
+
+**So the episode record carries all four stages, with no extra simulation and no reward change**, and the settle field is the (x) predicate rather than the settle-simulating one. The three requirements of this amendment are otherwise unchanged: one record from the single exit path both termination and truncation reach; logging only; reward untouched.

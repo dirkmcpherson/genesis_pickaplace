@@ -1,0 +1,11 @@
+{
+  "uids": [
+    234,
+    318
+  ],
+  "change": "Set quaternion wxyz to [1,0,0,0] and center z to standard upright 0.113 m; retain archived xy, all arm/grip commands, world and timing.",
+  "evidence": "real_start_frames.jpg; frame 0 of real_videos_480p/{234,318}_real.mp4, compared with 233",
+  "limitations": "Upright orientation is visually supported; z uses existing sim support geometry, xy remains unvalidated; no frozen placement changes.",
+  "max_extension": 0,
+  "polish_ik": true
+}

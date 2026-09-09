@@ -1,0 +1,8 @@
+{
+  "uids": [
+    247,
+    251,
+    275
+  ],
+  "purpose": "Test whether the last-contact insertion is too late. Keep 10 mm bound, original world/objects/grip and resume original path. Choose first three-frame sustained upright shelf+robot contact after physical release, gap 2..25 mm, and >=0.5 mm forward recorded target travel over the next three frames. Insert after that third contact frame. All declared outcomes retained; development only."
+}

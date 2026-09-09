@@ -1,0 +1,10 @@
+{
+  "uid": 237,
+  "frames": 900,
+  "all_observations_bit_identical": true,
+  "all_joint_targets_bit_identical": true,
+  "source_sha256": "03c16ab724a807606d9b09e1107487b2abb7200ba838e462e97cf0b206760d98",
+  "adapter_sha256": "ee3b3d9696cb856158edef9291b700cef3bd40098d464a5ce90a5dd331c029a2",
+  "scope": "Fresh configured world; reset and every direct EEF step compared to packaged tape",
+  "limitation": "This validates the adapter on this trace, not broader physical fidelity or a policy interface"
+}

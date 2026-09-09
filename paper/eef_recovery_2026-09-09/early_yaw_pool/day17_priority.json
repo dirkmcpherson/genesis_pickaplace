@@ -1,0 +1,10 @@
+{
+  "uids": [
+    184,
+    185,
+    189
+  ],
+  "reason": "Bring forward one candidate per archived stage from December 17 while main queue processes December 16; same declared population and sources",
+  "selection_rule": "Smallest UID per archived stage among December 17 winners; not based on new outcomes",
+  "execution": "One extra serial worker; main queue skips completed execution files"
+}

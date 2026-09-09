@@ -1,0 +1,9 @@
+{
+  "uids": [
+    237,
+    247
+  ],
+  "hypothesis": "Both 30 mm-bound runs reach sustained supported goal contact but lose retention. Their first resumed action subtracts the added push offset. Remove only that subtraction, then continue original recorded EEF deltas. Preserve grip and all earlier actions.",
+  "status": "Motion-repaired candidate, no independent verification until a second actual replay.",
+  "change": "Replace first resumed action with original source action. Subsequent saved deltas unchanged; suffix target positions remain translated by the inserted push offset."
+}

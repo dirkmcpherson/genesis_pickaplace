@@ -1,0 +1,6 @@
+{
+  "uid": 308,
+  "reason": "Complete push/contact occurred; the tape ends while the can is settling, COM 4.000015 mm above rest and declining each frame.",
+  "change": "Append exactly 10 zero-EEF-delta actions at unchanged final grip, 0.3 seconds. Do not change scorer thresholds or earlier actions.",
+  "role": "Explicit grip/timing repair; requires independent replay and visual review."
+}

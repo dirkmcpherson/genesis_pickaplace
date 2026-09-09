@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "uid": 233,
+      "cohort": "timestamp_full_pool",
+      "frames": 2884,
+      "source_sha256": "9d178c63ccf47c83b56df39cc496bedc7b088156c9ac3d37227eda00ad818fa3",
+      "control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz"
+    },
+    {
+      "uid": 235,
+      "cohort": "timestamp_full_pool",
+      "frames": 2980,
+      "source_sha256": "9969f95b5bfeed7987ac28abb6f369a44a2e8fb381db9c8c18a7958a43760360",
+      "control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/235/collection/235_eef_delta.npz"
+    },
+    {
+      "uid": 124,
+      "cohort": "early_yaw_pool",
+      "frames": 3927,
+      "source_sha256": "267a4d4940dfe81f58dde5ce87d70527d775bb1cd62f61225c992bbe1bc01944",
+      "control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/124/collection/124_eef_delta.npz"
+    },
+    {
+      "uid": 185,
+      "cohort": "early_yaw_pool",
+      "frames": 4239,
+      "source_sha256": "7e62a4aaf98375469043d9055af3dc3e5d0ccf1791948052aa214925bb9eedaa",
+      "control_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/collection/185_eef_delta.npz"
+    }
+  ],
+  "selection": "233 complete control, 235 placement failure, 124 absent recontact, 185 near-goal failed push. Diagnostic selection, not a rate estimate.",
+  "physics": "Same 10 ms physics timestep and world; one physics step per target instead of three.",
+  "acceptance": "Pickup remains 300 ms; supported release and goal contact remain 90 ms. All other geometry and movement gates unchanged.",
+  "modifications": "No grip transform, added push, terminal hold or initial-pose adjustment."
+}

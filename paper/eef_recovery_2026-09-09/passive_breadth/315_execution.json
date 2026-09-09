@@ -1,0 +1,42 @@
+{
+  "uid": 315,
+  "returncode": 0,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.5686827233645133
+  },
+  "control_sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.4180909571485123
+  },
+  "can_contact": {
+    "frames": 460,
+    "min_residual_deg": [
+      -0.11166248470544815,
+      -0.1116095557808876
+    ],
+    "max_residual_deg": [
+      1.53665030002594,
+      1.307140588760376
+    ]
+  },
+  "no_can_contact": {
+    "frames": 3271,
+    "min_residual_deg": [
+      -0.10432600975036621,
+      -0.10429868847131729
+    ],
+    "max_residual_deg": [
+      1.264404535293579,
+      1.007994532585144
+    ]
+  }
+}

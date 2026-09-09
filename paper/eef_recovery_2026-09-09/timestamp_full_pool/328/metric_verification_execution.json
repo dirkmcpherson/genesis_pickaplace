@@ -1,0 +1,21 @@
+{
+  "uid": 328,
+  "returncode": 0,
+  "verified": true,
+  "array_comparison": {
+    "trajectory": true,
+    "actions_eef": true,
+    "observations": true
+  },
+  "metric": {
+    "uid": "328",
+    "n": 655,
+    "released": true,
+    "release_frame": 41,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.07167612007549702,
+    "gain_m": 0.3376946123988808
+  }
+}

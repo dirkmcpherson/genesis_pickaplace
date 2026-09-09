@@ -1,0 +1,16 @@
+{
+  "uid": 247,
+  "returncode": 0,
+  "sequence": {
+    "complete": false,
+    "reason": "final_not_retained",
+    "release_start": 1389,
+    "push_start": 1621,
+    "contact_start": 1741,
+    "final_surface_gap_m": 0.004077750546478284,
+    "push_toward_goal_m": 0.08609801311896798,
+    "support_fraction": 0.967479674796748
+  },
+  "extension_m": 0.018000000000000013,
+  "repair_note": "contact_reached"
+}

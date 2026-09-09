@@ -1,0 +1,27 @@
+{
+  "uid": 243,
+  "variant": "gc_kp4_riser3_shelf6_og4",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4524,
+    -0.037,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 572,
+  "source_sha256": "11ce7cff7596bca9b410d02788e64236ff2af2e4c4ec666eb16a3da105d244d5",
+  "grip_transform": {
+    "gain": 4,
+    "deadband": 0.05,
+    "cadence_s": 0.03,
+    "implementation": "record_demos.HumanFollower._filter_grip",
+    "source_sha256": "7e2725f64465246c0f8653c4f7793bb572af19694824d7a5f39489f7d458dd6b",
+    "changed_frames": 302
+  }
+}

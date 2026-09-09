@@ -1,0 +1,17 @@
+{
+  "uids": [
+    242,
+    247,
+    248,
+    251,
+    256,
+    275,
+    302,
+    304,
+    309,
+    328,
+    330
+  ],
+  "workers": 2,
+  "basis": "Passes unchanged slide_predicate with physical tilt >60 degree mapping; existing strict successes already independently verified."
+}

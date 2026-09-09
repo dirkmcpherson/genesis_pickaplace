@@ -1,0 +1,13 @@
+{
+  "uid": 185,
+  "mode": "collection",
+  "returncode": 0,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 2894,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.053860453040734
+  }
+}

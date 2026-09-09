@@ -1,0 +1,46 @@
+{
+  "uid": 273,
+  "returncode": 0,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 917,
+    "push_start": 1187,
+    "contact_start": 1224,
+    "final_surface_gap_m": -0.0001501501576170461,
+    "push_toward_goal_m": 0.05827702042573825,
+    "support_fraction": 0.8
+  },
+  "control_sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 912,
+    "push_start": 1181,
+    "contact_start": 1222,
+    "final_surface_gap_m": -0.00021562284205471627,
+    "push_toward_goal_m": 0.07762901639602847,
+    "support_fraction": 0.8636363636363636
+  },
+  "can_contact": {
+    "frames": 621,
+    "min_residual_deg": [
+      -0.16309551894664764,
+      -0.16310234367847443
+    ],
+    "max_residual_deg": [
+      1.227615475654602,
+      1.069112777709961
+    ]
+  },
+  "no_can_contact": {
+    "frames": 899,
+    "min_residual_deg": [
+      -0.19669534265995026,
+      -0.19673462212085724
+    ],
+    "max_residual_deg": [
+      0.9002803564071655,
+      0.8150379061698914
+    ]
+  }
+}

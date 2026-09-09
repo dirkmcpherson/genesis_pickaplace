@@ -1,0 +1,907 @@
+{
+  "count": 64,
+  "counts": {
+    "released": 64,
+    "pushed": 64,
+    "arrived": 15,
+    "slide_success": 15
+  },
+  "records": [
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100000.npz",
+      "metric": {
+        "uid": "100000",
+        "n": 255,
+        "released": true,
+        "release_frame": 4,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06581186270106885,
+        "gain_m": 0.31539987838581174
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100001.npz",
+      "metric": {
+        "uid": "100001",
+        "n": 170,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.22519129908594676,
+        "gain_m": 0.2102218790322138
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100002.npz",
+      "metric": {
+        "uid": "100002",
+        "n": 412,
+        "released": true,
+        "release_frame": 31,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.13742552085388043,
+        "gain_m": 0.12865559182149208
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100003.npz",
+      "metric": {
+        "uid": "100003",
+        "n": 228,
+        "released": true,
+        "release_frame": 45,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2710617417397414,
+        "gain_m": 0.1746380063375924
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100004.npz",
+      "metric": {
+        "uid": "100004",
+        "n": 387,
+        "released": true,
+        "release_frame": 15,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07499698492746652,
+        "gain_m": 0.17676208798850734
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100005.npz",
+      "metric": {
+        "uid": "100005",
+        "n": 240,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.18132599556848855,
+        "gain_m": 0.1956424429327046
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100006.npz",
+      "metric": {
+        "uid": "100006",
+        "n": 600,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06591395989522025,
+        "gain_m": 0.21828368365872475
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100007.npz",
+      "metric": {
+        "uid": "100007",
+        "n": 465,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.34164317516798337,
+        "gain_m": 0.20585385703325126
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100008.npz",
+      "metric": {
+        "uid": "100008",
+        "n": 471,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.08894881688418602,
+        "gain_m": 0.25491196036739994
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/100009.npz",
+      "metric": {
+        "uid": "100009",
+        "n": 600,
+        "released": true,
+        "release_frame": 44,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07037658137066216,
+        "gain_m": 0.16783564063776152
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101000.npz",
+      "metric": {
+        "uid": "101000",
+        "n": 260,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06579205713645082,
+        "gain_m": 0.2151225399553865
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101001.npz",
+      "metric": {
+        "uid": "101001",
+        "n": 292,
+        "released": true,
+        "release_frame": 17,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09167706868726946,
+        "gain_m": 0.18563760743052457
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101002.npz",
+      "metric": {
+        "uid": "101002",
+        "n": 434,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11986712922853603,
+        "gain_m": 0.294200810905177
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101003.npz",
+      "metric": {
+        "uid": "101003",
+        "n": 290,
+        "released": true,
+        "release_frame": 5,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2871071165465886,
+        "gain_m": 0.14896040764697438
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101004.npz",
+      "metric": {
+        "uid": "101004",
+        "n": 390,
+        "released": true,
+        "release_frame": 58,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10695562361785267,
+        "gain_m": 0.3102064662895026
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101007.npz",
+      "metric": {
+        "uid": "101007",
+        "n": 362,
+        "released": true,
+        "release_frame": 17,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6530540162724962,
+        "gain_m": 0.0580574540578995
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101008.npz",
+      "metric": {
+        "uid": "101008",
+        "n": 391,
+        "released": true,
+        "release_frame": 7,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6096287725832901,
+        "gain_m": 0.3126643593842414
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/101009.npz",
+      "metric": {
+        "uid": "101009",
+        "n": 338,
+        "released": true,
+        "release_frame": 14,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10164402538586838,
+        "gain_m": 0.3239287061412851
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102001.npz",
+      "metric": {
+        "uid": "102001",
+        "n": 589,
+        "released": true,
+        "release_frame": 76,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.18111446246964744,
+        "gain_m": 0.18858614689772182
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102003.npz",
+      "metric": {
+        "uid": "102003",
+        "n": 600,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10455088274825475,
+        "gain_m": 0.2907079390410857
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102004.npz",
+      "metric": {
+        "uid": "102004",
+        "n": 240,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11285530247988293,
+        "gain_m": 0.18539736449271416
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102005.npz",
+      "metric": {
+        "uid": "102005",
+        "n": 600,
+        "released": true,
+        "release_frame": 110,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.344461248854461,
+        "gain_m": 0.0543555115305282
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102007.npz",
+      "metric": {
+        "uid": "102007",
+        "n": 600,
+        "released": true,
+        "release_frame": 91,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6337253187660657,
+        "gain_m": 0.11120869780346648
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/102008.npz",
+      "metric": {
+        "uid": "102008",
+        "n": 140,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.13665855224416443,
+        "gain_m": 0.14839613982147015
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103000.npz",
+      "metric": {
+        "uid": "103000",
+        "n": 138,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.13619447427829826,
+        "gain_m": 0.23203418210738455
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103001.npz",
+      "metric": {
+        "uid": "103001",
+        "n": 578,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.17206253513654957,
+        "gain_m": 0.17481014097209352
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103002.npz",
+      "metric": {
+        "uid": "103002",
+        "n": 581,
+        "released": true,
+        "release_frame": 10,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.14036989190230303,
+        "gain_m": 0.14390932715367294
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103003.npz",
+      "metric": {
+        "uid": "103003",
+        "n": 473,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.0977183188496904,
+        "gain_m": 0.19105146695032782
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103006.npz",
+      "metric": {
+        "uid": "103006",
+        "n": 318,
+        "released": true,
+        "release_frame": 12,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06620271815530338,
+        "gain_m": 0.18834872431602157
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103007.npz",
+      "metric": {
+        "uid": "103007",
+        "n": 500,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09653829418373468,
+        "gain_m": 0.26214288276203446
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/103008.npz",
+      "metric": {
+        "uid": "103008",
+        "n": 369,
+        "released": true,
+        "release_frame": 18,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09046703738928785,
+        "gain_m": 0.1580076679288121
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104000.npz",
+      "metric": {
+        "uid": "104000",
+        "n": 195,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09663536901976903,
+        "gain_m": 0.19017160087128243
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104001.npz",
+      "metric": {
+        "uid": "104001",
+        "n": 461,
+        "released": true,
+        "release_frame": 58,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07839309824299964,
+        "gain_m": 0.11913936744452147
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104002.npz",
+      "metric": {
+        "uid": "104002",
+        "n": 279,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.33593755769336214,
+        "gain_m": 0.22047419524045941
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104003.npz",
+      "metric": {
+        "uid": "104003",
+        "n": 367,
+        "released": true,
+        "release_frame": 13,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09874157127290953,
+        "gain_m": 0.15651213471112
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104004.npz",
+      "metric": {
+        "uid": "104004",
+        "n": 525,
+        "released": true,
+        "release_frame": 82,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10451603195122944,
+        "gain_m": 0.2954907809779768
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104006.npz",
+      "metric": {
+        "uid": "104006",
+        "n": 548,
+        "released": true,
+        "release_frame": 5,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07651900923777609,
+        "gain_m": 0.3336818676604711
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104007.npz",
+      "metric": {
+        "uid": "104007",
+        "n": 390,
+        "released": true,
+        "release_frame": 12,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06941534407321137,
+        "gain_m": 0.22804944446480074
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/104008.npz",
+      "metric": {
+        "uid": "104008",
+        "n": 600,
+        "released": true,
+        "release_frame": 7,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11009644076131377,
+        "gain_m": 0.32439774997825177
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105000.npz",
+      "metric": {
+        "uid": "105000",
+        "n": 233,
+        "released": true,
+        "release_frame": 6,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06661260279391178,
+        "gain_m": 0.15797304772012316
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105001.npz",
+      "metric": {
+        "uid": "105001",
+        "n": 600,
+        "released": true,
+        "release_frame": 12,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.12095370691657213,
+        "gain_m": 0.27690528557140676
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105002.npz",
+      "metric": {
+        "uid": "105002",
+        "n": 150,
+        "released": true,
+        "release_frame": 7,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.17461012181546587,
+        "gain_m": 0.17987130471132817
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105003.npz",
+      "metric": {
+        "uid": "105003",
+        "n": 600,
+        "released": true,
+        "release_frame": 2,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.15303350162609325,
+        "gain_m": 0.24899560078297772
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105004.npz",
+      "metric": {
+        "uid": "105004",
+        "n": 208,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.21903218629638374,
+        "gain_m": 0.18757799419533716
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/105008.npz",
+      "metric": {
+        "uid": "105008",
+        "n": 380,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.19766238001081396,
+        "gain_m": 0.20008295314339092
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106000.npz",
+      "metric": {
+        "uid": "106000",
+        "n": 255,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.13860373656527475,
+        "gain_m": 0.15920306324160952
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106001.npz",
+      "metric": {
+        "uid": "106001",
+        "n": 600,
+        "released": true,
+        "release_frame": 23,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2450631369374129,
+        "gain_m": 0.05946864337786262
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106002.npz",
+      "metric": {
+        "uid": "106002",
+        "n": 330,
+        "released": true,
+        "release_frame": 14,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09974680040906309,
+        "gain_m": 0.15292061092590933
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106003.npz",
+      "metric": {
+        "uid": "106003",
+        "n": 392,
+        "released": true,
+        "release_frame": 13,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06574660952079917,
+        "gain_m": 0.3106009795754062
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106004.npz",
+      "metric": {
+        "uid": "106004",
+        "n": 289,
+        "released": true,
+        "release_frame": 40,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.12263416200496051,
+        "gain_m": 0.1537818978390509
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106005.npz",
+      "metric": {
+        "uid": "106005",
+        "n": 310,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09414579202727413,
+        "gain_m": 0.3050333458272524
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106006.npz",
+      "metric": {
+        "uid": "106006",
+        "n": 423,
+        "released": true,
+        "release_frame": 15,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.42811799146888896,
+        "gain_m": 0.12016083683779331
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/106008.npz",
+      "metric": {
+        "uid": "106008",
+        "n": 600,
+        "released": true,
+        "release_frame": 33,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11853781767263073,
+        "gain_m": 0.17878874217202811
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107001.npz",
+      "metric": {
+        "uid": "107001",
+        "n": 421,
+        "released": true,
+        "release_frame": 24,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07641287034523343,
+        "gain_m": 0.3046956931976943
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107002.npz",
+      "metric": {
+        "uid": "107002",
+        "n": 291,
+        "released": true,
+        "release_frame": 6,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09644343321968103,
+        "gain_m": 0.28201580304872986
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107003.npz",
+      "metric": {
+        "uid": "107003",
+        "n": 503,
+        "released": true,
+        "release_frame": 81,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10027764250425909,
+        "gain_m": 0.18530286082641956
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107004.npz",
+      "metric": {
+        "uid": "107004",
+        "n": 356,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.19625546275802788,
+        "gain_m": 0.29758549433675513
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107005.npz",
+      "metric": {
+        "uid": "107005",
+        "n": 286,
+        "released": true,
+        "release_frame": 3,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07081951557591602,
+        "gain_m": 0.19742366315309315
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107006.npz",
+      "metric": {
+        "uid": "107006",
+        "n": 364,
+        "released": true,
+        "release_frame": 3,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11905246830283904,
+        "gain_m": 0.294994439559439
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107007.npz",
+      "metric": {
+        "uid": "107007",
+        "n": 508,
+        "released": true,
+        "release_frame": 65,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.12243173354072044,
+        "gain_m": 0.3151422053699594
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial/107008.npz",
+      "metric": {
+        "uid": "107008",
+        "n": 600,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.5338482437835778,
+        "gain_m": 0.17662367603444265
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3/102002.npz",
+      "metric": {
+        "uid": "102002",
+        "n": 315,
+        "released": true,
+        "release_frame": 7,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07535026200998973,
+        "gain_m": 0.21971557115607016
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3/105006.npz",
+      "metric": {
+        "uid": "105006",
+        "n": 289,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06964743141591057,
+        "gain_m": 0.2211107363460793
+      }
+    },
+    {
+      "source": "/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3/107000.npz",
+      "metric": {
+        "uid": "107000",
+        "n": 144,
+        "released": true,
+        "release_frame": 10,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.08333847627023978,
+        "gain_m": 0.3114382402611223
+      }
+    }
+  ]
+}

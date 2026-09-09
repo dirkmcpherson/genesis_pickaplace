@@ -1,0 +1,6 @@
+{
+  "uid": 167,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/167/real_review_sampling.json",
+  "observations": "Selected frames show carry, shelf placement and late hand motion near the goal; the hand is open near the cans in the final sample.",
+  "limitations": "Qualitative phase comparison only. Sparse, uncalibrated views do not measure distal joint angles or prove continuous supported sliding/contact."
+}

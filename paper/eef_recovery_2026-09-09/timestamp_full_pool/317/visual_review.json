@@ -1,0 +1,8 @@
+{
+  "uid": 317,
+  "approved": true,
+  "scope": "Six selected measured-pose phase frames; full video retained",
+  "note": "Carry, upright supported shelf release, later hand recontact and slide into solver goal contact, hand separated at upright endpoint; no solver goal contact in final sample",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/317/317_timed.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/317/317_timed_phases.jpg"
+}

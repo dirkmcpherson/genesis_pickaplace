@@ -1,0 +1,13 @@
+{
+  "uid": 328,
+  "returncode": 0,
+  "resumed_after_interruption": true,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 2350,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.02176095269848534
+  }
+}

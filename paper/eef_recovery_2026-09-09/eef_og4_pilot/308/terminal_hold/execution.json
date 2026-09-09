@@ -1,0 +1,13 @@
+{
+  "returncode": 0,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 858,
+    "push_start": 1208,
+    "contact_start": 1211,
+    "final_surface_gap_m": 8.530194922180823e-05,
+    "push_toward_goal_m": 0.010450147031601582,
+    "support_fraction": 0.8333333333333334
+  }
+}

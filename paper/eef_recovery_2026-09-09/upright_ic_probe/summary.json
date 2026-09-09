@@ -1,0 +1,36 @@
+[
+  {
+    "uid": 234,
+    "picked": true,
+    "max_can_z": 0.2736915946006775,
+    "final_can_z": 0.20282705128192902,
+    "final_tilt_deg": 90.00000716555911,
+    "shelf_contact_frames": 255,
+    "source_arrays_unchanged": true,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.03395445347529938
+    }
+  },
+  {
+    "uid": 318,
+    "picked": true,
+    "max_can_z": 0.24572838842868805,
+    "final_can_z": 0.03268260881304741,
+    "final_tilt_deg": 89.99983139819453,
+    "shelf_contact_frames": 219,
+    "source_arrays_unchanged": true,
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.5258009297493178
+    }
+  }
+]

@@ -1,0 +1,106 @@
+[
+  {
+    "uid": 124,
+    "control_30ms": {
+      "uid": "124",
+      "n": 328,
+      "released": true,
+      "release_frame": 15,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.1236698015329398,
+      "gain_m": 0.1511686003021409
+    },
+    "fine_10ms": {
+      "uid": "124",
+      "n": 328,
+      "released": true,
+      "release_frame": 15,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.25406296284326485,
+      "gain_m": 0.11642578874191001
+    },
+    "final_distance_change_m": 0.13039316131032505
+  },
+  {
+    "uid": 185,
+    "control_30ms": {
+      "uid": "185",
+      "n": 354,
+      "released": true,
+      "release_frame": 32,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.10826792662349773,
+      "gain_m": 0.23025926554500836
+    },
+    "fine_10ms": {
+      "uid": "185",
+      "n": 354,
+      "released": true,
+      "release_frame": 32,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.119860453040734,
+      "gain_m": 0.23062751707528373
+    },
+    "final_distance_change_m": 0.011592526417236279
+  },
+  {
+    "uid": 233,
+    "control_30ms": {
+      "uid": "233",
+      "n": 241,
+      "released": true,
+      "release_frame": 1,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06581495100647523,
+      "gain_m": 0.21495149341447795
+    },
+    "fine_10ms": {
+      "uid": "233",
+      "n": 241,
+      "released": true,
+      "release_frame": 1,
+      "pushed": true,
+      "arrived": true,
+      "slide_success": true,
+      "final_dist": 0.06575663188091012,
+      "gain_m": 0.21505531823683277
+    },
+    "final_distance_change_m": -5.831912556511498e-05
+  },
+  {
+    "uid": 235,
+    "control_30ms": {
+      "uid": "235",
+      "n": 249,
+      "released": true,
+      "release_frame": 0,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.14626332262964187,
+      "gain_m": 0.23063765900988595
+    },
+    "fine_10ms": {
+      "uid": "235",
+      "n": 249,
+      "released": true,
+      "release_frame": 0,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.15096696947846353,
+      "gain_m": 0.23069714678275066
+    },
+    "final_distance_change_m": 0.004703646848821658
+  }
+]

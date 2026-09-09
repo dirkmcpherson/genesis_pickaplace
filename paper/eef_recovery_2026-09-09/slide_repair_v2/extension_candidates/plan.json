@@ -1,0 +1,13 @@
+{
+  "uids": [
+    302,
+    275,
+    304
+  ],
+  "control": "Fresh zero-offset joint traces in slide_candidates; all physically released but missed goal contact.",
+  "algorithm": "Same bounded final-slide extension with contact hold as uid242, plus precision IK to preserve unmodified portions of each recorded path. No per-trial extra motion or force tuning.",
+  "max_extension_m": 0.01,
+  "max_contact_hold_s": 0.3,
+  "max_extra_duration_s": 0.9,
+  "acceptance": "Unchanged physical sequence test, then independent action replay and visual inspection. Failures remain failures."
+}

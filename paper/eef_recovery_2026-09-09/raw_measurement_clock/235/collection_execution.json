@@ -1,0 +1,24 @@
+{
+  "uid": 235,
+  "mode": "collection",
+  "returncode": 0,
+  "metric": {
+    "uid": "235",
+    "n": 249,
+    "released": true,
+    "release_frame": 0,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.09055218642926414,
+    "gain_m": 0.2798643084381239
+  },
+  "strict_contact_diagnostic": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.024552186429264142
+  }
+}

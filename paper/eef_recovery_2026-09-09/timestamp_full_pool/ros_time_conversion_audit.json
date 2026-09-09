@@ -1,0 +1,32 @@
+[
+  {
+    "uid": 254,
+    "shape": [
+      1614,
+      6
+    ],
+    "exact_q": true,
+    "exact_grip": true,
+    "max_q_diff": 0.0
+  },
+  {
+    "uid": 295,
+    "shape": [
+      6233,
+      6
+    ],
+    "exact_q": true,
+    "exact_grip": true,
+    "max_q_diff": 0.0
+  },
+  {
+    "uid": 300,
+    "shape": [
+      4771,
+      6
+    ],
+    "exact_q": true,
+    "exact_grip": true,
+    "max_q_diff": 0.0
+  }
+]

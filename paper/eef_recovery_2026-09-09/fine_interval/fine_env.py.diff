@@ -1,0 +1,52 @@
+--- baselines/genesis_can_env.py
++++ paper/eef_recovery_2026-09-09/fine_interval/fine_env.py
+@@ -11,14 +11,14 @@
+     image: uint8[H,W,3] scene camera (roughly matches the real 96x96 cam obs)
+ 
+ The action convention matches the demos: absolute joint-position targets applied for
+-3 physics steps (dt=0.01, substeps from the placement table's world config).
++1 physics step (dt=0.01, substeps from the placement table's world config).
+ """
+ import os
+ import json, sys, pathlib as pl
+ import numpy as np
+ 
+ REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
+-                              pl.Path(__file__).resolve().parents[1]))
++                              pl.Path(__file__).resolve().parents[3]))
+ sys.path.insert(0, str(REPO / 'can_pos_recovery'))
+ import torch
+ from replay_harness import (build_world, gripper_targets, tilt_deg, in_shelf_footprint,
+@@ -57,12 +57,12 @@
+ # can separates ballistically and falls back through pick_z. Cost: the grant lands
+ # PICK_SUSTAIN-1 frames (~0.3 s) later than before; demos still grant (verified).
+ PICK_EEF_DIST = 0.20
+-PICK_SUSTAIN = 10
++PICK_SUSTAIN = 30
+ # --- amendment (l) 2026-09-07: slide_success = the task as demonstrated (can ON THE SHELF, RELEASED, touching the
+ # goal), sustained 3 decisions. One decision = action_repeat 4 env frames; one env frame = the 3 scene steps step()
+ # takes -> SLIDE_SUSTAIN frames. GRIP_OPEN_CMD is the same threshold the legacy nested proxy uses.
+ SLIDE_SUSTAIN_DECISIONS = 3
+-SLIDE_SUSTAIN = SLIDE_SUSTAIN_DECISIONS * 4   # env frames
++SLIDE_SUSTAIN = SLIDE_SUSTAIN_DECISIONS * 12   # env frames
+ GRIP_OPEN_CMD = 0.3
+ SETTLE_STEPS = 100        # the post-episode settle _nested() has always run (scene steps)
+ 
+@@ -261,7 +261,7 @@
+         w['kinova'].control_dofs_position(arm, dofs_idx_local=w['kdofs'][:6])
+         w['kinova'].control_dofs_position(np.array(gripper_targets(gm)),
+                                           dofs_idx_local=np.array(w['kdofs'][-4:]))
+-        for _ in range(3):
++        for _ in range(1):
+             w['scene'].step()
+         if self.workspace_limit and arm_cmd is None and \
+                 self.in_workspace(self.tool_pos(), margin=WS_MARGIN):
+@@ -399,7 +399,7 @@
+         if not slide:
+             held = True
+             for f in range(SLIDE_SUSTAIN):
+-                for _ in range(3):
++                for _ in range(1):
+                     w['scene'].step()
+                 steps += 3
+                 ok, why = self._slide_clauses()

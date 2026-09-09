@@ -1,0 +1,29 @@
+[
+  {
+    "uid": 118,
+    "messages": 2046,
+    "max_abs_residual_rad": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "uid": 233,
+    "messages": 1155,
+    "max_abs_residual_rad": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "uid": 235,
+    "messages": 1193,
+    "max_abs_residual_rad": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+]

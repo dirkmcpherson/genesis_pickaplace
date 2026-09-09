@@ -1,0 +1,13 @@
+{
+  "uid": 124,
+  "mode": "collection",
+  "returncode": 0,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.18806296284326485
+  }
+}

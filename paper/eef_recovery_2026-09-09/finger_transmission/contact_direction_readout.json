@@ -1,0 +1,20 @@
+[
+  {
+    "run": "timed233",
+    "right_tip_min_offset_mm": -0.12133270502090454,
+    "right_tip_max_offset_mm": 1.6042311191558838,
+    "interpretation": "Positive is farther from gripper center plane at the same measured proximal angle; point-motion comparison, not measured material deformation"
+  },
+  {
+    "run": "fixed233",
+    "right_tip_min_offset_mm": -0.11931732296943665,
+    "right_tip_max_offset_mm": 1.5977565050125122,
+    "interpretation": "Positive is farther from gripper center plane at the same measured proximal angle; point-motion comparison, not measured material deformation"
+  },
+  {
+    "run": "fixed235",
+    "right_tip_min_offset_mm": -0.12417137622833252,
+    "right_tip_max_offset_mm": 0.1791045069694519,
+    "interpretation": "Positive is farther from gripper center plane at the same measured proximal angle; point-motion comparison, not measured material deformation"
+  }
+]

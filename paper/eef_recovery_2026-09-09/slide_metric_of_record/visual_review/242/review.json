@@ -1,0 +1,24 @@
+{
+  "uid": 242,
+  "source_sha256": "36e6d741c15b497fdec1f8e155ee1ef5e29e7807905ad2b043d10a0506f22972",
+  "review": "Six rendered measured-pose frames at 0, 30, 55, 72, 88 and 100 percent of the available video; full video retained, not watched frame by frame.",
+  "observations": "Can is carried to shelf, hand separates, hand later approaches again, and the can ends upright near the goal with the hand withdrawn.",
+  "independent_replay": "metric_verification_execution.json confirms exact trajectory/actions/observations",
+  "strict_contact_diagnostic": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 610,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.004036209913460723
+  },
+  "final_solver_contacts": [
+    5,
+    0,
+    0
+  ],
+  "goal_contact_frames": 9,
+  "final_center_distance_m": 0.07003620991346073,
+  "final_tilt_deg": 0.0025624658781188666,
+  "caveat": "Passes the supplied proximity metric; endpoint solver goal contact is not implied by the visual proximity."
+}

@@ -1,0 +1,10 @@
+{
+  "uids": [
+    233,
+    235
+  ],
+  "treatment": "Only distal equality dispatch disabled and tip kp/kv zero; no return spring",
+  "purpose": "Diagnostic of available independent contact response, not calibrated model or bank admission",
+  "controls": "Original commands, archived IC, w3 physics except specified tip constraints; compare existing baseline and tc0.3",
+  "limits": "Original URDF limits retained; limits not approached during prior carry"
+}

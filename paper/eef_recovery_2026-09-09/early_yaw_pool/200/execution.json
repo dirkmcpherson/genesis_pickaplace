@@ -1,0 +1,12 @@
+{
+  "uid": 200,
+  "returncode": 0,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 854,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.3921923606323764
+  }
+}

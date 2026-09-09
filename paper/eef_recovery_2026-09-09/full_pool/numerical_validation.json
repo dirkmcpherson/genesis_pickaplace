@@ -1,0 +1,11 @@
+{
+  "trials": 74,
+  "frames": 148736,
+  "float32_joint_targets_identical_trials": 73,
+  "maximum_joint_target_difference_rad": 1.1236944708059582e-09,
+  "nonidentical_uids": [
+    294
+  ],
+  "all_replay_controller_scorer_hashes_match": true,
+  "all_observation_action_shapes_valid_and_finite": true
+}

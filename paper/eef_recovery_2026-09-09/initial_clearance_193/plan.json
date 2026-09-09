@@ -1,0 +1,25 @@
+{
+  "uid": 193,
+  "source_sha256": "0184a2b9a603ab69af4d0ae5bf57de42e0bcc7f574ef9300381be614e1ca9c2d",
+  "correction": {
+    "reason": "Remove 1.356 mm initial overlap with modeled shelf, retaining 1 mm clearance",
+    "original_can_pos": [
+      0.518356359278704,
+      0.032582968762982584,
+      0.113
+    ],
+    "corrected_can_pos": [
+      0.516,
+      0.032582968762982584,
+      0.113
+    ],
+    "delta_m": [
+      -0.0023563592787040344,
+      0,
+      0
+    ],
+    "basis": "Geometric nonpenetration in current model; not a measured real position or outcome-selected sweep",
+    "unchanged": "Arm/grip measurement stream, timestamp reconstruction, full world and yaw"
+  },
+  "admission": "New collection, independent EEF replay and visual review required. Preserve failure if correction loses recovery."
+}

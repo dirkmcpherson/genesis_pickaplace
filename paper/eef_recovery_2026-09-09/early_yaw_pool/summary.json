@@ -1,0 +1,1153 @@
+{
+  "cohort": "December 16/17 early candidates; full world with day-specific yaw",
+  "by_day": {
+    "12-16": {
+      "declared": 49,
+      "finished": 49,
+      "worker_failed": 0,
+      "reasons": {
+        "no_supported_release": 27,
+        "not_picked": 4,
+        "no_supported_push_to_contact": 17,
+        "complete": 1
+      },
+      "complete_candidates": [
+        176
+      ]
+    },
+    "12-17": {
+      "declared": 40,
+      "finished": 6,
+      "worker_failed": 0,
+      "reasons": {
+        "not_picked": 2,
+        "no_supported_push_to_contact": 3,
+        "no_supported_release": 1
+      },
+      "complete_candidates": []
+    }
+  },
+  "records": [
+    {
+      "uid": 113,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.6311634280557825
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 118,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.28925580464918504
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 120,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.19889982074653234
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 121,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.596411241025069
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 122,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.31687640205029055
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 124,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1120,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.057669801532939796
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 126,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2038753561626086
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 128,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1143,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0787495736537144
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 129,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.09801458568756904
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 130,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.102477517311381
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 131,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 742,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.12351815870998778
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 132,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1537,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.07652922369182119
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 137,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1677306645255038
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 138,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2843102464549593
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 139,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.10594113738494826
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 140,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.040784553517320396
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 141,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 893,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.10187595467612826
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 143,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.357628142460825
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 144,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.7294386736640037
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 145,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15010309883942932
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 146,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1046,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1711991764165918
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 148,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1399,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.5909597765772441
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 149,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14867341422266692
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 151,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.008508609444046147
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 153,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.045340520731229794
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 154,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2802163057139365
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 156,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0618578190919617
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 157,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.11714260650963598
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 158,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04965648253570798
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 160,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.41633386774920067
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 161,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 754,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14285367811756458
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 162,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1036,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": -0.00012266220744522327
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 164,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02110445078011873
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 165,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 681,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.08718774821055719
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 166,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1073,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.07172396231486922
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 167,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1376,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.014917132537673142
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 168,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 818,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02830416769978239
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 169,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.11141488761101231
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 170,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1553,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.10677761085646276
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 171,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 806,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.27637210068654827
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 172,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 697,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.07042841589986573
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 173,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.28618001310206603
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 174,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.20553015823586313
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 175,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.3239229407999162
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 176,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 1213,
+        "push_start": 1216,
+        "contact_start": 2142,
+        "final_surface_gap_m": -0.00016382755436598895,
+        "push_toward_goal_m": 0.0489033751155744,
+        "support_fraction": 0.9967707212055974
+      },
+      "independent_replay_checked": true
+    },
+    {
+      "uid": 177,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.065125405726287
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 179,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2971494537671309
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 180,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.08936872881060237
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 181,
+      "day": "12-16",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 730,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.07839886269179988
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 183,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.24573592745241318
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 184,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1119,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02650815141959892
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 185,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 961,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04226792662349772
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 189,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.05629643349273798
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 190,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1327,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.032004895389574115
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 191,
+      "day": "12-17",
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.16289492955925267
+      },
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 192,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": true,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 193,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": true,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 194,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 196,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 197,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 198,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 200,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 201,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 202,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 203,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 204,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 206,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 207,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 208,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 209,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 210,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 211,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 212,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 213,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 214,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 215,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 216,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 217,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 218,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 219,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 220,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 221,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 222,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 224,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 225,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 226,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 229,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 230,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    },
+    {
+      "uid": 231,
+      "day": "12-17",
+      "status": "pending",
+      "world_checked": false,
+      "independent_replay_checked": false
+    }
+  ],
+  "limitation": "Numerical completion is not bank admission or evidence of calibrated physical fidelity"
+}

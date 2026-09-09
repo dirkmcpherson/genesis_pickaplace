@@ -1,6 +1,33 @@
 # Matched EEF replay pilot, September 9
 
-Development examples only; not a new demonstration bank or a held-out improvement claim. Registration: [EEF_GRASP_RECOVERY_2026-09-09.md](../EEF_GRASP_RECOVERY_2026-09-09.md). Frozen learners and datasets are unchanged.
+**Fidelity correction (September 9):** The default development manifest contains **eight
+unmodified-command reconstructions**. Trial 242's outcome-fitted initial pose is separate in
+`manifest_fitted_initial_pose.json`. Three added-motion or grip/timing records (242, 275, 308)
+are separate in `manifest_modified_commands.json`. The historical 11-source total is **not a
+faithful-recovery count**. Og4 accelerates recorded opening; it is a diagnostic command modification,
+not a fidelity fix or a passive-finger model. Unmodified commands alone do not validate timing,
+estimated initial poses or contact physics. Files remain in place; select through a manifest,
+not a directory glob. `manifest_mixed_historical.json` preserves the old packaging for provenance.
+
+
+**Latest:** [additional recoveries 275 and 308](REPAIR_FOLLOWUP.md), longer-push tests, and the
+adopted og4 opening correction applied explicitly in the EEF path. The development bank now has
+11 independent source trials; repaired recordings remain separately disclosed.
+
+**Subsequent work:** [final-slide recovery and engine recheck](SLIDE_RECOVERY_PROGRESS.md)
+documents the verified 242 EEF recovery, numerical IK refinement, failed candidates, and the
+fresh 1.2.1 comparison. It also corrects the earlier attribution of gravity compensation to
+the post-build hook: gravity compensation is applied by the pre-hook.
+
+The next pass covers the [complete 74-trial plan](full_pool/plan.json), with
+[per-trial census and verification status](full_pool/summary.json), an explicit
+[near-contact repair sweep](slide_repair_pool/plan.json), and a separate
+[distal compliance probe](PASSIVE_FINGER_PROBE.md). Admission into the development EEF bank
+requires independent saved-action playback and visual review; a small final gap alone does not pass.
+The [completed full-pool readout](FULL_POOL_READOUT.md) reports eight complete unchanged-motion
+EEF conversions, nine banked source trials including the earlier 242 rescue, and all retained failures.
+
+Development work only; not a frozen training-bank replacement or a held-out improvement claim. Registration: [EEF_GRASP_RECOVERY_2026-09-09.md](../EEF_GRASP_RECOVERY_2026-09-09.md). Frozen learners and datasets are unchanged.
 
 ## First paired readout
 

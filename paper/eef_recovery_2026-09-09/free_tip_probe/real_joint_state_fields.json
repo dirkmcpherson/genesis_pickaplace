@@ -1,0 +1,86 @@
+[
+  {
+    "uid": 118,
+    "topic": "/my_gen3_lite/joint_states",
+    "names": [
+      "joint_1",
+      "joint_2",
+      "joint_3",
+      "joint_4",
+      "joint_5",
+      "joint_6",
+      "right_finger_bottom_joint",
+      "right_finger_tip_joint",
+      "left_finger_bottom_joint",
+      "left_finger_tip_joint"
+    ],
+    "position": [
+      0.3268598805975672,
+      -1.4483218093198964,
+      2.3445916299550875,
+      -1.35036328757573,
+      2.207575187663819,
+      -1.5127900150918805,
+      0.9599645781553325,
+      -0.49993605483300485,
+      -0.9599645781553325,
+      -0.49993605483300485
+    ]
+  },
+  {
+    "uid": 233,
+    "topic": "/my_gen3_lite/joint_states",
+    "names": [
+      "joint_1",
+      "joint_2",
+      "joint_3",
+      "joint_4",
+      "joint_5",
+      "joint_6",
+      "right_finger_bottom_joint",
+      "right_finger_tip_joint",
+      "left_finger_bottom_joint",
+      "left_finger_tip_joint"
+    ],
+    "position": [
+      0.32674536467069376,
+      -1.4482195439340373,
+      2.3444286444963747,
+      -1.3507808712346545,
+      2.2077530868246362,
+      -1.5124533915300944,
+      0.9554333284976934,
+      -0.4968729300644408,
+      -0.9554333284976934,
+      -0.4968729300644408
+    ]
+  },
+  {
+    "uid": 235,
+    "topic": "/my_gen3_lite/joint_states",
+    "names": [
+      "joint_1",
+      "joint_2",
+      "joint_3",
+      "joint_4",
+      "joint_5",
+      "joint_6",
+      "right_finger_bottom_joint",
+      "right_finger_tip_joint",
+      "left_finger_bottom_joint",
+      "left_finger_tip_joint"
+    ],
+    "position": [
+      0.32668677512671207,
+      -1.4464123228183094,
+      2.3437783005581774,
+      -1.3512139012279016,
+      2.205293391241839,
+      -1.5139996228589947,
+      0.9545678497583888,
+      -0.4962878664366709,
+      -0.9545678497583888,
+      -0.4962878664366709
+    ]
+  }
+]

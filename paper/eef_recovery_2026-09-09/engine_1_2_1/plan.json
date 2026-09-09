@@ -1,0 +1,14 @@
+{
+  "version": "1.2.1",
+  "python_packages": ".venv-g12/lib/python3.10/site-packages",
+  "uids": [
+    233,
+    242,
+    304
+  ],
+  "mode": "joint",
+  "world": "gc_kp4_riser3_shelf6, both hooks",
+  "control": "Existing full-hook 0.2.1 raw-joint traces of the same uids and initial positions.",
+  "interpretation": "Initial native-default engine comparison, not a claim that solver defaults match. Test physical release/slide and pickup; retain failures. If promising, require EEF conversion and inspect actual contact/solver configuration before recommending an engine switch.",
+  "motivation": "User authorizes reexamining engine pin. July 1.2.1 grasp rejection predates corrected world and contains a later-questioned contact-timeconst assumption."
+}
