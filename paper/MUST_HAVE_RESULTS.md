@@ -79,11 +79,13 @@ Across all four scopes (end-to-end, pick, place, contact) that is ≈ 6 GB for R
 
 | set | tapes | decisions | idle frac | used by |
 |---|---|---|---|---|
-| `dHfull_all` (raw human) | 74 | 29,221 | **0.244** | {RLPD}, {r2dreamer} |
-| `dHfull_pruned` (pruned human) | 64 | 23,307 | **0.199** | **{Diffusion Policy}** |
+| `dHfull_all` (raw human) | 74 | 29,221 | **0.244** arm-still (0.000 truly idle) | {RLPD}, {r2dreamer} |
+| `dHfull_pruned` (pruned human) | 64 | 23,307 | **0.199** arm-still (0.000 truly idle) | **{Diffusion Policy}** |
 | `dDPfull_first` (machine, first attempt) | 72 | 36,834 | **0.000** | all three |
 
-**Why it matters for this learner specifically.** Diffusion Policy is pure imitation — it copies what it is shown, including the arm holding still. A quarter of the raw human set's decisions are idle against zero in the machine set, so the raw pairing trains one arm to pause and the other never to. Online learners can explore past that; an imitator cannot. Pruning is also the largest single effect measured anywhere in this project: **−0.19 for {Diffusion Policy}, p 0.000**, far larger than any demonstration-source difference.
+**CORRECTION 2026-09-09 (user): "idle" is a misnomer and my mechanism was wrong.** The project's `idle_frac` counts decisions where the ARM is still, and it ignores the gripper column. Recomputed over all seven action dimensions, **no decision in any set is actually idle — 0.000 everywhere**. The human set's 0.244 is entirely *arm-still-while-the-gripper-actuates*: the grasp and the release, which is the most task-relevant moment in the episode, not dead time. So the claim below that {Diffusion Policy} suffers by copying the arm holding still is **withdrawn** — what it copies is "stop the arm, close the fingers", which is correct behaviour. The real difference is that the machine policy never separates the two, moving arm and gripper together throughout. **The empirical case for pruning is unaffected** (−0.19, p 0.000, the largest effect measured in this project) — only my explanation of it was wrong, and it currently has no replacement.
+
+~~**Why it matters for this learner specifically.**~~ Diffusion Policy is pure imitation — it copies what it is shown, including the arm holding still. A quarter of the raw human set's decisions are idle against zero in the machine set, so the raw pairing trains one arm to pause and the other never to. Online learners can explore past that; an imitator cannot. Pruning is also the largest single effect measured anywhere in this project: **−0.19 for {Diffusion Policy}, p 0.000**, far larger than any demonstration-source difference.
 
 **The registered trigger has fired.** Amendment (n) disconfirm branch (iii) required the human-pruned control once the machine arm led by 0.10 or more. Measured on the de-selected sets: **{Diffusion Policy} rnd30 sampled, human 0.167 v machine 0.333, a gap of 0.166** — so this control is now mandatory before any source claim for that learner, not optional.
 

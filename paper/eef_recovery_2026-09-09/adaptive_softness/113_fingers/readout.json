@@ -1,0 +1,146 @@
+{
+  "uid": 113,
+  "scope": "fingers",
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "baseline_trace_exact": null,
+  "contact_treatment": {
+    "scope": "fingers",
+    "selected_geom_indices": [
+      10,
+      11,
+      12,
+      13
+    ],
+    "selected_before": [
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "selected_after": [
+      [
+        0.03999999910593033,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.03999999910593033,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.03999999910593033,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.03999999910593033,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "effective_finger_can_timeconst_s": 0.029999999329447746,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "strict_sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.19063294841580952
+  },
+  "metric": {
+    "uid": "113",
+    "n": 1047,
+    "released": true,
+    "release_frame": 0,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.2566329484158095,
+    "gain_m": 0.060262956159518266
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 9.84,
+  "final_tilt_deg": 0.002562349956393639,
+  "max_independent_inward_curl_deg": [
+    12.092538833618164,
+    12.097453117370605
+  ],
+  "all_contact_penetration_mm": {
+    "median": 2.0772030111402273,
+    "p95": 5.079964175820351,
+    "max": 5.4303728975355625
+  },
+  "all_contact_force_N": {
+    "median": 10.650269508361816,
+    "p95": 29.971755027770996,
+    "max": 33.54555130004883
+  },
+  "carry_penetration_mm": {
+    "median": 1.7358676414005458,
+    "p95": 2.3111014743335545,
+    "max": 2.3198213893920183
+  },
+  "carry_max_contact_force_N": {
+    "median": 8.179680347442627,
+    "p95": 11.278355121612549,
+    "max": 11.596787452697754
+  },
+  "carry_scene_samples": 186,
+  "contact_scene_samples": 326,
+  "qualification": "Penetration is solver contact overlap, not measured pad compression or can strain. Contact-dependent sample populations change between treatments; quantiles are descriptive. Separation after pickup alone is not successful shelf release."
+}

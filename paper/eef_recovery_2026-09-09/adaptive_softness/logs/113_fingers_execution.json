@@ -1,0 +1,16 @@
+{
+  "uid": 113,
+  "scope": "fingers",
+  "returncode": 0,
+  "elapsed_s": 262.3387415409088,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_softness/113_fingers",
+    "--soft-contact",
+    "fingers",
+    "--record-contact"
+  ]
+}
