@@ -1,0 +1,140 @@
+{
+  "events": [
+    [
+      "pre_closure",
+      204
+    ],
+    [
+      "loaded_early",
+      247
+    ],
+    [
+      "maximum_sim_can_height",
+      412
+    ],
+    [
+      "before_motor_opening",
+      663
+    ],
+    [
+      "after_motor_opening",
+      683
+    ],
+    [
+      "final",
+      4186
+    ]
+  ],
+  "matches": [
+    {
+      "event": "pre_closure",
+      "trace_frame": 204,
+      "camera": 4,
+      "camera_frame": 190,
+      "desired_bag_time_s": 6.170199298858642,
+      "actual_camera_time_s": 6.178696189,
+      "error_s": 0.008496890141358016
+    },
+    {
+      "event": "pre_closure",
+      "trace_frame": 204,
+      "camera": 0,
+      "camera_frame": 155,
+      "desired_bag_time_s": 6.170199298858642,
+      "actual_camera_time_s": 6.165385995,
+      "error_s": -0.00481330385864176
+    },
+    {
+      "event": "loaded_early",
+      "trace_frame": 247,
+      "camera": 4,
+      "camera_frame": 228,
+      "desired_bag_time_s": 7.460199298858642,
+      "actual_camera_time_s": 7.443896328,
+      "error_s": -0.016302970858641963
+    },
+    {
+      "event": "loaded_early",
+      "trace_frame": 247,
+      "camera": 0,
+      "camera_frame": 187,
+      "desired_bag_time_s": 7.460199298858642,
+      "actual_camera_time_s": 7.469518934,
+      "error_s": 0.009319635141357807
+    },
+    {
+      "event": "maximum_sim_can_height",
+      "trace_frame": 412,
+      "camera": 4,
+      "camera_frame": 377,
+      "desired_bag_time_s": 12.410199298858641,
+      "actual_camera_time_s": 12.411900554,
+      "error_s": 0.0017012551413593258
+    },
+    {
+      "event": "maximum_sim_can_height",
+      "trace_frame": 412,
+      "camera": 0,
+      "camera_frame": 308,
+      "desired_bag_time_s": 12.410199298858641,
+      "actual_camera_time_s": 12.402827297,
+      "error_s": -0.007372001858641397
+    },
+    {
+      "event": "before_motor_opening",
+      "trace_frame": 663,
+      "camera": 4,
+      "camera_frame": 603,
+      "desired_bag_time_s": 19.94019929885864,
+      "actual_camera_time_s": 19.943393741,
+      "error_s": 0.003194442141360554
+    },
+    {
+      "event": "before_motor_opening",
+      "trace_frame": 663,
+      "camera": 0,
+      "camera_frame": 493,
+      "desired_bag_time_s": 19.94019929885864,
+      "actual_camera_time_s": 19.953260932,
+      "error_s": 0.013061633141358442
+    },
+    {
+      "event": "after_motor_opening",
+      "trace_frame": 683,
+      "camera": 4,
+      "camera_frame": 621,
+      "desired_bag_time_s": 20.540199298858642,
+      "actual_camera_time_s": 20.543684755,
+      "error_s": 0.003485456141358867
+    },
+    {
+      "event": "after_motor_opening",
+      "trace_frame": 683,
+      "camera": 0,
+      "camera_frame": 507,
+      "desired_bag_time_s": 20.540199298858642,
+      "actual_camera_time_s": 20.523525034,
+      "error_s": -0.01667426485864354
+    },
+    {
+      "event": "final",
+      "trace_frame": 4186,
+      "camera": 4,
+      "camera_frame": 3774,
+      "desired_bag_time_s": 125.63019929885864,
+      "actual_camera_time_s": 125.642545972,
+      "error_s": 0.012346673141351516
+    },
+    {
+      "event": "final",
+      "trace_frame": 4186,
+      "camera": 0,
+      "camera_frame": 3085,
+      "desired_bag_time_s": 125.63019929885864,
+      "actual_camera_time_s": 125.649173294,
+      "error_s": 0.018973995141351452
+    }
+  ],
+  "clock": "Source action-start offset + post-step time; hardware acquisition/follower delays uncalibrated",
+  "event_basis": "First >30 motor closure, then first 10-unit decrease from running post-pick maximum, and simulation height select review times only; not observed real release/height labels"
+}

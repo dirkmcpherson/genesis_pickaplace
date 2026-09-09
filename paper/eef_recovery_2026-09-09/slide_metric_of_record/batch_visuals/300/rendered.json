@@ -10,7 +10,6 @@
     5006
   ],
   "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
-  "visual_review_completed": true,
-  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun",
-  "review_note": "Long initial dwell and subsequent shelf interaction visible; endpoint near goal with hand and goal contacts retained. Six overview frames do not resolve the full carry interval."
+  "visual_review_completed": false,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun"
 }

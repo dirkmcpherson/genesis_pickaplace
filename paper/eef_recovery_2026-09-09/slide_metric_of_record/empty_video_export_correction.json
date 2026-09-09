@@ -1,0 +1,124 @@
+{
+  "affected_videos": [
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/328/328_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/232/232_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/237/237_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/233/233_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/305/305_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/299/299_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/273/273_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/256/256_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/247/247_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/251/251_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/294/294_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/309/309_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/302/302_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/248/248_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/317/317_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/242/242_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/304/304_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/330/330_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/300/300_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/255/255_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/275/275_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/early_yaw_pool/224/metric_visuals/224_timestamp.mp4",
+    "paper/eef_recovery_2026-09-09/early_yaw_pool/225/metric_visuals/225_timestamp.mp4"
+  ],
+  "reason": "Writer expected 640x640; camera frames were not resized to writer dimensions. Re-render measured poses with shape assertion and decode checks.",
+  "physics_changed": false,
+  "status": "All 23 exports regenerated and decoded at first and last frames",
+  "validated": [
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/328/328_timestamp.mp4",
+      "frames": 874
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/232/232_timestamp.mp4",
+      "frames": 324
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/237/237_timestamp.mp4",
+      "frames": 301
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/233/233_timestamp.mp4",
+      "frames": 322
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/305/305_timestamp.mp4",
+      "frames": 437
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/299/299_timestamp.mp4",
+      "frames": 930
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/273/273_timestamp.mp4",
+      "frames": 508
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/256/256_timestamp.mp4",
+      "frames": 736
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/247/247_timestamp.mp4",
+      "frames": 602
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/251/251_timestamp.mp4",
+      "frames": 506
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/294/294_timestamp.mp4",
+      "frames": 1851
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/309/309_timestamp.mp4",
+      "frames": 595
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/302/302_timestamp.mp4",
+      "frames": 407
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/248/248_timestamp.mp4",
+      "frames": 1002
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/317/317_timestamp.mp4",
+      "frames": 475
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/242/242_timestamp.mp4",
+      "frames": 363
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/304/304_timestamp.mp4",
+      "frames": 717
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/330/330_timestamp.mp4",
+      "frames": 887
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/300/300_timestamp.mp4",
+      "frames": 1670
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/255/255_timestamp.mp4",
+      "frames": 453
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/slide_metric_of_record/batch_visuals/275/275_timestamp.mp4",
+      "frames": 411
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/early_yaw_pool/224/metric_visuals/224_timestamp.mp4",
+      "frames": 369
+    },
+    {
+      "file": "paper/eef_recovery_2026-09-09/early_yaw_pool/225/metric_visuals/225_timestamp.mp4",
+      "frames": 332
+    }
+  ]
+}

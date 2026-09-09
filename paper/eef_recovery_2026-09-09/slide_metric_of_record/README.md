@@ -73,3 +73,16 @@ recoveries. Ten timestamp passes already have independent saved-action replay;
 saved EEF actions. No tape is automatically admitted by this report. Visual
 review, initial-condition provenance, final distance, physical tilt and solver
 contacts remain available for judging what each reconstruction achieves.
+
+## Release-order audit
+
+The unchanged predicate can mark a stationary initial can as released while the
+hand approaches it. In the 162-completed-trace snapshot (74 December 18 and 88
+early), every metric pass receives its first release before the legacy picked
+flag: all 21 December 18 and all nine raw early passes. Thus carrying after that
+initial release can satisfy the 10 mm gain clause. This does not prove those
+trials lack a later slide; it means the predicate alone does not establish one.
+`release_order_audit.json` retains source hashes, mapped event frames, can height
+and solver contacts. The legacy picked flag is imperfect, particularly with
+initial shelf overlap. Thresholds and classifier remain unchanged. Use the
+separate contact diagnostic and visual evidence for physical sequence claims.

@@ -1,0 +1,22 @@
+[
+  {
+    "time_s": 9.996445245,
+    "requested_s": 10,
+    "camera_frame": 305
+  },
+  {
+    "time_s": 15.99532277,
+    "requested_s": 16,
+    "camera_frame": 485
+  },
+  {
+    "time_s": 21.997206992,
+    "requested_s": 22,
+    "camera_frame": 665
+  },
+  {
+    "time_s": 24.996601886,
+    "requested_s": 25,
+    "camera_frame": 755
+  }
+]

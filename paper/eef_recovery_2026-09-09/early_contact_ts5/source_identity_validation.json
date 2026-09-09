@@ -1,0 +1,57 @@
+{
+  "all_ten_inputs_bit_identical": true,
+  "records": [
+    {
+      "uid": 113,
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "baseline_source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985"
+    },
+    {
+      "uid": 130,
+      "source_sha256": "0d195e38b7c1ae52f384d06c785b73e1b31e302ad60b76ccd7a5ce80cd82bd05",
+      "baseline_source_sha256": "0d195e38b7c1ae52f384d06c785b73e1b31e302ad60b76ccd7a5ce80cd82bd05"
+    },
+    {
+      "uid": 121,
+      "source_sha256": "14ff2f0f531db05cb7affdf39b44d4fe70c062dd6062c77c572a1abd4714a0ba",
+      "baseline_source_sha256": "14ff2f0f531db05cb7affdf39b44d4fe70c062dd6062c77c572a1abd4714a0ba"
+    },
+    {
+      "uid": 173,
+      "source_sha256": "5ed656a942bbe45471657297f41ab4bf054bc0e53cd98f0cc69db9c31f91267e",
+      "baseline_source_sha256": "5ed656a942bbe45471657297f41ab4bf054bc0e53cd98f0cc69db9c31f91267e"
+    },
+    {
+      "uid": 211,
+      "source_sha256": "bf8111aa4112354accaba5e5a542f8a2a1541d61faf62cbdd8f13574f34feaa5",
+      "baseline_source_sha256": "bf8111aa4112354accaba5e5a542f8a2a1541d61faf62cbdd8f13574f34feaa5"
+    },
+    {
+      "uid": 212,
+      "source_sha256": "b26b5f3d3537683efa094bc6252d06e99c1f9976b645fd0a1613e31157b6b6ff",
+      "baseline_source_sha256": "b26b5f3d3537683efa094bc6252d06e99c1f9976b645fd0a1613e31157b6b6ff"
+    },
+    {
+      "uid": 197,
+      "source_sha256": "b3acc4e739bf24b60028c70a9f21767aacbc702e3ab60bb47437d90574686cf7",
+      "baseline_source_sha256": "b3acc4e739bf24b60028c70a9f21767aacbc702e3ab60bb47437d90574686cf7"
+    },
+    {
+      "uid": 204,
+      "source_sha256": "6caa6868983d96ad6db2ef9460de6da037534e8b52d52e6079c7fe8f5e2d27ad",
+      "baseline_source_sha256": "6caa6868983d96ad6db2ef9460de6da037534e8b52d52e6079c7fe8f5e2d27ad"
+    },
+    {
+      "uid": 176,
+      "source_sha256": "1d8fb81b6bf4fcbdae809696d946baafd31a3b1771a7d3f4f0d474bd41d2184c",
+      "baseline_source_sha256": "1d8fb81b6bf4fcbdae809696d946baafd31a3b1771a7d3f4f0d474bd41d2184c"
+    },
+    {
+      "uid": 225,
+      "source_sha256": "597ee778adbe675b3fbff26a15393f1573d6fada9ee4db9ea9c46eaa1793f20c",
+      "baseline_source_sha256": "597ee778adbe675b3fbff26a15393f1573d6fada9ee4db9ea9c46eaa1793f20c"
+    }
+  ],
+  "worker_sha256": "f627008e7d64cb819052d99431fb9f52816b88c1c185566ac7fd9d05d0960c13",
+  "verifier_sha256": "f154d2e7bbe504330bd3be5710900849d798052e7afee6e33a861e4117e174c5"
+}

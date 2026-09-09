@@ -1,0 +1,81 @@
+{
+  "uids": [
+    145,
+    174,
+    220
+  ],
+  "selection": "All remaining initial shelf overlaps below 5 mm in existing 89-trial geometry audit; 193 already tested separately",
+  "records": [
+    {
+      "uid": 145,
+      "day": "12-16",
+      "correction": {
+        "original_can_pos": [
+          0.5193374655630785,
+          -0.0628058852622898,
+          0.113
+        ],
+        "corrected_can_pos": [
+          0.516,
+          -0.0628058852622898,
+          0.113
+        ],
+        "delta_m": [
+          -0.0033374655630784567,
+          0,
+          0
+        ],
+        "basis": "Remove modeled shelf overlap with 1 mm clearance; not a measured real initial position or outcome-selected sweep"
+      },
+      "source_sha256": "1d4afd56fc9eb967231036f612df6500991eb61f9a0b54865f96b990c6e17086"
+    },
+    {
+      "uid": 174,
+      "day": "12-16",
+      "correction": {
+        "original_can_pos": [
+          0.5198959063508531,
+          0.11061497508394394,
+          0.113
+        ],
+        "corrected_can_pos": [
+          0.516,
+          0.11061497508394394,
+          0.113
+        ],
+        "delta_m": [
+          -0.003895906350853129,
+          0,
+          0
+        ],
+        "basis": "Remove modeled shelf overlap with 1 mm clearance; not a measured real initial position or outcome-selected sweep"
+      },
+      "source_sha256": "dc307989cd433f42b964f1cdf727a3d458ff7ef7d1795213cae9086534c35e65"
+    },
+    {
+      "uid": 220,
+      "day": "12-17",
+      "correction": {
+        "original_can_pos": [
+          0.5215917821406452,
+          0.07983953982200978,
+          0.113
+        ],
+        "corrected_can_pos": [
+          0.516,
+          0.07983953982200978,
+          0.113
+        ],
+        "delta_m": [
+          -0.005591782140645152,
+          0,
+          0
+        ],
+        "basis": "Remove modeled shelf overlap with 1 mm clearance; not a measured real initial position or outcome-selected sweep"
+      },
+      "source_sha256": "712c0188b0556a7d86497643abab2d0321c8e0b6245368145aba073d30be906a"
+    }
+  ],
+  "unchanged": "Recorded arm/grip stream, timing, full world, day yaw, no added motion",
+  "admission": "Retain every outcome. Metric pass requires independent EEF replay and visual review before packaging."
+}

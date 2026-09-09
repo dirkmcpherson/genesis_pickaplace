@@ -60,6 +60,8 @@ for record in rows:
                 w['scene']._visualizer._t = -1
                 w['cam']._rasterizer._context._t = -1
                 image = np.asarray(w['cam'].render()[0])[:, :, ::-1].copy()
+                image = cv2.resize(image, (640, 640))
+                assert image.shape == (640,640,3) and image.dtype == np.uint8
                 contacts = data['contact_counts'][i]
                 dist = np.linalg.norm(row[13:15] - goal[:2])
                 labels = [f'{uid} | measured poses | {(i+1)*.03:.2f}s',
@@ -74,6 +76,13 @@ for record in rows:
                     sampled.append(int(i))
         finally:
             writer.release()
+        check = cv2.VideoCapture(str(video))
+        assert int(check.get(cv2.CAP_PROP_FRAME_COUNT)) == len(indices)
+        for frame in [0, len(indices)-1]:
+            check.set(cv2.CAP_PROP_POS_FRAMES, frame)
+            ok, decoded = check.read()
+            assert ok and decoded.shape == (640,640,3)
+        check.release()
         assert len(pictures) == 6
         cv2.imwrite(str(destination / 'phases.jpg'), np.vstack([np.hstack(pictures[:3]), np.hstack(pictures[3:])]))
         (destination / 'rendered.json').write_text(json.dumps(dict(uid=uid,

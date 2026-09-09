@@ -1,0 +1,26 @@
+{
+  "source_sha256": "37701a6a44335ce2b309577c900a401426e40cb8dd6cfeb58dd2ac18df6855c4",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 786,
+    "push_start": 800,
+    "contact_start": 831,
+    "final_surface_gap_m": -0.00024034988369266153,
+    "push_toward_goal_m": 0.019233517391115118,
+    "support_fraction": 0.9411764705882353
+  },
+  "selected_trace_frames": [
+    777,
+    786,
+    801,
+    831,
+    840,
+    990
+  ],
+  "real_camera": "No separate camera files or image/camera topics in local trial bag",
+  "scope": "Saved-pose video and event-focused six-frame sheet; independent physical replay checked separately",
+  "event_sheet_reviewed": true,
+  "video_decode_checked": true,
+  "review_note": "Six event-focused frames inspected: supported separation, short recontact interval, goal contact and upright hand-separated endpoint. Full video not watched frame by frame."
+}

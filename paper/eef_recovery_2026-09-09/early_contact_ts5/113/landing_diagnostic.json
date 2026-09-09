@@ -1,0 +1,120 @@
+{
+  "records": [
+    {
+      "frame": 650,
+      "time_s": 19.529999999999998,
+      "can_xyz": [
+        0.5731174349784851,
+        -0.19968438148498535,
+        0.27394556999206543
+      ],
+      "tilt_deg": 8.873089269351171,
+      "contacts_shelf_hand_goal": [
+        0,
+        3,
+        0
+      ],
+      "recorded_grip": 56.57913233970595
+    },
+    {
+      "frame": 665,
+      "time_s": 19.98,
+      "can_xyz": [
+        0.5684251189231873,
+        -0.19934462010860443,
+        0.2741529047489166
+      ],
+      "tilt_deg": 8.930724277107224,
+      "contacts_shelf_hand_goal": [
+        0,
+        3,
+        0
+      ],
+      "recorded_grip": 56.58289251057083
+    },
+    {
+      "frame": 675,
+      "time_s": 20.279999999999998,
+      "can_xyz": [
+        0.5674805045127869,
+        -0.19848677515983582,
+        0.27436354756355286
+      ],
+      "tilt_deg": 9.553558362933861,
+      "contacts_shelf_hand_goal": [
+        0,
+        2,
+        0
+      ],
+      "recorded_grip": 43.49979188669896
+    },
+    {
+      "frame": 680,
+      "time_s": 20.43,
+      "can_xyz": [
+        0.5644378066062927,
+        -0.19962956011295319,
+        0.22157293558120728
+      ],
+      "tilt_deg": 10.833657024869666,
+      "contacts_shelf_hand_goal": [
+        2,
+        0,
+        0
+      ],
+      "recorded_grip": 42.7370344282873
+    },
+    {
+      "frame": 683,
+      "time_s": 20.52,
+      "can_xyz": [
+        0.5352851748466492,
+        -0.19759319722652435,
+        0.2184942662715912
+      ],
+      "tilt_deg": 22.001571548750082,
+      "contacts_shelf_hand_goal": [
+        2,
+        0,
+        0
+      ],
+      "recorded_grip": 42.84831342892894
+    },
+    {
+      "frame": 686,
+      "time_s": 20.61,
+      "can_xyz": [
+        0.5000746250152588,
+        -0.19764003157615662,
+        0.1854620724916458
+      ],
+      "tilt_deg": 66.30576191740825,
+      "contacts_shelf_hand_goal": [
+        0,
+        0,
+        0
+      ],
+      "recorded_grip": 42.91013787105365
+    },
+    {
+      "frame": 690,
+      "time_s": 20.73,
+      "can_xyz": [
+        0.4771813452243805,
+        -0.19694411754608154,
+        0.0806083083152771
+      ],
+      "tilt_deg": 87.66676437824574,
+      "contacts_shelf_hand_goal": [
+        0,
+        0,
+        0
+      ],
+      "recorded_grip": 42.96675256848078
+    }
+  ],
+  "shelf_front_x_m": 0.55,
+  "shelf_rest_center_z_m": 0.2205,
+  "interpretation": "Can remains held about 54 mm above shelf rest height before opening; first short support near front edge, then exits past front edge and tips. No claim that model shelf geometry matches real footage.",
+  "physics": "Isolated .005 grasp contact timeconstant experiment"
+}

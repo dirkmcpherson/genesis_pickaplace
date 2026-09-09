@@ -1,24 +1,30 @@
 {
   "declared": 89,
-  "scored": 73,
+  "scored": 89,
   "metric_passes": [
     162,
     167,
     176,
     193,
     196,
-    202
+    202,
+    222,
+    224,
+    225
   ],
   "verified": [
     162,
     167,
     176,
-    202
+    202,
+    224,
+    225
   ],
   "pending_verification": [],
   "failures": {
     "193": "Metric pass has initial shelf overlap; geometry reconciliation required",
-    "196": "Metric pass has initial shelf overlap; geometry reconciliation required"
+    "196": "Metric pass has initial shelf overlap; geometry reconciliation required",
+    "222": "Metric pass has initial shelf overlap; geometry reconciliation required"
   },
-  "completion": "Waiting for collectors or independent replay"
+  "completion": "Watcher complete"
 }

@@ -1,0 +1,71 @@
+{
+  "scope": "Completed changed-contact early-day EEF trials failing the slide; experimental physics",
+  "limitations": "Simulation contact evidence only; no inferred real finger angle or causal calibration.",
+  "count": 4,
+  "no_recontact_uids": [
+    113,
+    121
+  ],
+  "records": [
+    {
+      "uid": 113,
+      "day": "12-16",
+      "trace_sha256": "e7275317b3269b6d59d0216fb6231624a8e3aa10ee388a8de568833cab813798",
+      "release_frame": 680,
+      "post_release_robot_contact_frames": 0,
+      "first_recontact_frame": null,
+      "post_release_supported_robot_contact_frames": 0,
+      "post_release_goal_contact_frames": 0,
+      "pre_release_supported_goal_contact_frames": 0,
+      "minimum_post_release_surface_gap_mm": 72.70069585348071,
+      "final_surface_gap_mm": 143.39967784283607,
+      "max_post_release_xy_displacement_mm": 95.94504813610004,
+      "final_tilt_deg": 89.99982455692043
+    },
+    {
+      "uid": 121,
+      "day": "12-16",
+      "trace_sha256": "9a995e4e0c14caf0f867c27e023fad8a665d5a09bba5c56243ff749cd2b1d0ee",
+      "release_frame": 1244,
+      "post_release_robot_contact_frames": 0,
+      "first_recontact_frame": null,
+      "post_release_supported_robot_contact_frames": 0,
+      "post_release_goal_contact_frames": 0,
+      "pre_release_supported_goal_contact_frames": 0,
+      "minimum_post_release_surface_gap_mm": 29.5998434881508,
+      "final_surface_gap_mm": 29.690781417285763,
+      "max_post_release_xy_displacement_mm": 14.553753634561662,
+      "final_tilt_deg": 0.0025627389490634634
+    },
+    {
+      "uid": 173,
+      "day": "12-16",
+      "trace_sha256": "9574c4ed798711616ec851d67aa04c52effd096da0b95d3dbcd3aee450f414c0",
+      "release_frame": 1002,
+      "post_release_robot_contact_frames": 74,
+      "first_recontact_frame": 1005,
+      "post_release_supported_robot_contact_frames": 69,
+      "post_release_goal_contact_frames": 0,
+      "pre_release_supported_goal_contact_frames": 0,
+      "minimum_post_release_surface_gap_mm": 49.490243968069294,
+      "final_surface_gap_mm": 49.491865387033236,
+      "max_post_release_xy_displacement_mm": 40.14482929801647,
+      "final_tilt_deg": 0.00256238039524394
+    },
+    {
+      "uid": 211,
+      "day": "12-17",
+      "trace_sha256": "1316a30176d4f204cf3934e407dedc989153b6d323ded2ef7f404db5888763e9",
+      "release_frame": 3470,
+      "post_release_robot_contact_frames": 18,
+      "first_recontact_frame": 3554,
+      "post_release_supported_robot_contact_frames": 17,
+      "post_release_goal_contact_frames": 0,
+      "pre_release_supported_goal_contact_frames": 0,
+      "minimum_post_release_surface_gap_mm": 156.94155415821862,
+      "final_surface_gap_mm": 175.1108493382298,
+      "max_post_release_xy_displacement_mm": 18.530883758796598,
+      "final_tilt_deg": 0.0025625675720012883
+    }
+  ]
+}

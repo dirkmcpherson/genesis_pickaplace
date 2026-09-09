@@ -1,0 +1,15 @@
+{
+  "uid": 225,
+  "source_sha256": "37701a6a44335ce2b309577c900a401426e40cb8dd6cfeb58dd2ac18df6855c4",
+  "sampled_trace_frames": [
+    0,
+    297,
+    546,
+    714,
+    873,
+    991
+  ],
+  "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
+  "visual_review_completed": false,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun"
+}

@@ -1,0 +1,39 @@
+{
+  "records": [
+    {
+      "uid": 113,
+      "reviewed": "Six paired camera phase frames; 184 before-opening camera0 additionally inspected at full size",
+      "max_abs_timestamp_match_error_ms": 18.973995141351452,
+      "can_retention_visible_camera4": true,
+      "initial_grasp_visible_camera0": false,
+      "loaded_finger_shape_view": "Partial or occluded in selected camera0 placement frames",
+      "quantitative_distal_angle_validated": false,
+      "metric_3d_pose_validated": false,
+      "restriction": "Use visible can/rack/hand silhouettes; do not infer hidden pivots or measured 3D locations from uncalibrated views"
+    },
+    {
+      "uid": 184,
+      "reviewed": "Six paired camera phase frames; 184 before-opening camera0 additionally inspected at full size",
+      "max_abs_timestamp_match_error_ms": 21.391457809693648,
+      "can_retention_visible_camera4": true,
+      "initial_grasp_visible_camera0": false,
+      "loaded_finger_shape_view": "184 camera0 before/after motor decrease",
+      "quantitative_distal_angle_validated": false,
+      "metric_3d_pose_validated": false,
+      "restriction": "Use visible can/rack/hand silhouettes; do not infer hidden pivots or measured 3D locations from uncalibrated views"
+    },
+    {
+      "uid": 233,
+      "reviewed": "Six paired camera phase frames; 184 before-opening camera0 additionally inspected at full size",
+      "max_abs_timestamp_match_error_ms": 16.67821057348462,
+      "can_retention_visible_camera4": true,
+      "initial_grasp_visible_camera0": false,
+      "loaded_finger_shape_view": "Partial or occluded in selected camera0 placement frames",
+      "quantitative_distal_angle_validated": false,
+      "metric_3d_pose_validated": false,
+      "restriction": "Use visible can/rack/hand silhouettes; do not infer hidden pivots or measured 3D locations from uncalibrated views"
+    }
+  ],
+  "validation_images_reviewed_for_fitting": false,
+  "corrections": "Initial extraction used normalized source times and late absolute grip crossing; revised extraction uses raw first-window bag offset and first 10-unit motor decrease after pickup. All current images regenerated. Motor events remain review-time selectors, not physical release labels."
+}

@@ -1,0 +1,9 @@
+{
+  "uid": 225,
+  "reviewed": true,
+  "source_sha256": "37701a6a44335ce2b309577c900a401426e40cb8dd6cfeb58dd2ac18df6855c4",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/225/metric_visuals/225_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/225/metric_visuals/phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Selected phases show carry and near-goal hand contact before upright hand-separated endpoint at 65.76 mm. Earlier near-goal states are airborne or tilted; sampled review does not establish a distinct supported post-release slide."
+}

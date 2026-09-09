@@ -1,0 +1,18 @@
+[
+  {
+    "uid": 113,
+    "frames": 3787,
+    "bag_start_ns": 1734371549418081726,
+    "camera_start_minus_bag_start_s": -0.156085457,
+    "first_measurement_time_s": 0.020199298858642578,
+    "limitation": "Timestamp files share epoch with bag receipt times. Acquisition latency and timestamp writer implementation remain uncalibrated."
+  },
+  {
+    "uid": 176,
+    "frames": 2252,
+    "bag_start_ns": 1734385270230122150,
+    "camera_start_minus_bag_start_s": -0.165506424,
+    "first_measurement_time_s": 0.0473480224609375,
+    "limitation": "Timestamp files share epoch with bag receipt times. Acquisition latency and timestamp writer implementation remain uncalibrated."
+  }
+]

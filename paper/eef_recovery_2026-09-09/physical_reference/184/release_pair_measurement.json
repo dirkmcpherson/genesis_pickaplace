@@ -1,0 +1,53 @@
+{
+  "uid": 184,
+  "images": [
+    {
+      "file": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/physical_reference/184/rigid_landmark_30.9s.jpg",
+      "sha256": "6c01d4d775f1ae0e3818bf784c3bd7bc0a81f466abe8cd53d37c9c74d529a2b4",
+      "pad_axis_points_xy": [
+        [
+          282.0,
+          484.0
+        ],
+        [
+          273.0,
+          611.0
+        ]
+      ],
+      "projected_axis_angle_deg": 94.05355423183141
+    },
+    {
+      "file": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/physical_reference/184/rigid_landmark_33s.jpg",
+      "sha256": "241fd60b3ef3895a0a3ab046007bff1c0d8fb7610106a557f4d38411ea7f0b92",
+      "pad_axis_points_xy": [
+        [
+          315.0,
+          478.0
+        ],
+        [
+          359.0,
+          603.0
+        ]
+      ],
+      "projected_axis_angle_deg": 70.60793148921834
+    }
+  ],
+  "camera_bag_times_s": [
+    30.900983037,
+    33.004324616
+  ],
+  "projected_axis_change_deg": -23.445622742613068,
+  "point_selection_sensitivity_95pct_deg": [
+    -31.389459316911484,
+    -15.620939835428114
+  ],
+  "sensitivity_definition": "Independent uniform +/-8 pixel endpoint perturbations; diagnostic sensitivity, not a statistical confidence interval",
+  "tool_translation_mm": 1.9658109100845482,
+  "urdf_fk_tool_rotation_deg": 0.24756765762039784,
+  "recorded_motor_positions": [
+    65.7928695678711,
+    29.252113342285156
+  ],
+  "interpretation": "Visible pad rotates in image while rigid tool pose changes little during motor opening. This does not isolate passive curl, since motor position and contact load both change.",
+  "calibration_status": "No camera extrinsics, 3D angle or stiffness fitted. Rigid pivot cap is visible in only a small pose range here, insufficient for independent camera calibration."
+}

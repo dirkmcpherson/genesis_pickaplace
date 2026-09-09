@@ -17,14 +17,18 @@
     },
     "12-17": {
       "declared": 40,
-      "finished": 6,
+      "finished": 40,
       "worker_failed": 0,
       "reasons": {
-        "not_picked": 2,
-        "no_supported_push_to_contact": 3,
-        "no_supported_release": 1
+        "not_picked": 4,
+        "no_supported_push_to_contact": 18,
+        "no_supported_release": 16,
+        "complete": 2
       },
-      "complete_candidates": []
+      "complete_candidates": [
+        196,
+        225
+      ]
     }
   },
   "records": [
@@ -913,239 +917,549 @@
     {
       "uid": 192,
       "day": "12-17",
-      "status": "pending",
+      "status": "finished",
       "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 3386,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.03985158271259159
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 193,
       "day": "12-17",
-      "status": "pending",
+      "status": "finished",
       "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 3289,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.004458476449792276
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 194,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.05823113681804988
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 196,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
-      "independent_replay_checked": false
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 1543,
+        "push_start": 1969,
+        "contact_start": 2021,
+        "final_surface_gap_m": -0.00012598870777373594,
+        "push_toward_goal_m": 0.023628622711072834,
+        "support_fraction": 0.9454545454545454
+      },
+      "independent_replay_checked": true
     },
     {
       "uid": 197,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1631887581127435
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 198,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.11586191380725475
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 200,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 854,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.3921923606323764
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 201,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.45048179090663115
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 202,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 871,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0006034817904715384
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 203,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 882,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02352268351120068
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 204,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04442252819189217
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 206,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 719,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.4675928099817907
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 207,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.030046439341416986
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 208,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1191,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.16376423628912784
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 209,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 847,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.08126983236774224
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 210,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0023907518120896004
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 211,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04419983075346634
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 212,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1312818162420885
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 213,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.22494531106377758
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 214,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15529263945005137
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 215,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 618,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04254978931503545
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 216,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1068,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.22853338522034417
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 217,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 467,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.12625665040393647
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 218,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.20970108232939322
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 219,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.3693728352504271
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 220,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2709122320616771
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 221,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1317,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.13603698723609647
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 222,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 2363,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.00934512946676698
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 224,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 777,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": -0.00013343769918565396
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 225,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
-      "independent_replay_checked": false
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 786,
+        "push_start": 800,
+        "contact_start": 831,
+        "final_surface_gap_m": -0.00024034988369266153,
+        "push_toward_goal_m": 0.019233517391115118,
+        "support_fraction": 0.9411764705882353
+      },
+      "independent_replay_checked": true
     },
     {
       "uid": 226,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.0692559962643031
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 229,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.23929596242844609
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 230,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1145,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1436769876379054
+      },
       "independent_replay_checked": false
     },
     {
       "uid": 231,
       "day": "12-17",
-      "status": "pending",
-      "world_checked": false,
+      "status": "finished",
+      "world_checked": true,
+      "returncode": 0,
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.21160220735139545
+      },
       "independent_replay_checked": false
     }
   ],

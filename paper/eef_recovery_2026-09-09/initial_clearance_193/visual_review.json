@@ -1,0 +1,10 @@
+{
+  "uid": 193,
+  "reviewed": true,
+  "source_sha256": "490e9bd9d60393d685ec5951f903231b2f59ff602bd61c4e7102fb9802784aa2",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/initial_clearance_193/193_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/initial_clearance_193/193_phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Long initial dwell, carry, shelf placement and near-goal endpoint visible. Can ends upright with hand separated and a residual gap within the supplied arrival tolerance. Initial x was corrected by -2.356 mm to remove modeled shelf overlap; no motion or physics changes.",
+  "real_visual_limitation": "No separate camera files or camera-image topics found in the local trial 193 archive."
+}

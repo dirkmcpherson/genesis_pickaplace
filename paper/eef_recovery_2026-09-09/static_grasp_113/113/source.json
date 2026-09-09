@@ -1,0 +1,27 @@
+{
+  "uid": 113,
+  "day": "12-16",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4162839879333279,
+    -0.1489231279701776,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 434,
+  "source_sha256": "7c2183dc4fe876b18d06e14716309754539fcb70709a252f7bd40e9c1b086769",
+  "initial_pose_provenance": "archived pre-only outcome-fitted world position",
+  "source_matches_archived_episode": false,
+  "timing_reconstruction": {
+    "method": "DIAGNOSTIC ONLY: preserve first 267 timestamp-reconstructed actions, then repeat final joint target and recorded grip for 167 actions",
+    "decision_dt_s": 0.03
+  },
+  "diagnostic_modified_commands": true
+}

@@ -1,0 +1,52 @@
+{
+  "prefix_bit_identical": {
+    "trajectory": true,
+    "actions_eef": true,
+    "observations": true,
+    "finger_joint": true,
+    "contact_counts": true
+  },
+  "results": [
+    {
+      "condition": "recorded_continuation",
+      "frames": 168,
+      "tool_displacement_m": 0.1855970448914776,
+      "can_relative_to_tool_displacement_m": 0.022164541435507827,
+      "initial_local_can_m": [
+        0.0014702708957298675,
+        0.030608227674633028,
+        0.016548236584191852
+      ],
+      "final_local_can_m": [
+        0.001429663882801602,
+        0.052748408554925574,
+        0.01551014280000234
+      ],
+      "max_tilt_deg": 12.352826003898482,
+      "final_tilt_deg": 9.7507186529411,
+      "robot_contact_fraction": 1.0,
+      "shelf_contact_fraction": 0.0
+    },
+    {
+      "condition": "static_target_hold",
+      "frames": 168,
+      "tool_displacement_m": 0.0038664299701772244,
+      "can_relative_to_tool_displacement_m": 0.02172060236172789,
+      "initial_local_can_m": [
+        0.0014702708957298675,
+        0.030608227674633028,
+        0.016548236584191852
+      ],
+      "final_local_can_m": [
+        0.0015845062536354593,
+        0.052283967566918485,
+        0.015157618965546025
+      ],
+      "max_tilt_deg": 11.83704609832068,
+      "final_tilt_deg": 9.70301098524609,
+      "robot_contact_fraction": 1.0,
+      "shelf_contact_fraction": 0.0
+    }
+  ],
+  "scope": "One reproduced grasp, modified static-target diagnostic, no demo admission; cannot identify which physical parameter is wrong"
+}

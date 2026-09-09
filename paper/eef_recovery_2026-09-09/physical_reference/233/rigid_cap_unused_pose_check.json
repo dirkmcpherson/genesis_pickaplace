@@ -1,0 +1,64 @@
+{
+  "camera_time_s": 13.997250384,
+  "manual_centers_rotated_pixels": [
+    [
+      362.0,
+      497.0
+    ],
+    [
+      440.0,
+      490.0
+    ]
+  ],
+  "results": [
+    {
+      "surface_x_m": 0.0152,
+      "unused_pose_errors_px": [
+        5.2829243903511385,
+        4.176380494334138
+      ],
+      "predicted_rotated_pixels": [
+        [
+          366.340156781357,
+          493.9879692519153
+        ],
+        [
+          441.8799688797269,
+          486.2706741836207
+        ]
+      ],
+      "surface_facing_dot_m": [
+        0.4767248504356686,
+        0.5249171212363113,
+        0.5117187896876269,
+        0.49622584066991565
+      ],
+      "all_caps_face_camera": true
+    },
+    {
+      "surface_x_m": -0.0152,
+      "unused_pose_errors_px": [
+        5.118637052782486,
+        3.9457843883553454
+      ],
+      "predicted_rotated_pixels": [
+        [
+          366.3067587306729,
+          494.23372551725424
+        ],
+        [
+          441.8761428897189,
+          486.52878950555487
+        ]
+      ],
+      "surface_facing_dot_m": [
+        -0.4768713563247051,
+        -0.5250641602623017,
+        -0.5118655665809253,
+        -0.4963763779273426
+      ],
+      "all_caps_face_camera": false
+    }
+  ],
+  "scope": "One unused pose from same calibration trial; not a held-out-trial or intrinsic calibration. Surface-normal check assumes visible circles lie on corresponding CAD faces."
+}

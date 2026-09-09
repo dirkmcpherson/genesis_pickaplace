@@ -388,3 +388,23 @@ Per-frame demonstration reward recomputed under amendment (x) — same magnitude
 **Why the totals rose.** The stale `placed` rung was never granted, so `released` adds 72 grants that previously scored nothing; and `can-settle` fires 15 times where the nested proxy fired 3. The ladder pays more, but pays it for behaviour the task actually wants.
 
 Diffusion Policy is unaffected — it never reads reward — which is why its test could run first, on the de-selected arm.
+
+## 5.6 Long runs: doubling the budget multiplies honest completion ~9x (first cell, 2026-09-09)
+
+The eight world-model long runs trained to ~4.1M steps and were never evaluated by their launcher. Evaluated now on the random-uniform starts, first cell (human arm, seed 0), against the same arm's 2M figures of record:
+
+| stage | 2M (of record) | **4.1M** | change |
+|---|---|---|---|
+| picked | 0.492 | **0.600** | +0.11 |
+| placed_v2 | 0.163 | **0.567** | **3.5x** |
+| contact | 0.388 | **0.533** | +0.15 |
+| nested_honest | 0.046 | **0.400** | **8.7x** |
+| slide_success | 0.042 | **0.267** | **6.4x** |
+
+**This is the cost of the unconverged budget, made concrete.** The convergence analysis said neither arm had plateaued at 2M; this shows the size of what was left on the table. Every end-to-end conclusion in the paper was drawn from policies at roughly a tenth of their achievable completion rate, and **the damage grows down the ladder** — the stages the paper cares about most were the most under-trained.
+
+It also softens a conclusion: "no arm learns the slide" was measured at 0.042. This arm reaches **0.267** at 4.1M. Still low, but not "never".
+
+**`contact_push` is an ABSENCE in full scope, not a measurement.** It reads exactly 0.000 while bare `contact` reads 0.533 and `slide_success` 0.267. The env grants it only from `info['contact_push']`, and that key is not populated in the full-scope path — `slide_success` arrives through the same mechanism and does fire, which is what isolates the cause. `placed` reads 0.000 for the known separate reason that it is the stale never-granted predicate. **Our discriminating statistic has therefore been unavailable in full scope**, and any end-to-end table reporting it as zero is reporting a missing field.
+
+Caveats: one seed of eight, one arm, and these long runs used the OLD datasets (best-of-three machine set, old reward ladder), so this says nothing about demonstration source — only about budget.

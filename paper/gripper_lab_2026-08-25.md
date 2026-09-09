@@ -266,6 +266,17 @@ no force command**. Grip force is emergent from over-travel against a current ca
 qualitatively what `build_world` already does (position PD past contact, force range as the cap) --
 so the actuation model is right and the *contact* model is what is wrong.
 
+**September 9 correction:** The last inference is not established. A position
+servo and current limit do not validate the actuator-to-finger transmission,
+loaded distal coupling, or the conversion of the limit to joint force. Likewise,
+the affine URDF mimic above does not establish a physical four-bar mechanism or
+exclude underactuation. The source material supports qualitative actuation, not
+a complete mechanical model. See CONFOUNDS row 55 and
+[the physical-reference check](eef_recovery_2026-09-09/physical_reference/README.md):
+actual simulated fingers differ substantially from their targets during loading,
+while the real loaded tips remain partly occluded. Contact and transmission
+remain competing or coupled explanations; neither is ruled out by this audit.
+
 ### 2.2 Soft contacts: penetration vs stability
 * **MuJoCo `solref`/`solimp`** (Genesis' `sol_params` is byte-identical to MuJoCo's defaults and
   its docstring cites this page): `solref = (timeconst, dampratio)` -> `b = 2/(d_width*timeconst)`,

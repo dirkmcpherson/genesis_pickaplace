@@ -1,0 +1,16 @@
+{
+  "uid": 232,
+  "source_sha256": "698e7a9ef236417824975d8c9ac7e5db409d15cd1e7b1e2408b46afcfa1ea1bf",
+  "sampled_trace_frames": [
+    0,
+    291,
+    534,
+    699,
+    852,
+    967
+  ],
+  "render": "Saved measured poses; physics is not stepped; one shared world with identical variant",
+  "visual_review_completed": true,
+  "video_cadence": "Stride 3 at 11.111 fps; final source frame appended if needed, giving at most 60 ms endpoint display overrun",
+  "review_note": "Carry, shelf set-down and later goalward movement visible. Endpoint retains both hand and goal contact."
+}

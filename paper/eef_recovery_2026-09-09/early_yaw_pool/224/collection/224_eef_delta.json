@@ -1,0 +1,59 @@
+{
+  "uid": 224,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6_yaw17",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.5021999038218612,
+    0.04376779607245635,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+  "source_sha256": "93f4d25c147b06cccf026eff660c66c1447457127448ecbcb69863a67811bfc9",
+  "parent_trace_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7",
+  "frames": 1105,
+  "source_frames": 1105,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 777,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": -0.00013343769918565396
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "real-derived EEF replay",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.871083751574258e-16,
+  "command_rotation_rad_p99": 1.4875565713022732e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 33.09574246406555,
+    "original_frames": 1317,
+    "replay_duration_s": 33.15,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/224_timed.npz",
+    "decision_dt_s": 0.03
+  }
+}

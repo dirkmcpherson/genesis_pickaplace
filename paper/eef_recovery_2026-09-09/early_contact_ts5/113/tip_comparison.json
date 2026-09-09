@@ -1,0 +1,16 @@
+[
+  {
+    "condition": "baseline",
+    "first_tip_s": 13.379999999999999,
+    "tilt_at_original_tip_deg": 66.72396783052662,
+    "can_z_at_original_tip_m": 0.09091227501630783,
+    "final_tilt_deg": 90.00005156224125
+  },
+  {
+    "condition": "ts5",
+    "first_tip_s": 20.61,
+    "tilt_at_original_tip_deg": 9.06588665096038,
+    "can_z_at_original_tip_m": 0.2877116799354553,
+    "final_tilt_deg": 89.99982455692043
+  }
+]

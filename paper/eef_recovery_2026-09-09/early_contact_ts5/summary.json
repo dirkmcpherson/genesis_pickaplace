@@ -1,0 +1,471 @@
+{
+  "declared": 10,
+  "completed": 10,
+  "records": [
+    {
+      "uid": 113,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6971634280557826,
+        "gain_m": 0.08374779450616734
+      },
+      "probe_metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.20939967784283608,
+        "gain_m": 0.17533629405240217
+      },
+      "final_distance_change_m": -0.4877637502129465,
+      "baseline_tilt_deg": 90.00005156224125,
+      "probe_tilt_deg": 89.99982455692043,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.6311634280557825
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 680,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14339967784283608
+      }
+    },
+    {
+      "uid": 130,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "130",
+        "n": 330,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.168477517311381,
+        "gain_m": 0.14873577253275314
+      },
+      "probe_metric": {
+        "uid": "130",
+        "n": 330,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.23536781551228517,
+        "gain_m": 0.18613833135315166
+      },
+      "final_distance_change_m": 0.06689029820090417,
+      "baseline_tilt_deg": 89.99998290640853,
+      "probe_tilt_deg": 89.99997535304186,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.102477517311381
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.16936781551228516
+      }
+    },
+    {
+      "uid": 121,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "121",
+        "n": 369,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6624112410250691,
+        "gain_m": 0.2451867775743368
+      },
+      "probe_metric": {
+        "uid": "121",
+        "n": 369,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09569078141728576,
+        "gain_m": 0.24166514870160652
+      },
+      "final_distance_change_m": -0.5667204596077833,
+      "baseline_tilt_deg": 90.00051016137952,
+      "probe_tilt_deg": 0.0025627389490634634,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.596411241025069
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1244,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02969078141728576
+      }
+    },
+    {
+      "uid": 173,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "173",
+        "n": 356,
+        "released": true,
+        "release_frame": 29,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.35218001310206604,
+        "gain_m": 0.09861529016229123
+      },
+      "probe_metric": {
+        "uid": "173",
+        "n": 356,
+        "released": true,
+        "release_frame": 29,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11549186538703324,
+        "gain_m": 0.12121851223536621
+      },
+      "final_distance_change_m": -0.2366881477150328,
+      "baseline_tilt_deg": 89.99999674216815,
+      "probe_tilt_deg": 0.00256238039524394,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.28618001310206603
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1002,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.049491865387033235
+      }
+    },
+    {
+      "uid": 211,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "211",
+        "n": 945,
+        "released": true,
+        "release_frame": 154,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11019983075346634,
+        "gain_m": 0.18812366363131253
+      },
+      "probe_metric": {
+        "uid": "211",
+        "n": 945,
+        "released": true,
+        "release_frame": 154,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2411108493382298,
+        "gain_m": 0.18626825626572618
+      },
+      "final_distance_change_m": 0.13091101858476345,
+      "baseline_tilt_deg": 90.00000830726138,
+      "probe_tilt_deg": 0.0025625675720012883,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04419983075346634
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 3470,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1751108493382298
+      }
+    },
+    {
+      "uid": 212,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "212",
+        "n": 484,
+        "released": true,
+        "release_frame": 27,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.19728181624208851,
+        "gain_m": 0.17763908032647135
+      },
+      "probe_metric": {
+        "uid": "212",
+        "n": 484,
+        "released": true,
+        "release_frame": 27,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.3793398735941325,
+        "gain_m": 0.03134346443654179
+      },
+      "final_distance_change_m": 0.182058057352044,
+      "baseline_tilt_deg": 90.06060508629437,
+      "probe_tilt_deg": 0.002563048536496375,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1312818162420885
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.3133398735941325
+      }
+    },
+    {
+      "uid": 197,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "197",
+        "n": 563,
+        "released": true,
+        "release_frame": 29,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2291887581127435,
+        "gain_m": 0.08058946726121738
+      },
+      "probe_metric": {
+        "uid": "197",
+        "n": 563,
+        "released": true,
+        "release_frame": 29,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.26547944273622553,
+        "gain_m": 0.0880158185419399
+      },
+      "final_distance_change_m": 0.036290684623482033,
+      "baseline_tilt_deg": 90.00003390548196,
+      "probe_tilt_deg": 90.00000041687987,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1631887581127435
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.19947944273622553
+      }
+    },
+    {
+      "uid": 204,
+      "is_success_control": false,
+      "baseline_metric": {
+        "uid": "204",
+        "n": 405,
+        "released": true,
+        "release_frame": 22,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.11042252819189217,
+        "gain_m": 0.18265395727926653
+      },
+      "probe_metric": {
+        "uid": "204",
+        "n": 405,
+        "released": true,
+        "release_frame": 22,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.16118265735706241,
+        "gain_m": 0.20177270774795183
+      },
+      "final_distance_change_m": 0.05076012916517024,
+      "baseline_tilt_deg": 89.99999483453072,
+      "probe_tilt_deg": 90.0000288464613,
+      "baseline_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.04442252819189217
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.09518265735706241
+      }
+    },
+    {
+      "uid": 176,
+      "is_success_control": true,
+      "baseline_metric": {
+        "uid": "176",
+        "n": 621,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06583617244563401,
+        "gain_m": 0.21981175783655266
+      },
+      "probe_metric": {
+        "uid": "176",
+        "n": 621,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2680256022128284,
+        "gain_m": 0.14936701291784088
+      },
+      "final_distance_change_m": 0.2021894297671944,
+      "baseline_tilt_deg": 0.00256345604842548,
+      "probe_tilt_deg": 89.99998819260765,
+      "baseline_sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 1213,
+        "push_start": 1216,
+        "contact_start": 2142,
+        "final_surface_gap_m": -0.00016382755436598895,
+        "push_toward_goal_m": 0.0489033751155744,
+        "support_fraction": 0.9967707212055974
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2020256022128284
+      }
+    },
+    {
+      "uid": 225,
+      "is_success_control": true,
+      "baseline_metric": {
+        "uid": "225",
+        "n": 248,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06575965011630734,
+        "gain_m": 0.1762608620110933
+      },
+      "probe_metric": {
+        "uid": "225",
+        "n": 248,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.21754542699486723,
+        "gain_m": 0.04265106332751531
+      },
+      "final_distance_change_m": 0.15178577687855987,
+      "baseline_tilt_deg": 0.0025624661625829074,
+      "probe_tilt_deg": 0.0025626456530965687,
+      "baseline_sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 786,
+        "push_start": 800,
+        "contact_start": 831,
+        "final_surface_gap_m": -0.00024034988369266153,
+        "push_toward_goal_m": 0.019233517391115118,
+        "support_fraction": 0.9411764705882353
+      },
+      "probe_sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15154542699486723
+      }
+    }
+  ],
+  "new_metric_passes": [],
+  "lost_metric_passes": [
+    176,
+    225
+  ],
+  "new_strict_completions": [],
+  "lost_strict_completions": [
+    176,
+    225
+  ],
+  "qualification": "Changed physics, not calibrated real compliance; no result is admitted by this report"
+}

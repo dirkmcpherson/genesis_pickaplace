@@ -1,0 +1,9 @@
+{
+  "uid": 224,
+  "reviewed": true,
+  "source_sha256": "978ee306fe7aa1a577aae77fa5da440f84b5dcccdd649c599a3dc3399f734d7e",
+  "video": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/metric_visuals/224_timestamp.mp4",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/metric_visuals/phases.jpg",
+  "scope": "Six selected measured-pose phase frames inspected; full video retained, not watched frame by frame.",
+  "note": "Selected phases show carry, shelf placement and hand withdrawal; upright hand-separated endpoint at 65.87 mm center distance. This sampled review does not establish a separate supported post-release slide."
+}

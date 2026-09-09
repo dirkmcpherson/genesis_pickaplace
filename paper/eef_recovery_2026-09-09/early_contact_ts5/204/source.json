@@ -1,0 +1,32 @@
+{
+  "uid": 204,
+  "day": "12-17",
+  "variant": "gc_kp4_riser3_shelf6_yaw17_ts5_probe",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.4652016340218137,
+    -0.10119002967500913,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 1620,
+  "source_sha256": "c2ed2958970a0b8fc42d473e476bcde6efd8ebc405abc2bf7038362653b569e9",
+  "initial_pose_provenance": "archived pre-only outcome-fitted world position",
+  "source_matches_archived_episode": true,
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 48.56908845901489,
+    "original_frames": 1722,
+    "replay_duration_s": 48.6,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/204_timed.npz",
+    "decision_dt_s": 0.03
+  },
+  "parent_variant": "gc_kp4_riser3_shelf6_yaw17",
+  "physics_diagnostic": "Existing grasp_timeconst=.005 on finger and manipulated-can geoms; affects can-world pairs by solver averaging too; not calibrated passive hand"
+}

@@ -1,0 +1,8 @@
+{
+  "uid": 202,
+  "reviewed": true,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/202/202_real_cam4_embedded.npz",
+  "sheet": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/202/202_real_embedded_phases.jpg",
+  "observations": "Timestamp-matched low-resolution frames show carry, shelf interaction, an open hand near the placed can, and later hand approach near the goal.",
+  "limitations": "Native 96x96 imagery; insufficient for distal-angle calibration or precise contact metrology. Receipt-time matching does not establish acquisition-time synchronization."
+}

@@ -1,0 +1,234 @@
+{
+  "records": [
+    {
+      "uid": 113,
+      "role": "calibration",
+      "day": "12-16",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.npz",
+      "sim_trace_sha256": "bd9553eaa284d39df341a2313f24f654e66bf13c785e1e3667e403192cad06cd",
+      "variant": "gc_kp4_riser3_shelf6_yaw16",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "3d942c92ac527c0f5ac816732e830512ef42e2bcac827a0a95ebd6ee381cf2da",
+          "frames": 3787,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "4817050e234adff81cc5379426c43184873198c0061bf7162eb7242e83fdc469",
+          "frames": 3095,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    },
+    {
+      "uid": 184,
+      "role": "calibration",
+      "day": "12-17",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.npz",
+      "sim_trace_sha256": "a7115a6f1eedcc34d5f3cf374cc5f02dfedac78a1737b45ea6834dcc411e4f62",
+      "variant": "gc_kp4_riser3_shelf6_yaw17",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_184/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_184/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "e62a9269644287e60a1328fe47a6ffdac78afbaaa6c894af8d3eb0b52392baf9",
+          "frames": 2921,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_184/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_184/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "f2542668233b9980e29d1e00b8d2138e21ea28f20f63a7933bff267e3e5611e6",
+          "frames": 2406,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    },
+    {
+      "uid": 233,
+      "role": "calibration",
+      "day": "12-18",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+      "sim_trace_sha256": "ffac44936050a7ee354827a2e9ddd4d37a062001dee489b183fd58885cbc41af",
+      "variant": "gc_kp4_riser3_shelf6",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_233/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_233/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "f44b89e69713d965a9288e875bda43afe2a4c585e3c546dbe54013d5b5a5de57",
+          "frames": 886,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_233/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_233/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "d27f4e03b5fdf7be93b5e71af6fb2ded555961e4cdb987d3a6063d64a8b03fd5",
+          "frames": 728,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    },
+    {
+      "uid": 176,
+      "role": "validation",
+      "day": "12-16",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/collection/176_eef_delta.npz",
+      "sim_trace_sha256": "dd8c171e3b1194a3517c93e4a9688ebd657faa8b3e61a20db56bf172337e56c1",
+      "variant": "gc_kp4_riser3_shelf6_yaw16",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_176/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_176/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "c27626ee0f0dfc1dbdc765fb5bdc72483a0dcd2029f87827532f085f950a8974",
+          "frames": 2252,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_176/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_176/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "2352d80b2fe84da0ead55ae699620f06f1934dfdfc880fd26f9fdeb94249639b",
+          "frames": 1849,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    },
+    {
+      "uid": 185,
+      "role": "validation",
+      "day": "12-17",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/collection/185_eef_delta.npz",
+      "sim_trace_sha256": "4050b87b991bafb4b8990b9e6a61a2c2b945b357462190c370a3565876d20199",
+      "variant": "gc_kp4_riser3_shelf6_yaw17",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_185/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_185/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "ec8a8b76ffbeb7f951b51731a0eedf16a591ea9d157efd26a7e25839f2686933",
+          "frames": 1293,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_185/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_185/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "d517588cae09223d54e2a64327b2b3f71d05994c41e24839e7ed779b8e4d939d",
+          "frames": 1066,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    },
+    {
+      "uid": 237,
+      "role": "validation",
+      "day": "12-18",
+      "sim_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/collection/237_eef_delta.npz",
+      "sim_trace_sha256": "03c16ab724a807606d9b09e1107487b2abb7200ba838e462e97cf0b206760d98",
+      "variant": "gc_kp4_riser3_shelf6",
+      "cameras": [
+        {
+          "camera": 4,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_237/cam_dev_video4/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_237/cam_dev_video4/video_frame_timestamps.txt",
+          "timestamp_sha256": "85e71aade7b3e233dc4529784f4fa6dcf6b924eb7d6e3459c59929e8d02b870f",
+          "frames": 830,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        },
+        {
+          "camera": 0,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_237/cam_dev_video0/output.mp4",
+          "timestamps": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_237/cam_dev_video0/video_frame_timestamps.txt",
+          "timestamp_sha256": "21642bc1bc091610eb2c288c54bef6cdc173e5b1108bedb8a4bbd0c1bc0e611a",
+          "frames": 682,
+          "shape": [
+            720,
+            1280,
+            3
+          ],
+          "fps": 30.0
+        }
+      ]
+    }
+  ],
+  "selection": "One calibration and one validation reference per recording day; calibration spans known carry loss, placement loss and a complete sequence. All six have both high-resolution cameras and matching timestamp files.",
+  "calibration_uids": [
+    113,
+    184,
+    233
+  ],
+  "validation_uids": [
+    176,
+    185,
+    237
+  ],
+  "validation_scope": "Excluded from subsequent parameter fitting; previously inspected records, not a statistically pristine unseen holdout.",
+  "fit_policy": "No per-trial mechanical parameters; no fitting to pass/fail labels. Direct visual measurements and uncertainty first.",
+  "state": "Camera counts, monotonic timestamps and first/middle/last decode checked; visibility and quantitative observability remain to be reviewed."
+}

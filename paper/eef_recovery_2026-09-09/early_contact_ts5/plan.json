@@ -1,0 +1,37 @@
+{
+  "uids": [
+    113,
+    130,
+    121,
+    173,
+    211,
+    212,
+    197,
+    204,
+    176,
+    225
+  ],
+  "failures_by_day": {
+    "12-16": [
+      113,
+      130,
+      121,
+      173
+    ],
+    "12-17": [
+      211,
+      212,
+      197,
+      204
+    ]
+  },
+  "controls": [
+    176,
+    225
+  ],
+  "selection": "113 mechanistic index case plus SHA256-ranked stable-grip pre-support tipped failures, four per day; both valid-IC early strict completions as controls",
+  "workers": 2,
+  "intervention": "Only grasp_timeconst .005 via existing implementation; no impedance change",
+  "caveat": "Previously mixed results and increased grip force; sensitivity diagnostic, not automatic adoption or validated real finger compliance",
+  "outcomes": "Report every supplied metric component, final distance, tilt and strict sequence; no threshold tuning; independent saved-action replay and visual review before any admission"
+}

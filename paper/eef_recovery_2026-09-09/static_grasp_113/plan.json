@@ -1,0 +1,10 @@
+{
+  "uid": 113,
+  "prefix_frames": 267,
+  "static_hold_frames": 167,
+  "dt_s": 0.03,
+  "parent_source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+  "question": "Does the reproduced grasp slip during a static arm-target hold?",
+  "interpretation": "Distinguishes ongoing arm motion from static grasp instability; does not calibrate friction/compliance or prove real-world mechanism",
+  "admission": "Never admit this modified-command diagnostic as a real demonstration"
+}

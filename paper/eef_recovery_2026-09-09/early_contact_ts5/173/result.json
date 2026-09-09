@@ -1,0 +1,49 @@
+{
+  "uid": 173,
+  "returncode": 0,
+  "score": {
+    "uid": 173,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_contact_ts5/173/collection/173_eef_delta.npz",
+    "source_sha256": "9574c4ed798711616ec851d67aa04c52effd096da0b95d3dbcd3aee450f414c0",
+    "source_dt_s": 0.03,
+    "scoring_dt_s": 0.12,
+    "final_partial_interval": true,
+    "mapping": "post-action observations; measured URDF tool xyz; physical tilt >60 degrees",
+    "metric": {
+      "uid": "173",
+      "n": 356,
+      "released": true,
+      "release_frame": 29,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.11549186538703324,
+      "gain_m": 0.12121851223536621
+    },
+    "legacy_tip_proxy_metric": {
+      "uid": "173",
+      "n": 356,
+      "released": true,
+      "release_frame": 29,
+      "pushed": true,
+      "arrived": false,
+      "slide_success": false,
+      "final_dist": 0.11549186538703324,
+      "gain_m": 0.12121851223536621
+    },
+    "strict_contact_diagnostic": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 1002,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.049491865387033235
+    },
+    "final_tilt_deg": 0.00256238039524394,
+    "final_solver_contacts": [
+      5,
+      0,
+      0
+    ]
+  }
+}

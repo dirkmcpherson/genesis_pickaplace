@@ -1,0 +1,32 @@
+[
+  {
+    "requested_bag_time_s": 30.9,
+    "camera_frame": 768,
+    "actual_camera_time_s": 30.900983037
+  },
+  {
+    "requested_bag_time_s": 33,
+    "camera_frame": 820,
+    "actual_camera_time_s": 33.004324616
+  },
+  {
+    "requested_bag_time_s": 36,
+    "camera_frame": 894,
+    "actual_camera_time_s": 35.996179523
+  },
+  {
+    "requested_bag_time_s": 45,
+    "camera_frame": 1117,
+    "actual_camera_time_s": 45.018568696
+  },
+  {
+    "requested_bag_time_s": 60,
+    "camera_frame": 1487,
+    "actual_camera_time_s": 59.996243657
+  },
+  {
+    "requested_bag_time_s": 90,
+    "camera_frame": 2229,
+    "actual_camera_time_s": 90.018289508
+  }
+]
