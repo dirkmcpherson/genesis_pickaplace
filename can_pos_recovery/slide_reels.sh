@@ -29,7 +29,9 @@ for d in ('/home/james/wm_fix_2026-09-03/fulltapes/dHfull_w3_partial',
 def vpath(u):
     t = m.get(u, u)
     g = glob.glob(os.path.join(vid, f'{t}_*.mp4'))
-    return g[0] if g else None
+    # ABSOLUTE: mpv resolves playlist entries relative to the PLAYLIST's directory,
+    # not the cwd, so a repo-relative path here doubles the prefix and fails to open.
+    return os.path.abspath(g[0]) if g else None
 for name, keep in (('successes', True), ('failures', False)):
     sel = [r for r in rows if r['slide_success'] is keep]
     paths, missing = [], []
