@@ -701,3 +701,15 @@ same tree, at the same time, on the same code.
 **Implementation note.** The per-episode logging callback added to the queued RLPD runs is the model: logging-only, wrapping no environment, consuming no randomness, swallowing its own exceptions so it cannot kill a run, at about 0.16 MB per run. Cost is negligible; the discipline is that it must sit on the shared exit path and must never call anything that steps the simulator.
 
 **Standing check.** After computing any per-stage statistic, assert that strictly harder stages are subsets of easier ones. Three identical ignition steps across nested stages is what exposed the present defect, and the check is already in `HRI_results/curves/learning_curves.py`.
+
+---
+
+## Amendment (x) — approved parallel R2 long-run pilot (user, 2026-09-08)
+
+Approved human-all versus machine-first, n=4 per arm, 4M ONLINE simulator steps,
+existing 500k FIFO/no reinjection, and 2M/4M milestone checkpoints. Allocate one
+human/machine pair per node on four comparable L40S nodes (eight concurrent GPU
+jobs). The single-node A100 proposal is superseded without having been submitted.
+Exact seeds, release digest, node blocks, analyses and interruption policy are in
+[LONG_RUN_REGISTRATION_2026-09-08.md](LONG_RUN_REGISTRATION_2026-09-08.md).
+Only new jobs use the isolated release; existing jobs and their paths stay untouched.

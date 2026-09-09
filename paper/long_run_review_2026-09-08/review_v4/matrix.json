@@ -1,0 +1,16 @@
+{
+  "approval_status": "review",
+  "experiment": "r2_long_online4m_first_attempt_pilot",
+  "specs": [
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_h_202609080.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_h_202609081.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_h_202609082.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_h_202609083.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_m_202609090.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_m_202609091.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_m_202609092.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/r2long_m_202609093.json"
+  ],
+  "submission_state": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/submissions",
+  "registry": "/cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/RUN_REGISTRY.jsonl"
+}

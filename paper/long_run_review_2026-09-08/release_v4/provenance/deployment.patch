@@ -1,0 +1,134 @@
+--- a/r2dreamer/trainer.py
++++ b/r2dreamer/trainer.py
+@@ -138,6 +138,8 @@
+         # ONLINE step counter origin (post-prefill): the actor-BC lambda decay
+         # in Dreamer.update is scheduled in ONLINE env steps, not total steps.
+         online_step0 = step
++        from longrun_milestones import Milestones
++        milestones = Milestones(self, online_step0)
+         # Demo flag column for online rows (False; demo_prefill rows carry True).
+         # Added to every stored trans so the buffer key-set matches the prefill's.
+         online_is_demo = torch.zeros(envs.env_num, 1, dtype=torch.bool, device=agent.device)
+@@ -162,6 +164,7 @@
+         # (B, A)
+         act = agent_state["prev_action"].clone()
+         while step < self.steps:
++            milestones.capture(agent, step)
+             # Evaluation
+             if self._should_eval(step) and self.eval_episode_num > 0 and self.eval_envs is not None:
+                 self.eval(agent, step)
+@@ -269,3 +272,5 @@
+                         self.logger.write(step + i)
+                     except Exception:
+                         pass  # final logging must not turn completed training into a failure
++
++        milestones.finish(agent, step)
+--- a/r2dreamer/train.py
++++ b/r2dreamer/train.py
+@@ -70,10 +70,9 @@
+     prefill_info = prefill_from_npz(replay_buffer, agent, config)
+     if prefill_info is not None:
+         print("Demo prefill:", prefill_info)
+-        online = int(config.env.steps) - prefill_info["transitions_added"]
+-        print(f"Step accounting: trainer starts at step {prefill_info['transitions_added']}; "
+-              f"env.steps={int(config.env.steps)} -> {online} online env steps.")
+-        assert online > 0, "env.steps must exceed the prefill count (prefill spends the step budget)"
++        print("Prefill transitions:", prefill_info["transitions_added"],
++              "legacy simulator-counter origin:", replay_buffer.count()*int(config.env.action_repeat),
++              "requested budget (online when R2_LONG_RUN=1):", int(config.env.steps))
+ 
+     # Periodic demo re-injection (env.demo_reinject_every > 0 + env.demo_dir):
+     # re-adds the full demo set every N online env steps; unlike prefill this
+@@ -92,7 +91,9 @@
+     items_to_save = {
+         "agent_state_dict": agent.state_dict(),
+         "optims_state_dict": tools.recursively_collect_optim_state_dict(agent),
+-        "step": int(config.env.steps),  # loop exits at step >= env.steps
++        "step": policy_trainer.final_legacy_step,
++        "online_sim_steps": policy_trainer.final_online_step,
++        "resumable_full_state": False,
+     }
+     torch.save(items_to_save, logdir / "latest.pt")
+ 
+--- a/r2dreamer/longrun_milestones.py
++++ b/r2dreamer/longrun_milestones.py
+@@ -0,0 +1,79 @@
++"""Opt-in online-budget accounting and immutable milestone checkpoints."""
++import hashlib
++import json
++import os
++from pathlib import Path
++import torch
++import tools
++
++
++def digest(path):
++    h = hashlib.sha256()
++    with open(path, 'rb') as f:
++        for block in iter(lambda: f.read(8 * 1024**2), b''):
++            h.update(block)
++    return h.hexdigest()
++
++
++class Milestones:
++    def __init__(self, trainer, origin):
++        self.origin = int(origin)
++        self.trainer = trainer
++        self.milestones = ()
++        self.saved = set()
++        self.enabled = os.environ.get('R2_LONG_RUN') == '1'
++        if not self.enabled:
++            return
++        self.budget = int(trainer.steps)
++        if self.budget <= 0:
++            raise ValueError('Online budget must be positive')
++        requested = json.loads(os.environ.get('R2_MILESTONES', '[2000000,4000000]'))
++        self.milestones = tuple(int(x) for x in requested)
++        if (not self.milestones or list(self.milestones) != sorted(set(self.milestones))
++                or self.milestones[0] <= 0 or self.milestones[-1] != self.budget):
++            raise ValueError('Milestones must be positive, unique, sorted, ending at budget')
++        # Preserve the original counter (and update scheduling) while making the
++        # requested budget explicitly ONLINE. Never derive it again from replay.
++        trainer.steps = self.origin + self.budget
++        self.directory = Path(trainer.logdir) / 'milestones'
++        self.directory.mkdir(exist_ok=False)
++        (Path(trainer.logdir) / 'step_contract.json').write_text(json.dumps(dict(
++            prefill_counter_origin=self.origin, requested_online_sim_steps=self.budget,
++            legacy_counter_target=trainer.steps, milestones=self.milestones,
++            interruption_policy='incomplete; no resume or seed replacement'), indent=2))
++
++    def capture(self, agent, step):
++        if not self.enabled:
++            return
++        online = int(step) - self.origin
++        for target in self.milestones:
++            if online < target or target in self.saved:
++                continue
++            # First completed vector step at/above target, not a falsely exact label.
++            meta = dict(step=int(step), online_sim_steps=online,
++                        prefill_counter_origin=self.origin, requested_online_sim_steps=target,
++                        overshoot_sim_steps=online-target, resumable_full_state=False)
++            payload = dict(agent_state_dict=agent.state_dict(),
++                           optims_state_dict=tools.recursively_collect_optim_state_dict(agent), **meta)
++            final = self.directory / f'online_{target}.pt'
++            temporary = self.directory / f'.online_{target}.tmp'
++            if final.exists() or temporary.exists():
++                raise FileExistsError(final)
++            with temporary.open('xb') as f:
++                torch.save(payload, f)
++                f.flush()
++                os.fsync(f.fileno())
++            # link is an atomic no-clobber publication, unlike replace.
++            os.link(temporary, final)
++            temporary.unlink()  # only our successfully published temporary file
++            meta['sha256'] = digest(final)
++            with final.with_suffix('.json').open('x') as f:
++                json.dump(meta, f, indent=2)
++            self.saved.add(target)
++
++    def finish(self, agent, step):
++        self.capture(agent, step)
++        self.trainer.final_legacy_step = int(step)
++        self.trainer.final_online_step = int(step) - self.origin
++        if self.enabled and self.saved != set(self.milestones):
++            raise RuntimeError('Training ended without every required milestone')

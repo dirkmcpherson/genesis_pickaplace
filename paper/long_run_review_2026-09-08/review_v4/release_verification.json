@@ -1,0 +1,27 @@
+{
+  "release": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/release_v4",
+  "release_sha256": "8a91f0bd5f9fdcf9fbba8b226c497220160f1ba5c043d65d35139fcb5e977efa",
+  "read_only": true,
+  "source_files": 546,
+  "training_files": 87,
+  "training_matches_gradient_diagnostic": true,
+  "review_matrix": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/review_v4/matrix.json",
+  "long_jobs_submitted": 0,
+  "datasets": {
+    "dHfull_all": {
+      "raw_demo_transitions": 29295,
+      "prefill_transitions_env6": 29406,
+      "bytes": 2927600
+    },
+    "dDPfull_first": {
+      "raw_demo_transitions": 36906,
+      "prefill_transitions_env6": 37488,
+      "bytes": 3892210
+    },
+    "dDPfull": {
+      "raw_demo_transitions": 32923,
+      "prefill_transitions_env6": 33390,
+      "bytes": 3532803
+    }
+  }
+}

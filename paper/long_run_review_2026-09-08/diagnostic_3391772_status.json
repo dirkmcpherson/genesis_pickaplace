@@ -1,0 +1,8 @@
+{
+  "job_id": "3391772",
+  "accepted_validation": false,
+  "slurm_state": "COMPLETED",
+  "reason": "Batch-size-one diagnostic produced NaN batch-standardized loss; initial acceptance checks were insufficient.",
+  "replacement_diagnostic": "3392434",
+  "replacement_accepted": true
+}

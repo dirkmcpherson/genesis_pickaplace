@@ -1,0 +1,19 @@
+{
+  "approval_status": "review",
+  "run_id": "r2long_m_202609093",
+  "arm": "dDPfull_first",
+  "seed": 202609093,
+  "online_sim_steps": 4000000,
+  "milestones": [
+    2000000,
+    4000000
+  ],
+  "replay_capacity": 500000,
+  "reinject": 0,
+  "resume": false,
+  "release_sha256": "8a91f0bd5f9fdcf9fbba8b226c497220160f1ba5c043d65d35139fcb5e977efa",
+  "dataset_sha256": "08fa70ea758f0efb129a15cabefa9cd797f8a10e2690da15ba4d0239402c0115",
+  "minimum_free_bytes": 53687091200,
+  "output": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/runs/r2long_m_202609093",
+  "slurm_output": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/slurm/r2long_m_202609093_%j.log"
+}

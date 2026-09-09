@@ -1,0 +1,14 @@
+{
+  "approval_status": "approved",
+  "experiment": "r2_long_online4m_first_attempt_pilot",
+  "specs": [
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/approved_parallel_2026-09-08_v1/r2long_h_202609080.json",
+    "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/approved_parallel_2026-09-08_v1/r2long_m_202609090.json"
+  ],
+  "submission_state": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/long_run_candidate_2026-09-08/submissions",
+  "registry": "/cluster/tufts/shortlab/jstale02/genesis_pickaplace/cluster/RUN_REGISTRY.jsonl",
+  "training_node": "pax021",
+  "gpu_constraint": "l40s",
+  "registration_sha256": "2bc6fbb8d26d0fd4a83575535c2dd1973d5763d3975123bb19d2119e3449410a",
+  "approved_at": "2026-09-09T02:30:03.635526+00:00"
+}

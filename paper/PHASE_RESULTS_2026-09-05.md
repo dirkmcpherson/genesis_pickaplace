@@ -308,3 +308,21 @@ constraints were found while establishing that, and both are properties of the e
 over-count; `placed_v2` **8/30 = 0.267** where the stale `placed` is 0/30, which **refutes by measurement** the
 "policies carry the can in without releasing" reading in §5.1/`REVIEW_GUIDE` §2.7; `contact_push` 10/30 against
 `contact` 13/30; and `slide_success` (amendment (l)) **2/30 = 0.067**, both grants earned in the held continuation.
+
+
+## 5.2 End-to-end, Diffusion Policy — first large significant source effect, and it favours MACHINE (2026-09-09)
+
+**Preview cells** (in-job evaluations, not the pinned pass), random-uniform starts, sampled, 8 v 8:
+
+| stage | human | machine | Δ | p | MDE |
+|---|---|---|---|---|---|
+| picked | **0.237** | **0.496** | **−0.258** | **0.000** | 0.150 |
+| contact | 0.029 | 0.100 | −0.071 | **0.004** | 0.046 |
+
+This is the first end-to-end comparison in the project to clear its own detectable-effect threshold, and it is **large, significant, and in the machine arm's favour** — the opposite direction to the project's original hypothesis.
+
+**It must not be read as a demonstration-source effect, for a specific reason.** The end-to-end machine set is **best-of-three per start** (Σ demonstrated reward 206 against 118; 16 demonstrated completions against 3) while the human set keeps **every** attempt including failures. Diffusion Policy is pure imitation — the learner most directly sensitive to the quality of what it is shown — so a machine-favouring result here is **exactly the signature that selection would produce**, independent of who generated the data. The same pattern appeared on the independent benchmark, where imitators lost most and the effect dissolved once the sets were matched.
+
+**The de-confounded arm is the test**, and it is already running: the same machine tapes rebuilt as *first attempt per start*, the human protocol exactly. Until it reads out, the supported sentence is "the machine **set** trains a better end-to-end Diffusion Policy", never "machine **demonstrations** are better".
+
+Status: RLPD's cells exist but its stage columns are unpopulated and need investigation; the world-model rows reproduce §5.1 exactly (0.500 v 0.537 picked, mode).

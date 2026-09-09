@@ -1,0 +1,22 @@
+{
+  "method": "Existing immutable submitter, per-pair scheduler environment overrides",
+  "overrides": {
+    "pax021": {
+      "SBATCH_NODELIST": "pax021",
+      "SBATCH_CONSTRAINT": "l40s"
+    },
+    "pax022": {
+      "SBATCH_NODELIST": "pax022",
+      "SBATCH_CONSTRAINT": "l40s"
+    },
+    "pax023": {
+      "SBATCH_NODELIST": "pax023",
+      "SBATCH_CONSTRAINT": "l40s"
+    },
+    "pax024": {
+      "SBATCH_NODELIST": "pax024",
+      "SBATCH_CONSTRAINT": "l40s"
+    }
+  },
+  "note": "SBATCH environment overrides script directives; verified against installed sbatch manpage."
+}

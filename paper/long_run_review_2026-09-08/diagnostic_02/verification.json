@@ -1,0 +1,24 @@
+{
+  "kind": "diagnostic; tape-backed fixture, not simulator learning",
+  "optimizer_calls": 8,
+  "finite_losses": [
+    37.13549041748047,
+    36.9095458984375,
+    36.83456039428711,
+    36.98386001586914,
+    37.10194778442383,
+    36.98584747314453,
+    36.78627014160156,
+    36.819984436035156
+  ],
+  "changed_parameter_tensors": 60,
+  "prefill_transitions": 171,
+  "legacy_step": 732,
+  "online_step": 48,
+  "replay_row_bytes": 34992,
+  "checkpoint_loads": 2,
+  "release_sha256": "2736dac6a4be731a94ffba6f557e2dc5cda8cc7a90e10d60dca2048c4fbff870",
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "compiled": false,
+  "note": "Actual model, replay sampling, optimizer, trainer and checkpoint path; compile disabled for short test"
+}
