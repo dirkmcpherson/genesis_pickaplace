@@ -371,3 +371,20 @@ Caveats: the de-confounded arm has 4 seeds (its remaining 4 are training), the h
 3. **It sharpens the real2sim target.** 15 of 64 is the yield the recovery work must improve; every additional recovered slide raises a ceiling that currently binds the whole phase.
 
 **Method note worth keeping.** An automated count (21) was corrected by a human watching the footage (15), after two independent automated methods had already agreed on 15. This is the third time on this project that eyes on the raw data have settled something statistics could not — the goal-position fit and the world-selection choice being the others.
+
+## 5.5 Reward relabelled under the settled predicates; the two sets come out equal (2026-09-09)
+
+Per-frame demonstration reward recomputed under amendment (x) — same magnitudes, corrected predicates, each granted once at the first frame it fires. Trajectories untouched; only the reward column is rewritten, into new `*_rx` sets. Machine arm is the **first-attempt** set: best-of-three is dropped (user, 2026-09-09).
+
+| | tapes | picked | released | can-contact | can-settle | Σ old | Σ new |
+|---|---|---|---|---|---|---|---|
+| human `dHfull_all_rx` | 74 | 64 | 72 | **21** | **15** | 118 | **238** |
+| machine `dDPfull_first_rx` | 72 | 63 | 70 | 18 | 17 | 131 | **237** |
+
+**The two sets are now equal in demonstrated reward — 238 against 237.** Under the old ladder with best-of-three selection it was 118 against 206, a 75 % machine advantage. Removing our selection *and* correcting the predicates removes it entirely. That is what a like-for-like comparison should look like, and it is the first time these two arms have been matched on what they actually demonstrate.
+
+**Three independent checks pass.** The human `can-settle` count is **15**, matching the settled predicate run standalone and the per-uid census ladder — three methods, same number. The human `can-contact` count is **21**, reproducing the recorded contact count. And the per-episode ceiling is unchanged at 8 (1+1+2+4), so the registered return clamp needs no revision — only the *frequency* of grants changed, not the maximum return.
+
+**Why the totals rose.** The stale `placed` rung was never granted, so `released` adds 72 grants that previously scored nothing; and `can-settle` fires 15 times where the nested proxy fired 3. The ladder pays more, but pays it for behaviour the task actually wants.
+
+Diffusion Policy is unaffected — it never reads reward — which is why its test could run first, on the de-selected arm.
