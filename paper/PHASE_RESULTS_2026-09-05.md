@@ -326,3 +326,34 @@ This is the first end-to-end comparison in the project to clear its own detectab
 **The de-confounded arm is the test**, and it is already running: the same machine tapes rebuilt as *first attempt per start*, the human protocol exactly. Until it reads out, the supported sentence is "the machine **set** trains a better end-to-end Diffusion Policy", never "machine **demonstrations** are better".
 
 Status: RLPD's cells exist but its stage columns are unpopulated and need investigation; the world-model rows reproduce §5.1 exactly (0.500 v 0.537 picked, mode).
+
+## 5.3 End-to-end RLPD, including the DE-CONFOUNDED arm (2026-09-09)
+
+The RLPD cells were not missing — they live under `baselines/rl/checkpoints/e2e/`, not the outputs tree the table reads, which is why its stage columns were blank. Random-uniform starts, mode, `picked`:
+
+| arm | n | picked |
+|---|---|---|
+| human (every attempt, incl. 10 no-picks) | 7 | **0.648** |
+| machine, best-of-3 per start | 8 | **0.600** |
+| machine, **first attempt per start** (de-confounded) | 4 | **0.641** |
+
+| contrast | Δ | p |
+|---|---|---|
+| human v machine-best | +0.048 | 0.359 |
+| **human v machine-FIRST — the de-confounded comparison** | **+0.006** | **0.864** |
+| machine-best v machine-FIRST — selection alone | −0.041 | 0.624 |
+
+**The de-confounded RLPD comparison is a null at 0.006.** Removing our best-of-three selection leaves the two sources indistinguishable, and selection itself did not help RLPD — if anything the curated set trained slightly *worse*.
+
+**Set against Diffusion Policy on the same task, sets and starts, this is the sharpest contrast in the project:**
+
+| learner | human | machine (best-of-3) | Δ | p |
+|---|---|---|---|---|
+| Diffusion Policy (imitation) | 0.237 | 0.496 | **−0.258** | **0.000** |
+| RLPD (online RL) | 0.648 | 0.600 | +0.048 | 0.359 |
+
+**The same demonstration sets produce a large machine advantage for the imitator and nothing for the online learner.** The most likely mechanism is composition rather than provenance: the human end-to-end set contains **10 tapes that never pick**, which an imitator copies and an online learner can simply out-explore. That reading is supported from two directions — selection is worth nothing to RLPD here, and on the independent benchmark the ordering was the same, with imitators losing most and the effect dissolving once sets were matched.
+
+**Supported sentence:** *the composition of a demonstration set matters in proportion to how much a learner imitates it.* **Not supported:** any statement that machine demonstrations are better, or that source affects end-to-end performance.
+
+Caveats: the de-confounded arm has 4 seeds (its remaining 4 are training), the human arm 7, and the Diffusion Policy rows are preview cells rather than the pinned pass.
