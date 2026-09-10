@@ -1,0 +1,37 @@
+{
+  "purpose": "Separate pad benefit from regressions introduced by the uncalibrated adaptive hand.",
+  "jobs": [
+    [
+      113,
+      0.02
+    ],
+    [
+      113,
+      0.03
+    ],
+    [
+      184,
+      0.02
+    ],
+    [
+      184,
+      0.03
+    ],
+    [
+      233,
+      0.02
+    ],
+    [
+      233,
+      0.03
+    ]
+  ],
+  "fixed": "Original full-world fixed-coupling hand, source motion/grip, timestamps, early yaws, initial placements, geometry, friction and all non-pad parameters.",
+  "qualification": "Original coupling remains a known loaded-curl fidelity limitation; an attribution control is not sufficient to declare the full objective achieved.",
+  "gate": "Each .02 control must reproduce the original reference trajectory exactly. Compare paired full sequences and real-image checks; do not fit on reserved 176/185/237.",
+  "code_sha256": {
+    "can_pos_recovery/run_reference_hand_pads.py": "634126f008b4924e5e0b65eed55a5ae4e322260864aa37fc9e60cff700b17959",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b"
+  }
+}

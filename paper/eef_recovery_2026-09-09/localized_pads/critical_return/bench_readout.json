@@ -1,0 +1,12 @@
+{
+  "passed_schedule": true,
+  "peak_unloaded_joint_error_deg": 2.1158034896851685,
+  "max_hold_error_deg": 0.0018895249787867197,
+  "max_abs_substep_joint_velocity_rad_s": [
+    6.523139953613281,
+    6.523179054260254,
+    4.538728713989258,
+    5.5030317306518555
+  ],
+  "qualification": "Bench input is piecewise constant every 10 ms; peak substep velocities are larger than ramp-average velocity. Hardware actuator inertia, force and bandwidth remain uncalibrated."
+}

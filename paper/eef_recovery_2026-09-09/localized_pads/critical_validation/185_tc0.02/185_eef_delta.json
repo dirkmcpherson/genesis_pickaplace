@@ -1,0 +1,225 @@
+{
+  "uid": 185,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6_yaw17",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.3829913455644619,
+    -0.30214632253903834,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/source.npz",
+  "source_sha256": "f65ad010bcd3a8e41f49b1a351a892d4171820fa7f5698b198f66ffb0f5c282d",
+  "parent_trace_sha256": "9900e4a13cbe389b1337056efc7c95d64d8b3651f4b60ed03eace2aa4b8fb113",
+  "frames": 1414,
+  "source_frames": 1414,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 962,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.09499718802555066
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "Experimental adaptive-transmission replay; not calibrated or bank admitted",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.186199653170447e-16,
+  "command_rotation_rad_p99": 1.099436424491241e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 42.37610673904419,
+    "original_frames": 1314,
+    "replay_duration_s": 42.42,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/185_timed.npz",
+    "decision_dt_s": 0.03
+  },
+  "physics_treatment": {
+    "parameters": {
+      "actuator_stiffness": 320.0,
+      "actuator_force_limit": 4,
+      "distal_moment_ratio": 0.5,
+      "return_stiffness": 0.9,
+      "proximal_damping": 0.05,
+      "distal_damping": 0.002
+    },
+    "remaining_equalities": [
+      "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+    ],
+    "finger_dof_indices": [
+      7,
+      6,
+      9,
+      8
+    ],
+    "kp_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "kv_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "damping_readback": [
+      0.05000000074505806,
+      0.05000000074505806,
+      0.0020000000949949026,
+      0.0020000000949949026
+    ],
+    "substep_dt_s": 0.00125,
+    "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets.",
+    "declared_preset": {
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+      "configuration": {
+        "transmission": {
+          "actuator_stiffness": 320.0,
+          "actuator_force_limit": 4,
+          "distal_moment_ratio": 0.5,
+          "return_stiffness": 0.9,
+          "proximal_damping": 0.05,
+          "distal_damping": 0.002
+        },
+        "pad_timeconst_s": 0.02,
+        "max_pad_normal_depth_m": 0.003,
+        "distal_lower_limit_rad": -1.03,
+        "qualification": "Critical-return bench hypothesis. Return stiffness rounded from the mass-inclusive unloaded-mode critical-damping estimate. Force cap raised to permit the loaded curl previously consistent with 233 images; not calibrated hardware torque. Other parameters fixed.",
+        "finger_armature_kg_m2": [
+          0.0001,
+          0.0001,
+          0.0001,
+          0.0001
+        ]
+      }
+    },
+    "finger_armature": {
+      "before_kg_m2": [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612
+      ],
+      "after_kg_m2": [
+        9.999999747378752e-05,
+        9.999999747378752e-05,
+        9.999999747378752e-05,
+        9.999999747378752e-05
+      ],
+      "qualification": "Added joint inertia, separate from URDF link inertia. A small nonzero value is numerical regularization, not measured actuator inertia."
+    },
+    "surface_pad_treatment": {
+      "pad_timeconst_s": 0.02,
+      "regions": [
+        {
+          "link": "right_finger_prox_link",
+          "geom": 10,
+          "normal": [
+            0.3872324843550917,
+            0.9219821056073613,
+            0.0
+          ],
+          "offset_m": 0.0034121134635374736
+        },
+        {
+          "link": "left_finger_prox_link",
+          "geom": 11,
+          "normal": [
+            0.3872324843550917,
+            -0.9219821056073613,
+            0.0
+          ],
+          "offset_m": 0.003422466829866599
+        },
+        {
+          "link": "right_finger_dist_link",
+          "geom": 12,
+          "normal": [
+            0.09950371902099893,
+            0.9950371902099893,
+            0.0
+          ],
+          "offset_m": 0.003084673311748171
+        },
+        {
+          "link": "left_finger_dist_link",
+          "geom": 13,
+          "normal": [
+            0.09950371902099893,
+            -0.9950371902099893,
+            0.0
+          ],
+          "offset_m": 0.003084673311748171
+        }
+      ],
+      "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+      "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+      "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance."
+    },
+    "finger_limits_readback": [
+      [
+        -0.9599999785423279,
+        0.09000000357627869
+      ],
+      [
+        -0.09000000357627869,
+        0.9599999785423279
+      ],
+      [
+        -1.0299999713897705,
+        0.20999999344348907
+      ],
+      [
+        -1.0299999713897705,
+        0.20999999344348907
+      ]
+    ],
+    "contact_treatment": {
+      "scope": "none",
+      "selected_geom_indices": [],
+      "selected_before": [],
+      "selected_after": [],
+      "effective_finger_can_timeconst_s": 0.019999999552965164,
+      "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+    },
+    "urdf": {
+      "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+      "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+      "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_validation/185_tc0.02/gen3_lite_2f_adaptive_candidate.urdf",
+      "candidate_sha256": "aa22ab836119f742d0b07fe0f289af32c44c5a724239cbc9708b552525b62537",
+      "removed_mimics": [
+        "right_finger_tip_joint",
+        "left_finger_tip_joint"
+      ],
+      "distal_lower_limit_rad": -1.03,
+      "travel_reference": "Kinova right-tip CAD range at c3280d8a6a6b5d96590d51538e3f265710a6c77d, mirrored by finger symmetry; raw left CAD limit signs differ. Not measured hardware travel."
+    },
+    "variant": "gc_kp4_riser3_shelf6_yaw17",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/source.npz"
+  }
+}

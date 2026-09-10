@@ -1,0 +1,104 @@
+{
+  "records": [
+    {
+      "name": "233_fastreturn_tc0.02",
+      "strict_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 802,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.11333458341750682
+      },
+      "unchanged_predicate_on_post_supported_release_suffix": {
+        "uid": "233_post_supported_release",
+        "n": 41,
+        "released": true,
+        "release_frame": 9,
+        "pushed": false,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.17933458341750683,
+        "gain_m": 0.00044466276517018954
+      },
+      "supported_push_to_final": {
+        "start_frame": 808,
+        "start_time_s": 24.27,
+        "goalward_movement_m": 0.02208818477665592,
+        "support_fraction": 0.974025974025974,
+        "stays_low": true,
+        "stays_upright": true,
+        "post_release_goal_contact_frames": 0
+      },
+      "release_time_s": 24.09,
+      "qualification": "Suffix score and push-to-final audit are additional diagnostics, not replacements for either full-tape metric or strict goal-contact sequence."
+    },
+    {
+      "name": "233_fastreturn_tc0.03",
+      "strict_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 742,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.00419135904543827
+      },
+      "unchanged_predicate_on_post_supported_release_suffix": {
+        "uid": "233_post_supported_release",
+        "n": 56,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.07019135904543827,
+        "gain_m": 0.024527837078403822
+      },
+      "supported_push_to_final": {
+        "start_frame": 823,
+        "start_time_s": 24.72,
+        "goalward_movement_m": 0.024971307510307694,
+        "support_fraction": 0.9856115107913669,
+        "stays_low": true,
+        "stays_upright": true,
+        "post_release_goal_contact_frames": 0
+      },
+      "release_time_s": 22.29,
+      "qualification": "Suffix score and push-to-final audit are additional diagnostics, not replacements for either full-tape metric or strict goal-contact sequence."
+    },
+    {
+      "name": "233_fastreturn_tc0.04",
+      "strict_sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 745,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.003625948043609939
+      },
+      "unchanged_predicate_on_post_supported_release_suffix": {
+        "uid": "233_post_supported_release",
+        "n": 55,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06962594804360994,
+        "gain_m": 0.02324296929063606
+      },
+      "supported_push_to_final": {
+        "start_frame": 823,
+        "start_time_s": 24.72,
+        "goalward_movement_m": 0.023696251588380457,
+        "support_fraction": 0.9712230215827338,
+        "stays_low": true,
+        "stays_upright": true,
+        "post_release_goal_contact_frames": 0
+      },
+      "release_time_s": 22.38,
+      "qualification": "Suffix score and push-to-final audit are additional diagnostics, not replacements for either full-tape metric or strict goal-contact sequence."
+    }
+  ],
+  "slide_predicate_sha256": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283"
+}

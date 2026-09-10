@@ -771,6 +771,216 @@
       "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
     },
     {
+      "name": "233_fastreturn_tc0.02",
+      "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.02/233_eef_delta.npz",
+      "ratio": 0.5,
+      "carry_abs_actuator_coordinate_error_rad": {
+        "median": 0.0032338410576349536,
+        "p95": 0.0061489765073307265,
+        "maximum": 0.0061755145575454196
+      },
+      "carry_abs_implied_motor_error_percentage_points": {
+        "median": 0.4652339314681271,
+        "p95": 0.8846175380996613,
+        "maximum": 0.888435413256417
+      },
+      "checkpoints": [
+        {
+          "time_s": 14.01,
+          "recorded_motor_percent": 88.04760938195736,
+          "implied_motor_percent": 87.58613491072069,
+          "actuator_coordinate": 0.10120877623558044,
+          "target_coordinate": 0.09800106718601431,
+          "finger_q_rad": [
+            -0.6162080764770508,
+            0.6162121891975403,
+            -1.0300036668777466,
+            -1.0300017595291138
+          ]
+        },
+        {
+          "time_s": 15.99,
+          "recorded_motor_percent": 88.72065758969842,
+          "implied_motor_percent": 88.09404777496123,
+          "actuator_coordinate": 0.0976782739162445,
+          "target_coordinate": 0.09332270909400622,
+          "finger_q_rad": [
+            -0.6126784682273865,
+            0.6126824617385864,
+            -1.030005693435669,
+            -1.0300030708312988
+          ]
+        },
+        {
+          "time_s": 21.99,
+          "recorded_motor_percent": 38.790439778227814,
+          "implied_motor_percent": 38.77457204439231,
+          "actuator_coordinate": 0.440497949719429,
+          "target_coordinate": 0.4403876531015384,
+          "finger_q_rad": [
+            -0.6416594982147217,
+            0.641655683517456,
+            -0.42436549067497253,
+            -0.38027307391166687
+          ]
+        },
+        {
+          "time_s": 24.99,
+          "recorded_motor_percent": 38.88276575481344,
+          "implied_motor_percent": 38.76561869958924,
+          "actuator_coordinate": 0.4405601844191551,
+          "target_coordinate": 0.4397458952382917,
+          "finger_q_rad": [
+            -0.6029688119888306,
+            0.6029751896858215,
+            -0.2523784339427948,
+            -0.3972688317298889
+          ]
+        }
+      ],
+      "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
+    },
+    {
+      "name": "233_fastreturn_tc0.03",
+      "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.03/233_eef_delta.npz",
+      "ratio": 0.5,
+      "carry_abs_actuator_coordinate_error_rad": {
+        "median": 0.002621985127838955,
+        "p95": 0.004936285637343418,
+        "maximum": 0.007523462331038719
+      },
+      "carry_abs_implied_motor_error_percentage_points": {
+        "median": 0.37720977238368647,
+        "p95": 0.7101547456975197,
+        "maximum": 1.0823568308212685
+      },
+      "checkpoints": [
+        {
+          "time_s": 14.01,
+          "recorded_motor_percent": 88.04760938195736,
+          "implied_motor_percent": 87.68020237629197,
+          "actuator_coordinate": 0.10055491328239441,
+          "target_coordinate": 0.09800106718601431,
+          "finger_q_rad": [
+            -0.6146034598350525,
+            0.6146054863929749,
+            -1.0300003290176392,
+            -1.026197910308838
+          ]
+        },
+        {
+          "time_s": 15.99,
+          "recorded_motor_percent": 88.72065758969842,
+          "implied_motor_percent": 88.2425363134813,
+          "actuator_coordinate": 0.09664613008499146,
+          "target_coordinate": 0.09332270909400622,
+          "finger_q_rad": [
+            -0.6116462349891663,
+            0.6116493344306946,
+            -1.030003309249878,
+            -1.030003309249878
+          ]
+        },
+        {
+          "time_s": 21.99,
+          "recorded_motor_percent": 38.790439778227814,
+          "implied_motor_percent": 38.65145471040815,
+          "actuator_coordinate": 0.4413537383079529,
+          "target_coordinate": 0.4403876531015384,
+          "finger_q_rad": [
+            -0.5763890147209167,
+            0.5763869881629944,
+            -0.261065810918808,
+            -0.27907124161720276
+          ]
+        },
+        {
+          "time_s": 24.99,
+          "recorded_motor_percent": 38.88276575481344,
+          "implied_motor_percent": 38.82812704495981,
+          "actuator_coordinate": 0.4401256889104843,
+          "target_coordinate": 0.4397458952382917,
+          "finger_q_rad": [
+            -0.6096075177192688,
+            0.6096097826957703,
+            -0.28375476598739624,
+            -0.39417707920074463
+          ]
+        }
+      ],
+      "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
+    },
+    {
+      "name": "233_fastreturn_tc0.04",
+      "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.04/233_eef_delta.npz",
+      "ratio": 0.5,
+      "carry_abs_actuator_coordinate_error_rad": {
+        "median": 0.002459137320732205,
+        "p95": 0.0038981075947621124,
+        "maximum": 0.004027579876080947
+      },
+      "carry_abs_implied_motor_error_percentage_points": {
+        "median": 0.35378180416232397,
+        "p95": 0.5607981002391114,
+        "maximum": 0.5794245254036667
+      },
+      "checkpoints": [
+        {
+          "time_s": 14.01,
+          "recorded_motor_percent": 88.04760938195736,
+          "implied_motor_percent": 87.70362063048297,
+          "actuator_coordinate": 0.10039213299751282,
+          "target_coordinate": 0.09800106718601431,
+          "finger_q_rad": [
+            -0.612168550491333,
+            0.6121698617935181,
+            -1.0300008058547974,
+            -1.0171074867248535
+          ]
+        },
+        {
+          "time_s": 15.99,
+          "recorded_motor_percent": 88.72065758969842,
+          "implied_motor_percent": 88.37527691211791,
+          "actuator_coordinate": 0.09572345018386841,
+          "target_coordinate": 0.09332270909400622,
+          "finger_q_rad": [
+            -0.6107927560806274,
+            0.6107945442199707,
+            -1.030019760131836,
+            -1.0302610397338867
+          ]
+        },
+        {
+          "time_s": 21.99,
+          "recorded_motor_percent": 38.790439778227814,
+          "implied_motor_percent": 38.51311679744595,
+          "actuator_coordinate": 0.44231532514095306,
+          "target_coordinate": 0.4403876531015384,
+          "finger_q_rad": [
+            -0.5665324926376343,
+            0.5665306448936462,
+            -0.21364781260490417,
+            -0.2832171618938446
+          ]
+        },
+        {
+          "time_s": 24.99,
+          "recorded_motor_percent": 38.88276575481344,
+          "implied_motor_percent": 38.88941345652509,
+          "actuator_coordinate": 0.439699687063694,
+          "target_coordinate": 0.4397458952382917,
+          "finger_q_rad": [
+            -0.6203948855400085,
+            0.6203979849815369,
+            -0.2981620728969574,
+            -0.4246249198913574
+          ]
+        }
+      ],
+      "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
+    },
+    {
       "name": "233_feedback_tc0.02",
       "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.02/233_eef_delta.npz",
       "ratio": 0.5,
@@ -835,6 +1045,146 @@
             0.5807623863220215,
             -0.18759097158908844,
             -0.37285929918289185
+          ]
+        }
+      ],
+      "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
+    },
+    {
+      "name": "233_feedback_tc0.03",
+      "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.03/233_eef_delta.npz",
+      "ratio": 0.5,
+      "carry_abs_actuator_coordinate_error_rad": {
+        "median": 0.002680490197896554,
+        "p95": 0.004923688612436691,
+        "maximum": 0.0049750173504753414
+      },
+      "carry_abs_implied_motor_error_percentage_points": {
+        "median": 0.38562655702726545,
+        "p95": 0.7083424848851543,
+        "maximum": 0.715726852319861
+      },
+      "checkpoints": [
+        {
+          "time_s": 14.01,
+          "recorded_motor_percent": 88.04760938195736,
+          "implied_motor_percent": 87.68276629353956,
+          "actuator_coordinate": 0.10053709149360657,
+          "target_coordinate": 0.09800106718601431,
+          "finger_q_rad": [
+            -0.6147504448890686,
+            0.6147526502609253,
+            -1.0300010442733765,
+            -1.026856780052185
+          ]
+        },
+        {
+          "time_s": 15.99,
+          "recorded_motor_percent": 88.72065758969842,
+          "implied_motor_percent": 88.24019105807257,
+          "actuator_coordinate": 0.09666243195533752,
+          "target_coordinate": 0.09332270909400622,
+          "finger_q_rad": [
+            -0.6116625666618347,
+            0.611665666103363,
+            -1.030003309249878,
+            -1.0300034284591675
+          ]
+        },
+        {
+          "time_s": 21.99,
+          "recorded_motor_percent": 38.790439778227814,
+          "implied_motor_percent": 38.73974049971131,
+          "actuator_coordinate": 0.44074006378650665,
+          "target_coordinate": 0.4403876531015384,
+          "finger_q_rad": [
+            -0.6100977659225464,
+            0.6100947260856628,
+            -0.33245721459388733,
+            -0.3449675142765045
+          ]
+        },
+        {
+          "time_s": 24.99,
+          "recorded_motor_percent": 38.88276575481344,
+          "implied_motor_percent": 38.85426999716222,
+          "actuator_coordinate": 0.43994396924972534,
+          "target_coordinate": 0.4397458952382917,
+          "finger_q_rad": [
+            -0.5864115357398987,
+            0.5864132046699524,
+            -0.18015286326408386,
+            -0.4057207405567169
+          ]
+        }
+      ],
+      "qualification": "Implied motor percentage assumes this surrogate coordinate and unloaded mapping. Large error diagnoses failure to follow its measured-position input under that hypothesis; it is not a measured hardware actuator error. Fixed-coupling reference is projected through the same coordinate for comparison."
+    },
+    {
+      "name": "233_feedback_tc0.04",
+      "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.04/233_eef_delta.npz",
+      "ratio": 0.5,
+      "carry_abs_actuator_coordinate_error_rad": {
+        "median": 0.002503436075492499,
+        "p95": 0.003928289100607161,
+        "maximum": 0.004012440296307998
+      },
+      "carry_abs_implied_motor_error_percentage_points": {
+        "median": 0.36015480873147965,
+        "p95": 0.5651401381969784,
+        "maximum": 0.5772464819893628
+      },
+      "checkpoints": [
+        {
+          "time_s": 14.01,
+          "recorded_motor_percent": 88.04760938195736,
+          "implied_motor_percent": 87.70441381558464,
+          "actuator_coordinate": 0.1003866195678711,
+          "target_coordinate": 0.09800106718601431,
+          "finger_q_rad": [
+            -0.6128324270248413,
+            0.612833559513092,
+            -1.0300004482269287,
+            -1.0197850465774536
+          ]
+        },
+        {
+          "time_s": 15.99,
+          "recorded_motor_percent": 88.72065758969842,
+          "implied_motor_percent": 88.4044018115539,
+          "actuator_coordinate": 0.0955210030078888,
+          "target_coordinate": 0.09332270909400622,
+          "finger_q_rad": [
+            -0.6104558110237122,
+            0.6104575991630554,
+            -1.030005931854248,
+            -1.029736876487732
+          ]
+        },
+        {
+          "time_s": 21.99,
+          "recorded_motor_percent": 38.790439778227814,
+          "implied_motor_percent": 38.70112310397746,
+          "actuator_coordinate": 0.4410084933042526,
+          "target_coordinate": 0.4403876531015384,
+          "finger_q_rad": [
+            -0.6012293696403503,
+            0.6012281179428101,
+            -0.3025777041912079,
+            -0.3383032977581024
+          ]
+        },
+        {
+          "time_s": 24.99,
+          "recorded_motor_percent": 38.88276575481344,
+          "implied_motor_percent": 38.88422291753205,
+          "actuator_coordinate": 0.4397357665002346,
+          "target_coordinate": 0.4397458952382917,
+          "finger_q_rad": [
+            -0.5772198438644409,
+            0.5772213935852051,
+            -0.24981214106082916,
+            -0.3001272678375244
           ]
         }
       ],

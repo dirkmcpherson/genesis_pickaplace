@@ -1,0 +1,89 @@
+{
+  "uid": 233,
+  "name": "233_tc0.03",
+  "preset": {
+    "transmission": {
+      "actuator_stiffness": 320.0,
+      "actuator_force_limit": 2.0,
+      "distal_moment_ratio": 0.5,
+      "return_stiffness": 0.2,
+      "proximal_damping": 0.05,
+      "distal_damping": 0.002
+    },
+    "pad_timeconst_s": 0.03,
+    "max_pad_normal_depth_m": 0.003,
+    "distal_lower_limit_rad": -1.03,
+    "qualification": "Same frozen fast-return mechanics except added finger inertia reduced from generic 0.1 to 0.0001 kg m2. Selected from unloaded dynamics/stability benchmark, not task outcomes. Numerical regularization, not calibrated rotor inertia.",
+    "finger_armature_kg_m2": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001
+    ]
+  },
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.03/233_eef_delta.npz",
+  "reference_arrays_exact": {
+    "trajectory": false,
+    "contact_counts": false,
+    "goal_pose": false,
+    "stages": false,
+    "finger_joint": false,
+    "observations": false,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "armature": {
+    "before_kg_m2": [
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612
+    ],
+    "after_kg_m2": [
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05
+    ],
+    "qualification": "Added joint inertia, separate from URDF link inertia. A small nonzero value is numerical regularization, not measured actuator inertia."
+  },
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 739,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.005436149229319426
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.07143614922931943,
+    "gain_m": 0.21056340400319656
+  },
+  "max_abs_joint_velocity_rad_s": [
+    12.512580871582031,
+    12.511678695678711,
+    15.18348217010498,
+    14.361818313598633
+  ],
+  "max_abs_generalized_torque": [
+    1.1027458710552216,
+    1.106272153170395,
+    0.6519909335136413,
+    0.6572073271751404
+  ],
+  "before_first_can_contact_max_unloaded_joint_error_deg": 13.893320495173558,
+  "qualification": "Pre-can-contact interval may include other-world contacts; the separate isolated bench is the causal unloaded test."
+}

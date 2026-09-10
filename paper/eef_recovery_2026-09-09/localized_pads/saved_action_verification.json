@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "uid": 233,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.03/233_eef_delta.npz",
+      "replay": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_saved_action_verification/233_eef_delta.npz",
+      "source_sha256": "5fd1aeea3c9691ad9189f75cc0c28be70a70a2759e6b70d9699f88e47af8e38d",
+      "replay_sha256": "5fd1aeea3c9691ad9189f75cc0c28be70a70a2759e6b70d9699f88e47af8e38d",
+      "arrays_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "frames": 962,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 742,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.00419135904543827
+      }
+    },
+    {
+      "uid": 176,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.03/176_eef_delta.npz",
+      "replay": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_saved_action_verification/176_eef_delta.npz",
+      "source_sha256": "c42e6978929061a294cae8a54a4ba2a9eb56d8eaa6c26526602bd1e36fb9b4ca",
+      "replay_sha256": "c42e6978929061a294cae8a54a4ba2a9eb56d8eaa6c26526602bd1e36fb9b4ca",
+      "arrays_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "frames": 2481,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 686,
+        "push_start": 994,
+        "contact_start": 2154,
+        "final_surface_gap_m": -0.0002458780811405159,
+        "push_toward_goal_m": 0.04636510420960745,
+        "support_fraction": 0.9974204643164231
+      }
+    }
+  ]
+}

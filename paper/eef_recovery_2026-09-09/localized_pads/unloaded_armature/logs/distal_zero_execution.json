@@ -1,0 +1,13 @@
+{
+  "case": "distal_zero",
+  "returncode": 0,
+  "elapsed_s": 175.09928250312805,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/bench_unloaded_hand.py",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/unloaded_armature/distal_zero",
+    "--armature",
+    "distal_zero"
+  ]
+}

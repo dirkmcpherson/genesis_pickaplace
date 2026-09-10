@@ -64,15 +64,31 @@ failed executions are retained as errors. Incomplete jobs are not scored.
 
 ## Readouts and current direction
 
-- `INITIAL_READOUT.md`: five runs completed; divided-pad geometry rejected.
-- `SURFACE_READOUT.md`: four runs completed; surface-only compliance improves
-  loaded image position but does not recover the whole sequence.
-- `SPRING_READOUT.md`: six runs completed; stronger return springs alone do not
-  recover the task. Includes the reference-drive stiffness/damping derivation.
-- `matched_drive_plan.json`: next nine runs, with paired original-contact
-  controls; `matched_drive_execution.json` exists only after the batch terminates.
+`HAND_MECHANICS_READOUT.md` consolidates all 48 completed calibration replays.
+The current surface-pad candidate improves loaded seating and restores a real
+supported slide in 233 relative to the same hand with original contact. It still
+stops 4.19 mm short of goal contact and fails pickup in both early calibration
+trials. It is not accepted as a general end-to-end improvement.
 
-The first 15 full replays are all on calibration trial 233, not 15 independent
-demonstrations. No pad candidate has yet passed the end-to-end gate or been
-evaluated on the reserved validation trials. See `LIVE_STATUS.json` for the
-last verified process handle; re-poll it before inferring that work has stopped.
+The divided-geometry approach described above is historical and rejected; current
+pads use original geometry with a spatially localized contact law. See
+`INITIAL_READOUT.md`, `SURFACE_READOUT.md`, and `SPRING_READOUT.md` for the first
+stages. Every subsequent batch has a plan and terminal execution records.
+
+The frozen candidate and rigid controls have completed evaluation on 176/185/237.
+`VALIDATION_READOUT.md` reports the paired six-demo results: supplied-metric
+passes are 3/6 original fixed, 2/6 matching rigid and 3/6 soft; strict completions
+are 3/6, 0/6 and 1/6. Independent saved-action checks cover 233 and 176. `LIVE_STATUS.json` records the
+last verified process handle; poll it rather than restarting a quiet batch.
+`233_soft_pad_real_sim.mp4` is the inspected annotated real/sim review video.
+
+## Subsequent inertia audit
+
+The default 0.1 kg m² added inertia on every finger causes large unloaded
+curl and oscillation in the adaptive hand. `unloaded_armature/README.md`
+records a causal bench and corrects the earlier inertia-free settling argument.
+`reference_hand_pads/README.md` reports six original-hand attribution controls;
+its extra proximity pass is rejected as early-release mismatch.
+`low_armature/README.md` reports seven completed mass comparisons.
+`critical_return/` tests a spring/force setting derived from the verified bench.
+The goal remains unachieved; no candidate has been adopted.

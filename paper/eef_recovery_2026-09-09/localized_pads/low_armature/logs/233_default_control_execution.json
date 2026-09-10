@@ -1,0 +1,16 @@
+{
+  "name": "233_default_control",
+  "uid": 233,
+  "preset": "default_control",
+  "returncode": 0,
+  "elapsed_s": 77.58037948608398,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/233_default_control",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/default_control.json"
+  ]
+}

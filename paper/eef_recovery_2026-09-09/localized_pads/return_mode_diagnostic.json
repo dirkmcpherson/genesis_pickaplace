@@ -28,5 +28,6 @@
     }
   ],
   "assumptions": "Symmetric internal mode at fixed actuator coordinate; linearized return springs and joint viscous damping. Quasistatic time constant D/K, not an exact prediction with contact and inertia.",
-  "evidence": "233_feedback_tc0.02 tracks actuator position within 1 percentage point but remains curled and catches the can during withdrawal; observe saved q and contact timeline."
+  "evidence": "233_feedback_tc0.02 tracks actuator position within 1 percentage point but remains curled and catches the can during withdrawal; observe saved q and contact timeline.",
+  "later_inertia_audit": "unloaded_armature/README.md supersedes the overdamped interpretation: inherited armature makes the original mode strongly underdamped (zeta .069, natural period 7.50 s). D/K alone was not its relaxation time."
 }

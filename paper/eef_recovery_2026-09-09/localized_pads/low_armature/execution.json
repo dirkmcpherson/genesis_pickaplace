@@ -1,0 +1,114 @@
+[
+  {
+    "name": "233_default_control",
+    "uid": 233,
+    "preset": "default_control",
+    "returncode": 0,
+    "elapsed_s": 77.58037948608398,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/233_default_control",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/default_control.json"
+    ]
+  },
+  {
+    "name": "113_tc0.02",
+    "uid": 113,
+    "preset": "tc0.02",
+    "returncode": 0,
+    "elapsed_s": 269.24148631095886,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/113_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.02.json"
+    ]
+  },
+  {
+    "name": "113_tc0.03",
+    "uid": 113,
+    "preset": "tc0.03",
+    "returncode": 0,
+    "elapsed_s": 267.2571632862091,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/113_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.03.json"
+    ]
+  },
+  {
+    "name": "184_tc0.02",
+    "uid": 184,
+    "preset": "tc0.02",
+    "returncode": 0,
+    "elapsed_s": 211.65996980667114,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/184_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.02.json"
+    ]
+  },
+  {
+    "name": "184_tc0.03",
+    "uid": 184,
+    "preset": "tc0.03",
+    "returncode": 0,
+    "elapsed_s": 213.09896421432495,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/184_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.03.json"
+    ]
+  },
+  {
+    "name": "233_tc0.02",
+    "uid": 233,
+    "preset": "tc0.02",
+    "returncode": 0,
+    "elapsed_s": 81.87172293663025,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/233_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.02.json"
+    ]
+  },
+  {
+    "name": "233_tc0.03",
+    "uid": 233,
+    "preset": "tc0.03",
+    "returncode": 0,
+    "elapsed_s": 80.68928003311157,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/233_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/presets/tc0.03.json"
+    ]
+  }
+]

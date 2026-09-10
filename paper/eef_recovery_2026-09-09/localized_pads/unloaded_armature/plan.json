@@ -1,0 +1,10 @@
+{
+  "cases": [
+    "default",
+    "distal_zero",
+    "all_1e-4",
+    "all_zero"
+  ],
+  "purpose": "Test whether generic added joint inertia causes pre-contact curl and slow passive response. No contact, gravity, arm motion or outcome fitting.",
+  "candidate_code_sha256": "08c4dee81333774b2d676042a0b0fe3b5f324d0e8ca90b432b9f467916bc454d"
+}

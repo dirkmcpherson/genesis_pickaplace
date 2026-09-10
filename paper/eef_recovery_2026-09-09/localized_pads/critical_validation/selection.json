@@ -1,0 +1,1397 @@
+{
+  "new_panel": [
+    {
+      "uid": 156,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 61.33454512525265,
+      "first_50_percent_time_s": 6.18,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/156/source.npz",
+      "source_sha256": "d96fe98f9dc580028f5c8b99a298e1404c150a572b5e1bfa353aeaf24cea0dd2"
+    },
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.40818819902009,
+      "first_50_percent_time_s": 5.9399999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a"
+    },
+    {
+      "uid": 224,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.60759535565236,
+      "first_50_percent_time_s": 6.4799999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+      "source_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7"
+    },
+    {
+      "uid": 198,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 84.9422817872422,
+      "first_50_percent_time_s": 13.41,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/198/source.npz",
+      "source_sha256": "18733a38c48b6efaf3b5f4354ed422bc02512d95a80947469d86d910624442df"
+    },
+    {
+      "uid": 243,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.0106550455939,
+      "first_50_percent_time_s": 3.54,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+      "source_sha256": "0d640f53192d5522d4faf353b81231485d54394dffca8ddcf5aa6f9f23374276"
+    },
+    {
+      "uid": 246,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.60374580121677,
+      "first_50_percent_time_s": 45.69,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/246/source.npz",
+      "source_sha256": "d8ff0b893e063436568bf45d20b71b9dc9f670bc904680112b76f5bec8882d88"
+    }
+  ],
+  "old_reserved": [
+    176,
+    185,
+    237
+  ],
+  "excluded_calibration": [
+    113,
+    184,
+    233
+  ],
+  "excluded_initial_model_overlap": [
+    131,
+    145,
+    151,
+    153,
+    161,
+    174,
+    193,
+    196,
+    201,
+    206,
+    220,
+    222
+  ],
+  "excluded_no_eligible_signal_window": [],
+  "selection": "One random source per day \u00d7 initial closure stratum, seed 20260909. Initial closure is median recorded gripper feedback 1.02\u20132.97 s after first >=50% sample; lower<80%, higher>=80%. No simulated outcome used for selection.",
+  "qualification": "Source-signal proxy, not measured grasp depth. All old full-pool outcomes were historically available; these six have not been used in pad fitting. Excluding known model-overlap ICs defines the panel, not permanent exclusion of recordings.",
+  "eligible": [
+    {
+      "uid": 118,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.48618969056272,
+      "first_50_percent_time_s": 17.82,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/118/source.npz",
+      "source_sha256": "5968ddabd22e87416a5b4745ab9f1fe722c52b908124e3ac59fe58e5a927838f"
+    },
+    {
+      "uid": 120,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 48.90691952837896,
+      "first_50_percent_time_s": 16.62,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/120/source.npz",
+      "source_sha256": "44e036ab762484d1d25b03780d005d1e819a4b015e72b83c8c900189106d4b38"
+    },
+    {
+      "uid": 121,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.54431981930601,
+      "first_50_percent_time_s": 7.8,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/121/source.npz",
+      "source_sha256": "14ff2f0f531db05cb7affdf39b44d4fe70c062dd6062c77c572a1abd4714a0ba"
+    },
+    {
+      "uid": 122,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.88595012961184,
+      "first_50_percent_time_s": 9.48,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/122/source.npz",
+      "source_sha256": "bc5666a9093db0ffc193a31ed9e220b1563f72934f4faf808b6d173b6bef49c1"
+    },
+    {
+      "uid": 124,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 61.29192041586647,
+      "first_50_percent_time_s": 16.89,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/124/source.npz",
+      "source_sha256": "4e3ece69fbd180f54a2273dd732ab8758bfb246fe9ce0e6e16e11595657a3bb0"
+    },
+    {
+      "uid": 126,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.17529009389855,
+      "first_50_percent_time_s": 13.95,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/126/source.npz",
+      "source_sha256": "e7229076170ca19a9a3bcc43527a5c5a27d83e803bd7c12dbe7cc9d12dd6a297"
+    },
+    {
+      "uid": 128,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.91689699954263,
+      "first_50_percent_time_s": 13.11,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/128/source.npz",
+      "source_sha256": "9b002a72a17ed20da2a9f377053200463d4641a651dfd9f5a705e0296b07fd42"
+    },
+    {
+      "uid": 129,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.81281444257078,
+      "first_50_percent_time_s": 12.75,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/129/source.npz",
+      "source_sha256": "b3c6a083c17e987f63abe60b98d61c6455cc4c340cbd51dcab76a8855cd8eb2f"
+    },
+    {
+      "uid": 130,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.22015589786471,
+      "first_50_percent_time_s": 14.19,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/130/source.npz",
+      "source_sha256": "0d195e38b7c1ae52f384d06c785b73e1b31e302ad60b76ccd7a5ce80cd82bd05"
+    },
+    {
+      "uid": 132,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.89419014675678,
+      "first_50_percent_time_s": 27.18,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/132/source.npz",
+      "source_sha256": "7c1e1b59831ed6f02c25d49d74077c7b269cee87abe19a0fd451466eff1a3aff"
+    },
+    {
+      "uid": 137,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 88.85529983110666,
+      "first_50_percent_time_s": 27.24,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/137/source.npz",
+      "source_sha256": "5d3e797c62259e274b28f0af0ddc2e9f14429792b25dcdcf2f2ee94850b830a7"
+    },
+    {
+      "uid": 138,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 49.303893878648246,
+      "first_50_percent_time_s": 14.25,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/138/source.npz",
+      "source_sha256": "d702c712e70455568e06ae66fe825ba6a59dd60901d48732cc81789a876e5f1c"
+    },
+    {
+      "uid": 139,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 75.15720636264629,
+      "first_50_percent_time_s": 27.57,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/139/source.npz",
+      "source_sha256": "65a86a72eb3f9e72fce2cf2859526b67f234dbe85e514509a1c58cb8091c718f"
+    },
+    {
+      "uid": 140,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.36607976928855,
+      "first_50_percent_time_s": 13.65,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/140/source.npz",
+      "source_sha256": "fc0340e84cc0f5b0c4dc3d2fcb4acf4a6efadadd342d11a4a9d2e24b406bc1af"
+    },
+    {
+      "uid": 141,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 70.15890438148674,
+      "first_50_percent_time_s": 7.56,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/141/source.npz",
+      "source_sha256": "948a8b1eff4ac99b0db5bbe09335871efabe0cc02e42691e02a9f574dcc59ebd"
+    },
+    {
+      "uid": 143,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.36107265171316,
+      "first_50_percent_time_s": 92.75999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/143/source.npz",
+      "source_sha256": "bf3f9e3f0bdb0410ca9affabee9b30c50013ea35a187f0245e84847b3002f17c"
+    },
+    {
+      "uid": 144,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 18.187028830681186,
+      "first_50_percent_time_s": 40.68,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/144/source.npz",
+      "source_sha256": "16d1c020ded47fe09b2f30a609dea9fd4eeb24a9381d05bbd5e3e39451066394"
+    },
+    {
+      "uid": 146,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.33934631842001,
+      "first_50_percent_time_s": 17.31,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/146/source.npz",
+      "source_sha256": "61deb6b19189c4183b497185b42ff05c7566a61aa277fb2b7fb129b65e2680da"
+    },
+    {
+      "uid": 148,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 72.12204667697374,
+      "first_50_percent_time_s": 7.35,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/148/source.npz",
+      "source_sha256": "25ca39f5e4443bc14f8c70f6e5d3bf88bbe409db2e73dd2034de3c951b1dac71"
+    },
+    {
+      "uid": 149,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.50896731012904,
+      "first_50_percent_time_s": 12.54,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/149/source.npz",
+      "source_sha256": "883c17aed6d8d14c3bca2942eee408dd7e0d890b889eb3ba363991bdd232e0f4"
+    },
+    {
+      "uid": 154,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 77.08331502708302,
+      "first_50_percent_time_s": 6.54,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/154/source.npz",
+      "source_sha256": "7aaa1b2056042bcfac75f503c370780c469ee121629145ad5b06dc37efcc280a"
+    },
+    {
+      "uid": 156,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 61.33454512525265,
+      "first_50_percent_time_s": 6.18,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/156/source.npz",
+      "source_sha256": "d96fe98f9dc580028f5c8b99a298e1404c150a572b5e1bfa353aeaf24cea0dd2"
+    },
+    {
+      "uid": 157,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.54422155165007,
+      "first_50_percent_time_s": 8.37,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/157/source.npz",
+      "source_sha256": "6b05de998cfab3409b115d4de5b4b2d292b61d3d430674e645bc84662c6b41f7"
+    },
+    {
+      "uid": 158,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 69.02749917190567,
+      "first_50_percent_time_s": 11.79,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/158/source.npz",
+      "source_sha256": "608e3f14f79f7e71c194793b04730c3eb0376541c376977ded00a911b6ac0552"
+    },
+    {
+      "uid": 160,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.64123067417745,
+      "first_50_percent_time_s": 13.2,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/160/source.npz",
+      "source_sha256": "587ec51a9d704efc69026f46414384fc8e3901f1f48c5547d3697d66f57d22ba"
+    },
+    {
+      "uid": 162,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 44.63863509435553,
+      "first_50_percent_time_s": 10.77,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/162/source.npz",
+      "source_sha256": "c0000a292a546ec5c8618efe7a14d79ccea72c64f2d41480d93a27ce9a6cc33e"
+    },
+    {
+      "uid": 164,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 70.94584130331953,
+      "first_50_percent_time_s": 17.73,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/164/source.npz",
+      "source_sha256": "9e7e141dc27dc561904548d98d1b3d410c570cd4550d2ee6c843b1470154197e"
+    },
+    {
+      "uid": 165,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.31171278480394,
+      "first_50_percent_time_s": 4.92,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/165/source.npz",
+      "source_sha256": "11665cbeffdd9634f364d26342996121a962bb4fd92a3dfebfb35b8a27b3e7d1"
+    },
+    {
+      "uid": 166,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.37871322361033,
+      "first_50_percent_time_s": 17.79,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/166/source.npz",
+      "source_sha256": "c527528af47d40b8ddc792c0691ddbdfca2dcd319ebb7e1b22a61b8489e193d5"
+    },
+    {
+      "uid": 167,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.16413937003475,
+      "first_50_percent_time_s": 10.889999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/167/source.npz",
+      "source_sha256": "de4ad60e7e2304700c76c313e92cee88f4d6d536cb81d8fe95c6f0c2d71290b6"
+    },
+    {
+      "uid": 168,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 84.13647846537137,
+      "first_50_percent_time_s": 13.35,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/168/source.npz",
+      "source_sha256": "b89a0fb51f8b30250ff7b130774fdb46c93ed540fcc06f590805c36b5b8e0878"
+    },
+    {
+      "uid": 169,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 83.94974450644193,
+      "first_50_percent_time_s": 12.99,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/169/source.npz",
+      "source_sha256": "2ef1d846e8705002f3e9ce11ff7512e023acef986e8f655955abda94517b7f6e"
+    },
+    {
+      "uid": 170,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 20.606148576726937,
+      "first_50_percent_time_s": 3.0,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/170/source.npz",
+      "source_sha256": "78720f191bf976bff2c5b2f0ac4eda21e752b93eae0288a4cfcbecfb4939fe76"
+    },
+    {
+      "uid": 171,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 61.87394505230244,
+      "first_50_percent_time_s": 12.33,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/171/source.npz",
+      "source_sha256": "3ec90124bbf751c0900ad22542588bdc68a18e421aec3914e9b0f8b87ec0a6b4"
+    },
+    {
+      "uid": 172,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 67.87675617715173,
+      "first_50_percent_time_s": 7.26,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/172/source.npz",
+      "source_sha256": "6576efcc734b56fdff12b1b9849443baf32ede91b762db0a503c7bc1e0e3e0e0"
+    },
+    {
+      "uid": 173,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.87000544024026,
+      "first_50_percent_time_s": 11.43,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/173/source.npz",
+      "source_sha256": "5ed656a942bbe45471657297f41ab4bf054bc0e53cd98f0cc69db9c31f91267e"
+    },
+    {
+      "uid": 175,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.97317062778654,
+      "first_50_percent_time_s": 17.91,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/175/source.npz",
+      "source_sha256": "0c96e639ba54ef427fba63286e9f712bbfcbf12071de303ce3fcbcd459d165e9"
+    },
+    {
+      "uid": 177,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 83.30026100458875,
+      "first_50_percent_time_s": 7.62,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/177/source.npz",
+      "source_sha256": "72e40828ceb8d49880eec9ce3e41b174dd49fcdab86ea1c0fb1ce45f782b88a1"
+    },
+    {
+      "uid": 179,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 70.62892204115948,
+      "first_50_percent_time_s": 17.25,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/179/source.npz",
+      "source_sha256": "2b3f14c4dc611ac56e0b477a16662e3d14317f49d740a1471a795b3091b3ce10"
+    },
+    {
+      "uid": 180,
+      "day": "Dec16",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 64.61888017569494,
+      "first_50_percent_time_s": 5.76,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/180/source.npz",
+      "source_sha256": "bfe64fea6f9ba1eba3fd5a1ca81fbb3c1390a00c9a4c07faeac69ebd40a8beeb"
+    },
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.40818819902009,
+      "first_50_percent_time_s": 5.9399999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a"
+    },
+    {
+      "uid": 183,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 63.187307899094634,
+      "first_50_percent_time_s": 27.599999999999998,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/183/source.npz",
+      "source_sha256": "6544ab7a515b5a73a28b0a21f32a0dad0dfa4d44eb5817abb8421a8addad954f"
+    },
+    {
+      "uid": 189,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.14120630330885,
+      "first_50_percent_time_s": 14.28,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/189/source.npz",
+      "source_sha256": "95f93c0c1ba90db9c1d1ab4de4984daa19d6bdd8089ade0ce522011a238c5b60"
+    },
+    {
+      "uid": 190,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.32153021621977,
+      "first_50_percent_time_s": 25.29,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/190/source.npz",
+      "source_sha256": "22c1ac3b6cc23a6124ca23d7a1a69075cb9b3df1f69e9fa0ebe333dedab13d0a"
+    },
+    {
+      "uid": 191,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 76.21635336291648,
+      "first_50_percent_time_s": 5.22,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/191/source.npz",
+      "source_sha256": "fd62d0b91e0a80cdf77d72d4cdf0acced06c742fea4b3545096029caefe49a35"
+    },
+    {
+      "uid": 192,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.10472815984778,
+      "first_50_percent_time_s": 76.71,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/192/source.npz",
+      "source_sha256": "9b9afa322e0b0e5a20f687a1d5434ca0bc5fb6337d3d766371687086fbcf2429"
+    },
+    {
+      "uid": 194,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 73.37442211322912,
+      "first_50_percent_time_s": 16.47,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/194/source.npz",
+      "source_sha256": "4bc77a79f2c92976f1da228ba8598ee096e8be0de2e0ae6e5ab31b602f2aa6fa"
+    },
+    {
+      "uid": 197,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 63.286744554187095,
+      "first_50_percent_time_s": 25.95,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/197/source.npz",
+      "source_sha256": "b3acc4e739bf24b60028c70a9f21767aacbc702e3ab60bb47437d90574686cf7"
+    },
+    {
+      "uid": 198,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 84.9422817872422,
+      "first_50_percent_time_s": 13.41,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/198/source.npz",
+      "source_sha256": "18733a38c48b6efaf3b5f4354ed422bc02512d95a80947469d86d910624442df"
+    },
+    {
+      "uid": 200,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 69.3866712789879,
+      "first_50_percent_time_s": 9.6,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/200/source.npz",
+      "source_sha256": "f331c6a080aceb2ab012d83ec9cdb20763412a197c7bba6cfe7d63c1455a6f69"
+    },
+    {
+      "uid": 202,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 67.20373513408472,
+      "first_50_percent_time_s": 11.879999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/202/source.npz",
+      "source_sha256": "de06a7834b1dc69d03f8fa7e3d3f9fed231dbea1fe5075a8020badaa7faa6be3"
+    },
+    {
+      "uid": 203,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.68906040779277,
+      "first_50_percent_time_s": 9.33,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/203/source.npz",
+      "source_sha256": "d8ca8f9a4497b178754e4d52ae0582cb2c813d19dc484128f051f4ba0b7b9501"
+    },
+    {
+      "uid": 204,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 67.63716894476063,
+      "first_50_percent_time_s": 17.07,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/204/source.npz",
+      "source_sha256": "6caa6868983d96ad6db2ef9460de6da037534e8b52d52e6079c7fe8f5e2d27ad"
+    },
+    {
+      "uid": 207,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.63231625495911,
+      "first_50_percent_time_s": 11.49,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/207/source.npz",
+      "source_sha256": "db5c700e37ec9d6392e01570997892cafbf3cc5108c134a529193cf270f8dc93"
+    },
+    {
+      "uid": 208,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.20953778632733,
+      "first_50_percent_time_s": 22.2,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/208/source.npz",
+      "source_sha256": "5c194e31254dc63c92ca41f67822322b8d5333782e131ea3b811da8220170784"
+    },
+    {
+      "uid": 209,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 59.60762416220226,
+      "first_50_percent_time_s": 10.95,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/209/source.npz",
+      "source_sha256": "63e613d402ef58ddd09e6e261c48ab3b5df9f942f855b636666760410353c00e"
+    },
+    {
+      "uid": 210,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 79.13207671132511,
+      "first_50_percent_time_s": 12.87,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/210/source.npz",
+      "source_sha256": "73faf1dafb57c11e4360c5a351221fc958e94de14485bb833132026b75e39b0d"
+    },
+    {
+      "uid": 211,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 70.14302222258047,
+      "first_50_percent_time_s": 33.24,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/211/source.npz",
+      "source_sha256": "bf8111aa4112354accaba5e5a542f8a2a1541d61faf62cbdd8f13574f34feaa5"
+    },
+    {
+      "uid": 212,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 65.14297036618387,
+      "first_50_percent_time_s": 28.47,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/212/source.npz",
+      "source_sha256": "b26b5f3d3537683efa094bc6252d06e99c1f9976b645fd0a1613e31157b6b6ff"
+    },
+    {
+      "uid": 213,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 63.41509576482436,
+      "first_50_percent_time_s": 19.2,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/213/source.npz",
+      "source_sha256": "cb154d4641591438cf72b326011fd81be9ddd492fd1e4a342e6acaaa4f9a79bf"
+    },
+    {
+      "uid": 214,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.81298981031563,
+      "first_50_percent_time_s": 23.279999999999998,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/214/source.npz",
+      "source_sha256": "1a8bc70bcbda7d5ae9d610864d54f13031ae251c02bb1bbf4b5f65ed3d444866"
+    },
+    {
+      "uid": 215,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 62.32491469002592,
+      "first_50_percent_time_s": 11.07,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/215/source.npz",
+      "source_sha256": "3c641a0f2332a7febc830413f81e963ef88af6ce0892eef8a8aa645a679e86e6"
+    },
+    {
+      "uid": 216,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.22772476376448,
+      "first_50_percent_time_s": 19.98,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/216/source.npz",
+      "source_sha256": "627716bde8052358e676701577d413dd5f67976a80935cbcf55015b0a8cc6298"
+    },
+    {
+      "uid": 217,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.76454587340952,
+      "first_50_percent_time_s": 6.45,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/217/source.npz",
+      "source_sha256": "a86eb0c07fb7f421e345da483afe3ab20a8a6ad3dfcd6c8dc9653fdc8ccdca6b"
+    },
+    {
+      "uid": 218,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 56.73128568887442,
+      "first_50_percent_time_s": 7.4399999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/218/source.npz",
+      "source_sha256": "af97b74dfedf99f614c37f19cd5d358fb3965cfd82e01d8b5f6e1b0632224e6e"
+    },
+    {
+      "uid": 219,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 11.904420111621583,
+      "first_50_percent_time_s": 21.15,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/219/source.npz",
+      "source_sha256": "6f0ead9ba17e161a1aa8757fe0f87a3e8da735ba58f780b30911f333b4edfbc7"
+    },
+    {
+      "uid": 221,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.94182347814261,
+      "first_50_percent_time_s": 15.99,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/221/source.npz",
+      "source_sha256": "0c71bb1c4314ec0a990518f9c5348d62e568fda0932f503860c5db725eca9052"
+    },
+    {
+      "uid": 224,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.60759535565236,
+      "first_50_percent_time_s": 6.4799999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+      "source_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7"
+    },
+    {
+      "uid": 225,
+      "day": "Dec17",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 82.90259771283097,
+      "first_50_percent_time_s": 6.569999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/225/source.npz",
+      "source_sha256": "597ee778adbe675b3fbff26a15393f1573d6fada9ee4db9ea9c46eaa1793f20c"
+    },
+    {
+      "uid": 226,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 65.72481751724627,
+      "first_50_percent_time_s": 19.29,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/226/source.npz",
+      "source_sha256": "c96e09dab27e96fd795daf056b74c5c9d7f285a63a8000e4197adcf30092243b"
+    },
+    {
+      "uid": 229,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 67.87631748959458,
+      "first_50_percent_time_s": 10.139999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/229/source.npz",
+      "source_sha256": "6d2913c5c88627b889d443aed36a45a346c36794ae73317edc0cdfc586565555"
+    },
+    {
+      "uid": 230,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 55.21845426186458,
+      "first_50_percent_time_s": 11.28,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/230/source.npz",
+      "source_sha256": "39a3fb6bd7830bf1fe59ac471fdd3ceabfbf0d56d3de927dfcadf6e72cd572a8"
+    },
+    {
+      "uid": 231,
+      "day": "Dec17",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 75.06461372576325,
+      "first_50_percent_time_s": 14.549999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/231/source.npz",
+      "source_sha256": "da8517658a5aae8e4eb37d2b496d3a3ac8b9a6a36a86c180afa3879159b57e6c"
+    },
+    {
+      "uid": 232,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 78.73212837950096,
+      "first_50_percent_time_s": 7.29,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/232/source.npz",
+      "source_sha256": "aa47dfa7acbe676431ace0ecb33a0e02e1b395a36978fdb56985e9070bf40f79"
+    },
+    {
+      "uid": 234,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 88.00050422299302,
+      "first_50_percent_time_s": 9.209999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/234/source.npz",
+      "source_sha256": "e05cd80081f4ba4f71d5c28bb2f47ef2259f8577a062682df4049de89b577b84"
+    },
+    {
+      "uid": 235,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.92672519141965,
+      "first_50_percent_time_s": 4.38,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/235/source.npz",
+      "source_sha256": "428459178d47c123ba8ef3cabfe48fb1bd29094237f27c55268032d794144271"
+    },
+    {
+      "uid": 236,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.2780472555535,
+      "first_50_percent_time_s": 5.43,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/236/source.npz",
+      "source_sha256": "8da6cd3b3216fe8f59027d0d6fbb1d30f8fdd5d20fd49e0e7389bbd00ede5ab9"
+    },
+    {
+      "uid": 239,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.64856376469609,
+      "first_50_percent_time_s": 14.219999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/239/source.npz",
+      "source_sha256": "a315d9e67ff8e37108bdec937360bf379b687a9fc07c7fc85c62a344b1a1bf95"
+    },
+    {
+      "uid": 242,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 73.33443847938402,
+      "first_50_percent_time_s": 7.6499999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/242/source.npz",
+      "source_sha256": "71c542304d5f18a20963bbb356956542b1f3706f53df0434d21ede12e5b97f56"
+    },
+    {
+      "uid": 243,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.0106550455939,
+      "first_50_percent_time_s": 3.54,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+      "source_sha256": "0d640f53192d5522d4faf353b81231485d54394dffca8ddcf5aa6f9f23374276"
+    },
+    {
+      "uid": 244,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.68921217545915,
+      "first_50_percent_time_s": 14.58,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/244/source.npz",
+      "source_sha256": "0caa50f4a169a68d066e4543741a84ca551b545ac263d4549860a4553ee4ef11"
+    },
+    {
+      "uid": 245,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": -0.03980546692561053,
+      "first_50_percent_time_s": 4.17,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/245/source.npz",
+      "source_sha256": "6bbbeffcd6fcc314c4023e5f0b8747785377bbcb7be3968c0b1a9a48e84ffa2e"
+    },
+    {
+      "uid": 246,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.60374580121677,
+      "first_50_percent_time_s": 45.69,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/246/source.npz",
+      "source_sha256": "d8ff0b893e063436568bf45d20b71b9dc9f670bc904680112b76f5bec8882d88"
+    },
+    {
+      "uid": 247,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 88.26253319226433,
+      "first_50_percent_time_s": 20.669999999999998,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/247/source.npz",
+      "source_sha256": "a780991f9cbec481e2488fe2a27eb54d73ac61a8e0e7dcd2020bed0cdfd00d47"
+    },
+    {
+      "uid": 248,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.14551393239017,
+      "first_50_percent_time_s": 24.09,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/248/source.npz",
+      "source_sha256": "7610dea2067753e73008d2c7c37d819c5a7e94341efb0bfc887ccbfd7b6ecbaf"
+    },
+    {
+      "uid": 250,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.78301054644987,
+      "first_50_percent_time_s": 55.26,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/250/source.npz",
+      "source_sha256": "546cc57adad04bb5a3346a1546f506f00f79dcc4f96c249e292424c0181a519b"
+    },
+    {
+      "uid": 251,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 74.99877105364939,
+      "first_50_percent_time_s": 14.34,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/251/source.npz",
+      "source_sha256": "7cdbd0f0c32bfb2904f9ee85eb5c1e15ddc29701c3e363d34c5c7ea2f39b83fc"
+    },
+    {
+      "uid": 252,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.41160923616478,
+      "first_50_percent_time_s": 11.4,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/252/source.npz",
+      "source_sha256": "d305a947106418e72014b95976361725775f3a501876b80070460800b6d99e35"
+    },
+    {
+      "uid": 254,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 81.20795959267384,
+      "first_50_percent_time_s": 14.459999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/254/source.npz",
+      "source_sha256": "49ebe0023c8fb76aebdbaca37dcffc756dffde62af18e9d12091c68feb0bec5a"
+    },
+    {
+      "uid": 255,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.0023668752349,
+      "first_50_percent_time_s": 12.99,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/255/source.npz",
+      "source_sha256": "395828c109d04783b17d26aab80de3e59f5945d1fdf59d97cd2db2d1b9a1e2ec"
+    },
+    {
+      "uid": 256,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 90.54343143608588,
+      "first_50_percent_time_s": 18.509999999999998,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/256/source.npz",
+      "source_sha256": "91097ffc60b279d0d50f32c1c97b5ecb03b98720eb82fbb457ebc3a2db2b66af"
+    },
+    {
+      "uid": 257,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 77.04028138175592,
+      "first_50_percent_time_s": 7.6499999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/257/source.npz",
+      "source_sha256": "c1d29aa8648746fed09a514be694700edc0dd4d6f61660bde1728513299b36d5"
+    },
+    {
+      "uid": 258,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 75.38328916095766,
+      "first_50_percent_time_s": 7.41,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/258/source.npz",
+      "source_sha256": "487d4b8be0ea43c43e10e7ea3cb2c5dadb9d7c1feadda012b69d3bdb9a458694"
+    },
+    {
+      "uid": 259,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.50159741101206,
+      "first_50_percent_time_s": 11.549999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/259/source.npz",
+      "source_sha256": "04f3c067efeb1d2bc1d3e460dfdc29d4bf570ae5c7a6e708cf3c2f11e7e422ca"
+    },
+    {
+      "uid": 261,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.65261090797925,
+      "first_50_percent_time_s": 6.569999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/261/source.npz",
+      "source_sha256": "7d5be346b7953d1a63162c1a17b94836d1bab3d3ed76cd6196485835cb27e9c7"
+    },
+    {
+      "uid": 262,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.09503751144959,
+      "first_50_percent_time_s": 10.02,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/262/source.npz",
+      "source_sha256": "c06997e6fe92a8744200a98e21ef7b166851eaaaf22b22f6f023b927c940d48c"
+    },
+    {
+      "uid": 263,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 81.27383356991211,
+      "first_50_percent_time_s": 11.73,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/263/source.npz",
+      "source_sha256": "68221e496e1b5e7dd37e197e1c533f6a7d6a34071373bf10bca284b65faca351"
+    },
+    {
+      "uid": 265,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 49.570897751644466,
+      "first_50_percent_time_s": 13.559999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/265/source.npz",
+      "source_sha256": "bd6f895c6e6ec014f7efc1c3fafcb7174e2c59123b7d1e9dffe00523231d4481"
+    },
+    {
+      "uid": 266,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 84.725033683967,
+      "first_50_percent_time_s": 15.629999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/266/source.npz",
+      "source_sha256": "3e3f4e27ae941af5900afe5b09d809fa83e8424a4277c1dd6ea1ed6d14fcda44"
+    },
+    {
+      "uid": 267,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 87.27727878568152,
+      "first_50_percent_time_s": 14.879999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/267/source.npz",
+      "source_sha256": "9ed035f729d8dfed3bf207267fa46821153863b645009ddb3c5f4af4a4e71e04"
+    },
+    {
+      "uid": 269,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.35875183477131,
+      "first_50_percent_time_s": 10.77,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/269/source.npz",
+      "source_sha256": "a018828f203fdb647c93c67c17f7079e2acb55cc1df1e7f2f64040ea4a3f2f3b"
+    },
+    {
+      "uid": 273,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.0809959234009,
+      "first_50_percent_time_s": 11.79,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/273/source.npz",
+      "source_sha256": "673ae78be14acd01c459cef1abf8fd14339cf83550323c2ab4fbe5b0052da42a"
+    },
+    {
+      "uid": 274,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 74.47424813668816,
+      "first_50_percent_time_s": 22.98,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/274/source.npz",
+      "source_sha256": "234aea6fba7751ea7717d167543588c8b4e22173926601a073c83e782647876c"
+    },
+    {
+      "uid": 275,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.5306014943021,
+      "first_50_percent_time_s": 10.59,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/275/source.npz",
+      "source_sha256": "bf88da5ae394b7fb5a9a1786e1d882dce3e34065c2c71ad4e90e35bcd7afb265"
+    },
+    {
+      "uid": 276,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.67515892812185,
+      "first_50_percent_time_s": 16.89,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/276/source.npz",
+      "source_sha256": "4250dda901319edbc02c343a443d2b80c1d24c29904629130aca1239100e7bea"
+    },
+    {
+      "uid": 277,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 79.61194477380016,
+      "first_50_percent_time_s": 5.7,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/277/source.npz",
+      "source_sha256": "9ec461912c30dfff78b6b9f46268c7f205f04cb47e8e526c0c375f47308c57df"
+    },
+    {
+      "uid": 278,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.22592653547062,
+      "first_50_percent_time_s": 5.67,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/278/source.npz",
+      "source_sha256": "dbb9ccb16c6ee1915ce2037845b33ef709dac88e986b29bc748fab6869c8be64"
+    },
+    {
+      "uid": 279,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 41.75014656007535,
+      "first_50_percent_time_s": 1.92,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/279/source.npz",
+      "source_sha256": "fa75d770f4ce131763cbd110813fced7daa9c7a54c38490bbb40494c9612df09"
+    },
+    {
+      "uid": 280,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 72.62800859583584,
+      "first_50_percent_time_s": 4.68,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/280/source.npz",
+      "source_sha256": "37201f4f788a8c0ac412405000b4fadba231cb797290c564f6fe725a1a9a9443"
+    },
+    {
+      "uid": 281,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 52.39035635534508,
+      "first_50_percent_time_s": 4.109999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/281/source.npz",
+      "source_sha256": "f35deaf99886df580d38789b9f68ed95f6f82394de92443559611c3777bbc81d"
+    },
+    {
+      "uid": 283,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.44284114420904,
+      "first_50_percent_time_s": 9.69,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/283/source.npz",
+      "source_sha256": "e9cf992e33152aa475a3c476fc3751b5993521b107740c946f9c1c9700d97728"
+    },
+    {
+      "uid": 284,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 67.04413187378421,
+      "first_50_percent_time_s": 7.109999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/284/source.npz",
+      "source_sha256": "e6047dc9a78336036c34730cc7a3ba509bcd2f26b70a8c767981b8aa5ce3703a"
+    },
+    {
+      "uid": 286,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 82.38901178547619,
+      "first_50_percent_time_s": 71.28,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/286/source.npz",
+      "source_sha256": "b23125a21f0c82fd2f2bff8e12b6aca22ff1926f5e2f37763c428aa3553630a0"
+    },
+    {
+      "uid": 287,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.15406649269465,
+      "first_50_percent_time_s": 42.9,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/287/source.npz",
+      "source_sha256": "9582dac52c16dfca6d83d468beff5bba7cb88a33f4695d71a5d22e88b58dac14"
+    },
+    {
+      "uid": 293,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 51.64720702036672,
+      "first_50_percent_time_s": 57.0,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/293/source.npz",
+      "source_sha256": "2095b9e40c8220f35fc971f741828b543b37bcf6b14d7918010beb8fae381f7e"
+    },
+    {
+      "uid": 294,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 88.60649065723445,
+      "first_50_percent_time_s": 93.63,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/294/source.npz",
+      "source_sha256": "d8fe2eb5b69c4a4ffd1b4ab49a534e7f5fd24d4cc3029e989ea8c0881b7b7c84"
+    },
+    {
+      "uid": 295,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.6105238668708,
+      "first_50_percent_time_s": 51.36,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/295/source.npz",
+      "source_sha256": "045b022acfa1e324cd13f5440ba7786d9d76cb0836892507ae2ff1ed58123c88"
+    },
+    {
+      "uid": 297,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 88.20576822384528,
+      "first_50_percent_time_s": 7.739999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/297/source.npz",
+      "source_sha256": "2348dfbf9997c76696a26be071f2f6a7d2ccaadcc416e1fa6aba2802fe0638e6"
+    },
+    {
+      "uid": 298,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 82.31534316065716,
+      "first_50_percent_time_s": 7.14,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/298/source.npz",
+      "source_sha256": "8d342f977cff9d67a2b203ddebd2031f319e1025a9e007b8018c25cb260b76f7"
+    },
+    {
+      "uid": 299,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 70.15973554572676,
+      "first_50_percent_time_s": 50.879999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/299/source.npz",
+      "source_sha256": "896890af750ca4d1a681778800f8eca0b555500d625e774623e8d507b09e2350"
+    },
+    {
+      "uid": 300,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 73.87382253380454,
+      "first_50_percent_time_s": 88.59,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/300/source.npz",
+      "source_sha256": "257470a6af7309754a635433d8b33c1607b8f9ea001c670a3767cbd5522e1e35"
+    },
+    {
+      "uid": 301,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.81011756802373,
+      "first_50_percent_time_s": 14.399999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/301/source.npz",
+      "source_sha256": "6b0dd8969ae9606b45eeaab4fd10be4ebd8c3f32245f1edbe80ab7382d199b90"
+    },
+    {
+      "uid": 302,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.65634758601033,
+      "first_50_percent_time_s": 17.31,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/302/source.npz",
+      "source_sha256": "e9757a372af1ae625451cc7105648d58eaa1c206a542d9d49b92493c98c4b052"
+    },
+    {
+      "uid": 304,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 74.93511757051597,
+      "first_50_percent_time_s": 9.09,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/304/source.npz",
+      "source_sha256": "91fed5b9e500d9051ae54197eb283808c7021477bedd9209b229d5c28b3eeb28"
+    },
+    {
+      "uid": 305,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 73.70198866469323,
+      "first_50_percent_time_s": 7.38,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/305/source.npz",
+      "source_sha256": "b5ebf314b564a8f6779c10bc7201af263bc3e58ad56877c25eab1dff212de555"
+    },
+    {
+      "uid": 306,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 75.49352250124286,
+      "first_50_percent_time_s": 26.939999999999998,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/306/source.npz",
+      "source_sha256": "73e47731a1ac09e1b7f33c0d7b2ab25f2e53b8db171c8eb9911976cc3d9f8aac"
+    },
+    {
+      "uid": 308,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.0899535013844,
+      "first_50_percent_time_s": 7.35,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/308/source.npz",
+      "source_sha256": "8177fc2dbd78d9d667107d3d2442f7bcf37e60470ce80fc5949bc9eae4e0fc6a"
+    },
+    {
+      "uid": 309,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 63.07045925864696,
+      "first_50_percent_time_s": 9.12,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/309/source.npz",
+      "source_sha256": "c3ee3c19ebd8b6ecf5973a9962fddb29a9a6e83aa694c6d563927274d9f560e9"
+    },
+    {
+      "uid": 311,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 69.18982788901391,
+      "first_50_percent_time_s": 14.43,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/311/source.npz",
+      "source_sha256": "fe84eef3c993dbf276a11747c6933310fe2b58dbb5035f40f5ec1d53713c2f70"
+    },
+    {
+      "uid": 315,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 68.55808458028822,
+      "first_50_percent_time_s": 39.69,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/315/source.npz",
+      "source_sha256": "87d4a7b49f319dba5dc0ff9adf928068f98f574a6f9b00689a90c667b1bcb3e9"
+    },
+    {
+      "uid": 316,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 77.59224677214937,
+      "first_50_percent_time_s": 13.979999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/316/source.npz",
+      "source_sha256": "45be94a06654c7fb3a2a7a63f720dea921970eff07a319686c4afb7697e2e9a7"
+    },
+    {
+      "uid": 317,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.20551218164039,
+      "first_50_percent_time_s": 9.75,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/317/source.npz",
+      "source_sha256": "e46a36402c90b4057212621b9cf08ff4d6e3d67be3353237c455cf9f72d07849"
+    },
+    {
+      "uid": 318,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 89.4385721468939,
+      "first_50_percent_time_s": 18.9,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/318/source.npz",
+      "source_sha256": "592edfb58c780ffd518cdcbb907c7a371d5768718a7d3b3db83059809de76016"
+    },
+    {
+      "uid": 319,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.14816859862935,
+      "first_50_percent_time_s": 8.61,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/319/source.npz",
+      "source_sha256": "934c74a9dff6020f712be13b6a40e7a6d76e01e4edd56d1c90a6ebffa55657e6"
+    },
+    {
+      "uid": 320,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 73.64713497521765,
+      "first_50_percent_time_s": 31.59,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/320/source.npz",
+      "source_sha256": "42911afbf40d2cfe9d8215ed3670039efcb6bf71d5bc967455ec4be14e88a1e5"
+    },
+    {
+      "uid": 321,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.36790271917533,
+      "first_50_percent_time_s": 8.219999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/321/source.npz",
+      "source_sha256": "6dcec6f558446af8dcb305bc63bbd048ea1a20d9c1470d0d346ad6b7cb24bc2b"
+    },
+    {
+      "uid": 325,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 71.79893558704686,
+      "first_50_percent_time_s": 13.95,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/325/source.npz",
+      "source_sha256": "def0929c492b71f75dc081aa8fdb9762da921f968be5856e267c175088022638"
+    },
+    {
+      "uid": 326,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 72.86225687733189,
+      "first_50_percent_time_s": 6.8999999999999995,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/326/source.npz",
+      "source_sha256": "93392c21f5001f503084ac2ac83dcc8763ba2cea5017160f42068ab697d35408"
+    },
+    {
+      "uid": 327,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.2680701243878,
+      "first_50_percent_time_s": 16.59,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/327/source.npz",
+      "source_sha256": "e43793ecd9ac7716fe79b8df3d462d989cef173c4887262aac89b85859970dc4"
+    },
+    {
+      "uid": 328,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 66.29593560298173,
+      "first_50_percent_time_s": 40.8,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/328/source.npz",
+      "source_sha256": "ab702c4c2401778b35a051806604dfc1d553f0ad162540941f89ad11924f0008"
+    },
+    {
+      "uid": 329,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 80.90696979377262,
+      "first_50_percent_time_s": 6.93,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/329/source.npz",
+      "source_sha256": "7669bf1b33e1b7d4274fa2f56ae6037bd16526b77030c13c0f8692c74417c49d"
+    },
+    {
+      "uid": 330,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 85.50796523097134,
+      "first_50_percent_time_s": 29.82,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/330/source.npz",
+      "source_sha256": "5637ce955c8009873fb469b73c2fd06e35563aa6dacc8e63a96083bf4660e4c7"
+    },
+    {
+      "uid": 331,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 61.86341434283054,
+      "first_50_percent_time_s": 42.089999999999996,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/331/source.npz",
+      "source_sha256": "1061fb644e63bf3fd85f7c9d56f71168d931659e4a7e2e245440555be4198c81"
+    },
+    {
+      "uid": 333,
+      "day": "Dec18",
+      "closure_stratum": "higher",
+      "initial_closure_median_percent": 86.20169042827916,
+      "first_50_percent_time_s": 15.03,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/333/source.npz",
+      "source_sha256": "1c55e002609efb844db1f8f9a20c0aea15762af0a81a089cd5a6059d7f28f946"
+    },
+    {
+      "uid": 335,
+      "day": "Dec18",
+      "closure_stratum": "lower",
+      "initial_closure_median_percent": 76.69662600932406,
+      "first_50_percent_time_s": 8.879999999999999,
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/335/source.npz",
+      "source_sha256": "a5eb560ef9a484391e59cfadea034b7fe41c41a641e66547f5fd45b73e63ab02"
+    }
+  ],
+  "preset_sha256": {
+    "tc0.02.json": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "tc0.03.json": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  },
+  "gate": "Compare frozen soft and same-hand rigid controls against each original full-world replay. Retain failures and regressions, verify actual supported slide, inspect real-video fidelity before any acceptance. One exact saved-action replay of 233 included. No new fitting on this panel."
+}

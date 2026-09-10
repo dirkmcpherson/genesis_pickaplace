@@ -1,0 +1,165 @@
+{
+  "scope": "Original fixed-coupling hand with localized surface pads",
+  "surface_pad": {
+    "pad_timeconst_s": 0.03,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance."
+  },
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+  "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+  "urdf_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+  "kp": [
+    40.0,
+    40.0,
+    40.0,
+    40.0
+  ],
+  "kv": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+  ],
+  "finger_equalities": [
+    {
+      "name": "mimic_right_finger_tip_joint_to_right_finger_bottom_joint",
+      "data": [
+        0.149,
+        -0.676,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint",
+      "data": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "mimic_left_finger_tip_joint_to_right_finger_bottom_joint",
+      "data": [
+        0.149,
+        -0.676,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "original_geom_parameters": [
+    [
+      0.019999999552965164,
+      1.0,
+      0.8999999761581421,
+      0.949999988079071,
+      0.0010000000474974513,
+      0.5,
+      2.0
+    ],
+    [
+      0.019999999552965164,
+      1.0,
+      0.8999999761581421,
+      0.949999988079071,
+      0.0010000000474974513,
+      0.5,
+      2.0
+    ],
+    [
+      0.019999999552965164,
+      1.0,
+      0.8999999761581421,
+      0.949999988079071,
+      0.0010000000474974513,
+      0.5,
+      2.0
+    ],
+    [
+      0.019999999552965164,
+      1.0,
+      0.8999999761581421,
+      0.949999988079071,
+      0.0010000000474974513,
+      0.5,
+      2.0
+    ],
+    [
+      0.019999999552965164,
+      1.0,
+      0.8999999761581421,
+      0.949999988079071,
+      0.0010000000474974513,
+      0.5,
+      2.0
+    ]
+  ],
+  "qualification": "Attribution control: retains original mimic coupling, which is not a validated model of passive loaded curl.",
+  "detection_calls": 100496
+}

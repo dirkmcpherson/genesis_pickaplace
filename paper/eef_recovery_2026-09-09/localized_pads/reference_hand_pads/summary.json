@@ -1,0 +1,278 @@
+{
+  "records": [
+    {
+      "uid": 113,
+      "pad_timeconst_s": 0.02,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.6311634280557825
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6971634280557826,
+        "gain_m": 0.08374779450616734
+      },
+      "pad_counts_sum": [
+        1653,
+        0,
+        0
+      ]
+    },
+    {
+      "uid": 113,
+      "pad_timeconst_s": 0.03,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": false,
+        "contact_counts": false,
+        "goal_pose": false,
+        "stages": true,
+        "finger_joint": false,
+        "observations": false,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.39372791914499267
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.45972791914499267,
+        "gain_m": 0.08791533290676881
+      },
+      "pad_counts_sum": [
+        1448,
+        1448,
+        477
+      ]
+    },
+    {
+      "uid": 184,
+      "pad_timeconst_s": 0.02,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1119,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02650815141959892
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09250815141959892,
+        "gain_m": 0.1771097510414516
+      },
+      "pad_counts_sum": [
+        5421,
+        0,
+        0
+      ]
+    },
+    {
+      "uid": 184,
+      "pad_timeconst_s": 0.03,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": false,
+        "contact_counts": false,
+        "goal_pose": false,
+        "stages": false,
+        "finger_joint": false,
+        "observations": false,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 833,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": -4.1595997923443706e-05
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06595840400207656,
+        "gain_m": 0.18385769840625266
+      },
+      "pad_counts_sum": [
+        5191,
+        5191,
+        3955
+      ]
+    },
+    {
+      "uid": 233,
+      "pad_timeconst_s": 0.02,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 740,
+        "push_start": 834,
+        "contact_start": 860,
+        "final_surface_gap_m": -0.00018504899352476956,
+        "push_toward_goal_m": 0.02363847635736336,
+        "support_fraction": 0.9310344827586207
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06581495100647523,
+        "gain_m": 0.21495149341447795
+      },
+      "pad_counts_sum": [
+        6819,
+        0,
+        0
+      ]
+    },
+    {
+      "uid": 233,
+      "pad_timeconst_s": 0.03,
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+      "reference_arrays_exact": {
+        "trajectory": false,
+        "contact_counts": false,
+        "goal_pose": false,
+        "stages": true,
+        "finger_joint": false,
+        "observations": false,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 742,
+        "push_start": 834,
+        "contact_start": 858,
+        "final_surface_gap_m": -0.00020296598079219685,
+        "push_toward_goal_m": 0.02033579144877858,
+        "support_fraction": 0.9259259259259259
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.0657970340192078,
+        "gain_m": 0.21517654898631497
+      },
+      "pad_counts_sum": [
+        6622,
+        6622,
+        6204
+      ]
+    }
+  ]
+}

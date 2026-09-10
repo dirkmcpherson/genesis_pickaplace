@@ -1,0 +1,28 @@
+{
+  "default_revolute_armature_kg_m2": 0.1,
+  "source_default": "/home/james/workspace/genesis_sim2real/Genesis/genesis/utils/geom.py",
+  "source_loader": "/home/james/workspace/genesis_sim2real/Genesis/genesis/utils/urdf.py",
+  "source_mass_assembly": "/home/james/workspace/genesis_sim2real/Genesis/genesis/engine/solvers/rigid/rigid_solver_decomp.py",
+  "source_sha256": {
+    "/home/james/workspace/genesis_sim2real/Genesis/genesis/utils/geom.py": "dd6325276a3c4503d6feea4c20f9abfc74bf1aa524aaf979493f263aeaac9b0c",
+    "/home/james/workspace/genesis_sim2real/Genesis/genesis/utils/urdf.py": "0d8ea2abb3cd73a56b509019f45d9721037ebf3a252921a50371d754fee77273",
+    "/home/james/workspace/genesis_sim2real/Genesis/genesis/engine/solvers/rigid/rigid_solver_decomp.py": "21ab7d30a861b2a7107e383775e0268b8357f73cbf9a2e6e7c199378ba2d9c7f"
+  },
+  "links": [
+    {
+      "link": "left_finger_dist_link",
+      "mass_kg": 0.010748,
+      "com_inertia_zz_kg_m2": 1.61e-06,
+      "inertia_about_joint_axis_kg_m2": 5.29695358071388e-06,
+      "default_armature_over_link_axis_inertia": 18878.77597494876
+    },
+    {
+      "link": "right_finger_dist_link",
+      "mass_kg": 0.010748,
+      "com_inertia_zz_kg_m2": 1.61e-06,
+      "inertia_about_joint_axis_kg_m2": 5.29695358071388e-06,
+      "default_armature_over_link_axis_inertia": 18878.77597494876
+    }
+  ],
+  "qualification": "Comparison to URDF link inertia, not a measurement of physical motor/gear inertia. Current surrogate applies separate generic armatures to passive tips. Solver mass matrix also includes damping*substep_dt."
+}

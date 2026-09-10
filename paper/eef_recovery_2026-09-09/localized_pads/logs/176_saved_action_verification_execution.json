@@ -1,0 +1,15 @@
+{
+  "name": "176_saved_action_verification",
+  "returncode": 0,
+  "elapsed_s": 164.06189727783203,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.03/176_eef_delta.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_saved_action_verification",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/fast_return_presets/tc0.03.json",
+    "--verify-actions"
+  ]
+}

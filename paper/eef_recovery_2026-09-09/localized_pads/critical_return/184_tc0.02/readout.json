@@ -1,0 +1,89 @@
+{
+  "uid": 184,
+  "name": "184_tc0.02",
+  "preset": {
+    "transmission": {
+      "actuator_stiffness": 320.0,
+      "actuator_force_limit": 4,
+      "distal_moment_ratio": 0.5,
+      "return_stiffness": 0.9,
+      "proximal_damping": 0.05,
+      "distal_damping": 0.002
+    },
+    "pad_timeconst_s": 0.02,
+    "max_pad_normal_depth_m": 0.003,
+    "distal_lower_limit_rad": -1.03,
+    "qualification": "Critical-return bench hypothesis. Return stiffness rounded from the mass-inclusive unloaded-mode critical-damping estimate. Force cap raised to permit the loaded curl previously consistent with 233 images; not calibrated hardware torque. Other parameters fixed.",
+    "finger_armature_kg_m2": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001
+    ]
+  },
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/low_armature/184_tc0.02/184_eef_delta.npz",
+  "reference_arrays_exact": {
+    "trajectory": false,
+    "contact_counts": false,
+    "goal_pose": false,
+    "stages": false,
+    "finger_joint": false,
+    "observations": false,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "armature": {
+    "before_kg_m2": [
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612
+    ],
+    "after_kg_m2": [
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05
+    ],
+    "qualification": "Added joint inertia, separate from URDF link inertia. A small nonzero value is numerical regularization, not measured actuator inertia."
+  },
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 982,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.025811763828226322
+  },
+  "metric": {
+    "uid": "184",
+    "n": 806,
+    "released": true,
+    "release_frame": 26,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.09181176382822633,
+    "gain_m": 0.1584876560494536
+  },
+  "max_abs_joint_velocity_rad_s": [
+    18.83458709716797,
+    18.834165573120117,
+    15.36571216583252,
+    17.994949340820312
+  ],
+  "max_abs_generalized_torque": [
+    2.037480464315033,
+    2.0397531152315618,
+    1.0554444738388062,
+    1.0588063834786414
+  ],
+  "before_first_can_contact_max_unloaded_joint_error_deg": 0.29053631269198643,
+  "qualification": "Pre-can-contact interval may include other-world contacts; the separate isolated bench is the causal unloaded test."
+}

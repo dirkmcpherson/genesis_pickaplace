@@ -1,0 +1,46 @@
+{
+  "jobs": [
+    [
+      233,
+      "default_control"
+    ],
+    [
+      113,
+      "tc0.02"
+    ],
+    [
+      113,
+      "tc0.03"
+    ],
+    [
+      184,
+      "tc0.02"
+    ],
+    [
+      184,
+      "tc0.03"
+    ],
+    [
+      233,
+      "tc0.02"
+    ],
+    [
+      233,
+      "tc0.03"
+    ]
+  ],
+  "hypothesis": "Generic 0.1 kg m2 armature on every finger introduces large unloaded curl/oscillation; this may explain early pickup regressions and slow release.",
+  "selection": "1e-4 kg m2 passed the declared no-contact/no-gravity benchmark; zero and distal-only zero were unstable with current force integration. Selection uses no new full-task outcomes.",
+  "qualification": "Numerical regularization, not calibrated hardware rotor inertia. Same link inertias, mechanics, material regions, source path/grip, clocks, ICs, early yaws and full world.",
+  "gates": "Default-control must reproduce prior 233 rigid trace exactly. Assess pickup, loaded real-image seating, supported release/slide and both immutable scores on calibration113/184/233 before any new reserved comparison.",
+  "preset_sha256": {
+    "tc0.02.json": "dfe26651254e567cc7eef3ccc33cbf68186dbb69577ef03eacd25434b669fc10",
+    "default_control.json": "e0ce1a0b346d337bbf6c97ed5a6bfb1e519ee5817d3a7a9e0e883806ff010d81",
+    "tc0.03.json": "74c03617024bb0c86c673b56a9307e3707188486cf27787f3b06afaafd06cf12"
+  },
+  "code_sha256": {
+    "can_pos_recovery/run_hand_preset.py": "b3cc104fd6c54985e2a75a582cfc9d506a038a829d6799dca6969222d462e057",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b"
+  }
+}

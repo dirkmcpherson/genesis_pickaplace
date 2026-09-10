@@ -1,0 +1,13 @@
+{
+  "case": "default",
+  "returncode": 0,
+  "elapsed_s": 186.73889684677124,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/bench_unloaded_hand.py",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/unloaded_armature/default",
+    "--armature",
+    "default"
+  ]
+}

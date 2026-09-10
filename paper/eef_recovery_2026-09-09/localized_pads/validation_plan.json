@@ -1,0 +1,47 @@
+{
+  "jobs": [
+    {
+      "uid": 176,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 176,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 185,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 185,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 237,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 237,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 233,
+      "pad_timeconst_s": 0.03
+    }
+  ],
+  "candidate": "fast_return_presets/tc0.03.json",
+  "evidence": "Early calibration 113 and 184 both failed pickup with this frozen hand. Reserved 176/185/237 assess generalization without new fitting; historical baseline outcomes were already known.",
+  "selection": "Least compliant tested setting that restores actual supported release/slide and supplied-metric success in 233. 0.04 also passes; its sub-mm endpoint difference is not used for selection.",
+  "qualification": "233 still lacks solver-confirmed goal-can contact (4.19 mm surface gap). Keep that strict failure explicit. New early-day comparison evaluates e2e fidelity and every stage, not just proximity.",
+  "fixed": "All hand parameters frozen; only paired rigid versus soft pad setting differs. Recorded source motion, clocks, corrected early yaw, ICs and world unchanged.",
+  "preset_sha256": {
+    "fast_return_presets/tc0.02.json": "4ed46143a5a629462ca817b9c886b160e8a884746708b09ab7e6d542ffcbe1a8",
+    "fast_return_presets/tc0.03.json": "5490a3962de64832fb81ef84f1a00f33664e04402dd247adb9b9fa7b9a02372d"
+  },
+  "code_sha256": {
+    "can_pos_recovery/run_hand_preset.py": "344cc7d96be1ef43604d728e297aa6f21c7bdd5a9e22f183811cc393ca4b9483",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "731076693b662ed15e7f09fc51c87788c2311d6e2b9dd8f12db9e9f5edce0931"
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "records": [
+    {
+      "uid": 113,
+      "cohort": "calibration",
+      "day": "Dec16",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_release",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.6311634280557825
+        },
+        "metric": {
+          "uid": "113",
+          "n": 1047,
+          "released": true,
+          "release_frame": 0,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.6971634280557826,
+          "gain_m": 0.08374779450616734
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/113_fastreturn_tc0.02/113_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "not_picked",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.24650624046118808
+        },
+        "metric": {
+          "uid": "113",
+          "n": 1047,
+          "released": true,
+          "release_frame": 0,
+          "pushed": false,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.3125062404611881,
+          "gain_m": 0.00035597102252488133
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/113_fastreturn_tc0.03/113_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "not_picked",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.22790998788646677
+        },
+        "metric": {
+          "uid": "113",
+          "n": 1047,
+          "released": true,
+          "release_frame": 0,
+          "pushed": false,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.2939099878864668,
+          "gain_m": 0.00043864938686938304
+        }
+      }
+    },
+    {
+      "uid": 184,
+      "cohort": "calibration",
+      "day": "Dec17",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 1119,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.02650815141959892
+        },
+        "metric": {
+          "uid": "184",
+          "n": 806,
+          "released": true,
+          "release_frame": 26,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.09250815141959892,
+          "gain_m": 0.1771097510414516
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/184_fastreturn_tc0.02/184_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "not_picked",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.1403757984912387
+        },
+        "metric": {
+          "uid": "184",
+          "n": 806,
+          "released": true,
+          "release_frame": 26,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.20637579849123872,
+          "gain_m": 0.03901640585194219
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/184_fastreturn_tc0.03/184_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "not_picked",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.15252465860284692
+        },
+        "metric": {
+          "uid": "184",
+          "n": 806,
+          "released": true,
+          "release_frame": 26,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.21852465860284692,
+          "gain_m": 0.026827627208278304
+        }
+      }
+    },
+    {
+      "uid": 233,
+      "cohort": "calibration",
+      "day": "Dec18",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 740,
+          "push_start": 834,
+          "contact_start": 860,
+          "final_surface_gap_m": -0.00018504899352476956,
+          "push_toward_goal_m": 0.02363847635736336,
+          "support_fraction": 0.9310344827586207
+        },
+        "metric": {
+          "uid": "233",
+          "n": 241,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06581495100647523,
+          "gain_m": 0.21495149341447795
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.02/233_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 802,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.11333458341750682
+        },
+        "metric": {
+          "uid": "233",
+          "n": 241,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.17933458341750683,
+          "gain_m": 0.1959718176789917
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_fastreturn_tc0.03/233_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 742,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.00419135904543827
+        },
+        "metric": {
+          "uid": "233",
+          "n": 241,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.07019135904543827,
+          "gain_m": 0.2103887435328165
+        }
+      }
+    },
+    {
+      "uid": 176,
+      "cohort": "reserved",
+      "day": "Dec16",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/collection/176_eef_delta.npz",
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 1213,
+          "push_start": 1216,
+          "contact_start": 2142,
+          "final_surface_gap_m": -0.00016382755436598895,
+          "push_toward_goal_m": 0.0489033751155744,
+          "support_fraction": 0.9967707212055974
+        },
+        "metric": {
+          "uid": "176",
+          "n": 621,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06583617244563401,
+          "gain_m": 0.21981175783655266
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.02/176_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 686,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.0029061403690617688
+        },
+        "metric": {
+          "uid": "176",
+          "n": 621,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06890614036906177,
+          "gain_m": 0.2134911167678885
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.03/176_eef_delta.npz",
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 686,
+          "push_start": 994,
+          "contact_start": 2154,
+          "final_surface_gap_m": -0.0002458780811405159,
+          "push_toward_goal_m": 0.04636510420960745,
+          "support_fraction": 0.9974204643164231
+        },
+        "metric": {
+          "uid": "176",
+          "n": 621,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06575412191885949,
+          "gain_m": 0.21875739167141586
+        }
+      }
+    },
+    {
+      "uid": 185,
+      "cohort": "reserved",
+      "day": "Dec17",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/collection/185_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 961,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.04226792662349772
+        },
+        "metric": {
+          "uid": "185",
+          "n": 354,
+          "released": true,
+          "release_frame": 32,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.10826792662349773,
+          "gain_m": 0.23025926554500836
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/185_validation_tc0.02/185_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_release",
+          "release_start": null,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.25295033470400075
+        },
+        "metric": {
+          "uid": "185",
+          "n": 354,
+          "released": true,
+          "release_frame": 32,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.31895033470400075,
+          "gain_m": 0.02325112918897182
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/185_validation_tc0.03/185_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "no_supported_push_to_contact",
+          "release_start": 940,
+          "push_start": null,
+          "contact_start": null,
+          "final_surface_gap_m": 0.08865679096842455
+        },
+        "metric": {
+          "uid": "185",
+          "n": 354,
+          "released": true,
+          "release_frame": 32,
+          "pushed": true,
+          "arrived": false,
+          "slide_success": false,
+          "final_dist": 0.15465679096842455,
+          "gain_m": 0.21767518597381286
+        }
+      }
+    },
+    {
+      "uid": 237,
+      "cohort": "reserved",
+      "day": "Dec18",
+      "original_fixed": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/collection/237_eef_delta.npz",
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 671,
+          "push_start": 781,
+          "contact_start": 804,
+          "final_surface_gap_m": 0.0005478832324798122,
+          "push_toward_goal_m": 0.01380929113212293,
+          "support_fraction": 0.9615384615384616
+        },
+        "metric": {
+          "uid": "237",
+          "n": 225,
+          "released": true,
+          "release_frame": 7,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06654788323247982,
+          "gain_m": 0.15843812255152562
+        }
+      },
+      "matching_rigid": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/237_validation_tc0.02/237_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "final_not_retained",
+          "release_start": 651,
+          "push_start": 663,
+          "contact_start": 807,
+          "final_surface_gap_m": 0.007684862654899802,
+          "push_toward_goal_m": 0.019690786147570877,
+          "support_fraction": 0.9931972789115646
+        },
+        "metric": {
+          "uid": "237",
+          "n": 225,
+          "released": true,
+          "release_frame": 7,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.0736848626548998,
+          "gain_m": 0.15787110302767704
+        }
+      },
+      "soft_candidate": {
+        "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/237_validation_tc0.03/237_eef_delta.npz",
+        "sequence": {
+          "complete": false,
+          "reason": "final_not_retained",
+          "release_start": 637,
+          "push_start": 780,
+          "contact_start": 808,
+          "final_surface_gap_m": 0.006470877924240934,
+          "push_toward_goal_m": 0.02321904366987917,
+          "support_fraction": 0.8709677419354839
+        },
+        "metric": {
+          "uid": "237",
+          "n": 225,
+          "released": true,
+          "release_frame": 7,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.07247087792424094,
+          "gain_m": 0.15762508330525166
+        }
+      }
+    }
+  ],
+  "totals": {
+    "original_fixed": {
+      "metric_pass": 3,
+      "strict_complete": 3,
+      "n": 6
+    },
+    "matching_rigid": {
+      "metric_pass": 2,
+      "strict_complete": 0,
+      "n": 6
+    },
+    "soft_candidate": {
+      "metric_pass": 3,
+      "strict_complete": 1,
+      "n": 6
+    }
+  },
+  "qualification": "Selected six-demo comparison; calibration and reserved labels retained. Historical reserved outcomes were seen but excluded from new fitting. Not a population-rate estimate or hardware calibration."
+}

@@ -1,0 +1,113 @@
+{
+  "treatment": "distal_zero",
+  "armature_before": [
+    0.10000000149011612,
+    0.10000000149011612,
+    0.10000000149011612,
+    0.10000000149011612
+  ],
+  "armature_after": [
+    0.10000000149011612,
+    0.10000000149011612,
+    0.0,
+    0.0
+  ],
+  "mass_matrix_at_end": [
+    [
+      0.10012761503458023,
+      0.0,
+      -1.5242508197843563e-05,
+      -0.0
+    ],
+    [
+      0.0,
+      0.10008782893419266,
+      -0.0,
+      -4.648600224754773e-06
+    ],
+    [
+      -1.5242508197843563e-05,
+      -0.0,
+      7.796953468641732e-06,
+      -0.0
+    ],
+    [
+      -0.0,
+      -4.648600224754773e-06,
+      -0.0,
+      7.796963473083451e-06
+    ]
+  ],
+  "frames": 1,
+  "planned_frames": 951,
+  "error": "Candidate transmission unstable; stopping without admitting a tape",
+  "transmission": {
+    "parameters": {
+      "actuator_stiffness": 320.0,
+      "actuator_force_limit": 2.0,
+      "distal_moment_ratio": 0.5,
+      "return_stiffness": 0.2,
+      "proximal_damping": 0.05,
+      "distal_damping": 0.002
+    },
+    "remaining_equalities": [
+      "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+    ],
+    "finger_dof_indices": [
+      1,
+      0,
+      3,
+      2
+    ],
+    "kp_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "kv_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "damping_readback": [
+      0.05000000074505806,
+      0.05000000074505806,
+      0.0020000000949949026,
+      0.0020000000949949026
+    ],
+    "substep_dt_s": 0.00125,
+    "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets."
+  },
+  "stats": {
+    "target": [
+      -0.96,
+      0.96,
+      -0.49995999999999996,
+      -0.49995999999999996
+    ],
+    "substep_calls": 10,
+    "max_abs_torque": [
+      1.0086645282173157,
+      1.0086666907447814,
+      0.5128173494338989,
+      0.5128205484390259
+    ],
+    "max_abs_velocity": [
+      0.006015189923346043,
+      0.006168495398014784,
+      67.79026794433594,
+      67.80722045898438
+    ]
+  },
+  "urdf_sha256": "31305317882e7ad373d7d2a53802fc3f6b4494236c36a3bb66a711590edbecef",
+  "bench": "Hand only, fixed base, collisions disabled, zero gravity, original link inertia. Not a demo or proof of hardware actuator inertia.",
+  "max_abs_target_error_rad": [
+    5.564689636194942e-06,
+    5.683898925745723e-06,
+    0.06408298543930058,
+    0.0640988998794556
+  ],
+  "checkpoints": []
+}

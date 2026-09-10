@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "treatment": "default",
+      "internal_mode_effective_mass": 1.0000904865973756,
+      "natural_period_s": 7.5038049313995305,
+      "damping_ratio": 0.06926125630070279,
+      "max_free_shape_error_deg": 34.457536517492365,
+      "max_hold_checkpoint_error_deg": 12.043175543458336
+    },
+    {
+      "treatment": "all_1e-4",
+      "internal_mode_effective_mass": 0.001090438632647856,
+      "natural_period_s": 0.24777786263876536,
+      "damping_ratio": 2.097535877698013,
+      "max_free_shape_error_deg": 10.5689080604641,
+      "max_hold_checkpoint_error_deg": 0.01061655152810986
+    }
+  ],
+  "mode": [
+    -1.0,
+    1.0,
+    -2.0,
+    -2.0
+  ],
+  "modal_stiffness": 0.7011904,
+  "qualification": "Linearized internal mode at fixed assumed actuator coordinate. Effective mass at end pose; includes URDF linkage mass and added joint inertia, subtracts solver damping*dt. Not a hardware measurement."
+}

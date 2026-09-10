@@ -1,0 +1,34 @@
+{
+  "jobs": [
+    {
+      "uid": 113,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 113,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 184,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 184,
+      "pad_timeconst_s": 0.03
+    }
+  ],
+  "candidate": "fast_return_presets/tc0.03.json",
+  "selection": "Least compliant tested setting that restores actual supported release/slide and supplied-metric success in 233. 0.04 also passes; its sub-mm endpoint difference is not used for selection.",
+  "qualification": "233 still lacks solver-confirmed goal-can contact (4.19 mm surface gap). Keep that strict failure explicit. New early-day comparison evaluates e2e fidelity and every stage, not just proximity.",
+  "fixed": "All hand parameters frozen; only paired rigid versus soft pad setting differs. Recorded source motion, clocks, corrected early yaw, ICs and world unchanged.",
+  "preset_sha256": {
+    "fast_return_presets/tc0.02.json": "4ed46143a5a629462ca817b9c886b160e8a884746708b09ab7e6d542ffcbe1a8",
+    "fast_return_presets/tc0.03.json": "5490a3962de64832fb81ef84f1a00f33664e04402dd247adb9b9fa7b9a02372d"
+  },
+  "code_sha256": {
+    "can_pos_recovery/run_hand_preset.py": "fd598b2b5a9736ec53d3ec53d3143d25db2bd9fe732af9d8bc9d874cfb7b9305",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "002cd63f17e84fef78bed187bee5b336ea6e06f92b35df286c559a4b6fa7fab9"
+  }
+}

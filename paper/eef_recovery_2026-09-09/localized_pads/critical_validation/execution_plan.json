@@ -1,0 +1,107 @@
+{
+  "jobs": [
+    [
+      233,
+      0.03,
+      true
+    ],
+    [
+      176,
+      0.02,
+      false
+    ],
+    [
+      176,
+      0.03,
+      false
+    ],
+    [
+      185,
+      0.02,
+      false
+    ],
+    [
+      185,
+      0.03,
+      false
+    ],
+    [
+      237,
+      0.02,
+      false
+    ],
+    [
+      237,
+      0.03,
+      false
+    ],
+    [
+      156,
+      0.02,
+      false
+    ],
+    [
+      156,
+      0.03,
+      false
+    ],
+    [
+      181,
+      0.02,
+      false
+    ],
+    [
+      181,
+      0.03,
+      false
+    ],
+    [
+      224,
+      0.02,
+      false
+    ],
+    [
+      224,
+      0.03,
+      false
+    ],
+    [
+      198,
+      0.02,
+      false
+    ],
+    [
+      198,
+      0.03,
+      false
+    ],
+    [
+      243,
+      0.02,
+      false
+    ],
+    [
+      243,
+      0.03,
+      false
+    ],
+    [
+      246,
+      0.02,
+      false
+    ],
+    [
+      246,
+      0.03,
+      false
+    ]
+  ],
+  "workers": 4,
+  "selection_sha256": "b552963747accb28b8cb870cbe9e0092fb2dec68cf2fdddb49edd1f370ba9eeb",
+  "code_sha256": {
+    "can_pos_recovery/run_hand_preset.py": "b3cc104fd6c54985e2a75a582cfc9d506a038a829d6799dca6969222d462e057",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "731076693b662ed15e7f09fc51c87788c2311d6e2b9dd8f12db9e9f5edce0931"
+  }
+}

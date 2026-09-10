@@ -1,0 +1,13 @@
+{
+  "case": "all_zero",
+  "returncode": 0,
+  "elapsed_s": 17.40740656852722,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/bench_unloaded_hand.py",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/unloaded_armature/all_zero",
+    "--armature",
+    "all_zero"
+  ]
+}

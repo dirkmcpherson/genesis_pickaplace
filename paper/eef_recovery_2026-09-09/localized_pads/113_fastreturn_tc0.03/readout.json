@@ -1,0 +1,122 @@
+{
+  "name": "113_fastreturn_tc0.03",
+  "uid": 113,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "max_abs_joint_velocity_rad_s": [
+    1.1932058334350586,
+    1.1932048797607422,
+    0.7393714785575867,
+    0.7406192421913147
+  ],
+  "max_abs_generalized_torque": [
+    1.0534503178260803,
+    1.0534408999944687,
+    0.5790685174942016,
+    0.5790545857906342
+  ],
+  "baseline_reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_transmission/113_active/113_eef_delta.npz",
+  "baseline_is_prior_adaptive": true,
+  "transmission_parameters": {
+    "actuator_stiffness": 320.0,
+    "actuator_force_limit": 2.0,
+    "distal_moment_ratio": 0.5,
+    "return_stiffness": 0.2,
+    "proximal_damping": 0.05,
+    "distal_damping": 0.002
+  },
+  "distal_lower_limit_rad": -1.03,
+  "reference_drive": null,
+  "baseline_trajectory_exact": false,
+  "baseline_arm_max_difference_rad": 0.004901409149169922,
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.22790998788646677
+  },
+  "metric": {
+    "uid": "113",
+    "n": 1047,
+    "released": true,
+    "release_frame": 0,
+    "pushed": false,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.2939099878864668,
+    "gain_m": 0.00043864938686938304
+  },
+  "first_post_pick_ten_frame_hand_separation_s": null,
+  "carry_overlap_mm": null,
+  "carry_contact_force_N": null,
+  "regions": {},
+  "contact_treatment": {
+    "scope": "none",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": 0.019999999552965164,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "qualification": "Per-run contact sample populations differ. Solver overlap is not material strain; post-pick separation alone is not shelf placement.",
+  "surface_pad_treatment": {
+    "pad_timeconst_s": 0.03,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance.",
+    "detection_calls": 100496
+  },
+  "surface_pad_contact_counts_sum": [
+    328,
+    328,
+    0
+  ]
+}

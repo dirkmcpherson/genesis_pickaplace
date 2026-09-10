@@ -1,0 +1,54 @@
+{
+  "jobs": [
+    [
+      113,
+      "tc0.02"
+    ],
+    [
+      113,
+      "tc0.03"
+    ],
+    [
+      184,
+      "tc0.02"
+    ],
+    [
+      184,
+      "tc0.03"
+    ],
+    [
+      233,
+      "tc0.02"
+    ],
+    [
+      233,
+      "tc0.03"
+    ]
+  ],
+  "derivation": {
+    "purpose": "Improve unloaded transient response and test spring/actuator force feasibility before new task fitting.",
+    "effective_internal_mass": 0.001090438632647856,
+    "internal_damping": 0.116,
+    "return_stiffness_for_critical_damping": 0.8799313516460747,
+    "declared_return_stiffness": 0.9,
+    "representative_loaded_theta_rad": 0.61,
+    "representative_loaded_tip_rad": -1.03,
+    "representative_return_residual_rad": -0.76664,
+    "minimum_actuator_scalar_to_balance_tip_return": 2.759904,
+    "declared_actuator_force_limit": 4,
+    "qualification": "Representative loaded q comes from the previous image-consistent simulated grasp, not measured hardware joint angles. This is a feasibility hypothesis, not force calibration. No reserved outcomes used.",
+    "previous_bench_code_sha256": "08c4dee81333774b2d676042a0b0fe3b5f324d0e8ca90b432b9f467916bc454d"
+  },
+  "bench_report_sha256": "78a47912afc168d9ec49904d1e0f5a82a035df5d4aaf93ddc2b4ddf7572d619b",
+  "fixed": "Same low-inertia hand except spring/force-cap changes derived before full-task outcomes. Source actions, grip feedback, clocks, corrected early yaw, ICs and full world unchanged.",
+  "qualification": "No hardware force calibration; no new reserved fitting. Both immutable metrics and actual supported slide required; proximity alone is insufficient.",
+  "preset_sha256": {
+    "tc0.02.json": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "tc0.03.json": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  },
+  "code_sha256": {
+    "can_pos_recovery/run_hand_preset.py": "b3cc104fd6c54985e2a75a582cfc9d506a038a829d6799dca6969222d462e057",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b"
+  }
+}

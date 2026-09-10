@@ -1,0 +1,14 @@
+{
+  "purpose": "Improve unloaded transient response and test spring/actuator force feasibility before new task fitting.",
+  "effective_internal_mass": 0.001090438632647856,
+  "internal_damping": 0.116,
+  "return_stiffness_for_critical_damping": 0.8799313516460747,
+  "declared_return_stiffness": 0.9,
+  "representative_loaded_theta_rad": 0.61,
+  "representative_loaded_tip_rad": -1.03,
+  "representative_return_residual_rad": -0.76664,
+  "minimum_actuator_scalar_to_balance_tip_return": 2.759904,
+  "declared_actuator_force_limit": 4,
+  "qualification": "Representative loaded q comes from the previous image-consistent simulated grasp, not measured hardware joint angles. This is a feasibility hypothesis, not force calibration. No reserved outcomes used.",
+  "previous_bench_code_sha256": "08c4dee81333774b2d676042a0b0fe3b5f324d0e8ca90b432b9f467916bc454d"
+}

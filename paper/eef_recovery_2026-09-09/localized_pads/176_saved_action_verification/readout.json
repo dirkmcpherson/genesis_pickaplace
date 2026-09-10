@@ -1,0 +1,132 @@
+{
+  "name": "176_saved_action_verification",
+  "uid": 176,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "max_abs_joint_velocity_rad_s": [
+    1.0666859149932861,
+    1.066684603691101,
+    1.0799927711486816,
+    1.0313326120376587
+  ],
+  "max_abs_generalized_torque": [
+    1.1026485571580886,
+    1.102655889985466,
+    0.6518469780445099,
+    0.651857825422287
+  ],
+  "baseline_reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/collection/176_eef_delta.npz",
+  "baseline_is_prior_adaptive": false,
+  "transmission_parameters": {
+    "actuator_stiffness": 320.0,
+    "actuator_force_limit": 2.0,
+    "distal_moment_ratio": 0.5,
+    "return_stiffness": 0.2,
+    "proximal_damping": 0.05,
+    "distal_damping": 0.002
+  },
+  "distal_lower_limit_rad": -1.03,
+  "reference_drive": null,
+  "baseline_trajectory_exact": false,
+  "baseline_arm_max_difference_rad": 0.014273881912231445,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 686,
+    "push_start": 994,
+    "contact_start": 2154,
+    "final_surface_gap_m": -0.0002458780811405159,
+    "push_toward_goal_m": 0.04636510420960745,
+    "support_fraction": 0.9974204643164231
+  },
+  "metric": {
+    "uid": "176",
+    "n": 621,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06575412191885949,
+    "gain_m": 0.21875739167141586
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 27.119999999999997,
+  "carry_overlap_mm": {
+    "median": 0.5503922002390027,
+    "p95": 0.5775357130914925,
+    "maximum": 1.1867518769577146
+  },
+  "carry_contact_force_N": {
+    "median": 3.4057648181915283,
+    "p95": 3.6990267276763915,
+    "maximum": 9.284368515014648
+  },
+  "regions": {},
+  "contact_treatment": {
+    "scope": "none",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": 0.019999999552965164,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "qualification": "Per-run contact sample populations differ. Solver overlap is not material strain; post-pick separation alone is not shelf placement.",
+  "surface_pad_treatment": {
+    "pad_timeconst_s": 0.03,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance.",
+    "detection_calls": 59552
+  },
+  "surface_pad_contact_counts_sum": [
+    13823,
+    13823,
+    0
+  ]
+}

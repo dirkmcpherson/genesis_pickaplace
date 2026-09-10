@@ -761,3 +761,21 @@ An earlier statement in this amendment, and in `MUST_HAVE_RESULTS.md`, implied t
 **Change.** Thread `scope` into `convert_one` and apply both clauses only when `scope == 'pick'`. For full scope, retain the checks that remain meaningful: rewards non-negative, finite, and the tape terminating or truncating on its last row. Pick-scope behaviour is unchanged.
 
 **Why it matters now.** Without it, r2dreamer cannot train on the relabelled `_rx` demonstrations, which would leave it taking one objective from its demonstration buffer and a different one from the environment — the mismatch the relabel exists to remove.
+
+### Amendment (y) — implemented, and there were THREE pick-scope behaviours, not two
+
+Registered as two validation clauses; a third was found only by checking arithmetic after conversion, and it was the dangerous one.
+
+1. **`{0,1,2}` value check** — now `scope == 'pick'` only. Failed loudly.
+2. **No positive reward before the terminal row** — now `scope == 'pick'` only. Failed loudly.
+3. **`rew = np.minimum(rew, 1.0)`** — a hard clip of every reward to 1.0, applied unconditionally. Its rationale is pick-specific: a single-stage pick pays exactly one terminal, and 2.0 rows were the env's double-grant bug fixed 2026-08-28, so older tapes are normalised here. **In full scope this silently flattens the staged ladder.** Now `scope == 'pick'` only.
+
+**The third would have shipped.** It produces a well-formed dataset with no error, in which every stage pays the same. Measured: source `dHfull_all_rx` totals 238 with values {1:136, 2:19, 4:13, 6:2}; converted it read **170, every value 1.0**. The only symptom downstream would have been learners that never prioritised finishing the task — indistinguishable from a genuine null.
+
+**Two further conversion errors caught the same way, by reconciling totals rather than reading exit status:** `--terminal-reward` defaults to **100** and multiplies the tape rewards, giving a first conversion of 17000 against a source of 238 — which, with the return clamp at 8, would have saturated the critic immediately. Both were caught because the reported total did not match the source, not because anything failed.
+
+**Full scope retains a real check** rather than losing one: rewards must be finite and non-negative.
+
+**Verified after the fix:** converted totals 238 and 237, exactly matching source, with magnitudes intact ({1:136, 2:19, 4:13, 6:2} human; {1:133, 2:17, 4:16, 6:1} machine).
+
+**Note on provenance:** the pre-existing full-scope sets carry {1,2,4,6}, so they predate all three behaviours. The converter accumulated pick-scope assumptions *after* the full-scope data it is meant to produce, and nothing re-derived that data in between.

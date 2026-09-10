@@ -1,0 +1,17 @@
+{
+  "name": "176_saved_action_verification",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.03/176_eef_delta.npz",
+  "source_sha256": "c42e6978929061a294cae8a54a4ba2a9eb56d8eaa6c26526602bd1e36fb9b4ca",
+  "preset_sha256": "5490a3962de64832fb81ef84f1a00f33664e04402dd247adb9b9fa7b9a02372d",
+  "purpose": "Replay saved actions without source path reconstruction or parameter fitting.",
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_validation_tc0.03/176_eef_delta.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/176_saved_action_verification",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/fast_return_presets/tc0.03.json",
+    "--verify-actions"
+  ]
+}

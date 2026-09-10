@@ -1,21 +1,48 @@
 {
   "goal": "find a soft-pad configuration that improves real2sim for the task end-to-end (e2e)",
   "goal_achieved": false,
-  "completed_initial_batches": {
-    "divided_geometry": 5,
-    "surface_law": 4,
-    "return_spring_bracket": 6
-  },
-  "calibration_uid": 233,
-  "live_batch": "run_matched_drive.py",
-  "session_id": 57355,
-  "last_verified_live_utc": "2026-09-10T00:02:52.899176+00:00",
-  "expected_jobs": 9,
-  "process_note": "Specific unified-exec handle polled live. Re-poll before interpreting a quiet log; do not restart based on observation timeout.",
-  "next_actions": [
-    "Finish matched-drive batch; score only terminal successful runs with summarize.py.",
-    "Compare soft cases against same-drive same-spring original-contact controls. Check real-image seating plus strict release/slide, not endpoint distance alone.",
-    "Only after a useful full-sequence candidate: extend to 113/184 calibration, then freeze and validate on 176/185/237; independent saved-action replay and annotated videos still required."
+  "completed_full_replays": 71,
+  "calibration_replays": 48,
+  "reserved_comparisons": 6,
+  "independent_action_verifications": 2,
+  "unique_demos": [
+    113,
+    184,
+    233,
+    176,
+    185,
+    237
   ],
-  "remaining": "No end-to-end pad improvement established. Early/late validation and review artifacts for an accepted candidate remain undone."
+  "live_batch": "critical_return/run.py",
+  "session_id": 12961,
+  "last_verified_utc": "2026-09-10T01:26:51.965591+00:00",
+  "terminal_sessions": [
+    5586,
+    15057,
+    50410,
+    72613,
+    13520,
+    2303,
+    75818,
+    64523
+  ],
+  "findings": "Localized pads improve the adaptive hand relative to its rigid controls, but no general e2e improvement over original recovery. Six selected demos: original / matching rigid / soft metric passes 3/2/3; strict completions 3/0/1. Both independent action replays reproduce every saved array exactly.",
+  "review_videos": [
+    "233_soft_pad_real_sim.mp4",
+    "176_soft_pad_real_sim.mp4"
+  ],
+  "remaining": "Finish critical-return calibration 184/233 and assess full sequence plus real-image seating. 113 still fails pickup. No general e2e improvement or bank admission.",
+  "unloaded_bench_executions": 5,
+  "unloaded_bench_completed_schedules": 2,
+  "unloaded_bench_guarded_instabilities": 2,
+  "expected_jobs": 7,
+  "live_batches": [
+    {
+      "script": "critical_return/run.py",
+      "session_id": 12961
+    }
+  ],
+  "previous_goal_turn_classification": "progress: completed reserved comparisons, exact action verification and annotated review artifacts; rejected general adoption.",
+  "current_batch_completed": 2,
+  "current_batch_total": 6
 }

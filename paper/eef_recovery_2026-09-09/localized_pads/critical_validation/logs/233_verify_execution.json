@@ -1,0 +1,18 @@
+{
+  "name": "233_verify",
+  "uid": 233,
+  "tc": 0.03,
+  "verify_actions": true,
+  "returncode": 0,
+  "elapsed_s": 93.01222372055054,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/233_tc0.03/233_eef_delta.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_validation/233_verify",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+    "--verify-actions"
+  ]
+}

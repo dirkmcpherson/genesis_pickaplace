@@ -1,0 +1,16 @@
+{
+  "name": "113_tc0.03",
+  "uid": 113,
+  "pad_timeconst_s": 0.03,
+  "returncode": 0,
+  "elapsed_s": 184.65069937705994,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_reference_hand_pads.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/reference_hand_pads/113_tc0.03",
+    "--pad-timeconst",
+    "0.03"
+  ]
+}
