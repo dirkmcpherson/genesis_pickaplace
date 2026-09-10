@@ -231,3 +231,41 @@ so its train->eval handoff was unproven in this batch (the shared evaluator was 
 13 RLPD cells, and the world-model e2e path ran in earlier work). If that handoff proves
 broken, 32 r2dreamer runs train correctly and produce no cells; the training records
 survive either way and the cells can be regenerated post hoc from checkpoints.
+
+## 2026-09-10 — {r2dreamer} runs die AFTER training completes (my `-J` rename); launcher fixed
+
+The disclosed risk in the 16v16 extension ("no r2dreamer run had completed end-to-end, so its
+train->eval handoff is unproven") materialised on the first run to finish.
+
+**`e2eL_r2_dH_s0` (job 3484586) trained the full 4M steps successfully — `# train rc=0`, final
+logged step 3,998,137 — then exited 3 in the post-training verification**, 11h41m in:
+
+    grep: .../slurm/wmfix_full_3484586.out: No such file or directory
+    # [sim-variant] lines:
+    line 65: [: : integer expression expected
+    FATAL: no [sim-variant] line
+
+`wmfix_full.sbatch` located its own Slurm log by an assumed job NAME
+(`wmfix_full_${SLURM_JOB_ID}.out`). I submitted every e2e run with `-J e2eL_r2_*`, so the log is
+named after the job and the hardcoded path does not exist; `grep -c` returned empty and the
+`[ -ge ]` test died. The line carried the comment *"must match #SBATCH -J (the 10:23 smoke failed
+its own check on the old name)"* — the trap was known, and my rename re-armed it.
+
+**Nothing was lost.** `latest.pt` (118 MB), `metrics.jsonl` (4,883 rows) and the tfevents file are
+all intact; only the in-job evals did not run, and those are `role=preview` by design — the cells
+of record come from the decoupled pinned re-score pass (`cluster/sbatch_e2e_rescore.sh`).
+
+**Actions.** (1) Launcher fixed to resolve its log by JOB ID (`ls $W/slurm/*_${SLURM_JOB_ID}.out`)
+with the old path as fallback, and `grep` guarded so an empty result cannot crash the test.
+(2) The 16 not-yet-trained r2dreamer seeds (908-915, 928-935) were CANCELLED and resubmitted
+against the fixed launcher — they had spooled the pre-fix script and would each have died the same
+way after 12h. Cancelling cost nothing; one had run ~1h. (3) The 16 ORIGINAL r2dreamer seeds
+(900-907, 920-927) are mid-training and cannot be repaired — Slurm spools the batch script at
+submission — so they will each exit nonzero after training and need the post-hoc eval pass. Their
+training artifacts are complete, so this costs the automatic step, not the data.
+
+**Monitor fixes prompted by this.** The health checker lived in `/tmp`, which is local to each
+login node while `pax` is load-balanced — it could vanish between polls and read as "cluster
+unreachable". Moved to `$LAB/e2e_health.py` on shared storage. It also now reports `r2trained=N/32`
+and excuses post-train deaths for the original seeds ONLY, so the 16 expected benign failures do
+not mask a real one among the resubmitted seeds.
