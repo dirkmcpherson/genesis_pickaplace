@@ -186,3 +186,88 @@ Open, all requiring a human decision:
 2. Retrain {RLPD} under the (x) ladder? Only needed for cross-learner claims.
 3. Fix `placed_v2` by predicate (changes a reward term) or by IC set (moves every prior number)?
 4. DP on `dHfull_pruned` — still unstarted; the convergence runs used the RAW human set.
+
+---
+
+## 9. Exactly how these runs were launched
+
+`$W = $LAB/wm_fix_2026-09-03`, `$E = $LAB/gp_e2e`.
+
+### {r2dreamer} — 4M steps
+
+    cd $W
+    for i in 0 1 2 3 4 5 6 7; do
+      FULLENV_REWARD_X=1 sbatch -J e2eL_r2_dH_s$i $W/wmfix_full.sbatch dHfull_all_rx      $((900+i)) 4000000
+      FULLENV_REWARD_X=1 sbatch -J e2eL_r2_dM_s$i $W/wmfix_full.sbatch dDPfull_first_rx   $((920+i)) 4000000
+    done
+    # extension, same form with i = 8..15  → seeds 908-915 / 928-935
+
+`wmfix_full.sbatch <ARM> <seed> <steps>`; ARM is the directory name under
+`${DEMO_ROOT:-$W/demos_state_full}`. The launcher exports
+`GENESIS_PICKAPLACE_ROOT=${GP_ROOT:-$W/gp_root}` (line 27) — **this is why r2dreamer got the (x)
+ladder**. Logdir `$W/runs/full_r2d_state_<ARM>_s<seed>`; the launcher refuses if it exists, and
+clears it on requeue.
+
+### {RLPD} — 250k decisions
+
+    cd $E
+    for i in 0 1 2 3 4 5 6 7; do
+      ARM=dH        SEED=$((900+i)) DEMO=$W/demos_state_full/dHfull_all_rx     FULLENV_REWARD_X=1 \
+        sbatch -J e2eL_rl_dH_s$i cluster/sbatch_rlpd_e2e.sh
+      ARM=dDPfirst  SEED=$((920+i)) DEMO=$W/demos_state_full/dDPfull_first_rx  FULLENV_REWARD_X=1 \
+        sbatch -J e2eL_rl_dM_s$i cluster/sbatch_rlpd_e2e.sh
+    done
+    # extension, same form with i = 8..15
+
+`sbatch_rlpd_e2e.sh` reads ARM/SEED/DEMO/STEPS from the environment and does
+`cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"` (line 41) — since it is invoked from `$E`, it runs the
+**gp_e2e** tree. **`FULLENV_REWARD_X=1` here is inert** (§2). Run dir
+`$E/baselines/rl/checkpoints/e2e/e2e_rlpd_<ARM>_s<seed>`.
+
+### `-J` matters, and broke things
+
+Both launchers were given explicit `-J` names so the queue is readable. Two scripts locate a
+run's Slurm log by an **assumed job name** and therefore broke:
+
+* `wmfix_full.sbatch` looked for `$W/slurm/wmfix_full_${SLURM_JOB_ID}.out`; with `-J` the log is
+  `e2eL_r2_*_<id>.out`, so the post-training check died (`FATAL: no [sim-variant] line`) **after
+  a complete 12h training run**. Fixed to resolve by job id.
+* `full_eval_sweep.sh` (the project's standing recovery tool) globs `slurm/wmfix_full_*.out` for
+  the same reason and **silently skips every `-J`-renamed run** — it would report success having
+  recovered nothing. `cluster/e2e_posthoc_sweep.sh` was written to replace it for this batch.
+
+### Generations — several seeds were launched more than once
+
+`sacct` shows far more jobs than 64 (`e2eL_rl_dM` alone has 56 records). **The live run for a seed
+is the highest job id bearing that job name**; earlier ones are FAILED or CANCELLED. To trace one:
+
+    sacct -S 2026-09-09 -u $USER -X -n --name e2eL_rl_dM_s2 --format=JobID%14,State%12,Elapsed
+
+| generation | ids (approx) | what changed |
+|---|---|---|
+| RLPD gen 1 | 3484565–66 + | machine arm FAILED 1:0 — the launcher's `one_per_ic_first` manifest gate correctly refused a relabelled set whose manifest did not attest the de-selection |
+| RLPD gen 2 | 3484659–67 | after the manifest gained verified provenance (72/72 keys match, all 72 action streams byte-identical by sha256; only reward differs) |
+| RLPD gen 3 | 3484712–27 | relaunch for the sticky episode-record change — **13 REFUSED by the run registry**, correctly: the fix was still uncommitted, so `(script, arm, seed, git)` was unchanged and it looked like a duplicate run |
+| **RLPD gen 4** | 3484741–56 | after committing gp_e2e `6e98ce3`. **This is the live generation for seeds 0–7** |
+| RLPD gen 5 | 3488574+ | extension seeds 8–15 |
+| **r2 gen 1** | 3484549–3484601 | seeds 900–907 / 920–927. **Spooled the PRE-FIX launcher**, so each exits non-zero after training; evals recovered post hoc |
+| r2 s906 | 3484598 → 3486259 | bus error at 1.1M steps → resubmitted → later preempted → auto-requeued |
+| **r2 gen 2** | 3491309–10 + | extension seeds 908–915 / 928–935, cancelled and resubmitted against the **fixed** launcher |
+
+**Within-arm code difference an auditor must know:** r2 gen 1 and gen 2 ran *different launcher
+versions*. The difference is confined to the post-training log check — the training command,
+tree, ladder and demo sets are identical — so it does not affect what any policy learned. But
+gen-1 runs die at the end and gen-2 runs do not, and only gen 1 needs the post-hoc eval sweep.
+
+Slurm spools the batch script at submission, so a launcher fix **cannot** reach already-submitted
+jobs, pending ones included. That is why the pending r2 extension seeds had to be cancelled and
+resubmitted rather than simply left to pick up the fix.
+
+### Datasets the runs consume
+
+`$W/demos_state_full/dHfull_all_rx` (74 tapes) and `.../dDPfull_first_rx` (72). Both are
+reward-relabelled copies (`baselines/rl/relabel_reward.py`) of the corresponding
+`demos_state_full/` sets; `dDPfull_first_rx` derives from the first-attempt (de-selected) machine
+set. Manifests are asserted by both launchers before training starts — sim_variant, scope=full,
+`with_state`, `action_repeat==4`, `reward_from_tape`, `delta_cap`, tape count, and the
+`one_per_ic_first` / `one_per_ic_best` selection flags.
