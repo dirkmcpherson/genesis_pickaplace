@@ -1,0 +1,218 @@
+{
+  "name": "233_split_tc0.02",
+  "uid": 233,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "transmission_parameters": {
+    "actuator_stiffness": 80.0,
+    "actuator_force_limit": 100.0,
+    "distal_moment_ratio": 0.2,
+    "return_stiffness": 2.0,
+    "proximal_damping": 1.0,
+    "distal_damping": 0.02
+  },
+  "reference_drive": null,
+  "baseline_trajectory_exact": false,
+  "baseline_arm_max_difference_rad": 0.0026901960372924805,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.036775110818689644
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.10277511081868965,
+    "gain_m": 0.19580340111107386
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 21.119999999999997,
+  "carry_overlap_mm": {
+    "median": 4.653059178963304,
+    "p95": 4.823945881798863,
+    "maximum": 4.860977176576853
+  },
+  "carry_contact_force_N": {
+    "median": 67.5819206237793,
+    "p95": 73.09494476318359,
+    "maximum": 73.46261596679688
+  },
+  "regions": {
+    "pad": {
+      "carry_samples": 1308,
+      "penetration_mm": {
+        "median": 4.653059178963304,
+        "p95": 4.823945881798863,
+        "maximum": 4.860977176576853
+      },
+      "force_N": {
+        "median": 67.5819206237793,
+        "p95": 73.09494476318359,
+        "maximum": 73.46261596679688
+      }
+    },
+    "backing": {
+      "carry_samples": 1247,
+      "penetration_mm": {
+        "median": 1.7487676814198494,
+        "p95": 1.902270969003439,
+        "maximum": 1.938485773280263
+      },
+      "force_N": {
+        "median": 29.393150329589844,
+        "p95": 36.356803512573244,
+        "maximum": 37.24665832519531
+      }
+    },
+    "knuckle": {
+      "carry_samples": 1299,
+      "penetration_mm": {
+        "median": 2.4235141463577747,
+        "p95": 2.6039401069283485,
+        "maximum": 2.6410799473524094
+      },
+      "force_N": {
+        "median": 32.943607330322266,
+        "p95": 37.23900527954102,
+        "maximum": 38.0600700378418
+      }
+    }
+  },
+  "contact_treatment": {
+    "scope": "localized_pads",
+    "selected_geom_indices": [
+      11,
+      14,
+      17,
+      20
+    ],
+    "selected_before": [
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "selected_after": [
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ],
+      [
+        0.019999999552965164,
+        1.0,
+        0.8999999761581421,
+        0.949999988079071,
+        0.0010000000474974513,
+        0.5,
+        2.0
+      ]
+    ],
+    "effective_finger_can_timeconst_s": null,
+    "interpretation": "Only designated inner pad cap is softened. Rigid backing, knuckle and manipulated can unchanged. Same link inertia, joint dynamics and exterior hull; decomposition effects require the split rigid control.",
+    "geometry": "split",
+    "regions": {
+      "pad": [
+        11,
+        14,
+        17,
+        20
+      ],
+      "backing": [
+        10,
+        13,
+        16,
+        19
+      ],
+      "knuckle": [
+        12,
+        15,
+        18,
+        21
+      ]
+    },
+    "pad_timeconst_s": 0.02,
+    "effective_pad_can_timeconst_s": 0.02,
+    "friction_readback": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.20000000298023224
+    ]
+  },
+  "qualification": "Per-run contact sample populations differ. Solver overlap is not material strain; post-pick separation alone is not shelf placement."
+}

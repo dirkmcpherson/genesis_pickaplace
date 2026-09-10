@@ -745,3 +745,19 @@ An earlier statement in this amendment, and in `MUST_HAVE_RESULTS.md`, implied t
 **The settle caveat dissolves under amendment (x).** It applied to the environment's `nested` check, which simulates 100 settle steps and would change training if run inline. Predicate (x) simulates nothing: it reads the **final state** — can within 0.081 m of the goal, upright. The one thing a final-frame read misses is *at rest*, since the state vector carries no velocities; that is recoverable from the trajectory itself as can displacement below ~2 mm across the last few frames. Both are free and inline.
 
 **So the episode record carries all four stages, with no extra simulation and no reward change**, and the settle field is the (x) predicate rather than the settle-simulating one. The three requirements of this amendment are otherwise unchanged: one record from the single exit path both termination and truncation reach; logging only; reward untouched.
+
+---
+
+## Amendment (y) — the tape-reward validation is pick-scope and must be scope-aware (2026-09-09)
+
+**The defect.** `to_dreamer_native.convert_one()` takes no scope argument, so its reward validation is applied unconditionally to every tape. Two clauses encode pick-scope assumptions: rewards must be drawn from **{0, 1, 2}**, and **no positive reward may appear before the terminal row**. Its own comment says why — a fast pick can land the stage grant and the hardened-pick terminal inside one repeat-4 window, giving 2.0 on the terminal row — and the intent is to stop shaping being baked into demonstration tapes.
+
+**Both clauses are wrong for full scope by construction.** The staged ladder pays at four separate moments during an episode (picked, place, can-contact, can-settle) and its top rung is 4.0. So a correct full-scope tape necessarily violates both.
+
+**The existing full-scope sets already violate it and predate it.** Inspecting `demos_state_full/dHfull_all`: converted tapes carry rewards at non-terminal rows — indices 71 and 205 in a 256-step tape, 44 in a 171-step tape — which the "no positive reward before the terminal row" clause forbids. They exist and every full-scope run to date has trained on them. So the guard postdates the data it would now reject, and **making it scope-aware restores the prior behaviour rather than weakening a check that was ever enforced on this scope.**
+
+**Checked and excluded: this is not a value-function constraint.** `train_rlpd.py` has no reward scaling, reward clipping, Q-clipping or value normalisation — the only normalisation is on actions. So the {0,1,2} bound protects nothing downstream in RLPD, and the r2dreamer return clamp is unaffected because the per-episode ceiling is 8.0 under both ladders.
+
+**Change.** Thread `scope` into `convert_one` and apply both clauses only when `scope == 'pick'`. For full scope, retain the checks that remain meaningful: rewards non-negative, finite, and the tape terminating or truncating on its last row. Pick-scope behaviour is unchanged.
+
+**Why it matters now.** Without it, r2dreamer cannot train on the relabelled `_rx` demonstrations, which would leave it taking one objective from its demonstration buffer and a different one from the environment — the mismatch the relabel exists to remove.

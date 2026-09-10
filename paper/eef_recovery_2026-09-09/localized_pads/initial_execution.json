@@ -1,0 +1,87 @@
+[
+  {
+    "name": "233_hull_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 81.36663269996643,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02",
+      "--pad-geometry",
+      "hull",
+      "--pad-timeconst",
+      "0.02",
+      "--record-contact"
+    ]
+  },
+  {
+    "name": "233_split_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 243.10408329963684,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_split_tc0.02",
+      "--pad-geometry",
+      "split",
+      "--pad-timeconst",
+      "0.02",
+      "--record-contact"
+    ]
+  },
+  {
+    "name": "233_split_tc0.025",
+    "returncode": 0,
+    "elapsed_s": 234.5102560520172,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_split_tc0.025",
+      "--pad-geometry",
+      "split",
+      "--pad-timeconst",
+      "0.025",
+      "--record-contact"
+    ]
+  },
+  {
+    "name": "233_split_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 87.62091732025146,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_split_tc0.03",
+      "--pad-geometry",
+      "split",
+      "--pad-timeconst",
+      "0.03",
+      "--record-contact"
+    ]
+  },
+  {
+    "name": "233_split_tc0.04",
+    "returncode": 0,
+    "elapsed_s": 85.78282237052917,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_adaptive_gripper_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_split_tc0.04",
+      "--pad-geometry",
+      "split",
+      "--pad-timeconst",
+      "0.04",
+      "--record-contact"
+    ]
+  }
+]

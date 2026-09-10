@@ -1,0 +1,21 @@
+{
+  "goal": "find a soft-pad configuration that improves real2sim for the task end-to-end (e2e)",
+  "goal_achieved": false,
+  "completed_initial_batches": {
+    "divided_geometry": 5,
+    "surface_law": 4,
+    "return_spring_bracket": 6
+  },
+  "calibration_uid": 233,
+  "live_batch": "run_matched_drive.py",
+  "session_id": 57355,
+  "last_verified_live_utc": "2026-09-10T00:02:52.899176+00:00",
+  "expected_jobs": 9,
+  "process_note": "Specific unified-exec handle polled live. Re-poll before interpreting a quiet log; do not restart based on observation timeout.",
+  "next_actions": [
+    "Finish matched-drive batch; score only terminal successful runs with summarize.py.",
+    "Compare soft cases against same-drive same-spring original-contact controls. Check real-image seating plus strict release/slide, not endpoint distance alone.",
+    "Only after a useful full-sequence candidate: extend to 113/184 calibration, then freeze and validate on 176/185/237; independent saved-action replay and annotated videos still required."
+  ],
+  "remaining": "No end-to-end pad improvement established. Early/late validation and review artifacts for an accepted candidate remain undone."
+}

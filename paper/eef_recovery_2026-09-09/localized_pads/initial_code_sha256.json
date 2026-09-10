@@ -1,0 +1,7 @@
+{
+  "can_pos_recovery/localized_pad_candidate.py": "3770c0ea3f11c26a2b604419aba8b6c4114083d0733304e13ad9d908f4c6271e",
+  "can_pos_recovery/run_adaptive_gripper_candidate.py": "2ecd1f917be929276c32e1c40c2aff66208c8a2b99e7ed7ebb8af552aab51a86",
+  "can_pos_recovery/adaptive_gripper_candidate.py": "e88d5a35ec4d8e445a40321ae6a10bf4242cf3a8f69204e6eebf8322ac91a46c",
+  "paper/eef_recovery_2026-09-09/localized_pads/run_initial.py": "73945f16acac953a7653b58e1c939a36515f27e02d674fabbb48a1e8cb230c12",
+  "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283"
+}

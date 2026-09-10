@@ -1,0 +1,296 @@
+{
+  "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+  "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+  "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/candidate.urdf",
+  "candidate_sha256": "bb89f391d2ac8142ceb04110911ae00cb635e93038ac7b03784642a52dcbe0fa",
+  "removed_mimics": [
+    "right_finger_tip_joint",
+    "left_finger_tip_joint"
+  ],
+  "geometry": "split",
+  "max_cap_depth_m": 0.003,
+  "pad_x_limit_m": -0.008,
+  "regions": [
+    {
+      "link": "right_finger_prox_link",
+      "normal": [
+        0.3872324843550917,
+        0.9219821056073613,
+        0.0
+      ],
+      "offset_m": 0.0034121134635374736,
+      "volume_relative_error": 0.0,
+      "support_max_error_m": 0.0,
+      "pieces": [
+        {
+          "label": "backing",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_prox_link_backing.ply",
+          "sha256": "3c1dd62e1ab20db6e299cb327b94e40fca76d0cb7dbe3f1e821bd94322f159cd",
+          "faces": 378,
+          "volume_m3": 2.2563919999789862e-05,
+          "bounds_m": [
+            [
+              -0.04675733670592308,
+              -0.015780946239829063,
+              -0.0120038241147995
+            ],
+            [
+              0.00598527304828167,
+              0.022001809680660116,
+              0.01214897632598877
+            ]
+          ]
+        },
+        {
+          "label": "pad",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_prox_link_pad.ply",
+          "sha256": "7a71f3c744fc19a41935aa55555e609947c5eec9d4e2e599e9128c99333a1406",
+          "faces": 292,
+          "volume_m3": 2.427861695489957e-06,
+          "bounds_m": [
+            [
+              -0.043573723886081044,
+              0.007060845648506076,
+              -0.011925373738748692
+            ],
+            [
+              -0.008,
+              0.023719562217593193,
+              0.012065173367182453
+            ]
+          ]
+        },
+        {
+          "label": "knuckle",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_prox_link_knuckle.ply",
+          "sha256": "ba0c5e35c7f4b438814b2d1c821e96f258dff63f20b5c9ba1ddcfb960f454316",
+          "faces": 174,
+          "volume_m3": 8.690508154175645e-07,
+          "bounds_m": [
+            [
+              -0.008000000000000002,
+              0.0012420320574872646,
+              -0.011985592948478813
+            ],
+            [
+              0.005854318073854316,
+              0.009982542428311116,
+              0.012126557405839674
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "link": "right_finger_dist_link",
+      "normal": [
+        0.09950371902099893,
+        0.9950371902099893,
+        0.0
+      ],
+      "offset_m": 0.003084673311748171,
+      "volume_relative_error": 0.0,
+      "support_max_error_m": 0.0,
+      "pieces": [
+        {
+          "label": "backing",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_dist_link_backing.ply",
+          "sha256": "6be8859a2c37a23488923a32ced4d746ba6c649a31723de99414a7106a7a0a73",
+          "faces": 318,
+          "volume_m3": 8.672398179109775e-06,
+          "bounds_m": [
+            [
+              -0.04357098042964935,
+              -0.009972276166081429,
+              -0.01180879957973957
+            ],
+            [
+              6.792286148993298e-05,
+              0.007455500544148475,
+              0.011801782995462418
+            ]
+          ]
+        },
+        {
+          "label": "pad",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_dist_link_pad.ply",
+          "sha256": "c22544e18e547ca99853dfee20525344887d5316b30c112d8282bd5a2014fb01",
+          "faces": 258,
+          "volume_m3": 2.118002083097799e-06,
+          "bounds_m": [
+            [
+              -0.04355442232662457,
+              0.003900058311486018,
+              -0.01161267580468416
+            ],
+            [
+              -0.008,
+              0.010080217383801937,
+              0.011585178630985673
+            ]
+          ]
+        },
+        {
+          "label": "knuckle",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/right_finger_dist_link_knuckle.ply",
+          "sha256": "cfc1f72ca044da879d05fe577c9293dd4a4ce1d845de47ecd3a0ebd91ed80201",
+          "faces": 306,
+          "volume_m3": 3.4190377405333877e-07,
+          "bounds_m": [
+            [
+              -0.008,
+              0.003223073798012727,
+              -0.011778419279557768
+            ],
+            [
+              -0.0012301548652670882,
+              0.006530572252951366,
+              0.011758262893167224
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "link": "left_finger_prox_link",
+      "normal": [
+        0.3872324843550917,
+        -0.9219821056073613,
+        0.0
+      ],
+      "offset_m": 0.0034224663259477452,
+      "volume_relative_error": 0.0,
+      "support_max_error_m": 0.0,
+      "pieces": [
+        {
+          "label": "backing",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_prox_link_backing.ply",
+          "sha256": "eec7297aeab63c57d9f580e243a1da9771ccf857df9a9a2bdee333b7650d76e7",
+          "faces": 362,
+          "volume_m3": 2.258213279161759e-05,
+          "bounds_m": [
+            [
+              -0.04675733298063278,
+              -0.022008578576746013,
+              -0.011983597474831898
+            ],
+            [
+              0.006004626397043467,
+              0.015780966728925705,
+              0.012139174155890942
+            ]
+          ]
+        },
+        {
+          "label": "pad",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_prox_link_pad.ply",
+          "sha256": "1435a6494e03daa0c8474aa7f09ddaaa2a1583222c792fc14c78eb93dd538aae",
+          "faces": 294,
+          "volume_m3": 2.4199012545538698e-06,
+          "bounds_m": [
+            [
+              -0.04356310478383499,
+              -0.0237195435911417,
+              -0.011927779126691358
+            ],
+            [
+              -0.008,
+              -0.007072074567535315,
+              0.012067578671220425
+            ]
+          ]
+        },
+        {
+          "label": "knuckle",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_prox_link_knuckle.ply",
+          "sha256": "08efe3924a1cb90ca7897c77944d86c79fd11fdb8c18989ff997666f10a203c9",
+          "faces": 176,
+          "volume_m3": 8.660276863584046e-07,
+          "bounds_m": [
+            [
+              -0.008000000000000002,
+              -0.009985213496337537,
+              -0.011983814649283886
+            ],
+            [
+              0.005839698017397569,
+              -0.0012594014002283362,
+              0.012124977283741168
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "link": "left_finger_dist_link",
+      "normal": [
+        0.09950371902099893,
+        -0.9950371902099893,
+        0.0
+      ],
+      "offset_m": 0.003084673311748171,
+      "volume_relative_error": 1.5218435633256841e-16,
+      "support_max_error_m": 0.0,
+      "pieces": [
+        {
+          "label": "backing",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_dist_link_backing.ply",
+          "sha256": "6f247bc0361a627f0eac46ec4ff699760f7eca0b4ba45332e7bf3c95b321084f",
+          "faces": 312,
+          "volume_m3": 8.670998142694357e-06,
+          "bounds_m": [
+            [
+              -0.04357098415493965,
+              -0.00745550062431233,
+              -0.011793754063546658
+            ],
+            [
+              6.792286148993298e-05,
+              0.009972276166081429,
+              0.011780779549676193
+            ]
+          ]
+        },
+        {
+          "label": "pad",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_dist_link_pad.ply",
+          "sha256": "4b7ef22930849b9fd3d571eb0090ddb2534f7d5f627343cebe0f95d73ecf168a",
+          "faces": 256,
+          "volume_m3": 2.118582345684009e-06,
+          "bounds_m": [
+            [
+              -0.04355442312826312,
+              -0.010080217383801937,
+              -0.011604957875339814
+            ],
+            [
+              -0.008,
+              -0.003900058311486018,
+              0.011631349435459758
+            ]
+          ]
+        },
+        {
+          "label": "knuckle",
+          "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/geometry_review_v2/pad_candidate_assets/left_finger_dist_link_knuckle.ply",
+          "sha256": "84313af6781423b8cce1ae0e1f8975585db358047002f16a4463a199673be097",
+          "faces": 288,
+          "volume_m3": 3.4208859596929824e-07,
+          "bounds_m": [
+            [
+              -0.008,
+              -0.006530572252951366,
+              -0.0117612819784806
+            ],
+            [
+              -0.0012301548509463247,
+              -0.0032230737965806503,
+              0.011789455078542233
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "interpretation": "Assumed inner cap material region; geometric partition of processed reference hull. No added thickness or mass; depth is not calibrated material compression."
+}

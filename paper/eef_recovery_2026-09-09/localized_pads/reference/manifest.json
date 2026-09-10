@@ -1,0 +1,89 @@
+{
+  "variant": "gc_kp4_riser3_shelf6",
+  "records": [
+    {
+      "link": "right_finger_prox_link",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/reference/right_finger_prox_link.ply",
+      "sha256": "56a3488da7be9cea13b2568cb27cfb7f58a0f00e7bf35631c8625ad0c481b126",
+      "vertices": 252,
+      "faces": 500,
+      "convex": true,
+      "bounds_m": [
+        [
+          -0.04675733670592308,
+          -0.015780946058100397,
+          -0.012003824191489447
+        ],
+        [
+          0.00598527304828167,
+          0.023719562217593193,
+          0.012148975999643206
+        ]
+      ],
+      "geom_idx": 10
+    },
+    {
+      "link": "left_finger_prox_link",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/reference/left_finger_prox_link.ply",
+      "sha256": "0b63d8dff7c0a4c8d127aa12b8e4eecac48eb44bc79598fbb01ac5ac454dd08f",
+      "vertices": 252,
+      "faces": 500,
+      "convex": true,
+      "bounds_m": [
+        [
+          -0.04675733298063278,
+          -0.0237195435911417,
+          -0.011983814258193974
+        ],
+        [
+          0.006004626276430599,
+          0.015780965979279277,
+          0.012139174143675392
+        ]
+      ],
+      "geom_idx": 11
+    },
+    {
+      "link": "right_finger_dist_link",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/reference/right_finger_dist_link.ply",
+      "sha256": "f008fe6d38199421e78ba3f0b1f6b9174e80971122335a8c0e556cd6b910d186",
+      "vertices": 249,
+      "faces": 494,
+      "convex": true,
+      "bounds_m": [
+        [
+          -0.04357098194837242,
+          -0.009972276166081429,
+          -0.011808799517345864
+        ],
+        [
+          6.792286148993298e-05,
+          0.010080217796044908,
+          0.011801782540451467
+        ]
+      ],
+      "geom_idx": 12
+    },
+    {
+      "link": "left_finger_dist_link",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/reference/left_finger_dist_link.ply",
+      "sha256": "a463b50a36e2ccf17af0ac1b292165275d501338c4eeb0b45b143a27cd69baab",
+      "vertices": 250,
+      "faces": 495,
+      "convex": false,
+      "bounds_m": [
+        [
+          -0.04357098494932148,
+          -0.010080217607275337,
+          -0.011793754036693962
+        ],
+        [
+          6.792286148993298e-05,
+          0.009972276166081429,
+          0.011789455293735233
+        ]
+      ],
+      "geom_idx": 13
+    }
+  ]
+}

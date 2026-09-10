@@ -1,0 +1,270 @@
+{
+  "uid": 233,
+  "mode": "eef_delta",
+  "variant": "gc_kp4_riser3_shelf6",
+  "variant_post_hook": true,
+  "can_pos": [
+    0.4673,
+    -0.0294,
+    0.113
+  ],
+  "ik_respect_joint_limit": false,
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+  "source_sha256": "a9556c805e196be2f301b41107d1eb0295066e4720293ef1d3631d392d531d31",
+  "parent_trace_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+  "frames": 962,
+  "source_frames": 962,
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "extension_m": 0.0,
+  "insert_after": null,
+  "repair_note": "not_requested",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 747,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.001539646373320172
+  },
+  "extension_bound_m": 0.0,
+  "precision_ik": true,
+  "hold_contact": false,
+  "source_kind": "executed_trace",
+  "action_plan_execution": false,
+  "action_replay_verification": false,
+  "provenance": "Experimental adaptive-transmission replay; not calibrated or bank admitted",
+  "observation_schema": "GenesisCanEnv 17-vector; N+1 observations paired with N actions",
+  "action_schema": "world dx/dy/dz metres, left-composed world rotvec radians, grip feedback/100",
+  "decision_dt_s": 0.03,
+  "command_xyz_m_p99": 4.454370495696987e-16,
+  "command_rotation_rad_p99": 1.2991019376255496e-15,
+  "code_sha256": {
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e"
+  },
+  "timing_reconstruction": {
+    "method": "linear interpolation of matched bag-window means at action-start times",
+    "source": "/home/james/workspace/genesis_pickaplace/inthewild_trials/233_timed.npz",
+    "sha256": "90c4cf727ad2bbf7ffb34ac22adf2ccb7255709ef1e11ef8cf9d9e5cf2ab5056",
+    "original_frames": 926,
+    "original_span_s": 28.822158098220825,
+    "decision_dt_s": 0.03,
+    "replay_duration_s": 28.86,
+    "endpoint_overrun_s": 0.037841901779174236,
+    "limitation": "window-close timestamps represent window means; interpolation is approximate, not original hardware commands"
+  },
+  "physics_treatment": {
+    "parameters": {
+      "actuator_stiffness": 80.0,
+      "actuator_force_limit": 100.0,
+      "distal_moment_ratio": 0.2,
+      "return_stiffness": 2.0,
+      "proximal_damping": 1.0,
+      "distal_damping": 0.02
+    },
+    "remaining_equalities": [
+      "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+    ],
+    "finger_dof_indices": [
+      7,
+      6,
+      9,
+      8
+    ],
+    "kp_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "kv_readback": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "damping_readback": [
+      1.0,
+      1.0,
+      0.019999999552965164,
+      0.019999999552965164
+    ],
+    "substep_dt_s": 0.00125,
+    "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets.",
+    "contact_treatment": {
+      "scope": "localized_pads",
+      "selected_geom_indices": [],
+      "selected_before": [],
+      "selected_after": [],
+      "effective_finger_can_timeconst_s": null,
+      "interpretation": "Only designated inner pad cap is softened. Rigid backing, knuckle and manipulated can unchanged. Same link inertia, joint dynamics and exterior hull; decomposition effects require the split rigid control.",
+      "geometry": "hull",
+      "regions": {
+        "pad": [],
+        "backing": [],
+        "knuckle": []
+      },
+      "pad_timeconst_s": 0.02,
+      "effective_pad_can_timeconst_s": null,
+      "friction_readback": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.20000000298023224
+      ]
+    },
+    "urdf": {
+      "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+      "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+      "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02/gen3_lite_2f_adaptive_candidate.urdf",
+      "candidate_sha256": "009212746e68da56a2c7ff46a36f7c58369e286f9012ad11d63176284a76ede9",
+      "removed_mimics": [
+        "right_finger_tip_joint",
+        "left_finger_tip_joint"
+      ],
+      "geometry": "hull",
+      "max_cap_depth_m": 0.003,
+      "pad_x_limit_m": -0.008,
+      "regions": [
+        {
+          "link": "right_finger_prox_link",
+          "normal": [
+            0.3872324843550917,
+            0.9219821056073613,
+            0.0
+          ],
+          "offset_m": 0.0034121134635374736,
+          "volume_relative_error": 0.0,
+          "support_max_error_m": 0.0,
+          "pieces": [
+            {
+              "label": "hull",
+              "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02/pad_candidate_assets/right_finger_prox_link_hull.ply",
+              "sha256": "1d3c75faa576982d83146c3aaf370d2cb39e56d60ba719be417d29b81ea3102b",
+              "faces": 500,
+              "volume_m3": 2.5860832510697386e-05,
+              "bounds_m": [
+                [
+                  -0.04675733670592308,
+                  -0.015780946239829063,
+                  -0.0120038241147995
+                ],
+                [
+                  0.00598527304828167,
+                  0.023719562217593193,
+                  0.01214897632598877
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "link": "right_finger_dist_link",
+          "normal": [
+            0.09950371902099893,
+            0.9950371902099893,
+            0.0
+          ],
+          "offset_m": 0.003084673311748171,
+          "volume_relative_error": 0.0,
+          "support_max_error_m": 0.0,
+          "pieces": [
+            {
+              "label": "hull",
+              "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02/pad_candidate_assets/right_finger_dist_link_hull.ply",
+              "sha256": "9f5155faff93d3fdddd94b617d2b36f8203d1e5b0bebbcdaf6df8141bf6f8f4f",
+              "faces": 494,
+              "volume_m3": 1.1132304036260912e-05,
+              "bounds_m": [
+                [
+                  -0.04357098042964935,
+                  -0.009972276166081429,
+                  -0.01180879957973957
+                ],
+                [
+                  6.792286148993298e-05,
+                  0.010080217383801937,
+                  0.011801782995462418
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "link": "left_finger_prox_link",
+          "normal": [
+            0.3872324843550917,
+            -0.9219821056073613,
+            0.0
+          ],
+          "offset_m": 0.0034224663259477452,
+          "volume_relative_error": 0.0,
+          "support_max_error_m": 0.0,
+          "pieces": [
+            {
+              "label": "hull",
+              "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02/pad_candidate_assets/left_finger_prox_link_hull.ply",
+              "sha256": "13ce692088e20877f827be5aa87696f4abb8152926ba0ad0ab434f7b24edc025",
+              "faces": 500,
+              "volume_m3": 2.586806173252987e-05,
+              "bounds_m": [
+                [
+                  -0.04675733298063278,
+                  -0.0237195435911417,
+                  -0.011983814649283886
+                ],
+                [
+                  0.006004626397043467,
+                  0.015780966728925705,
+                  0.012139174155890942
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "link": "left_finger_dist_link",
+          "normal": [
+            0.09950371902099893,
+            -0.9950371902099893,
+            0.0
+          ],
+          "offset_m": 0.003084673311748171,
+          "volume_relative_error": 0.0,
+          "support_max_error_m": 0.0,
+          "pieces": [
+            {
+              "label": "hull",
+              "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_hull_tc0.02/pad_candidate_assets/left_finger_dist_link_hull.ply",
+              "sha256": "9ee3f8a35568357e5b95f4597e6b7d1363b0eb0f60997df93510f9d6f05f46fe",
+              "faces": 496,
+              "volume_m3": 1.1131669084347665e-05,
+              "bounds_m": [
+                [
+                  -0.04357098415493965,
+                  -0.010080217383801937,
+                  -0.011793754063546658
+                ],
+                [
+                  6.792286148993298e-05,
+                  0.009972276166081429,
+                  0.011789455078542233
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "interpretation": "Assumed inner cap material region; geometric partition of processed reference hull. No added thickness or mass; depth is not calibrated material compression."
+    },
+    "variant": "gc_kp4_riser3_shelf6",
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz"
+  }
+}

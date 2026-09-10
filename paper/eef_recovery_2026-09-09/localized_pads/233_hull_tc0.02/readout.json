@@ -1,0 +1,76 @@
+{
+  "name": "233_hull_tc0.02",
+  "uid": 233,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "transmission_parameters": {
+    "actuator_stiffness": 80.0,
+    "actuator_force_limit": 100.0,
+    "distal_moment_ratio": 0.2,
+    "return_stiffness": 2.0,
+    "proximal_damping": 1.0,
+    "distal_damping": 0.02
+  },
+  "reference_drive": null,
+  "baseline_trajectory_exact": false,
+  "baseline_arm_max_difference_rad": 0.0002480102702975273,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 747,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.001539646373320172
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06753964637332018,
+    "gain_m": 0.21285088207137076
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 22.439999999999998,
+  "carry_overlap_mm": {
+    "median": 4.678085912019014,
+    "p95": 4.7479091212153435,
+    "maximum": 4.81827137991786
+  },
+  "carry_contact_force_N": {
+    "median": 65.60082244873047,
+    "p95": 69.23569641113279,
+    "maximum": 84.32957458496094
+  },
+  "regions": {},
+  "contact_treatment": {
+    "scope": "localized_pads",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": null,
+    "interpretation": "Only designated inner pad cap is softened. Rigid backing, knuckle and manipulated can unchanged. Same link inertia, joint dynamics and exterior hull; decomposition effects require the split rigid control.",
+    "geometry": "hull",
+    "regions": {
+      "pad": [],
+      "backing": [],
+      "knuckle": []
+    },
+    "pad_timeconst_s": 0.02,
+    "effective_pad_can_timeconst_s": null,
+    "friction_readback": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.20000000298023224
+    ]
+  },
+  "qualification": "Per-run contact sample populations differ. Solver overlap is not material strain; post-pick separation alone is not shelf placement."
+}

@@ -1,0 +1,3 @@
+{
+  "reason": "Initial generator rejected non-watertight left distal reference. Replaced by explicit closed hull from same vertices in geometry_review_v2. No replay used this directory."
+}

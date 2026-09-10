@@ -1,0 +1,86 @@
+[
+  {
+    "uid": 113,
+    "source": "paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.json",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_release",
+      "release_start": null,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.6311634280557825
+    }
+  },
+  {
+    "uid": 184,
+    "source": "paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.json",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 1119,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.02650815141959892
+    }
+  },
+  {
+    "uid": 233,
+    "source": "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.json",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 740,
+      "push_start": 834,
+      "contact_start": 860,
+      "final_surface_gap_m": -0.00018504899352476956,
+      "push_toward_goal_m": 0.02363847635736336,
+      "support_fraction": 0.9310344827586207
+    }
+  },
+  {
+    "uid": 176,
+    "source": "paper/eef_recovery_2026-09-09/early_yaw_pool/176/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/early_yaw_pool/176/collection/176_eef_delta.json",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 1213,
+      "push_start": 1216,
+      "contact_start": 2142,
+      "final_surface_gap_m": -0.00016382755436598895,
+      "push_toward_goal_m": 0.0489033751155744,
+      "support_fraction": 0.9967707212055974
+    }
+  },
+  {
+    "uid": 185,
+    "source": "paper/eef_recovery_2026-09-09/early_yaw_pool/185/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/early_yaw_pool/185/collection/185_eef_delta.json",
+    "sequence": {
+      "complete": false,
+      "reason": "no_supported_push_to_contact",
+      "release_start": 961,
+      "push_start": null,
+      "contact_start": null,
+      "final_surface_gap_m": 0.04226792662349772
+    }
+  },
+  {
+    "uid": 237,
+    "source": "paper/eef_recovery_2026-09-09/timestamp_full_pool/237/source.npz",
+    "baseline": "paper/eef_recovery_2026-09-09/timestamp_full_pool/237/collection/237_eef_delta.json",
+    "sequence": {
+      "complete": true,
+      "reason": "complete",
+      "release_start": 671,
+      "push_start": 781,
+      "contact_start": 804,
+      "final_surface_gap_m": 0.0005478832324798122,
+      "push_toward_goal_m": 0.01380929113212293,
+      "support_fraction": 0.9615384615384616
+    }
+  }
+]

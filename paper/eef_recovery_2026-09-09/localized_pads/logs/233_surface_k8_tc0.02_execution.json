@@ -1,0 +1,16 @@
+{
+  "name": "233_surface_k8_tc0.02",
+  "returncode": 0,
+  "elapsed_s": 76.71723771095276,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_surface_k8_tc0.02",
+    "--pad-timeconst",
+    "0.02",
+    "--return-stiffness",
+    "8.0"
+  ]
+}

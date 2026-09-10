@@ -1,0 +1,29 @@
+{
+  "uid": 233,
+  "jobs": [
+    [
+      "hull",
+      0.02
+    ],
+    [
+      "split",
+      0.02
+    ],
+    [
+      "split",
+      0.025
+    ],
+    [
+      "split",
+      0.03
+    ],
+    [
+      "split",
+      0.04
+    ]
+  ],
+  "pad_depth_m": 0.003,
+  "purpose": "Establish geometry effect and whether localized compliance improves both grasp and release before extending to early-day calibration trials.",
+  "fixed": "Original EEF/gripper inputs, yaw, initial conditions, adaptive transmission, friction, scene timestep and strict/supplied metrics.",
+  "limitations": "Pad boundaries and depth are assumptions. Trial previously inspected; no population-yield claim. Geometry subdivision can change contacts even with identical exterior support."
+}

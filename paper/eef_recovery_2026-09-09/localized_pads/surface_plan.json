@@ -1,0 +1,19 @@
+{
+  "uid": 233,
+  "pad_timeconstants_s": [
+    0.02,
+    0.025,
+    0.03,
+    0.04
+  ],
+  "max_normal_depth_m": 0.003,
+  "motivation": "Every divided-geometry treatment failed supported release, including rigid control. Isolate material law using the original collision geometry and contact generation.",
+  "law": "Local pad surface classification; softer restoring stiffness over assumed thickness, original incremental stiffness beyond backing plane. Damping follows effective time constant.",
+  "controls": "0.02 s must reproduce the previous adaptive trace exactly. Actions, geometry, world, friction and transmission unchanged.",
+  "code_sha256": {
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/run_surface_pad_candidate.py": "60aa4bd68f37ee638eec4fca1f227bad428ae28db908d124172f727f1478bb1b",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "2ecd1f917be929276c32e1c40c2aff66208c8a2b99e7ed7ebb8af552aab51a86",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283"
+  }
+}

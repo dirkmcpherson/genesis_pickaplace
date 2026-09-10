@@ -1,0 +1,55 @@
+{
+  "uid": 233,
+  "jobs": [
+    {
+      "return_stiffness": 2.0,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "return_stiffness": 2.0,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "return_stiffness": 2.0,
+      "pad_timeconst_s": 0.04
+    },
+    {
+      "return_stiffness": 4.0,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "return_stiffness": 4.0,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "return_stiffness": 4.0,
+      "pad_timeconst_s": 0.04
+    },
+    {
+      "return_stiffness": 8.0,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "return_stiffness": 8.0,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "return_stiffness": 8.0,
+      "pad_timeconst_s": 0.04
+    }
+  ],
+  "motivation": "Prior adaptive motor/damping scales do not match the original position-controlled hand even in its coupled direction. All six spring-only bracket runs failed the full sequence. Match those reference coefficients before judging the spring/pad combination.",
+  "derivation": "j=[-1,1,-0.676,-0.676], a=[-0.5,0.5,0.1,0.1]. K_motor=sum(kp*j^2)/(a.j)^2. D_prox=(sum(kv*j^2)-D_dist*sum(j_dist^2))/2.",
+  "expected": {
+    "actuator_stiffness": 155.85151310030028,
+    "proximal_damping": 14.56062048
+  },
+  "fixed": "Same original geometry, pad surface/depth, recorded actions, source clocks, initial positions, friction, actuator force limit and distal damping. No goal-conditioned or phase-conditioned forces.",
+  "qualification": "Reference-mode match below saturation, not full dynamic equivalence or manufacturer calibration. Compare each soft treatment to its matched-drive original-contact control; all are calibration attempts on 233.",
+  "code_sha256": {
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/run_surface_pad_candidate.py": "24a7db9896a54dcde55105f0377325fc78ea1d4b3979f1017b1d60c0b6699b7c",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e88d5a35ec4d8e445a40321ae6a10bf4242cf3a8f69204e6eebf8322ac91a46c",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "2ecd1f917be929276c32e1c40c2aff66208c8a2b99e7ed7ebb8af552aab51a86"
+  }
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "233_surface_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 77.65134954452515,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_surface_tc0.02",
+      "--pad-timeconst",
+      "0.02"
+    ]
+  },
+  {
+    "name": "233_surface_tc0.025",
+    "returncode": 0,
+    "elapsed_s": 78.34996819496155,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_surface_tc0.025",
+      "--pad-timeconst",
+      "0.025"
+    ]
+  },
+  {
+    "name": "233_surface_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 77.54457378387451,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_surface_tc0.03",
+      "--pad-timeconst",
+      "0.03"
+    ]
+  },
+  {
+    "name": "233_surface_tc0.04",
+    "returncode": 0,
+    "elapsed_s": 77.9265763759613,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_surface_tc0.04",
+      "--pad-timeconst",
+      "0.04"
+    ]
+  }
+]

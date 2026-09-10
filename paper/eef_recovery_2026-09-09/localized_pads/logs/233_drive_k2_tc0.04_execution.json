@@ -1,0 +1,17 @@
+{
+  "name": "233_drive_k2_tc0.04",
+  "returncode": 0,
+  "elapsed_s": 78.01991033554077,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_drive_k2_tc0.04",
+    "--pad-timeconst",
+    "0.04",
+    "--return-stiffness",
+    "2.0",
+    "--match-reference-drive"
+  ]
+}
