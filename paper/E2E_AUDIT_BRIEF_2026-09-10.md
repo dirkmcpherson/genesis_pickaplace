@@ -116,6 +116,32 @@ Over the same 390 episodes:
   name happens to be accurate, but **64 of them picked the can and 66 reached `placed_v2`**, and
   **8 have `nested_honest = 1`**. Filtering "successes" by outcome label discards most placements.
 * `placed` (legacy) never fires at all.
+
+### 4a. THE PROXY INVERTS THE HUMAN-VS-MACHINE ORDERING (measured 2026-09-10)
+
+    $ python3 $LAB/nested_asymmetry.py     # rnd30 mode cells, all trained {RLPD} runs
+
+| arm | episodes | `nested_proxy` | `nested_honest` | proxy-only | proxy precision | proxy recall |
+|---|---|---|---|---|---|---|
+| human | 300 | 44 (**0.147**) | 12 (**0.040**) | 39 | 0.114 | 0.417 |
+| machine | 240 | 70 (**0.292**) | 3 (**0.013**) | 68 | 0.029 | 0.667 |
+
+**On `nested_proxy` the machine arm leads 0.292 to 0.147. On `nested_honest` the human arm leads
+0.040 to 0.013. Same episodes, same runs, opposite conclusion.**
+
+The proxy is not merely noisy, and its error is **not symmetric across arms**: its precision is
+0.114 for the human arm and 0.029 for the machine arm — a 4x difference. The machine arm produces
+68 proxy firings that the settled predicate rejects, against 3 real nests.
+
+This matters more than the `placed_v2` artefact in §3, which was symmetric (13/13) and therefore
+left the contrast unbiased. **This one biases the contrast itself.** Any result stated on
+`nested`, `nested_proxy`, or a reward ladder that pays for the proxy (which is what {RLPD}
+trained on — see §2) inherits an arm-dependent error large enough to reverse the sign.
+
+Practical consequence: **do not report any nesting comparison on the proxy.** The settled
+predicate is available for every episode via the post-episode `end_of_episode()` call, costs one
+extra settle, and is already recorded in the eval cells as `nested_honest`.
+
 * `slide_success` and `nested_honest` are decided by a **post-episode settle**, so they cannot
   exist as per-decision flags. That part is inherent, not a bug.
 
@@ -128,7 +154,9 @@ Over the same 390 episodes:
 re-scored without retraining ({RLPD} 3 ckpts/run, 0.6 GB total; {r2dreamer} `latest.pt`, 2.6 GB).
 
 **Not safe.** (a) Any cross-learner comparison (§2). (b) Any absolute placement level on `rnd30`
-without netting out §3. (c) Any statement built on `nested_proxy` as if it were nesting. (d) Any
+without netting out §3. (c) **Any nesting comparison stated on `nested_proxy` — it reverses the
+arm ordering (§4a), and its error is arm-dependent, so it biases the contrast rather than the
+level.** (d) Any
 number from these run dirs described as final — they are `role: preview`.
 
 **Cannot be recovered by re-scoring:** the training-time phase curves. They were logged as the
