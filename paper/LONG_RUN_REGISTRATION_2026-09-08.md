@@ -175,3 +175,33 @@ of a broken recorder. The discriminating test (`ep` vs `term` per episode) was a
 the relaunch and would have taken one training-warm run to apply; I acted on the pattern instead
 of the test. The earlier `contact_push=0.000` misdiagnosis this week was the same shape — reading
 a zero as an absence rather than a measurement.
+
+## 2026-09-10 (overnight) — one seed lost to a bus error; the health monitor was blind to it
+
+**{r2dreamer} `e2eL_r2_dH_s6` (job 3484598, seed 906, HUMAN arm) died after 4h25m at ~1.1M of
+4M steps: `Bus error (core dumped)` on pax141, MaxRSS 21 GB.** Infrastructure fault, not code or
+data — the demo gate, reward gate and stage emission were all correct in its log. Left the arms
+at 7 v 8. Logdir preserved as `full_r2d_state_dHfull_all_rx_s906_FAILED_buserror_3484598`;
+resubmitted fresh as **3486259** (not resumed: r2dreamer's replay buffer is not checkpointed,
+so a resumed run is not the same experiment as the seven that ran straight through).
+
+**The monitor did not catch it, and reported `failed=0` while it was dead.** The checker built
+hours earlier used `%%`-escaped format strings written through a quoted heredoc, so `sacct`
+received `+%%Y-%%m-%%dT%%H:%%M` literally and answered `Invalid time specification (pos=0)`,
+returning zero lines. Every terminal-state counter — done, failed, preempted — therefore read 0
+structurally, regardless of the truth. Three consecutive "0 failures" status reports to the user
+rested on it. Fixed: single `%`, scoped to the current batch by job id, and an explicit
+`BAD-SACCT-RETURNED-NOTHING` verdict so an empty query can never again present as health.
+
+This is the third instance today of the same defect class, twice in my own tooling: a value that
+is *absent* being rendered as a confident zero. The first (`contact_push=0.000`) I misread as
+unreachable code; the second (RLPD `picked=0`) I misread as a broken recorder and relaunched 16
+jobs over; this one inverted — a real death displayed as health. The guard that generalises is
+the one now added: **distinguish "the query returned zero" from "the query returned nothing".**
+
+**Also measured, and it settles an open question from the RLPD correction above.** The failed
+run's log shows `episode/train_picked 0.0` beside `episode/train_ep_picked 1.0` on the same
+episode, repeatedly. So for **{r2dreamer}** the sticky twin carries information the first-grant
+read does not — the opposite of **{RLPD}**, where the two agree on every one of 7000+ episodes.
+Both learners now emit both, so no comparison depends on which is which; but the r2dreamer
+`log_*` first-grant values must NOT be read as per-episode stage outcomes.
