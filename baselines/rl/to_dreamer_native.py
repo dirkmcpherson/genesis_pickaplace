@@ -295,21 +295,32 @@ def main():
         census['n_written'] += 1
     src_manifest = os.path.join(args.src, 'manifest.json')
     try:
-        src_sv = str(json.load(open(os.path.join(args.src, 'manifest.json'))).get('sim_variant') or 'base')
+        src_meta = json.load(open(src_manifest))
     except Exception:
-        src_sv = 'base'
+        src_meta = {}
+    src_sv = str(src_meta.get('sim_variant') or 'base')
+    # Selection flags may have been applied UPSTREAM (e.g. a relabelled copy of an already
+    # one-per-IC set). Stamping False from an unset flag would be a FALSE claim, not a missing
+    # one, and the e2e launcher gates assert on these keys -- so inherit the source manifest's
+    # attestation and record that we did.  (2026-09-09: cost 8 failed dDPfirst RLPD jobs.)
+    sel_best = bool(args.one_per_ic_best) or bool(src_meta.get('one_per_ic_best'))
+    sel_first = bool(args.one_per_ic_first) or bool(src_meta.get('one_per_ic_first'))
+    sel_inherited = sorted(k for k in ('one_per_ic_best', 'one_per_ic_first')
+                           if src_meta.get(k) and not getattr(args, k))
     meta = dict(
         sim_variant=(sorted(svs)[0] if svs else src_sv),   # tapes' own stamp wins over the dir manifest
         action_repeat=int(args.repeat), contract='v1', action_encoding='delta_joint',
         delta_cap=(args.stride1_cap if args.stride1_cap is not None else (sorted(cap_seen)[0] if cap_seen else None)), scope=(args.phase or args.scope),
-        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=bool(args.one_per_ic_best), one_per_ic_first=bool(args.one_per_ic_first),
+        stride1_cap=args.stride1_cap, reward_from_tape=bool(args.reward_from_tape), one_per_ic_best=sel_best, one_per_ic_first=sel_first,
+        selection_inherited_from=(os.path.abspath(src_manifest) if sel_inherited else None),
+        selection_inherited_keys=sel_inherited,
         max_tapes=args.max_tapes, subsample_seed=(args.subsample_seed if args.max_tapes is not None else None), subsample_kept=subsample_kept, source_action_repeat=(sorted({int(np.load(f)['action_repeat']) for f in files})[0] if args.stride1_cap is not None else None),
         phase=args.phase, phases_json=(os.path.abspath(args.phases_json) if args.phases_json else None),
         n_skipped_no_phase=int(n_skipped_no_phase), n_skipped_dup_ic=int(n_skipped_dup_ic), one_per_ic=bool(args.one_per_ic), state_only=bool(args.state_only),
         terminal_reward=float(args.terminal_reward), grant_slack_decisions=0,
         with_state=bool(args.with_state), state_dim=(17 if args.with_state else None),
         src=os.path.abspath(args.src), src_sha=tape_sha(files),
-        src_manifest_sha=(json.load(open(src_manifest)).get('content_sha256') if os.path.exists(src_manifest) else None),
+        src_manifest_sha=src_meta.get('content_sha256'),
         generator='baselines/rl/to_dreamer_native.py',
         created=datetime.datetime.now().isoformat(timespec='seconds'),
         total_reward=total_reward, decisions_min=int(min(lens)), decisions_median=int(np.median(lens)),
