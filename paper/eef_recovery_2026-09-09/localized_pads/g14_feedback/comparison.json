@@ -1,0 +1,69 @@
+{
+  "cached": {
+    "refresh_before_read": false,
+    "frames": 951,
+    "planned_frames": 951,
+    "error": null,
+    "substep_count": 7608,
+    "indices": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "q_indices": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "qpos0": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_cached_physical_q_difference_rad": 0.07462892681360245,
+    "max_used_physical_q_difference_rad": 0.07462892681360245,
+    "max_abs_velocity_rad_s": 59.70314025878906,
+    "max_target_error_deg": 15.408247351579874,
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "urdf_sha256": "ee986f45563d0b63171dffcf522acb901cfdce2c9b54f01379eba8d8f2adbb42",
+    "qualification": "Only controller read freshness varies. Fixed hand, no collisions, zero gravity. Same spring law, gains, damping, armature, limits, 951-step source schedule and substep timing."
+  },
+  "refreshed": {
+    "refresh_before_read": true,
+    "frames": 951,
+    "planned_frames": 951,
+    "error": null,
+    "substep_count": 7608,
+    "indices": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "q_indices": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "qpos0": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_cached_physical_q_difference_rad": 0.005059043876826763,
+    "max_used_physical_q_difference_rad": 0.0,
+    "max_abs_velocity_rad_s": 4.047234535217285,
+    "max_target_error_deg": 2.1564074786309253,
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "urdf_sha256": "ee986f45563d0b63171dffcf522acb901cfdce2c9b54f01379eba8d8f2adbb42",
+    "qualification": "Only controller read freshness varies. Fixed hand, no collisions, zero gravity. Same spring law, gains, damping, armature, limits, 951-step source schedule and substep timing."
+  },
+  "pinned_full_trace_max_difference": 0.005266312717139954,
+  "pinned_joint_angle_max_difference_rad": 2.950429916381836e-05,
+  "qualification": "Every-substep refreshed feedback exactly matches integrated qpos; comparison to archived pinned schedule uses physical new-engine qpos. No demo recovery claim."
+}

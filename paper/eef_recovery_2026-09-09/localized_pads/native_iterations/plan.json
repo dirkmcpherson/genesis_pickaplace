@@ -1,0 +1,31 @@
+{
+  "trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/constraint_iterations/233_cg1000/233_eef_delta.npz",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "trace_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+  "reference_sha256": "943333574293d81be51964df5364b2730fa1e0839b48ed347a9ffbb504d8371a",
+  "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+  "source_code_sha256": {
+    "can_pos_recovery/bench_native_iterations_g14.py": "e47d6d9cb41163911fdf288f4589c6b6a86be8c2a4689757a3d5f0cdd8bddf26",
+    "can_pos_recovery/bench_native_full_task_g14.py": "a6de350d2433f04c4bb0c440158799367e9d37954d2013a3ec00c29207ce816f",
+    "can_pos_recovery/bench_native_batch_g14_v2.py": "fc311033043350255e12881e926227747fea8a6d3d27b2783b6abbd0e0d454e2",
+    "can_pos_recovery/batched_surface_pad_candidate_g14.py": "2142f213ac9ee2c115df749fecc64f0d4a957556a27ff6626a8f4d16d6332365",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d"
+  },
+  "cases": [
+    {
+      "name": "cpu233_cg1000",
+      "backend": "cpu",
+      "n_envs": 0
+    },
+    {
+      "name": "gpu16_233_cg1000",
+      "backend": "gpu",
+      "n_envs": 16
+    }
+  ],
+  "purpose": "Matched numerical-cap diagnostic; unchanged soft233 physics/source. CPU native port must exactly match the independently executed cap1000 trace before GPU full replay starts. Not a material or training-tape adoption. One unique recording;16 copied lanes do not broaden the sample."
+}

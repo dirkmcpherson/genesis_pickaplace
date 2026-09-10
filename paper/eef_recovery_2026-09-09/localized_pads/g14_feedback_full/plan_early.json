@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    [
+      113,
+      0.02,
+      "113_pyramid_rigid"
+    ],
+    [
+      113,
+      0.03,
+      "113_pyramid_soft"
+    ],
+    [
+      184,
+      0.02,
+      "184_pyramid_rigid"
+    ],
+    [
+      184,
+      0.03,
+      "184_pyramid_soft"
+    ]
+  ],
+  "cone": "pyramidal",
+  "impratio": 1,
+  "selection": "Both prior early-day calibration demos, frozen critical-return hand/pad parameters. The fresh-feedback233 pyramidal soft condition completes; its rigid pair misses retention. No early outcomes inspected before this declaration. Earlier pinned outcomes known.",
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "1928a987f3ba9c03bda35a23bb06af856e0ba769458c4eb9ec1c724849c8e4af",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "5e1d56998d13decd7e0677b941cfa7ee069653dabd5d215d3826e7d9f288230f"
+  },
+  "max_workers": 2
+}

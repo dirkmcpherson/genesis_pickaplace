@@ -1,0 +1,212 @@
+{
+  "uid": 113,
+  "source_trace": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_elliptic10_soft/113_eef_delta.npz",
+  "trace_sha256": "23bd2b3db64e3d09ff506893958cd70ffd3e814e2d961b3741853689d1f231c2",
+  "records": [
+    {
+      "requested_replay_time_s": 19.8,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 599,
+          "time_error_s": -0.009511007858641563,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 490,
+          "time_error_s": 0.007361398141355835,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 20.04,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 606,
+          "time_error_s": -0.01644039585864121,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 496,
+          "time_error_s": 0.018326755141359286,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 20.16,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 610,
+          "time_error_s": -0.0020481338586435527,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 499,
+          "time_error_s": 0.015282035141357397,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 20.34,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 615,
+          "time_error_s": -0.017532400858641495,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 503,
+          "time_error_s": -3.652985864377456e-05,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 20.52,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 621,
+          "time_error_s": 0.003485456141358867,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 507,
+          "time_error_s": -0.01667426485864354,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 20.7,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 626,
+          "time_error_s": -0.008765138858642274,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 512,
+          "time_error_s": 0.006725154141356882,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 21.0,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 635,
+          "time_error_s": -0.009420360858641175,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 519,
+          "time_error_s": -0.00990411185864204,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 21.5,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 650,
+          "time_error_s": -0.006952728858642843,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 531,
+          "time_error_s": -0.017760719858642915,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 22.0,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 665,
+          "time_error_s": -0.007959093858641353,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 544,
+          "time_error_s": 0.015259777141356068,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 22.5,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 680,
+          "time_error_s": -0.009074415858641771,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 556,
+          "time_error_s": 0.003333602141356806,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 23.0,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 695,
+          "time_error_s": -0.008078302858642417,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 568,
+          "time_error_s": -0.008748973858644149,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    },
+    {
+      "requested_replay_time_s": 24.0,
+      "matches": [
+        {
+          "camera": 4,
+          "frame": 725,
+          "time_error_s": -0.009721721858642951,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video4/output.mp4"
+        },
+        {
+          "camera": 0,
+          "frame": 593,
+          "time_error_s": 0.008889470141358657,
+          "video": "/home/james/workspace/genesis_pickaplace/inthewild_trials/raw/user_113/cam_dev_video0/output.mp4"
+        }
+      ]
+    }
+  ],
+  "qualification": "Clock-matched raw cameras, no simulation fitting or inferred real contact labels."
+}

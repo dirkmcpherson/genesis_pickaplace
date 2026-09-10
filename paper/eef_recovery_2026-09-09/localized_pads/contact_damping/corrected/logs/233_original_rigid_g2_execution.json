@@ -1,0 +1,27 @@
+{
+  "uid": 233,
+  "placement": "original",
+  "condition": "rigid",
+  "gain": 2.0,
+  "name": "233_original_rigid_g2",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+  "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+  "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+  "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+  "reference": null,
+  "reference_sha256": null,
+  "returncode": 0,
+  "elapsed_s": 70.95713782310486,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_pad_damping_v2.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/233_original_rigid_g2",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+    "--gain",
+    "2.0"
+  ]
+}

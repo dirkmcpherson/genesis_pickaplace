@@ -1,0 +1,11 @@
+{
+  "spin_length_m": 0.0,
+  "force_calls": 100496,
+  "all_selected_changed_unexpected_counts": [
+    785747,
+    70099,
+    0,
+    0
+  ],
+  "actual_rows_per_contact": 4
+}

@@ -1,0 +1,93 @@
+{
+  "matches": [
+    {
+      "time_s": 40.0,
+      "camera": 4,
+      "frame": 1206,
+      "error_s": 0.0015364089221208133
+    },
+    {
+      "time_s": 40.0,
+      "camera": 0,
+      "frame": 992,
+      "error_s": -0.0002507770778805707
+    },
+    {
+      "time_s": 46.32,
+      "camera": 4,
+      "frame": 1396,
+      "error_s": 0.013768645922120015
+    },
+    {
+      "time_s": 46.32,
+      "camera": 0,
+      "frame": 1148,
+      "error_s": -0.003942755077879667
+    },
+    {
+      "time_s": 53.58,
+      "camera": 4,
+      "frame": 1613,
+      "error_s": -0.010164775077882382
+    },
+    {
+      "time_s": 53.58,
+      "camera": 0,
+      "frame": 1327,
+      "error_s": -0.016885556077880892
+    },
+    {
+      "time_s": 59.1,
+      "camera": 4,
+      "frame": 1779,
+      "error_s": 0.002211037922116077
+    },
+    {
+      "time_s": 59.1,
+      "camera": 0,
+      "frame": 1464,
+      "error_s": 0.008618536922121223
+    },
+    {
+      "time_s": 60.63,
+      "camera": 4,
+      "frame": 1825,
+      "error_s": 0.006161604922120034
+    },
+    {
+      "time_s": 60.63,
+      "camera": 0,
+      "frame": 1502,
+      "error_s": 0.014302407922116345
+    },
+    {
+      "time_s": 68.0,
+      "camera": 4,
+      "frame": 2046,
+      "error_s": 0.0013947879221234416
+    },
+    {
+      "time_s": 68.0,
+      "camera": 0,
+      "frame": 1684,
+      "error_s": 0.008255520922119786
+    },
+    {
+      "time_s": 73.47,
+      "camera": 4,
+      "frame": 2210,
+      "error_s": -0.005571059077880136
+    },
+    {
+      "time_s": 73.47,
+      "camera": 0,
+      "frame": 1819,
+      "error_s": 0.001470394922122864
+    }
+  ],
+  "source_trace_sha256": {
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/196/collection/196_eef_delta.npz": "b3a699f634649fc7d8c48a4226d717b2d23cf60e74b570cb46743f87cd6c6ccc",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/expanded_panel/196_soft_g2/196_eef_delta.npz": "e7b9b72b0f279217ddba00453c0e30683b3398aa069a600ecc96d3b1a1dadc2b"
+  },
+  "scope": "Selected timestamp-matched real images and simulated numeric diagnostics; no registered image comparison or calibrated pose claim."
+}

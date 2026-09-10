@@ -1,0 +1,7 @@
+{
+  "physical_states_exact": true,
+  "contacts_exact": true,
+  "picked_exact": true,
+  "tool_max_abs_difference": 0.0,
+  "strict_sequence_exact": true
+}

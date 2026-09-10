@@ -1,0 +1,22 @@
+{
+  "gain": 2.0,
+  "resolve_calls": 27272,
+  "counts_selected_normal_changed_normal_checked_unchanged_violations": [
+    204693,
+    204693,
+    1120573,
+    0
+  ],
+  "max_normal_mapping_tangent_mapping_normal_target_relative_errors": [
+    2.382599433303767e-07,
+    8.803792297840118e-06,
+    3.814697265625e-06
+  ],
+  "audit_version": "native_order_v2",
+  "max_legacy_ascending_normal_tangent_mapping_errors": [
+    3.814697265625e-06,
+    1.0073184967041016e-05
+  ],
+  "legacy_mapping_exceedances": 1,
+  "qualification": "Selected normal/tangent references checked with native ancestor accumulation at unchanged1e-5 threshold. Legacy ascending errors retained. Physical delta and normal target check unchanged from v1; all unselected references and contact parameters checked for exact nonmutation. Identity performs no writes."
+}

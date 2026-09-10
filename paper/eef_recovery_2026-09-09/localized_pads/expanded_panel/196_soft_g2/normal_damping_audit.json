@@ -1,0 +1,29 @@
+{
+  "gain": 2.0,
+  "resolve_calls": 58784,
+  "counts_selected_normal_changed_normal_checked_unchanged_violations": [
+    141192,
+    141192,
+    2579844,
+    0
+  ],
+  "max_normal_mapping_tangent_mapping_normal_target_relative_errors": [
+    5.066394805908203e-06,
+    2.51084566116333e-06,
+    6.318092346191406e-06
+  ],
+  "audit_version": "native_order_backward_error_v3",
+  "max_input_scaled_normal_tangent_target_errors": [
+    2.3501064561060048e-07,
+    1.6601302377239335e-07,
+    2.0244578990968876e-07
+  ],
+  "max_jacobian_entry_relative_error": 5.960464477539063e-08,
+  "max_input_to_output_scale_ratio": 79.9969482421875,
+  "max_legacy_ascending_normal_tangent_mapping_errors": [
+    6.288290023803711e-06,
+    6.273388862609863e-06
+  ],
+  "legacy_mapping_exceedances": 0,
+  "qualification": "Selected reference errors use native ancestor accumulation and sum-of-input-magnitudes scale at1e-5; native Jacobian entries compared independently at1e-6. Output-scaled and legacy errors retained. Physical update unchanged. Legacy ascending errors retained. Physical delta and normal target check unchanged from v1; all unselected references and contact parameters checked for exact nonmutation. Identity performs no writes."
+}

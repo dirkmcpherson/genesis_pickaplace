@@ -1,0 +1,31 @@
+{
+  "jobs": [
+    {
+      "condition": "rigid",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/rigid/113_eef_delta.npz",
+      "reference_sha256": "b9ab46546130b0d70dda0cc01c223ffaae7d7cb81b22d61b9779b4edcf97adcd",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b"
+    },
+    {
+      "condition": "soft",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/soft/113_eef_delta.npz",
+      "reference_sha256": "46762790ce0b6bf22a5653024a3459943b6454110594b48a74cff6e23ede2a35",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a"
+    }
+  ],
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+  "source_npz_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+  "source_metadata_sha256": "1f7d14ab49b35e2d11876266bf3e319ded17af730190bb7a43b0847e56d73a1f",
+  "windows_s": [
+    19.8,
+    20.6
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/observe_g14_release_forces.py": "b335ddba933e18117b38678f445842e6f0ff5ba83c06ce7a63e2e631a49ad854",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640"
+  },
+  "qualification": "Exact-reference observation of the conditional image-derived initial pose. No new treatment, pose search or adoption. Require every saved trace array to match before interpreting impulses. Diagnose soft failure versus rigid supported release; both full tasks fail."
+}

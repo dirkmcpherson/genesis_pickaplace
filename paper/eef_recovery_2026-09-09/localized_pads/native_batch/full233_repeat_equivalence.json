@@ -1,0 +1,16 @@
+{
+  "trace.npz": {
+    "state": true,
+    "arm_commands": true,
+    "source_grip": true,
+    "env_uids": true
+  },
+  "full_task_diagnostic.npz": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "wrist_pose": true,
+    "picked": true,
+    "env_uids": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "233_elliptic10_soft",
+  "uid": 233,
+  "frames": 962,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 751,
+    "push_start": 762,
+    "contact_start": 861,
+    "final_surface_gap_m": -7.761538819747726e-06,
+    "push_toward_goal_m": 0.04254789863343435,
+    "support_fraction": 0.8823529411764706
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06599223846118026,
+    "gain_m": 0.21472191678305602
+  },
+  "source_command_max_differences": {
+    "target_tool": 5.551115123125783e-16,
+    "actions_eef": 8.9462516783545e-08,
+    "actions_joint": 7.721911998714859e-11,
+    "mount": 0.0,
+    "source_grip": 0.0
+  },
+  "material_contact_count_sums": [
+    23952,
+    23952,
+    0
+  ],
+  "final_goal_shift_mm": 9.86266040802002,
+  "max_goal_shift_mm": 10.611788749694824,
+  "measured_tool_target_error_mm_p50_p95_max": [
+    3.6956149918821026,
+    6.778351078799597,
+    12.777291040385798
+  ],
+  "approach_max_finger_target_error_deg": 0.044719291683955574,
+  "max_abs_joint_velocity_rad_s": [
+    13.287933349609375,
+    13.727088928222656,
+    27.528949737548828,
+    24.921594619750977
+  ],
+  "max_used_feedback_difference_rad": 0.0
+}

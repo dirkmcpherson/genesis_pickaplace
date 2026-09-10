@@ -1,0 +1,16 @@
+{
+  "condition": "original_fixed",
+  "preset": null,
+  "returncode": 0,
+  "elapsed_s": 168.06019115447998,
+  "cmd": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "can_pos_recovery/repair_eef_slide.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/original_fixed",
+    "--max-extension",
+    "0",
+    "--polish-ik"
+  ]
+}

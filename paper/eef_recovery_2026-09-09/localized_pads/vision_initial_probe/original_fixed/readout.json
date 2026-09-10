@@ -1,0 +1,26 @@
+{
+  "condition": "original_fixed",
+  "status": "complete",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.040612625475636904
+  },
+  "metric": {
+    "uid": "113",
+    "n": 1047,
+    "released": true,
+    "release_frame": 0,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.10661262547563691,
+    "gain_m": 0.17817087648213575
+  },
+  "final_goal_shift_mm": 64.48860168457031,
+  "max_goal_shift_mm": 66.93376922607422,
+  "frames": 4187
+}

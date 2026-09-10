@@ -1,0 +1,5086 @@
+{
+  "records": [
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "soft",
+      "gain": 1.0,
+      "name": "113_conditional_soft_g1",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "source_metadata_sha256": "1f7d14ab49b35e2d11876266bf3e319ded17af730190bb7a43b0847e56d73a1f",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/soft/113_eef_delta.npz",
+      "reference_sha256": "46762790ce0b6bf22a5653024a3459943b6454110594b48a74cff6e23ede2a35",
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/113_conditional_soft_g1/113_eef_delta.npz",
+      "sha256": "46762790ce0b6bf22a5653024a3459943b6454110594b48a74cff6e23ede2a35",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 25.94346464665324
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 26.00946464665324,
+        "gain_m": 0.15944599379233948
+      },
+      "final_goal_shift_mm": 60.799537658691406,
+      "max_goal_shift_mm": 68.33009338378906,
+      "frames": 4187,
+      "damping_audit": {
+        "gain": 1.0,
+        "applied_contact_rows": 0,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "min_applied_timeconst_s": null,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "rigid",
+      "gain": 2.0,
+      "name": "113_conditional_rigid_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "source_metadata_sha256": "1f7d14ab49b35e2d11876266bf3e319ded17af730190bb7a43b0847e56d73a1f",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/113_conditional_rigid_g2/113_eef_delta.npz",
+      "sha256": "193d0bd9d3c2f43af9d3f8d8ff07ff29dbb64dc7373478aae38a46af12fe5a21",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.2833403466641278
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.3493403466641278,
+        "gain_m": 0.1590243760688581
+      },
+      "final_goal_shift_mm": 59.78489685058594,
+      "max_goal_shift_mm": 66.91741943359375,
+      "frames": 4187,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 74374,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          9.059906602715273e-08,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.009999999776482582,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "soft",
+      "gain": 2.0,
+      "name": "113_conditional_soft_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "source_metadata_sha256": "1f7d14ab49b35e2d11876266bf3e319ded17af730190bb7a43b0847e56d73a1f",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/113_conditional_soft_g2/113_eef_delta.npz",
+      "sha256": "bae9436a06a31b70aee9620c045a9534578ff5fd0bcc37829078d088a5f239e2",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 3.399296271890839
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 3.4652962718908387,
+        "gain_m": 0.1603240569483837
+      },
+      "final_goal_shift_mm": 60.74867630004883,
+      "max_goal_shift_mm": 67.43942260742188,
+      "frames": 4187,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 74934,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          1.1324882365215672e-07,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.012499998323619366,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 1.0,
+      "name": "233_original_soft_g1",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "reference_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/233_original_soft_g1/233_eef_delta.npz",
+      "sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "max_goal_shift_mm": 10.611788749694824,
+      "frames": 962,
+      "damping_audit": {
+        "gain": 1.0,
+        "applied_contact_rows": 0,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "min_applied_timeconst_s": null,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            13
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 2.0,
+      "name": "233_original_rigid_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/233_original_rigid_g2/233_eef_delta.npz",
+      "sha256": "e7dfcfe3a6ca324f212dc4d23417eb6aa1c57f15a92f65caa84a5351d16ab365",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.87457915812801
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.94057915812801,
+        "gain_m": 0.19406144723724317
+      },
+      "final_goal_shift_mm": 0.032224513590335846,
+      "max_goal_shift_mm": 0.03229900822043419,
+      "frames": 962,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 189855,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          9.059906602715273e-08,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.009999999776482582,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            13
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 2.0,
+      "name": "233_original_soft_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/233_original_soft_g2/233_eef_delta.npz",
+      "sha256": "c9ebf13ebad2404213ddb1a01089546128a80ed9c98fa16cbc6bece25901dc1d",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.8250231618074162
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.8910231618074161,
+        "gain_m": 0.19544741585983127
+      },
+      "final_goal_shift_mm": 0.03348739072680473,
+      "max_goal_shift_mm": 0.03361351042985916,
+      "frames": 962,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 189229,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          1.1324882365215672e-07,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.012499998323619366,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            13
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 113,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 2.0,
+      "name": "113_original_rigid_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "source_metadata_sha256": "16828a7d195f3a72c34cd4c16fe4b4bd5e1768a8ccedfe4c3e63b929a0d8adf1",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/113_original_rigid_g2/113_eef_delta.npz",
+      "sha256": "acec52e7207f970387d83272873ad57bb9c65dc6f408d46b07ea6af64b47b6e0",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 34.13921859692131
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 34.20521859692131,
+        "gain_m": 0.16361306802192782
+      },
+      "final_goal_shift_mm": 58.77117156982422,
+      "max_goal_shift_mm": 66.3652114868164,
+      "frames": 4187,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 66154,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          9.059906602715273e-08,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.009999999776482582,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 113,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 2.0,
+      "name": "113_original_soft_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "source_metadata_sha256": "16828a7d195f3a72c34cd4c16fe4b4bd5e1768a8ccedfe4c3e63b929a0d8adf1",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/113_original_soft_g2/113_eef_delta.npz",
+      "sha256": "9c73191b978204b23bcaed49ca658dc3a46bf08b943606a4307698c4a4568578",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 13.574485926096376
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 13.640485926096376,
+        "gain_m": 0.16381767659516616
+      },
+      "final_goal_shift_mm": 59.67343521118164,
+      "max_goal_shift_mm": 67.16545104980469,
+      "frames": 4187,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 66300,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          1.1324882365215672e-07,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.012499998323619366,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 184,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 2.0,
+      "name": "184_original_rigid_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+      "source_metadata_sha256": "97aa9f9647cf361f14233c48b60a3beca759eb8b2f47a1af5e7f661262755812",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/184_original_rigid_g2/184_eef_delta.npz",
+      "sha256": "9108dda845331851c369d63653229ba6d627ce4f7d6946fb777fd51aca889ae4",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 23.99750898404512
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 24.063508984045118,
+        "gain_m": 0.17202868630828758
+      },
+      "final_goal_shift_mm": 26.0884952545166,
+      "max_goal_shift_mm": 38.787601470947266,
+      "frames": 3222,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 162515,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          9.059906602715273e-08,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.009999999776482582,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    },
+    {
+      "uid": 184,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 2.0,
+      "name": "184_original_soft_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+      "source_metadata_sha256": "97aa9f9647cf361f14233c48b60a3beca759eb8b2f47a1af5e7f661262755812",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "reference": null,
+      "reference_sha256": null,
+      "status": "complete",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/contact_damping/corrected/184_original_soft_g2/184_eef_delta.npz",
+      "sha256": "740147806264b4fb7010ea47c3b4292d6d5c748eb947c6e15c3215f8df7a062a",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 16.572065340539925
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 16.638065340539924,
+        "gain_m": 0.16902719189675136
+      },
+      "final_goal_shift_mm": 2803.325927734375,
+      "max_goal_shift_mm": 3168.7109375,
+      "frames": 3222,
+      "damping_audit": {
+        "gain": 2.0,
+        "applied_contact_rows": 155594,
+        "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+          0.0,
+          1.1324882365215672e-07,
+          0.0
+        ],
+        "min_applied_timeconst_s": 0.012499998323619366,
+        "minimum_safe_timeconst_s": 0.0025,
+        "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+      },
+      "exact_reference_arrays": null,
+      "collision_policy": {
+        "enable_self_collision": true,
+        "enable_neutral_collision": false,
+        "valid_geom_pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            9
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            0,
+            11
+          ],
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            13
+          ],
+          [
+            0,
+            14
+          ],
+          [
+            0,
+            15
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            9
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            1,
+            12
+          ],
+          [
+            1,
+            13
+          ],
+          [
+            1,
+            14
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            9
+          ],
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            2,
+            13
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            15
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            3,
+            10
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            3,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            3,
+            14
+          ],
+          [
+            3,
+            15
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            11
+          ],
+          [
+            4,
+            12
+          ],
+          [
+            4,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            4,
+            15
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            11
+          ],
+          [
+            5,
+            12
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            6,
+            11
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            6,
+            13
+          ],
+          [
+            6,
+            14
+          ],
+          [
+            6,
+            15
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            7,
+            12
+          ],
+          [
+            7,
+            13
+          ],
+          [
+            7,
+            14
+          ],
+          [
+            7,
+            15
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            9,
+            11
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            10,
+            14
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            11,
+            14
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            14
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ]
+      }
+    }
+  ],
+  "archived_references": [
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "original_fixed",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/original_fixed/113_eef_delta.npz",
+      "sha256": "43643cf16ba9068df1b2209a454edee9ab893e69adba68cfaff0b19c8bb8fefb",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.040612625475636904
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10661262547563691,
+        "gain_m": 0.17817087648213575
+      },
+      "final_goal_shift_mm": 64.48860168457031,
+      "max_goal_shift_mm": 66.93376922607422
+    },
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "rigid",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/rigid/113_eef_delta.npz",
+      "sha256": "b9ab46546130b0d70dda0cc01c223ffaae7d7cb81b22d61b9779b4edcf97adcd",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 674,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 1.2017373120703023
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 1.2677373120703024,
+        "gain_m": 0.18260178240635566
+      },
+      "final_goal_shift_mm": 1092.6785888671875,
+      "max_goal_shift_mm": 1092.6785888671875
+    },
+    {
+      "uid": 113,
+      "placement": "conditional",
+      "condition": "soft",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/soft/113_eef_delta.npz",
+      "sha256": "46762790ce0b6bf22a5653024a3459943b6454110594b48a74cff6e23ede2a35",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 25.94346464665324
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 26.00946464665324,
+        "gain_m": 0.15944599379233948
+      },
+      "final_goal_shift_mm": 60.799537658691406,
+      "max_goal_shift_mm": 68.33009338378906
+    },
+    {
+      "uid": 113,
+      "placement": "original",
+      "condition": "original_fixed",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/collection/113_eef_delta.npz",
+      "sha256": "bd9553eaa284d39df341a2313f24f654e66bf13c785e1e3667e403192cad06cd",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.6311634280557825
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.6971634280557826,
+        "gain_m": 0.08374779450616734
+      },
+      "final_goal_shift_mm": 58.0910530090332,
+      "max_goal_shift_mm": 59.71567153930664
+    },
+    {
+      "uid": 113,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_elliptic10_rigid/113_eef_delta.npz",
+      "sha256": "0d110916c4410e1f18d4f6dc1af589b5b598218797f664c5d6eff87975d43247",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 23.436765349834367
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 23.502765349834366,
+        "gain_m": 0.16356796302307838
+      },
+      "final_goal_shift_mm": 60.32261276245117,
+      "max_goal_shift_mm": 67.09134674072266
+    },
+    {
+      "uid": 113,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_elliptic10_soft/113_eef_delta.npz",
+      "sha256": "23bd2b3db64e3d09ff506893958cd70ffd3e814e2d961b3741853689d1f231c2",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 4.084932037084861
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 4.150932037084861,
+        "gain_m": 0.16087313013606508
+      },
+      "final_goal_shift_mm": 58.7078742980957,
+      "max_goal_shift_mm": 66.43289947509766
+    },
+    {
+      "uid": 184,
+      "placement": "original",
+      "condition": "original_fixed",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/collection/184_eef_delta.npz",
+      "sha256": "a7115a6f1eedcc34d5f3cf374cc5f02dfedac78a1737b45ea6834dcc411e4f62",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 1119,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.02650815141959892
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.09250815141959892,
+        "gain_m": 0.1771097510414516
+      },
+      "final_goal_shift_mm": 21.103572845458984,
+      "max_goal_shift_mm": 23.434612274169922
+    },
+    {
+      "uid": 184,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/184_rigid/184_eef_delta.npz",
+      "sha256": "ef376c1963ad7220dc923eccf5fdf36d963804a58015ddda911e24b8b25825db",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 23.115663225058242
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 23.18166322505824,
+        "gain_m": 0.1717262727803359
+      },
+      "final_goal_shift_mm": 19293.482421875,
+      "max_goal_shift_mm": 19293.482421875
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "original_fixed",
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/collection/233_eef_delta.npz",
+      "sha256": "ffac44936050a7ee354827a2e9ddd4d37a062001dee489b183fd58885cbc41af",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 740,
+        "push_start": 834,
+        "contact_start": 860,
+        "final_surface_gap_m": -0.00018504899352476956,
+        "push_toward_goal_m": 0.02363847635736336,
+        "support_fraction": 0.9310344827586207
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06581495100647523,
+        "gain_m": 0.21495149341447795
+      },
+      "final_goal_shift_mm": 1.0028355121612549,
+      "max_goal_shift_mm": 1.00383722782135
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "rigid",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_rigid/233_eef_delta.npz",
+      "sha256": "c7d39ea40dbfa9777f1b5e35c8853e81b6fc250fb17b92d22bce2fada6f29fc4",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 755,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.03882427325276133
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10482427325276134,
+        "gain_m": 0.19781304077380693
+      },
+      "final_goal_shift_mm": 0.08596152812242508,
+      "max_goal_shift_mm": 1.4213906526565552
+    },
+    {
+      "uid": 233,
+      "placement": "original",
+      "condition": "soft",
+      "gain": 1.0,
+      "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "max_goal_shift_mm": 10.611788749694824
+    }
+  ],
+  "original_placement_totals": {
+    "rigid": {
+      "completed": 3,
+      "declared": 3,
+      "metric_pass": 0,
+      "strict_complete": 0
+    },
+    "soft": {
+      "completed": 3,
+      "declared": 3,
+      "metric_pass": 0,
+      "strict_complete": 0
+    }
+  },
+  "completed_full_replays": 10,
+  "all_terminal": true,
+  "qualification": "All failures retained. Conditional113 placement is diagnostic only and not adopted. Coupled normal and tangent velocity damping; static elastic coefficient preserved at fixed penetration. Frozen chosen calibration cases are not a population estimate. No treatment adoption from these outcomes alone."
+}

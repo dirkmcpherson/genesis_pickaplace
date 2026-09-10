@@ -1,0 +1,29 @@
+{
+  "uid": 179,
+  "day": "12-16",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/179/source.npz",
+  "frames": 1586,
+  "selection_key": "0ae79a379c865bdf66618a1205083e79e25e48983bbb473a511b016c7a01d38d",
+  "condition": "rigid",
+  "gain": 2.0,
+  "name": "179_rigid_g2",
+  "source_sha256": "2b3f14c4dc611ac56e0b477a16662e3d14317f49d740a1471a795b3091b3ce10",
+  "source_metadata_sha256": "44648bf314b67580239fbc3ab38f2c68a6754a0ad5c95cd4e68765f95844440c",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+  "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+  "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/179/collection/179_eef_delta.npz",
+  "baseline_sha256": "0d0590440136709d8e8003d6a28a1fc8e6c7eae2954e4f9dfea683ee45ef39ad",
+  "returncode": 0,
+  "elapsed_s": 293.25866055488586,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_normal_pad_damping_v3.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/179/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/expanded_panel/179_rigid_g2",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+    "--gain",
+    "2.0"
+  ]
+}

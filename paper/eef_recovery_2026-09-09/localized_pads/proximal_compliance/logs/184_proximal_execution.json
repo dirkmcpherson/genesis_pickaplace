@@ -1,0 +1,23 @@
+{
+  "uid": 184,
+  "condition": "proximal",
+  "name": "184_proximal",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+  "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json",
+  "returncode": 0,
+  "elapsed_s": 161.5631341934204,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_hand.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/184_proximal",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json",
+    "--cone",
+    "elliptic",
+    "--impratio",
+    "10"
+  ]
+}

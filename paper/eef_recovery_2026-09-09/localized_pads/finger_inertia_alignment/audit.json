@@ -1,0 +1,359 @@
+{
+  "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+  "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+  "records": [
+    {
+      "link": "right_finger_prox_link",
+      "mesh": "/home/james/workspace/genesis_pickaplace/kortex_description/grippers/gen3_lite_2f/meshes/right_finger_prox_link.STL",
+      "mesh_sha256": "2b19bfcea81c1985da2c69977bce9966968bb34d45f47b6639b0b7ffdbe55eec",
+      "mass_kg": 0.018385,
+      "mesh_bounds": [
+        [
+          -0.04675733670592308,
+          -0.015748726204037666,
+          -0.011980099603533745
+        ],
+        [
+          0.0059996098279953,
+          0.023719562217593193,
+          0.012119898572564125
+        ]
+      ],
+      "published_com": [
+        0.020257,
+        0.0063483,
+        6.991e-05
+      ],
+      "mesh_uniform_density_com": [
+        -0.020243020451765688,
+        0.0063408624961640795,
+        7.139628272577547e-05
+      ],
+      "published_com_outside_mesh_aabb": true,
+      "proposed_com": [
+        -0.020257,
+        0.0063483,
+        6.991e-05
+      ],
+      "proposed_com_mesh_difference_m": 1.5904504660182145e-05,
+      "published_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "mesh_uniform_density_inertia": [
+        [
+          2.2849687364448425e-06,
+          1.4311037756948834e-06,
+          4.514459056443865e-10
+        ],
+        [
+          1.4311037756948834e-06,
+          4.562034111901227e-06,
+          6.747584128835417e-11
+        ],
+        [
+          4.514459056443865e-10,
+          6.747584128835417e-11,
+          4.7616437458619535e-06
+        ]
+      ],
+      "proposed_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "relative_inertia_error_before": 0.0013907603870535392,
+      "relative_inertia_error_after": 0.0013907603870535392
+    },
+    {
+      "link": "right_finger_dist_link",
+      "mesh": "/home/james/workspace/genesis_pickaplace/kortex_description/grippers/gen3_lite_2f/meshes/right_finger_dist_link.STL",
+      "mesh_sha256": "2f7ce7e9013451924e506056ae81a4b8413441c8afa503e3a3cdfa843e3e7f2a",
+      "mass_kg": 0.010748,
+      "mesh_bounds": [
+        [
+          -0.04351062700152397,
+          -0.009972276166081429,
+          -0.011796446517109871
+        ],
+        [
+          6.792286148993298e-05,
+          0.010077698156237602,
+          0.011796446517109871
+        ]
+      ],
+      "published_com": [
+        0.018488,
+        0.0011091,
+        0.0
+      ],
+      "mesh_uniform_density_com": [
+        -0.018486274800918606,
+        0.0011086305630604062,
+        2.4698780359375924e-08
+      ],
+      "published_com_outside_mesh_aabb": true,
+      "proposed_com": [
+        -0.018488,
+        0.0011091,
+        0.0
+      ],
+      "proposed_com_mesh_difference_m": 1.7880975757636248e-06,
+      "published_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "mesh_uniform_density_inertia": [
+        [
+          6.299195539270643e-07,
+          3.2278574171547063e-07,
+          -1.5650147103560534e-11
+        ],
+        [
+          3.2278574171547063e-07,
+          1.832488946900626e-06,
+          3.148748158779082e-11
+        ],
+        [
+          -1.5650147103560534e-11,
+          3.148748158779082e-11,
+          1.6122416668089156e-06
+        ]
+      ],
+      "proposed_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "relative_inertia_error_before": 0.0020189392059042502,
+      "relative_inertia_error_after": 0.0020189392059042502
+    },
+    {
+      "link": "left_finger_prox_link",
+      "mesh": "/home/james/workspace/genesis_pickaplace/kortex_description/grippers/gen3_lite_2f/meshes/left_finger_prox_link.STL",
+      "mesh_sha256": "82df8dbc59de39f54ab30099d95eb767493a8c2e3f3b37698181379013515148",
+      "mass_kg": 0.018385,
+      "mesh_bounds": [
+        [
+          -0.04675733298063278,
+          -0.0237195435911417,
+          -0.011980099603533745
+        ],
+        [
+          0.005999610293656588,
+          0.01574874483048916,
+          0.012119898572564125
+        ]
+      ],
+      "published_com": [
+        0.020257,
+        0.0063483,
+        6.99e-05
+      ],
+      "mesh_uniform_density_com": [
+        -0.020243558631454325,
+        -0.006341355563681599,
+        6.832650941255649e-05
+      ],
+      "published_com_outside_mesh_aabb": true,
+      "proposed_com": [
+        -0.020257,
+        -0.0063483,
+        6.99e-05
+      ],
+      "proposed_com_mesh_difference_m": 1.521089927617031e-05,
+      "published_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "mesh_uniform_density_inertia": [
+        [
+          2.285011360446194e-06,
+          -1.431219029625719e-06,
+          -4.799149509529085e-10
+        ],
+        [
+          -1.431219029625719e-06,
+          4.562166412838641e-06,
+          3.7899001399677896e-11
+        ],
+        [
+          -4.799149509529085e-10,
+          3.7899001399677896e-11,
+          4.761856705450382e-06
+        ]
+      ],
+      "proposed_inertia": [
+        [
+          2.29e-06,
+          -1.43e-06,
+          0.0
+        ],
+        [
+          -1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "relative_inertia_error_before": 0.5568303359787992,
+      "relative_inertia_error_after": 0.001371490688403918
+    },
+    {
+      "link": "left_finger_dist_link",
+      "mesh": "/home/james/workspace/genesis_pickaplace/kortex_description/grippers/gen3_lite_2f/meshes/left_finger_dist_link.STL",
+      "mesh_sha256": "681dee5c31fd526c4aa0918dd60947beae5d3fb1568511dfde62a4fca728e7ee",
+      "mass_kg": 0.010748,
+      "mesh_bounds": [
+        [
+          -0.04351062700152397,
+          -0.010077698156237602,
+          -0.011796446517109871
+        ],
+        [
+          6.792286148993298e-05,
+          0.009972276166081429,
+          0.011796446517109871
+        ]
+      ],
+      "published_com": [
+        -0.018488,
+        0.0011091,
+        0.0
+      ],
+      "mesh_uniform_density_com": [
+        -0.018486312450241883,
+        -0.0011086835388207108,
+        -1.1226850360730222e-07
+      ],
+      "published_com_outside_mesh_aabb": false,
+      "proposed_com": [
+        -0.018488,
+        -0.0011091,
+        -0.0
+      ],
+      "proposed_com_mesh_difference_m": 1.7418003091285696e-06,
+      "published_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "mesh_uniform_density_inertia": [
+        [
+          6.299118690967779e-07,
+          -3.2277790612963194e-07,
+          2.2949332969230634e-11
+        ],
+        [
+          -3.2277790612963194e-07,
+          1.8324912229003816e-06,
+          3.5818039891569984e-11
+        ],
+        [
+          2.2949332969230634e-11,
+          3.5818039891569984e-11,
+          1.612240579209662e-06
+        ]
+      ],
+      "proposed_inertia": [
+        [
+          6.3e-07,
+          -3.2e-07,
+          0.0
+        ],
+        [
+          -3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "relative_inertia_error_before": 0.35484942406313447,
+      "relative_inertia_error_after": 0.0020159849632940346
+    }
+  ],
+  "qualification": "Mesh uniform density is corroborating evidence, not a material-density measurement. Proposed correction preserves published mass, COM magnitudes and inertia magnitudes, aligning signs with corresponding mesh/mirror geometry. Three COMs outside mesh bounds are impossible for mass confined to those meshes; undocumented extra mass outside geometry would be an alternative explanation."
+}

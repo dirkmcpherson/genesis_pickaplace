@@ -1,0 +1,10 @@
+{
+  "files": {
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/rigid_solver.py": "db3f8039a177078946fafb22492db8d65bc1deb40e304d5ba4db61650f5f6bf2",
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/kinematic_solver.py": "9a9dec141ade181da3326167f100e3bfc39952584a86edaa38611b58e461026b",
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/abd/forward_dynamics.py": "e9eb8421c40ee2c881ca2c809ee142350f31515fc63af4778a7d767873fe9f0a",
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/abd/forward_kinematics.py": "762f94cb3c729f83a1a7dd7bbc5ee2586940ed38c469efad0594dd992dc806c6"
+  },
+  "mechanism": "MuJoCo-compatible substep integrates qpos and invalidates forward cache. get_dofs_position reads cached dyn_state.dofs.pos directly. Explicit forward refresh before external spring feedback matches qpos and restores pinned-like hand dynamics.",
+  "runtime_verification": "Paired zero-collision zero-gravity951-step schedules, every-substep cached/physical/used angles and commanded torque; no spring/damping/mass change."
+}

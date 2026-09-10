@@ -1,0 +1,17 @@
+{
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+  "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+  "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+  "reference_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+  "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+  "source_code_sha256": {
+    "can_pos_recovery/audit_g14_constraint_convergence.py": "2571231aa8a31501352715d64678612d6cbaf122309b6752a07fb2e0eaedac34",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b"
+  },
+  "purpose": "Observe every constraint-force callback under unchanged CG100, float32, 8 substeps and physical/source settings. No material or numerical change. All14 archived arrays must reproduce exactly before interpreting the diagnostic."
+}

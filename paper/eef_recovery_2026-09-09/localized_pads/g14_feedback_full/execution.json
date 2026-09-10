@@ -1,0 +1,78 @@
+[
+  {
+    "name": "233_pyramid_rigid",
+    "uid": 233,
+    "returncode": 0,
+    "elapsed_s": 54.51246762275696,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_pyramid_rigid",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "233_pyramid_soft",
+    "uid": 233,
+    "returncode": 0,
+    "elapsed_s": 54.688673973083496,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_pyramid_soft",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "233_elliptic10_rigid",
+    "uid": 233,
+    "returncode": 0,
+    "elapsed_s": 55.65256452560425,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_rigid",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10"
+    ]
+  },
+  {
+    "name": "233_elliptic10_soft",
+    "uid": 233,
+    "returncode": 0,
+    "elapsed_s": 57.65806603431702,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "options": {
+    "constraint_solver": "constraint_solver.CG",
+    "iterations": "1000",
+    "tolerance": "1e-05",
+    "ls_iterations": "50",
+    "ls_tolerance": "0.01",
+    "use_contact_island": "False",
+    "integrator": "integrator.approximate_implicitfast",
+    "enable_mujoco_compatibility": "True",
+    "friction_cone": "friction_cone.elliptic",
+    "impratio": "10",
+    "contact_resolution": "contact_resolution.convex",
+    "enable_torsional_friction": "False",
+    "enable_rolling_friction": "False"
+  },
+  "actual_iterations": 1000,
+  "substep_dt_s": 0.00125,
+  "qualification": "Only numerical iteration cap changed from100 to1000. The inner benchmark engine_options snapshot predates this override; these actual build options are authoritative. No physical/source change."
+}

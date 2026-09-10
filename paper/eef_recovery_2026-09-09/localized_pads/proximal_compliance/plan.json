@@ -1,0 +1,95 @@
+{
+  "jobs": [
+    {
+      "uid": 113,
+      "condition": "rigid",
+      "name": "113_rigid",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json"
+    },
+    {
+      "uid": 113,
+      "condition": "proximal",
+      "name": "113_proximal",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json"
+    },
+    {
+      "uid": 184,
+      "condition": "rigid",
+      "name": "184_rigid",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json"
+    },
+    {
+      "uid": 184,
+      "condition": "proximal",
+      "name": "184_proximal",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json"
+    },
+    {
+      "uid": 233,
+      "condition": "rigid",
+      "name": "233_rigid",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json"
+    },
+    {
+      "uid": 233,
+      "condition": "proximal",
+      "name": "233_proximal",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json"
+    },
+    {
+      "uid": 233,
+      "condition": "all_soft_control",
+      "name": "233_all_soft_control",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json"
+    }
+  ],
+  "workers": 3,
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/align_finger_inertia.py": "fc0309083cd135a9a92efa09f16ffa87c2e43b16ec77711332d3392860a8f951",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9"
+  },
+  "preset_sha256": {
+    "rigid": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+    "proximal": "586c91663996fe1e9c5c5734c377940af3a5c8173c8e03ce79a7716b849e26b2",
+    "all_soft_control": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a"
+  },
+  "fixed": {
+    "engine": "1.4.0",
+    "cone": "elliptic",
+    "impratio": 10,
+    "neutral_collision": false,
+    "feedback": "fresh",
+    "source_motion": "unchanged",
+    "early_yaw": "existing corrected mount",
+    "initial_positions": "unchanged"
+  },
+  "hypothesis": "Restrict the existing extra compliance to proximal inner pads; distal inner pads retain original normal response. Same geometry and shared-actuator model. Chosen from visible wrapping location and early seating evidence, not new outcomes.",
+  "checks": [
+    "All seven terminal executions retained.",
+    "Rigid113/233 and all-soft233 must reproduce their archived fresh-feedback elliptic reference arrays exactly.",
+    "Per-geometry material activity must exclude distal tips in proximal treatment.",
+    "Score unchanged supplied metric, strict full sequence, goal displacement, and seating against independent real annotations.",
+    "Advance only if full-task evidence improves; verify saved actions and reserve broader panel before adoption."
+  ],
+  "qualification": "Exploratory selected calibration trio, not population yield. Material values and contact law remain uncalibrated. No can placement, shelf, gripper command, terminal hold or goal threshold adjustment."
+}

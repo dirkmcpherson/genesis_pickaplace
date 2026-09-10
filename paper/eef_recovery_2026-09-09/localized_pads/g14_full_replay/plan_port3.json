@@ -1,0 +1,35 @@
+{
+  "uid": 233,
+  "conditions": [
+    [
+      "pyramidal",
+      1,
+      0.02,
+      "233_pyramid_rigid_port3"
+    ],
+    [
+      "pyramidal",
+      1,
+      0.03,
+      "233_pyramid_soft_port3"
+    ],
+    [
+      "elliptic",
+      10,
+      0.02,
+      "233_elliptic10_rigid_port3"
+    ],
+    [
+      "elliptic",
+      10,
+      0.03,
+      "233_elliptic10_soft_port3"
+    ]
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "8e7a29b7726e3b7cfa076df8f1bf493386b325b3c97ab4ed6c62abbdbe84a0db",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "5e1d56998d13decd7e0677b941cfa7ee069653dabd5d215d3826e7d9f288230f"
+  },
+  "qualification": "Corrected material coordinate mapping; unchanged source path/grip, scoring, geometry inputs and transmission. Rigid control expected to repeat port2 physics exactly. Soft port2 deliberately interrupted after material frame mismatch discovered.",
+  "executed_source_archive": "executed_port3_sources"
+}

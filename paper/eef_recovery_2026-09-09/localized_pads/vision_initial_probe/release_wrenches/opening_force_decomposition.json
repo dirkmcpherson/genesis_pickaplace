@@ -1,0 +1,129 @@
+{
+  "records": [
+    {
+      "condition": "rigid",
+      "rows": [
+        {
+          "window_s": [
+            20.1,
+            20.16
+          ],
+          "normal_impulse_Ns": [
+            0.018578541990243384,
+            0.04015609955333156,
+            -0.006673943499134482
+          ],
+          "tangent_impulse_Ns": [
+            -0.024937633855840673,
+            -0.02316386817872507,
+            0.10147335351541042
+          ],
+          "contact_net_work_J": -0.0249368404012057,
+          "peak_downward_individual_normal_N": -1.808073287324703,
+          "peak_downward_individual_tangent_N": -3.3333747722086855
+        },
+        {
+          "window_s": [
+            20.13,
+            20.16
+          ],
+          "normal_impulse_Ns": [
+            0.023486082886539934,
+            0.032095908403327975,
+            -0.005821785445545761
+          ],
+          "tangent_impulse_Ns": [
+            -0.03250704359003209,
+            -0.02270199517898849,
+            0.07355486858937607
+          ],
+          "contact_net_work_J": -0.021920878142118454,
+          "peak_downward_individual_normal_N": -1.808073287324703,
+          "peak_downward_individual_tangent_N": -3.2315004761506287
+        },
+        {
+          "window_s": [
+            20.15,
+            20.17
+          ],
+          "normal_impulse_Ns": [
+            0.010932032106985798,
+            0.03135669618525024,
+            -0.0163349079394214
+          ],
+          "tangent_impulse_Ns": [
+            -0.017582514225115527,
+            -0.02142597071506496,
+            0.05027569853304551
+          ],
+          "contact_net_work_J": -0.016066085677593947,
+          "peak_downward_individual_normal_N": -3.6279806016790417,
+          "peak_downward_individual_tangent_N": -3.2315004761506287
+        }
+      ]
+    },
+    {
+      "condition": "soft",
+      "rows": [
+        {
+          "window_s": [
+            20.1,
+            20.16
+          ],
+          "normal_impulse_Ns": [
+            0.006615420986231863,
+            0.01976897509412801,
+            -0.058243519741621175
+          ],
+          "tangent_impulse_Ns": [
+            0.00030048922050327165,
+            0.0026942914201136857,
+            -0.0005694883469973544
+          ],
+          "contact_net_work_J": 0.14112857356783934,
+          "peak_downward_individual_normal_N": -13.207302916004664,
+          "peak_downward_individual_tangent_N": -7.283641594162162
+        },
+        {
+          "window_s": [
+            20.13,
+            20.16
+          ],
+          "normal_impulse_Ns": [
+            0.0018998581150753936,
+            0.03323587669862224,
+            -0.054338591088635015
+          ],
+          "tangent_impulse_Ns": [
+            -0.0012329335862977953,
+            0.005562548797002291,
+            -0.011377826045173123
+          ],
+          "contact_net_work_J": 0.12353363098576665,
+          "peak_downward_individual_normal_N": -13.207302916004664,
+          "peak_downward_individual_tangent_N": -3.870149339999699
+        },
+        {
+          "window_s": [
+            20.15,
+            20.17
+          ],
+          "normal_impulse_Ns": [
+            -0.012395264780455826,
+            0.059988940648883465,
+            -0.04974765458414532
+          ],
+          "tangent_impulse_Ns": [
+            -0.0009443513170540363,
+            -0.000869753055423379,
+            0.03540082381377197
+          ],
+          "contact_net_work_J": 0.006529505532234907,
+          "peak_downward_individual_normal_N": -13.207302916004664,
+          "peak_downward_individual_tangent_N": -2.1832597804942395
+        }
+      ]
+    }
+  ],
+  "qualification": "Can-normal force reconstructed from recorded normal and Fn, with geometry-side sign. Remaining force is tangential. Contact net work is force on body b dot relative velocity b-a, not actuator work or measured pad energy. Half-open windows; geometry14 is the manipulated can."
+}

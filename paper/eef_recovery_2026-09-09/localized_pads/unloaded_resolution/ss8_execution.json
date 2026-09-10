@@ -1,0 +1,14 @@
+{
+  "substeps": 8,
+  "returncode": 0,
+  "elapsed_s": 38.29366731643677,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/bench_g14_hand_resolution.py",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/unloaded_resolution/ss8",
+    "--refresh-before-read",
+    "--substeps",
+    "8"
+  ]
+}

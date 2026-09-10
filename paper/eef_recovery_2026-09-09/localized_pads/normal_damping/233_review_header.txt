@@ -1,0 +1,1 @@
+Trial 233 | SOFT PADS | normal damping 2x | proximity pass; strict contact test fails | recorded motion

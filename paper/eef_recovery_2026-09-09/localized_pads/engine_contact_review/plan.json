@@ -1,0 +1,46 @@
+{
+  "conditions": [
+    {
+      "cone": "legacy",
+      "impratio": 1
+    },
+    {
+      "cone": "pyramidal",
+      "impratio": 1
+    },
+    {
+      "cone": "elliptic",
+      "impratio": 1
+    },
+    {
+      "cone": "elliptic",
+      "impratio": 10
+    }
+  ],
+  "within_each_condition": {
+    "pad_tc_s": [
+      0.02,
+      0.03
+    ],
+    "can_tc_s": 0.02,
+    "normal_impedance": [
+      0.9,
+      0.95
+    ],
+    "penetration_m": [
+      0.0005,
+      0.002
+    ],
+    "offset_m": [
+      0,
+      0.03
+    ],
+    "duration_s": 2
+  },
+  "purpose": "Determine whether a newer friction formulation reduces off-centre droop and centred slip while preserving declared normal contact softness. No task result can be inferred from a fixed-pad bench.",
+  "fixed": "Can radius .033, height .101, density1000; fixed pad boxes .010x.020x.030; dt.01,8substeps,CG100tol1e-5; all free-can armatures verified zero. New engine uses explicit MuJoCo compatibility and convex contact resolution, no torsion/rolling.",
+  "gate": "Inspect every condition including regressions. Read back normal parameters and compare geometry hashes; same-engine cone comparisons isolate formulation better than cross-engine comparisons. Full source replays remain necessary.",
+  "code_sha256": "c56041e5ad7c6396e635460095f5e8e7667c546ebb9e9bf9b5c4552e05086831",
+  "recorded_at": "2026-09-10T02:31:22.687224+00:00",
+  "registration": "Recorded after launching legacy control, before any bench outcomes; no outcomes used for condition selection."
+}

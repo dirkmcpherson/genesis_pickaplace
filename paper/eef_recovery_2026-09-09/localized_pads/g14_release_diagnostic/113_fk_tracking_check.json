@@ -1,0 +1,59 @@
+{
+  "records": [
+    {
+      "time_s": 8,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.000388191567043783,
+        -0.00013309729823779426,
+        0.008905625635358683
+      ],
+      "norm_mm": 8.915075745089318
+    },
+    {
+      "time_s": 10,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.008212070737626365,
+        -0.004005054044616624,
+        0.001300098337013167
+      ],
+      "norm_mm": 9.228695432507436
+    },
+    {
+      "time_s": 12,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.0003224310171847655,
+        -0.000845354920828989,
+        0.009144808692513606
+      ],
+      "norm_mm": 9.189456606659887
+    },
+    {
+      "time_s": 14,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.006876823472458882,
+        -0.0013317369531984369,
+        0.002524616930566048
+      ],
+      "norm_mm": 7.445664176551104
+    },
+    {
+      "time_s": 18,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.004993700633048825,
+        -0.004495991311580516,
+        0.0009150550725516848
+      ],
+      "norm_mm": 6.7814681059577575
+    },
+    {
+      "time_s": 20.04,
+      "raw_fk_minus_sim_tool_xyz_m": [
+        0.0002312535032282792,
+        3.323251679937522e-05,
+        0.0027586147081302137
+      ],
+      "norm_mm": 2.7684901464228684
+    }
+  ],
+  "qualification": "Recorded-joint FK versus interpolated saved simulation tool pose at matched camera time. Seating projections intentionally mount relative can pose at raw FK wrist, so they exclude this arm tracking difference. Not a measured real-world wrist error."
+}

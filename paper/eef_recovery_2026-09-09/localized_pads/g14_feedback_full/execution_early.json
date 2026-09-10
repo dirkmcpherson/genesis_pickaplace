@@ -1,0 +1,78 @@
+[
+  {
+    "name": "113_pyramid_rigid",
+    "uid": 113,
+    "returncode": 0,
+    "elapsed_s": 205.99451684951782,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_pyramid_rigid",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "113_pyramid_soft",
+    "uid": 113,
+    "returncode": 0,
+    "elapsed_s": 206.80277252197266,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_pyramid_soft",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "184_pyramid_soft",
+    "uid": 184,
+    "returncode": 0,
+    "elapsed_s": 171.59562420845032,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/184_pyramid_soft",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "184_pyramid_rigid",
+    "uid": 184,
+    "returncode": 0,
+    "elapsed_s": 172.404194355011,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/184_pyramid_rigid",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  }
+]

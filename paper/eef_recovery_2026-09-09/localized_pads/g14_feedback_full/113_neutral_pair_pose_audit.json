@@ -1,0 +1,14 @@
+{
+  "trace": "paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_pyramid_soft/113_eef_delta.npz",
+  "trace_sha256": "682e67d2e3ad239fd3e004d6d3fc76ea62449c3a82a5b62557cdb7b5ca680241",
+  "uid": 113,
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "neutral_pair_enabled": true,
+  "geoms": [
+    11,
+    13
+  ],
+  "frames": 4187,
+  "contact_frames": [],
+  "qualification": "Collision detection only at every saved30ms decision pose; no physics integration or trajectory modification. Unobserved intermediate physics substeps are not covered. This cannot measure the effect of re-enabling the pair on a dynamic replay."
+}

@@ -1,0 +1,18 @@
+{
+  "uid": 113,
+  "camera": 4,
+  "coordinates": "720x1280 image after 90-degree counterclockwise rotation",
+  "method": "Approximate manual outer metallic rim points from axis-labelled raw-camera crops, before multiview can-pose fitting. These are not exact ellipse correspondences or fitted simulation landmarks.",
+  "point_uncertainty_px": 3,
+  "train_times_s": [10, 12, 14],
+  "evaluation_times_s": [8, 18, 20.04],
+  "records": [
+    {"time_s":8,"rim_points_px":[[305,708],[334,718],[349,744],[337,768],[306,779],[277,768],[263,744],[275,719]]},
+    {"time_s":10,"rim_points_px":[[310,568],[342,578],[360,604],[345,628],[311,638],[277,626],[263,602],[276,579]]},
+    {"time_s":12,"rim_points_px":[[317,524],[349,535],[367,561],[352,582],[320,593],[289,579],[275,552],[288,532]]},
+    {"time_s":14,"rim_points_px":[[291,448],[323,458],[342,483],[329,505],[297,518],[263,507],[249,482],[261,458]]},
+    {"time_s":18,"rim_points_px":[[301,387],[334,399],[352,421],[341,439],[310,450],[276,439],[262,416],[272,398]]},
+    {"time_s":20.04,"rim_points_px":[[313,424],[346,434],[369,458],[355,481],[325,489],[291,479],[275,453],[286,432]]}
+  ],
+  "qualification": "Known 33 mm radius and 101 mm height are existing geometry assumptions. Fitting evaluates a fixed can-to-tool pose hypothesis; no physical parameters or task outcomes enter the objective. Held-out frames may include relative motion and shelf support."
+}

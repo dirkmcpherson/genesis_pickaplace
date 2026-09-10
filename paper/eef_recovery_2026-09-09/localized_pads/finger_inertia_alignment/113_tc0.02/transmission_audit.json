@@ -1,0 +1,498 @@
+{
+  "parameters": {
+    "actuator_stiffness": 320.0,
+    "actuator_force_limit": 4,
+    "distal_moment_ratio": 0.5,
+    "return_stiffness": 0.9,
+    "proximal_damping": 0.05,
+    "distal_damping": 0.002
+  },
+  "remaining_equalities": [
+    "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+  ],
+  "finger_dof_indices": [
+    7,
+    6,
+    9,
+    8
+  ],
+  "kp_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "kv_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "damping_readback": [
+    0.05000000074505806,
+    0.05000000074505806,
+    0.0020000000949949026,
+    0.0020000000949949026
+  ],
+  "substep_dt_s": 0.00125,
+  "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets.",
+  "finger_inertia_readback": {
+    "original_inertia": false,
+    "records": [
+      {
+        "link": "right_finger_prox_link",
+        "com": [
+          -0.020256999880075455,
+          0.006348299793899059,
+          6.990999827394262e-05
+        ],
+        "inertia": [
+          [
+            2.2900001113157487e-06,
+            1.4299999975264654e-06,
+            0.0
+          ],
+          [
+            1.4299999975264654e-06,
+            4.55999997939216e-06,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            4.7700000322947744e-06
+          ]
+        ],
+        "mass_kg": 0.01838500052690506,
+        "inertial_quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "link": "right_finger_dist_link",
+        "com": [
+          -0.018487999215722084,
+          0.0011090999469161034,
+          0.0
+        ],
+        "inertia": [
+          [
+            6.299999881775875e-07,
+            3.199999980552093e-07,
+            0.0
+          ],
+          [
+            3.199999980552093e-07,
+            1.829999973779195e-06,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.610000026630587e-06
+          ]
+        ],
+        "mass_kg": 0.010747999884188175,
+        "inertial_quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "link": "left_finger_prox_link",
+        "com": [
+          -0.020256999880075455,
+          -0.006348299793899059,
+          6.990000110818073e-05
+        ],
+        "inertia": [
+          [
+            2.2900001113157487e-06,
+            -1.4299999975264654e-06,
+            0.0
+          ],
+          [
+            -1.4299999975264654e-06,
+            4.55999997939216e-06,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            4.7700000322947744e-06
+          ]
+        ],
+        "mass_kg": 0.01838500052690506,
+        "inertial_quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "link": "left_finger_dist_link",
+        "com": [
+          -0.018487999215722084,
+          -0.0011090999469161034,
+          -0.0
+        ],
+        "inertia": [
+          [
+            6.299999881775875e-07,
+            -3.199999980552093e-07,
+            0.0
+          ],
+          [
+            -3.199999980552093e-07,
+            1.829999973779195e-06,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.610000026630587e-06
+          ]
+        ],
+        "mass_kg": 0.010747999884188175,
+        "inertial_quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "audit_sha256": "46ce4f3cc0ee359e0fba7e140ff05c00c38bd68989aa9c8f1456f594e0d68fdd",
+    "all_runtime_assertions_passed": true
+  },
+  "declared_preset": {
+    "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+    "sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "configuration": {
+      "transmission": {
+        "actuator_stiffness": 320.0,
+        "actuator_force_limit": 4,
+        "distal_moment_ratio": 0.5,
+        "return_stiffness": 0.9,
+        "proximal_damping": 0.05,
+        "distal_damping": 0.002
+      },
+      "pad_timeconst_s": 0.02,
+      "max_pad_normal_depth_m": 0.003,
+      "distal_lower_limit_rad": -1.03,
+      "qualification": "Critical-return bench hypothesis. Return stiffness rounded from the mass-inclusive unloaded-mode critical-damping estimate. Force cap raised to permit the loaded curl previously consistent with 233 images; not calibrated hardware torque. Other parameters fixed.",
+      "finger_armature_kg_m2": [
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001
+      ]
+    }
+  },
+  "finger_armature": {
+    "before_kg_m2": [
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612,
+      0.10000000149011612
+    ],
+    "after_kg_m2": [
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05,
+      9.999999747378752e-05
+    ],
+    "qualification": "Added joint inertia, separate from URDF link inertia. A small nonzero value is numerical regularization, not measured actuator inertia."
+  },
+  "surface_pad_treatment": {
+    "pad_timeconst_s": 0.02,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance."
+  },
+  "finger_limits_readback": [
+    [
+      -0.9599999785423279,
+      0.09000000357627869
+    ],
+    [
+      -0.09000000357627869,
+      0.9599999785423279
+    ],
+    [
+      -1.0299999713897705,
+      0.20999999344348907
+    ],
+    [
+      -1.0299999713897705,
+      0.20999999344348907
+    ]
+  ],
+  "contact_treatment": {
+    "scope": "none",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": 0.019999999552965164,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "urdf": {
+    "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+    "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+    "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/113_tc0.02/gen3_lite_2f_adaptive_candidate.urdf",
+    "candidate_sha256": "aa22ab836119f742d0b07fe0f289af32c44c5a724239cbc9708b552525b62537",
+    "removed_mimics": [
+      "right_finger_tip_joint",
+      "left_finger_tip_joint"
+    ],
+    "distal_lower_limit_rad": -1.03,
+    "travel_reference": "Kinova right-tip CAD range at c3280d8a6a6b5d96590d51538e3f265710a6c77d, mirrored by finger symmetry; raw left CAD limit signs differ. Not measured hardware travel.",
+    "finger_inertia_alignment": {
+      "audit": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/audit.json",
+      "audit_sha256": "46ce4f3cc0ee359e0fba7e140ff05c00c38bd68989aa9c8f1456f594e0d68fdd",
+      "before_sha256": "aa22ab836119f742d0b07fe0f289af32c44c5a724239cbc9708b552525b62537",
+      "after_sha256": "13beaaca12e550352054eae84a4425fcf13578654e8fc5b37705be8878be640e",
+      "changes": [
+        {
+          "link": "right_finger_prox_link",
+          "before_com": [
+            0.020257,
+            0.0063483,
+            6.991e-05
+          ],
+          "after_com": [
+            -0.020257,
+            0.0063483,
+            6.991e-05
+          ],
+          "before_inertia": [
+            [
+              2.29e-06,
+              1.43e-06,
+              0.0
+            ],
+            [
+              1.43e-06,
+              4.56e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              4.77e-06
+            ]
+          ],
+          "after_inertia": [
+            [
+              2.29e-06,
+              1.43e-06,
+              0.0
+            ],
+            [
+              1.43e-06,
+              4.56e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              4.77e-06
+            ]
+          ]
+        },
+        {
+          "link": "right_finger_dist_link",
+          "before_com": [
+            0.018488,
+            0.0011091,
+            0.0
+          ],
+          "after_com": [
+            -0.018488,
+            0.0011091,
+            0.0
+          ],
+          "before_inertia": [
+            [
+              6.3e-07,
+              3.2e-07,
+              0.0
+            ],
+            [
+              3.2e-07,
+              1.83e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.61e-06
+            ]
+          ],
+          "after_inertia": [
+            [
+              6.3e-07,
+              3.2e-07,
+              0.0
+            ],
+            [
+              3.2e-07,
+              1.83e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.61e-06
+            ]
+          ]
+        },
+        {
+          "link": "left_finger_prox_link",
+          "before_com": [
+            0.020257,
+            0.0063483,
+            6.99e-05
+          ],
+          "after_com": [
+            -0.020257,
+            -0.0063483,
+            6.99e-05
+          ],
+          "before_inertia": [
+            [
+              2.29e-06,
+              1.43e-06,
+              0.0
+            ],
+            [
+              1.43e-06,
+              4.56e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              4.77e-06
+            ]
+          ],
+          "after_inertia": [
+            [
+              2.29e-06,
+              -1.43e-06,
+              0.0
+            ],
+            [
+              -1.43e-06,
+              4.56e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              4.77e-06
+            ]
+          ]
+        },
+        {
+          "link": "left_finger_dist_link",
+          "before_com": [
+            -0.018488,
+            0.0011091,
+            0.0
+          ],
+          "after_com": [
+            -0.018488,
+            -0.0011091,
+            -0.0
+          ],
+          "before_inertia": [
+            [
+              6.3e-07,
+              3.2e-07,
+              0.0
+            ],
+            [
+              3.2e-07,
+              1.83e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.61e-06
+            ]
+          ],
+          "after_inertia": [
+            [
+              6.3e-07,
+              -3.2e-07,
+              0.0
+            ],
+            [
+              -3.2e-07,
+              1.83e-06,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.61e-06
+            ]
+          ]
+        }
+      ],
+      "qualification": "Mesh uniform density is corroborating evidence, not a material-density measurement. Proposed correction preserves published mass, COM magnitudes and inertia magnitudes, aligning signs with corresponding mesh/mirror geometry. Three COMs outside mesh bounds are impossible for mass confined to those meshes; undocumented extra mass outside geometry would be an alternative explanation."
+    }
+  },
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz"
+}

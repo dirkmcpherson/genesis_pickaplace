@@ -1,0 +1,32 @@
+[
+  {
+    "time_s": 25,
+    "camera_frame": 758,
+    "error_s": 0.01582831280969188
+  },
+  {
+    "time_s": 28,
+    "camera_frame": 847,
+    "error_s": -0.014063655190309277
+  },
+  {
+    "time_s": 30,
+    "camera_frame": 907,
+    "error_s": -0.015702306190306103
+  },
+  {
+    "time_s": 33,
+    "camera_frame": 997,
+    "error_s": -0.016723691190307477
+  },
+  {
+    "time_s": 36,
+    "camera_frame": 1088,
+    "error_s": 0.01548475180969433
+  },
+  {
+    "time_s": 50,
+    "camera_frame": 1507,
+    "error_s": -0.015718041190304177
+  }
+]

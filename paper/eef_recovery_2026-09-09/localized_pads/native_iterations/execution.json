@@ -1,0 +1,52 @@
+[
+  {
+    "name": "cpu233_cg1000",
+    "backend": "cpu",
+    "n_envs": 0,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/bench_native_iterations_g14.py",
+      "--trace",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/native_iterations/cpu233_cg1000",
+      "--backend",
+      "cpu",
+      "--n-envs",
+      "0",
+      "--steps",
+      "962",
+      "--iterations",
+      "1000"
+    ],
+    "returncode": 0,
+    "elapsed_s": 55.208142042160034
+  },
+  {
+    "name": "gpu16_233_cg1000",
+    "backend": "gpu",
+    "n_envs": 16,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/bench_native_iterations_g14.py",
+      "--trace",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/native_iterations/gpu16_233_cg1000",
+      "--backend",
+      "gpu",
+      "--n-envs",
+      "16",
+      "--steps",
+      "962",
+      "--iterations",
+      "1000"
+    ],
+    "returncode": 0,
+    "elapsed_s": 148.28251957893372
+  }
+]

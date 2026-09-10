@@ -1958,5 +1958,13 @@
     "push_toward_goal_m": 0.023766029054243427,
     "support_fraction": 1.0
   },
-  "scope": "Saved simulation poses, no physics rerun or added settling. Real crop uses fixed cap-camera hypothesis only to center the view. Different viewpoints; not a registered image overlay."
+  "scope": "Saved simulation poses, no physics rerun or added settling. Real crop uses fixed cap-camera hypothesis only to center the view. Different viewpoints; not a registered image overlay.",
+  "decode_check": {
+    "frames": 321,
+    "all_dimensions_correct": true
+  },
+  "visual_review": {
+    "contact_sheet_inspected": true,
+    "observation": "Loaded curl, shelf release, hand separation and supported final push visible. Final solver goal contact is absent; +1.405 mm nominal gap passes existing strict tolerance. Real/sim viewpoints differ."
+  }
 }

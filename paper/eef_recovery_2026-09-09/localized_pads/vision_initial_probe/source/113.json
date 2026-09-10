@@ -1,0 +1,55 @@
+{
+  "uid": 113,
+  "day": "12-16",
+  "variant": "gc_kp4_riser3_shelf6_yaw16",
+  "variant_post_hook": true,
+  "source_kind": "kinematic_tape",
+  "can_pos": [
+    0.43352428407824206,
+    -0.15433696660953797,
+    0.113
+  ],
+  "can_quat": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "source_frames": 4187,
+  "source_sha256": "0859966fe55dd424989058b64a52ae4610d6f72ff4d701155e8b566ef06eb382",
+  "initial_pose_provenance": "Conditional image-only nominal XY fit; assumes existing pick-table plane and cap-camera model. Reset height unchanged. Not adopted or fitted to simulation success.",
+  "source_matches_archived_episode": true,
+  "timing_reconstruction": {
+    "method": "ROS1 window timestamps, linear measurement interpolation at action starts",
+    "original_span_s": 125.55531644821167,
+    "original_frames": 4084,
+    "replay_duration_s": 125.61,
+    "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/timed/113_timed.npz",
+    "decision_dt_s": 0.03
+  },
+  "initial_pose_measurement": {
+    "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_release_diagnostic/113_initial_plane_sensitivity.json",
+    "sha256": "76dd730a7ce0f2852685512597a4f174521697cd9200519f9e5d34ced8c4f4e6",
+    "nominal": {
+      "scale": 1,
+      "k1": -0.1274681245280161,
+      "can_center_world_z_m": 0.1005,
+      "annotation": "nominal",
+      "success": true,
+      "rim_rms_px": 1.698365843707316,
+      "estimated_initial_xy_m": [
+        0.43352428407824206,
+        -0.15433696660953797
+      ],
+      "delta_from_archived_xy_m": [
+        0.01724029614491418,
+        -0.005413838639360374
+      ]
+    },
+    "original_can_pos": [
+      0.4162839879333279,
+      -0.1489231279701776,
+      0.113
+    ]
+  }
+}

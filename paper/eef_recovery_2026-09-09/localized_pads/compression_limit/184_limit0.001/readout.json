@@ -1,0 +1,51 @@
+{
+  "name": "184_limit0.001",
+  "uid": 184,
+  "compression_limit_m": 0.001,
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.1054704169482655
+  },
+  "metric": {
+    "uid": "184",
+    "n": 806,
+    "released": true,
+    "release_frame": 26,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.1714704169482655,
+    "gain_m": 0.07095745246299867
+  },
+  "reference_arrays_exact": {
+    "trajectory": false,
+    "contact_counts": false,
+    "goal_pose": false,
+    "stages": false,
+    "finger_joint": false,
+    "observations": false,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "pad_counts_sum": [
+    575,
+    575,
+    11
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    18.24880027770996,
+    18.24748992919922,
+    16.569438934326172,
+    17.417285919189453
+  ]
+}

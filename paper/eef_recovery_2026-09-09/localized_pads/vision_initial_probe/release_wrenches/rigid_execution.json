@@ -1,0 +1,21 @@
+{
+  "condition": "rigid",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/rigid/113_eef_delta.npz",
+  "reference_sha256": "b9ab46546130b0d70dda0cc01c223ffaae7d7cb81b22d61b9779b4edcf97adcd",
+  "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/observe_g14_release_forces.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/source/113.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/vision_initial_probe/release_wrenches/rigid",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+    "--windows",
+    "19.8",
+    "20.6"
+  ],
+  "returncode": 0,
+  "elapsed_s": 197.05454778671265
+}

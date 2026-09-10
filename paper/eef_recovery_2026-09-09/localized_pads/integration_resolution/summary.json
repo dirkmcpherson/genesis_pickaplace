@@ -1,0 +1,130 @@
+{
+  "records": [
+    {
+      "substeps": 8,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "max_goal_shift_mm": 10.611788749694824,
+      "substep_dt_s": 0.00125
+    },
+    {
+      "substeps": 16,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "c0bee79c97ea672cee689d05d0249a094b41b9b3acca00220a79c33da84c2387",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15973223937270312
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.22573223937270312,
+        "gain_m": 0.2134212690709303
+      },
+      "final_goal_shift_mm": 52.9642219543457,
+      "max_goal_shift_mm": 52.9642219543457,
+      "substep_dt_s": 0.000625
+    },
+    {
+      "substeps": 32,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "023625f04fc0c7350b33e49cb649876c7d179fee828a1a31c1eba689b7be8b6f",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 753,
+        "push_start": 763,
+        "contact_start": 860,
+        "final_surface_gap_m": -1.0455691171529224e-05,
+        "push_toward_goal_m": 0.03503291627105816,
+        "support_fraction": 0.9
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06598954430882847,
+        "gain_m": 0.21487471940276448
+      },
+      "final_goal_shift_mm": 0.3016214072704315,
+      "max_goal_shift_mm": 1.1952449083328247,
+      "substep_dt_s": 0.0003125
+    }
+  ],
+  "comparisons": [
+    {
+      "substeps": [
+        8,
+        16
+      ],
+      "max_can_position_difference_mm": 207.46979791563527,
+      "final_can_position_difference_mm": 207.46979791563527,
+      "max_finger_difference_rad": 0.16959410905838013,
+      "contact_count_disagreement_frames": 501,
+      "first_over_1mm_s": 6.06
+    },
+    {
+      "substeps": [
+        16,
+        32
+      ],
+      "max_can_position_difference_mm": 202.0836214181144,
+      "final_can_position_difference_mm": 202.0836214181144,
+      "max_finger_difference_rad": 0.14866364002227783,
+      "contact_count_disagreement_frames": 437,
+      "first_over_1mm_s": 6.4799999999999995
+    },
+    {
+      "substeps": [
+        8,
+        32
+      ],
+      "max_can_position_difference_mm": 22.593608460849637,
+      "final_can_position_difference_mm": 22.526233028719382,
+      "max_finger_difference_rad": 0.2049383521080017,
+      "contact_count_disagreement_frames": 395,
+      "first_over_1mm_s": 6.06
+    }
+  ],
+  "completed_full_replays": 3,
+  "all_terminal": true,
+  "qualification": "Numerical refinement study on one selected recording, not new independent demonstrations or a material improvement claim. Success at one resolution is not convergence."
+}

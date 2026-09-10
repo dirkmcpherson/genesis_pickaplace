@@ -1,0 +1,26 @@
+{
+  "initial_failure": {
+    "session_id": 88092,
+    "exit_code": 1,
+    "before_stepping": true
+  },
+  "initial_full_rigid": {
+    "session_id": 56061,
+    "exit_code": 0
+  },
+  "interrupted_invalid_frame_batch": {
+    "session_id": 66632,
+    "exit_code": 130,
+    "soft_run_interrupted": true,
+    "elliptic_conditions_not_started": true
+  },
+  "build_only_frame_audit": {
+    "session_id": 12231,
+    "exit_code": 0
+  },
+  "corrected_four_condition_batch": {
+    "session_id": 9510,
+    "exit_code": 0,
+    "all_four_children_exit_zero": true
+  }
+}

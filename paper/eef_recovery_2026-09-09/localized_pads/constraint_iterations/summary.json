@@ -1,0 +1,157 @@
+{
+  "records": {
+    "100": {
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "intervals": [
+        {
+          "interval_s": [
+            0,
+            28.86
+          ],
+          "constrained_substeps": 23088,
+          "improved_still_true": 559,
+          "fraction_improved_still_true": 0.02421171171171171
+        },
+        {
+          "interval_s": [
+            0,
+            6
+          ],
+          "constrained_substeps": 4800,
+          "improved_still_true": 6,
+          "fraction_improved_still_true": 0.00125
+        },
+        {
+          "interval_s": [
+            6,
+            20
+          ],
+          "constrained_substeps": 11200,
+          "improved_still_true": 220,
+          "fraction_improved_still_true": 0.019642857142857142
+        },
+        {
+          "interval_s": [
+            20,
+            23
+          ],
+          "constrained_substeps": 2400,
+          "improved_still_true": 244,
+          "fraction_improved_still_true": 0.10166666666666667
+        },
+        {
+          "interval_s": [
+            23,
+            28.86
+          ],
+          "constrained_substeps": 4688,
+          "improved_still_true": 89,
+          "fraction_improved_still_true": 0.018984641638225257
+        }
+      ],
+      "trace_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "diagnostic_sha256": "a70fb34244c1d71c6dd0c4e63013af08a9fecd0c1e158f08e8bcd770b44bbd21"
+    },
+    "1000": {
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 753,
+        "push_start": 762,
+        "contact_start": 859,
+        "final_surface_gap_m": 9.014945983855382e-05,
+        "push_toward_goal_m": 0.03873291524395697,
+        "support_fraction": 0.88
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06609014945983856,
+        "gain_m": 0.2154599213676543
+      },
+      "final_goal_shift_mm": 5.041566371917725,
+      "intervals": [
+        {
+          "interval_s": [
+            0,
+            28.86
+          ],
+          "constrained_substeps": 23088,
+          "improved_still_true": 0,
+          "fraction_improved_still_true": 0.0
+        },
+        {
+          "interval_s": [
+            0,
+            6
+          ],
+          "constrained_substeps": 4800,
+          "improved_still_true": 0,
+          "fraction_improved_still_true": 0.0
+        },
+        {
+          "interval_s": [
+            6,
+            20
+          ],
+          "constrained_substeps": 11200,
+          "improved_still_true": 0,
+          "fraction_improved_still_true": 0.0
+        },
+        {
+          "interval_s": [
+            20,
+            23
+          ],
+          "constrained_substeps": 2400,
+          "improved_still_true": 0,
+          "fraction_improved_still_true": 0.0
+        },
+        {
+          "interval_s": [
+            23,
+            28.86
+          ],
+          "constrained_substeps": 4688,
+          "improved_still_true": 0,
+          "fraction_improved_still_true": 0.0
+        }
+      ],
+      "trace_sha256": "943333574293d81be51964df5364b2730fa1e0839b48ed347a9ffbb504d8371a",
+      "diagnostic_sha256": "6fb59600fee895f99309fa6f030d22c3ed436665428c6d0258c98e002eee56a1"
+    }
+  },
+  "comparison": {
+    "max_can_difference_mm": 14.776227577014097,
+    "final_can_difference_mm": 14.746924132919853,
+    "first_over_1mm_s": 6.029999999999999,
+    "max_finger_difference_rad": 0.1666666865348816
+  },
+  "qualification": "Only the iteration cap changed. Intended physics and source inputs verified. Different trajectories also encounter different contacts; cap-exit counts are full-replay diagnostics, not a paired residual test at identical physical states. The frozen plan phrase \"No material or numerical change\" is an inherited wording error: the plan and command explicitly change the numerical cap100 to1000. No material change."
+}

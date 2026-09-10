@@ -1,0 +1,16 @@
+{
+  "gain": 2.0,
+  "resolve_calls": 100496,
+  "counts_selected_normal_changed_normal_checked_unchanged_violations": [
+    79754,
+    79754,
+    2401235,
+    0
+  ],
+  "max_normal_mapping_tangent_mapping_normal_target_relative_errors": [
+    1.940911033671e-06,
+    8.430331945419312e-06,
+    1.940911033671e-06
+  ],
+  "qualification": "Every assembled selected normal/tangent reference checked against installed imp_aref and current Jacobian velocity. Every unselected reference and all contact parameters/friction checked for exact nonmutation. Identity performs checks without writes."
+}

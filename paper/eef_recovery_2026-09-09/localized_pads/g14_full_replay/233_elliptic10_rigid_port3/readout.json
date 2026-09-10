@@ -1,0 +1,49 @@
+{
+  "name": "233_elliptic10_rigid_port3",
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.34081426935519743
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": false,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.40681426935519743,
+    "gain_m": 2.701533222959629e-06
+  },
+  "source_command_max_differences": {
+    "target_tool": 5.551115123125783e-16,
+    "actions_eef": 8.9462516783545e-08,
+    "actions_joint": 7.721911998714859e-11,
+    "mount": 0.0,
+    "source_grip": 0.0
+  },
+  "rigid_material_mapping_noop_exact": null,
+  "material_contact_count_sums": [
+    1628,
+    0,
+    0
+  ],
+  "can_mass_kg": 0.3455406427383423,
+  "final_goal_shift_mm": 0.009704592637717724,
+  "max_goal_shift_mm": 0.010017315857112408,
+  "measured_tool_target_error_mm_p50_p95_max": [
+    1.338666457549029,
+    5.337109267270877,
+    6.879387343831854
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    35.762359619140625,
+    35.75959396362305,
+    67.19662475585938,
+    63.02058029174805
+  ]
+}

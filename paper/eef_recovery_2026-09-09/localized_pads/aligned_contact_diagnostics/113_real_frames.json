@@ -1,0 +1,27 @@
+[
+  {
+    "time_s": 8,
+    "camera_frame": 245,
+    "error_s": -0.008772815858643312
+  },
+  {
+    "time_s": 10,
+    "camera_frame": 305,
+    "error_s": -0.009536232858643245
+  },
+  {
+    "time_s": 12,
+    "camera_frame": 365,
+    "error_s": -0.009690965858641931
+  },
+  {
+    "time_s": 14,
+    "camera_frame": 425,
+    "error_s": -0.009608711858643204
+  },
+  {
+    "time_s": 18,
+    "camera_frame": 545,
+    "error_s": -0.00860687685864292
+  }
+]

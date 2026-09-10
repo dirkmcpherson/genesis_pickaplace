@@ -1,0 +1,64 @@
+{
+  "name": "233_pyramid_rigid_port3",
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.32217211555315034
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": false,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.38817211555315034,
+    "gain_m": 0.0006151830127262836
+  },
+  "source_command_max_differences": {
+    "target_tool": 5.551115123125783e-16,
+    "actions_eef": 8.9462516783545e-08,
+    "actions_joint": 7.721911998714859e-11,
+    "mount": 0.0,
+    "source_grip": 0.0
+  },
+  "rigid_material_mapping_noop_exact": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "material_contact_count_sums": [
+    1119,
+    0,
+    0
+  ],
+  "can_mass_kg": 0.3455406427383423,
+  "final_goal_shift_mm": 0.0032582811545580626,
+  "max_goal_shift_mm": 0.0072833760641515255,
+  "measured_tool_target_error_mm_p50_p95_max": [
+    1.2800366483956387,
+    5.333121650289203,
+    6.881637521777713
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    36.60681915283203,
+    36.649017333984375,
+    68.46256256103516,
+    69.69784545898438
+  ]
+}

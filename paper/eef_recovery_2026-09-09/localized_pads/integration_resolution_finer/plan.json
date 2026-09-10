@@ -1,0 +1,32 @@
+{
+  "uid": 233,
+  "substeps": [
+    64
+  ],
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+  "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+  "source_metadata_sha256": "42e04a178544509be909c332830bf5418580afea1566a29d29125964e5f40cfb",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+  "reference_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand_resolution_v2.py": "d7fce59399818e17d46a5a422d5ed2123510bb2fa21a16424fa3ada9b25ea167",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9"
+  },
+  "workers": 1,
+  "purpose": "Follow-up after nonmonotonic8/16/32 full-task results: add64-substep refinement, without selecting resolution by success. Prior8-substep implementation identity is exact; v2 only extends accepted CLI choices.",
+  "fixed": "Same source duration/commands, initial geometry, masses, hand springs/damping, contact normal parameters, elliptic ratio10 and normal gain1. Scene dt.01, decision dt.03 fixed. This refinement uses64 substeps,0.15625ms integration; prior8/16/32 results remain the references.",
+  "gates": [
+    "First8-substep control must reproduce all14 archived arrays exactly.",
+    "Every scene step checks actual substep counts and refreshed feedback; runtime dt verified.",
+    "Compare full endpoints, strict sequence, supplied metric and real-image seating before claiming improvement.",
+    "Do not choose resolution to increase success count; assess successive refinement and report nonconvergence."
+  ]
+}

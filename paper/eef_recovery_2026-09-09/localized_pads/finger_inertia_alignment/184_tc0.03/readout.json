@@ -1,0 +1,52 @@
+{
+  "name": "184_tc0.03",
+  "uid": 184,
+  "tc": 0.03,
+  "original": false,
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/184_tc0.03/184_eef_delta.npz",
+  "reference_arrays_exact": {
+    "trajectory": false,
+    "contact_counts": false,
+    "goal_pose": false,
+    "stages": false,
+    "finger_joint": false,
+    "observations": false,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 912,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.03514972876350192
+  },
+  "metric": {
+    "uid": "184",
+    "n": 806,
+    "released": true,
+    "release_frame": 26,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.10114972876350192,
+    "gain_m": 0.1520697909096107
+  },
+  "final_goal_shift_mm": 22.1227970123291,
+  "max_goal_shift_mm": 24.663135528564453,
+  "realized_urdf_sha256": "13beaaca12e550352054eae84a4425fcf13578654e8fc5b37705be8878be640e",
+  "urdf_hash_qualification": "Initial wrapper retains the pre-alignment factory hash in the outer URDF metadata; nested inertia_alignment.after_sha256 and this checked realized hash identify the actual loaded file.",
+  "max_abs_joint_velocity_rad_s": [
+    11.49574089050293,
+    11.495671272277832,
+    13.701639175415039,
+    12.402616500854492
+  ]
+}

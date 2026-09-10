@@ -1,0 +1,163 @@
+{
+  "records": {
+    "8": {
+      "substeps": 8,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "max_goal_shift_mm": 10.611788749694824,
+      "substep_dt_s": 0.00125
+    },
+    "16": {
+      "substeps": 16,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "c0bee79c97ea672cee689d05d0249a094b41b9b3acca00220a79c33da84c2387",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15973223937270312
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.22573223937270312,
+        "gain_m": 0.2134212690709303
+      },
+      "final_goal_shift_mm": 52.9642219543457,
+      "max_goal_shift_mm": 52.9642219543457,
+      "substep_dt_s": 0.000625
+    },
+    "32": {
+      "substeps": 32,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "023625f04fc0c7350b33e49cb649876c7d179fee828a1a31c1eba689b7be8b6f",
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 753,
+        "push_start": 763,
+        "contact_start": 860,
+        "final_surface_gap_m": -1.0455691171529224e-05,
+        "push_toward_goal_m": 0.03503291627105816,
+        "support_fraction": 0.9
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06598954430882847,
+        "gain_m": 0.21487471940276448
+      },
+      "final_goal_shift_mm": 0.3016214072704315,
+      "max_goal_shift_mm": 1.1952449083328247,
+      "substep_dt_s": 0.0003125
+    },
+    "64": {
+      "substeps": 64,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "c6b02a8bc0299bb6d838a74c07c7dd596eb583ce803accab5b8c73b2950955dd",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 756,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.9262769472675074
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.9922769472675075,
+        "gain_m": 0.19820948492748827
+      },
+      "final_goal_shift_mm": 0.23913104832172394,
+      "max_goal_shift_mm": 0.6364060640335083,
+      "substep_dt_s": 0.00015625
+    }
+  },
+  "comparisons": [
+    {
+      "substeps": [
+        8,
+        16
+      ],
+      "max_can_position_difference_mm": 207.46979791563527,
+      "final_can_position_difference_mm": 207.46979791563527,
+      "max_finger_difference_rad": 0.16959410905838013,
+      "contact_count_disagreement_frames": 501
+    },
+    {
+      "substeps": [
+        16,
+        32
+      ],
+      "max_can_position_difference_mm": 202.0836214181144,
+      "final_can_position_difference_mm": 202.0836214181144,
+      "max_finger_difference_rad": 0.14866364002227783,
+      "contact_count_disagreement_frames": 437
+    },
+    {
+      "substeps": [
+        32,
+        64
+      ],
+      "max_can_position_difference_mm": 945.5761295314959,
+      "final_can_position_difference_mm": 945.5761295314959,
+      "max_finger_difference_rad": 0.2199258804321289,
+      "contact_count_disagreement_frames": 473
+    },
+    {
+      "substeps": [
+        8,
+        64
+      ],
+      "max_can_position_difference_mm": 941.1380037962793,
+      "final_can_position_difference_mm": 941.1380037962793,
+      "max_finger_difference_rad": 0.20642852783203125,
+      "contact_count_disagreement_frames": 492
+    }
+  ],
+  "qualification": "Same intended physical parameters, fixed commands/endpoint. No resolution selected by passing scores; compare successive refinement and physical-image evidence."
+}

@@ -1,0 +1,22 @@
+{
+  "session_id": 55621,
+  "all_saved_arrays_exact": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "source": "233_pyramid_soft/233_eef_delta.npz",
+  "verification": "233_pyramid_soft_verify/233_eef_delta.npz",
+  "qualification": "Independent replay from saved EEF action tape; not a new demonstration."
+}

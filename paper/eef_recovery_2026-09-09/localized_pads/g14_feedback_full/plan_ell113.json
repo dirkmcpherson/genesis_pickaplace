@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    [
+      113,
+      0.02,
+      "113_elliptic10_rigid"
+    ],
+    [
+      113,
+      0.03,
+      "113_elliptic10_soft"
+    ]
+  ],
+  "cone": "elliptic",
+  "impratio": 10,
+  "selection": "Corrected pyramidal113 pair still loses carry before12s; direct test of previously declared fixed-pad creep lead under fresh controller feedback. Same parameters as completed233 elliptic pair, no tuning to113 outcomes.",
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "1928a987f3ba9c03bda35a23bb06af856e0ba769458c4eb9ec1c724849c8e4af",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "5e1d56998d13decd7e0677b941cfa7ee069653dabd5d215d3826e7d9f288230f"
+  }
+}

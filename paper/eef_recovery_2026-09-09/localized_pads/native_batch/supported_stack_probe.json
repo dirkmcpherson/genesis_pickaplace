@@ -1,0 +1,5 @@
+{
+  "returncode": 1,
+  "stdout": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError\n\n",
+  "stderr": "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+}

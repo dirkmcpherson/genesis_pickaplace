@@ -1,0 +1,17 @@
+{
+  "substeps": [
+    8,
+    16,
+    32
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/bench_g14_hand_resolution.py": "a86d40688aaf36903dc579dba2927c7291e90433b7d904e39557f68a9d7e9117",
+    "can_pos_recovery/bench_g14_feedback.py": "2537a2bb6f7cf559e0d2d0e9f30a255d523568552aedffb38bec95d5acba2771",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/align_finger_inertia.py": "fc0309083cd135a9a92efa09f16ffa87c2e43b16ec77711332d3392860a8f951"
+  },
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback/refreshed/trace.npz",
+  "reference_sha256": "525ba8af957b7d9acb383842c3847e890b2781d5f02e566d71d5dda61054fba6",
+  "purpose": "Same951-step unloaded ramp/hold schedule and hand, no collisions/gravity. Isolate integration sensitivity before attributing full-scene divergence to the controller. Not a real demonstration.",
+  "gate": "Eight-substep control must reproduce archived scene/substep arrays exactly before16/32 run. Physical stiffness/damping/inertia/limits, command schedule and scene interval fixed."
+}

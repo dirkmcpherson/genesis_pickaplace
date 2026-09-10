@@ -1,0 +1,521 @@
+{
+  "records": [
+    {
+      "name": "233_pyramid_rigid",
+      "uid": 233,
+      "frames": 962,
+      "sequence": {
+        "complete": false,
+        "reason": "final_not_retained",
+        "release_start": 741,
+        "push_start": 825,
+        "contact_start": 861,
+        "final_surface_gap_m": 0.0029674808963260912,
+        "push_toward_goal_m": 0.024222427504475876,
+        "support_fraction": 0.9487179487179487
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.0689674808963261,
+        "gain_m": 0.21356709694896098
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        26039,
+        0,
+        0
+      ],
+      "final_goal_shift_mm": 0.0605156235396862,
+      "max_goal_shift_mm": 0.06412668526172638,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        3.5856308104861423,
+        6.470160579190072,
+        10.387596400479637
+      ],
+      "approach_max_finger_target_error_deg": 0.044942980379273495,
+      "max_abs_joint_velocity_rad_s": [
+        15.64280891418457,
+        15.551567077636719,
+        28.27303695678711,
+        25.004547119140625
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "233_pyramid_soft",
+      "uid": 233,
+      "frames": 962,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 702,
+        "push_start": 705,
+        "contact_start": 865,
+        "final_surface_gap_m": 0.0009562340935344998,
+        "push_toward_goal_m": 0.023072955657755512,
+        "support_fraction": 0.9815950920245399
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.0669562340935345,
+        "gain_m": 0.2141793229150008
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        26110,
+        26110,
+        0
+      ],
+      "final_goal_shift_mm": 0.11648852378129959,
+      "max_goal_shift_mm": 0.2951810657978058,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        3.6204759946433014,
+        6.465873772331686,
+        10.607269977949759
+      ],
+      "approach_max_finger_target_error_deg": 0.044942980379273495,
+      "max_abs_joint_velocity_rad_s": [
+        12.889059066772461,
+        12.649176597595215,
+        26.300159454345703,
+        30.108055114746094
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "233_elliptic10_rigid",
+      "uid": 233,
+      "frames": 962,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 755,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.03882427325276133
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10482427325276134,
+        "gain_m": 0.19781304077380693
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        24468,
+        0,
+        0
+      ],
+      "final_goal_shift_mm": 0.08596152812242508,
+      "max_goal_shift_mm": 1.4213906526565552,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        3.706326791330077,
+        6.8485517390183785,
+        12.453504607243977
+      ],
+      "approach_max_finger_target_error_deg": 0.044719291683955574,
+      "max_abs_joint_velocity_rad_s": [
+        13.352147102355957,
+        13.44587516784668,
+        28.75010108947754,
+        28.770709991455078
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "233_elliptic10_soft",
+      "uid": 233,
+      "frames": 962,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        23952,
+        23952,
+        0
+      ],
+      "final_goal_shift_mm": 9.86266040802002,
+      "max_goal_shift_mm": 10.611788749694824,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        3.6956149918821026,
+        6.778351078799597,
+        12.777291040385798
+      ],
+      "approach_max_finger_target_error_deg": 0.044719291683955574,
+      "max_abs_joint_velocity_rad_s": [
+        13.287933349609375,
+        13.727088928222656,
+        27.528949737548828,
+        24.921594619750977
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "113_pyramid_rigid",
+      "uid": 113,
+      "frames": 4187,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.14486937321715646
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.21086937321715646,
+        "gain_m": 0.0768305189591213
+      },
+      "source_command_max_differences": {
+        "target_tool": 1.9984014443252818e-15,
+        "actions_eef": 1.7066797642489862e-07,
+        "actions_joint": 5.855982365687851e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        1326,
+        0,
+        0
+      ],
+      "final_goal_shift_mm": 35.539249420166016,
+      "max_goal_shift_mm": 35.57151412963867,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.24841921217270355,
+        5.20758518630122,
+        125.29446559148121
+      ],
+      "approach_max_finger_target_error_deg": 0.034015441435986754,
+      "max_abs_joint_velocity_rad_s": [
+        11.605798721313477,
+        11.604462623596191,
+        13.970857620239258,
+        16.45897102355957
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "113_pyramid_soft",
+      "uid": 113,
+      "frames": 4187,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.15539921015537225
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.22139921015537226,
+        "gain_m": 0.07401440944256624
+      },
+      "source_command_max_differences": {
+        "target_tool": 1.9984014443252818e-15,
+        "actions_eef": 1.7066797642489862e-07,
+        "actions_joint": 5.855982365687851e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        1279,
+        1279,
+        0
+      ],
+      "final_goal_shift_mm": 42.5623664855957,
+      "max_goal_shift_mm": 42.682186126708984,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.24826022765199884,
+        5.211529497831064,
+        125.29446559148121
+      ],
+      "approach_max_finger_target_error_deg": 0.034015441435986754,
+      "max_abs_joint_velocity_rad_s": [
+        11.604692459106445,
+        11.603608131408691,
+        14.22485065460205,
+        17.88036346435547
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "184_pyramid_soft",
+      "uid": 184,
+      "frames": 3222,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 24.748858339824597
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 24.814858339824596,
+        "gain_m": 0.14926131180524915
+      },
+      "source_command_max_differences": {
+        "target_tool": 0.0,
+        "actions_eef": 2.9802322387695312e-08,
+        "actions_joint": 6.943823294136564e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        8059,
+        8059,
+        0
+      ],
+      "final_goal_shift_mm": 14.533374786376953,
+      "max_goal_shift_mm": 16.96042251586914,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.620788672825979,
+        5.19675049295499,
+        7.204127513539502
+      ],
+      "approach_max_finger_target_error_deg": 0.0014929925838817835,
+      "max_abs_joint_velocity_rad_s": [
+        11.471976280212402,
+        11.55586051940918,
+        14.831498146057129,
+        17.932022094726562
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "184_pyramid_rigid",
+      "uid": 184,
+      "frames": 3222,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 20.407267926694878
+      },
+      "metric": {
+        "uid": "184",
+        "n": 806,
+        "released": true,
+        "release_frame": 26,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 20.473267926694877,
+        "gain_m": 0.1494131091047312
+      },
+      "source_command_max_differences": {
+        "target_tool": 0.0,
+        "actions_eef": 2.9802322387695312e-08,
+        "actions_joint": 6.943823294136564e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        7847,
+        0,
+        0
+      ],
+      "final_goal_shift_mm": 15.557122230529785,
+      "max_goal_shift_mm": 16.96010971069336,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.6277452797222033,
+        5.19674030770815,
+        7.204228483480138
+      ],
+      "approach_max_finger_target_error_deg": 0.0014929925838817835,
+      "max_abs_joint_velocity_rad_s": [
+        11.554581642150879,
+        11.588582992553711,
+        14.188282012939453,
+        14.204026222229004
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "113_elliptic10_soft",
+      "uid": 113,
+      "frames": 4187,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 4.084932037084861
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 4.150932037084861,
+        "gain_m": 0.16087313013606508
+      },
+      "source_command_max_differences": {
+        "target_tool": 1.9984014443252818e-15,
+        "actions_eef": 1.7066797642489862e-07,
+        "actions_joint": 5.855982365687851e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        8571,
+        8571,
+        0
+      ],
+      "final_goal_shift_mm": 58.7078742980957,
+      "max_goal_shift_mm": 66.43289947509766,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.4088902028430278,
+        5.463068250362344,
+        125.29446559148121
+      ],
+      "approach_max_finger_target_error_deg": 0.03548311840105171,
+      "max_abs_joint_velocity_rad_s": [
+        15.108576774597168,
+        15.147686004638672,
+        16.213027954101562,
+        17.378562927246094
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    },
+    {
+      "name": "113_elliptic10_rigid",
+      "uid": 113,
+      "frames": 4187,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 23.436765349834367
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 23.502765349834366,
+        "gain_m": 0.16356796302307838
+      },
+      "source_command_max_differences": {
+        "target_tool": 1.9984014443252818e-15,
+        "actions_eef": 1.7066797642489862e-07,
+        "actions_joint": 5.855982365687851e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "material_contact_count_sums": [
+        8861,
+        0,
+        0
+      ],
+      "final_goal_shift_mm": 60.32261276245117,
+      "max_goal_shift_mm": 67.09134674072266,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        0.40943768496554417,
+        5.464679996030665,
+        125.29446559148121
+      ],
+      "approach_max_finger_target_error_deg": 0.03548311840105171,
+      "max_abs_joint_velocity_rad_s": [
+        13.249893188476562,
+        13.354769706726074,
+        17.71420669555664,
+        19.41464614868164
+      ],
+      "max_used_feedback_difference_rad": 0.0
+    }
+  ],
+  "qualification": "Explicitly selected calibration demonstrations. Not population validation or hardware calibration. Same-engine contrasts retain processed geometry and analytic mass; cross-engine comparison changes those as well."
+}

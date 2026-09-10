@@ -1,0 +1,9 @@
+{
+  "uid":113,
+  "time_s":4,
+  "camera":4,
+  "rim_points_px":[[317,720],[348,731],[361,759],[346,784],[318,795],[290,784],[277,756],[291,731]],
+  "annotation_method":"Manual approximate outer metal-rim points in the unheld, stationary4s camera4 frame. Recorded before the3D circle fit.",
+  "point_uncertainty_px":3,
+  "assumptions":"Upright circular rim of radius.033m, can height.101m; camera fitted only to independent rigid caps. No simulated success, terminal position, or grasp outcome enters the fit."
+}

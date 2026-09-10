@@ -1,0 +1,14 @@
+{
+  "uid":113,
+  "camera":4,
+  "coordinates":"720x1280 image after90-degree counterclockwise rotation",
+  "method":"Approximate manual lid centers in existing full-resolution release frames, recorded before projecting the fixed grasp at these times.",
+  "uncertainty_px":5,
+  "records":[
+    {"time_s":20.04,"rim_center_px":[323,455]},
+    {"time_s":20.16,"rim_center_px":[323,455]},
+    {"time_s":20.34,"rim_center_px":[318,478],"note":"Motion blur; less precise center"},
+    {"time_s":20.7,"rim_center_px":[318,480]}
+  ],
+  "qualification":"The can moves down in the image as the hand opens. Image movement alone is not a metric drop-height or definitive support-timing measurement; account for hand movement using the preceding fixed-grasp camera model."
+}

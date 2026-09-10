@@ -1,0 +1,61 @@
+{
+  "source_sha256": "bca7173e9156dcc105d285e9834169721293e1a97142ff5ba309f47183b7f70d",
+  "verified_sha256": "bca7173e9156dcc105d285e9834169721293e1a97142ff5ba309f47183b7f70d",
+  "frames": 991,
+  "exact_arrays": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "action_replay_verification": true,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 583,
+    "push_start": 610,
+    "contact_start": 892,
+    "final_surface_gap_m": -4.77847059411618e-06,
+    "push_toward_goal_m": 0.04877510941067978,
+    "support_fraction": 0.9087719298245615
+  },
+  "normal_damping_audit": {
+    "gain": 1.0,
+    "resolve_calls": 23792,
+    "counts_selected_normal_changed_normal_checked_unchanged_violations": [
+      78739,
+      0,
+      942739,
+      0
+    ],
+    "max_normal_mapping_tangent_mapping_normal_target_relative_errors": [
+      2.8987840323679848e-06,
+      5.019828677177429e-06,
+      0.0
+    ],
+    "audit_version": "native_order_backward_error_v3",
+    "max_input_scaled_normal_tangent_target_errors": [
+      2.735827138167224e-07,
+      1.739271056067082e-07,
+      0.0
+    ],
+    "max_jacobian_entry_relative_error": 5.960464477539063e-08,
+    "max_input_to_output_scale_ratio": 74.82896423339844,
+    "max_legacy_ascending_normal_tangent_mapping_errors": [
+      4.947185516357422e-06,
+      5.628913640975952e-06
+    ],
+    "legacy_mapping_exceedances": 0,
+    "qualification": "Selected reference errors use native ancestor accumulation and sum-of-input-magnitudes scale at1e-5; native Jacobian entries compared independently at1e-6. Output-scaled and legacy errors retained. Physical update unchanged. Legacy ascending errors retained. Physical delta and normal target check unchanged from v1; all unselected references and contact parameters checked for exact nonmutation. Identity performs no writes."
+  }
+}

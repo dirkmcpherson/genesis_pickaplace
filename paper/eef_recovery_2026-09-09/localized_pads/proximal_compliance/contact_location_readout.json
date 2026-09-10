@@ -1,0 +1,279 @@
+{
+  "sampled_scene_steps": 1401,
+  "detected_can_finger_contacts": 8663,
+  "exact_reference_arrays": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "intervals": [
+    {
+      "interval_s": [
+        7,
+        8
+      ],
+      "link": "left_finger_dist_link",
+      "detected_contacts": 299,
+      "classified": 299,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.012747074477374554,
+        -0.00734214810654521,
+        -0.009485851973295212
+      ],
+      "local_xyz_max_m": [
+        -0.01154878456145525,
+        -0.007217141333967447,
+        -0.009430358186364174
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9909210740247265,
+        0.9917274508531608,
+        0.9917683276165308
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.0008920351800043135,
+        0.000898857950232923,
+        0.0009274365147575734
+      ]
+    },
+    {
+      "interval_s": [
+        7,
+        8
+      ],
+      "link": "right_finger_dist_link",
+      "detected_contacts": 300,
+      "classified": 300,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.011347191408276558,
+        0.007100759074091911,
+        0.00719334976747632
+      ],
+      "local_xyz_max_m": [
+        -0.01023677084594965,
+        0.007259483449161053,
+        0.007499363739043474
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9337366158537697,
+        0.9536282197211772,
+        0.9841565580677285
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.0008906776609364897,
+        0.001138356572482735,
+        0.0011447391123510897
+      ]
+    },
+    {
+      "interval_s": [
+        8,
+        18
+      ],
+      "link": "left_finger_dist_link",
+      "detected_contacts": 3271,
+      "classified": 3271,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.013052253983914852,
+        -0.007376483175903559,
+        -0.009528199210762978
+      ],
+      "local_xyz_max_m": [
+        -0.009854241274297237,
+        -0.006959492340683937,
+        -0.008053923025727272
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9925125564184809,
+        0.9990743687780165,
+        0.9998374340669982
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.0006640827632509172,
+        0.000828696065582335,
+        0.0008908588206395507
+      ]
+    },
+    {
+      "interval_s": [
+        8,
+        18
+      ],
+      "link": "right_finger_dist_link",
+      "detected_contacts": 3347,
+      "classified": 3347,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.011779594235122204,
+        0.00679404940456152,
+        -0.008323638699948788
+      ],
+      "local_xyz_max_m": [
+        -0.008432329632341862,
+        0.0072360560297966,
+        0.007461060769855976
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9842888615552229,
+        0.9998946263210935,
+        0.9999213531076953
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.0006753112538717687,
+        0.0008079199469648302,
+        0.0008837288594804704
+      ]
+    },
+    {
+      "interval_s": [
+        18,
+        20.2
+      ],
+      "link": "left_finger_dist_link",
+      "detected_contacts": 647,
+      "classified": 638,
+      "fails_x": 9,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.011016018688678741,
+        -0.007144707255065441,
+        -0.009328240528702736
+      ],
+      "local_xyz_max_m": [
+        -0.006883341819047928,
+        -0.006651733536273241,
+        -0.0017260269960388541
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9998245781349446,
+        0.9998580386987704,
+        0.9998792161797844
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.0007957800116855652,
+        0.0008291106205433607,
+        0.0008351894794031978
+      ]
+    },
+    {
+      "interval_s": [
+        18,
+        20.2
+      ],
+      "link": "left_finger_prox_link",
+      "detected_contacts": 2,
+      "classified": 2,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.039749108254909515,
+        -0.023654453456401825,
+        -0.0008751032873988152
+      ],
+      "local_xyz_max_m": [
+        -0.03970826044678688,
+        -0.023641444742679596,
+        -0.0008656792342662811
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.7741915898350653,
+        0.7827855871453084,
+        0.7913795844555517
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.00044211288332007825,
+        0.00044211288332007825,
+        0.00044211288332007825
+      ]
+    },
+    {
+      "interval_s": [
+        18,
+        20.2
+      ],
+      "link": "right_finger_dist_link",
+      "detected_contacts": 796,
+      "classified": 782,
+      "fails_x": 14,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.011154362000524998,
+        0.00655749486759305,
+        -0.011039911769330502
+      ],
+      "local_xyz_max_m": [
+        -0.006976280361413956,
+        0.007135212421417236,
+        0.00660951342433691
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.9998905925787313,
+        0.9999064002375291,
+        0.9999197578852862
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.000676921452395618,
+        0.0006961506442166865,
+        0.0007797575672157109
+      ]
+    },
+    {
+      "interval_s": [
+        18,
+        20.2
+      ],
+      "link": "right_finger_prox_link",
+      "detected_contacts": 1,
+      "classified": 1,
+      "fails_x": 0,
+      "fails_normal": 0,
+      "fails_depth": 0,
+      "local_xyz_min_m": [
+        -0.04021979868412018,
+        0.023321261629462242,
+        -0.010814222507178783
+      ],
+      "local_xyz_max_m": [
+        -0.04021979868412018,
+        0.023321261629462242,
+        -0.010814222507178783
+      ],
+      "normal_cosine_p05_p50_p95": [
+        0.8853242112924815,
+        0.8853242112924815,
+        0.8853242112924815
+      ],
+      "penetration_p05_p50_p95_m": [
+        0.00035800813930109143,
+        0.00035800813930109143,
+        0.00035800813930109143
+      ]
+    }
+  ],
+  "qualification": "Read-only observation after collision detection and pad assignment, at each original10ms scene-step final substep during7\u201321s. Before current constraint-force solve. Includes every detected can-finger contact; no force threshold. Not every physics substep, and not evidence all detected contacts carry load."
+}

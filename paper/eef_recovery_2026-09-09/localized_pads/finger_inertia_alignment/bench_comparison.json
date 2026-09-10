@@ -1,0 +1,16 @@
+[
+  {
+    "model": "critical_return",
+    "peak_joint_target_error_deg": 2.1158034896851685,
+    "peak_unloaded_relation_error_deg": 1.2889838813339396,
+    "hold_joint_target_error_deg": 0.0018895249787867197,
+    "hold_relation_error_deg": 0.001287487243453849
+  },
+  {
+    "model": "finger_inertia_alignment",
+    "peak_joint_target_error_deg": 2.156416870141034,
+    "peak_unloaded_relation_error_deg": 1.3702342202663331,
+    "hold_joint_target_error_deg": 1.3357664353718501e-05,
+    "hold_relation_error_deg": 1.021796300181224e-05
+  }
+]

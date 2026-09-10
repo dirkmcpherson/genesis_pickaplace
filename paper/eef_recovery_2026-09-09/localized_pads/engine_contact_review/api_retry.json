@@ -1,0 +1,17 @@
+{
+  "failed_attempts": [
+    {
+      "name": "g14_pyramid1",
+      "session_id": 53292,
+      "returncode": 1
+    },
+    {
+      "name": "g14_elliptic10",
+      "session_id": 44569,
+      "returncode": 1
+    }
+  ],
+  "failure": "Renamed solver API: geoms_info removed; use get_sol_params/set_sol_params. Both failed after build, before stepping. Not physical bench failures.",
+  "old_code_sha256": "c56041e5ad7c6396e635460095f5e8e7667c546ebb9e9bf9b5c4552e05086831",
+  "new_code_sha256": "5512b9b6f405434059e99b442f10c3734ba464e4a67010c0dcc62def3bdd94e9"
+}

@@ -1,0 +1,12 @@
+{
+  "gain": 2.0,
+  "applied_contact_rows": 189855,
+  "max_relative_error_static_normal_normal_velocity_tangent_velocity": [
+    0.0,
+    9.059906602715273e-08,
+    0.0
+  ],
+  "min_applied_timeconst_s": 0.009999999776482582,
+  "minimum_safe_timeconst_s": 0.0025,
+  "qualification": "Every treated substep contact checked using installed gu.imp_aref. Static normal term unchanged; both velocity reference terms multiply by gain. Identity control bypasses damping writes."
+}

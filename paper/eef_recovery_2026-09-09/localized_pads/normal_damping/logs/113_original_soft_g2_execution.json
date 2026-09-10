@@ -1,0 +1,27 @@
+{
+  "uid": 113,
+  "placement": "original",
+  "condition": "soft",
+  "gain": 2.0,
+  "name": "113_original_soft_g2",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+  "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+  "source_metadata_sha256": "16828a7d195f3a72c34cd4c16fe4b4bd5e1768a8ccedfe4c3e63b929a0d8adf1",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+  "reference": null,
+  "reference_sha256": null,
+  "returncode": 0,
+  "elapsed_s": 398.2898097038269,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_normal_pad_damping.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/normal_damping/113_original_soft_g2",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+    "--gain",
+    "2.0"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "uid": 113,
+  "camera": 4,
+  "coordinate_system": "720x1280 image after90-degree counterclockwise rotation",
+  "annotation_method": "Manual approximate centers read from axis-labelled raw camera crops; recorded before fitting this camera or projecting simulated can poses.",
+  "uncertainty_px": 5,
+  "train_times_s": [8, 10, 14],
+  "records": [
+    {"time_s":8,"caps":[[315,828],[390,800]],"rim_center":[305,743]},
+    {"time_s":10,"caps":[[339,679],[410,648]],"rim_center":[310,604]},
+    {"time_s":12,"caps":[[349,628],[420,601]],"rim_center":[321,560]},
+    {"time_s":14,"caps":[[307,542],[387,525]],"rim_center":[295,486]},
+    {"time_s":18,"caps":[[333,475],[418,453]],"rim_center":[308,419],"note":"right cap partly occluded"},
+    {"time_s":20.04,"caps":[[340,511],[419,491]],"rim_center":[323,455],"note":"right cap partly occluded"}
+  ],
+  "qualification":"Conditional visual diagnostic using the existing CAD-cap correspondence hypothesis, not independently measured camera or3D can calibration. Rim centers are evaluation observations only. No simulation/world parameter is fitted."
+}

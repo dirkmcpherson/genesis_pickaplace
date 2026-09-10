@@ -1,0 +1,22 @@
+{
+  "uid": 224,
+  "tc": 0.03,
+  "name": "224_tc0.03",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+  "source_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7",
+  "returncode": 0,
+  "elapsed_s": 73.47614049911499,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_hand.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_validation/224_tc0.03",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+    "--cone",
+    "pyramidal",
+    "--impratio",
+    "1"
+  ]
+}

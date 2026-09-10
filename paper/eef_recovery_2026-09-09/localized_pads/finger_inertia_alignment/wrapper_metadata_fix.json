@@ -1,0 +1,6 @@
+{
+  "before_sha256": "c611ae50d596bc2816ef316e7e1efe20be96aab5e39aeed5d04ddad489f4842d",
+  "after_sha256": "37e08da24ae8cdb2fcb854278b1d5efc8fe65c25981ef3f2a9988227b998ab18",
+  "change": "Refresh outer candidate_sha256 after alignment; no physics change. Completed cohort used archived v1. Realized URDF hashes in readout match nested correction after_sha256.",
+  "completed_cohort_unchanged": true
+}

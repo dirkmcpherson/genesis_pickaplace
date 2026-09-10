@@ -1,0 +1,82 @@
+{
+  "jobs": [
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "condition": "rigid",
+      "gain": 1.0,
+      "name": "181_rigid_g1",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a",
+      "source_metadata_sha256": "ee3856b5a88298f0f8f697977e470e371f531a60d796a54506ae4c0ee9710f65",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/collection/181_eef_delta.npz",
+      "baseline_sha256": "30e2993d9a5d4e971e0618e6e8f5e6114bdcea488219a8c725f1754f525d159c"
+    },
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "condition": "soft",
+      "gain": 1.0,
+      "name": "181_soft_g1",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a",
+      "source_metadata_sha256": "ee3856b5a88298f0f8f697977e470e371f531a60d796a54506ae4c0ee9710f65",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/collection/181_eef_delta.npz",
+      "baseline_sha256": "30e2993d9a5d4e971e0618e6e8f5e6114bdcea488219a8c725f1754f525d159c"
+    },
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "condition": "rigid",
+      "gain": 2.0,
+      "name": "181_rigid_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a",
+      "source_metadata_sha256": "ee3856b5a88298f0f8f697977e470e371f531a60d796a54506ae4c0ee9710f65",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/rigid.json",
+      "preset_sha256": "eb96fb81f4e2d9862ab7546e7899192e5297b2a37622aba4f486b5d1471f408b",
+      "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/collection/181_eef_delta.npz",
+      "baseline_sha256": "30e2993d9a5d4e971e0618e6e8f5e6114bdcea488219a8c725f1754f525d159c"
+    },
+    {
+      "uid": 181,
+      "day": "Dec16",
+      "condition": "soft",
+      "gain": 2.0,
+      "name": "181_soft_g2",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a",
+      "source_metadata_sha256": "ee3856b5a88298f0f8f697977e470e371f531a60d796a54506ae4c0ee9710f65",
+      "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+      "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/collection/181_eef_delta.npz",
+      "baseline_sha256": "30e2993d9a5d4e971e0618e6e8f5e6114bdcea488219a8c725f1754f525d159c"
+    }
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_normal_pad_damping.py": "1ce28da6ab97c545baf15ba28f8b1d8e5ed03bbfe47a52a0f1eba6b3d8b893f1",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/align_finger_inertia.py": "fc0309083cd135a9a92efa09f16ffa87c2e43b16ec77711332d3392860a8f951",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9",
+    "can_pos_recovery/run_g14_normal_pad_damping_v2.py": "a8d09176a7df29502fdde543f4ee3c5e7cb86bad40462645cb91f5ecaa5ca3e0"
+  },
+  "engine_source_sha256": {
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/constraint/solver.py": "7affdbe0e599597799fbf3194c17381478b40cf9d64a38fe2d9d716319d284fb"
+  },
+  "purpose": "Diagnose v1 ascending J@qvel cancellation by native ancestor-order reconstruction; same1e-5 threshold, unchanged physical delta. Preserve every original attempt.",
+  "checks": [
+    "All four181 conditions rerun.",
+    "181 soft1 must reproduce every original NPZ array exactly.",
+    "Native reference checks and existing normal target checks must pass; legacy errors and exceedances recorded.",
+    "All original source, timing, geometry and nonmutation invariants remain required."
+  ]
+}

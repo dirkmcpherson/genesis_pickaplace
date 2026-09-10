@@ -1,0 +1,154 @@
+{
+  "jobs": [
+    {
+      "uid": 176,
+      "tc": 0.02,
+      "name": "176_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/source.npz",
+      "source_sha256": "1d8fb81b6bf4fcbdae809696d946baafd31a3b1771a7d3f4f0d474bd41d2184c"
+    },
+    {
+      "uid": 176,
+      "tc": 0.03,
+      "name": "176_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/176/source.npz",
+      "source_sha256": "1d8fb81b6bf4fcbdae809696d946baafd31a3b1771a7d3f4f0d474bd41d2184c"
+    },
+    {
+      "uid": 185,
+      "tc": 0.02,
+      "name": "185_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/source.npz",
+      "source_sha256": "9900e4a13cbe389b1337056efc7c95d64d8b3651f4b60ed03eace2aa4b8fb113"
+    },
+    {
+      "uid": 185,
+      "tc": 0.03,
+      "name": "185_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/185/source.npz",
+      "source_sha256": "9900e4a13cbe389b1337056efc7c95d64d8b3651f4b60ed03eace2aa4b8fb113"
+    },
+    {
+      "uid": 237,
+      "tc": 0.02,
+      "name": "237_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/source.npz",
+      "source_sha256": "d423f77d6dd7402c4c5150c7fb533f8efe8dec3f6c28eff246b2a4eae8ff31b4"
+    },
+    {
+      "uid": 237,
+      "tc": 0.03,
+      "name": "237_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/237/source.npz",
+      "source_sha256": "d423f77d6dd7402c4c5150c7fb533f8efe8dec3f6c28eff246b2a4eae8ff31b4"
+    },
+    {
+      "uid": 156,
+      "tc": 0.02,
+      "name": "156_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/156/source.npz",
+      "source_sha256": "d96fe98f9dc580028f5c8b99a298e1404c150a572b5e1bfa353aeaf24cea0dd2"
+    },
+    {
+      "uid": 156,
+      "tc": 0.03,
+      "name": "156_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/156/source.npz",
+      "source_sha256": "d96fe98f9dc580028f5c8b99a298e1404c150a572b5e1bfa353aeaf24cea0dd2"
+    },
+    {
+      "uid": 181,
+      "tc": 0.02,
+      "name": "181_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a"
+    },
+    {
+      "uid": 181,
+      "tc": 0.03,
+      "name": "181_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/181/source.npz",
+      "source_sha256": "85c3bb1b3287fabdb210dca2c84b466cd313059a26009594d1e4bc58fd0bb34a"
+    },
+    {
+      "uid": 224,
+      "tc": 0.02,
+      "name": "224_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+      "source_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7"
+    },
+    {
+      "uid": 224,
+      "tc": 0.03,
+      "name": "224_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/224/source.npz",
+      "source_sha256": "647f4046d5bbc7b9a0176628772b39e5d2a9de8c2e6dcd39a01f044a1937f0d7"
+    },
+    {
+      "uid": 198,
+      "tc": 0.02,
+      "name": "198_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/198/source.npz",
+      "source_sha256": "18733a38c48b6efaf3b5f4354ed422bc02512d95a80947469d86d910624442df"
+    },
+    {
+      "uid": 198,
+      "tc": 0.03,
+      "name": "198_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/198/source.npz",
+      "source_sha256": "18733a38c48b6efaf3b5f4354ed422bc02512d95a80947469d86d910624442df"
+    },
+    {
+      "uid": 243,
+      "tc": 0.02,
+      "name": "243_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+      "source_sha256": "0d640f53192d5522d4faf353b81231485d54394dffca8ddcf5aa6f9f23374276"
+    },
+    {
+      "uid": 243,
+      "tc": 0.03,
+      "name": "243_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+      "source_sha256": "0d640f53192d5522d4faf353b81231485d54394dffca8ddcf5aa6f9f23374276"
+    },
+    {
+      "uid": 246,
+      "tc": 0.02,
+      "name": "246_tc0.02",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/246/source.npz",
+      "source_sha256": "d8ff0b893e063436568bf45d20b71b9dc9f670bc904680112b76f5bec8882d88"
+    },
+    {
+      "uid": 246,
+      "tc": 0.03,
+      "name": "246_tc0.03",
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/246/source.npz",
+      "source_sha256": "d8ff0b893e063436568bf45d20b71b9dc9f670bc904680112b76f5bec8882d88"
+    }
+  ],
+  "workers": 4,
+  "selection_sha256": "b552963747accb28b8cb870cbe9e0092fb2dec68cf2fdddb49edd1f370ba9eeb",
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "b62e9f28dbf0868bf60a09ba2d8e7fd96468b69103e756bd6d4f11c77f42a8ed",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "5e1d56998d13decd7e0677b941cfa7ee069653dabd5d215d3826e7d9f288230f",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/align_finger_inertia.py": "fc0309083cd135a9a92efa09f16ffa87c2e43b16ec77711332d3392860a8f951",
+    "can_pos_recovery/repair_eef_slide.py": "5dc5bef75fb82c7a856d66fbfa6a7492bb4468d4ed21da074ce77cba4bc7803b",
+    "can_pos_recovery/eef_task_sequence.py": "55058f8da2beffc06683c801b262e8dcf7a74fd592000d2ec0ddad38d5d4d88e",
+    "can_pos_recovery/slide_predicate.py": "1474d2f6d68a293567afb6af359d27f03778f18596599a6a037e50531bb87283",
+    "baselines/eef_delta_control.py": "b9851553622bdc4535715b5c1307da6816a1135893d529e0d30de231a101a3c9"
+  },
+  "preset_sha256": {
+    "0.02": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+    "0.03": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  },
+  "fixed": {
+    "engine": "1.4.0",
+    "cone": "pyramidal",
+    "impratio": 1,
+    "neutral_collision": false,
+    "feedback": "refresh before each spring read and after each scene step"
+  },
+  "qualification": "Existing closure/day-stratified selected panel, with previous outcomes known. No new-engine results for these9 demos used for selection. Freeze all settings before execution; include all failures. Compare both same-hand rigid and existing original fixed-gripper controls. No population or calibrated-material claim from this panel alone."
+}

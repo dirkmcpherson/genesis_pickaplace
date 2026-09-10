@@ -1,0 +1,43 @@
+{
+  "jobs": [
+    [
+      233,
+      0
+    ],
+    [
+      184,
+      0.0005
+    ],
+    [
+      184,
+      0.001
+    ],
+    [
+      233,
+      0.0005
+    ],
+    [
+      233,
+      0.001
+    ],
+    [
+      113,
+      0.0005
+    ],
+    [
+      113,
+      0.001
+    ]
+  ],
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+  "preset_sha256": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a",
+  "hypothesis": "Allowing soft response through the full assumed 3 mm layer may overstate usable compression. Preserve material extent and test earlier stiffening at .5/1 mm; zero limit is exact original-contact control.",
+  "fixed": "Frozen critical-return mechanics, .03 pad time constant, same 3 mm material region and original mesh, source path/grip, full world, clocks, early yaw and ICs. No validation outcome used for fitting.",
+  "qualification": "Compression limits are declared exploratory material settings, not measured rubber strain. No torsional friction or impedance changes. Original incremental stiffness after the limit, not a hard geometric stop.",
+  "gate": "Zero limit must reproduce critical_return/233_tc0.02 exactly. Compare each candidate with same-hand rigid and full-3mm-soft controls on full sequences and real-video fidelity. Do not relax either score.",
+  "code_sha256": {
+    "can_pos_recovery/finite_compression_pads.py": "20e8ac92465cd109826a04179a145e9fbae6575ac9264a3c9c70ed34afb78a92",
+    "can_pos_recovery/run_limited_pad_compression.py": "0333a3467f33ae2104dbfda747da90edf0776a7f2c283cbffe5ea687a2b7e0d4",
+    "can_pos_recovery/run_hand_preset.py": "b3cc104fd6c54985e2a75a582cfc9d506a038a829d6799dca6969222d462e057"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "substep_calls": 100496,
+  "sampling": "One snapshot after constraint solve, before integration, at every eighth substep, including reset. Relative velocities precede current force integration.",
+  "kinds": {
+    "0": "other geometry",
+    "1": "finger geometry",
+    "2": "manipulated can"
+  },
+  "force_convention": "force acts on link_b; normal force = -force dot collision normal",
+  "utilization": "(abs(F dot d1)+abs(F dot d2))/(mu*Fn), using the pinned solver orthogonals; ignore near-zero Fn when interpreting ratios.",
+  "qualification": "Observer only. Must reproduce all saved reference arrays before diagnostic use. No physical coefficient measurement; contact rows are dependent samples."
+}

@@ -1,0 +1,51 @@
+{
+  "jobs": [
+    [
+      233,
+      0.02,
+      true
+    ],
+    [
+      233,
+      0.02,
+      false
+    ],
+    [
+      233,
+      0.03,
+      false
+    ],
+    [
+      184,
+      0.02,
+      false
+    ],
+    [
+      184,
+      0.03,
+      false
+    ],
+    [
+      113,
+      0.02,
+      false
+    ],
+    [
+      113,
+      0.03,
+      false
+    ]
+  ],
+  "hypothesis": "Align finger COM/inertia coordinate signs to their corresponding meshes; determine whether corrected dynamics change the full-task pad comparison.",
+  "fixed": "Critical-return presets, original collision meshes, source EEF/grip/timing, corrected early yaw, initial placements, world and both immutable scorers.",
+  "control": "233 original-inertia wrapper must reproduce critical_return/233_tc0.02 every saved array exactly.",
+  "qualification": "Mass magnitudes preserved; sign hypothesis supported by mesh integration and mirror geometry, not real mass measurements. No new parameter fit or validation outcomes used to choose signs.",
+  "code_sha256": {
+    "can_pos_recovery/run_aligned_finger_inertia.py": "c611ae50d596bc2816ef316e7e1efe20be96aab5e39aeed5d04ddad489f4842d",
+    "can_pos_recovery/align_finger_inertia.py": "fc0309083cd135a9a92efa09f16ffa87c2e43b16ec77711332d3392860a8f951",
+    "can_pos_recovery/run_hand_preset.py": "b3cc104fd6c54985e2a75a582cfc9d506a038a829d6799dca6969222d462e057",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b"
+  },
+  "audit_sha256": "46ce4f3cc0ee359e0fba7e140ff05c00c38bd68989aa9c8f1456f594e0d68fdd"
+}

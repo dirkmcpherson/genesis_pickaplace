@@ -1,0 +1,136 @@
+[
+  {
+    "uid": 233,
+    "tc": 0.02,
+    "original": false,
+    "name": "233_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 78.75938987731934,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/233_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json"
+    ],
+    "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd"
+  },
+  {
+    "uid": 233,
+    "tc": 0.02,
+    "original": true,
+    "name": "233_original_control",
+    "returncode": 0,
+    "elapsed_s": 79.00124764442444,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/233_original_control",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--original-inertia"
+    ],
+    "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd"
+  },
+  {
+    "uid": 233,
+    "tc": 0.03,
+    "original": false,
+    "name": "233_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 77.88310766220093,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/233_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json"
+    ],
+    "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+    "preset_sha256": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  },
+  {
+    "uid": 184,
+    "tc": 0.02,
+    "original": false,
+    "name": "184_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 216.539977312088,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/184_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json"
+    ],
+    "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd"
+  },
+  {
+    "uid": 184,
+    "tc": 0.03,
+    "original": false,
+    "name": "184_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 221.51341938972473,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/184_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json"
+    ],
+    "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+    "preset_sha256": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  },
+  {
+    "uid": 113,
+    "tc": 0.02,
+    "original": false,
+    "name": "113_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 280.6094195842743,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/113_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json"
+    ],
+    "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+    "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd"
+  },
+  {
+    "uid": 113,
+    "tc": 0.03,
+    "original": false,
+    "name": "113_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 276.17386198043823,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/113_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json"
+    ],
+    "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+    "preset_sha256": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+  }
+]

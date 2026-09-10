@@ -1,0 +1,51 @@
+{
+  "name": "184_pyramid_soft",
+  "uid": 184,
+  "frames": 3222,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_release",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 24.748858339824597
+  },
+  "metric": {
+    "uid": "184",
+    "n": 806,
+    "released": true,
+    "release_frame": 26,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 24.814858339824596,
+    "gain_m": 0.14926131180524915
+  },
+  "source_command_max_differences": {
+    "target_tool": 0.0,
+    "actions_eef": 2.9802322387695312e-08,
+    "actions_joint": 6.943823294136564e-11,
+    "mount": 0.0,
+    "source_grip": 0.0
+  },
+  "material_contact_count_sums": [
+    8059,
+    8059,
+    0
+  ],
+  "final_goal_shift_mm": 14.533374786376953,
+  "max_goal_shift_mm": 16.96042251586914,
+  "measured_tool_target_error_mm_p50_p95_max": [
+    0.620788672825979,
+    5.19675049295499,
+    7.204127513539502
+  ],
+  "approach_max_finger_target_error_deg": 0.0014929925838817835,
+  "max_abs_joint_velocity_rad_s": [
+    11.471976280212402,
+    11.55586051940918,
+    14.831498146057129,
+    17.932022094726562
+  ],
+  "max_used_feedback_difference_rad": 0.0
+}

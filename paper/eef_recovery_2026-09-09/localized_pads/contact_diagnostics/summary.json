@@ -1,0 +1,84 @@
+{
+  "all_reference_arrays_exact": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "substep_calls": 100496,
+  "contact_rows": 55748,
+  "finger_can_rows": 14,
+  "loaded_finger_can_rows": 14,
+  "qualification": "Dependent contact samples at 10 ms; Fn > 0.05 N excludes near-zero denominators for diagnostics only. Speeds are before current integration. Saturation does not by itself prove a higher-friction treatment helps. No scoring thresholds changed.",
+  "intervals": [
+    {
+      "start_s": 0,
+      "end_s": 5,
+      "n": 0
+    },
+    {
+      "start_s": 5,
+      "end_s": 6,
+      "n": 12,
+      "normal_force_N_p50_p95": [
+        1.4452415704727173,
+        7.124465286731715
+      ],
+      "tangent_speed_mm_s_p50_p95": [
+        34.89055950194597,
+        536.7747247219086
+      ],
+      "utilization_p50_p95": [
+        0.5495138466358185,
+        1.0000000089406966
+      ],
+      "saturation_fraction": 0.16666666666666666,
+      "moving_fraction": 1.0,
+      "saturation_fraction_among_moving": 0.16666666666666666,
+      "effective_mu_values": [
+        1.0
+      ]
+    },
+    {
+      "start_s": 6,
+      "end_s": 8,
+      "n": 2,
+      "normal_force_N_p50_p95": [
+        4.907188296318054,
+        7.137717711925506
+      ],
+      "tangent_speed_mm_s_p50_p95": [
+        438.80441784858704,
+        534.5457345247269
+      ],
+      "utilization_p50_p95": [
+        0.9729193150997162,
+        0.9972918778657913
+      ],
+      "saturation_fraction": 0.5,
+      "moving_fraction": 1.0,
+      "saturation_fraction_among_moving": 0.5,
+      "effective_mu_values": [
+        1.0
+      ]
+    },
+    {
+      "start_s": 8,
+      "end_s": 125.611,
+      "n": 0
+    }
+  ],
+  "first_loaded_finger_contact_s": 5.71,
+  "finding": "Only 14 sampled finger-can contacts; all distal links, at 5.71\u20135.89 s and two later contacts at 6.73/6.82 s. Most main-approach samples below the friction pyramid limit. This is a brief collision/ejection, not a sustained grasp slipping during carry.",
+  "limits": "One of eight substeps is sampled; fast transients may be missed. Pre-integration speed and current constraint force cannot be treated as steady-state friction data. No material treatment or causal friction ablation has been run."
+}

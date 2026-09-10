@@ -1,0 +1,20 @@
+{
+  "pinned_source": "/home/james/workspace/genesis_sim2real/Genesis/genesis/engine/solvers/rigid/constraint_solver_decomp.py",
+  "sha256": "e737c81005b691b91ed41cef702f926770d3bfb4970af5cfc85befe315c9a385",
+  "diagonal_formula": "t*(1+mu^2)*2*mu^2*(1-imp)/imp",
+  "relative_diagonal_at_fixed_t_imp": {
+    "0.5": 0.15625,
+    "0.75": 0.439453125,
+    "1": 1.0,
+    "2": 10.0
+  },
+  "qualification": "Constraint-ray regularization diagonal, not a direct physical stiffness or slip-rate prediction. Changing friction affects the constraint Jacobian and reference acceleration too.",
+  "pin_rationale": "cluster/patches/GENESIS_PIN.md documents reproducibility of upstream31951c3f plus two rendering patches; it does not establish optimal contact physics.",
+  "public_references": [
+    "https://github.com/Genesis-Embodied-AI/genesis-world/pull/3028",
+    "https://github.com/Genesis-Embodied-AI/genesis-world/pull/3072",
+    "https://genesis-world.readthedocs.io/en/latest/api_reference/engine/solvers/rigid_solver.html"
+  ],
+  "upstream_caveat": "Issue3051 was resolved by an armature override fix. Do not cite it as proof of unresolved manifold error or assume its benchmark result transfers to this hand.",
+  "historical_gate": "CAN_STARTING_POSITION.md:391\u2013418 rejected Genesis1.2.1 after 12 configurations: reported3.4x lower contact forces and pinch extrusion under matched geometry. Preserve this negative result; test1.4 separately after upstream friction/armature fixes. That historical gate claims old effective timeconst.0025; METHODS CHECK6 says this pinned tree actually honors geom.02, so inspect realized parameters in any new comparison."
+}

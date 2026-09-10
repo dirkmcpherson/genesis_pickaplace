@@ -1,0 +1,53 @@
+{
+  "name": "233_limit0",
+  "uid": 233,
+  "compression_limit_m": 0,
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 740,
+    "push_start": 825,
+    "contact_start": 859,
+    "final_surface_gap_m": -0.0001619423715192858,
+    "push_toward_goal_m": 0.024895139895028503,
+    "support_fraction": 0.8648648648648649
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06583805762848072,
+    "gain_m": 0.2163009044298509
+  },
+  "reference_arrays_exact": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "pad_counts_sum": [
+    13644,
+    0,
+    13644
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    15.602495193481445,
+    15.603218078613281,
+    30.616676330566406,
+    31.324501037597656
+  ]
+}

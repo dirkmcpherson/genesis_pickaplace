@@ -1,0 +1,50 @@
+{
+  "pad_timeconst_s": 0.03,
+  "soft_compression_limit_m": 0.001,
+  "regions": [
+    {
+      "link": "right_finger_prox_link",
+      "geom": 10,
+      "normal": [
+        0.3872324843550917,
+        0.9219821056073613,
+        0.0
+      ],
+      "offset_m": 0.0034121134635374736
+    },
+    {
+      "link": "left_finger_prox_link",
+      "geom": 11,
+      "normal": [
+        0.3872324843550917,
+        -0.9219821056073613,
+        0.0
+      ],
+      "offset_m": 0.003422466829866599
+    },
+    {
+      "link": "right_finger_dist_link",
+      "geom": 12,
+      "normal": [
+        0.09950371902099893,
+        0.9950371902099893,
+        0.0
+      ],
+      "offset_m": 0.003084673311748171
+    },
+    {
+      "link": "left_finger_dist_link",
+      "geom": 13,
+      "normal": [
+        0.09950371902099893,
+        -0.9950371902099893,
+        0.0
+      ],
+      "offset_m": 0.003084673311748171
+    }
+  ],
+  "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+  "law": "Soft restoring stiffness until the lesser of local layer thickness and declared compression limit; original incremental stiffness thereafter. Material region unchanged. Damping follows effective time constant; friction unchanged.",
+  "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance.",
+  "detection_calls": 100496
+}

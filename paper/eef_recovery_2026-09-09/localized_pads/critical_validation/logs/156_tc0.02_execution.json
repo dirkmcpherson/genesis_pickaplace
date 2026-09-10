@@ -1,0 +1,17 @@
+{
+  "name": "156_tc0.02",
+  "uid": 156,
+  "tc": 0.02,
+  "verify_actions": false,
+  "returncode": 0,
+  "elapsed_s": 386.3570394515991,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/156/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_validation/156_tc0.02",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json"
+  ]
+}

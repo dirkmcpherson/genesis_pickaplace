@@ -1,0 +1,769 @@
+{
+  "records": [
+    {
+      "uid": 173,
+      "day": "12-16",
+      "can_pos": [
+        0.45463697750675963,
+        -0.12727462166556902,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "290b26a5c49ca32bc215410d6fa38ffe11f56fda67492b41c5aa82d13d24bf96",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.06236302249324041,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 42.66
+    },
+    {
+      "uid": 220,
+      "day": "12-17",
+      "can_pos": [
+        0.5215917821406452,
+        0.07983953982200978,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "cb08083b133bae01d9f1e844332b3072b32673f19b237e1051eeac7f3c45a808",
+      "upright": true,
+      "cylinder_shelf_overlap": true,
+      "horizontal_overlap_m": 0.004591782140645123,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 83.25
+    },
+    {
+      "uid": 262,
+      "day": "12-18",
+      "can_pos": [
+        0.4575,
+        -0.0338,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "e73c972ef5a0ad4db8e8f9bfa2d40e7d6b5c85f2c5fa1c8ba93f8c1541a042e4",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.059500000000000025,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 29.73
+    },
+    {
+      "uid": 161,
+      "day": "12-16",
+      "can_pos": [
+        0.5682163911432807,
+        -0.12799027024006338,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "231dd1bab7f395b68c97167f4e47b3b04e29bb183cbdeaedfbe05b41f78958eb",
+      "upright": true,
+      "cylinder_shelf_overlap": true,
+      "horizontal_overlap_m": 0.033,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 67.02
+    },
+    {
+      "uid": 209,
+      "day": "12-17",
+      "can_pos": [
+        0.4777154112204348,
+        0.0015140723060939158,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "cd0d93c5a2197004c9b005bd591221d300815c9a05b47278a29bef9da0b20add",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.03928458877956523,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 42.989999999999995
+    },
+    {
+      "uid": 308,
+      "day": "12-18",
+      "can_pos": [
+        0.4841,
+        0.0833,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "408a7b263cf49d63a673f9b20231bf87b97cd913909f97b1cb49c4213ea4f4a9",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.03290000000000007,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 41.25
+    },
+    {
+      "uid": 179,
+      "day": "12-16",
+      "can_pos": [
+        0.4771279986804532,
+        0.18030741578311943,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "44648bf314b67580239fbc3ab38f2c68a6754a0ad5c95cd4e68765f95844440c",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.03987200131954685,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 47.58
+    },
+    {
+      "uid": 218,
+      "day": "12-17",
+      "can_pos": [
+        0.4975632292710389,
+        -0.170867200424479,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "d762cf2db071c2568445c4b3a38c0fe36de0873bafa1d74da2d06affe0c1ab36",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.019436770728961134,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 30.09
+    },
+    {
+      "uid": 254,
+      "day": "12-18",
+      "can_pos": [
+        0.5134,
+        0.1181,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "eceb2b94efe7adadb7463d50efe2eecf3c700616d34a66f38821bb52ca2c15a3",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.0036000000000000754,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 48.39
+    },
+    {
+      "uid": 137,
+      "day": "12-16",
+      "can_pos": [
+        0.42782545189022814,
+        -0.3144749336281556,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "c176b2803fa0fe2c8d63b156acf6321e00322e4fa695849913e5900b0b1fcf50",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.0891745481097719,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 58.919999999999995
+    },
+    {
+      "uid": 204,
+      "day": "12-17",
+      "can_pos": [
+        0.4652016340218137,
+        -0.10119002967500913,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "892e0910fe2a0c7dce19a4091f102c5faaeda0696113a2792f2e888c0b5e7052",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.05179836597818635,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 48.6
+    },
+    {
+      "uid": 298,
+      "day": "12-18",
+      "can_pos": [
+        0.4761,
+        -0.0412,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "a9281345e0f57690d71ce54061f54363605aad38439bf7012332652d43480ebe",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.04090000000000002,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 32.43
+    },
+    {
+      "uid": 139,
+      "day": "12-16",
+      "can_pos": [
+        0.44918152161092456,
+        -0.18681699990144768,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "1be1e000df630939e4164a9c80ffbedb80ab718200f56bca6e17fcd01e6e9d3f",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.06781847838907548,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 57.0
+    },
+    {
+      "uid": 196,
+      "day": "12-17",
+      "can_pos": [
+        0.5944020793945453,
+        -0.13007891237095237,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "276bb416c81b84ba094c77e2a4d3564fffa5792f11be28fa0b3133a5f8b3e741",
+      "upright": true,
+      "cylinder_shelf_overlap": true,
+      "horizontal_overlap_m": 0.033,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 73.47
+    },
+    {
+      "uid": 333,
+      "day": "12-18",
+      "can_pos": [
+        0.4381,
+        -0.2,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "ef4fb6653ca8f951b0ac9c396b651fa66026918a9c0351b332c71cd12da12a4d",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.07890000000000005,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 115.8
+    },
+    {
+      "uid": 162,
+      "day": "12-16",
+      "can_pos": [
+        0.4149262225957138,
+        -0.22333110430891728,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "94efde9a29bd4a4d04281164b30e1a6c8751d0ab9770efeb5efc22dc95f20ab2",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.10207377740428622,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 44.25
+    },
+    {
+      "uid": 225,
+      "day": "12-17",
+      "can_pos": [
+        0.46131349407840977,
+        -0.11307787982424732,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "7edbf0aa2ed1dddf31148c716d64eced3f5ce1c429494640168d1590c3afa412",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.055686505921590274,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 29.759999999999998
+    },
+    {
+      "uid": 232,
+      "day": "12-18",
+      "can_pos": [
+        0.4776,
+        0.1056,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "a2f1c866a53d06974231d5776c073b40edd398b1f421f09f110eeea04aa8b63b",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.03940000000000002,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 29.04
+    },
+    {
+      "uid": 165,
+      "day": "12-16",
+      "can_pos": [
+        0.45846668789662537,
+        -0.014959374436014099,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "adcdb6e48ae5f2d6d289c9ac653962cccc809945cb9309c09b551772f34fd67e",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.058533312103374674,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 42.87
+    },
+    {
+      "uid": 197,
+      "day": "12-17",
+      "can_pos": [
+        0.461500347291337,
+        -0.14054869899631353,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "38037701755abc65804d7b1383c87c75c93f510b8b6b88c3bb47091699063070",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.055499652708663055,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 67.47
+    },
+    {
+      "uid": 239,
+      "day": "12-18",
+      "can_pos": [
+        0.4381,
+        -0.05,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "1101598601be99ae266d71a1334073e144ccae930e0a787fd2ba9e36f6c07855",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.07890000000000005,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 87.75
+    },
+    {
+      "uid": 151,
+      "day": "12-16",
+      "can_pos": [
+        0.5581434651596322,
+        -0.09048200875886356,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "f0eff8e3ff269ebc766daccef100cfc3184066763ea491bf41160ddf96beea63",
+      "upright": true,
+      "cylinder_shelf_overlap": true,
+      "horizontal_overlap_m": 0.033,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 52.11
+    },
+    {
+      "uid": 201,
+      "day": "12-17",
+      "can_pos": [
+        0.5260232765902131,
+        -0.04672577841496138,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "6f1d095433de103245da69ed1bf4b24c0e1eb9e256f6683bbe5a066f6a87f7a6",
+      "upright": true,
+      "cylinder_shelf_overlap": true,
+      "horizontal_overlap_m": 0.009023276590213042,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 196.29
+    },
+    {
+      "uid": 248,
+      "day": "12-18",
+      "can_pos": [
+        0.4381,
+        0.1,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "ed7e4a26ab7b417a392e680900e1999bcd7624e4b61ca78176364c172f5521d9",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.07890000000000005,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 90.06
+    },
+    {
+      "uid": 180,
+      "day": "12-16",
+      "can_pos": [
+        0.49689081508311894,
+        -0.01576389424299514,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "ff4a2dc5c54564993ace4b9fb23198ef9cfe180de725d3dbb273e9ed82ae6178",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.0201091849168811,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 28.619999999999997
+    },
+    {
+      "uid": 210,
+      "day": "12-17",
+      "can_pos": [
+        0.4669334101685064,
+        -0.15916116112019316,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "26ddac354997c0d03e3f11574fb9b3d88663c38f85d0636e4cae3129fecb5d1d",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.05006658983149362,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 38.19
+    },
+    {
+      "uid": 244,
+      "day": "12-18",
+      "can_pos": [
+        0.4153,
+        -0.1727,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "d8e72df71507cbee43cc97751ae0c524aff6f214fb12658ab7878f23f5501ca2",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.10170000000000004,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 33.03
+    },
+    {
+      "uid": 154,
+      "day": "12-16",
+      "can_pos": [
+        0.4692530253935308,
+        0.018692149578498997,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "a1b8a175fb4f8c8ff8dcc578374cf4d61fe8b75d22b1c036bc51c4549e36cef5",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.047746974606469234,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 38.699999999999996
+    },
+    {
+      "uid": 213,
+      "day": "12-17",
+      "can_pos": [
+        0.44081178397595033,
+        0.003694044436356625,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "16fc6e47e279910a082e736a41b761308a64a888346bdab619425bb8c72b0a8e",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.07618821602404971,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 60.839999999999996
+    },
+    {
+      "uid": 242,
+      "day": "12-18",
+      "can_pos": [
+        0.4926,
+        0.1142,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "98da301e5de69fb9296b9941265ede0f84cd804a39d83e2a07370128cd9cdd31",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.02440000000000006,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 32.55
+    },
+    {
+      "uid": 138,
+      "day": "12-16",
+      "can_pos": [
+        0.4931176107138659,
+        -0.05147437379553241,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "51425df0df7a92481f78976e494457565e11cb5b08de32c1d622e88586144acb",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.023882389286134148,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 93.33
+    },
+    {
+      "uid": 231,
+      "day": "12-17",
+      "can_pos": [
+        0.376750119573179,
+        -0.24343801003708276,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "7d684ae08be535babb3a3d43e7ed2655ca37a79e669c75fd645a411d273545e4",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.14024988042682104,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 124.32
+    },
+    {
+      "uid": 263,
+      "day": "12-18",
+      "can_pos": [
+        0.4396,
+        -0.1976,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "1ea051687a18eb3792e53f9a419ef793c5f78881034f82922ad6b74660b6ab7b",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.07740000000000005,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 33.21
+    },
+    {
+      "uid": 158,
+      "day": "12-16",
+      "can_pos": [
+        0.47670638636816043,
+        -0.18248491871464578,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "a9c32b7d7f1e92b1330c25915a9eded5971aa5558c3ed5a03b94deb2c8ed61be",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.040293613631839614,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 46.199999999999996
+    },
+    {
+      "uid": 191,
+      "day": "12-17",
+      "can_pos": [
+        0.4765890907821123,
+        -0.12268573820236525,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "772bd31c019c4c9e0746b2c0b0ebc1e32282983792380d6b572b8ebfcc7b6450",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.04041090921788773,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 149.19
+    },
+    {
+      "uid": 320,
+      "day": "12-18",
+      "can_pos": [
+        0.4592,
+        0.1005,
+        0.113
+      ],
+      "can_quat": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "source_metadata_sha256": "3fc0eef615b7aa5732fea5f629b3df4e49eb49a80ab20e8dbf9f3286882aef38",
+      "upright": true,
+      "cylinder_shelf_overlap": false,
+      "horizontal_overlap_m": -0.057800000000000046,
+      "vertical_overlap_m": 0.101,
+      "source_duration_s": 75.92999999999999
+    }
+  ],
+  "flagged_uids": [
+    220,
+    161,
+    196,
+    151,
+    201
+  ],
+  "nonupright_uids": [],
+  "qualification": "Analytic upright cylinder r.033 h.101 against existing shelf AABB[.55,-.5625,.05] to[.95,.1875,.17]. Audit of current source metadata, not a real initial-pose measurement. Selected demos retained unchanged and flag disclosed; no outcome-based exclusion."
+}

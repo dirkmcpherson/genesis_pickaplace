@@ -1,0 +1,202 @@
+{
+  "records": [
+    {
+      "name": "full_cpu233",
+      "status": "complete",
+      "uid": 233,
+      "steps": 962,
+      "lanes": 1,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 751,
+        "push_start": 762,
+        "contact_start": 861,
+        "final_surface_gap_m": -7.761538819747726e-06,
+        "push_toward_goal_m": 0.04254789863343435,
+        "support_fraction": 0.8823529411764706
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599223846118026,
+        "gain_m": 0.21472191678305602
+      },
+      "final_goal_shift_mm": 9.86266040802002,
+      "final_tilt_deg": 0.014064967267354608,
+      "aggregate_decisions_per_second": 10.526895620700962,
+      "trace_sha256": "4df7245f2851e9bd5db9877cee0d14457ade4e3583af06cd14b768ef89320f14",
+      "diagnostic_sha256": "5db9dce4d6add18d82bca383e9578abc707368dca031c582a57b214405a67fe1"
+    },
+    {
+      "name": "full_gpu16_233",
+      "status": "complete",
+      "uid": 233,
+      "steps": 962,
+      "lanes": 16,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 751,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1487299623441882
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2147299623441882,
+        "gain_m": 0.21366600311617556
+      },
+      "final_goal_shift_mm": 51.59973907470703,
+      "final_tilt_deg": 90.05285805737611,
+      "aggregate_decisions_per_second": 75.68291086215369,
+      "trace_sha256": "b59289585b6a6e1007a0c1da536a23a9a6852171cb8fff9fa125fbd83bb28499",
+      "diagnostic_sha256": "270c2f97adb10c5b29d67c6e2fe6a10ba8d17c129b2219e7d835284e98ce3140"
+    },
+    {
+      "name": "full_gpu16_233_repeat",
+      "status": "complete",
+      "uid": 233,
+      "steps": 962,
+      "lanes": 16,
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 751,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.1487299623441882
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.2147299623441882,
+        "gain_m": 0.21366600311617556
+      },
+      "final_goal_shift_mm": 51.59973907470703,
+      "final_tilt_deg": 90.05285805737611,
+      "aggregate_decisions_per_second": 74.98239843922462,
+      "trace_sha256": "b59289585b6a6e1007a0c1da536a23a9a6852171cb8fff9fa125fbd83bb28499",
+      "diagnostic_sha256": "270c2f97adb10c5b29d67c6e2fe6a10ba8d17c129b2219e7d835284e98ce3140"
+    },
+    {
+      "name": "full_gpu16_262",
+      "status": "complete",
+      "uid": 262,
+      "steps": 991,
+      "lanes": 16,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 584,
+        "push_start": 610,
+        "contact_start": 891,
+        "final_surface_gap_m": -5.559237390581617e-06,
+        "push_toward_goal_m": 0.04908409651917476,
+        "support_fraction": 0.9049295774647887
+      },
+      "metric": {
+        "uid": "262",
+        "n": 248,
+        "released": true,
+        "release_frame": 45,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599444076260942,
+        "gain_m": 0.21933542305209738
+      },
+      "final_goal_shift_mm": 0.41250988841056824,
+      "final_tilt_deg": 0.016549440020689483,
+      "aggregate_decisions_per_second": 77.52854359718701,
+      "trace_sha256": "61cf577356ad9e14c4719910af393a37bbcb5848bf08fda15fb4846f1092763c",
+      "diagnostic_sha256": "15c7c730eea46b65b058adea8305a11bad76c34fc93f72a3cba0ccb90bf93c6b"
+    },
+    {
+      "name": "full_gpu16_262_repeat",
+      "status": "complete",
+      "uid": 262,
+      "steps": 991,
+      "lanes": 16,
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 584,
+        "push_start": 610,
+        "contact_start": 891,
+        "final_surface_gap_m": -5.559237390581617e-06,
+        "push_toward_goal_m": 0.04908409651917476,
+        "support_fraction": 0.9049295774647887
+      },
+      "metric": {
+        "uid": "262",
+        "n": 248,
+        "released": true,
+        "release_frame": 45,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06599444076260942,
+        "gain_m": 0.21933542305209738
+      },
+      "final_goal_shift_mm": 0.41250988841056824,
+      "final_tilt_deg": 0.016549440020689483,
+      "aggregate_decisions_per_second": 75.2379428796273,
+      "trace_sha256": "61cf577356ad9e14c4719910af393a37bbcb5848bf08fda15fb4846f1092763c",
+      "diagnostic_sha256": "15c7c730eea46b65b058adea8305a11bad76c34fc93f72a3cba0ccb90bf93c6b"
+    }
+  ],
+  "repeats": {
+    "233": {
+      "trace.npz": {
+        "state": true,
+        "arm_commands": true,
+        "source_grip": true,
+        "env_uids": true
+      },
+      "full_task_diagnostic.npz": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "wrist_pose": true,
+        "picked": true,
+        "env_uids": true
+      }
+    },
+    "262": {
+      "trace.npz": {
+        "state": true,
+        "arm_commands": true,
+        "source_grip": true,
+        "env_uids": true
+      },
+      "full_task_diagnostic.npz": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "wrist_pose": true,
+        "picked": true,
+        "env_uids": true
+      }
+    }
+  },
+  "completed_full_source_cases": 5,
+  "all_terminal": true,
+  "qualification": "Each case is one source replay/control even when it duplicates16 lanes. Repeatability does not imply CPU equivalence or real-world fidelity. Diagnostic arrays are not admitted training tapes."
+}

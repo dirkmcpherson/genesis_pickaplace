@@ -1,0 +1,8 @@
+{
+  "returncode": 0,
+  "session_id": 22146,
+  "substep_calls": 100496,
+  "full_source_actions": 4187,
+  "all_arrays_exact": true,
+  "every_substep_in_window": true
+}

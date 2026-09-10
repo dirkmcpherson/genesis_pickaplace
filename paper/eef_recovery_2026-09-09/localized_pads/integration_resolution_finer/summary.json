@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "substeps": 64,
+      "status": "complete",
+      "frames": 962,
+      "sha256": "c6b02a8bc0299bb6d838a74c07c7dd596eb583ce803accab5b8c73b2950955dd",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 756,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.9262769472675074
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.9922769472675075,
+        "gain_m": 0.19820948492748827
+      },
+      "final_goal_shift_mm": 0.23913104832172394,
+      "max_goal_shift_mm": 0.6364060640335083,
+      "substep_dt_s": 0.00015625
+    }
+  ],
+  "comparisons": [],
+  "completed_full_replays": 1,
+  "all_terminal": true,
+  "qualification": "Numerical refinement study on one selected recording, not new independent demonstrations or a material improvement claim. Success at one resolution is not convergence."
+}

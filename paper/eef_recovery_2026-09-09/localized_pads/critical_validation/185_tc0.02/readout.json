@@ -1,0 +1,43 @@
+{
+  "status": "complete",
+  "path": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_validation/185_tc0.02/185_eef_delta.npz",
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 962,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.09499718802555066
+  },
+  "metric": {
+    "uid": "185",
+    "n": 354,
+    "released": true,
+    "release_frame": 32,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.16099718802555066,
+    "gain_m": 0.23485027291073757
+  },
+  "final_goal_shift_mm": 60.4683980345726,
+  "max_goal_shift_mm": 62.15010583400726,
+  "final_can_to_initial_goal_mm": 109.85721945308545,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "material_counts_sum": [
+    8498,
+    0,
+    0
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    14.814528465270996,
+    14.814656257629395,
+    26.04791831970215,
+    25.777751922607422
+  ]
+}

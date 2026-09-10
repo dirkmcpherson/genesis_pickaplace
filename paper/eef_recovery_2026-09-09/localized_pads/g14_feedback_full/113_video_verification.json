@@ -1,0 +1,14 @@
+{
+  "all_frames_decoded": 100,
+  "trace_sha256": "23bd2b3db64e3d09ff506893958cd70ffd3e814e2d961b3741853689d1f231c2",
+  "video_sha256": "60bd5bfd6e84b1dbcbcec356498853608040c431f9fcef7cc70a6647600a0ce7",
+  "simulation_engine": "Genesis1.4, fresh-feedback elliptic ratio10, .03 s pads",
+  "rendering_engine": "Pinned Genesis; saved poses only, no physics stepping",
+  "max_camera4_time_error_s": 0.018053344858642184,
+  "max_camera0_time_error_s": 0.021274494858644744,
+  "clip_start_s": 6.12,
+  "clip_end_s": 23.939999999999998,
+  "scope": "Timing and full decoding verified; viewpoints differ, not a registered overlay.",
+  "contact_sheet_visually_inspected": true,
+  "visual_observation": "Real can remains upright in20.7/22.5s views while simulation falls/tips; whether real hand still supports it is unresolved."
+}

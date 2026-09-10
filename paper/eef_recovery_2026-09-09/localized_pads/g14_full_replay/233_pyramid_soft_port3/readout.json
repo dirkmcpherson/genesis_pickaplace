@@ -1,0 +1,49 @@
+{
+  "name": "233_pyramid_soft_port3",
+  "sequence": {
+    "complete": false,
+    "reason": "not_picked",
+    "release_start": null,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 3.03769180255556
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": false,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 3.1036918025555598,
+    "gain_m": 4.696301677098447e-06
+  },
+  "source_command_max_differences": {
+    "target_tool": 5.551115123125783e-16,
+    "actions_eef": 8.9462516783545e-08,
+    "actions_joint": 7.721911998714859e-11,
+    "mount": 0.0,
+    "source_grip": 0.0
+  },
+  "rigid_material_mapping_noop_exact": null,
+  "material_contact_count_sums": [
+    1495,
+    1495,
+    1639
+  ],
+  "can_mass_kg": 0.3455406427383423,
+  "final_goal_shift_mm": 7014.84912109375,
+  "max_goal_shift_mm": 7014.84912109375,
+  "measured_tool_target_error_mm_p50_p95_max": [
+    1.261581162468128,
+    5.328827258020449,
+    6.881719444315795
+  ],
+  "max_abs_joint_velocity_rad_s": [
+    35.582725524902344,
+    35.57371139526367,
+    70.84062194824219,
+    72.66524505615234
+  ]
+}

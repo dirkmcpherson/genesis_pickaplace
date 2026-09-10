@@ -1,0 +1,27 @@
+{
+  "uid": 243,
+  "day": "Dec18",
+  "condition": "soft",
+  "gain": 2.0,
+  "name": "243_soft_g2",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+  "source_sha256": "0d640f53192d5522d4faf353b81231485d54394dffca8ddcf5aa6f9f23374276",
+  "source_metadata_sha256": "65a9c7b5135dc92e36db3e447618f3d69ec51e16ab268c4bab3e15fce399d4b4",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "preset_sha256": "974d03715062c2bce9cc7085d0cc4bcfc5847e4eb82a0391760079b702188b5a",
+  "baseline": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/collection/243_eef_delta.npz",
+  "baseline_sha256": "bd99c53b39d5364fa2bfb34ed6f9bd1af9e982706a9fcac2f2d6e3c0aa6420b1",
+  "returncode": 0,
+  "elapsed_s": 70.29655122756958,
+  "cmd": [
+    "/tmp/genesis-contact-1.4/bin/python",
+    "can_pos_recovery/run_g14_normal_pad_damping.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/243/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/243_soft_g2",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+    "--gain",
+    "2.0"
+  ]
+}

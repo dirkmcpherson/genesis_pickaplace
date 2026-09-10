@@ -1,0 +1,46 @@
+[
+  {
+    "name": "supported_repeat_single233",
+    "returncode": 0,
+    "elapsed_s": 96.99975323677063,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/bench_native_batch_g14_v2.py",
+      "--trace",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/native_batch/supported_repeat_single233",
+      "--backend",
+      "gpu",
+      "--n-envs",
+      "0",
+      "--steps",
+      "400"
+    ]
+  },
+  {
+    "name": "supported_repeat_mixed16",
+    "returncode": 0,
+    "elapsed_s": 100.21791410446167,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/bench_native_batch_g14_v2.py",
+      "--trace",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/native_batch/supported_repeat_mixed16",
+      "--backend",
+      "gpu",
+      "--n-envs",
+      "16",
+      "--steps",
+      "400",
+      "--other-trace",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/expanded_panel/262_soft_g1/262_eef_delta.npz"
+    ]
+  }
+]

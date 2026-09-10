@@ -80,6 +80,20 @@ VARIANTS = {
     # data-fit alternative: real release tool z p50 0.177 (base) - grasp offset (0.020 + 0.03) = can
     # bottom 0.127 base-frame at release -> shelf top ~0.13 base = 0.21 world (= BOX_TOP_Z + 0.10)
     'gc_kp4_riser3_shelf10': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0, effort='base', riser=0.03, shelf_dz=0.10),
+    # ARM YAW (2026-09-08, paper/EARLY_TRIALS_ROTATION_2026-09-08.md): the 120 never-ingested
+    # trials (uids 110-231, recorded 12-15..12-17) were driven with the arm at a different yaw
+    # relative to the table/shelf/goal than the 12-18 session every frozen set comes from. Measured
+    # from the tapes alone: rotate each day about the robot base so its release cluster (the STATIC
+    # goal can) lands on 12-18's, then check the pick cloud, which was NOT used in the fit --
+    # 12-16 phi -9.7 deg (goal residual 1.9 cm, pick median 2.8 cm), 12-17 phi -19.2 deg (0.2 cm,
+    # 6.3 cm). The scene is authored in base-frame coordinates, so turning the MOUNT by `yaw`
+    # (degrees about +z) realizes "the arm is turned relative to the scene". Nothing else moves.
+    # These are per-DAY worlds for re-recording those trials; they are NOT candidates for the
+    # world of record and no frozen set uses them.
+    'gc_kp4_riser3_shelf6_yaw16': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0, effort='base',
+                                       riser=0.03, shelf_dz=0.06, yaw=-9.7),    # 2024-12-16 session
+    'gc_kp4_riser3_shelf6_yaw17': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0, effort='base',
+                                       riser=0.03, shelf_dz=0.06, yaw=-19.2),   # 2024-12-17 session
 }
 BOX_SIZE = (0.4, 0.75, 0.12); BOX_POS = (0.75, -0.1875, 0.05); BOX_TOP_Z = 0.11
 
@@ -98,6 +112,7 @@ def install(name):
         _installed['orig'] = gs.Scene.add_entity
     orig = _installed['orig']
     gc = float(v['gravity_comp']); riser = float(v.get('riser', 0.0)); shelf_dz = float(v.get('shelf_dz', 0.0))
+    yaw = float(v.get('yaw', 0.0))          # degrees about +z, applied to the robot mount (see add_entity)
 
     def add_entity(self, morph=None, material=None, surface=None, *a, **kw):
         if shelf_dz != 0.0 and isinstance(morph, gs.morphs.Box) and \
@@ -110,6 +125,22 @@ def install(name):
         if isinstance(morph, gs.morphs.URDF) and 'gen3' in str(getattr(morph, 'file', '')):
             if material is None and gc != 0.0:
                 material = gs.materials.Rigid(gravity_compensation=gc)
+            if yaw != 0.0:
+                # 2026-09-08: the arm sat at a different yaw relative to the table/shelf on the
+                # 12-16 and 12-17 recording days (paper/EARLY_TRIALS_ROTATION_2026-09-08.md).
+                # The scene (table, shelf, goal) is authored in base-frame coordinates, so rotating
+                # the MOUNT by yaw is exactly "the arm is turned by yaw relative to the scene".
+                # Set `quat`, NOT `euler`: Genesis morphs derive quat from euler in __init__ and use
+                # quat thereafter (genesis/options/morphs.py:69-71, "If specified, `euler` will be
+                # ignored"), so assigning euler after construction is silently inert -- the selftest's
+                # read-back of the BUILT base orientation caught exactly that.
+                import genesis as _gs
+                q = tuple(float(x) for x in _gs.utils.geom.xyz_to_quat(
+                    np.array([0.0, 0.0, float(yaw)]), rpy=True, degrees=True))
+                try:
+                    morph.quat = q
+                except Exception:
+                    object.__setattr__(morph, 'quat', q)
             if riser != 0.0:
                 pos = tuple(float(x) for x in morph.pos)
                 try:
@@ -158,7 +189,7 @@ def post_build(w, name):
         # the goal can rests on the shelf: its spawn height follows the shelf (read at every reset)
         w['goal_start_z'] = float(w['goal_start_z']) + float(v['shelf_dz'])
     return dict(name=name, kp=kp.tolist(), kv=kv.tolist(), effort=eff.tolist(), gravity_comp=v['gravity_comp'],
-                riser=float(v.get('riser', 0.0)), finger_force=v.get('finger_force'), finger_map=v.get('finger_map'),
+                riser=float(v.get('riser', 0.0)), yaw=float(v.get('yaw', 0.0)), finger_force=v.get('finger_force'), finger_map=v.get('finger_map'),
                 grasp_timeconst=v.get('grasp_timeconst'),
                 shelf_dz=float(v.get('shelf_dz', 0.0)), shelf_top=shelf_top(name))
 
@@ -173,4 +204,4 @@ def describe(name):
     v = VARIANTS[name]
     return dict(name=name, kp=(np.array(BASE_KP) * v['kp_mult']).tolist(), kv=(np.array(BASE_KV) * v['kv_mult']).tolist(),
                 effort=(URDF_EFFORT if v['effort'] == 'urdf' else BASE_EFFORT), gravity_comp=v['gravity_comp'],
-                riser=float(v.get('riser', 0.0)), finger_force=v.get('finger_force'), finger_map=v.get('finger_map'))
+                riser=float(v.get('riser', 0.0)), yaw=float(v.get('yaw', 0.0)), finger_force=v.get('finger_force'), finger_map=v.get('finger_map'))

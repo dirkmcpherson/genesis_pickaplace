@@ -1,0 +1,7 @@
+{
+  "max_arm_rad": 0.0009256601333618164,
+  "max_finger_rad": 0.140447199344635,
+  "max_can_position_m": 0.0034197771456092596,
+  "final_can_position_m": 0.0002967157051898539,
+  "qualification": "400-decision prefix only. CPU Torch2.8 versus GPU Torch2.7; not a supported-stack equivalence result or e2e validation."
+}

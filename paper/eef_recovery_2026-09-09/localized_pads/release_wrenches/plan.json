@@ -1,0 +1,37 @@
+{
+  "jobs": [
+    {
+      "uid": 113,
+      "windows": [
+        8,
+        8.1,
+        19.8,
+        20.5
+      ],
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+      "source_sha256": "06db2a3a7253d336a1710a42e0b969a7e3e60964343fa29fdeb7ada56703b985",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/113_elliptic10_soft/113_eef_delta.npz",
+      "reference_sha256": "23bd2b3db64e3d09ff506893958cd70ffd3e814e2d961b3741853689d1f231c2"
+    },
+    {
+      "uid": 233,
+      "windows": [
+        14,
+        14.1,
+        20,
+        25
+      ],
+      "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "source_sha256": "9807c0f9debc213b7839f23e010f4b4eac9edc31acbe84b72a338719bcdbf194",
+      "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz",
+      "reference_sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5"
+    }
+  ],
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+  "source_code_sha256": {
+    "can_pos_recovery/observe_g14_release_forces.py": "b335ddba933e18117b38678f445842e6f0ff5ba83c06ce7a63e2e631a49ad854",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640"
+  },
+  "purpose": "Distinguish loss of support from finger ejection and twisting during release. Every-substep observation only; require exact archived arrays and force/momentum sign check before interpretation. No treatment or new recovery claim."
+}

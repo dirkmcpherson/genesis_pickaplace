@@ -1,0 +1,14 @@
+{
+  "version": "1.4.0",
+  "files": {
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/materials/rigid.py": "4fca3e9d505e03d4496b2b8c4ef5a88a4cb6797e65f94c65f7da46b95a131704",
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/options/solvers.py": "463fac67ea719808ad2254d361685f05ada2206113e9448dcad2eb0a21ca33ca",
+    "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/collider/contact.py": "0461ff9939f5843c3c8f62abff72aed86526c3c633670501711e31e2dfe6cb16"
+  },
+  "current_options": {
+    "enable_torsional_friction": false,
+    "enable_rolling_friction": false
+  },
+  "source_findings": "Installed1.4 supports contact-normal spin resistance via friction_torsional (length units) and tangent-axis rolling resistance via friction_rolling. Existing comparisons disable both. Nonzero library defaults are not measured pad properties. Spatially localized patch moments would be a distinct untested physical hypothesis, not a visual texture.",
+  "decision": "No new treatment executed or selected from this source inspection. Resolve current contact-location and release mismatch first."
+}

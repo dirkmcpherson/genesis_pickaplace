@@ -1,0 +1,10 @@
+{
+  "uid": 113,
+  "reference": "paper/eef_recovery_2026-09-09/localized_pads/critical_return/113_tc0.03/113_eef_delta.npz",
+  "reference_sha256": "58acb64f44087713587828a1726c27d11961bd9fcf0e54064831abf2b4264703",
+  "hypothesis": "Determine whether early approach failure under the previously rejected soft hand is friction-saturated sliding or contact/geometry response. No material treatment.",
+  "gate": "Every saved reference array must reproduce exactly; runtime observer substep count must match transmission count.",
+  "scope": "All finger or manipulated-can contacts, sampled once per scene step immediately after constraint solve and before integration.",
+  "code_sha256": "1a51c28b2de073bbdc20aa1eecdc6eab3eed0e82397684614ebe854c14b65070",
+  "qualification": "Diagnostic velocities precede current integration; interpret impulses and geometry together, not a friction coefficient estimate."
+}

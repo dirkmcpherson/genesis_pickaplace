@@ -1,0 +1,76 @@
+{
+  "records": {
+    "cpu233_cg1000": {
+      "first_lane": {
+        "lane": 0,
+        "uid": 233,
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 753,
+          "push_start": 762,
+          "contact_start": 859,
+          "final_surface_gap_m": 9.014945983855382e-05,
+          "push_toward_goal_m": 0.03873291524395697,
+          "support_fraction": 0.88
+        },
+        "metric": {
+          "uid": "233",
+          "n": 241,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06609014945983856,
+          "gain_m": 0.2154599213676543
+        },
+        "final_goal_shift_mm": 5.041566371917725,
+        "max_goal_shift_mm": 5.135946750640869
+      },
+      "actual_envs": 1,
+      "aggregate_decisions_per_second": 23.861114395060703,
+      "trace_sha256": "962c30a05315b6dcef801b84f48e7a05031278e2416d0f17763129cea6b9986f",
+      "diagnostic_sha256": "9cce10289eb96f9db52dc6fef52d9e4ee53062f6566f5480d229339b35435554"
+    },
+    "gpu16_233_cg1000": {
+      "first_lane": {
+        "lane": 0,
+        "uid": 233,
+        "sequence": {
+          "complete": true,
+          "reason": "complete",
+          "release_start": 752,
+          "push_start": 763,
+          "contact_start": 860,
+          "final_surface_gap_m": 0.0001586288183590412,
+          "push_toward_goal_m": 0.03246230107346517,
+          "support_fraction": 0.89
+        },
+        "metric": {
+          "uid": "233",
+          "n": 241,
+          "released": true,
+          "release_frame": 1,
+          "pushed": true,
+          "arrived": true,
+          "slide_success": true,
+          "final_dist": 0.06615862881835904,
+          "gain_m": 0.21498570129579303
+        },
+        "final_goal_shift_mm": 0.8889749646186829,
+        "max_goal_shift_mm": 2.123577117919922
+      },
+      "actual_envs": 16,
+      "aggregate_decisions_per_second": 112.55570449355562,
+      "trace_sha256": "bc42f99ce639fc87a97b673fdbdad249396c32b09d9cd5d219bfc85a6e715d02",
+      "diagnostic_sha256": "bedc7a6e6eefce54e96b75d8cda1d76c739f3bf121e66fd28baaf13c70f0eb79"
+    }
+  },
+  "comparison": {
+    "max_can_difference_mm": 14.023859024047852,
+    "final_can_difference_mm": 10.955031394958496,
+    "first_over_1mm_s": 6.029999999999999
+  },
+  "qualification": "CPU port exactly matches independent cap1000 replay; all duplicate GPU lanes match. CPU and GPU both complete233 at cap1000, whereas earlier GPU cap100 tipped. Physical state equivalence is still not established; this is one recording, not a new pad configuration or independent16-demo sample. This cap1000 GPU case has not been repeated."
+}

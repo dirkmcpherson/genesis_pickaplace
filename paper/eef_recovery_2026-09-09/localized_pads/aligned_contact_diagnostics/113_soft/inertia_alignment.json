@@ -1,0 +1,197 @@
+{
+  "audit": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/audit.json",
+  "audit_sha256": "46ce4f3cc0ee359e0fba7e140ff05c00c38bd68989aa9c8f1456f594e0d68fdd",
+  "before_sha256": "aa22ab836119f742d0b07fe0f289af32c44c5a724239cbc9708b552525b62537",
+  "after_sha256": "13beaaca12e550352054eae84a4425fcf13578654e8fc5b37705be8878be640e",
+  "changes": [
+    {
+      "link": "right_finger_prox_link",
+      "before_com": [
+        0.020257,
+        0.0063483,
+        6.991e-05
+      ],
+      "after_com": [
+        -0.020257,
+        0.0063483,
+        6.991e-05
+      ],
+      "before_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "after_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ]
+    },
+    {
+      "link": "right_finger_dist_link",
+      "before_com": [
+        0.018488,
+        0.0011091,
+        0.0
+      ],
+      "after_com": [
+        -0.018488,
+        0.0011091,
+        0.0
+      ],
+      "before_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "after_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ]
+    },
+    {
+      "link": "left_finger_prox_link",
+      "before_com": [
+        0.020257,
+        0.0063483,
+        6.99e-05
+      ],
+      "after_com": [
+        -0.020257,
+        -0.0063483,
+        6.99e-05
+      ],
+      "before_inertia": [
+        [
+          2.29e-06,
+          1.43e-06,
+          0.0
+        ],
+        [
+          1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ],
+      "after_inertia": [
+        [
+          2.29e-06,
+          -1.43e-06,
+          0.0
+        ],
+        [
+          -1.43e-06,
+          4.56e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.77e-06
+        ]
+      ]
+    },
+    {
+      "link": "left_finger_dist_link",
+      "before_com": [
+        -0.018488,
+        0.0011091,
+        0.0
+      ],
+      "after_com": [
+        -0.018488,
+        -0.0011091,
+        -0.0
+      ],
+      "before_inertia": [
+        [
+          6.3e-07,
+          3.2e-07,
+          0.0
+        ],
+        [
+          3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ],
+      "after_inertia": [
+        [
+          6.3e-07,
+          -3.2e-07,
+          0.0
+        ],
+        [
+          -3.2e-07,
+          1.83e-06,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.61e-06
+        ]
+      ]
+    }
+  ],
+  "qualification": "Mesh uniform density is corroborating evidence, not a material-density measurement. Proposed correction preserves published mass, COM magnitudes and inertia magnitudes, aligning signs with corresponding mesh/mirror geometry. Three COMs outside mesh bounds are impossible for mass confined to those meshes; undocumented extra mass outside geometry would be an alternative explanation."
+}

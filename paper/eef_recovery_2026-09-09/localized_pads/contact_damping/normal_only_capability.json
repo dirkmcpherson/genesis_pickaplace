@@ -1,0 +1,19 @@
+{
+  "status": "source-inspected hypothesis; not implemented or tested",
+  "source_sha256": {
+    "engine/solvers/rigid/rigid_solver.py": "db3f8039a177078946fafb22492db8d65bc1deb40e304d5ba4db61650f5f6bf2",
+    "engine/solvers/rigid/constraint/solver.py": "7affdbe0e599597799fbf3194c17381478b40cf9d64a38fe2d9d716319d284fb",
+    "utils/geom.py": "1101daaabf267aeed5acded07e24ff69a49b1aefc23e9eeb441d06b0afcf28c3"
+  },
+  "finding": "Python ConstraintSolver.resolve runs after add_inequality_constraints and before func_solve_body. An isolated wrapper could alter only classified pad contact normal-row aref before solving, leaving contact sol_params and tangent rows unchanged.",
+  "prospective_change": "normal aref -= (gain-1)*b*(normal Jacobian dot current generalized velocity). Leave impedance, normal elastic term, tangent aref, Coulomb coefficient and geometry unchanged.",
+  "requirements": [
+    "Verify actual contact row mapping against contact_sort_idx and equality/frictionloss offsets; islands and torsion/rolling currently disabled.",
+    "Check assembled original normal aref against installed imp_aref and current Jacobian velocity before modifying it.",
+    "Verify identity control is exact and untouched rows/parameters remain exact at each step.",
+    "Apply by material region against every object, throughout the entire source replay.",
+    "No separate backward/autodiff correctness claim; these recovery runs are forward simulation.",
+    "Same-damping rigid/soft full-task controls and original placements; no adoption from one or conditional success."
+  ],
+  "qualification": "This would isolate the normal damping hypothesis left unresolved by the current coupled normal/tangent damping regression. Feasibility inspection is not an implemented remedy or evidence of recovery benefit."
+}

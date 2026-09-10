@@ -1,0 +1,26 @@
+{
+  "completed": [
+    {
+      "name": "legacy",
+      "session_id": 33923,
+      "returncode": 0
+    },
+    {
+      "name": "g14_pyramid1_v3",
+      "session_id": 41340,
+      "returncode": 0
+    },
+    {
+      "name": "g14_elliptic1",
+      "session_id": 31141,
+      "returncode": 0
+    },
+    {
+      "name": "g14_elliptic10_v3",
+      "session_id": 36624,
+      "returncode": 0
+    }
+  ],
+  "pre_step_failures": 4,
+  "all_cases_per_completed_condition": 8
+}

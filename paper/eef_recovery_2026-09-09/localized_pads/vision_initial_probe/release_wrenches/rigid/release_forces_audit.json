@@ -1,0 +1,27 @@
+{
+  "windows_s": [
+    [
+      19.8,
+      20.6
+    ]
+  ],
+  "substep_dt_s": 0.00125,
+  "observer_calls": 100496,
+  "can_mass_kg": 0.3455406427383423,
+  "geom_labels": {
+    "3": "base_link",
+    "4": "shoulder_link",
+    "5": "arm_link",
+    "6": "forearm_link",
+    "7": "lower_wrist_link",
+    "8": "upper_wrist_link",
+    "9": "end_effector_link",
+    "10": "right_finger_prox_link",
+    "11": "right_finger_dist_link",
+    "12": "left_finger_prox_link",
+    "13": "left_finger_dist_link",
+    "14": "bottle",
+    "15": "goal"
+  },
+  "qualification": "Every substep in declared windows, after constraint solve and before integration. Velocities precede current impulse. Force acts on link_b; can-force sign chosen by geometry side. Net contact force and next-step linear momentum must agree before interpretation. Exact saved-reference replay required. No physical parameter or source change."
+}

@@ -1,0 +1,15 @@
+{
+  "uid": 233,
+  "purpose": "First full-world compatibility and four-condition contact comparison; no e2e adoption from one demo",
+  "conditions": [
+    "233_pyramid_rigid_port2",
+    "233_pyramid_soft",
+    "233_elliptic10_rigid",
+    "233_elliptic10_soft"
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "25cedb52b808ad62d6ebc7cbf735747ae8b32d870943fd1584e0485c1c37eaf0",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "fbe79fae5516153277e434af2b4f3feaa4aaade7e66b696ad94f3deb14047d11"
+  },
+  "known_control": "pyramid rigid completed, not_picked; remaining conditions declared before execution"
+}

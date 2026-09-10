@@ -1,0 +1,12 @@
+{
+  "uid": 113,
+  "window_s": [
+    7,
+    16
+  ],
+  "every_substep": true,
+  "reference": "paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/113_tc0.03/113_eef_delta.npz",
+  "hypothesis": "Aligned soft hand now captures 113 but loses it during carry. Determine force utilization and slip before loss; old-hand approach diagnostic does not diagnose this failure.",
+  "gate": "All saved arrays must match aligned reference and all callback counts match. No physics changes.",
+  "observer_sha256": "949cedbd0c77e4962e33295ea77fedb65a9f49c30a7c9db6b48cbff6f7071385"
+}

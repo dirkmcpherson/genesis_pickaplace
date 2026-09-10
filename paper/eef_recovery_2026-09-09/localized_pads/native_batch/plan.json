@@ -1,0 +1,24 @@
+{
+  "purpose": "User-requested native GPU batching, separate from expanded CPU material comparison.",
+  "source_code_sha256": {
+    "can_pos_recovery/bench_native_batch_g14.py": "9544cb5213b2f5cd729ec594bcc3b1f24ded587758daf552d9f70cac8b6c67c0",
+    "can_pos_recovery/batched_surface_pad_candidate_g14.py": "2142f213ac9ee2c115df749fecc64f0d4a957556a27ff6626a8f4d16d6332365",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3"
+  },
+  "cases": [
+    "CPU standalone400 decisions (completed)",
+    "CPU standalone entire233 (running)",
+    "CUDA16 copies400 decisions (Torch2.7 compatibility probe, running)",
+    "Supported Torch2.8 CUDA stack install (running); rerun GPU comparisons before any adoption"
+  ],
+  "scope": "Copied233 only for implementation equivalence and throughput, not extra unique demos. Existing normal-gain1 soft material. No damping2, heterogeneous episode exporter or task reconstruction claim yet.",
+  "gates": [
+    "No CPU fallback accepted as GPU result.",
+    "CPU port must match archived complete physical state.",
+    "Compare same-GPU standalone to native16/64 before scaling.",
+    "Check duplicates and heterogeneous environment independence, memory and warm throughput.",
+    "Full source/geometry/controls and scoring remain required before batch outputs can enter comparisons."
+  ]
+}

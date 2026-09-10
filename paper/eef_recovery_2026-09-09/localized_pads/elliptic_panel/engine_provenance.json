@@ -1,0 +1,10 @@
+{
+  "engine_root": "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis",
+  "source_sha256": {
+    "utils/geom.py": "1101daaabf267aeed5acded07e24ff69a49b1aefc23e9eeb441d06b0afcf28c3",
+    "engine/solvers/rigid/constraint/solver.py": "7affdbe0e599597799fbf3194c17381478b40cf9d64a38fe2d9d716319d284fb",
+    "engine/solvers/rigid/rigid_solver.py": "db3f8039a177078946fafb22492db8d65bc1deb40e304d5ba4db61650f5f6bf2"
+  },
+  "exact_match_to_verified_normal_damping_engine": true,
+  "qualification": "Recorded immediately after panel launch; all three engine source files exactly match the preceding verified implementation experiment."
+}

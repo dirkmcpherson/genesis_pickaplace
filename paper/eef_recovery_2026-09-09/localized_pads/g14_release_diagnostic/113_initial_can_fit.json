@@ -1,0 +1,2358 @@
+{
+  "nominal": {
+    "focal_multiplier": 1.0,
+    "k1": -0.1274681245280161,
+    "annotation_perturbation": "nominal",
+    "fit_success": true,
+    "rim_rms_px": 0.5731944571939529,
+    "can_center_arm_m": [
+      0.4378618266676494,
+      -0.07775362185791553,
+      0.04618623048068187
+    ],
+    "can_center_world_m": [
+      0.4185012613421907,
+      -0.15041708420172795,
+      0.12618622869254253
+    ],
+    "difference_from_archived_settled_world_m": [
+      0.0022172734088627966,
+      -0.001493956231550353,
+      0.02568622869254253
+    ]
+  },
+  "records": [
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5757140352115402,
+      "can_center_arm_m": [
+        0.43152464053316103,
+        -0.07673561400231325,
+        0.05819038828844731
+      ],
+      "can_center_world_m": [
+        0.4124261985065088,
+        -0.14834588173945246,
+        0.13819038650030796
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0038577894268190804,
+        0.0005772462307251369,
+        0.037690386500307954
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5687089607449743,
+      "can_center_arm_m": [
+        0.4317919800709846,
+        -0.07438303241953657,
+        0.0582299636044649
+      ],
+      "can_center_world_m": [
+        0.41308610103790283,
+        -0.14607197778783892,
+        0.13822996181632555
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0031978868954250506,
+        0.0028511501823386687,
+        0.03772996181632554
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5839324386002672,
+      "can_center_arm_m": [
+        0.43125031955080956,
+        -0.07908770461463764,
+        0.05816066698965218
+      ],
+      "can_center_world_m": [
+        0.4117594970643388,
+        -0.1506181254405002,
+        0.13816066520151282
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.004524490868989095,
+        -0.0016949974703226178,
+        0.037660665201512816
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5871917008859018,
+      "can_center_arm_m": [
+        0.43302227913267,
+        -0.07694303515263036,
+        0.06013955784634886
+      ],
+      "can_center_world_m": [
+        0.41386747780649574,
+        -0.14880267369184122,
+        0.14013955605820952
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0024165101268321387,
+        0.00012045427833637379,
+        0.03963955605820951
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5661498555929676,
+      "can_center_arm_m": [
+        0.4300032098008379,
+        -0.07652584475520027,
+        0.056268337140571015
+      ],
+      "can_center_world_m": [
+        0.4109618628480708,
+        -0.14788276653810561,
+        0.13626833535243166
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.00532212508525709,
+        0.001040361432071979,
+        0.03576833535243165
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5507461905531039,
+      "can_center_arm_m": [
+        0.44721747899893843,
+        -0.07792375783336442,
+        0.03207839541571686
+      ],
+      "can_center_world_m": [
+        0.427694494187903,
+        -0.1521611159212251,
+        0.11207839362757752
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.011410506254575126,
+        -0.0032379879510475162,
+        0.01157839362757751
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.25,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6136013877142581,
+      "can_center_arm_m": [
+        0.41733028724991683,
+        -0.07566077844464983,
+        0.08181688966445391
+      ],
+      "can_center_world_m": [
+        0.39861587362558704,
+        -0.1448948147611173,
+        0.16181688787631457
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.017668114307740845,
+        0.0040283132090603024,
+        0.06131688787631456
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5335384999342587,
+      "can_center_arm_m": [
+        0.4323363659845405,
+        -0.07663104016461225,
+        0.05595121775847892
+      ],
+      "can_center_world_m": [
+        0.413243938680762,
+        -0.14837957006623106,
+        0.13595121597033957
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0030400492525659017,
+        0.0005435579039465288,
+        0.03545121597033957
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5302364202002731,
+      "can_center_arm_m": [
+        0.43263753069135025,
+        -0.07427360384210548,
+        0.05594295287844993
+      ],
+      "can_center_world_m": [
+        0.4139380007706491,
+        -0.14610657996271464,
+        0.13594295109031057
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0023459871626788087,
+        0.002816548007462949,
+        0.035442951090310565
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5387822282499456,
+      "can_center_arm_m": [
+        0.4320327676472468,
+        -0.07898828979085581,
+        0.055962794594461004
+      ],
+      "can_center_world_m": [
+        0.4125475092092046,
+        -0.15065196610169213,
+        0.13596279280632168
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0037364787241233044,
+        -0.0017288381315145318,
+        0.03546279280632167
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5398173231720654,
+      "can_center_arm_m": [
+        0.4337474296685849,
+        -0.0768269304979097,
+        0.058044012672113336
+      ],
+      "can_center_world_m": [
+        0.4146018236065623,
+        -0.14881040909811266,
+        0.138044010883974
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0016821643267656006,
+        0.00011271887206493192,
+        0.037544010883973994
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5299286179161822,
+      "can_center_arm_m": [
+        0.4309157184510894,
+        -0.07643402136925309,
+        0.05386146053350586
+      ],
+      "can_center_world_m": [
+        0.4118767970552392,
+        -0.1479460039284983,
+        0.1338614587453665
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.004407190878088663,
+        0.0009771240416792948,
+        0.0333614587453665
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5264829840444722,
+      "can_center_arm_m": [
+        0.44804409326838285,
+        -0.07773414896118551,
+        0.029550135485422402
+      ],
+      "can_center_world_m": [
+        0.42854123782234144,
+        -0.1521134935273741,
+        0.10955013369728306
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.012257249889013555,
+        -0.0031903655571965117,
+        0.009050133697283053
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.5542996240299632,
+      "can_center_arm_m": [
+        0.4181427141488408,
+        -0.07563473419380112,
+        0.07981667633601584
+      ],
+      "can_center_world_m": [
+        0.3994210738174015,
+        -0.1450060281604872,
+        0.1598166745478765
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.016862914115926386,
+        0.003917099809690405,
+        0.05931667454787651
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5262424914295113,
+      "can_center_arm_m": [
+        0.4331463915818477,
+        -0.07651111978349173,
+        0.053685559722434086
+      ],
+      "can_center_world_m": [
+        0.414062589032608,
+        -0.14839784484456867,
+        0.13368555793429474
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.002221398900719873,
+        0.0005252831256089274,
+        0.03318555793429473
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5278202467810695,
+      "can_center_arm_m": [
+        0.4334797601763109,
+        -0.07414843761116299,
+        0.05363086661014744
+      ],
+      "can_center_world_m": [
+        0.41478927847625396,
+        -0.1461251099018822,
+        0.1336308648220081
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0014947094570739172,
+        0.0027980180682953826,
+        0.03313086482200808
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5272618995670735,
+      "can_center_arm_m": [
+        0.43281285388442337,
+        -0.078873783822052,
+        0.05374053015722513
+      ],
+      "can_center_world_m": [
+        0.4133357359589343,
+        -0.1506705334206829,
+        0.1337405283690858
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0029482519743935787,
+        -0.0017474054505053072,
+        0.03324052836908578
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5242025501567785,
+      "can_center_arm_m": [
+        0.43447296558047577,
+        -0.07669661843505933,
+        0.0559207916467497
+      ],
+      "can_center_world_m": [
+        0.41533894307050917,
+        -0.1488042051446755,
+        0.13592078985861036
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0009450448628187114,
+        0.00011892282550210465,
+        0.03542078985861036
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5315685332689247,
+      "can_center_arm_m": [
+        0.4318121786581536,
+        -0.07632487731849259,
+        0.051449569518222396
+      ],
+      "can_center_world_m": [
+        0.41277883060444187,
+        -0.14798946428720364,
+        0.13144956773008304
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0035051573288860105,
+        0.0009336636829739564,
+        0.030949567730083033
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5350480714861349,
+      "can_center_arm_m": [
+        0.44886399727706927,
+        -0.07752548439682974,
+        0.02700254798615783
+      ],
+      "can_center_world_m": [
+        0.4293845778113143,
+        -0.15204595726395123,
+        0.1070025461980185
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.013100589877986402,
+        -0.003122829293773638,
+        0.006502546198018488
+      ]
+    },
+    {
+      "focal_multiplier": 0.8,
+      "k1": 0.0,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.530140002313178,
+      "can_center_arm_m": [
+        0.41895555369560944,
+        -0.07559600552001207,
+        0.07778644214909593
+      ],
+      "can_center_world_m": [
+        0.4002288179482355,
+        -0.14510480800695227,
+        0.15778644036095657
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.016055169985092377,
+        0.0038183199632253195,
+        0.057286440360956564
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5965105267149365,
+      "can_center_arm_m": [
+        0.4342244370462586,
+        -0.07727298821381341,
+        0.053195456563167154
+      ],
+      "can_center_world_m": [
+        0.4149968554433627,
+        -0.1493304604149906,
+        0.1331954547750278
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0012871324899652037,
+        -0.00040733244481300224,
+        0.032695454775027805
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5890124855675138,
+      "can_center_arm_m": [
+        0.43447205675196915,
+        -0.07492227793887905,
+        0.0532666842736033
+      ],
+      "can_center_world_m": [
+        0.41563700477234233,
+        -0.14705507843564186,
+        0.13326668248546397
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0006469831609855481,
+        0.0018680495345357317,
+        0.032766682485463966
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.604920477602114,
+      "can_center_arm_m": [
+        0.43391875484662706,
+        -0.07961890753974393,
+        0.05321914186038637
+      ],
+      "can_center_world_m": [
+        0.41430028093679183,
+        -0.15159133702545421,
+        0.13321914007224703
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.00198370699653605,
+        -0.0026682090552766213,
+        0.03271914007224702
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6082399831888202,
+      "can_center_arm_m": [
+        0.4357173056476097,
+        -0.07747508445567666,
+        0.05514009719153122
+      ],
+      "can_center_world_m": [
+        0.41643433013016684,
+        -0.14978119989259647,
+        0.1351400954033919
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00015034219683895955,
+        -0.0008580719224188793,
+        0.034640095403391885
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5862481161721794,
+      "can_center_arm_m": [
+        0.4327113327243005,
+        -0.07706868087805598,
+        0.051273040137360074
+      ],
+      "can_center_world_m": [
+        0.41353980688242026,
+        -0.14887413195036414,
+        0.13127303834922072
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0027441810509076237,
+        4.899601981345203e-05,
+        0.03077303834922071
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5663255223904747,
+      "can_center_arm_m": [
+        0.45194700272379523,
+        -0.07877991963270552,
+        0.02397838637178087
+      ],
+      "can_center_world_m": [
+        0.43221214795283736,
+        -0.15380191211539698,
+        0.10397838458364153
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.015928160019509474,
+        -0.004878784145219389,
+        0.003478384583641525
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.25,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6390755513073771,
+      "can_center_arm_m": [
+        0.41819133464818303,
+        -0.07590964764281719,
+        0.07963478584490659
+      ],
+      "can_center_world_m": [
+        0.3994226792145512,
+        -0.1452852033386571,
+        0.15963478405676723
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.01686130871877667,
+        0.0036379246315204894,
+        0.059134784056767226
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5526392080462358,
+      "can_center_arm_m": [
+        0.43500911021907857,
+        -0.07720183448564946,
+        0.051169614958174445
+      ],
+      "can_center_world_m": [
+        0.4157822991591437,
+        -0.14939253303790093,
+        0.13116961317003512
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0005016887741841614,
+        -0.000469405067723333,
+        0.03066961317003511
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5472757202966831,
+      "can_center_arm_m": [
+        0.4353112088472993,
+        -0.07484953940448288,
+        0.051157264160677215
+      ],
+      "can_center_world_m": [
+        0.4164764155740183,
+        -0.1471247680296483,
+        0.13115726237253789
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00019242764069044016,
+        0.0017983599405292927,
+        0.03065726237253788
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5594393591542586,
+      "can_center_arm_m": [
+        0.4347020453743508,
+        -0.07955371575055134,
+        0.05118956415562508
+      ],
+      "can_center_world_m": [
+        0.41508335725108125,
+        -0.15165905339126598,
+        0.13118956236748575
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0012006306822466284,
+        -0.0027359254210883865,
+        0.03068956236748574
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.561552341743301,
+      "can_center_arm_m": [
+        0.4364247928023482,
+        -0.077393462437793,
+        0.05324131109638155
+      ],
+      "can_center_world_m": [
+        0.4171454551159053,
+        -0.14981994886138109,
+        0.1332413093082422
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0008614671825774023,
+        -0.0008968208912034925,
+        0.032741309308242206
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5457143595787188,
+      "can_center_arm_m": [
+        0.4335728559434921,
+        -0.07700817164502681,
+        0.04912099136768638
+      ],
+      "can_center_world_m": [
+        0.4143992084710225,
+        -0.14895964530602251,
+        0.12912098957954704
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0018847794623053638,
+        -3.651733584492112e-05,
+        0.028620989579547035
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5365682877725821,
+      "can_center_arm_m": [
+        0.4527412673234156,
+        -0.07863415051569003,
+        0.021704523678631075
+      ],
+      "can_center_world_m": [
+        0.43301961787218785,
+        -0.1537920521443192,
+        0.10170452189049173
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.016735629938859964,
+        -0.0048689241741416145,
+        0.001204521890491722
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.5821534042549634,
+      "can_center_arm_m": [
+        0.41897698578138565,
+        -0.07590725303370571,
+        0.07781790846176634
+      ],
+      "can_center_world_m": [
+        0.40019750172765844,
+        -0.14541521683963904,
+        0.157817906673627
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.016086486205669437,
+        0.0035079111305385546,
+        0.05731790667362699
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5284502160734585,
+      "can_center_arm_m": [
+        0.4357944787067776,
+        -0.07711844286350875,
+        0.0491143555204392
+      ],
+      "can_center_world_m": [
+        0.4165704902044306,
+        -0.149442659879449,
+        0.12911435373229985
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00028650227110271764,
+        -0.0005195319092713979,
+        0.02861435373229984
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5261112809271088,
+      "can_center_arm_m": [
+        0.4361265152368321,
+        -0.0747624719575221,
+        0.0490583263329731
+      ],
+      "can_center_world_m": [
+        0.4172947358504368,
+        -0.1471763158165611,
+        0.12905832454483376
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0010107479171089229,
+        0.0017468121536164949,
+        0.028558324544833757
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5327706041303584,
+      "can_center_arm_m": [
+        0.4354619647051844,
+        -0.07947431577340248,
+        0.04917109925943167
+      ],
+      "can_center_world_m": [
+        0.4158457904243739,
+        -0.15170882689836276,
+        0.12917109747129232
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0004381975089539636,
+        -0.0027856989281851707,
+        0.028671097471292317
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5324490423167426,
+      "can_center_arm_m": [
+        0.4371321316240663,
+        -0.0773001262209236,
+        0.05131629358831343
+      ],
+      "can_center_world_m": [
+        0.4178584076074424,
+        -0.1498471261110575,
+        0.1313162918001741
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0015744196741145355,
+        -0.0009239981408799003,
+        0.03081629180017409
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5270256808915618,
+      "can_center_arm_m": [
+        0.43444842731768407,
+        -0.07693591509298833,
+        0.04691452629765909
+      ],
+      "can_center_world_m": [
+        0.415274436673276,
+        -0.14903594625357253,
+        0.12691452450951973
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.0010095512600518664,
+        -0.00011281828339493316,
+        0.026414524509519727
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5263807579956803,
+      "can_center_arm_m": [
+        0.45354235500083895,
+        -0.07847352902731597,
+        0.019388131724858114
+      ],
+      "can_center_world_m": [
+        0.4338363157898949,
+        -0.1537687017554566,
+        0.09938812993671878
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.017552327856567018,
+        -0.004845573785279,
+        -0.0011118700632812284
+      ]
+    },
+    {
+      "focal_multiplier": 0.9,
+      "k1": 0.0,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.544091239821433,
+      "can_center_arm_m": [
+        0.4197537678695746,
+        -0.07589431121867816,
+        0.0759897839963085
+      ],
+      "can_center_world_m": [
+        0.4009653590845628,
+        -0.14553333958323714,
+        0.15598978220816917
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.015318628848765059,
+        0.0033897883869404566,
+        0.055489782208169164
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.6145452565699777,
+      "can_center_arm_m": [
+        0.43711679140634097,
+        -0.07780374366522767,
+        0.04802644809376941
+      ],
+      "can_center_world_m": [
+        0.41775843250865285,
+        -0.15034095890878285,
+        0.12802644630563007
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0014744445753249735,
+        -0.0014178309386052579,
+        0.02752644630563006
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.606948937192889,
+      "can_center_arm_m": [
+        0.43735739462514867,
+        -0.07545476543394679,
+        0.04810732853111539
+      ],
+      "can_center_world_m": [
+        0.4183913738311887,
+        -0.1480661020073144,
+        0.12810732674297604
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.002107385897860803,
+        0.0008570259628631893,
+        0.02760732674297603
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.6228512961955348,
+      "can_center_arm_m": [
+        0.43683302800895474,
+        -0.0801491101564726,
+        0.04801547782431415
+      ],
+      "can_center_world_m": [
+        0.41708355658825247,
+        -0.15260498367366826,
+        0.1280154760361748
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0007995686549245873,
+        -0.0036818557034906663,
+        0.027515476036174796
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6260719715160533,
+      "can_center_arm_m": [
+        0.43860338030692547,
+        -0.07800140424412937,
+        0.049972649358962964
+      ],
+      "can_center_world_m": [
+        0.4191904646347515,
+        -0.1507862680751092,
+        0.1299726475708236
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0029064767014236326,
+        -0.0018631401049316043,
+        0.0294726475708236
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.6041664186589761,
+      "can_center_arm_m": [
+        0.43560574102855276,
+        -0.07760360756939716,
+        0.046110885733404675
+      ],
+      "can_center_world_m": [
+        0.41630270571795663,
+        -0.1498890881176076,
+        0.12611088394526532
+      ],
+      "difference_from_archived_settled_world_m": [
+        1.8717784628752288e-05,
+        -0.0009659601474300006,
+        0.02561088394526531
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5804923759134716,
+      "can_center_arm_m": [
+        0.45684331064825023,
+        -0.07961745958140122,
+        0.015728086493215408
+      ],
+      "can_center_world_m": [
+        0.43689733906592243,
+        -0.15545245405385566,
+        0.09572808470507607
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.02061335113259455,
+        -0.0065293260836780664,
+        -0.004771915294923934
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.25,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6605108225314936,
+      "can_center_arm_m": [
+        0.4192515845416493,
+        -0.076161394556909,
+        0.07728416017084275
+      ],
+      "can_center_world_m": [
+        0.4004253545293501,
+        -0.14571199199647614,
+        0.1572841583827034
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.015858633403977807,
+        0.0032111359737014566,
+        0.0567841583827034
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5731944571939529,
+      "can_center_arm_m": [
+        0.4378618266676494,
+        -0.07775362185791553,
+        0.04618623048068187
+      ],
+      "can_center_world_m": [
+        0.4185012613421907,
+        -0.15041708420172795,
+        0.12618622869254253
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0022172734088627966,
+        -0.001493956231550353,
+        0.02568622869254253
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5668587665914528,
+      "can_center_arm_m": [
+        0.43816355002356583,
+        -0.07540510049644532,
+        0.04617202457566168
+      ],
+      "can_center_world_m": [
+        0.41919437201814624,
+        -0.14815297573266914,
+        0.12617202278752232
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0029103840848183626,
+        0.0007701522375084535,
+        0.025672022787522314
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5806179264463068,
+      "can_center_arm_m": [
+        0.4375533273335877,
+        -0.08010155811001843,
+        0.04621119808378655
+      ],
+      "can_center_world_m": [
+        0.41780157014579294,
+        -0.1526794742460702,
+        0.1262111962956472
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0015175822124650629,
+        -0.003756346275892608,
+        0.025711196295647193
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5831977061758364,
+      "can_center_arm_m": [
+        0.43928059914534423,
+        -0.0779418183838228,
+        0.04824335405308046
+      ],
+      "can_center_world_m": [
+        0.4198680411774968,
+        -0.1508416382708741,
+        0.1282433522649411
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0035840532441689388,
+        -0.0019185103006965076,
+        0.027743352264941096
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5646970737550306,
+      "can_center_arm_m": [
+        0.4364252416298826,
+        -0.07756362002796213,
+        0.044148544839212656
+      ],
+      "can_center_world_m": [
+        0.4171172277792086,
+        -0.1499877494108478,
+        0.12414854305107331
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00083323984588074,
+        -0.0010646214406702104,
+        0.023648543051073306
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5503719671990813,
+      "can_center_arm_m": [
+        0.4576176142784749,
+        -0.0795027390326027,
+        0.013632693128907558
+      ],
+      "can_center_world_m": [
+        0.43767990203437485,
+        -0.155469835552718,
+        0.09363269134076821
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.021395914101046964,
+        -0.0065467075825404175,
+        -0.006867308659231797
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6089861222703888,
+      "can_center_arm_m": [
+        0.4199868964894918,
+        -0.07617127080153292,
+        0.0756474618554464
+      ],
+      "can_center_world_m": [
+        0.4011484900242678,
+        -0.14584561930221096,
+        0.15564746006730706
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.015135497909060103,
+        0.003077508667966633,
+        0.05514746006730706
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5432203859301269,
+      "can_center_arm_m": [
+        0.4386093361785848,
+        -0.07769364066439594,
+        0.04431630155783392
+      ],
+      "can_center_world_m": [
+        0.4192481902540762,
+        -0.15048390794828834,
+        0.12431629976969458
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0029642023207483437,
+        -0.0015607799781107434,
+        0.02381629976969457
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5387175014788088,
+      "can_center_arm_m": [
+        0.4389296118358951,
+        -0.0753418498706174,
+        0.04427652611339859
+      ],
+      "can_center_world_m": [
+        0.4199601388624969,
+        -0.14821970265429776,
+        0.12427652432525925
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0036761509291690087,
+        0.0007034253158798298,
+        0.023776524325259243
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5492212534155785,
+      "can_center_arm_m": [
+        0.43828268218560146,
+        -0.08004494063277806,
+        0.044366629295113424
+      ],
+      "can_center_world_m": [
+        0.4185300371969292,
+        -0.1527465547521347,
+        0.12436662750697408
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.002246049263601335,
+        -0.003823426781957101,
+        0.023866627506974075
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5503745062039626,
+      "can_center_arm_m": [
+        0.4399638404721049,
+        -0.07787311856676361,
+        0.04647953155125869
+      ],
+      "can_center_world_m": [
+        0.42055308971284794,
+        -0.15088903953320873,
+        0.12647952976311935
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.004269101779520057,
+        -0.0019659115630311363,
+        0.025979529763119347
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5380205003408741,
+      "can_center_arm_m": [
+        0.43724924779105356,
+        -0.07751346521872177,
+        0.0421515105388427
+      ],
+      "can_center_world_m": [
+        0.41793790406311243,
+        -0.15007714793195118,
+        0.12215150875070335
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0016539161297845495,
+        -0.0011540199617735836,
+        0.021651508750703347
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5320732740346825,
+      "can_center_arm_m": [
+        0.45838369309378535,
+        -0.07937432277257067,
+        0.01152148760149082
+      ],
+      "can_center_world_m": [
+        0.4384566653561894,
+        -0.15547233134751776,
+        0.09152148581335148
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.022172677422861498,
+        -0.0065492033773401626,
+        -0.008978514186648523
+      ]
+    },
+    {
+      "focal_multiplier": 1.0,
+      "k1": 0.0,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.567944311806093,
+      "can_center_arm_m": [
+        0.4207422514059514,
+        -0.07617554334030789,
+        0.07395561380305926
+      ],
+      "can_center_world_m": [
+        0.40189232610781367,
+        -0.14597710004309125,
+        0.15395561201491992
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.014391661825514213,
+        0.002946027927086342,
+        0.05345561201491991
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.6298602974337877,
+      "can_center_arm_m": [
+        0.4401067222582378,
+        -0.07832472181587777,
+        0.04280631455701819
+      ],
+      "can_center_world_m": [
+        0.420617838431735,
+        -0.15135826048630172,
+        0.12280631276887885
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.004333850498407121,
+        -0.002435132516124122,
+        0.022306312768878844
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6223839727301915,
+      "can_center_arm_m": [
+        0.4403912320748263,
+        -0.07598224739775854,
+        0.042811289083336534
+      ],
+      "can_center_world_m": [
+        0.42129296281651235,
+        -0.14909721221163857,
+        0.12281128729519719
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005008974883184469,
+        -0.00017408424146098112,
+        0.022311287295197185
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.6379179653230543,
+      "can_center_arm_m": [
+        0.4398266830306527,
+        -0.08066881234303185,
+        0.04278868541521021
+      ],
+      "can_center_world_m": [
+        0.4199468484248279,
+        -0.1536216550120331,
+        0.12278868362707088
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0036628604914999974,
+        -0.004698527041855499,
+        0.02228868362707087
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6410054544802585,
+      "can_center_arm_m": [
+        0.44164108220588494,
+        -0.07852425810082438,
+        0.044665344240740396
+      ],
+      "can_center_world_m": [
+        0.42209664260805274,
+        -0.15181346745687568,
+        0.12466534245260105
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00581265467472486,
+        -0.0028903394866980903,
+        0.024165342452601046
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.619683220123995,
+      "can_center_arm_m": [
+        0.4386537587194724,
+        -0.07813376055241575,
+        0.040800837193286005
+      ],
+      "can_center_world_m": [
+        0.4192178221778734,
+        -0.15092522037494005,
+        0.12080083540514666
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.002933834244545519,
+        -0.0020020924047624566,
+        0.020300835405146656
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5928984912867021,
+      "can_center_arm_m": [
+        0.4619017610376149,
+        -0.08044435957539063,
+        0.0073045018915162685
+      ],
+      "can_center_world_m": [
+        0.4417441472884465,
+        -0.1571198274360937,
+        0.08730450010337693
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.02546015935511864,
+        -0.008196699465916113,
+        -0.01319549989662308
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.25,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6783950380474204,
+      "can_center_arm_m": [
+        0.4204529705181727,
+        -0.07641450991899537,
+        0.07482047127547833
+      ],
+      "can_center_world_m": [
+        0.40156691760176483,
+        -0.14616390946992702,
+        0.154820469487339
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.014717070331563054,
+        0.002759218500250571,
+        0.054320469487338985
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5922991432396797,
+      "can_center_arm_m": [
+        0.4408308926722859,
+        -0.07829104509973138,
+        0.041087966245970185
+      ],
+      "can_center_world_m": [
+        0.42133732988968153,
+        -0.15144708025738327,
+        0.12108796445783085
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005053341956353652,
+        -0.002523952287205672,
+        0.020587964457830843
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5855655441663892,
+      "can_center_arm_m": [
+        0.44113221654884816,
+        -0.07594546153258629,
+        0.04107202007406588
+      ],
+      "can_center_world_m": [
+        0.4220295518102959,
+        -0.14918580027434966,
+        0.12107201828592654
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005745563876968007,
+        -0.000262672304172068,
+        0.02057201828592653
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5998767721930988,
+      "can_center_arm_m": [
+        0.44052380750036585,
+        -0.0806360654897653,
+        0.04111304970569339
+      ],
+      "can_center_world_m": [
+        0.4206395239296154,
+        -0.15370683439767913,
+        0.12111304791755405
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.004355535996287518,
+        -0.004783706427501533,
+        0.020613047917554042
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6026301265213351,
+      "can_center_arm_m": [
+        0.4422806554327448,
+        -0.07847914606685717,
+        0.04308686592230539
+      ],
+      "can_center_world_m": [
+        0.4227346730548328,
+        -0.15187676166756062,
+        0.12308686413416604
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.006450685121504929,
+        -0.0029536336973830235,
+        0.022586864134166038
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5831629369135231,
+      "can_center_arm_m": [
+        0.43942906378830937,
+        -0.07810714713131775,
+        0.03900103537673174
+      ],
+      "can_center_world_m": [
+        0.41998652715216517,
+        -0.1510296181069361,
+        0.1190010335885924
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0037025392188372863,
+        -0.00210649013675851,
+        0.018501033588592397
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5644142385395376,
+      "can_center_arm_m": [
+        0.462622364042313,
+        -0.08034895832011285,
+        0.005407466034849966
+      ],
+      "can_center_world_m": [
+        0.442470522268201,
+        -0.15714720404426863,
+        0.08540746424671063
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.026186534334873113,
+        -0.008224076074091036,
+        -0.01509253575328938
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6326957362708032,
+      "can_center_arm_m": [
+        0.4211582711819245,
+        -0.07643344955734364,
+        0.07330562202934182
+      ],
+      "can_center_world_m": [
+        0.4022589437842396,
+        -0.14630141401152066,
+        0.15330562024120248
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.014025044149088284,
+        0.0026217139586569294,
+        0.05280562024120247
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5615165188475867,
+      "can_center_arm_m": [
+        0.4415498360472105,
+        -0.07824781273596015,
+        0.039357310704931835
+      ],
+      "can_center_world_m": [
+        0.4220532790622171,
+        -0.15152560029285675,
+        0.1193573089167925
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005769291128889242,
+        -0.0026024723226791557,
+        0.018857308916792492
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5558994475315089,
+      "can_center_arm_m": [
+        0.4418746128555602,
+        -0.07590027198393966,
+        0.0393069807226927
+      ],
+      "can_center_world_m": [
+        0.4227689483839109,
+        -0.1492663426759336,
+        0.11930697893455336
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.006484960450582999,
+        -0.00034321470575601754,
+        0.018806978934553353
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5682851839918922,
+      "can_center_arm_m": [
+        0.4412225568494327,
+        -0.08059511868789827,
+        0.03941182505918326
+      ],
+      "can_center_world_m": [
+        0.4213351826879062,
+        -0.15378420484047098,
+        0.11941182327104391
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005051194754578325,
+        -0.004861076870293385,
+        0.018911823271043904
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5701985652267185,
+      "can_center_arm_m": [
+        0.4429349008484585,
+        -0.07842721174483014,
+        0.04146229943638924
+      ],
+      "can_center_world_m": [
+        0.42338831541216687,
+        -0.15193580323330527,
+        0.1214622976482499
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.00710432747883899,
+        -0.0030126752631276787,
+        0.02096229764824989
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5543399776133137,
+      "can_center_arm_m": [
+        0.4402140548320222,
+        -0.0780727023685971,
+        0.03716133322888531
+      ],
+      "can_center_world_m": [
+        0.4207660991234123,
+        -0.15112792844227352,
+        0.11716133144074597
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.0044821111900844035,
+        -0.0022048004720959247,
+        0.01666133144074597
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.54325219286815,
+      "can_center_arm_m": [
+        0.4633602097965597,
+        -0.08024410194699624,
+        0.003454549891842616
+      ],
+      "can_center_world_m": [
+        0.44321548657296955,
+        -0.1571681659302466,
+        0.08345454810370327
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.02693149863964167,
+        -0.008245037960069007,
+        -0.017045451896296734
+      ]
+    },
+    {
+      "focal_multiplier": 1.1,
+      "k1": 0.0,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.5930284924285019,
+      "can_center_arm_m": [
+        0.42187413203917823,
+        -0.0764470549606996,
+        0.07175238118760568
+      ],
+      "can_center_world_m": [
+        0.4029622779480435,
+        -0.14643543985967977,
+        0.15175237939946634
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.013321709985284369,
+        0.002487688110497821,
+        0.051252379399466336
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.6428496538964736,
+      "can_center_arm_m": [
+        0.44326483288705076,
+        -0.07884844995938992,
+        0.03738878472635045
+      ],
+      "can_center_world_m": [
+        0.4236425563996224,
+        -0.1524066092483399,
+        0.11738878293821112
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.007358568466294513,
+        -0.0034834812781623092,
+        0.01688878293821111
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6355783180560183,
+      "can_center_arm_m": [
+        0.44352975927073657,
+        -0.07650513417457022,
+        0.03742539586117832
+      ],
+      "can_center_world_m": [
+        0.42429851908802296,
+        -0.15014143203505517,
+        0.11742539407303898
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.008014531154695081,
+        -0.001218304064877579,
+        0.016925394073038974
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.6505934289216205,
+      "can_center_arm_m": [
+        0.44296393259189126,
+        -0.08118833885151312,
+        0.03740922347904236
+      ],
+      "can_center_world_m": [
+        0.4229517114969525,
+        -0.15466234733942308,
+        0.11740922169090301
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.006667723563624606,
+        -0.005739219369245485,
+        0.016909221690903004
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6534852872509529,
+      "can_center_arm_m": [
+        0.44472846594997906,
+        -0.07903800543748353,
+        0.03935982617999974
+      ],
+      "can_center_world_m": [
+        0.42505332650036753,
+        -0.1528400613737422,
+        0.1193598243918604
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.008769338567039653,
+        -0.00391693340356461,
+        0.01885982439186039
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.6329950049367443,
+      "can_center_arm_m": [
+        0.4418054728074095,
+        -0.07865917277576956,
+        0.03540214896117021
+      ],
+      "can_center_world_m": [
+        0.42223595130365904,
+        -0.15197415139108705,
+        0.11540214717303086
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.005951963370331159,
+        -0.00305102342090946,
+        0.014902147173030858
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.603641100522616,
+      "can_center_arm_m": [
+        0.4671033047471117,
+        -0.08126512319666006,
+        -0.001281051536603085
+      ],
+      "can_center_world_m": [
+        0.446733037006579,
+        -0.15880526187982524,
+        0.07871894667525757
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.030449049073251133,
+        -0.00988213390964765,
+        -0.021781053324742436
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.25,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6933521840168189,
+      "can_center_arm_m": [
+        0.421774409807871,
+        -0.07666989929508147,
+        0.07225492143809306
+      ],
+      "can_center_world_m": [
+        0.4028264344941422,
+        -0.14663829615565094,
+        0.15225491964995372
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.013457553439185699,
+        0.0022848318145266555,
+        0.05175491964995371
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.609195498639029,
+      "can_center_arm_m": [
+        0.44392264579466706,
+        -0.07882113622664656,
+        0.03585028636028531
+      ],
+      "can_center_world_m": [
+        0.42429556693817544,
+        -0.1524905204988469,
+        0.11585028457214597
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.008011579004847558,
+        -0.0035673925286693053,
+        0.015350284572145961
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6023702257296656,
+      "can_center_arm_m": [
+        0.4442307346606999,
+        -0.0764783931185345,
+        0.03582149156029853
+      ],
+      "can_center_world_m": [
+        0.4249939785451814,
+        -0.15023318019504256,
+        0.11582148977215918
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.008709990611853513,
+        -0.001310052224864966,
+        0.015321489772159178
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.616699966149069,
+      "can_center_arm_m": [
+        0.4436291594479654,
+        -0.08116520990260867,
+        0.035855311877634494
+      ],
+      "can_center_world_m": [
+        0.4236113248985631,
+        -0.1547516327174831,
+        0.11585531008949515
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.007327336965235243,
+        -0.005828504747305507,
+        0.015355310089495144
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.6194460268739147,
+      "can_center_arm_m": [
+        0.4453470304472088,
+        -0.07900440771062338,
+        0.03788491274557052
+      ],
+      "can_center_world_m": [
+        0.42566870853097416,
+        -0.1529111655289635,
+        0.11788491095743117
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.009384720597646279,
+        -0.003988037558785906,
+        0.017384910957431166
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5998966709121283,
+      "can_center_arm_m": [
+        0.44253446265924967,
+        -0.07864122448828989,
+        0.03374754622038771
+      ],
+      "can_center_world_m": [
+        0.4229575432248949,
+        -0.15207928675296165,
+        0.11374754443224837
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.006673555291567046,
+        -0.003156158782784052,
+        0.013247544432248362
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.577440173194029,
+      "can_center_arm_m": [
+        0.46771920975988257,
+        -0.08117803562044262,
+        -0.002921419357236926
+      ],
+      "can_center_world_m": [
+        0.44735481004590016,
+        -0.1588231928101165,
+        0.07707857885462373
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.031070822112572283,
+        -0.00990006483993891,
+        -0.02342142114537628
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": -0.1274681245280161,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6530555745281301,
+      "can_center_arm_m": [
+        0.4224525195606885,
+        -0.0766947489093409,
+        0.07083710852850086
+      ],
+      "can_center_world_m": [
+        0.4034906627332012,
+        -0.14677704480116363,
+        0.15083710674036152
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.01279332520012666,
+        0.0021460831690139626,
+        0.050337106740361515
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "nominal",
+      "fit_success": true,
+      "rim_rms_px": 0.5796958581106071,
+      "can_center_arm_m": [
+        0.4446241018230894,
+        -0.07879087723160429,
+        0.03421959355335908
+      ],
+      "can_center_world_m": [
+        0.4249920928977062,
+        -0.15257888199663205,
+        0.11421959176521973
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.008708104964378294,
+        -0.003655754026454461,
+        0.013719591765219724
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "x-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5735507380928623,
+      "can_center_arm_m": [
+        0.44495051673991554,
+        -0.07644646160647671,
+        0.03416379729675058
+      ],
+      "can_center_world_m": [
+        0.42570885035790146,
+        -0.1503229808320144,
+        0.11416379550861123
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.009424862424573577,
+        -0.0013998528618368034,
+        0.013663795508611229
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "x+3",
+      "fit_success": true,
+      "rim_rms_px": 0.5867425707188529,
+      "can_center_arm_m": [
+        0.44429794452075827,
+        -0.08113532244806086,
+        0.034274940099499836
+      ],
+      "can_center_world_m": [
+        0.42427558438318724,
+        -0.1548348557348329,
+        0.11427493831136049
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.007991596449859362,
+        -0.005911727764655317,
+        0.01377493831136048
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "y-3",
+      "fit_success": true,
+      "rim_rms_px": 0.5890205564873046,
+      "can_center_arm_m": [
+        0.44602062248565644,
+        -0.07896915678488405,
+        0.03630008587780158
+      ],
+      "can_center_world_m": [
+        0.42633860994627354,
+        -0.15298991167683973,
+        0.11630008408966223
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.010054622012945658,
+        -0.004066783706662136,
+        0.015800084089662228
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "y+3",
+      "fit_success": true,
+      "rim_rms_px": 0.571545805270269,
+      "can_center_arm_m": [
+        0.44326589033207087,
+        -0.07861617094734724,
+        0.03206758730436817
+      ],
+      "can_center_world_m": [
+        0.4236827352745063,
+        -0.15217782918880987,
+        0.11206758551622883
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.007398747341178402,
+        -0.0032547012186322777,
+        0.011567585516228829
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "radial-2",
+      "fit_success": true,
+      "rim_rms_px": 0.5559146535236476,
+      "can_center_arm_m": [
+        0.4684570540355739,
+        -0.08109361430617419,
+        -0.004785946420972385
+      ],
+      "can_center_world_m": [
+        0.4480963298027738,
+        -0.15886429735535573,
+        0.07521405179088828
+      ],
+      "difference_from_archived_settled_world_m": [
+        0.031812341869445926,
+        -0.009941169385178139,
+        -0.02528594820911173
+      ]
+    },
+    {
+      "focal_multiplier": 1.2,
+      "k1": 0.0,
+      "annotation_perturbation": "radial+2",
+      "fit_success": true,
+      "rim_rms_px": 0.6163057946517615,
+      "can_center_arm_m": [
+        0.42311652873547656,
+        -0.07671316136169198,
+        0.06942534909991144
+      ],
+      "can_center_world_m": [
+        0.40414207657703594,
+        -0.1469070725161506,
+        0.1494253473117721
+      ],
+      "difference_from_archived_settled_world_m": [
+        -0.012141911356291946,
+        0.0020160554540269993,
+        0.04892534731177209
+      ]
+    }
+  ],
+  "all_hypotheses_world_min_m": [
+    0.39861587362558704,
+    -0.15886429735535573,
+    0.07521405179088828
+  ],
+  "all_hypotheses_world_max_m": [
+    0.4480963298027738,
+    -0.1448948147611173,
+    0.16181688787631457
+  ],
+  "archived_initial_xyz_m": [
+    0.4162839879333279,
+    -0.1489231279701776,
+    0.113
+  ],
+  "archived_settled_xyz_m": [
+    0.4162839879333279,
+    -0.1489231279701776,
+    0.1005
+  ],
+  "rim_annotation_sha256": "dfc94456101f65224889a566c8e56ccfb8cf1c2073ec2d669dd97450e93524b4",
+  "qualification": "Vision-only circle fit under cap correspondence, upright can, known radius and camera hypotheses. Ranges are sensitivity scenarios, not statistical confidence bounds. World coordinates inherit the existing mount transform. No can, shelf or simulator change made; no recovered-success term in objective."
+}

@@ -1,0 +1,216 @@
+{
+  "records": [
+    {
+      "name": "233_pyramid_rigid_port3",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.32217211555315034
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": false,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.38817211555315034,
+        "gain_m": 0.0006151830127262836
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "rigid_material_mapping_noop_exact": {
+        "trajectory": true,
+        "contact_counts": true,
+        "goal_pose": true,
+        "stages": true,
+        "finger_joint": true,
+        "observations": true,
+        "actions_eef": true,
+        "actions_joint": true,
+        "target_tool": true,
+        "command_pose_error": true,
+        "source_grip": true,
+        "source_frame_index": true,
+        "action_kind": true,
+        "mount": true
+      },
+      "material_contact_count_sums": [
+        1119,
+        0,
+        0
+      ],
+      "can_mass_kg": 0.3455406427383423,
+      "final_goal_shift_mm": 0.0032582811545580626,
+      "max_goal_shift_mm": 0.0072833760641515255,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        1.2800366483956387,
+        5.333121650289203,
+        6.881637521777713
+      ],
+      "max_abs_joint_velocity_rad_s": [
+        36.60681915283203,
+        36.649017333984375,
+        68.46256256103516,
+        69.69784545898438
+      ]
+    },
+    {
+      "name": "233_pyramid_soft_port3",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 3.03769180255556
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": false,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 3.1036918025555598,
+        "gain_m": 4.696301677098447e-06
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "rigid_material_mapping_noop_exact": null,
+      "material_contact_count_sums": [
+        1495,
+        1495,
+        1639
+      ],
+      "can_mass_kg": 0.3455406427383423,
+      "final_goal_shift_mm": 7014.84912109375,
+      "max_goal_shift_mm": 7014.84912109375,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        1.261581162468128,
+        5.328827258020449,
+        6.881719444315795
+      ],
+      "max_abs_joint_velocity_rad_s": [
+        35.582725524902344,
+        35.57371139526367,
+        70.84062194824219,
+        72.66524505615234
+      ]
+    },
+    {
+      "name": "233_elliptic10_rigid_port3",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.34081426935519743
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": false,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.40681426935519743,
+        "gain_m": 2.701533222959629e-06
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "rigid_material_mapping_noop_exact": null,
+      "material_contact_count_sums": [
+        1628,
+        0,
+        0
+      ],
+      "can_mass_kg": 0.3455406427383423,
+      "final_goal_shift_mm": 0.009704592637717724,
+      "max_goal_shift_mm": 0.010017315857112408,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        1.338666457549029,
+        5.337109267270877,
+        6.879387343831854
+      ],
+      "max_abs_joint_velocity_rad_s": [
+        35.762359619140625,
+        35.75959396362305,
+        67.19662475585938,
+        63.02058029174805
+      ]
+    },
+    {
+      "name": "233_elliptic10_soft_port3",
+      "sequence": {
+        "complete": false,
+        "reason": "not_picked",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 8.751862049054617
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 8.817862049054618,
+        "gain_m": 0.013779432294075189
+      },
+      "source_command_max_differences": {
+        "target_tool": 5.551115123125783e-16,
+        "actions_eef": 8.9462516783545e-08,
+        "actions_joint": 7.721911998714859e-11,
+        "mount": 0.0,
+        "source_grip": 0.0
+      },
+      "rigid_material_mapping_noop_exact": null,
+      "material_contact_count_sums": [
+        2310,
+        2310,
+        2780
+      ],
+      "can_mass_kg": 0.3455406427383423,
+      "final_goal_shift_mm": 4835.9853515625,
+      "max_goal_shift_mm": 4835.9853515625,
+      "measured_tool_target_error_mm_p50_p95_max": [
+        1.431738956737786,
+        5.460355455442843,
+        6.9178515322678
+      ],
+      "max_abs_joint_velocity_rad_s": [
+        35.599647521972656,
+        35.59672546386719,
+        72.41319274902344,
+        84.33342742919922
+      ]
+    }
+  ],
+  "qualification": "One demo, four conditions. Not population validation or hardware calibration. Same-engine contrasts retain processed geometry and analytic mass; cross-engine comparison also changes these."
+}

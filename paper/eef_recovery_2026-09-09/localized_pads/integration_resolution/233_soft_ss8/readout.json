@@ -1,0 +1,30 @@
+{
+  "substeps": 8,
+  "status": "complete",
+  "frames": 962,
+  "sha256": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+  "sequence": {
+    "complete": true,
+    "reason": "complete",
+    "release_start": 751,
+    "push_start": 762,
+    "contact_start": 861,
+    "final_surface_gap_m": -7.761538819747726e-06,
+    "push_toward_goal_m": 0.04254789863343435,
+    "support_fraction": 0.8823529411764706
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": true,
+    "slide_success": true,
+    "final_dist": 0.06599223846118026,
+    "gain_m": 0.21472191678305602
+  },
+  "final_goal_shift_mm": 9.86266040802002,
+  "max_goal_shift_mm": 10.611788749694824,
+  "substep_dt_s": 0.00125
+}

@@ -1,0 +1,86 @@
+{
+  "records": [
+    {
+      "time_s": 20.04,
+      "rim_center_px": [
+        323,
+        455
+      ],
+      "actual_camera_time_s": 20.043758903,
+      "fixed_grasp_predicted_center_px": [
+        325.32806396484375,
+        455.61993408203125
+      ],
+      "observed_minus_predicted_px": [
+        -2.32806396484375,
+        -0.61993408203125
+      ],
+      "relative_motion_since20p04_px": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "time_s": 20.16,
+      "rim_center_px": [
+        323,
+        455
+      ],
+      "actual_camera_time_s": 20.178151165,
+      "fixed_grasp_predicted_center_px": [
+        325.4631652832031,
+        455.6145324707031
+      ],
+      "observed_minus_predicted_px": [
+        -2.463165283203125,
+        -0.614532470703125
+      ],
+      "relative_motion_since20p04_px": [
+        -0.135101318359375,
+        0.005401611328125
+      ]
+    },
+    {
+      "time_s": 20.34,
+      "rim_center_px": [
+        318,
+        478
+      ],
+      "note": "Motion blur; less precise center",
+      "actual_camera_time_s": 20.342666898,
+      "fixed_grasp_predicted_center_px": [
+        325.38433837890625,
+        453.10198974609375
+      ],
+      "observed_minus_predicted_px": [
+        -7.38433837890625,
+        24.89801025390625
+      ],
+      "relative_motion_since20p04_px": [
+        -5.0562744140625,
+        25.5179443359375
+      ]
+    },
+    {
+      "time_s": 20.7,
+      "rim_center_px": [
+        318,
+        480
+      ],
+      "actual_camera_time_s": 20.71143416,
+      "fixed_grasp_predicted_center_px": [
+        325.4741516113281,
+        454.04205322265625
+      ],
+      "observed_minus_predicted_px": [
+        -7.474151611328125,
+        25.95794677734375
+      ],
+      "relative_motion_since20p04_px": [
+        -5.146087646484375,
+        26.577880859375
+      ]
+    }
+  ],
+  "qualification": "Conditional fixed-grasp projection using the preceding independent real-rim fit. Approximately5px center annotations;20.34s is blurred. Motion after opening contradicts treating20.04s as established settled support. No source, initial pose or shelf change follows from this image check."
+}

@@ -1,0 +1,62 @@
+{
+  "records": {
+    "8": {
+      "sequence": {
+        "complete": true,
+        "reason": "complete",
+        "release_start": 753,
+        "push_start": 762,
+        "contact_start": 859,
+        "final_surface_gap_m": 9.014945983855382e-05,
+        "push_toward_goal_m": 0.03873291524395697,
+        "support_fraction": 0.88
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": true,
+        "slide_success": true,
+        "final_dist": 0.06609014945983856,
+        "gain_m": 0.2154599213676543
+      },
+      "final_goal_shift_mm": 5.041566371917725,
+      "source_substeps": 23088,
+      "improved_still_true": 0,
+      "trace_sha256": "943333574293d81be51964df5364b2730fa1e0839b48ed347a9ffbb504d8371a"
+    },
+    "16": {
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 756,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.03646969531478905
+      },
+      "metric": {
+        "uid": "233",
+        "n": 241,
+        "released": true,
+        "release_frame": 1,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10246969531478906,
+        "gain_m": 0.1991783720819268
+      },
+      "final_goal_shift_mm": 2.3867762088775635,
+      "source_substeps": 46176,
+      "improved_still_true": 0,
+      "trace_sha256": "a4612e8db771001b9a685cace5ac4071f285f00e5e805047b46ab8bd0840adbd"
+    }
+  },
+  "comparison": {
+    "max_can_difference_mm": 49.865927198913525,
+    "final_can_difference_mm": 45.57319993332972,
+    "max_finger_difference_rad": 0.1785634160041809
+  },
+  "qualification": "Both runs have zero observed cap exits, yet full-task trajectories remain sensitive to integration resolution. Cap exhaustion is therefore not a sufficient explanation or remedy. Physical and source inputs fixed; no setting chosen by task yield."
+}

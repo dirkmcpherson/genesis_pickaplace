@@ -1,0 +1,12 @@
+{
+  "passed_schedule": true,
+  "peak_unloaded_relation_error_deg": 1.3702342202663331,
+  "hold_error_deg": 1.021796300181224e-05,
+  "max_abs_substep_joint_velocity_rad_s": [
+    4.047240257263184,
+    4.047240257263184,
+    3.6197853088378906,
+    3.6197850704193115
+  ],
+  "qualification": "Bench self-consistency only; source URDF mass values and magnitudes preserved, signs aligned. Not hardware calibration."
+}

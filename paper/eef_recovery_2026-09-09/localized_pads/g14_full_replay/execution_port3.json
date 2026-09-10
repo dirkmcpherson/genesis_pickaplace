@@ -1,0 +1,74 @@
+[
+  {
+    "name": "233_pyramid_rigid_port3",
+    "returncode": 0,
+    "elapsed_s": 44.78813290596008,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_full_replay/233_pyramid_rigid_port3",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "233_pyramid_soft_port3",
+    "returncode": 0,
+    "elapsed_s": 44.73115682601929,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_full_replay/233_pyramid_soft_port3",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "pyramidal",
+      "--impratio",
+      "1"
+    ]
+  },
+  {
+    "name": "233_elliptic10_rigid_port3",
+    "returncode": 0,
+    "elapsed_s": 51.50205588340759,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_full_replay/233_elliptic10_rigid_port3",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.02.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10"
+    ]
+  },
+  {
+    "name": "233_elliptic10_soft_port3",
+    "returncode": 0,
+    "elapsed_s": 45.77654671669006,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand.py",
+      "paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_full_replay/233_elliptic10_soft_port3",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10"
+    ]
+  }
+]

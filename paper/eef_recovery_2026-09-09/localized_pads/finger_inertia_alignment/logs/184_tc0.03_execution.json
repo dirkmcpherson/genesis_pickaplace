@@ -1,0 +1,19 @@
+{
+  "uid": 184,
+  "tc": 0.03,
+  "original": false,
+  "name": "184_tc0.03",
+  "returncode": 0,
+  "elapsed_s": 221.51341938972473,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_aligned_finger_inertia.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/finger_inertia_alignment/184_tc0.03",
+    "--preset",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/critical_return/presets/tc0.03.json"
+  ],
+  "source_sha256": "24e8cc08e0fb25cef2c5cff2488a57b6a5d7623368f1558885e51b8def6ea32a",
+  "preset_sha256": "efc2e735cf3da98f951df76fff34387631c0446230725b17ed05434d5712fd5a"
+}

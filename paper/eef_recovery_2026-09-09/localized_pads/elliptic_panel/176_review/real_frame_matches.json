@@ -1,0 +1,156 @@
+[
+  {
+    "camera": 4,
+    "time_s": 20,
+    "frame": 606,
+    "match_error_s": -0.012803854460937458,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_20s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 25,
+    "frame": 756,
+    "match_error_s": -0.011994661460938971,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_25s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 27.4,
+    "frame": 828,
+    "match_error_s": -0.012834991460934475,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_27.4s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 30,
+    "frame": 906,
+    "match_error_s": -0.012761654460938132,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_30s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 35,
+    "frame": 1056,
+    "match_error_s": -0.012843193460938096,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_35s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 36.4,
+    "frame": 1098,
+    "match_error_s": -0.012191022460939394,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_36.4s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 40,
+    "frame": 1206,
+    "match_error_s": -0.012183965460934587,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_40s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 50,
+    "frame": 1506,
+    "match_error_s": -0.01279097946093799,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_50s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 60,
+    "frame": 1806,
+    "match_error_s": -0.012853922460934086,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_60s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 65,
+    "frame": 1956,
+    "match_error_s": -0.011929573460932374,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_65s.jpg"
+  },
+  {
+    "camera": 4,
+    "time_s": 70,
+    "frame": 2106,
+    "match_error_s": -0.012324155460930797,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam4_70s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 20,
+    "frame": 498,
+    "match_error_s": 0.010106263539061189,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_20s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 25,
+    "frame": 621,
+    "match_error_s": 0.006156621539062712,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_25s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 27.4,
+    "frame": 680,
+    "match_error_s": 0.002613340539063813,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_27.4s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 30,
+    "frame": 744,
+    "match_error_s": -0.0017774714609366526,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_30s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 35,
+    "frame": 867,
+    "match_error_s": -0.001835407460937688,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_35s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 36.4,
+    "frame": 902,
+    "match_error_s": 0.01809242853906312,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_36.4s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 40,
+    "frame": 990,
+    "match_error_s": -0.00943595346093673,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_40s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 50,
+    "frame": 1237,
+    "match_error_s": 0.01804941753906064,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_50s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 60,
+    "frame": 1483,
+    "match_error_s": 0.002407728539061793,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_60s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 65,
+    "frame": 1606,
+    "match_error_s": -0.005839647460931019,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_65s.jpg"
+  },
+  {
+    "camera": 0,
+    "time_s": 70,
+    "frame": 1729,
+    "match_error_s": -0.009632887460938377,
+    "path": "paper/eef_recovery_2026-09-09/localized_pads/elliptic_panel/176_review/real_cam0_70s.jpg"
+  }
+]

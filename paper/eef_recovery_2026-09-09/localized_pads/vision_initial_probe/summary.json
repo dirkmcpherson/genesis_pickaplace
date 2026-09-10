@@ -1,0 +1,84 @@
+{
+  "records": [
+    {
+      "condition": "rigid",
+      "status": "complete",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_push_to_contact",
+        "release_start": 674,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 1.2017373120703023
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 1.2677373120703024,
+        "gain_m": 0.18260178240635566
+      },
+      "final_goal_shift_mm": 1092.6785888671875,
+      "max_goal_shift_mm": 1092.6785888671875,
+      "frames": 4187
+    },
+    {
+      "condition": "soft",
+      "status": "complete",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 25.94346464665324
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 26.00946464665324,
+        "gain_m": 0.15944599379233948
+      },
+      "final_goal_shift_mm": 60.799537658691406,
+      "max_goal_shift_mm": 68.33009338378906,
+      "frames": 4187
+    },
+    {
+      "condition": "original_fixed",
+      "status": "complete",
+      "sequence": {
+        "complete": false,
+        "reason": "no_supported_release",
+        "release_start": null,
+        "push_start": null,
+        "contact_start": null,
+        "final_surface_gap_m": 0.040612625475636904
+      },
+      "metric": {
+        "uid": "113",
+        "n": 1047,
+        "released": true,
+        "release_frame": 0,
+        "pushed": true,
+        "arrived": false,
+        "slide_success": false,
+        "final_dist": 0.10661262547563691,
+        "gain_m": 0.17817087648213575
+      },
+      "final_goal_shift_mm": 64.48860168457031,
+      "max_goal_shift_mm": 66.93376922607422,
+      "frames": 4187
+    }
+  ],
+  "all_terminal": true,
+  "qualification": "Nominal image-only estimate declared before outcome. No XY search, no passing-value selection, no change to source q/grip/times, yaw, goal, shelf, reset z or scoring. Pinned original fixed hand is a cross-engine reference; rigid/soft1.4 pair isolates pad response at identical conditional placement. Any improvement remains conditional on unresolved table/camera assumptions and needs independent visual and broader validation. No bank adoption."
+}

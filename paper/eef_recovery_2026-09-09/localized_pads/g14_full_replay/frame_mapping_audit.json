@@ -1,0 +1,21 @@
+{
+  "records": [
+    {
+      "link": "right_finger_prox_link",
+      "offset_diff_m": 3.796779417714752e-06
+    },
+    {
+      "link": "right_finger_dist_link",
+      "offset_diff_m": -1.2698158670387816e-10
+    },
+    {
+      "link": "left_finger_prox_link",
+      "offset_diff_m": -1.0369173674230903e-05
+    },
+    {
+      "link": "left_finger_dist_link",
+      "offset_diff_m": 5.831076420326209e-11
+    }
+  ],
+  "qualification": "Material frame corrected. Residual few-micron offsets reflect engine mesh processing differences; identical input URDF does not establish identical processed collision mesh."
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "233_soft_ss8",
+    "substeps": 8,
+    "returncode": 0,
+    "elapsed_s": 124.96088027954102,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand_resolution.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/integration_resolution/233_soft_ss8",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10",
+      "--substeps",
+      "8"
+    ]
+  },
+  {
+    "name": "233_soft_ss16",
+    "substeps": 16,
+    "returncode": 0,
+    "elapsed_s": 186.152334690094,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand_resolution.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/integration_resolution/233_soft_ss16",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10",
+      "--substeps",
+      "16"
+    ]
+  },
+  {
+    "name": "233_soft_ss32",
+    "substeps": 32,
+    "returncode": 0,
+    "elapsed_s": 352.139910697937,
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/run_g14_hand_resolution.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/integration_resolution/233_soft_ss32",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--cone",
+      "elliptic",
+      "--impratio",
+      "10",
+      "--substeps",
+      "32"
+    ]
+  }
+]

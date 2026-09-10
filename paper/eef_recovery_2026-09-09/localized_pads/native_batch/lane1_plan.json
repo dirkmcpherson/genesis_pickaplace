@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "name": "supported_lane1_233",
+      "n_envs": 1,
+      "paths": [
+        "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz"
+      ]
+    },
+    {
+      "name": "supported_lane1_262",
+      "n_envs": 1,
+      "paths": [
+        "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/expanded_panel/262_soft_g1/262_eef_delta.npz"
+      ]
+    }
+  ],
+  "steps": 400,
+  "source_code_sha256": {
+    "can_pos_recovery/bench_native_batch_g14_v2.py": "fc311033043350255e12881e926227747fea8a6d3d27b2783b6abbd0e0d454e2",
+    "can_pos_recovery/batched_surface_pad_candidate_g14.py": "2142f213ac9ee2c115df749fecc64f0d4a957556a27ff6626a8f4d16d6332365",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3"
+  },
+  "source_trace_sha256": {
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/g14_feedback_full/233_elliptic10_soft/233_eef_delta.npz": "5bec2806e4ce4711bae17d0f80d360bbd2bda1886ee59df3e7a9bc67ed0824b5",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/expanded_panel/262_soft_g1/262_eef_delta.npz": "bca7173e9156dcc105d285e9834169721293e1a97142ff5ba309f47183b7f70d"
+  },
+  "installer_pid": 3060763,
+  "installer_proc_start_ticks": "80267593",
+  "purpose": "Adaptive diagnostic after 16/64 disagreement: isolate n_envs=0 versus n_envs=1 API shape/engine specialization. Same frozen code, commands, physical settings and 400-decision prefix.",
+  "limits": "400-decision common prefixes only; two late-day sources with matching mount/geometry. No e2e recovery claim, no extra unique recordings from duplicate lanes, no GPU admission into the CPU material panel.",
+  "checks": [
+    "Refuse CPU fallback and unsupported Torch.",
+    "Duplicate copies within each UID must agree; record exact and numerical errors.",
+    "Compare each UID to its standalone GPU trace, with collision geometry/policies identical.",
+    "Report all state discrepancies rather than relaxing gates to declare equivalence.",
+    "Full-source task export and gain2 batching remain future work."
+  ]
+}

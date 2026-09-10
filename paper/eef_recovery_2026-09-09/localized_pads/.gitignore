@@ -1,0 +1,6 @@
+# New replay arrays and review videos are local experiment artifacts.
+# Existing tracked artifacts are retained; see LOCAL_ARTIFACTS.json for new ones.
+*.npz
+*.mp4
+*.log
+__pycache__/

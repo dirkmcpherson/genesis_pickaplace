@@ -1,0 +1,55 @@
+{
+  "summary_sha256": "a420d38955ad1658ef6db9e694d6bb22d3530e52273747d8ea92873d022efc33",
+  "diagnostics": {
+    "original_fixed": {
+      "reasons": {
+        "no_supported_release": 19,
+        "no_supported_push_to_contact": 11,
+        "complete": 3,
+        "not_picked": 3
+      },
+      "median_final_dist_m": 0.18169078998907878
+    },
+    "rigid_g1": {
+      "reasons": {
+        "no_supported_release": 11,
+        "no_supported_push_to_contact": 20,
+        "complete": 1,
+        "not_picked": 4
+      },
+      "median_final_dist_m": 0.16564360744370477
+    },
+    "soft_g1": {
+      "reasons": {
+        "no_supported_release": 10,
+        "complete": 1,
+        "not_picked": 3,
+        "no_supported_push_to_contact": 21,
+        "final_not_retained": 1
+      },
+      "median_final_dist_m": 0.13383909290359708
+    },
+    "rigid_g2": {
+      "reasons": {
+        "no_supported_push_to_contact": 23,
+        "complete": 1,
+        "not_picked": 3,
+        "no_supported_release": 8,
+        "final_not_retained": 1
+      },
+      "median_final_dist_m": 0.14591330022096616
+    },
+    "soft_g2": {
+      "reasons": {
+        "no_supported_release": 8,
+        "no_supported_push_to_contact": 23,
+        "complete": 1,
+        "not_picked": 3,
+        "final_not_retained": 1
+      },
+      "median_final_dist_m": 0.14266209847276384
+    }
+  },
+  "decision": "No configuration admitted: soft2 gains one supplied-metric pass over original, but loses two net strict completions; its additional191 metric pass moves the goal178.10mm and has no supported release.",
+  "qualification": "Descriptive36-demo historical sample. Paired wins/losses retained; not pristine unseen data or independent participants. Source poses, thresholds and recorded path fixed. Numerical sensitivity remains unresolved."
+}

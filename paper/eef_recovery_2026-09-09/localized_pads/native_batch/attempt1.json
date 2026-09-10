@@ -1,0 +1,20 @@
+{
+  "source_sha256": {
+    "can_pos_recovery/bench_native_batch_g14.py": "41d10104d7eeebc2705428ef1ba509d192503bc211f54ef966b2bbf7633598d0",
+    "can_pos_recovery/batched_surface_pad_candidate_g14.py": "2142f213ac9ee2c115df749fecc64f0d4a957556a27ff6626a8f4d16d6332365",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/replay_harness.py": "eaa2c9eec5e3dcc437e2afdd8b103a5d2d9d815190c32c6b2a54b0037008904d",
+    "baselines/sim_variants.py": "efa8e948c046d6f87d94cf7ddabdf7880dd36d799a04b6c1a8cd7488a1ff4db3"
+  },
+  "cpu0": {
+    "session": 36090,
+    "exit_code": 0,
+    "steps": 400
+  },
+  "gpu16": {
+    "session": 42083,
+    "exit_code": 1,
+    "reason": "Torch2.8.0+cpu caused engine fallback; failed before replay at CUDA synchronization, not a GPU benchmark."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "session_id": 68388,
+  "returncode": 0,
+  "full_replay_completed": true,
+  "frames": 4187,
+  "exact_reference_arrays": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  }
+}

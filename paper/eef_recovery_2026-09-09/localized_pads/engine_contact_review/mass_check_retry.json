@@ -1,0 +1,19 @@
+{
+  "failed_attempts": [
+    {
+      "name": "g14_pyramid1_v2",
+      "session_id": 81595,
+      "returncode": 1
+    },
+    {
+      "name": "g14_elliptic10_v2",
+      "session_id": 3708,
+      "returncode": 1
+    }
+  ],
+  "failure": "Old absolute mass tolerance excluded new analytic cylinder mass. New inertial.py computes rho*pi*r^2*h; legacy mesh mass is about0.64% lower. Both attempts stopped before stepping.",
+  "change": "Validate mass within1% of the physically declared cylinder dimensions/density and report realized mass. No simulated mass or physics setting changed. Same-engine cone comparisons remain primary for attribution.",
+  "source": "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/entities/rigid_entity/inertial.py:51",
+  "old_code_sha256": "5512b9b6f405434059e99b442f10c3734ba464e4a67010c0dcc62def3bdd94e9",
+  "new_code_sha256": "25d7a8cc5e76f274d116772d2821708c7512302a8297cfa8056e67c6a0ee1c96"
+}

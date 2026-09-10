@@ -1,0 +1,118 @@
+{
+  "all_reference_arrays_exact": {
+    "trajectory": true,
+    "contact_counts": true,
+    "goal_pose": true,
+    "stages": true,
+    "finger_joint": true,
+    "observations": true,
+    "actions_eef": true,
+    "actions_joint": true,
+    "target_tool": true,
+    "command_pose_error": true,
+    "source_grip": true,
+    "source_frame_index": true,
+    "action_kind": true,
+    "mount": true
+  },
+  "contact_rows": 21662,
+  "loaded_finger_can_rows": 12736,
+  "intervals": [
+    {
+      "start": 7,
+      "end": 8,
+      "n": 2073,
+      "Fn_p50_p95": [
+        6.472701549530029,
+        7.530423164367676
+      ],
+      "util_p50_p95": [
+        0.3419298231601715,
+        0.5421132326126098
+      ],
+      "saturated_frac": 0.001447178002894356,
+      "vt_mm_s_p50_p95": [
+        2.867096569389105,
+        19.121003523468964
+      ]
+    },
+    {
+      "start": 8,
+      "end": 9,
+      "n": 3536,
+      "Fn_p50_p95": [
+        2.8567835092544556,
+        6.22380268573761
+      ],
+      "util_p50_p95": [
+        0.29545900225639343,
+        0.5828142464160919
+      ],
+      "saturated_frac": 0.004807692307692308,
+      "vt_mm_s_p50_p95": [
+        3.715630969963968,
+        7.439912180416286
+      ]
+    },
+    {
+      "start": 9,
+      "end": 10,
+      "n": 2436,
+      "Fn_p50_p95": [
+        3.7478729486465454,
+        6.276647090911865
+      ],
+      "util_p50_p95": [
+        0.30432695150375366,
+        0.4148859828710556
+      ],
+      "saturated_frac": 0.0012315270935960591,
+      "vt_mm_s_p50_p95": [
+        6.541934330016375,
+        8.744919672608376
+      ]
+    },
+    {
+      "start": 10,
+      "end": 11,
+      "n": 2379,
+      "Fn_p50_p95": [
+        3.620455265045166,
+        6.095245409011841
+      ],
+      "util_p50_p95": [
+        0.23741406202316284,
+        0.5107884645462036
+      ],
+      "saturated_frac": 0.0012610340479192938,
+      "vt_mm_s_p50_p95": [
+        7.733509875833988,
+        10.701753105968237
+      ]
+    },
+    {
+      "start": 11,
+      "end": 12,
+      "n": 2312,
+      "Fn_p50_p95": [
+        3.6589417457580566,
+        4.999655079841612
+      ],
+      "util_p50_p95": [
+        0.2826932519674301,
+        0.8989446699619285
+      ],
+      "saturated_frac": 0.04368512110726644,
+      "vt_mm_s_p50_p95": [
+        5.682414164766669,
+        12.56525507196782
+      ]
+    },
+    {
+      "start": 12,
+      "end": 16,
+      "n": 0
+    }
+  ],
+  "qualification": "Every substep in 7\u201316 s window. Pre-integration speed, not steady-state coefficient measurement. Loaded force cutoff 0.05 N is diagnostic only."
+}

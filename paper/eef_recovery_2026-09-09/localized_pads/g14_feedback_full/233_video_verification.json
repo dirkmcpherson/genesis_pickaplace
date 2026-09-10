@@ -1,0 +1,11 @@
+{
+  "all_frames_decoded": 161,
+  "trace_sha256": "1ad18ba53a1fa07b04977bee63fc6d40434ee5fe62ffa9901b9b7ecc50ed4ed6",
+  "video_sha256": "329fc660fc06a7b6f2dbfa595c2483debb413ddc0aff42809c6c97135bdda102",
+  "simulation_engine": "Genesis1.4, fresh-feedback pyramidal ratio1, .03 s pads",
+  "rendering_engine": "Pinned Genesis; saved poses only, no physics stepping",
+  "contact_sheet_visually_inspected": true,
+  "max_camera4_time_error_s": 0.01624095057348618,
+  "max_camera0_time_error_s": 0.0208748545734867,
+  "scope": "Timing and full video decoding verified. Viewpoints differ; not a registered overlay. Visual softness is not deformation calibration."
+}

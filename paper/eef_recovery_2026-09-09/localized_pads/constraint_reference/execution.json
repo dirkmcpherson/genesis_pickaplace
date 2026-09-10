@@ -1,0 +1,68 @@
+[
+  {
+    "name": "cg32_control",
+    "precision": "32",
+    "solver": "CG",
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/audit_g14_constraint_reference.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/constraint_reference/cg32_control",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--iterations",
+      "1000",
+      "--precision",
+      "32",
+      "--solver",
+      "CG"
+    ],
+    "returncode": 0,
+    "elapsed_s": 64.01964449882507
+  },
+  {
+    "name": "newton64_reference",
+    "precision": "64",
+    "solver": "Newton",
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/audit_g14_constraint_reference.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/constraint_reference/newton64_reference",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--iterations",
+      "1000",
+      "--precision",
+      "64",
+      "--solver",
+      "Newton"
+    ],
+    "returncode": 0,
+    "elapsed_s": 122.20513725280762
+  },
+  {
+    "name": "cg64_reference",
+    "precision": "64",
+    "solver": "CG",
+    "cmd": [
+      "/tmp/genesis-contact-1.4/bin/python",
+      "can_pos_recovery/audit_g14_constraint_reference.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/constraint_reference/cg64_reference",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/all_soft_control.json",
+      "--iterations",
+      "1000",
+      "--precision",
+      "64",
+      "--solver",
+      "CG"
+    ],
+    "returncode": 0,
+    "elapsed_s": 123.55113053321838
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "bag": "inthewild_trials/raw/user_113/trial_data.bag",
+  "connections": [
+    {
+      "topic": "/my_gen3_lite/in/cartesian_velocity",
+      "msgtype": "kortex_driver/msg/TwistCommand",
+      "count": 4124
+    },
+    {
+      "topic": "/my_gen3_lite/joint_states",
+      "msgtype": "sensor_msgs/msg/JointState",
+      "count": 5024
+    },
+    {
+      "topic": "/tf",
+      "msgtype": "tf2_msgs/msg/TFMessage",
+      "count": 5024
+    },
+    {
+      "topic": "/my_gen3_lite/base_feedback",
+      "msgtype": "kortex_driver/msg/BaseCyclic_Feedback",
+      "count": 5023
+    },
+    {
+      "topic": "/my_gen3_lite/base_feedback/joint_state",
+      "msgtype": "sensor_msgs/msg/JointState",
+      "count": 5023
+    },
+    {
+      "topic": "/camera_obs__dev_video0_96x96",
+      "msgtype": "sensor_msgs/msg/Image",
+      "count": 3079
+    },
+    {
+      "topic": "/camera_obs__dev_video4_96x96",
+      "msgtype": "sensor_msgs/msg/Image",
+      "count": 3767
+    },
+    {
+      "topic": "/joy",
+      "msgtype": "sensor_msgs/msg/Joy",
+      "count": 11361
+    }
+  ],
+  "camera_info_present": false
+}

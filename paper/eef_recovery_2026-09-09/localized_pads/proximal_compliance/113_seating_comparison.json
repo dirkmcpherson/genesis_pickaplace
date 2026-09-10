@@ -1,0 +1,35 @@
+{
+  "records": [
+    {
+      "time_s": 8,
+      "all_soft_error_px": 24.325146661748672,
+      "proximal_error_px": 24.471726137509535
+    },
+    {
+      "time_s": 10,
+      "all_soft_error_px": 23.24806926861032,
+      "proximal_error_px": 23.160387015952637
+    },
+    {
+      "time_s": 12,
+      "all_soft_error_px": 22.402558694909157,
+      "proximal_error_px": 22.19608144119633
+    },
+    {
+      "time_s": 14,
+      "all_soft_error_px": 20.69469585063823,
+      "proximal_error_px": 20.73438143697854
+    },
+    {
+      "time_s": 18,
+      "all_soft_error_px": 29.388656077397663,
+      "proximal_error_px": 29.128150410840206
+    },
+    {
+      "time_s": 20.04,
+      "all_soft_error_px": 21.854696753512222,
+      "proximal_error_px": 21.346269877380813
+    }
+  ],
+  "qualification": "Same real annotations and cap-only camera; differences below5px manual landmark uncertainty do not establish a visual fidelity gain."
+}

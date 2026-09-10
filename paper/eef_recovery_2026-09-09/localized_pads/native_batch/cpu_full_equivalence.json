@@ -1,0 +1,8 @@
+{
+  "frames": 962,
+  "source_frames": 962,
+  "all_physical_state_exact": true,
+  "max_abs_error": 0.0,
+  "max_can_distance_m": 0.0,
+  "scope": "Every recorded arm/finger joint, can pose and goal pose over the whole source; this is frozen-joint-command execution, not an independent EEF action decoder test."
+}

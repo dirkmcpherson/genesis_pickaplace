@@ -1,0 +1,70 @@
+{
+  "records": [
+    {
+      "condition": "Pinned rigid",
+      "window_s": [
+        0.3,
+        3
+      ],
+      "max_can_hand_contact_count": 0,
+      "finger_unloaded_relation_error_deg_p50_p95_max": [
+        0.0018743186137213945,
+        0.02078307844715866,
+        0.04937918824519678
+      ]
+    },
+    {
+      "condition": "1.4 pyramid rigid",
+      "window_s": [
+        0.3,
+        3
+      ],
+      "max_can_hand_contact_count": 0,
+      "finger_unloaded_relation_error_deg_p50_p95_max": [
+        4.2083032052344,
+        12.643489242575074,
+        15.142480397039655
+      ]
+    },
+    {
+      "condition": "1.4 pyramid soft",
+      "window_s": [
+        0.3,
+        3
+      ],
+      "max_can_hand_contact_count": 0,
+      "finger_unloaded_relation_error_deg_p50_p95_max": [
+        4.2083032052344,
+        12.643489242575074,
+        15.142480397039655
+      ]
+    },
+    {
+      "condition": "1.4 elliptic10 rigid",
+      "window_s": [
+        0.3,
+        3
+      ],
+      "max_can_hand_contact_count": 0,
+      "finger_unloaded_relation_error_deg_p50_p95_max": [
+        4.052139544874327,
+        11.896465399932893,
+        14.563043571035612
+      ]
+    },
+    {
+      "condition": "1.4 elliptic10 soft",
+      "window_s": [
+        0.3,
+        3
+      ],
+      "max_can_hand_contact_count": 0,
+      "finger_unloaded_relation_error_deg_p50_p95_max": [
+        4.052139544874327,
+        11.896465399932893,
+        14.563043571035612
+      ]
+    }
+  ],
+  "qualification": "Sampled approach contains zero can-hand contacts in the reported window. This is not a separate collision-disabled or zero-gravity bench; robot self-contact and other world forces have not been excluded."
+}

@@ -1,0 +1,6 @@
+{
+  "physical_states_exact": true,
+  "contacts_exact": true,
+  "picked_exact": true,
+  "tool_exact": true
+}

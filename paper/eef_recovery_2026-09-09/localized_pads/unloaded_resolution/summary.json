@@ -1,0 +1,134 @@
+{
+  "reports": {
+    "8": {
+      "numerical_substeps": 8,
+      "substep_dt_s": 0.00125,
+      "refresh_before_read": true,
+      "frames": 951,
+      "planned_frames": 951,
+      "error": null,
+      "substep_count": 7608,
+      "indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "q_indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "qpos0": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_cached_physical_q_difference_rad": 0.005059043876826763,
+      "max_used_physical_q_difference_rad": 0.0,
+      "max_abs_velocity_rad_s": 4.047234535217285,
+      "max_target_error_deg": 2.1564074786309253,
+      "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+      "urdf_sha256": "ee986f45563d0b63171dffcf522acb901cfdce2c9b54f01379eba8d8f2adbb42",
+      "qualification": "Only controller read freshness varies. Fixed hand, no collisions, zero gravity. Same spring law, gains, damping, armature, limits, 951-step source schedule and substep timing."
+    },
+    "16": {
+      "numerical_substeps": 16,
+      "substep_dt_s": 0.000625,
+      "refresh_before_read": true,
+      "frames": 951,
+      "planned_frames": 951,
+      "error": null,
+      "substep_count": 15216,
+      "indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "q_indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "qpos0": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_cached_physical_q_difference_rad": 0.00179213285446167,
+      "max_used_physical_q_difference_rad": 0.0,
+      "max_abs_velocity_rad_s": 2.8674159049987793,
+      "max_target_error_deg": 2.226555886357227,
+      "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+      "urdf_sha256": "ee986f45563d0b63171dffcf522acb901cfdce2c9b54f01379eba8d8f2adbb42",
+      "qualification": "Only controller read freshness varies. Fixed hand, no collisions, zero gravity. Same spring law, gains, damping, armature, limits, 951-step source schedule and substep timing."
+    },
+    "32": {
+      "numerical_substeps": 32,
+      "substep_dt_s": 0.0003125,
+      "refresh_before_read": true,
+      "frames": 951,
+      "planned_frames": 951,
+      "error": null,
+      "substep_count": 30432,
+      "indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "q_indices": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "qpos0": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_cached_physical_q_difference_rad": 0.0009092241525650024,
+      "max_used_physical_q_difference_rad": 0.0,
+      "max_abs_velocity_rad_s": 2.9095065593719482,
+      "max_target_error_deg": 2.241109371719973,
+      "preset_sha256": "fee9e2d0fd09a675118fdc58b7b12e84f5a2eb51807a3c26a6f6256969d677cd",
+      "urdf_sha256": "ee986f45563d0b63171dffcf522acb901cfdce2c9b54f01379eba8d8f2adbb42",
+      "qualification": "Only controller read freshness varies. Fixed hand, no collisions, zero gravity. Same spring law, gains, damping, armature, limits, 951-step source schedule and substep timing."
+    }
+  },
+  "comparisons": [
+    {
+      "substeps": [
+        8,
+        16
+      ],
+      "max_joint_difference_deg": 0.08645728156596187,
+      "final_joint_difference_deg": 3.2443398557560565e-05
+    },
+    {
+      "substeps": [
+        16,
+        32
+      ],
+      "max_joint_difference_deg": 0.015259923266277862,
+      "final_joint_difference_deg": 2.7320756680051004e-05
+    },
+    {
+      "substeps": [
+        8,
+        32
+      ],
+      "max_joint_difference_deg": 0.09683788844391188,
+      "final_joint_difference_deg": 6.830189170012751e-06
+    }
+  ],
+  "completed_schedules": 3,
+  "qualification": "The inherited per-bench qualification mentions only feedback freshness; in this frozen experiment freshness is fixed and substep resolution varies. Same scene schedule, hand and physical parameters; no contacts or gravity. These are unloaded benches, not independent real demonstrations. Small unloaded differences do not exclude their amplification under contact."
+}

@@ -1,0 +1,90 @@
+{
+  "intervals": [
+    {
+      "interval_s": [
+        0,
+        28.86
+      ],
+      "constrained_substeps": 23088,
+      "improved_still_true": 559,
+      "fraction_improved_still_true": 0.02421171171171171,
+      "gradient_to_tolerance_percentiles": {
+        "p50": 1083.329586131642,
+        "p90": 2312.7098424695632,
+        "p99": 6023.863409649747,
+        "max": 73962.6639426789
+      },
+      "positive_small_cost_improvement": 22510
+    },
+    {
+      "interval_s": [
+        0,
+        6
+      ],
+      "constrained_substeps": 4800,
+      "improved_still_true": 6,
+      "fraction_improved_still_true": 0.00125,
+      "gradient_to_tolerance_percentiles": {
+        "p50": 502.1302771770604,
+        "p90": 1905.50462665089,
+        "p99": 2879.0913428480662,
+        "max": 11332.47356707886
+      },
+      "positive_small_cost_improvement": 4775
+    },
+    {
+      "interval_s": [
+        6,
+        20
+      ],
+      "constrained_substeps": 11200,
+      "improved_still_true": 220,
+      "fraction_improved_still_true": 0.019642857142857142,
+      "gradient_to_tolerance_percentiles": {
+        "p50": 1053.5872503831724,
+        "p90": 2362.429263436702,
+        "p99": 5165.246546919495,
+        "max": 73962.6639426789
+      },
+      "positive_small_cost_improvement": 10980
+    },
+    {
+      "interval_s": [
+        20,
+        23
+      ],
+      "constrained_substeps": 2400,
+      "improved_still_true": 244,
+      "fraction_improved_still_true": 0.10166666666666667,
+      "gradient_to_tolerance_percentiles": {
+        "p50": 1486.9665410855173,
+        "p90": 2974.5103758519917,
+        "p99": 17606.69886285385,
+        "max": 66697.68001816451
+      },
+      "positive_small_cost_improvement": 2156
+    },
+    {
+      "interval_s": [
+        23,
+        28.86
+      ],
+      "constrained_substeps": 4688,
+      "improved_still_true": 89,
+      "fraction_improved_still_true": 0.018984641638225257,
+      "gradient_to_tolerance_percentiles": {
+        "p50": 1335.1004638483182,
+        "p90": 2279.6700388144172,
+        "p99": 3440.948407269557,
+        "max": 17656.655897519042
+      },
+      "positive_small_cost_improvement": 4599
+    }
+  ],
+  "callbacks": 23096,
+  "reset_callbacks": 8,
+  "diagnostic_sha256": "a70fb34244c1d71c6dd0c4e63013af08a9fecd0c1e158f08e8bcd770b44bbd21",
+  "inspected_engine_source": "/tmp/genesis-contact-1.4/lib/python3.10/site-packages/genesis/engine/solvers/rigid/constraint/solver.py",
+  "inspected_engine_source_sha256": "7affdbe0e599597799fbf3194c17381478b40cf9d64a38fe2d9d716319d284fb",
+  "qualification": "Exact14-array observation identity passed. In this monolithic CG solver, the loop breaks when improved is false and otherwise runs to the iteration cap. A true final flag therefore indicates cap exhaustion, inferred from the installed loop; actual iteration counts were not instrumented. A high gradient alone is not a failed convergence check because positive-small-cost-improvement exits are allowed. Does not establish the cause of GPU or timestep trajectory differences."
+}

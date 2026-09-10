@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    "cached",
+    "refreshed"
+  ],
+  "manipulated_variable": "call solver.update_forward_pos before reading spring-controller joint positions",
+  "fixed": "hand-only candidate URDF, no collisions/gravity, .0001 armature, frozen critical-return parameters and 951-scene-step schedule",
+  "prediction": "If feedback is delayed, refreshed joint positions should match qpos and eliminate oscillation without a parameter change. No e2e claim from this bench.",
+  "code_sha256": "2537a2bb6f7cf559e0d2d0e9f30a255d523568552aedffb38bec95d5acba2771"
+}

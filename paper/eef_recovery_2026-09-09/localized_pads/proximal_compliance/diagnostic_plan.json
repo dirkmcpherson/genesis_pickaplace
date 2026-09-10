@@ -1,0 +1,11 @@
+{
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/113/source.npz",
+  "preset": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/presets/proximal.json",
+  "reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/proximal_compliance/113_proximal/113_eef_delta.npz",
+  "source_code_sha256": {
+    "can_pos_recovery/observe_g14_pad_regions.py": "3fa03ff01d03a78d9996aec566b37b878b0f1fe9948c09679aa486005fbd6a3e",
+    "can_pos_recovery/run_g14_hand.py": "7e27d593f5ac0c6475ef1d87025dd4c3b5b527417ab69815fb90952e5d4eb739",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "7c6d350832cbec4bcee125a1be0feb9416514eb4c4a63cbcd366fb0d715a5640"
+  },
+  "purpose": "Locate detected can/finger contacts relative to declared pad regions at original scene cadence. Require exact equality of every saved trace array with completed proximal113. No physical intervention."
+}

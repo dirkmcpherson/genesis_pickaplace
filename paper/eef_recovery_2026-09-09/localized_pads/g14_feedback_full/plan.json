@@ -1,0 +1,34 @@
+{
+  "uid": 233,
+  "conditions": [
+    [
+      "pyramidal",
+      1,
+      0.02,
+      "233_pyramid_rigid"
+    ],
+    [
+      "pyramidal",
+      1,
+      0.03,
+      "233_pyramid_soft"
+    ],
+    [
+      "elliptic",
+      10,
+      0.02,
+      "233_elliptic10_rigid"
+    ],
+    [
+      "elliptic",
+      10,
+      0.03,
+      "233_elliptic10_soft"
+    ]
+  ],
+  "source_code_sha256": {
+    "can_pos_recovery/run_g14_hand.py": "1928a987f3ba9c03bda35a23bb06af856e0ba769458c4eb9ec1c724849c8e4af",
+    "can_pos_recovery/surface_pad_candidate_g14.py": "5e1d56998d13decd7e0677b941cfa7ee069653dabd5d215d3826e7d9f288230f"
+  },
+  "qualification": "Fresh feedback fixes verified controller delay. Same material mapping, source path/grip, scoring, geometry inputs and transmission as preceding full-world port. No candidate adoption from one demo."
+}
