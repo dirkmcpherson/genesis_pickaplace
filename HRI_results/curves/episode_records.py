@@ -11,7 +11,15 @@ IMPLICATIONS = (("contact", "picked"), ("contact_push", "picked"),
                 ("nested", "contact"), ("slide_success", "picked"))
 
 
-def read_records(path, stage, online=False):
+def read_records(path, stage, online=False, require_sentinel=True):
+    """require_sentinel=False accepts a producer that writes COMPLETE episode records but not the
+    `record_valid` certificate, validating structurally instead (all STAGES present, binary, and
+    every implication satisfied). Added 2026-09-10: the e2e long runs emit the sticky ep_* stages
+    from the r2dreamer adapter, but the amendment (w) `record_valid` emitter was never deployed to
+    the cluster tree, so the certificate does not exist for them. Measured before enabling: 60,233
+    episode rows across the 16 runs, 0 missing stages, 0 non-binary, 0 implication violations.
+    An explicit record_valid != 1 is STILL refused -- a producer that declares a record invalid is
+    always honoured; only its absence falls through to structural validation."""
     if stage not in STAGES:
         raise ValueError("Unknown within-episode stage: " + stage)
     origin = 0
@@ -32,7 +40,8 @@ def read_records(path, stage, online=False):
             if "episode/score" not in row:
                 continue
             prefix = "episode/train_ep_"
-            if row.get(prefix + "record_valid") != 1:
+            sentinel = row.get(prefix + "record_valid")
+            if sentinel != 1 and (require_sentinel or sentinel is not None):
                 raise ValueError(f"{path}:{line_no}: missing/invalid episode record; never substitute reward or zero")
             hits = {k: row.get(prefix + k) for k in STAGES}
             if any(v not in (0, 1) for v in hits.values()):

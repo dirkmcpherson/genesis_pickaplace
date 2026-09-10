@@ -24,6 +24,10 @@ parser.add_argument('runs_dir')
 parser.add_argument('out_csv')
 parser.add_argument('n_bins', nargs='?', type=int, default=40)
 parser.add_argument('--episode-record', action='store_true')
+parser.add_argument('--allow-missing-sentinel', action='store_true',
+                    help='Accept complete episode records that lack the record_valid certificate '
+                         '(validated structurally instead). Needed for runs whose producer predates '
+                         'the amendment (w) emitter. An explicit record_valid != 1 is still refused.')
 parser.add_argument('--online-steps', action='store_true', help='Full-task only: subtract recorded prefill origin')
 parser.add_argument('--online-budget', type=int, default=4000000)
 parser.add_argument('--full-human-pattern', default='full_r2d_state_dHfull_all_bnormclampS8ent5_s%d')
@@ -77,7 +81,8 @@ def seed_series(run_dir, stage, fam=None):
     if not os.path.exists(f):
         return None
     if fam == 'e2e' and args.episode_record:
-        steps, vals = read_records(f, stage, online=args.online_steps)
+        steps, vals = read_records(f, stage, online=args.online_steps,
+                               require_sentinel=not args.allow_missing_sentinel)
         if len(steps) < 10:
             return None
         return np.asarray(steps), np.asarray(vals)

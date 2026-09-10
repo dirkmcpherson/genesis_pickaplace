@@ -16,7 +16,12 @@ def read(fn):
             rows = list(csv.DictReader(itertools.chain([line], fh))); break
     return rows
 
-curves, seeds = read("curves_2026-09-08.csv"), read("curves_2026-09-08_seeds.csv")
+# Inputs/output prefix are overridable so a new batch can be plotted without clobbering the
+# frozen 2026-09-08 figures. Defaults are unchanged, so the existing invocation still works.
+_mean_csv = sys.argv[1] if len(sys.argv) > 1 else "curves_2026-09-08.csv"
+_seed_csv = sys.argv[2] if len(sys.argv) > 2 else _mean_csv.replace(".csv", "_seeds.csv")
+_prefix = sys.argv[3] if len(sys.argv) > 3 else "learning_curves"
+curves, seeds = read(_mean_csv), read(_seed_csv)
 CAVEAT = ("WORLD MODEL (r2dreamer) ONLY — RLPD persists no training-time metrics and DP is offline (no online rollouts),\n"
           "so neither can produce this curve without new compute; the per-learner comparison exists for FINAL numbers only.\n"
           "TRAINING ROLLOUTS (exploring policy, resetting from the TRAINING bank) — NOT the evaluation protocol.\n"
@@ -97,6 +102,6 @@ for variant in ("mean", "seeds"):
     fig.text(0.5, 0.005, CAVEAT, ha="center", va="bottom", fontsize=8, color="#333333")
     fig.tight_layout(rect=[0, 0.075, 1, 0.97])
     for ext in ("png", "pdf"):
-        fig.savefig("learning_curves_%s.%s" % (variant, ext), dpi=150)
+        fig.savefig("%s_%s.%s" % (_prefix, variant, ext), dpi=150)
     plt.close(fig)
-    print("wrote learning_curves_%s.png/.pdf" % variant)
+    print("wrote %s_%s.png/.pdf" % (_prefix, variant))
