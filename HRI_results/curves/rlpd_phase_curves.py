@@ -18,7 +18,9 @@ import numpy as np
 src, out_csv = sys.argv[1], sys.argv[2]
 NB = int(sys.argv[3]) if len(sys.argv) > 3 else 20
 STAGES = ("picked", "placed_v2", "contact", "contact_push", "slide_success", "nested")
-ARMS = (("human", "e2e_rlpd_dH_s90*"), ("machine", "e2e_rlpd_dDPfirst_s92*"))
+# _s9* not _s90*/_s92*: the 16v16 extension added seeds 908-915 / 928-935, and a narrower
+# glob silently drops them from the curve (seeds 911, 912, 931 were already trained by 09-10).
+ARMS = (("human", "e2e_rlpd_dH_s9*"), ("machine", "e2e_rlpd_dDPfirst_s9*"))
 
 def seed_rows(d):
     p = os.path.join(d, "episode_rollouts.jsonl")
