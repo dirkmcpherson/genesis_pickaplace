@@ -269,3 +269,46 @@ login node while `pax` is load-balanced — it could vanish between polls and re
 unreachable". Moved to `$LAB/e2e_health.py` on shared storage. It also now reports `r2trained=N/32`
 and excuses post-train deaths for the original seeds ONLY, so the 16 expected benign failures do
 not mask a real one among the resubmitted seeds.
+
+## 2026-09-10 — CONFOUND: the two learners trained on DIFFERENT reward ladders
+
+`FULLENV_REWARD_X=1` was exported on every e2e submission and had **no effect on any RLPD run**.
+
+    gp_e2e/baselines/rl/full_env.py:57   STAGE_REWARD = dict(picked=1, placed=1, contact=2, nested=4)   # hardcoded, NO gate
+    gp_root/baselines/rl/full_env.py:72  STAGE_REWARD = _STAGE_REWARD_X if FULLENV_REWARD_X == '1' else _STAGE_REWARD_OLD
+
+`cluster/sbatch_rlpd_e2e.sh:41` does `cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"`, i.e. the gp_e2e clone,
+whose copy predates amendment (x) and has no gate. `wmfix_full.sbatch:27` exports
+`GENESIS_PICKAPLACE_ROOT=$W/gp_root`, which has it. So:
+
+  {RLPD}       trained on picked 1 / placed 1 / contact 2 / **nested 4**   (and `placed` never fires,
+               so effectively picked 1 / contact 2 / nested 4)
+  {r2dreamer}  trained on picked 1 / placed_v2 1 / contact_push 2 / **slide_success 4**
+
+Detected because the annotation re-run returned reward **7.0 = 1 + 2 + 4** on an episode where
+placed_v2, contact_push and slide_success were all true (the (x) ladder would pay 8), with the gate
+demonstrably exported (`[gate] FULLENV_REWARD_X=1` in the job log).
+
+**Scope of damage.** Within-learner human-vs-machine contrasts are UNAFFECTED — both arms of a
+learner ran the same tree and the same ladder. The CROSS-LEARNER e2e comparison is confounded:
+the learners optimised different objectives, so any statement of the form "RLPD reaches placement
+more often than r2dreamer" conflates learner with reward.
+
+**It also inverts the reading of today's phase results.** RLPD reached placement on 69/240 eval
+episodes and produced 7 slides while being paid for NEITHER; r2dreamer sat at ~0.05 placement and
+~0 slide while being paid +1 and +4 for exactly those. Whatever drives placement and slide here,
+it is not the reward term.
+
+**My reporting error, recorded.** I stated repeatedly that all 32 (later 64) runs carried the (x)
+ladder. The monitor's `gate_logs=16` only ever grepped `$W/slurm/e2eL_r2_*.out` — r2dreamer logs —
+and I generalised it to both learners without checking. The flag was passed; I never verified it
+took effect. Verifying that a flag is *set* is not verifying that it *does anything*.
+
+**Consequence for the annotator** (same root cause): `_granted` is populated by iterating
+`STAGE_REWARD.items()`, so under the old ladder `placed_v2` never enters it and a chip keyed on
+`_granted` alone could never light for RLPD even on episodes the evaluator scores as placed. The
+annotator now mirrors the evaluator and snapshots `_granted | info`.
+
+**Open decision for the user (NOT actioned):** whether the 32 RLPD e2e runs are re-trained under
+the (x) ladder. Not required for within-learner assessment, which is the stated purpose; required
+before any cross-learner e2e claim.
