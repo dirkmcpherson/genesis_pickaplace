@@ -1,0 +1,44 @@
+[
+  {
+    "name": "233_feedback_tc0.02",
+    "returncode": 0,
+    "elapsed_s": 78.32772636413574,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.02",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/feedback_coordinate_presets/tc0.02.json"
+    ]
+  },
+  {
+    "name": "233_feedback_tc0.03",
+    "returncode": 0,
+    "elapsed_s": 78.70753765106201,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.03",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/feedback_coordinate_presets/tc0.03.json"
+    ]
+  },
+  {
+    "name": "233_feedback_tc0.04",
+    "returncode": 0,
+    "elapsed_s": 79.35092449188232,
+    "command": [
+      "/home/james/workspace/genesis_sim2real/venv/bin/python",
+      "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_hand_preset.py",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+      "--out",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_feedback_tc0.04",
+      "--preset",
+      "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/feedback_coordinate_presets/tc0.04.json"
+    ]
+  }
+]

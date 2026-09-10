@@ -1,0 +1,14 @@
+{
+  "transmission": {
+    "actuator_stiffness": 320.0,
+    "actuator_force_limit": 2.0,
+    "distal_moment_ratio": 0.5,
+    "return_stiffness": 0.2,
+    "proximal_damping": 0.05,
+    "distal_damping": 0.002
+  },
+  "pad_timeconst_s": 0.02,
+  "max_pad_normal_depth_m": 0.003,
+  "distal_lower_limit_rad": -1.03,
+  "qualification": "Whole hand candidate changes multiple mechanics together. Only pad effect is isolated within this three-case family. No hardware-calibration or e2e-improvement claim until observed."
+}

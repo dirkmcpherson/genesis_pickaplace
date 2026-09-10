@@ -7,6 +7,20 @@
     "source_grip": true,
     "mount": true
   },
+  "max_abs_joint_velocity_rad_s": [
+    1.570199728012085,
+    1.5703436136245728,
+    2.7968640327453613,
+    1.8391432762145996
+  ],
+  "max_abs_generalized_torque": [
+    12.171582957339048,
+    12.248043325432539,
+    2.9726285637397205,
+    2.936080921508733
+  ],
+  "baseline_reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_transmission/233_active/233_eef_delta.npz",
+  "baseline_is_prior_adaptive": true,
   "transmission_parameters": {
     "actuator_stiffness": 80.0,
     "actuator_force_limit": 100.0,
@@ -15,6 +29,7 @@
     "proximal_damping": 1.0,
     "distal_damping": 0.02
   },
+  "distal_lower_limit_rad": -0.5,
   "reference_drive": null,
   "baseline_trajectory_exact": false,
   "baseline_arm_max_difference_rad": 0.003996372222900391,

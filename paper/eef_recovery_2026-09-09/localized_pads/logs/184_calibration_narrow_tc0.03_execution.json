@@ -1,0 +1,16 @@
+{
+  "name": "184_calibration_narrow_tc0.03",
+  "returncode": 0,
+  "elapsed_s": 208.3150188922882,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/184_calibration_narrow_tc0.03",
+    "--pad-timeconst",
+    "0.03",
+    "--distal-lower-limit",
+    "-0.5"
+  ]
+}

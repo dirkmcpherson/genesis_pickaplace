@@ -1,0 +1,9 @@
+{
+  "changed_joints": [
+    "right_finger_tip_joint",
+    "left_finger_tip_joint"
+  ],
+  "narrow_hash": "8c0385fc878f4ce278c226fa7973edd55ad94a6b01b8a0136e641394557d7c0d",
+  "wide_hash": "aa22ab836119f742d0b07fe0f289af32c44c5a724239cbc9708b552525b62537",
+  "narrow_matches_original": true
+}

@@ -1,0 +1,41 @@
+{
+  "uid": 233,
+  "jobs": [
+    {
+      "match_reference_drive": false,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "match_reference_drive": false,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "match_reference_drive": false,
+      "pad_timeconst_s": 0.04
+    },
+    {
+      "match_reference_drive": true,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "match_reference_drive": true,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "match_reference_drive": true,
+      "pad_timeconst_s": 0.04
+    }
+  ],
+  "distal_lower_limit_rad": -1.03,
+  "return_stiffness": 2.0,
+  "max_pad_normal_depth_m": 0.003,
+  "motivation": "Prior narrow-limit candidates saturate the inherited -0.50 rad tip stops. Official right-tip CAD export permits -1.03 rad. Test the additional travel before more material tuning.",
+  "qualification": "Mirror the CAD right-tip range as a finger-symmetry hypothesis. Raw-left CAD limit signs differ from the ROS model; this is not an axis-converted or measured hardware correction. All 233 runs are calibration attempts.",
+  "fixed": "Only distal lower stops change relative to the paired prior drive/pad configurations. Same geometry, inertia, source actions/clocks, initial positions, friction, actuator force limit and timestep.",
+  "code_sha256": {
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/run_surface_pad_candidate.py": "21e4bed819f67718e5c62eb537777d8cf86ff084fc9ad0a368ff9c97861a5708",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "002cd63f17e84fef78bed187bee5b336ea6e06f92b35df286c559a4b6fa7fab9"
+  }
+}

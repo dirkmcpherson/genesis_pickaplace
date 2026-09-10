@@ -17,6 +17,7 @@ for status_path in sorted((ROOT/'logs').glob('*_execution.json')):
     path=next(folder.glob('*_eef_delta.npz'));uid=int(path.name.split('_')[0])
     z=np.load(path);meta=json.loads(path.with_suffix('.json').read_text());n=len(z['actions_eef'])
     reference=ROOT.parent/f'adaptive_transmission/{uid}_active/{uid}_eef_delta.npz'
+    reference_is_adaptive=reference.exists()
     if not reference.exists():
         reference=ROOT.parent/f'{"early_yaw_pool" if uid<233 else "timestamp_full_pool"}/{uid}/collection/{uid}_eef_delta.npz'
     previous=np.load(reference)
@@ -39,7 +40,10 @@ for status_path in sorted((ROOT/'logs').glob('*_execution.json')):
             s=values[1:].reshape(n,3,3,3)[carry,:,j,:].reshape(-1,3);s=s[s[:,2]>0]
             regions[str(label)]=dict(carry_samples=len(s),penetration_mm=quantiles(s[:,0],1000),force_N=quantiles(s[:,1]))
     record=dict(name=status['name'],uid=uid,source_identity=identity,
+        max_abs_joint_velocity_rad_s=stats['max_abs_velocity'],max_abs_generalized_torque=stats['max_abs_torque'],
+        baseline_reference=str(reference),baseline_is_prior_adaptive=reference_is_adaptive,
         transmission_parameters=meta['physics_treatment']['parameters'],
+        distal_lower_limit_rad=meta['physics_treatment']['urdf'].get('distal_lower_limit_rad',-.50),
         reference_drive=meta['physics_treatment'].get('reference_drive'),
         baseline_trajectory_exact=bool(np.array_equal(z['trajectory'],previous['trajectory'])),
         baseline_arm_max_difference_rad=float(np.max(abs(tr[:,:6]-previous['trajectory'][:,:6]))),
@@ -53,7 +57,7 @@ for status_path in sorted((ROOT/'logs').glob('*_execution.json')):
         s=np.load(folder/'surface_pad_observations.npz')['counts'];assert s.shape==(1+3*n,3)
         assert a['detection_calls']>=8+24*n
         record['surface_pad_contact_counts_sum']=s.sum(axis=0).tolist()
-        if a['pad_timeconst_s']==.02 and record['transmission_parameters']['return_stiffness']==2. and record['transmission_parameters']['actuator_stiffness']==80.:
+        if reference_is_adaptive and a['pad_timeconst_s']==.02 and record['transmission_parameters']['return_stiffness']==2. and record['transmission_parameters']['actuator_stiffness']==80. and record['distal_lower_limit_rad']==-.50:
             assert record['baseline_trajectory_exact'],'Unchanged-material surface control must reproduce original adaptive trace'
         elif a['pad_timeconst_s']>.02:assert s[:,1].sum()>0,'Candidate did not soften any contacts'
     (folder/'readout.json').write_text(json.dumps(record,indent=2));records.append(record)

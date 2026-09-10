@@ -1,0 +1,53 @@
+{
+  "jobs": [
+    {
+      "uid": 113,
+      "distal_lower_limit_rad": -0.5,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 113,
+      "distal_lower_limit_rad": -0.5,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 113,
+      "distal_lower_limit_rad": -1.03,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 113,
+      "distal_lower_limit_rad": -1.03,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 184,
+      "distal_lower_limit_rad": -0.5,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 184,
+      "distal_lower_limit_rad": -0.5,
+      "pad_timeconst_s": 0.03
+    },
+    {
+      "uid": 184,
+      "distal_lower_limit_rad": -1.03,
+      "pad_timeconst_s": 0.02
+    },
+    {
+      "uid": 184,
+      "distal_lower_limit_rad": -1.03,
+      "pad_timeconst_s": 0.03
+    }
+  ],
+  "motivation": "Broaden to both early-day calibration trials rather than treating success on one known late-day trial as a necessary gate for all useful configurations. Demonstration recoverability can vary. This revises the earlier 233-first gate, not the end-to-end success definition.",
+  "fixed": "Original adaptive drive (stiffness 80, proximal damping 1), return stiffness 2, distal damping 0.02, original collision geometry, pad depth 3 mm, source actions/clocks, corrected early yaw and initial conditions. Only declared travel/pad settings vary.",
+  "qualification": "Calibration only. Earlier 233 outcomes are known. Evaluate all three calibration trials jointly, with failed stages and regressions visible. No final-distance-only winner selection. Reserved 176/185/237 remain excluded from new fitting.",
+  "code_sha256": {
+    "can_pos_recovery/surface_pad_candidate.py": "ff8e6b84ce50f44c728a1f7c2845470d86bdb26c7b079b5445a2806428873e9b",
+    "can_pos_recovery/run_surface_pad_candidate.py": "21e4bed819f67718e5c62eb537777d8cf86ff084fc9ad0a368ff9c97861a5708",
+    "can_pos_recovery/adaptive_gripper_candidate.py": "e32afa866bd9993c63423c747918c2261dc4c216bd1624229fdb0372ea672edb",
+    "can_pos_recovery/run_adaptive_gripper_candidate.py": "002cd63f17e84fef78bed187bee5b336ea6e06f92b35df286c559a4b6fa7fab9"
+  }
+}

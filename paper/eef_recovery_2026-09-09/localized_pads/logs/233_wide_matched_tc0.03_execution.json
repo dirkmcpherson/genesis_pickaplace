@@ -1,0 +1,17 @@
+{
+  "name": "233_wide_matched_tc0.03",
+  "returncode": 0,
+  "elapsed_s": 78.43377614021301,
+  "command": [
+    "/home/james/workspace/genesis_sim2real/venv/bin/python",
+    "/home/james/workspace/genesis_pickaplace/can_pos_recovery/run_surface_pad_candidate.py",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/timestamp_full_pool/233/source.npz",
+    "--out",
+    "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/233_wide_matched_tc0.03",
+    "--pad-timeconst",
+    "0.03",
+    "--distal-lower-limit",
+    "-1.03",
+    "--match-reference-drive"
+  ]
+}

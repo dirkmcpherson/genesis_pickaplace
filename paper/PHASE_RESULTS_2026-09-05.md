@@ -410,3 +410,22 @@ It also softens a conclusion: "no arm learns the slide" was measured at 0.042. T
 ~~**`contact_push` is an ABSENCE in full scope, not a measurement.**~~ It reads exactly 0.000 while bare `contact` reads 0.533 and `slide_success` 0.267. The env grants it only from `info['contact_push']`, and that key is not populated in the full-scope path — `slide_success` arrives through the same mechanism and does fire, which is what isolates the cause. `placed` reads 0.000 for the known separate reason that it is the stale never-granted predicate. **Our discriminating statistic has therefore been unavailable in full scope**, and any end-to-end table reporting it as zero is reporting a missing field.
 
 Caveats: one seed of eight, one arm, and these long runs used the OLD datasets (best-of-three machine set, old reward ladder), so this says nothing about demonstration source — only about budget.
+
+## 5.7 {Diffusion Policy} converges at a quarter of its budget — unlike the other two learners (2026-09-09)
+
+Checkpoint sweep, end-to-end, random-uniform starts, sampled, `picked`, **1 seed per arm**:
+
+| checkpoint | human (raw set) | machine (first-attempt) |
+|---|---|---|
+| 25k | 0.067 | 0.367 |
+| 50k | 0.167 | 0.300 |
+| 75k | 0.133 | 0.433 |
+| 100k | 0.167 | 0.333 |
+
+**Both arms are flat from 25k onward.** The human arm sits near 0.15 and the machine near 0.36, and the checkpoint-to-checkpoint movement has no trend — 0.367 → 0.300 → 0.433 → 0.333 is wobble. **The 100k gradient-step budget is not this learner's constraint**; three quarters of its training buys nothing.
+
+**That separates it sharply from the other two.** {r2dreamer} was still improving at 4.1M env steps (+0.059 in its final quarter, 4 of 4 seeds) and {RLPD} at 250k decisions (+0.072 human, +0.129 machine; 13 of 16 seeds). So of the three learners, only the offline imitator has converged at the budget it was given — and the two online learners, whose budgets were set by the same kind of heuristic, have not.
+
+**Consequence for the machine advantage on this learner:** it is present at *every* checkpoint, from the earliest. It is therefore not an artefact of unequal optimisation, and de-selecting the machine set did not remove it. The remaining control is the pruned human arm, which is the set of record for this learner and has not yet been run.
+
+**Caveats.** One seed per arm, so checkpoint wobble is not separable from seed noise; a four-seed version is cheap given convergence at 25k. And this human arm is the **raw** set, not `dHfull_pruned` — the comparison of record is still outstanding.

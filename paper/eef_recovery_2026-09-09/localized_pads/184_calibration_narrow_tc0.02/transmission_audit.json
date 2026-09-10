@@ -1,0 +1,153 @@
+{
+  "parameters": {
+    "actuator_stiffness": 80.0,
+    "actuator_force_limit": 100.0,
+    "distal_moment_ratio": 0.2,
+    "return_stiffness": 2.0,
+    "proximal_damping": 1.0,
+    "distal_damping": 0.02
+  },
+  "remaining_equalities": [
+    "mimic_left_finger_bottom_joint_to_right_finger_bottom_joint"
+  ],
+  "finger_dof_indices": [
+    7,
+    6,
+    9,
+    8
+  ],
+  "kp_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "kv_readback": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "damping_readback": [
+    1.0,
+    1.0,
+    0.019999999552965164,
+    0.019999999552965164
+  ],
+  "substep_dt_s": 0.00125,
+  "status": "Uncalibrated transmission candidate. No phase/contact-conditioned targets.",
+  "reference_drive": {
+    "matched": false,
+    "reference_kp": [
+      40.0,
+      40.0,
+      40.0,
+      40.0
+    ],
+    "reference_kv": [
+      10.0,
+      10.0,
+      10.0,
+      10.0
+    ],
+    "coupled_joint_derivative": [
+      -1.0,
+      1.0,
+      -0.676,
+      -0.676
+    ],
+    "reference_modal_stiffness": 116.55808000000002,
+    "reference_modal_damping": 29.139520000000005,
+    "adaptive_modal_stiffness": 59.8303232,
+    "adaptive_modal_damping": 2.01827904,
+    "qualification": "Matching is only along the unloaded coupled direction, below force saturation. Finite passive joints and implicit damping still differ. This matches a simulation reference, not measured hardware."
+  },
+  "surface_pad_treatment": {
+    "pad_timeconst_s": 0.02,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance."
+  },
+  "finger_limits_readback": [
+    [
+      -0.9599999785423279,
+      0.09000000357627869
+    ],
+    [
+      -0.09000000357627869,
+      0.9599999785423279
+    ],
+    [
+      -0.5,
+      0.20999999344348907
+    ],
+    [
+      -0.5,
+      0.20999999344348907
+    ]
+  ],
+  "contact_treatment": {
+    "scope": "none",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": 0.019999999552965164,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "urdf": {
+    "source": "/home/james/workspace/genesis_pickaplace/gen3_lite_2f_robotiq_85.urdf",
+    "source_sha256": "34d1d9c19fdb79ef48aaee1d8bba70f36ddea22200ad60755976d94705acf853",
+    "candidate": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/localized_pads/184_calibration_narrow_tc0.02/gen3_lite_2f_adaptive_candidate.urdf",
+    "candidate_sha256": "8c0385fc878f4ce278c226fa7973edd55ad94a6b01b8a0136e641394557d7c0d",
+    "removed_mimics": [
+      "right_finger_tip_joint",
+      "left_finger_tip_joint"
+    ],
+    "distal_lower_limit_rad": -0.5,
+    "travel_reference": "Inherited ROS mimic-model range"
+  },
+  "variant": "gc_kp4_riser3_shelf6_yaw17",
+  "source": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/early_yaw_pool/184/source.npz"
+}

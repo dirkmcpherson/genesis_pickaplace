@@ -1,0 +1,32 @@
+{
+  "cases": [
+    {
+      "proximal_damping": 0.5,
+      "distal_damping": 0.02,
+      "null_direction": [
+        -1,
+        1,
+        -2.0,
+        -2.0
+      ],
+      "return_modal_stiffness": 0.7011903999999999,
+      "return_modal_damping": 1.16,
+      "overdamped_relaxation_time_s": 1.654329551574009
+    },
+    {
+      "proximal_damping": 0.05,
+      "distal_damping": 0.002,
+      "null_direction": [
+        -1,
+        1,
+        -2.0,
+        -2.0
+      ],
+      "return_modal_stiffness": 0.7011903999999999,
+      "return_modal_damping": 0.116,
+      "overdamped_relaxation_time_s": 0.16543295515740095
+    }
+  ],
+  "assumptions": "Symmetric internal mode at fixed actuator coordinate; linearized return springs and joint viscous damping. Quasistatic time constant D/K, not an exact prediction with contact and inertia.",
+  "evidence": "233_feedback_tc0.02 tracks actuator position within 1 percentage point but remains curled and catches the can during withdrawal; observe saved q and contact timeline."
+}

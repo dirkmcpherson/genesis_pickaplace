@@ -1,0 +1,130 @@
+{
+  "name": "233_fastreturn_tc0.02",
+  "uid": 233,
+  "source_identity": {
+    "actions_eef": true,
+    "actions_joint": true,
+    "source_grip": true,
+    "mount": true
+  },
+  "max_abs_joint_velocity_rad_s": [
+    0.8148496150970459,
+    0.8147779107093811,
+    1.3377348184585571,
+    1.1624950170516968
+  ],
+  "max_abs_generalized_torque": [
+    1.1022576109506608,
+    1.1010445568538665,
+    0.6512686552524567,
+    0.6494741965293884
+  ],
+  "baseline_reference": "/home/james/workspace/genesis_pickaplace/paper/eef_recovery_2026-09-09/adaptive_transmission/233_active/233_eef_delta.npz",
+  "baseline_is_prior_adaptive": true,
+  "transmission_parameters": {
+    "actuator_stiffness": 320.0,
+    "actuator_force_limit": 2.0,
+    "distal_moment_ratio": 0.5,
+    "return_stiffness": 0.2,
+    "proximal_damping": 0.05,
+    "distal_damping": 0.002
+  },
+  "distal_lower_limit_rad": -1.03,
+  "reference_drive": null,
+  "baseline_trajectory_exact": false,
+  "baseline_arm_max_difference_rad": 0.004566073417663574,
+  "sequence": {
+    "complete": false,
+    "reason": "no_supported_push_to_contact",
+    "release_start": 802,
+    "push_start": null,
+    "contact_start": null,
+    "final_surface_gap_m": 0.11333458341750682
+  },
+  "metric": {
+    "uid": "233",
+    "n": 241,
+    "released": true,
+    "release_frame": 1,
+    "pushed": true,
+    "arrived": false,
+    "slide_success": false,
+    "final_dist": 0.17933458341750683,
+    "gain_m": 0.1959718176789917
+  },
+  "first_post_pick_ten_frame_hand_separation_s": 25.259999999999998,
+  "carry_overlap_mm": {
+    "median": 0.37240725941956043,
+    "p95": 0.6335568963550031,
+    "maximum": 0.7711760699748993
+  },
+  "carry_contact_force_N": {
+    "median": 2.9093668460845947,
+    "p95": 7.0669877290725704,
+    "maximum": 7.128967761993408
+  },
+  "regions": {},
+  "contact_treatment": {
+    "scope": "none",
+    "selected_geom_indices": [],
+    "selected_before": [],
+    "selected_after": [],
+    "effective_finger_can_timeconst_s": 0.019999999552965164,
+    "interpretation": "Soft rigid contact, not mesh deformation. Pair parameters are averaged. Finger treatment also changes finger-other contacts; can treatment changes can-table/shelf/goal contacts. Friction, impedance and damping ratio unchanged."
+  },
+  "qualification": "Per-run contact sample populations differ. Solver overlap is not material strain; post-pick separation alone is not shelf placement.",
+  "surface_pad_treatment": {
+    "pad_timeconst_s": 0.02,
+    "regions": [
+      {
+        "link": "right_finger_prox_link",
+        "geom": 10,
+        "normal": [
+          0.3872324843550917,
+          0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.0034121134635374736
+      },
+      {
+        "link": "left_finger_prox_link",
+        "geom": 11,
+        "normal": [
+          0.3872324843550917,
+          -0.9219821056073613,
+          0.0
+        ],
+        "offset_m": 0.003422466829866599
+      },
+      {
+        "link": "right_finger_dist_link",
+        "geom": 12,
+        "normal": [
+          0.09950371902099893,
+          0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      },
+      {
+        "link": "left_finger_dist_link",
+        "geom": 13,
+        "normal": [
+          0.09950371902099893,
+          -0.9950371902099893,
+          0.0
+        ],
+        "offset_m": 0.003084673311748171
+      }
+    ],
+    "geometry": "Original reference URDF collision meshes; no subdivision or reconstruction",
+    "law": "Soft restoring stiffness until the backing plane, original incremental stiffness thereafter; damping follows effective time constant. Friction and all other solver parameters unchanged.",
+    "qualification": "Uncalibrated layered contact approximation. Material classification uses local surface position/normal, not task phase, can identity or goal distance.",
+    "detection_calls": 23096
+  },
+  "surface_pad_contact_counts_sum": [
+    11522,
+    0,
+    0
+  ]
+}

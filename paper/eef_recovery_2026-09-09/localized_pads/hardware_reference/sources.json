@@ -1,0 +1,159 @@
+{
+  "commit": "c3280d8a6a6b5d96590d51538e3f265710a6c77d",
+  "records": [
+    {
+      "filename": "gen3_lite_2f_macro.xacro",
+      "url": "https://raw.githubusercontent.com/Kinovarobotics/ros_kortex/c3280d8a6a6b5d96590d51538e3f265710a6c77d/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro",
+      "sha256": "1c65454fc1ff2a98e22b3e6bfa737b16929d4e2353aed4f98ec20817f71d43a3",
+      "joints": [
+        {
+          "name": "${prefix}right_finger_bottom_joint",
+          "child": {
+            "link": "${prefix}right_finger_prox_link"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-0.09",
+            "upper": "0.96",
+            "effort": "1000",
+            "velocity": "0.6"
+          },
+          "mimic": null
+        },
+        {
+          "name": "${prefix}right_finger_tip_joint",
+          "child": {
+            "link": "${prefix}right_finger_dist_link"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-0.50",
+            "upper": "0.21",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": {
+            "joint": "${prefix}right_finger_bottom_joint",
+            "multiplier": "-0.676",
+            "offset": "0.149"
+          }
+        },
+        {
+          "name": "${prefix}left_finger_bottom_joint",
+          "child": {
+            "link": "${prefix}left_finger_prox_link"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-0.96",
+            "upper": "0.09",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": {
+            "joint": "${prefix}right_finger_bottom_joint",
+            "multiplier": "-1.0",
+            "offset": "0.0"
+          }
+        },
+        {
+          "name": "${prefix}left_finger_tip_joint",
+          "child": {
+            "link": "${prefix}left_finger_dist_link"
+          },
+          "axis": {
+            "xyz": "0 0 -1"
+          },
+          "limit": {
+            "lower": "-0.50",
+            "upper": "0.21",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": {
+            "joint": "${prefix}right_finger_bottom_joint",
+            "multiplier": "-0.676",
+            "offset": "0.149"
+          }
+        }
+      ]
+    },
+    {
+      "filename": "GEN3-LITE-GRIPPER_URDF_SIMPLIFIED_V2.urdf",
+      "url": "https://raw.githubusercontent.com/Kinovarobotics/ros_kortex/c3280d8a6a6b5d96590d51538e3f265710a6c77d/kortex_description/grippers/gen3_lite_2f/urdf/GEN3-LITE-GRIPPER_URDF_SIMPLIFIED_V2.urdf",
+      "sha256": "aafa0488addaea070c4872bd0a923a7cf1d0509628ec0e1b09997d44a92619a2",
+      "joints": [
+        {
+          "name": "RIGHT_BOTTOM",
+          "child": {
+            "link": "RIGHT_FINGER_PROX"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-0.09",
+            "upper": "0.96",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": null
+        },
+        {
+          "name": "RIGHT_TIP",
+          "child": {
+            "link": "RIGHT_FINGER_DIST"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-1.03",
+            "upper": "0.21",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": null
+        },
+        {
+          "name": "LEFT_BOTTOM",
+          "child": {
+            "link": "LEFT_FINGER_PROX"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-0.96",
+            "upper": "0.09",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": null
+        },
+        {
+          "name": "LEFT_TIP",
+          "child": {
+            "link": "LEFT_FINGER_DIST"
+          },
+          "axis": {
+            "xyz": "0 0 -1"
+          },
+          "limit": {
+            "lower": "-0.21",
+            "upper": "1.03",
+            "effort": "1000",
+            "velocity": "1000"
+          },
+          "mimic": null
+        }
+      ]
+    }
+  ]
+}
