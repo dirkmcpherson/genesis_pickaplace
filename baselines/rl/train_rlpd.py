@@ -556,9 +556,69 @@ def main():
                 print(f'[ckpt] archived {d}/rlpd_ckpt.zip @ {self.num_timesteps} decisions', flush=True)
             return True
 
+    class EpisodeRolloutLogCallback(BaseCallback):
+        """PHASE_PLAN amendment (u): one JSONL row per FINISHED online rollout episode --
+        `step` (decisions) plus the episode's sticky stage flags -- i.e. the same shape of record
+        r2dreamer writes as `episode/train_*` in metrics.jsonl, which is what makes a learning
+        curve / ignition-step comparison possible for this learner at all.
+
+        LOGGING ONLY, and deliberately inert: it reads `self.locals` (SB3 puts `dones`/`infos`
+        there in collect_rollouts), wraps nothing, draws no random numbers, and swallows every
+        exception -- a logging fault must never kill a training run. Cost measured on the e2e
+        recipe: ~800 finished episodes per 250k-decision run, ~200 B per row, so ~0.16 MB per run
+        and no measurable runtime."""
+
+        FLAGS = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push', 'nested',
+                 'slide_success', 'tipped')
+
+        def __init__(self, path):
+            super().__init__()
+            self._path = pl.Path(path); self._n = 0; self._warned = False
+            self._acc = {}          # env index -> stages seen SO FAR this episode
+
+        def _on_step(self):
+            try:
+                dones = self.locals.get('dones'); infos = self.locals.get('infos')
+                if dones is None or infos is None:
+                    return True
+                rows = []
+                for i, (d, inf) in enumerate(zip(dones, infos)):
+                    # Accumulate on EVERY step, not only the done step. `info` reports a stage
+                    # at the step it is granted, and SB3 auto-resets on done (so the env own
+                    # `_granted` set is already cleared by the time a callback could read it) --
+                    # a point-read at the terminal step therefore records ONLY the stage that
+                    # ENDED the episode. Measured 2026-09-09 on e2e_rlpd_dDPfirst_s920: `tipped`
+                    # (which terminates) fired in 4 of 17 episodes while `picked` read 0 in all
+                    # 17. Accumulating is correct whether or not `info` happens to be sticky.
+                    acc = self._acc.setdefault(i, set())
+                    if isinstance(inf, dict):
+                        for k in self.FLAGS:
+                            if inf.get(k):
+                                acc.add(k)
+                    if not d:
+                        continue
+                    self._n += 1
+                    row = {'step': int(self.num_timesteps), 'episode': int(self._n)}
+                    for k in self.FLAGS:
+                        row['episode/train_ep_' + k] = float(k in acc)   # sticky: the record
+                        v = inf.get(k) if isinstance(inf, dict) else None
+                        if v is not None:
+                            row['episode/train_' + k] = float(bool(v))   # legacy terminal read
+                    self._acc[i] = set()
+                    rows.append(json.dumps(row))
+                if rows:
+                    with open(self._path, 'a') as fh:
+                        fh.write('\n'.join(rows) + '\n')
+            except Exception as e:                      # never fatal
+                if not self._warned:
+                    self._warned = True
+                    print(f'[episode-log] disabled after error: {e}', flush=True)
+            return True
+
+
     run = init_wandb(args, name=args.run_name or out.name, tags=('rlpd',),
                      project=args.project)
-    cbs = []
+    cbs = [EpisodeRolloutLogCallback(out / 'episode_rollouts.jsonl')]
     if args.ckpt_every > 0:
         cbs.append(SidecarCheckpointCallback(json.dumps(sidecar), save_freq=args.ckpt_every,
                                              save_path=str(out), name_prefix='rlpd'))
