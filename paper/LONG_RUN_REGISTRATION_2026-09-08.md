@@ -144,3 +144,34 @@ provenance gate (above), and a run registry that refuses a duplicate
 `(script, arm, seed, git)` key — it refused 13 resubmissions because the fix was still
 uncommitted, which is exactly the "these seeds are not independent" error it exists to
 prevent. 16 relaunched under `6e98ce3`: 13 RUNNING, 3 PENDING on the 30-GPU cap, 0 refused.
+
+### CORRECTION (2026-09-09, later) — the claimed {RLPD} defect is DISPROVEN for `picked`
+
+The section above justified relaunching 16 runs with: "the record captured only the stage
+that ended the episode; `tipped` fired in 4 of 17 episodes while `picked` read 0 in all 17."
+**That inference was wrong.** The counts were real, but the explanation was not: `picked`
+read 0 because an untrained policy had not picked yet — not because of a plumbing fault.
+
+Measured on the relaunched runs once picking began (660 episodes, both arms), comparing the
+new sticky flag against the legacy terminal read **per episode**:
+
+    both=6   ep_only=0   term_only=0   neither=649
+
+Zero disagreement in either direction. `info['picked']` is sticky at the done step, so the
+original point-read was recording `picked` correctly. Aggregate equality alone would not have
+settled this (offsetting errors); the per-episode split is what does.
+
+**What the change did legitimately gain, and what it did not.** It did not fix a `picked`
+defect — there was none. It did add the `ep_*` keys, which did not exist; it made `placed_v2`
+and `nested` explicit 0/1 instead of silently absent (`inf.get` returned `None`, so they were
+omitted from rows entirely); and it moved the sticky guarantee into the logger instead of
+relying on env behaviour that happens to be sticky for `picked` and may not be for transient
+predicates such as `contact_push` / `slide_success` — for which no evidence either way exists
+yet. Those are real improvements, but they are completeness and robustness, not a bug fix.
+
+**Cost of the error:** ~20 minutes of compute on 16 runs, relaunched at a few minutes old.
+**Standing lesson:** an absent signal from a policy that cannot yet produce it is not evidence
+of a broken recorder. The discriminating test (`ep` vs `term` per episode) was available before
+the relaunch and would have taken one training-warm run to apply; I acted on the pattern instead
+of the test. The earlier `contact_push=0.000` misdiagnosis this week was the same shape — reading
+a zero as an absence rather than a measurement.
