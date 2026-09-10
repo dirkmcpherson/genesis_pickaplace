@@ -83,3 +83,29 @@ apply the blocked between-arm analysis without auditing all actual allocations.
 Primary within-seed checkpoint comparisons remain defined. No run or queued job
 was altered after discovering this deviation. See the OG launch update and
 `long_run_submission_2026-09-08/verification.json` for job-level evidence.
+
+## 2026-09-09 — machine-arm RLPD relaunch + a manifest edit, disclosed
+
+The 8 `e2eL_rl_dM_*` runs (RLPD, machine arm, `dDPfull_first_rx`) failed at submission
+(exit 1:0, jobs 3484620–27). Cause: `sbatch_rlpd_e2e.sh` asserts
+`one_per_ic_first is True` for `ARM=dDPfirst`, and `to_dreamer_native.py` had stamped
+`False`, because it derives that key from its own CLI flag and the selection had been
+applied UPSTREAM (the relabelled set is a copy of the already-selected `dDPfull_first`).
+The gate behaved correctly — it refused a set that could not attest its own provenance.
+
+**Before** editing anything, the claim was checked rather than assumed: the 72 tape keys
+match `dDPfull_first` one-for-one, and all 72 **action streams are byte-identical by
+sha256**; only per-frame reward differs (70 tapes; totals 237.0 vs 131.0, the amendment (x)
+ladder). On that basis `one_per_ic_first: True` was written into
+`demos_state_full/dDPfull_first_rx/repeat.json`, together with `provenance_src_set` and a
+`provenance_check` string recording the above. Prior file kept as
+`repeat.json.bak_before_provenance`. Runs resubmitted as **3484659–67**, all alive.
+
+Root cause fixed in `to_dreamer_native.py` (commit b756259): the converter now inherits the
+source manifest's selection attestation when its own flag is unset and records
+`selection_inherited_{from,keys}`, instead of stamping a false `False`.
+
+Note this is the same failure mode the project has hit repeatedly — a field named for the
+flag that sets it rather than the fact it asserts. The key reads as "was `--one-per-ic-first`
+passed to *this* invocation", but every consumer treats it as "these tapes are the
+first-attempt set".
