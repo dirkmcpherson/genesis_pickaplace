@@ -17,32 +17,38 @@ import matplotlib.pyplot as plt
 src, prefix = sys.argv[1], sys.argv[2]
 rows = [r for r in csv.DictReader(l for l in open(src) if not l.startswith('#'))
         if r['family'] == 'e2e']
-STAGES = [('picked', 'pick'), ('placed_v2', 'placement'), ('contact', 'contact (legacy)'),
-          ('contact_push', 'contact_push'), ('slide_within_episode_diagnostic', 'slide (diagnostic)'),
-          ('nested_proxy', 'nested (TRAINING PROXY)')]
+# Stage aliases: r2dreamer's reader names slide/nested one way, the RLPD record another.
+# Accept either so ONE plotter draws both learners rather than two divergent figures.
+STAGES = [(('picked',), 'pick'), (('placed_v2',), 'placement'), (('contact',), 'contact (legacy)'),
+          (('contact_push',), 'contact_push'),
+          (('slide_within_episode_diagnostic', 'slide_success'), 'slide'),
+          (('nested_proxy', 'nested'), 'nested (proxy)')]
+LEARNER = sys.argv[3] if len(sys.argv) > 3 else 'r2dreamer'
 fig, axes = plt.subplots(2, 3, figsize=(16, 8.5))
-for ax, (stage, title) in zip(axes.ravel(), STAGES):
+for ax, (names, title) in zip(axes.ravel(), STAGES):
     for arm, colour in (('human', '#1f5fa8'), ('machine', '#c1392b')):
         d = sorted((float(r['step']), float(r['mean']), float(r['se']))
-                   for r in rows if r['stage'] == stage and r['arm'] == arm)
+                   for r in rows if r['stage'] in names and r['arm'] == arm)
         if not d:
             continue
         x = [p[0] for p in d]; m = [p[1] for p in d]; se = [p[2] for p in d]
-        n = {r['n_seeds'] for r in rows if r['stage'] == stage and r['arm'] == arm}
+        n = {r['n_seeds'] for r in rows if r['stage'] in names and r['arm'] == arm}
         ax.plot(x, m, color=colour, lw=2, label=f'{arm} (mean ± SE, {sorted(n)[0]} seeds)')
         ax.fill_between(x, [a - b for a, b in zip(m, se)], [a + b for a, b in zip(m, se)],
                         color=colour, alpha=0.18, lw=0)
     ax.set_title(f'e2e — {title}'); ax.set_xlabel('env step (training)')
     ax.set_ylabel('online rollout rate'); ax.set_ylim(-0.02, 1.02)
     ax.grid(alpha=0.3); ax.legend(fontsize=8, loc='upper left')
-fig.suptitle('{r2dreamer} end-to-end phase acquisition — ONLINE TRAINING ROLLOUTS, not evaluation',
+fig.suptitle('{%s} end-to-end phase acquisition' % LEARNER + '  — ONLINE TRAINING ROLLOUTS, not evaluation',
              fontsize=13)
+_prov = (' Records carry no record_valid certificate (its emitter was never deployed); validated structurally instead — 60,233 rows, 0 missing stages, 0 non-binary, 0 implication violations.'
+         if LEARNER == 'r2dreamer' else
+         ' Records are the amendment (u) per-episode rollout log (episode_rollouts.jsonl); sticky flags are accumulated across each episode, so a stage counts wherever it occurred, not only at the final step.')
 fig.text(0.5, 0.005,
-         'WORLD MODEL (r2dreamer) only — RLPD persists no training-time metrics of this shape and DP is offline.\n'
-         'Training rollouts from the exploring policy, resetting from the TRAINING bank. Endpoints are NOT the table '
-         'numbers (eval uses mode/sampled actions on rnd30/spots60 at the final checkpoint).\n'
-         'Records carry no record_valid certificate (emitter never deployed); validated structurally instead — '
-         '60,233 rows, 0 missing stages, 0 non-binary, 0 implication violations.',
+         f'{LEARNER}: ONLINE TRAINING ROLLOUTS from the exploring policy, resetting from the TRAINING bank. '
+         'DP is offline (no online rollouts) and cannot produce this curve.\n'
+         'Endpoints are NOT the table numbers (eval uses mode/sampled actions on rnd30/spots60, final checkpoint).\n'
+         + _prov,
          ha='center', fontsize=8, color='#444')
 fig.tight_layout(rect=(0, 0.06, 1, 0.96))
 for ext in ('png', 'pdf'):
