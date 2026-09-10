@@ -109,3 +109,38 @@ Note this is the same failure mode the project has hit repeatedly — a field na
 flag that sets it rather than the fact it asserts. The key reads as "was `--one-per-ic-first`
 passed to *this* invocation", but every consumer treats it as "these tapes are the
 first-attempt set".
+
+## 2026-09-09 — {RLPD} episode record was hollow; all 16 runs relaunched
+
+Caught ~20 min into the batch by inspecting the records directly rather than
+trusting the monitor's summary (the monitor read `ok`, because its check was
+shaped around r2dreamer's output and RLPD's different shape passed vacuously).
+
+**Defect.** `EpisodeRolloutLogCallback` point-read `info` at the done step.
+`full_env` reports a stage in `info` at the step it is GRANTED, and SB3 auto-resets
+on done — so the record captured *only the stage that ended the episode*. Measured on
+`e2e_rlpd_dDPfirst_s920`: `tipped` (which terminates) fired in 4 of 17 episodes while
+`picked` read 0.0 in all 17. The sticky `ep_*` twins were absent entirely, as were
+`placed_v2` / `nested_honest` / `task_success`.
+
+**Why it could not be repaired after the fact.** Reading the env's own `_granted` set
+from a callback fails for the same reason — SB3 has already auto-reset by then. And no
+per-episode return is logged for RLPD (no `Monitor`, no `monitor.csv`), so the
+score-derived decoding that works elsewhere (ladder 1/1/2/4 ⇒ ≥1 picked, ≥2 placed,
+≥4 contact, =8 slide) had nothing to decode. RLPD phase curves were unrecoverable.
+
+**Fix** (`gp_e2e` commit `6e98ce3`): accumulate flags across every step of the episode
+and emit sticky `episode/train_ep_<stage>` at done, keeping the legacy terminal read
+beside it. Correct whether or not `info` is sticky. Logging-only, and confined to
+`train_rlpd.py`, which r2dreamer does not import — its 16 running jobs were untouched.
+
+**Verified so far:** all 8 `ep_*` keys now present in every record (they did not exist
+before). **NOT yet verified:** that the values populate — an untrained policy has not
+picked yet, so `ep_picked` and the terminal read are both 0 and do not yet discriminate.
+The discriminating check is `ep_picked > picked` once picking begins.
+
+Two guards fired correctly during the relaunch and are worth keeping: the demo-set
+provenance gate (above), and a run registry that refuses a duplicate
+`(script, arm, seed, git)` key — it refused 13 resubmissions because the fix was still
+uncommitted, which is exactly the "these seeds are not independent" error it exists to
+prevent. 16 relaunched under `6e98ce3`: 13 RUNNING, 3 PENDING on the 30-GPU cap, 0 refused.
