@@ -271,3 +271,94 @@ reward-relabelled copies (`baselines/rl/relabel_reward.py`) of the corresponding
 set. Manifests are asserted by both launchers before training starts — sim_variant, scope=full,
 `with_state`, `action_repeat==4`, `reward_from_tape`, `delta_cap`, tape count, and the
 `one_per_ic_first` / `one_per_ic_best` selection flags.
+
+---
+
+## 10. The world these runs use, and what is known to be wrong with it
+
+    $ grep -n "gc_kp4_riser3_shelf6'" baselines/sim_variants.py
+    'gc_kp4_riser3_shelf6': dict(kp_mult=4.0, kv_mult=2.0, gravity_comp=1.0,
+                                 effort='base', riser=0.03, shelf_dz=0.06)
+
+Asserted in every demo manifest and every eval cell, so all 64 runs share it. Four world-level
+facts bear on how the e2e results should be read:
+
+**(a) The declared contact-solver fix is NOT in this world.** `sim_variants.py` carries an
+explicit comment: `gc_kp4_riser3_shelf6` was *"DECLARED world of record on 2026-08-26 (commit
+7c8195d) but NEVER RUN as one: every frozen w3 set, harvest and reported arm was built on
+gc_kp4_riser3_shelf6 WITHOUT this fix (dropped by omission)"*. The variant dict has no
+`grasp_timeconst` key; a `_ts5` sibling exists and is unused here. Consequence, per
+`paper/TS5_DROPPED_FIX_2026-09-02.md`: **8–10 mm of finger-into-can penetration is live in every
+arm of this batch**, and over-squeeze can eject the can. It is symmetric across arms, so it does
+not bias human-vs-machine, but it caps absolute grasp quality.
+
+**(b) The slide is control-limited by the simulator, not by the policy.**
+`paper/SLIDE_ANATOMY_2026-09-07.md` measured that at set-down the sim tool tracks the real tool to
+**0.2 cm median**, but the *can* does not follow: engaged strokes transfer only ~0.65 of the
+goalward motion and lose ~2.4 cm laterally per tape, a systematic **2–4 cm under-transfer**. This
+is why the same human demonstrations yield ~15 completed slides in sim against the ~18 a human
+counts from the real footage. **Any e2e slide number is therefore a lower bound set partly by
+world fidelity**, which matters a great deal given slide is the top rung of the ladder and reads
+near zero (§4, §6.2).
+
+**(c) Contact-constraint creep.** `paper/CONFOUNDS.md` row 49: Genesis regularises friction
+constraints so a pinched can under a sub-limit tangential load creeps linearly in time (59°
+droop/s at the engine default impedance). This is a real engine property; the registered
+impedance ladder was tested and **did not** fix the recorder path, so w3 was kept.
+
+**(d) Two initial conditions are unwinnable by construction.** CONFOUNDS row 51: uids 234 and 318
+are the only 90°-lying-can entries in `trial_placements.json` (an artifact of a 2026-07-20
+placement pass); the tip rule fires at decision 1 and both tapes are one decision long. Real
+footage shows both cans upright at t0. They sit in every n=74 denominator.
+
+See also CONFOUNDS row 50 (the `og4` fast-open release filter was adopted for the *recorder*
+path; machine-arm harvests do not receive it — check before comparing grip dynamics across arms).
+
+---
+
+## 11. The demonstration sets
+
+Verified from the manifests (`$W/demos_state_full/<set>/repeat.json`):
+
+| | human `dHfull_all_rx` | machine `dDPfull_first_rx` |
+|---|---|---|
+| tapes | 74 | 72 |
+| Σ reward (relabelled) | 238.0 | 237.0 |
+| decisions min / median / max | 2 / **389** / 601 | 2 / **601** / 601 |
+| sim_variant | gc_kp4_riser3_shelf6 | gc_kp4_riser3_shelf6 |
+| action_repeat / delta_cap | 4 / 0.025 | 4 / 0.025 |
+| selection | none (every attempt kept, no-picks included) | `one_per_ic_first=True`, `one_per_ic_best=False` |
+
+**The episode-length asymmetry is large and easy to miss:** the machine median is 601 — the cap —
+while the human median is 389. Machine demonstrations mostly run to the horizon; human ones end
+when the person finishes. Any per-decision statistic (idle fraction, action magnitude) inherits
+this.
+
+**Provenance of the human set.** These are teleoperated Kinova gen3-lite pick-and-place trials
+replayed in sim. The 74 uids are **all from a single afternoon** (the 2024-12-18 session). A
+further 120 trials from three earlier days were recovered on 2026-09-08
+(`paper/EARLY_TRIALS_ROTATION_2026-09-08.md`, 88/89 solved) but are a **disclosed separate pool**
+and are NOT in these sets.
+
+**Participant identity is unknown, and this is a real limitation for a paper about "human
+demonstrations".** Per `CLAUDE.md`: no identifier exists anywhere — `config.yaml` is byte-identical
+across all 224 trials except `data_dir`, `user_NNN` is a trial counter, no bag topic carries one,
+and METHODS states no participant count. One person over four days and four people over four days
+are **equally consistent with the data**. If it is one person, "human demonstrations" describes a
+single individual's style, which is worth stating explicitly rather than leaving to the reader.
+
+**Provenance of the machine set.** Harvested from a Diffusion Policy teacher trained on the human
+demonstrations, then reduced to the **first** attempt per initial condition. The earlier
+best-of-3 selection was removed deliberately (PHASE_PLAN (v)) because selection, not
+demonstration source, produced most of the machine arm's apparent advantage: Σ reward
+131 → 206 (+57 %) and completions 8 → 16 under selection, and `best ≠ first` on 24 of 72 starts.
+**The de-selected set is the honest comparison and is what these runs use.**
+
+**Lineage caveat.** `paper/SLIDE_CLAUSE5_LINEAGE_2026-09-07.md` found that `dHfull_w3` and the
+honest census are *different recordings of the same 74 ICs* — action streams differ on 24 of 74
+and contact flags on 11 — with the census re-executing bit-exactly and `dHfull` not. Check which
+lineage any given number came from before combining.
+
+**One asymmetry that is NOT a confound:** `convert_to_lerobot` drops 2 one-decision tapes per arm,
+so DP datasets hold 72/74 and 70/72 while RLPD and the world model train on all. It is symmetric
+and 0.007 % of rows, and is recorded in the manifests.
