@@ -138,6 +138,34 @@ left the contrast unbiased. **This one biases the contrast itself.** Any result 
 `nested`, `nested_proxy`, or a reward ladder that pays for the proxy (which is what {RLPD}
 trained on — see §2) inherits an arm-dependent error large enough to reverse the sign.
 
+### 4b. The same census for {r2dreamer}, and the strongest evidence on slide
+
+    $ python3 $LAB/r2_select.py      # rnd30 mode cells, 390 episodes, 13 runs
+
+| arm | episodes | `nested_proxy` | `nested_honest` | `slide_success` |
+|---|---|---|---|---|
+| human | 180 | 8 | 3 | **0** |
+| machine | 210 | 6 | 2 | **0** |
+
+**Zero slides in all 390 episodes — from the learner that was paid +4 for exactly that.**
+{RLPD}, paid nothing for sliding (§2), produced 7. Slide occurrence is therefore uncorrelated
+with slide reward across the two learners, which is the strongest single piece of evidence that
+the binding constraint on the top rung is the WORLD (§10b: 2-4 cm systematic under-transfer of
+the push), not the incentive. Raising the slide reward is very unlikely to produce slides.
+
+{r2dreamer} also nests far less than {RLPD} at every level (proxy 8/180 vs 44/300; honest 3/180
+vs 12/300) **despite the better pick rate** (~0.88 vs ~0.80). It picks more and finishes less.
+Real, but confounded by the ladder split (§2) — do not report it as a learner result.
+
+The proxy inversion in §4a is {RLPD}-specific: at n=8 and n=6 the r2dreamer proxy counts are too
+small to reverse anything. The inversion is driven by {RLPD}'s 68 machine-arm proxy-only firings,
+and {RLPD} is also the arm whose reward paid for the proxy.
+
+**Note the two evaluators differ in honesty.** `eval_genesis.py` (r2dreamer) already records
+`outcome` AND `outcome_honest` and labels 12 episodes `proxy_only` outright; `eval_e2e.py`
+({RLPD}/DP) does not. Both share one trap: episodes that are `nested_honest` but labelled
+`timeout` (3 in r2dreamer, 8 in RLPD).
+
 Practical consequence: **do not report any nesting comparison on the proxy.** The settled
 predicate is available for every episode via the post-episode `end_of_episode()` call, costs one
 extra settle, and is already recorded in the eval cells as `nested_honest`.
