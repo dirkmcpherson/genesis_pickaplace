@@ -225,3 +225,36 @@ baselines/demonstrations/
 
 # datasets never travel by git (rsync only) -- lerobot_dH_pick slipped in via git add -A on 080cb73
 baselines/lerobot_*/
+
+# ---------------------------------------------------------------------------
+# Datasets travel by rsync ONLY, never git (standing project rule).
+# Added 2026-09-10 after measuring the history: .git is 2.0 GB, of which the
+# actual code+docs are ~130 MB. The rest is committed data --
+#   1,776 MB of .npz, 200 MB of .mp4, 427 MB of YCB meshes, 166 MB of lerobot
+#   parquet, 34 MB of a committed virtualenv.
+# `paper/eef_recovery_2026-09-09/` alone is 590 MB in 1,481 blobs, committed
+# this week, so the rule was being broken continuously rather than historically.
+# NOTE: these rules do NOT untrack what is already committed and do not shrink
+# history -- they only stop new data being added. Use `git add -f` to override
+# deliberately for a genuinely small file.
+# ---------------------------------------------------------------------------
+*.npz
+*.npy
+*.parquet
+*.mp4
+*.mkv
+*.avi
+*.pkl
+*.ply
+*.stl
+*.dae
+*.obj
+
+# bulk artefact directories (episode banks, harvests, lerobot builds, meshes)
+baselines/assets/
+baselines/episodes_*/
+baselines/demos_*/
+baselines/lerobot_*/
+baselines/*_harvest/
+baselines/genesis_m1all/
+baselines/x2x2*/
