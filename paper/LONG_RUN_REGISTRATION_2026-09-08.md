@@ -205,3 +205,29 @@ episode, repeatedly. So for **{r2dreamer}** the sticky twin carries information 
 read does not — the opposite of **{RLPD}**, where the two agree on every one of 7000+ episodes.
 Both learners now emit both, so no comparison depends on which is which; but the r2dreamer
 `log_*` first-grant values must NOT be read as per-episode stage outcomes.
+
+## 2026-09-10 — extension to 16 v 16 per learner (registered BEFORE submission)
+
+User authorised adding 8 further seeds per arm for both learners, on seeing the first
+runs complete. This takes each learner from 8 v 8 to **16 v 16**, the sample size left
+open as a decision in `OVERNIGHT_STATE_2026-09-07.md` (e2e MDE at 8 v 8 ≈ 0.21).
+
+- **{RLPD}** human seeds 908-915, machine seeds 928-935 (16 runs, 250k decisions)
+- **{r2dreamer}** human seeds 908-915, machine seeds 928-935 (16 runs, 4M steps)
+
+**Code is unchanged from the first 16 of each**: RLPD at `gp_e2e` `6e98ce3` (sticky
+episode record), r2dreamer via `wmfix_full.sbatch` with `FULLENV_REWARD_X=1`, same
+demo sets `dHfull_all_rx` / `dDPfull_first_rx` with the same manifest gates. The new
+seeds are therefore poolable with the existing ones; had any code changed, they would
+not be.
+
+**State at the decision, so the basis is auditable:** {RLPD} 9 of 16 COMPLETED at full
+budget with eval cells and `disagree=0` over 16.5k episodes; {r2dreamer} 16 of 16 alive
+at 2.8-3.5M of 4M after 10h, sticky keys present in all. Disk 324 GB free, r2 runs 0.5 GB
+each, so the extension costs ~10-20 GB.
+
+**Disclosed risk:** no {r2dreamer} run had completed end-to-end when these were submitted,
+so its train->eval handoff was unproven in this batch (the shared evaluator was proven by
+13 RLPD cells, and the world-model e2e path ran in earlier work). If that handoff proves
+broken, 32 r2dreamer runs train correctly and produce no cells; the training records
+survive either way and the cells can be regenerated post hoc from checkpoints.
