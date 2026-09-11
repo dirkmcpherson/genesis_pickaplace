@@ -208,3 +208,47 @@ with the other 60 batch nodes excluded.
 Cost: one minute of compute. Nothing was built on the wrong class, because the assertion runs before
 the first tape.
 
+### 3.2 What the cluster build has to reproduce, and from whom
+
+Lane 12b landed `paper/R2D_LADDERN_SMOKE_2026-09-11.md` (commit `f9828d4`) into this shared
+checkout while step 2 was running. It built the four Ladder-N sets LOCALLY, on a 32-core AVX2 box,
+from Lane 7's records, under the same names this lane uses — so the cluster build is a
+**reproduction on the 64-core class**, which is P-aa-7, and the local numbers are the targets:
+
+| set | tapes | Σ reward recorded → relabelled | `home` tapes |
+|---|---:|---|---:|
+| `dHfull_all_rnrh` (ramp v2) | 74 | 118.0 → **215.9** | **13** |
+| `dHfull_all_rnsh` (sparse) | 74 | 118.0 → **13.0** | **13** |
+| `dDPfull_first_rnrh` (ramp v2) | 72 | 131.0 → **217.8** | **14** |
+| `dDPfull_first_rnsh` (sparse) | 72 | 131.0 → **14.0** | **14** |
+
+P-aa-7 allows ±1 tape per set. The `_rzh` control sets have no local counterpart; their comparison
+is the pilot's own cluster-built `_rz` pair (Σ **171.0** human / **183.0** machine, built on pax080
+by job 3537411), which differ from `_rzh` only in the tip guard.
+
+The stamps Lane 12b measured, which mine must match field for field:
+
+    ramp (v2): unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4
+               ramp:slide_gain_m=3/0.05m | max_return=9 | terminal=home+tipped | shaping=off |
+               far_release=off | tip=tilt>60deg&not_in_hand@4f |
+               full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632
+    sparse:    unified-2026-09-10 | ladder=nested_sparse | home=1 | max_return=1 |
+               terminal=home+tipped | … same three hashes …
+
+Those three hashes are the ones `$LAB/gp_ladderN` carries (§2), so the trees agree before a single
+job runs. `farside` is absent from the ramp stamp's reward list — that absence IS revision 1.
+
+**Two caveats inherited from Lane 12b, recorded here because this batch runs under them**
+(`HANDOFF_2026-09-11.md` §7b):
+
+1. **The r2dreamer trainer does not itself refuse legacy gates.** `train.py` never calls
+   `full_env.refuse_legacy_gates()`, so a stray `FULLENV_*` gate is refused by
+   `cluster/wmfix_full.sbatch`'s preflight and by nothing else. The fix exists on an r2dreamer
+   worktree branch (`lane12b-fullenv-tipguard-fix`, `5e3a627`) and was deliberately NOT merged,
+   because this lane was copying the committed tree to the cluster at that moment. **This batch
+   therefore runs with launcher-side gate refusal only**, and `$W/r2dreamer_ladderN` is `0cf3d9e`
+   without that commit. Both launchers do refuse, and no submission below sets any gate.
+2. **Do not smoke this port on CPU with `model.compile=True`** — an inductor crash in CPU codegen
+   on the first `agent.update()`, unrelated to the ladder work, reproduced on all three of Lane
+   12b's CPU smokes. My {r2dreamer} smokes run on GPU, where it does not occur.
+
