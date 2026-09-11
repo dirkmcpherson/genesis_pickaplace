@@ -206,6 +206,9 @@ can_pos_recovery/videos_gallery/
 can_pos_recovery/videos_realsim/
 can_pos_recovery/videos_ss8/
 can_pos_recovery/rebuild_videos.log
+# Lane 5 annotated demonstrations (2026-09-11): the mp4s are regenerable from the tapes by
+# baselines/annotate_demos.py; INDEX.md and the census/render JSONs beside them ARE tracked.
+can_pos_recovery/videos_ladder_2026-09-11/*.mp4
 
 # session 2026-07 additions
 wandb/
