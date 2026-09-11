@@ -38,8 +38,9 @@ LEGACY row  (dim, visually separated, behind a rule -- these pay NOTHING and ter
     nestP  `nested`, the withdrawn training proxy (precision 0.114 human / 0.029 machine)
     pushL  `contact_push_legacy`, the (g) geometry with NO release requirement
     slidL  `slide_success_legacy`, the (l) predicate with the grip < 0.3 clause (p) withdrew
-A chip lights ON THE FRAME its stage is granted (a cyan flash for 6 frames), then stays lit,
-and carries the decision index it fired on.
+A chip lights ON THE FRAME its stage is granted (a YELLOW flash for 6 decisions -- the tuple
+(60, 255, 255) is yellow in OpenCV's BGR order), then stays GREEN, and carries the decision
+index it fired on. Grey outline = not granted yet.
 
 Diagnostics line: decision index, `lever_m` (|tool_xy - can_xy|), `in_hand`, `at_rest`,
 `goalward_gain_m`, `dist_xy` to the goal, and the COMMANDED grip -- all read from the tracker

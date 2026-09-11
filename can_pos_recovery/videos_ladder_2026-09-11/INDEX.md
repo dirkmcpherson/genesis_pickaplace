@@ -25,8 +25,11 @@ ladder : unified-2026-09-10 | staged | picked=1 placed_v2=1 contact_push=2 slide
 ## How to read the overlay
 
 **LADDER row** (bright) — the rungs that pay under `staged`. A chip lights **on the frame its
-stage is granted**, flashes cyan for 6 frames, then stays lit and carries the decision it fired
-on. A chip never shows a grant that has not happened yet (no spoilers), and the timeline ticks
+stage is granted**, shows **YELLOW** for the 6 decisions after the grant (the "just fired" flash;
+the code comment says cyan, but OpenCV's BGR order renders that tuple yellow), then turns
+**GREEN** and stays green — green and yellow both mean "granted"; yellow only adds "within the
+last 6 decisions". Grey outline = not granted yet. Each lit chip carries `d<N>`, the decision
+it fired on. A chip never shows a grant that has not happened yet (no spoilers), and the timeline ticks
 at the bottom likewise only appear once passed.
 
 | chip | stage | pays | definition |
