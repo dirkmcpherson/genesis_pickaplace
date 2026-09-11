@@ -87,13 +87,14 @@ sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
 # The tape reader, the IC restore and the env invariants come from the D5 relabel path.
 # Importing them is the point: a second reader is a second set of assumptions.
 from relabel_reward import tape_layout, tape_stream, reset_to_tape_ic, scalar, set_meta  # noqa: E402
+from stage_predicates import tilt_from_quat  # noqa: E402  (the settle's final can tilt)
 
 MAX_FRAMES = 400
 CARD_FRAMES = 18           # held terminal card
 BODY_BUDGET = 340          # uniform body before forced frames are added
 RENDER_HW = (360, 480)     # camera render (H, W) -- native 480 px wide, no upscale blur
 SCALE = 1.0
-PANEL_H = 124
+PANEL_H = 140          # 124 + one line for the can-tilt / tip-rule readout (Lane 6)
 
 # (chip label, info/_granted key). LADDER = the rungs of the 'staged' ladder plus nested_v2,
 # which is logged there and is the whole ladder under 'sparse'. LEGACY pays nothing.
@@ -106,6 +107,12 @@ ALL_CHIP_KEYS = [k for _, k in LADDER_CHIPS + LEGACY_CHIPS]
 REPORT = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
           'released', 'pushed', 'nested', 'contact', 'placed',
           'contact_push_legacy', 'slide_success_legacy')
+
+# --- the TIP rule of record (full_env.FullTaskEnv.TIP_DEG / GRIP_OPEN), kept here as a
+# REFERENCE so a clip rendered with the rule disabled can still show the frame on which the
+# live rule would have ended the episode. Changing these numbers changes only the marker.
+TIP_REF_DEG, TIP_REF_GRIP = 60.0, 0.3
+TIP_OFF_DEG = 1.0e9        # --no-tip: a tilt no quaternion can reach
 
 
 # ----------------------------------------------------------------- uid resolution
@@ -151,10 +158,15 @@ def uid_map(set_dir, src_dir):
 
 
 # ----------------------------------------------------------------- env
-def build_env(sim_variant, max_sim_steps, ladder, with_video):
+def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None):
     """FullTaskEnv in the end-to-end contract MDP. Every knob asserted (the silent-default
     rule); identical to relabel_reward.build_env except for `render_size`, which is what makes
-    the camera exist."""
+    the camera exist.
+
+    `tip_deg` (Lane 6, analysis only): override the tip threshold ON THIS INSTANCE -- a plain
+    attribute assignment that shadows the class attribute for this object only. Pass a huge
+    value (TIP_OFF_DEG) to let a tape that would have been cut short run its whole action
+    stream. `FullTaskEnv.TIP_DEG` is never written, and that is asserted below."""
     sys.path.insert(0, str(REPO / 'can_pos_recovery'))
     os.environ['GENESIS_SIM_VARIANT'] = sim_variant
     from sim_variant_hook import apply_pre, apply_post
@@ -174,6 +186,11 @@ def build_env(sim_variant, max_sim_steps, ladder, with_video):
     assert not env.goalward_shaping, 'an annotation must show the unshaped ladder'
     if with_video:
         assert env.genv.w.get('cam') is not None, 'render_size set but no camera in the world'
+    if tip_deg is not None:
+        env.TIP_DEG = float(tip_deg)
+        assert float(FullTaskEnv.TIP_DEG) == TIP_REF_DEG, 'the CLASS default must not move'
+        print(f'[tip] instance TIP_DEG {env.TIP_DEG:g} (class default '
+              f'{FullTaskEnv.TIP_DEG:g} untouched)', flush=True)
     print(f'[env] built in {time.time() - t0:.1f}s | variant {sim_variant} | ladder {env.ladder} '
           f'{env.stage_reward} terminal {env.terminal_stages}+tipped | shelf_top_z {env.shelf_top_z:.3f}',
           flush=True)
@@ -182,7 +199,7 @@ def build_env(sim_variant, max_sim_steps, ladder, with_video):
 
 # ----------------------------------------------------------------- drawing
 def _draw_panel(cv2, W, i, n_dec, dec, first, sticky, diag, staged_r, staged_max,
-                sparse_r, sparse_dec, stride_note):
+                sparse_r, sparse_dec, stride_note, tip_dec=None):
     F = cv2.FONT_HERSHEY_SIMPLEX
     pan = np.full((PANEL_H, W, 3), 22, np.uint8)
 
@@ -222,10 +239,23 @@ def _draw_panel(cv2, W, i, n_dec, dec, first, sticky, diag, staged_r, staged_max
                 % (dec, n_dec, diag['lever_m'], int(diag['in_hand']), int(diag['at_rest']),
                    diag['goalward_gain_m'], int(diag['pushed']), diag['dist_xy_m'], diag['grip_cmd']),
                 (6, 87), F, 0.355, (205, 205, 205), 1, cv2.LINE_AA)
+    # --- tilt line (Lane 6). `tilt` is the can's tilt from world z, the quantity the tip rule
+    # thresholds; the rule ALSO needs grip < 0.3, which is already on the line above.
+    tl = diag.get('tilt_deg')
+    tcol = ((60, 60, 255) if (tl is not None and tl >= 80) else
+            (80, 200, 255) if (tl is not None and tl > TIP_REF_DEG) else (205, 205, 205))
+    cv2.putText(pan, 'can tilt %s  (tip rule: >%.0f deg AND grip<%.1f)'
+                % ('--' if tl is None else '%5.1f deg' % tl, TIP_REF_DEG, TIP_REF_GRIP),
+                (6, 103), F, 0.355, tcol, 1, cv2.LINE_AA)
+    if tip_dec is not None and dec >= tip_dec:
+        # the decision the LIVE rule would have ended the episode on. It stays up so the
+        # viewer can watch exactly what the rule would have cut off.
+        cv2.putText(pan, 'RULE FIRES @d%d' % tip_dec, (W - 118, 103), F, 0.355,
+                    (60, 60, 255), 1, cv2.LINE_AA)
     sp = ('%.1f%s' % (sparse_r, '  (ENDS here)' if sparse_dec is not None and dec >= sparse_dec else '')
           if sparse_r else '0.0')
     cv2.putText(pan, 'staged paid %.1f/%.0f     sparse would pay %s' % (staged_r, staged_max, sp),
-                (6, 103), F, 0.37, (120, 230, 255), 1, cv2.LINE_AA)
+                (6, 119), F, 0.37, (120, 230, 255), 1, cv2.LINE_AA)
     if stride_note:     # right end of the LEGACY row: the only strip nothing else reaches
         # (the ladder row runs to the SLIDE chip; the reward line runs long when sparse
         # adds "(ENDS here)"; the diagnostics line fills its whole width)
@@ -240,6 +270,9 @@ def _draw_panel(cv2, W, i, n_dec, dec, first, sticky, diag, staged_r, staged_max
             fx = int(6 + (W - 12) * min(fd, n_dec) / n_dec)
             cv2.line(pan, (fx, bar_y - 4), (fx, bar_y + 4),
                      (90, 240, 90) if key in [k for _, k in LADDER_CHIPS] else (140, 140, 90), 1)
+        if tip_dec is not None and tip_dec <= dec:      # same no-spoiler rule as the chips
+            tx = int(6 + (W - 12) * min(tip_dec, n_dec) / n_dec)
+            cv2.line(pan, (tx, bar_y - 6), (tx, bar_y + 6), (60, 60, 255), 2)
         cv2.line(pan, (px, bar_y - 4), (px, bar_y + 4), (245, 245, 245), 2)
     return pan
 
@@ -273,6 +306,15 @@ def _terminal_card(cv2, im, row):
          (190, 235, 190)),
         ('nested_honest (settled) %d        tipped %d' % (int(row['nested_honest']), int(row['tipped'])),
          (255, 220, 130)),
+        ('can tilt after the settle %.1f deg' % row.get('final_tilt_deg', float('nan')),
+         (255, 220, 130)),
+        (('tip rule fires @d%d: %.1f deg, grip %.2f, in_hand %d'
+          % (row['tip_ref_decision'], row['tip_ref_tilt_deg'], row['tip_ref_grip'],
+             int(bool(row['tip_ref_in_hand'])))
+          if row.get('tip_ref_decision') is not None else
+          'tip rule never met on this tape' if row.get('tip_watched') else
+          'tip rule LIVE (TIP_DEG %g)' % row.get('tip_deg_instance', float('nan'))),
+         (60, 60, 255)),
         ('legacy: nested_proxy %d   contact %d   pushL %d   slideL %d'
          % (int('nested' in g), int('contact' in g), int('contact_push_legacy' in g),
             int('slide_success_legacy' in g)), (150, 150, 150)),
@@ -307,7 +349,7 @@ def write_mp4(cv2, path, frames, fps):
 
 
 # ----------------------------------------------------------------- one tape
-def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
+def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name='', mark_tip=False):
     import cv2
     z = np.load(path, allow_pickle=True)
     layout = tape_layout(z)
@@ -334,14 +376,35 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
         decs.append(dec); rewards.append(staged_r)
 
     diag0 = dict(lever_m=float('nan'), in_hand=False, at_rest=False, goalward_gain_m=0.0,
-                 pushed=False, dist_xy_m=float('nan'), grip_cmd=float('nan'))
+                 pushed=False, dist_xy_m=float('nan'), grip_cmd=float('nan'),
+                 tilt_deg=float('nan'))
     if video:
         push(0, render(), set(), diag0, 0.0)
     first, grants = {}, {}
     staged_r, sparse_dec = 0.0, None
     end_reason, end_dec, tipped = 'stream_exhausted', n, False
+    # --- Lane 6: when the tip rule is DISABLED on this instance, watch every ENV FRAME for
+    # the moment the LIVE rule (TIP_REF_DEG / TIP_REF_GRIP) would have fired, so the clip can
+    # mark it. `_step_once` is wrapped on the INSTANCE; the class method is untouched, and
+    # the wrapper only reads the tracker's own diagnostics.
+    tip_ref = dict(dec=None, tilt=None, grip=None, in_hand=None)
+    _cur = dict(dec=0)
+    if mark_tip:
+        _inner = env._step_once
+
+        def _watch(action):
+            out = _inner(action)
+            tr = env._track
+            if (tip_ref['dec'] is None and float(tr['can_tilt_deg']) > TIP_REF_DEG
+                    and float(tr['grip_cmd']) < TIP_REF_GRIP):
+                tip_ref.update(dec=_cur['dec'] + 1, tilt=float(tr['can_tilt_deg']),
+                               grip=float(tr['grip_cmd']), in_hand=bool(tr['in_hand']))
+            return out
+
+        env._step_once = _watch
     t0 = time.time()
     for t in range(n):
+        _cur['dec'] = t
         obs, r, term, trunc, info = env.step(acts[t])
         staged_r += float(r)
         sticky = set(env._granted) | {k for k in ALL_CHIP_KEYS + list(REPORT) if info.get(k)}
@@ -358,9 +421,13 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
         diag = dict(lever_m=float(tr.lever_m), in_hand=bool(tr.in_hand), at_rest=bool(tr.at_rest),
                     goalward_gain_m=float(tr.goalward_gain_m), pushed=bool(tr.pushed),
                     dist_xy_m=float(tr.dist_xy_m),
+                    tilt_deg=float(env._track['can_tilt_deg']),
                     grip_cmd=float((np.clip(float(acts[t][6]), -1.0, 1.0) + 1.0) / 2.0))
         if video:
-            fired = any(first.get(k) == t for k in ALL_CHIP_KEYS)
+            # a forced frame: any chip granting here, and the decision the live tip rule
+            # would have fired on (the frame the clip exists to show, when marking)
+            fired = (any(first.get(k) == t for k in ALL_CHIP_KEYS)
+                     or (mark_tip and tip_ref['dec'] == t + 1))
             want = (t + 1) in keep_plan or fired or force_next or term or trunc or t == n - 1
             img = render() if want or fired else None
             if fired and prev_drop is not None:
@@ -379,7 +446,10 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
                           next((s for s in env.terminal_stages if info.get(s)), 'terminated'))
             end_dec = t + 1
             break
+    if mark_tip:
+        del env._step_once              # drop the shadow; the bound method comes back
     end = env.genv.end_of_episode()      # ONE settle, after the last rendered frame
+    final_tilt = tilt_from_quat(np.asarray(env.genv.w['bottle'].get_quat()).reshape(-1)[:4])
     gr = set(env._granted)
     row = dict(
         file=os.path.basename(path), set=set_name, ic_uid=ic_uid, decisions=n, layout=layout,
@@ -396,7 +466,13 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
         contact_push_legacy=bool('contact_push_legacy' in grants),
         slide_success_legacy=bool('slide_success_legacy' in grants),
         nested_honest=bool(end['nested']), slide_settle=bool(end['slide_success']),
-        slide_route=str(end.get('slide_route')), seconds=round(time.time() - t0, 1))
+        slide_route=str(end.get('slide_route')),
+        tip_deg_instance=float(env.TIP_DEG), final_tilt_deg=round(float(final_tilt), 2),
+        tip_watched=bool(mark_tip), tip_ref_decision=tip_ref['dec'],
+        tip_ref_tilt_deg=(None if tip_ref['tilt'] is None else round(tip_ref['tilt'], 2)),
+        tip_ref_grip=(None if tip_ref['grip'] is None else round(tip_ref['grip'], 3)),
+        tip_ref_in_hand=tip_ref['in_hand'],
+        seconds=round(time.time() - t0, 1))
     row['klass'] = classify(row)
 
     if video and frames:
@@ -410,7 +486,8 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name=''):
         for j, fr in enumerate(frames):
             im = cv2.resize(np.ascontiguousarray(fr), (W, H), interpolation=cv2.INTER_LINEAR)
             pan = _draw_panel(cv2, W, j, n_dec_axis, decs[j], first, snaps[j], diags[j],
-                              rewards[j], staged_max, row['reward_sparse'], sparse_dec, stride_note)
+                              rewards[j], staged_max, row['reward_sparse'], sparse_dec,
+                              stride_note, tip_dec=tip_ref['dec'])
             out.append(np.vstack([im, pan]))
         card = _terminal_card(cv2, out[-1][:H].copy(), row)
         for _ in range(CARD_FRAMES):
@@ -464,7 +541,7 @@ def files_of(set_dir, names=None):
 
 def run_shard(args, files, meta, umap):
     env = build_env(args.sim_variant or meta['sim_variant'], meta['max_sim_steps'],
-                    args.ladder, args.cmd == 'render')
+                    args.ladder, args.cmd == 'render', tip_deg=args.tip_deg)
     rows = []
     for i, f in enumerate(files):
         u, ic = umap.get(f.name, (None, None))
@@ -473,7 +550,8 @@ def run_shard(args, files, meta, umap):
             pl.Path(args.out_dir).mkdir(parents=True, exist_ok=True)
             stem = f'{args.set_name}_{ic if ic is not None else f.stem}'
             out_mp4 = pl.Path(args.out_dir) / f'{stem}_PENDING.mp4'
-        r = annotate_one(env, str(f), out_mp4, args.ic_tol, ic_uid=ic, set_name=args.set_name)
+        r = annotate_one(env, str(f), out_mp4, args.ic_tol, ic_uid=ic, set_name=args.set_name,
+                         mark_tip=args.mark_tip)
         r['rollout_uid'] = u
         if out_mp4 is not None:      # rename now that the class is known
             final = pl.Path(args.out_dir) / f'{args.set_name}_{ic if ic is not None else f.stem}_{r["klass"]}.mp4'
@@ -499,6 +577,15 @@ def main():
     ap.add_argument('--set-name', default='set', help='human | machine; prefixes the clip names')
     ap.add_argument('--tapes', nargs='*', default=None, help='render: segment basenames')
     ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged')
+    # --- Lane 6 (TIP_RULE_2026-09-11). ANALYSIS ONLY: the override is applied to the env
+    # INSTANCE, never to FullTaskEnv.TIP_DEG, and build_env asserts the class default is
+    # still 60. --no-tip is --tip-deg 1e9 (a tilt no quaternion reaches).
+    ap.add_argument('--tip-deg', type=float, default=None,
+                    help='instance override of the tip threshold; default = the class value')
+    ap.add_argument('--no-tip', action='store_true',
+                    help='disable the tip rule for this render (implies --mark-tip)')
+    ap.add_argument('--mark-tip', action='store_true',
+                    help='mark the frame on which the LIVE rule (60 deg AND grip<0.3) fires')
     ap.add_argument('--sim-variant', default=None, help="default: the set's own stamp")
     ap.add_argument('--max-sim-steps', type=int, default=None)
     ap.add_argument('--ic-tol', type=float, default=0.002)
@@ -507,6 +594,9 @@ def main():
     ap.add_argument('--shard', type=int, default=None)
     ap.add_argument('--nshards', type=int, default=None)
     args = ap.parse_args()
+    if args.no_tip:
+        assert args.tip_deg is None, 'pass --no-tip or --tip-deg, not both'
+        args.tip_deg, args.mark_tip = TIP_OFF_DEG, True
     if args.cmd == 'census':
         assert args.out, 'census needs --out'
     else:
@@ -545,6 +635,10 @@ def main():
             base += ['--limit', str(args.limit)]
         if args.sim_variant:
             base += ['--sim-variant', args.sim_variant]
+        if args.tip_deg is not None:
+            base += ['--tip-deg', repr(float(args.tip_deg))]
+        if args.mark_tip:
+            base += ['--mark-tip']
         procs = [subprocess.Popen(base + ['--shard', str(i), '--nshards', str(n_proc)])
                  for i in range(n_proc)]
         rcs = [p.wait() for p in procs]
