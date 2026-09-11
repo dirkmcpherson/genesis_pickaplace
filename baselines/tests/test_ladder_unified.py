@@ -618,9 +618,10 @@ def test_10c_the_ramp_pays_once_for_net_progress():
     r1, _, a1, e1 = _ladder_run(once, 'nested_ramp')
     r2, _, a2, e2 = _ladder_run(twice, 'nested_ramp')
     assert abs(e1['slide_gain_m'] - 0.030) < 1e-9 and abs(e2['slide_gain_m'] - 0.030) < 1e-9
-    assert abs(a1.ramp_paid - 0.6) < 1e-9, '2 * 30mm/100mm'
+    # span 0.05 m per amendment (aa): 30 mm of net progress pays 2 * 30/50 = 1.2
+    assert abs(a1.ramp_paid - 1.2) < 1e-9, '2 * 30mm/50mm'
     assert abs(r1 - r2) < 1e-9, f'the second lap paid {r2 - r1} extra'
-    assert abs(r1 - (1.0 + 1.0 + 1.0 + 0.6)) < 1e-9, r1
+    assert abs(r1 - (1.0 + 1.0 + 1.0 + 1.2)) < 1e-9, r1
     print('10c. ramp: paid once for net progress, oscillation adds nothing  OK')
 
 
@@ -689,7 +690,7 @@ def test_10f_staged_and_sparse_are_unchanged_by_ladder_n():
     assert p['far_release'] is True and p['terminal_stages'] == ['home', 'tipped']
     assert p['requires'] == dict(placed_v2='picked', farside='placed_v2',
                                  slide_event='farside', home='slide_event')
-    assert p['ramp']['scale'] == 2.0 and p['ramp']['span'] == 0.10
+    assert p['ramp']['scale'] == 2.0 and p['ramp']['span'] == 0.05   # amendment (aa)
     assert p['return_clamp_required'] == 9.0
     assert full_env.ladder_provenance('nested_sparse')['return_clamp_required'] == 1.0
     print('10f. staged/sparse unchanged; every ladder and far_release distinct in the stamp  OK')

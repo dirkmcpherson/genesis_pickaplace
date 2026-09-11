@@ -135,7 +135,11 @@ LADDERS = {
     'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, farside=1.0, home=4.0),
                         requires=dict(placed_v2='picked', farside='placed_v2',
                                       slide_event='farside', home='slide_event'),
-                        ramp=dict(key='slide_gain_m', scale=2.0, span=0.10, requires='farside'),
+                        # span 0.05 m per PHASE_PLAN amendment (aa): the 13 human sim-slides
+                        # gain 1.1-6.4 cm, so at 0.10 m none reached the ramp maximum (mean
+                        # 7.80 of 9); at 0.05 m they average 8.39 and four saturate it
+                        # (paper/LADDER_N_DEMO_CHECK_2026-09-11.md section 5).
+                        ramp=dict(key='slide_gain_m', scale=2.0, span=0.05, requires='farside'),
                         terminal=('home',)),
 }
 LADDER_DEFAULT = 'staged'
