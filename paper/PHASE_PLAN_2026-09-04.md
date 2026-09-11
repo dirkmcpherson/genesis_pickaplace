@@ -1183,3 +1183,172 @@ code and stamps one `git describe`.
 
 `pytest` was also run on the cluster for the first time (Lane 2 could not): **37 passed**
 (`test_ladder_unified.py`, `test_stage_predicates.py`, `test_terminal_guard.py`).
+
+---
+
+## Amendment (ab) — {Diffusion Policy} end-to-end on the PRUNED human set (2026-09-11)
+
+Registered BEFORE any job of this arm is submitted, and before any cell of the existing arms is
+re-scored.
+
+### (ab).0 The defect this amendment repairs
+
+The standing convention (`MUST_HAVE_RESULTS`, restated as a user directive on 2026-09-09 and
+carried in `CLAUDE.md` as an outstanding item) is that **{Diffusion Policy} trains on the PRUNED
+human set**. The end-to-end {DP} cells of record — `PHASE_RESULTS_2026-09-05.md` §5.2, the row that
+reads picked **0.237 human v 0.496 machine** — were trained on `dHfull_all`, the **RAW** 74-tape
+human set. The pruned arm has never been run end-to-end, at any seed. Amendment (n) itself
+anticipated this: its disconfirm branch (iii) says a machine-ahead gap of ≥ 0.10 for {DP} triggers a
+human-PRUNED control *before the word "source"*. The observed gap is **+0.259**. The branch fired
+on 2026-09-09 and the control was never built. This amendment builds it.
+
+### (ab).1 Facts established first (each with the command that produced it)
+
+**(a) The {DP} end-to-end runs of record.** 20 runs under
+`$LAB/gp_e2e/baselines/outputs/dp_e2e/`: `e2e_dp_dH_s0..s7` (human), `e2e_dp_dDP_s0..s7`
+(machine, best-of-3), `e2e_dp_dDPfirst_s0..s3` (machine, de-selected, amendment (v)). Every one
+keeps exactly one checkpoint, `checkpoints/100000/pretrained_model`, plus a `last` alias. The
+sidecar of `e2e_dp_dH_s0` records `raw_demo_dir .../matched_w3/dHfull_all`, `dataset_root
+.../dHfull_all/lerobot`, `demo_sha 70027c899be26f60`, `git 68a41cd`, `amendment n`.
+
+    ls -d $LAB/gp_e2e/baselines/outputs/dp_e2e/*/
+    cat $LAB/gp_e2e/baselines/outputs/dp_e2e/e2e_dp_dH_s0/checkpoints/100000/dp_sidecar.json
+
+**Their cells are `role: preview`, and no pinned pass exists for this learner.** Every
+`fresh_eval_*/metrics.json` under those 20 runs carries `role = preview` and `git = 68a41cd`; there
+is no `rec/` directory anywhere under `dp_e2e`. §5.2 already says so in its own header. The
+per-seed `rnd30` picked counts reproduce §5.2 exactly (human 6,6,4,5,10,9,10,7 = 57/240 = 0.237;
+machine 14,13,13,18,18,11,16,16 = 119/240 = 0.496).
+
+    ls -d $LAB/gp_e2e/baselines/outputs/dp_e2e/*/rec 2>/dev/null    # empty
+    for A in dH dDP; do for S in $(seq 0 7); do head -1 $LAB/gp_e2e/baselines/outputs/dp_e2e/e2e_dp_${A}_s${S}/E2E_HEADLINE.txt; done; done
+
+**(b) A full-scope pruned human set EXISTS, in the e2e pipeline's lerobot format.**
+`$LAB/genesis_pickaplace/baselines/matched_w3/dHfull_pruned`: 64 npz, `manifest.json` with
+`contract v1`, `sim_variant gc_kp4_riser3_shelf6`, `content_sha256 841c5dd5…`,
+`pruner "baselines/prune_full_v1.py --margin 38"`, `source "baselines/demos_v2/dHfull_w3"`; and
+`lerobot/` with `fps 7.5`, `total_episodes 64`, `total_frames 23307`, the same feature set as the
+raw arm's dataset (`observation.state`, `observation.environment_state`, `action`). **Nothing had
+to be built.** It was built on 2026-09-04 as the training set of the full-task {DP} teacher, and
+this amendment reuses it rather than rebuilding, so the arm is bit-for-bit the set the teacher saw.
+
+    python3 -c "import json;print(json.load(open('.../dHfull_pruned/lerobot/meta/info.json')))"
+    cat $LAB/genesis_pickaplace/baselines/matched_w3/dHfull_pruned/manifest.json
+
+**The pruned set is the SAME RECORDINGS as the raw arm's, verified rather than assumed.** All 64
+of its ICs are a strict subset of the raw set's 74; for all 64, the tape's stamped `prune_orig_n`
+equals the raw tape's `n`, and the last 50 decisions are **bit-identical** (the pruner never touches
+anything from `j_pick − 38` on). Σ tape reward is **118.0 in both sets** — the 10 absent tapes
+carried none.
+
+    python3 /tmp/lineage_check.py .../matched_w3/dHfull_all .../matched_w3/dHfull_pruned
+    # shared ICs 64; prune_orig_n == raw n 64/64; last-50 actions bit-identical 64/64;
+    # decisions raw(shared) 25123 -> pruned 23307 (7.2% removed)
+
+**(c) LINEAGE OF THE MACHINE SET'S TEACHER — the coordinator's statement is WRONG and is corrected
+here.** The coordinator told the user the machine set's teacher was trained on the raw set. It was
+not. **All 195 harvested machine tapes stamp the same `teacher_ckpt`:**
+`.../baselines/outputs/dp_phase/dHfull_pruned_DP_s0/checkpoints/100000/pretrained_model`, and that
+run's own `train_config.json` reads `dataset.root = baselines/matched_w3/dHfull_pruned/lerobot`
+with its sidecar recording `arm dHfull_pruned`, `demo_sha 841c5dd5…`. The teacher was trained on
+the **PRUNED** human set.
+
+    python3 - # over $W/demos_state_full/src_dDPfull/*.npz -> teacher 'dp' 195/195,
+              # teacher_ckpt .../dHfull_pruned_DP_s0/... 195/195
+    python3 -c "import json;print(json.load(open('.../dp_phase/dHfull_pruned_DP_s0/checkpoints/100000/pretrained_model/train_config.json'))['dataset']['root'])"
+
+**Consequence, and it is the reason this arm matters more than a convention fix.** §5.2 compares a
+student trained on the RAW human set against a student trained on tapes produced by a teacher
+trained on the PRUNED human set. The two arms therefore differ in demonstration source **and** in
+whether the human data reaching them was pruned. The pruned arm is the cell that separates those.
+
+### (ab).2 Design
+
+8 seeds of `cluster/sbatch_dp_e2e.sh` with `ARM=dHpruned` (new case, gated — see (ab).5) on
+`matched_w3/dHfull_pruned`, **the same recipe and budget as the raw arm of record**: lerobot
+Diffusion Policy, state-only, absolute window-end joint targets at fps 7.5, batch 64, 100k grad
+steps, final checkpoint only, 150 GB disk guard. Seeds **100–107** (the raw arm's 0–7 plus 100), so
+no run directory, wandb name or registry row can collide with an existing one.
+
+**All three arms are then re-scored by the UNIFIED evaluator** (`baselines/eval_e2e.py` at this
+branch, `LADDER=staged`, D6 provenance stamp recorded on every cell), in ONE pinned pass:
+`REQUIRE_CORES=64`, `THREADS=8`, `PAR=8`, `ROLE=record`, `CELL_DIR=rec`. Cells: **`rnd30` and
+`hold15`**, sampled (see the disclosure on modes below), shared-process protocol plus the isolated
+`rnd30` cell. `spots60` only if CPU time allows — {DP} evaluates at ~425 s/episode on a 64-core
+node, so a shared `spots60` cell is ~7 h serial per run.
+
+Statistic of record: the unified HEADLINE columns `picked`, `placed_v2`, `contact_push`,
+`slide_success`, `nested_v2`, `nested_honest`.
+
+### (ab).3 Predictions
+
+**P1 — `picked`, pruned > raw by ≥ +0.10** on `rnd30`. Basis: the pruned-vs-raw {DP} gap at PICK
+scope is +0.19 in-distribution (`spots60` selected ckpt: dH 0.878 v dHv2raw 0.688, p 0.000) and
++0.16 to +0.27 on random starts (A29). Direction and rough size should carry to the full task,
+because the mechanism — {DP} is a pure imitator and idle decisions teach it to stand still — is
+scope-independent.
+*Disconfirm:* pruned ≤ raw, or |Δ| < 0.10. Then the idle account does not transfer to the full
+task, §5.2's human arm is not meaningfully handicapped by pruning, and the machine-favouring gap
+needs a different explanation. Say so; do not quietly keep the pick-scope story.
+
+**P2 — `placed_v2` and `nested_v2`, pruned ≥ raw** (no margin; directional). `placed_v2` is
+reported net of the four `rnd30` starts that lie inside the shelf footprint and grant at reset
+(CONFOUNDS row 82) — the net number and the raw number are both reported, and the correction is
+identical for every arm, so it shifts levels and not the contrast.
+*Disconfirm:* pruned below raw on either. Pruning would then be helping the pick and hurting the
+placement, which would be a real finding about what the idle decisions carry, and must be reported
+as one.
+
+**P3 — `picked`, pruned vs MACHINE within ±0.10** on `rnd30`. Basis: the like-for-like
+in-distribution pick cell is 0.878 v 0.873 (Δ +0.005, p 0.845) — once the human arm is pruned, {DP}
+is indifferent to demonstration source.
+*Disconfirm (machine ahead by ≥ 0.10):* the machine advantage survives pruning, and the remaining
+candidate explanations are (i) best-of-three selection, tested by the existing `dDPfirst` arm, and
+(ii) source. Read (i) first; it is already built.
+*Disconfirm (pruned ahead by ≥ 0.10):* the §5.2 machine advantage was an artefact of the human
+arm's raw data, and §5.2's sentence must be withdrawn, not softened.
+
+### (ab).4 Disclosures — what this arm does NOT control
+
+1. **The pruned set differs from the raw set in TWO ways, not one.** It collapses pre-pick idle
+   (7.2 % of decisions on the shared ICs) **and** it is missing the 10 tapes that never picked
+   (raw stages: `picked` 43, `contact` 18, `nested` 3, `none` 10 → pruned 43/18/3/0). So this arm
+   is "pruned as the project has always meant it", not a clean idle-only control. If P1 is met, it
+   is NOT established which of the two changes did the work. The separating cell — idle-collapsed
+   but failure-retaining, 74 tapes — is cheap to build from the same pruner and is NOT run here.
+2. **The raw and machine arms' cells of record are re-scored, not reused.** They are `role:
+   preview` cells from the pre-unification evaluator at `git 68a41cd`, which had no `nested_v2`, no
+   ladder provenance stamp, and ran on unpinned, arm-heterogeneous hardware. Every number in the
+   three-arm table comes from the new pinned pass. Movement between §5.2's preview numbers and the
+   pinned numbers is reported in the DIFFERENCE, per the standing rule.
+3. **The machine arm keeps its selection confound.** `dDPfull` is best-of-three per start (Σ reward
+   206 v 118, 16 completions v 3). P3 therefore compares a pruned human arm against a SELECTED
+   machine arm. The de-selected `dDPfull_first` arm exists at 4 seeds and is the cell that removes
+   it; it is re-scored in the same pass and reported beside the others, at its own n.
+4. **{DP} has no deterministic action mode in this pipeline.** `e2e_eval_cells.sh` uses
+   `MODES=sample` for `KIND=dp`, and every {DP} cell on record is sampled. "mode" cells are not
+   produced for this learner; the word "deterministic" must not appear against a {DP} row.
+5. **Training-time curves are not obtainable.** {DP} is offline and has no rollouts; the only
+   convergence evidence available is a checkpoint sweep, and these runs keep the final checkpoint
+   only (disk rule). The 100k budget is inherited from the raw arm so that the arms are comparable,
+   not because it is known to be converged.
+6. **n = 8 v 8 v 8 (+4).** At this n the MDE on a 30-start binomial cell is ≈ 0.2, so a
+   non-significant P3 reads "no effect detectable at this sample size", never "equivalent".
+
+### (ab).5 Code, and the gate that makes the new arm refusable
+
+`cluster/sbatch_dp_e2e.sh` gains `ARM=dHpruned`. The pruned set carries the **pruner's** manifest
+schema, not `full_demos.py select`'s, so it gets its own provenance gate rather than a relaxed
+version of the existing one. The gate asserts, positively: `contract v1`, matching `sim_variant`,
+`pruner` beginning `baselines/prune_full_v1.py`, `N == 64 == len(files)`; on every tape,
+`contract/scope/sim_variant`, `teacher == 'human'`, and the presence of `prune_rule` — **an
+unpruned set is refused, so the raw arm cannot be trained twice under two names**. It asserts,
+negatively, that the selector's keys (`builder`, `scope`, `one_per_ic_best`, `one_per_ic_first`)
+are ABSENT, so a select-built set can never be mistaken for a pruned one. The lerobot cross-check
+is computed from the tapes themselves (`total_episodes == 64`, `total_frames == Σ n == 23307`,
+`fps == 7.5`) because the pruner's manifest has no `n_lerobot`. Runs stamp `amendment = ab` in the
+registry and in every sidecar.
+
+This gate is written the way it is because of the `one_per_ic_first` incident: the failure mode
+that has actually bitten this project is a manifest **attesting** something its data does not
+support, so the new gate checks the data and refuses the attestation shortcut.

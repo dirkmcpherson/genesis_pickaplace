@@ -8,8 +8,13 @@
 # Submit (from the code checkout root):
 #   for S in $(seq 0 7); do ARM=dH  SEED=$S sbatch -J e2e_dp_dH_s$S  cluster/sbatch_dp_e2e.sh; done
 #   for S in $(seq 0 7); do ARM=dDP SEED=$S sbatch -J e2e_dp_dDP_s$S cluster/sbatch_dp_e2e.sh; done
+#   for S in $(seq 100 107); do ARM=dHpruned SEED=$S sbatch -J dpP_e2e_dHpruned_s$S cluster/sbatch_dp_e2e.sh; done
 # Env vars:
-#   ARM        dH | dDP   (dH -> $DEMO_ROOT/dHfull_all [74], dDP -> $DEMO_ROOT/dDPfull [72]; RAW npz + manifest + lerobot/)
+#   ARM        dH | dDP | dDPfirst | dHpruned   (dH -> $DEMO_ROOT/dHfull_all [74], dDP -> $DEMO_ROOT/dDPfull [72],
+#             dDPfirst -> dDPfull_first [72], dHpruned -> dHfull_pruned [64]; RAW npz + manifest + lerobot/)
+#             dHpruned is PHASE_PLAN amendment (ab): the SAME human recordings as dH with the pre-pick idle
+#             collapsed and the 10 no-pick tapes absent -- the set the DP convention (MUST_HAVE_RESULTS) calls
+#             for, and the set the machine arm's own teacher (dp_phase/dHfull_pruned_DP_s0) was trained on.
 #   SEED       required     STEPS 100000     DEMO_ROOT /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3
 #   OUT_ROOT   baselines/outputs/dp_e2e  -> $OUT_ROOT/e2e_dp_${ARM}_s${SEED}     PROJ genesis_paper    DRYRUN=1
 #   DEVICE     unset (default; the runs of record use lerobot's own device choice = cuda). Setting DEVICE=cpu adds
@@ -48,7 +53,7 @@ for G in FULLENV_REWARD_X FULLENV_EPISODE_RECORD; do
   if [ -n "$(eval echo \"\${$G:-}\")" ]; then echo "FATAL: legacy gate set ($G); this tree has no gates"; exit 1; fi
 done
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
-ARM=${ARM:?set ARM (dH | dDP | dDPfirst)}; SEED=${SEED:?set SEED}
+ARM=${ARM:?set ARM (dH | dDP | dDPfirst | dHpruned)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 ACTION_REPEAT=4; EVAL_HORIZON=1200; DEVFLAG=(); [ -n "${DEVICE:-}" ] && DEVFLAG=(--policy.device="$DEVICE")
 DEMO_ROOT=${DEMO_ROOT:-/cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3}
@@ -56,8 +61,10 @@ case "$ARM" in
   dH)  SET=dHfull_all; N_EXP=74 ;;
   dDP) SET=dDPfull;    N_EXP=72 ;;
   dDPfirst) SET=dDPfull_first; N_EXP=72 ;;   # PHASE_PLAN (v): FIRST attempt per IC (de-selected)
-  *) echo "FATAL: ARM must be dH | dDP | dDPfirst (got $ARM)"; exit 1 ;;
+  dHpruned) SET=dHfull_pruned; N_EXP=64 ;;   # PHASE_PLAN (ab): the PRUNED human set the DP convention calls for
+  *) echo "FATAL: ARM must be dH | dDP | dDPfirst | dHpruned (got $ARM)"; exit 1 ;;
 esac
+AMEND=n; [ "$ARM" = dHpruned ] && AMEND=ab   # PHASE_PLAN (ab) registers the pruned-human end-to-end arm
 RAW=$DEMO_ROOT/$SET; DATASET=$RAW/lerobot
 OUT_ROOT=${OUT_ROOT:-baselines/outputs/dp_e2e}
 OUT=$OUT_ROOT/e2e_dp_${ARM}_s${SEED}
@@ -79,36 +86,74 @@ import json, os, sys
 d, sv, arm, n_exp = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
 files = sorted(f for f in os.listdir(d) if f.endswith('.npz'))
 m = json.load(open(os.path.join(d, 'manifest.json')))
-assert m.get('contract') == 'v1' and m.get('scope') == 'full' and m.get('sim_variant') == sv, m
-assert int(m['n_kept']) == len(files) == n_exp, (m.get('n_kept'), len(files), n_exp)
-assert m.get('builder') == 'baselines/rl/full_demos.py select', m.get('builder')
-assert (m.get('one_per_ic_best') is True) == (arm == 'dDP'), m
-assert (m.get('one_per_ic_first') is True) == (arm == 'dDPfirst'), m   # PHASE_PLAN (v)
-print(f'DEMO-SHA {arm} full n={len(files)} sha={m["content_sha256"][:16]} decisions={m["decisions_total"]} '
-      f'tape_reward={m["tape_reward_total"]:.0f} idle={m["idle_frac"]:.3f} (pre-pick {m["idle_frac_prepick"]:.3f}) '
-      f'stages={m["stage_yields"]}', file=sys.stderr)
+assert m.get('contract') == 'v1' and m.get('sim_variant') == sv, m
+if arm == 'dHpruned':
+    # PHASE_PLAN (ab). This set is built by the PRUNER (prune_full_v1.py over the full-task human
+    # recordings), not by `full_demos.py select`, so it carries the pruner's manifest schema. Assert that
+    # schema POSITIVELY and assert the selector's keys are ABSENT, so a select-built set can never be
+    # mistaken for a pruned one, nor the reverse -- the failure mode of the `one_per_ic_first` incident
+    # was a manifest that ATTESTED something its data did not support.
+    import numpy as np
+    assert m.get('scope') is None and m.get('builder') is None, ('select-built manifest under ARM=dHpruned', m)
+    assert 'one_per_ic_best' not in m and 'one_per_ic_first' not in m, m
+    assert str(m.get('pruner', '')).startswith('baselines/prune_full_v1.py'), m.get('pruner')
+    assert int(m['N']) == len(files) == n_exp, (m.get('N'), len(files), n_exp)
+    dec = orig = 0
+    for f in files:
+        z = np.load(os.path.join(d, f), allow_pickle=True)
+        assert str(z['contract']) == 'v1' and str(z['scope']) == 'full' and str(z['sim_variant']) == sv, f
+        assert str(z['teacher']) == 'human', (f, z['teacher'])
+        # an UNPRUNED set has no prune_rule; refuse it rather than train the raw arm twice under two names
+        assert 'prune_rule' in z.files, f'{f}: no prune_rule -- this set is NOT pruned'
+        dec += int(z['n']); orig += int(z['prune_orig_n'])
+    print(f'DEMO-SHA {arm} full n={len(files)} sha={m["content_sha256"][:16]} decisions={dec} '
+          f'(from {orig} recorded; {100 * (1 - dec / orig):.1f}% pre-pick idle collapsed) '
+          f'pruner={m["pruner"]} source={m.get("source")}', file=sys.stderr)
+else:
+    assert m.get('scope') == 'full', m
+    assert int(m['n_kept']) == len(files) == n_exp, (m.get('n_kept'), len(files), n_exp)
+    assert m.get('builder') == 'baselines/rl/full_demos.py select', m.get('builder')
+    assert (m.get('one_per_ic_best') is True) == (arm == 'dDP'), m
+    assert (m.get('one_per_ic_first') is True) == (arm == 'dDPfirst'), m   # PHASE_PLAN (v)
+    print(f'DEMO-SHA {arm} full n={len(files)} sha={m["content_sha256"][:16]} decisions={m["decisions_total"]} '
+          f'tape_reward={m["tape_reward_total"]:.0f} idle={m["idle_frac"]:.3f} (pre-pick {m["idle_frac_prepick"]:.3f}) '
+          f'stages={m["stage_yields"]}', file=sys.stderr)
 print(m['content_sha256'][:16])
 PY
 ) || exit 1
 [ -d "$DATASET" ] || { echo "FATAL: lerobot dataset $DATASET missing (cluster/e2e_build_sets.sh)"; exit 1; }
-python3 - "$DATASET" "$N_EXP" "$ACTION_REPEAT" "$RAW" <<'PY' || exit 1
+python3 - "$DATASET" "$N_EXP" "$ACTION_REPEAT" "$RAW" "$ARM" <<'PY' || exit 1
 import json, sys, pathlib as pl
-ds, n_exp, rep, raw = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
+ds, n_exp, rep, raw, arm = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4], sys.argv[5]
 info = json.loads((pl.Path(ds) / 'meta' / 'info.json').read_text())
 man = json.loads((pl.Path(raw) / 'manifest.json').read_text())
-# the raw set carries every tape (n_kept == n_exp, gated above); the lerobot dataset holds the tapes long enough to
-# form a DP sample (n_lerobot; convert_to_lerobot drops episodes under MIN_FRAMES -- disclosed, never silent)
-assert int(man['n_kept']) == n_exp, (man['n_kept'], n_exp)
-assert info['total_episodes'] == int(man['n_lerobot']), (info['total_episodes'], man['n_lerobot'])
 assert abs(float(info['fps']) - 30.0 / rep) < 1e-6, (info['fps'], rep)
-assert int(info['total_frames']) == int(man['decisions_lerobot']), (info['total_frames'], man['decisions_lerobot'])
+if arm == 'dHpruned':
+    # PHASE_PLAN (ab): the pruner's manifest carries no n_lerobot/decisions_lerobot, so the lerobot dataset is
+    # cross-checked against the TAPES themselves. The pruned set has no tape under MIN_FRAMES, so episodes and
+    # frames must match EXACTLY -- a mismatch means the dataset was converted from something else.
+    import glob
+    import numpy as np
+    files = sorted(glob.glob(raw + '/*.npz'))
+    dec = sum(int(np.load(f, allow_pickle=True)['n']) for f in files)
+    assert int(man['N']) == len(files) == n_exp, (man['N'], len(files), n_exp)
+    assert info['total_episodes'] == len(files), (info['total_episodes'], len(files))
+    assert int(info['total_frames']) == dec, (info['total_frames'], dec)
+    man = dict(man, n_kept=len(files), n_lerobot=info['total_episodes'],
+               decisions_total=dec, decisions_lerobot=int(info['total_frames']), short_tapes=[])
+else:
+    # the raw set carries every tape (n_kept == n_exp, gated above); the lerobot dataset holds the tapes long enough
+    # to form a DP sample (n_lerobot; convert_to_lerobot drops episodes under MIN_FRAMES -- disclosed, never silent)
+    assert int(man['n_kept']) == n_exp, (man['n_kept'], n_exp)
+    assert info['total_episodes'] == int(man['n_lerobot']), (info['total_episodes'], man['n_lerobot'])
+    assert int(info['total_frames']) == int(man['decisions_lerobot']), (info['total_frames'], man['decisions_lerobot'])
 src = json.loads((pl.Path(ds) / 'genesis_source.json').read_text()); assert src.get('contract') == 'v1', src
 print(f'PROVENANCE-OK dataset={ds} total_episodes={info["total_episodes"]}/{man["n_kept"]} '
       f'total_frames={info["total_frames"]}/{man["decisions_total"]} fps={info["fps"]} short_tapes={man["short_tapes"]}')
 PY
 REG_KNOBS=(steps="$STEPS" budget_unit=grad_steps batch_size=64 policy=diffusion dataset_root="$DATASET" action_repeat="$ACTION_REPEAT"
            eval_horizon="$EVAL_HORIZON" demo_format=full_tapes demo_sha="$DEMO_SHA" save_freq="$SAVE_FREQ" wave="$WAVE"
-           sim_variant="$SIM_VARIANT" scope=full amendment=n)
+           sim_variant="$SIM_VARIANT" scope=full amendment="$AMEND")
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS RAW=$RAW (N=$N_EXP sha=$DEMO_SHA) DATASET=$DATASET OUT=$OUT NODE=$NODE_CLASS SAVE_FREQ=$SAVE_FREQ"
   echo "[dry] train: lerobot-train --dataset.repo_id=local/${RUN_NAME} --dataset.root=$DATASET --policy.type=diffusion --policy.push_to_hub=false --seed=$SEED --output_dir=$OUT --batch_size=64 --steps=$STEPS --save_freq=$SAVE_FREQ --job_name=$RUN_NAME --wandb.enable=true --wandb.project=$PROJ --wandb.disable_artifact=true"
@@ -165,13 +210,13 @@ echo "CKPT-PRUNE $OUT: $((BEFORE_KB / 1024)) MB -> $((AFTER_KB / 1024)) MB (kept
 
 GIT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
 for D in $(ls -d "$OUT"/checkpoints/[0-9]*/ | sort -V); do
-  python3 - "$D" "$ARM" "$SEED" "$RAW" "$DATASET" "$GIT_HASH" "$STEPS" "$PROJ" "$ACTION_REPEAT" "$DEMO_SHA" "$NODE_CLASS" "$SIM_VARIANT" <<'PY'
+  python3 - "$D" "$ARM" "$SEED" "$RAW" "$DATASET" "$GIT_HASH" "$STEPS" "$PROJ" "$ACTION_REPEAT" "$DEMO_SHA" "$NODE_CLASS" "$SIM_VARIANT" "$AMEND" <<'PY'
 import json, sys, pathlib as pl, datetime
-d, arm, seed, raw, dataset, git, steps, proj, rep, sha, node, sv = sys.argv[1:13]
+d, arm, seed, raw, dataset, git, steps, proj, rep, sha, node, sv, amend = sys.argv[1:14]
 pl.Path(d, 'dp_sidecar.json').write_text(json.dumps({
     'script': 'sbatch_dp_e2e.sh', 'arm': arm, 'seed': int(seed), 'scope': 'full', 'raw_demo_dir': raw, 'dataset_root': dataset, 'git': git,
     'action_repeat': int(rep), 'delta_cap': 0.025, 'delta_leash': 0.125, 'demo_sha': sha, 'demo_format': 'full_tapes', 'node': node, 'sim_variant': sv,
-    'ckpt_step': pl.Path(d).name, 'amendment': 'n',
+    'ckpt_step': pl.Path(d).name, 'amendment': amend,
     'config': {'policy': 'diffusion', 'batch_size': 64, 'steps': int(steps), 'project': proj},
     'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds')}, indent=1))
 print(f'sidecar -> {d}dp_sidecar.json')
