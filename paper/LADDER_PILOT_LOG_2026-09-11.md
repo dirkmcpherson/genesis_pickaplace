@@ -103,7 +103,32 @@ counter target 44406`; `# train rc=0`. Milestone checkpoint written at 15000 onl
 **114 MB** — so the whole pilot's milestone footprint is ≈ 1.8 GB (8 staged + 16 sparse
 checkpoints), not a disk concern.
 
-**{r2dreamer} sparse — see §1.** Confirms the sparse `return_clamp` on the world-model side.
+Its END-OF-JOB evaluation then crashed — `TypeError: dict() got multiple values for keyword
+argument 'slide_success'` at `eval_genesis.py` line 469, after 15 evaluated episodes. That is
+defect 7 in amendment (z) §(z).10: `scope='full'` now names `slide_success` as its success key and
+the summary splatted it into a `dict()` that already passed it explicitly. **All eight
+{r2dreamer} pilot cells would have been lost.** Fixed in r2dreamer `197a1a3`, deployed to
+`$W/r2dreamer_unified`, and verified by re-running the evaluator on this same checkpoint
+(job **3539098**, 2 episodes, CPU).
+
+**{r2dreamer} sparse — 3539030, 15k ONLINE steps, `dHfull_all_rs`, interactive QOS.**
+
+    [demo-gate] .../dHfull_all_rs: 74 tapes, variant gc_kp4_riser3_shelf6, stride 4,
+                with_state, terminal 1.0, total_reward 14.0
+    [ladder] … | ladder=sparse | nested_v2=1 | max_return=1 | terminal=nested_v2+tipped | shaping=off |
+             full_env=f9e9538d9fc6 genesis_can_env=40544bf73c8c stage_predicates=de4ffde57cd7
+    [ladder] ladder=sparse return_clamp=1.0 (env.return_clamp AND model.return_clamp)
+    [ladder] return_clamp=1.0 (env and model agree)      # the trainer's own independent check
+
+This is the P1 evidence for the sparse world-model arm: the same three file hashes as every other
+stamp, the ladder fields the only difference, and the clamp following the ladder ceiling on both
+the env and the model.
+
+**One provenance wrinkle, stated rather than smoothed over.** The four smokes did not all run at
+the same commit: 3537917 / 3538260 / 3538337 at `b89478d3`, 3539030 at `21c58b49`. The difference
+is `baselines/eval_e2e.py` (defect 6), which is not one of the three files in the stamp, so the
+`git=` suffix differs (`…-815-gb89478d3-dirty` versus `…-816-g21c58b49-dirty`) while all four
+fields P1 compares are identical. The pilot itself runs at one commit.
 
 ---
 

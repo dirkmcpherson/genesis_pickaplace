@@ -1044,10 +1044,13 @@ demonstration-source comparison**, and no cell from it may be reported as one.
   ladder and differ between ladders ONLY in `ladder`, `stage_reward`, `terminal_stages`,
   `return_clamp` (assert; a mismatch aborts the pilot).
   *Status before submission: MET on four smokes — {RLPD} staged **3537917**, {RLPD} sparse
-  **3538260**, {r2dreamer} staged **3538337**, and a {r2dreamer} sparse smoke in flight at the
-  moment of this registration (its job id and result are in `paper/LADDER_PILOT_LOG_2026-09-11.md`;
-  **the pilot is not submitted until its stamp matches**, which is what P1 requires). Both learners
-  print the stamps in §(z).2 with the same three file hashes, character for character; the
+  **3538260**, {r2dreamer} staged **3538337**, {r2dreamer} sparse **3539030** (the last was in
+  flight when this amendment was first committed and is recorded here on its readout:
+  `[ladder] ladder=sparse return_clamp=1.0 (env.return_clamp AND model.return_clamp)` plus the
+  trainer's independent `[ladder] return_clamp=1.0 (env and model agree)`). Both learners
+  print the stamps in §(z).2 with the same three file hashes, character for character (the `git`
+  field differs between the smokes run before and after the evaluator fix of §(z).10 item 6, a file
+  that is not in the stamp and not one of the four fields P1 compares); the
   world-model launcher and trainer additionally agree on `return_clamp` (8.0 staged / 1.0 sparse)
   and the trainer refuses to start if `env.return_clamp` and `model.return_clamp` do not both equal
   the ladder ceiling.*
@@ -1102,11 +1105,12 @@ all four `repeat.json` manifests exist, and that the filesystem is above the reg
 floor. Every job id, its full command and the `[ladder]` line from its own log go in
 `paper/LADDER_PILOT_LOG_2026-09-11.md`.
 
-### (z).10 Six defects found and fixed between the merge and the submission
+### (z).10 Seven defects found and fixed between the merge and the submission
 
-All five were found by RUNNING the thing, not by reading it, and all five are committed before any
-pilot job. Two of them would have stopped every job; two would have made a run lie about its own
-objective; one killed a training run three minutes in.
+Six of the seven were found by RUNNING the thing, not by reading it, and all seven are committed
+before any pilot job. Two would have stopped every job at the gate; two would have made a run lie
+about its own objective; one killed a training run three minutes in; and two would have let an arm
+train to its full budget and then produce no cell at all.
 
 1. **Relabelled sets had no `repeat.json`.** `relabel_reward.py` wrote only `manifest.json`, which
    NEITHER launcher reads. Both gate on `<set>/repeat.json`. Every pilot job would have exited at
@@ -1140,6 +1144,14 @@ objective; one killed a training run three minutes in.
    trained for 250k decisions and produced nothing to read. The sidecar is now the SOURCE and
    `--ladder` an optional ASSERTION. Found by running the smoke THROUGH its eval stage instead of
    stopping at TRAIN-OK. (`21c58b4`)
+7. **The world-model evaluator's summary collided with itself.** `scope='full'` now names
+   `slide_success` as its success key (D2/D4 moved it off the withdrawn proxy), and
+   `eval_genesis.py` splatted `**{success_key: ...}` into a `dict()` call that already passes
+   `slide_success=` explicitly: `TypeError: dict() got multiple values for keyword argument
+   'slide_success'`, raised at the LAST step, after a complete training run and 15 evaluated
+   episodes. All eight {r2dreamer} pilot cells would have been lost. Both quantities (an outcome
+   rate over the terminal taxonomy, and a stage-grant rate) are now kept under names that cannot
+   collide. Found by the staged smoke, job 3538337. (r2dreamer `197a1a3`)
 
 `pytest` was also run on the cluster for the first time (Lane 2 could not): **37 passed**
 (`test_ladder_unified.py`, `test_stage_predicates.py`, `test_terminal_guard.py`).
