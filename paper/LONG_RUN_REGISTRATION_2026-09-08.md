@@ -312,3 +312,18 @@ annotator now mirrors the evaluator and snapshots `_granted | info`.
 **Open decision for the user (NOT actioned):** whether the 32 RLPD e2e runs are re-trained under
 the (x) ladder. Not required for within-learner assessment, which is the stated purpose; required
 before any cross-learner e2e claim.
+
+## 2026-09-11 — batch STOPPED before completion (user decision)
+
+The user cancelled every in-flight `e2eL_*` job at ~13:10 on 2026-09-11 because neither ladder
+is the one now of record (amendment (z), `paper/LADDER_UNIFY_BRIEF_2026-09-10.md`): {RLPD} had
+trained on the old proxy ladder (the (x) gate was inert in `gp_e2e`), {r2dreamer} on the (x)
+ladder whose top rung cannot be paid in training (`paper/E2E_TRAINING_PROBLEMS_2026-09-10.md`
+§0). Cancelled (job, name, elapsed at cancel): 3491301 `e2eL_r2_dH_s11` 19:09; 3484587
+`e2eL_r2_dM_s0` 1-11:29; 3515826 `e2eL_r2_dM_s12` 13:17; 3488571 `e2eL_rl_dH_s8` 6:40; 3488573
+`e2eL_rl_dH_s9` 3:30; 3484755 `e2eL_rl_dM_s6` 8:09; 3488572 `e2eL_rl_dM_s8` 4:47. Their
+partial checkpoints stay on disk; no partial run enters any table. Runs that had already
+completed before the cut ({r2dreamer} 29/32 trained per the health checker; {RLPD} the seeds
+with `fresh_eval_*` cells) remain valid as WITHIN-learner cells under their own ladder, with the
+seed count reported as achieved, not as 16 v 16. The GPUs went to the unified-ladder pilot
+(`lz_*`, jobs 3539249–3539264).
