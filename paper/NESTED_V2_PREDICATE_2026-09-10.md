@@ -5,9 +5,10 @@ Implements `LADDER_UNIFY_BRIEF_2026-09-10.md` D3/D4 and the Lane-1 interface. De
 diagnostics under `baselines/diagnostics/` that produced every number below.
 
 Everything here was measured on this box, CPU only, in the worktree
-`.claude/worktrees/agent-ad02acbe90243e42b` off `e2e-longrun-2026-09-10` at `3ad144f`. No cluster
-file was modified and no Slurm job was submitted; the cluster was used read-only, to copy two
-{RLPD} checkpoints and to read two reference eval cells.
+`.claude/worktrees/agent-ad02acbe90243e42b` off `e2e-longrun-2026-09-10` at `3ad144f`. **No
+cluster file was created or modified and no Slurm job was submitted**; the cluster was used
+read-only, to copy two {RLPD} checkpoints and the 74 human census tapes (over a streamed `tar`,
+so not even a temporary file was written) and to read two reference eval cells.
 
 ---
 
@@ -21,9 +22,13 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
    falsely vetoing a good nest: 41 frames at 2.5 cm, 140 at 3.0 cm). **I earlier recommended
    raising it to 0.030 on a reconstruction cohort; that is withdrawn.** No count anywhere in this
    document moves over 1.5–4.0 cm, so this is a margin decision either way.
-2. **`nested_v2` reproduces amendment (x)'s `arrived` set exactly on the human tapes: 21 of 74,
-   the same 21 uids, zero disagreement** — two independently written predicates, one reading
-   final distance and tilt, one reading seven clauses including `in_hand` and `at_rest`.
+2. **On the 74 human census tapes, re-executed, `nested_v2` has precision 1.000 and recall 0.786
+   against the settled `nested_honest` — zero false positives.** It is a strict subset of both
+   references: (x) `arrived` 15 ⊃ `nested_v2` 11, `nested_honest` 14 ⊃ `nested_v2` 11, with no
+   `nested_v2`-only uid in either comparison. The three misses are two tapes whose recording
+   simply *ends* while the can is still moving (`at_rest`) and one where `placed_v2` was never
+   granted. **`nested_proxy` on the same tapes has recall 0.143 — it misses 12 of the 14 real
+   nests.**
 3. **Under D2's terminal rule, `nested_v2` agrees with the settled `nested_honest` on 60 of 60
    policy episodes — precision 1.000, recall 1.000, on both arms** (§5.4). Under the OLD terminal
    rule recall is 0.250, and every one of the six disagreements is the `at_rest` clause being
@@ -34,7 +39,9 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
    reverses the arm ordering.** At the frame the proxy fires on the machine arm, the can is not
    touching the goal in **0 of 15** episodes and sits a median **149 mm** away (nesting needs
    ≤ 81 mm). On the human arm it is touching in **6 of 6** at a median 65 mm. Same predicate,
-   opposite meaning. Project documents describe the proxy as "instantaneous"; it is not.
+   opposite meaning. Project documents describe the proxy as "instantaneous"; it is not. The
+   other half of the same defect: on human demonstrations its recall is **0.143** (§4.2). The
+   proxy fails in both directions and which failure you see depends on the arm.
 5. **The release-first `contact_push` of D2 removes the entire machine-arm rung.** Legacy
    `contact_push` fires on 15 of 30 machine episodes; the D2 version fires on **0 of 30** — and
    on 0 of 30 again in the D2-terminal control, where the legacy count is still 15. On the human
@@ -51,9 +58,11 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
 | `baselines/stage_predicates.py` | pure-numpy `StageTracker`; no Genesis, torch or taichi import (asserted by a test over the module AST) |
 | `baselines/tests/test_stage_predicates.py` | 26 synthetic-history tests, all passing |
 | `baselines/eval_e2e_stagerec.py` | a COPY of `eval_e2e.py` that logs per-**env-frame** poses/contacts/flags |
+| `baselines/diagnostics/replay_tape_stagerec.py` | re-executes one recorder tape through `FullTaskEnv`, same frame-log schema |
 | `baselines/diagnostics/held_lever_calibration.py` | §3 |
-| `baselines/diagnostics/tape_stage_sweep.py` | §4 |
-| `baselines/diagnostics/nested_v2_validate.py` | §5 |
+| `baselines/diagnostics/replay_fidelity.py` | §4.1 |
+| `baselines/diagnostics/nested_v2_validate.py` | §4.2, §4.3, §5 |
+| `baselines/diagnostics/tape_stage_sweep.py` | §4.3 secondary cohort |
 | `baselines/diagnostics/proxy_firing_frame.py` | §6 |
 
 Unit tests:
@@ -247,62 +256,127 @@ lever of 1.47 cm — people release the can and then shove it home with the fing
 (amendment (p): *"sometimes it's easier to push with the gripper closed"*). Those frames read
 `in_hand` at any threshold above 1.5 cm, and `pushed` accumulates only while not `in_hand`, so in
 principle the clause could refuse to count genuine human pushes. §4 measures it at the tape level,
-which is the level that matters, and the answer is that it does not: the same 21 tapes nest and
-19–20 slide at every threshold from 1.5 to 4.0 cm.
+which is the level that matters, and the answer is that it does not: on the 74 re-executed census
+tapes every count is **identical** at every threshold from 1.5 to 4.0 cm.
 
 ---
 
-## 4. The D3 predicates over the 74 human tapes
+## 4. The D3 predicates on the 74 human census tapes, re-executed
+
+The tapes carry the tool point per *decision* and no solver contacts, no `placed_v2` and no goal
+orientation (§2), so all 74 were re-executed through `FullTaskEnv` — `record_demos`'s own replay:
+a fresh reset of the same IC, then the tape's `actions_delta` in order. That gives the real
+per-env-frame tool, contacts, `picked`, `placed_v2` and goal pose, and the honest settle from
+`end_of_episode()`.
 
 ```
-$ ~/workspace/genesis_sim2real/venv/bin/python \
-      baselines/diagnostics/tape_stage_sweep.py --cohort dec18_timestamp
+$ for f in <local src_dHfull_all>/*.npz; do
+    CUDA_VISIBLE_DEVICES="" python baselines/diagnostics/replay_tape_stagerec.py \
+        --tape "$f" --out <tapereplay>/dHfull_w3 --threads 2; done     # 8 concurrent
+$ python baselines/diagnostics/replay_fidelity.py --frames <tapereplay>/dHfull_w3 \
+        --per-uid paper/slide_per_uid_2026-09-07.txt
+$ python baselines/diagnostics/nested_v2_validate.py --roll <tapereplay> --sweep
 ```
 
-Three substitutions, forced by what the adapted tapes store, all disclosed in the script header:
-`picked` is derived (the can has been airborne); `placed_v2` is derived with the env's own
-clauses but the **measured** gripper motor in place of the grip **command**; solver contacts are
-absent, so **`contact_push` is not evaluable on tapes and is reported as unavailable, not as
-zero**. Derived `placed_v2` fires on 46/74 tapes and derived `picked` on 71/74.
+### 4.1 Does the replay reproduce the recording? Mostly, and the gap is known
 
-| HELD_LEVER | released | pushed | `nested_v2` end | lastK | `slide_success` (x) |
-|---|---:|---:|---:|---:|---:|
-| 1.5 cm | 46 | 31 | 21 | 21 | 19 |
-| 2.0 cm | 46 | 29 | 21 | 21 | 19 |
-| 2.5 cm | 46 | 31 | 21 | 21 | 20 |
-| 3.0 cm | 46 | 31 | 21 | 21 | 20 |
-| 3.3 cm | 46 | 31 | 21 | 21 | 20 |
-| 4.0 cm | 46 | 32 | 21 | 21 | 20 |
-| 6.0 cm | 46 | 29 | 20 | 20 | 18 |
-| ∞ (`in_hand` off) | 46 | **0** | **0** | **0** | **0** |
+`SLIDE_CLAUSE5_LINEAGE_2026-09-07.md` §7 records that the `dHfull_w3` lineage does NOT re-execute
+bit-exactly (the census lineage does). Measured rather than assumed, 74 tapes:
 
-Amendment (x)'s tape classifier on the same cohort: released 74, pushed 74, **arrived 21**,
-slide_success 21.
+* decisions **and** summed reward identical to the recording: **68 / 74**
+* `picked` agree 73/74 (replay *gained* uid 301) · `contact` 70/74 (lost 333, gained 256/302/316)
+* `nested` (recorder flag) **74 / 74** · `tipped` 71/74 (lost 262/326, gained 256)
+* replay reward total **123** against the tape total **118** — and 118.0 is exactly the
+  `total_reward` in `dHfull_all`'s `repeat.json`, so the tapes are the right ones.
 
-**`nested_v2` = 21 and it is the SAME 21 uids as (x)'s `arrived`**: `[232 233 237 242 247 248 251
-255 256 273 275 294 299 300 302 304 305 309 317 328 330]`, intersection 21, symmetric difference
-0. Two predicates written independently — (x) reads only final distance and tip, D3 reads picked
-∧ released ∧ distance ∧ can tilt ∧ goal tilt ∧ z-band ∧ not in_hand ∧ at_rest — agree on every
-tape. That is the strongest evidence available locally that the extra clauses reject nothing real.
+Against the in-repo per-uid reference `paper/slide_per_uid_2026-09-07.txt`, the replay's honest
+settle reproduces the labelling:
 
-The `∞` row is the control that the zeros elsewhere are real: with `in_hand` forced true,
-`pushed` cannot accumulate and `nested_v2` cannot fire, and both go to 0. Non-monotonic `pushed`
-(29 at 2.0 cm, 31 at 2.5 cm) is expected: a larger lever means more frames are `in_hand`, which
-*ends* a run and banks it, and banking can help or hurt.
+| reference label | n | replay `nested_honest` | replay `nested_proxy` | replay `contact` |
+|---|---:|---:|---:|---:|
+| NESTED | 16 | **13** | 2 | 10 |
+| contact | 4 | 0 | 1 | 3 |
+| no-pick | 5 | 0 | 0 | 0 |
+| short | 17 | 0 | 0 | 3 |
+| tipped | 32 | 1 | 0 | 7 |
 
-`slide_success` differs from (x)'s on 5 tapes (18 shared):
+So 13 of 16 reference nests come back, and 1 of 58 non-nests comes back as a nest. The residual
+is the lineage's known non-determinism, not the predicate — every number below is computed on the
+replayed episode against *that same episode's own* settle, so it is internally consistent
+regardless.
 
-* **(x) only — 242, 299, 328.** All three have `nested_v2` true and `released` true; all three
-  fail `pushed`, with gains of 9.7, 2.8 and 0.0 mm. (x) calls them pushed because it measures its
-  gain from its OWN release frame, and that frame is spurious: on uid 232 the (x) classifier
-  reports `release_frame 3` of 242, i.e. before the can was ever picked up. Its "push" therefore
-  includes the whole carry. **This is the defect D3's `released = placed_v2-granted` fixes**, and
-  it is why the brief replaces (x)'s motion-based release with the env's release predicate.
-* **D3 only — 236, 269.** `slide_success` is sticky while `nested_v2` is not, so a can that nests
-  and is then disturbed latches the slide. Under D2 that is self-consistent — `slide_success` is
-  terminal, so the episode would have ended at that frame — but a tape has no terminal, so tape
-  scoring can latch a transient. The D5 relabel re-executes tapes through `FullTaskEnv`, where the
-  terminal applies, so this asymmetry does not reach the relabelled sets.
+### 4.2 `nested_v2` against the three references
+
+74 tapes. Reference counts from the replay: `nested_honest` **14**, `nested_proxy` 3, `slide(l)`
+2, picked 65, `placed_v2` 40, contact 23, legacy `contact_push` 22, tipped 14.
+New counts: `nested_v2` 11 (end and lastK; `ever` 12), `slide(x)` 11, `contact_push(x)` 14,
+released 40, pushed 29.
+
+| predicate | TP | FP | FN | TN | precision | recall | agreement |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **`nested_v2` (end or lastK)** | 11 | **0** | 3 | 60 | **1.000** | 0.786 | 0.959 |
+| `nested_v2_ever` (sticky) | 11 | 1 | 3 | 59 | 0.917 | 0.786 | 0.946 |
+| `nested_v2` without `at_rest` | 13 | **0** | 1 | 60 | **1.000** | 0.929 | 0.986 |
+| **`nested_proxy`** | 2 | 1 | **12** | 59 | 0.667 | **0.143** | 0.824 |
+| `slide(x)` vs `nested_honest` | 10 | 1 | 4 | 59 | 0.909 | 0.714 | 0.932 |
+| `contact_push(x)` vs legacy `contact_push` | 14 | **0** | 8 | 52 | 1.000 | 0.636 | 0.892 |
+
+**`nested_proxy` misses 12 of the 14 real nests on human demonstrations — recall 0.143.** Set
+against §6, where its precision on the machine policy arm is 0.000, the proxy fails in *both*
+directions and which failure you see depends on the arm. That is the mechanism behind the
+ordering reversal, stated twice from two independent directions.
+
+All three predicate sets nest cleanly, with `nested_v2` the most conservative and **never wrong
+in the false-positive direction**:
+
+| comparison | both | A only | B only |
+|---|---:|---|---|
+| (x) `arrived` (15) vs `nested_v2` (11) | 11 | 255, 298, 305, 333 | **none** |
+| `nested_honest` (14) vs `nested_v2` (11) | 11 | 255, 305, 308 | **none** |
+| (x) `arrived` (15) vs `nested_honest` (14) | 13 | 298, 333 | 308 |
+
+The three `nested_v2` misses against the settled reference are: **255 and 305**, where `at_rest`
+fails because the human tape simply *ends* while the can is still moving (both have `placed_v2`,
+gains 45.1 and 40.0 mm, final distances 64.6 and 65.3 mm, and the settle then nests them); and
+**308**, where `placed_v2` was never granted. And `nested_v2` correctly *rejects* 298 and 333,
+which the (x) final-frame read calls arrived but the settle does not.
+
+**Amendment (x) reproduces its registered number on these tapes and not on the reconstruction
+cohort.** Running `can_pos_recovery/slide_predicate.py` unchanged over the 74 census tapes gives
+**released 72 / pushed 69 / arrived 15 / slide_success 15** — the 15 amendment (x) registered.
+The dec18 reconstruction cohort gives 74 / 74 / 21 (§4.3). The two tapes that do not release are
+**234 and 318**, the two lying-can starts that `CONFOUNDS` row 51 calls unwinnable by
+construction — an independent confirmation from a different direction.
+
+**And the (x) release fires before the pick.** Median `release_frame` is decision **7** of tapes
+whose median length is 389, `p0 = 1`, and **53 of 72** release inside the first 20 decisions. The
+"can holds still while the tool moves away" test is satisfied by the approach, long before
+anything is grasped, so (x)'s `pushed` gain includes the entire carry. **This is exactly the
+defect D3's `released = placed_v2-granted` removes**, and it is why the four (x)-only arrivals
+above are not losses.
+
+### 4.3 The `HELD_LEVER` sweep, and a secondary cohort
+
+| HELD_LEVER | `nested_v2` (lastK) | `slide(x)` | FP | FN | precision | recall |
+|---|---:|---:|---:|---:|---:|---:|
+| 1.5 cm | 11 | 11 | 0 | 3 | 1.000 | 0.786 |
+| 2.0 cm | 11 | 11 | 0 | 3 | 1.000 | 0.786 |
+| **2.5 cm** (registered) | **11** | **11** | 0 | 3 | 1.000 | 0.786 |
+| 2.8 / 3.0 / 3.3 / 4.0 cm | 11 | 11 | 0 | 3 | 1.000 | 0.786 |
+| ∞ (`in_hand` disabled) | **0** | **0** | 0 | 14 | — | 0.000 |
+
+**Every count is identical from 1.5 to 4.0 cm.** The `∞` row is the control that these are not
+vacuous zeros: with `in_hand` forced true, `pushed` cannot accumulate and `nested_v2` cannot fire,
+and both collapse to 0 — so the clause is live and simply not binding at any plausible threshold.
+This is the measurement that settles §3: the lever is not a results parameter.
+
+**Secondary cohort (dec18 reconstruction), reported separately.** The same D3 code over
+`slide_metric_of_record/dec18_timestamp/adapted` — with `picked` derived from airborne frames,
+`placed_v2` derived from the *measured* gripper motor, contacts absent so `contact_push` not
+evaluable — gives `nested_v2` **21/74**, and those are the **same 21 uids** as that cohort's (x)
+`arrived`, symmetric difference 0. It is a genuine independent agreement between two predicates,
+on a cohort whose (x) counts (74/74/21) differ from the registered ones (64/64/15). Treat it as
+corroboration of the predicate's *logic*, never as a count of record.
 
 ---
 
@@ -525,49 +599,65 @@ legacy 8.
 | `AT_REST_MM` | 2.0 | **2.0** | unchanged; §5.4 shows it stops binding under D2 |
 | `AT_REST_FRAMES` | 12 | **12** | unchanged (3 decisions at repeat 4) |
 | `PUSH_GAIN_MM` | 10.0 | **10.0** | unchanged |
-| `HELD_LEVER_M` | 0.025 | **0.030 recommended** | §3: the gap between 2.64 and 3.53 cm; 28× fewer held-frame errors, no fist-contact errors, no count changes anywhere |
+| `HELD_LEVER_M` | 0.025 | **0.025 — keep** | §3: disjoint populations at 1.03–3.23 and 3.43–10.73 cm, but xy-only `in_hand` makes raising it cost more than it saves, and §4.3/§5 show no count moves over 1.5–4.0 cm |
 | `TILT_MAX_DEG` | 20 | **20** | matches the settled predicate |
 | band | shelf_top +0.01…+0.07 | same | matches `full_env`'s `placed_v2` |
 
-The module ships `HELD_LEVER_M = 0.025` as the brief specifies; the recommendation above is a
-one-line change that Lane 2 or the coordinator should make deliberately, not something Lane 1
-should do unilaterally to a registered constant.
+**No constant changes.** The module ships exactly what the brief registered.
 
 **Unverified / not done, listed so nobody infers otherwise:**
 
-1. **The original 74 census tapes were never scored** — they are not on this machine, and the
-   census re-execution scripts (`render_census.py`, `slide_score.py`, `render_slide_panel.py`)
-   were never committed and are absent from disk. §3 and §4 use the December-18 EEF
-   reconstruction cohort instead (74 uids, the same uid set), whose (x) counts differ from the
-   original 64-tape cohort's (arrived 21 vs 15). Every tape number here carries that cohort.
-2. **`contact_push` was not evaluated on tapes** — the adapted tapes store no solver contacts.
-   Reported as unavailable, not as zero.
-3. **Goal orientation is not stored in the tapes**, so the tape pass assumes the goal is upright.
-   On policy episodes the real `goal_quat` is recorded and used.
-4. **Two seeds, one per arm, 30 episodes each.** These are predicate-validation samples, not a
-   human-vs-machine result, and nothing here should be read as one.
-5. `AT_REST_MM` and `AT_REST_FRAMES` were **not** swept. §5.2 shows the clause is the binding one
-   under the OLD terminal rule and §5.4 shows it stops binding under D2's, so no sweep was
-   needed; if `at_rest` ever binds again, the window is the parameter to revisit, not the lever.
+1. **The `dHfull_w3` lineage does not re-execute bit-exactly** (68/74 identical in decisions and
+   reward; `picked` 73/74, `contact` 70/74, `tipped` 71/74 — §4.1), which is the known property
+   `SLIDE_CLAUSE5_LINEAGE_2026-09-07.md` §7 records. Every §4 number is computed on the replayed
+   episode against that same episode's own settle, so it is internally consistent; but the census
+   lineage (which does re-execute bit-exactly) was **not** used, because the tapes the long runs
+   actually train on are the `dHfull_w3` ones.
+2. **No `honest*.json` exists** on the cluster under `$LAB/genesis_pickaplace/baselines/demos_v2`
+   or `$W`, nor on this machine; `honest_rescore.py`, `render_census.py`, `slide_score.py` and
+   `render_slide_panel.py` were never committed. The honest reference used is the settle computed
+   live by `end_of_episode()` during the replay, cross-checked against the in-repo
+   `paper/slide_per_uid_2026-09-07.txt` (§4.1).
+3. **The dec18 reconstruction cohort is not a count of record** (§4.3): its (x) numbers are
+   74/74/21 against the registered 64/64/15, and its held-lever tail is thinner than the real
+   tapes'. It is used only as an independent corroboration of the predicate's logic.
+4. **Two checkpoints, one per arm, 30 episodes each, plus 74 tapes.** These are
+   predicate-validation samples, not a human-versus-machine result, and nothing here is one.
+5. `AT_REST_MM` and `AT_REST_FRAMES` were **not** swept. §5.2 shows the clause binds under the
+   OLD terminal rule and §5.4 shows it stops binding under D2's; on tapes it costs 2 of 14
+   because the recording ends mid-motion, which no constant fixes. If `at_rest` ever binds again,
+   the window is the parameter to revisit, not the lever.
 6. **The D2 control suppresses the proxy terminal but not the slide terminal**, so the `slide(x)`
    false positives in §5.4 are an artifact of that control rather than a property of the
    predicate. Settling those requires re-simulating from the slide frame, which I did not do.
-7. **`nested_v2` is validated against `nested_honest`, which is itself a predicate, not ground
-   truth.** No human ever looked at these 60 episodes. The golden set proposed in
-   `E2E_AUDIT_BRIEF_2026-09-10.md` §7 is what would close that gap; this document does not.
+7. **`nested_v2` is validated against `nested_honest` and (x) `arrived`, which are themselves
+   predicates, not ground truth.** No human looked at these 60 episodes or 74 replays. The golden
+   set proposed in `E2E_AUDIT_BRIEF_2026-09-10.md` §7 is what would close that gap.
+8. **The machine tape set `dDPfull_first` was not analysed.** Everything on the tape side is the
+   human arm.
 
 ---
 
 ## 8. Recommendations to Lane 2 and the coordinator
 
-1. **Adopt `nested_v2` as specified.** It is exact on the human tapes (21/21 against (x)'s
-   `arrived`) and exact on policy episodes under D2 (60/60 against `nested_honest`).
-2. **Report it on the final frame or the last-12-frame window, never sticky** (§5.4: the sticky
-   form has precision 0.571).
-3. **Raise `HELD_LEVER_M` to 0.030** — free, and 28× fewer held-frame errors (§3). Registered at
-   0.025, so this is a deliberate amendment, not a silent edit; the module still ships 0.025.
-4. **Keep D2's `contact_push` release-first clause.** It is what removes the 15/30 machine-arm
-   rung that pays for pressing a held can (§5.3, §6), and it costs 1 of 9 on the human arm.
+1. **Adopt `nested_v2` as specified.** Against the settled reference it has **zero false
+   positives** everywhere it was measured — 74 human census tapes (precision 1.000, recall 0.786)
+   and 60 {RLPD} policy episodes under D2 (precision 1.000, recall 1.000). It is a strict subset
+   of both `nested_honest` and (x) `arrived` on the tapes.
+2. **Report it on the final frame or the last-12-frame window, never sticky** — the sticky
+   `nested_v2_ever` has precision 0.571 on policy episodes (§5.4) and 0.917 on tapes (§4.2).
+3. **Change no constant.** `HELD_LEVER_M` stays at the registered 0.025: the populations are
+   disjoint either way, and no count in this document moves over 1.5–4.0 cm (§3, §4.3, §5.4).
+   My earlier 0.030 recommendation, made on the reconstruction cohort, is withdrawn.
+4. **Keep D2's `contact_push` release-first clause.** It removes the 15/30 machine-arm rung that
+   pays for pressing a held can (§5.3, §6), costs 1 of 9 on the human policy arm, and keeps
+   14 of 22 on the human tapes.
 5. **Record in the audit brief that `nested_proxy`'s `contact` term is sticky** (§6). The brief
    and `E2E_TRAINING_PROBLEMS` §0 both describe the proxy as instantaneous. It is not, and the
-   stickiness — not the instantaneity — is the mechanism behind the arm-dependent precision.
+   stickiness is the mechanism behind the arm-dependent error. Add the other half too: on human
+   demonstrations its **recall is 0.143** (§4.2), so it fails in both directions.
+6. **For D5 (the `_rz` relabel), note that amendment (x)'s `released` fires before the pick** —
+   median decision 7 of 389, 53 of 72 tapes inside 20 decisions (§4.2). Any relabel that measures
+   push gain from the (x) release frame counts the whole carry as a push. D3's
+   `released = placed_v2-granted` is what fixes it, and D5 should use the tracker, not the tape
+   classifier.
