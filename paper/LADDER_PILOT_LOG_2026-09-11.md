@@ -168,6 +168,32 @@ written before the fix (`fresh_eval_hold15_{sample,mode}` under
 `full_r2d_state_dHfull_all_rs_lzsmokeS_s9991`) are scored under the WRONG ladder and must not be
 read as sparse-arm numbers.**
 
+**Defect 9, found while verifying defect 8.** The fixed sparse cell still read
+`success_key: slide_success` — because the OUTCOME taxonomy's success was a hardcoded
+`slide_success` in BOTH evaluators, which is the paid terminal of the `staged` ladder only. Under
+`sparse` the paid terminal is `nested_v2`, so every sparse success without `pushed` would have been
+counted a **`timeout`**. The stage columns were never affected (they come from the env's sticky
+grants), so `nested_v2` — the sparse arm's statistic of record, and what P7 is read from — was
+right throughout; the outcome / `success_rate` half was not. Fixed in `7913caa` (both
+`eval_e2e.py` and the annotator) and r2dreamer `903c6a2`, each taking the terminal from the env's
+own D6 stamp, and verified on real sparse checkpoints:
+
+    # {r2dreamer}, job 3539900, sparse smoke checkpoint
+    [eval] ladder='sparse' from the run config
+    [eval] outcome success_key='nested_v2' (the ladder's paid terminal)
+    [ladder] … ladder=sparse | nested_v2=1 | max_return=1 | terminal=nested_v2+tipped
+    # cell: ladder sparse | max_return 1.0 | terminal ['nested_v2','tipped']    (job 3539729)
+
+    # {RLPD}, job 3539901, sparse smoke checkpoint
+    ladder sparse | terminal_stage nested_v2 | outcomes {'nested_v2': 0.0, 'tipped': 0.0, 'timeout': 1.0}
+
+`eval_e2e.py` now writes `terminal_stage` into every `metrics.json`, so a reader can see which
+taxonomy a row used instead of inferring it.
+
+**Both defects landed AFTER the 16 jobs were submitted and BEFORE any of them started.** All 16
+were still PENDING, so `$LAB/gp_unified` was fast-forwarded to `7913caa` and every pilot job runs
+the fixed code and stamps one `git describe`. The pin note in §4 stands from here on.
+
 **One provenance wrinkle, stated rather than smoothed over.** The four smokes did not all run at
 the same commit: 3537917 / 3538260 / 3538337 at `b89478d3`, 3539030 at `21c58b49`. The difference
 is `baselines/eval_e2e.py` (defect 6), which is not one of the three files in the stamp, so the
