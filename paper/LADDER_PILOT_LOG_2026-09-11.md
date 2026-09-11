@@ -4,8 +4,12 @@ Operational log for PHASE_PLAN amendment **(z)**. The amendment is the registrat
 the record of what was actually submitted and what came back. Every number carries the command
 that produced it, and every claim about a job carries its id.
 
-Trees of record for the PILOT: `$LAB/gp_unified` @ **`877eb2b`** (branch
-`ladder-unify-2026-09-11`, the registration commit — see the pin note in §4) and
+Trees of record for the PILOT: `$LAB/gp_unified` @ **`cf6d312`** (branch
+`ladder-unify-2026-09-11`; registration was `a89e26a`, and the tree was fast-forwarded twice after
+submission to carry the defect-8 and defect-9 evaluator fixes — legitimately, because **all 16 jobs
+were still PENDING each time**, so no split was created. From the first job START the tree is
+FROZEN: the authority is always `git -C $LAB/gp_unified describe --always --dirty`, which is also
+what every `[ladder]` stamp records, so read it from the tree rather than from this line) and
 `$W/r2dreamer_unified` @ **`f1c134c`** (its own git history: `77b2c61` plus the defect-7 and
 defect-8 evaluator fixes, both of which reach already-submitted jobs because the evaluator is a
 separate process launched at the END of each job), with
