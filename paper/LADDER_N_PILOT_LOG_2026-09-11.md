@@ -208,6 +208,119 @@ with the other 60 batch nodes excluded.
 Cost: one minute of compute. Nothing was built on the wrong class, because the assertion runs before
 the first tape.
 
+### 3.3 The build (job 3575953, pax146, 64 cores, AVX-512, Xeon Gold 6438M)
+
+`COMPLETED`, **48:55**. Records: 10 min for the human set, 10 min for the machine set; the six
+offline builds ~4.5 min each. `stage_records_2026-09-11/{dHfull_all,dDPfull_first}` = 146 records.
+
+    GENESIS_PICKAPLACE_ROOT=$LAB/gp_ladderN TIP_GUARD=not_in_hand \
+      sbatch -J ln_sets --exclude=<the 60 non-verified batch nodes> cluster/ladderN_sets.sbatch
+
+**THE SIX SETS OF RECORD** (`bash cluster/ladderN_verify_sets.sh`, which re-opens every tape
+independently of the builder):
+
+| set | ladder | tapes | Σ reward | `home` | `slide_event` | `nested_v2` | actions vs source |
+|---|---|---:|---:|---:|---:|---:|---|
+| `dHfull_all_rnrh` | nested_ramp v2 | 74 | **204.68** | **12** | 25 | 14 | 74/74 identical |
+| `dDPfull_first_rnrh` | nested_ramp v2 | 72 | **206.22** | **12** | 23 | 15 | 72/72 identical |
+| `dHfull_all_rnsh` | nested_sparse | 74 | **12.00** | **12** | 25 | 14 | 74/74 identical |
+| `dDPfull_first_rnsh` | nested_sparse | 72 | **12.00** | **12** | 23 | 15 | 72/72 identical |
+| `dHfull_all_rzh` | staged (control) | 74 | **171.00** | 12 | 25 | 14 | 74/74 identical |
+| `dDPfull_first_rzh` | staged (control) | 72 | **183.00** | 12 | 23 | 15 | 72/72 identical |
+
+Every set: `tip_guard=not_in_hand` (sustain 4 frames), `far_release=off`,
+`relabel_node = {host pax146, cores 64, isa avx512, Xeon Gold 6438M, slurm_job 3575953}`, and both
+machine sets carry `one_per_ic_first=True` **inherited** from the source manifest
+(`selection_inherited {'one_per_ic_best': False, 'one_per_ic_first': True}`) rather than re-derived
+from a CLI flag — the 2026-09-09 false-claim defect cannot recur here.
+
+**The three builds of one arm have IDENTICAL grant tables** — `picked 65 / placed_v2 40 /
+contact_push 9 / slide_success 12 / nested_v2 14 / farside 38 / slide_event 25 / home 12` for every
+human set, and `64 / 41 / 13 / 13 / 15 / 40 / 23 / 12` for every machine set. Only the reward column
+and the terminal differ. That is the record-once/score-many guarantee holding on real data.
+
+Stamps, verbatim, and identical to Lane 12b's local ones in every field P1 compares:
+
+    nested_ramp: unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4
+                 ramp:slide_gain_m=3/0.05m | max_return=9 | terminal=home+tipped | shaping=off |
+                 far_release=off | tip=tilt>60deg&not_in_hand@4f |
+                 full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632
+    nested_sparse: … | ladder=nested_sparse | home=1 | max_return=1 | terminal=home+tipped | …
+    staged:        … | ladder=staged | picked=1 placed_v2=1 contact_push=2 slide_success=4 |
+                   max_return=8 | terminal=slide_success+tipped | …
+
+**Both launcher gates pass on all six.** The {RLPD} gate (`DRYRUN=1`) and the {r2dreamer} gate (its
+own embedded block, run directly):
+
+    DEMO-SHA dH       n=74 sha=ec8e7e2ab95f835a total_reward=204.675…  # dHfull_all_rnrh
+    DEMO-SHA dDPfirst n=72 sha=b57f7c7944475d12 total_reward=206.224…  # dDPfull_first_rnrh
+    DEMO-SHA dH       n=74 sha=32b3e4ed36e3b2a4 total_reward=12.0      # dHfull_all_rnsh
+    DEMO-SHA dDPfirst n=72 sha=38f5e4a71ea95a6a total_reward=12.0      # dDPfull_first_rnsh
+    DEMO-SHA dH       n=74 sha=4b3c0d62135fc015 total_reward=171.0     # dHfull_all_rzh
+    DEMO-SHA dDPfirst n=72 sha=e98190455d408ffb total_reward=183.0     # dDPfull_first_rzh
+
+### 3.4 An independent cross-check nobody asked for, and it PASSES
+
+`dHfull_all_rzh` sums to **171.00** and `dDPfull_first_rzh` to **183.00** — *exactly* the pilot's
+`dHfull_all_rz` and `dDPfull_first_rz`, which Lane 4 built on **pax080** by **direct re-execution**
+under the **other** tip guard (job 3537411). The full grant tables match too (human
+`picked 65 / placed_v2 40 / contact_push 9 / slide_success 12 / nested_v2 14`).
+
+So the offline-from-records path on pax146 reproduces, to the unit, an independently produced
+cluster set made by a different method on a different node. That is the strongest available
+validation of the record-once/score-many pipeline, and it also says the **new tip guard costs zero
+staged reward on the 64-core class** (locally Lane 7 measured a 2.0 cost on one human tape). The
+guard does move terminations — `_rzh` ends 22 human / 23 machine tapes `tipped` — but those tapes
+had already banked their rungs, so the total is unchanged. Good news for **P-aa-6**: the control arm
+starts from a demonstration set that is reward-identical to the pilot's staged arm.
+
+### 3.5 P-aa-7: MET on the human set, NOT MET on the machine set
+
+P-aa-7 predicted the demonstration `home` counts reproduce on the 64-core class **within ±1 tape per
+set** against this box's 32-core measurement.
+
+| set | local (32-core, Lane 12b) | cluster (64-core, this build) | Δ | verdict |
+|---|---:|---:|---:|---|
+| human | 13 | **12** | −1 | **MET** (at the boundary) |
+| machine | 14 | **12** | **−2** | **NOT MET** |
+
+Σ reward moves the same way: human 215.89 → **204.68**, machine 217.83 → **206.22**.
+
+**This is a registered prediction failing, and it is recorded as failed.** The direction is
+consistent — the cluster class completes fewer slides than the 32-core box on both arms — which is
+the hardware sensitivity of full-scope re-execution the amendment anticipated, at a magnitude that
+exceeds the tolerance it registered on one of the two sets. It does NOT invalidate the batch: the
+sets are internally consistent, hardware-homogeneous, and built on the class of record. What it
+changes is what may be said about the demonstrations: **the sets these 20 jobs train on contain 12
+human and 12 machine `home` tapes, not the 13/14 of amendment (aa) §P-aa-1.** Every later statement
+about demonstration slide counts must use 12/12 and cite this build.
+
+Note also that the count coincidence (12 = 12) is NOT a matched design — the two arms lost different
+numbers of tapes to reach it.
+
+The `home` tapes, by file (the npz carry no `ic_uid` key, so the per-uid identity check against
+(aa)'s list `232 233 237 247 251 256 259 273 275 302 304 316 317` needs the source manifest's
+index→uid map and was **not** run; only the counts above are established):
+
+    human   : genesis-{100000-013, 100004-017, 101000-023, 103006-041, 103007-042, 104000-044,
+                       104001-045, 104006-049, 104007-050, 105000-052, 106003-061, 107001-066}
+    machine : genesis-{101000-000, 103016-003, 100009-020, 101007-026, 101014-028, 105006-052,
+                       105012-054, 106000-057, 106003-058, 106019-064, 107000-066, 107006-067}
+
+Re-execution fidelity, for the reader who wants to judge the pin rather than take it: can_dev p50
+**13.0 mm**, max 685.7 (human) / 754.0 (machine), 39/41 tapes over 1 cm. The pilot's own pax080
+build reads p50 8.1 / 10.8 mm with the same maxima — same family, so the large per-tape divergences
+are a property of 600-decision full-scope re-execution, not of this build.
+
+### 3.6 Tree note
+
+The set build ran at `gp_ladderN` = **`b65bd076`** (that is the `git=` suffix inside every set's
+stamp). The tree was then fast-forwarded to **`1f12d056`** to pick up `ladderN_verify_sets.sh` —
+legitimate because **no `ln_*` training job had been submitted**, and verified harmless: the three
+ladder file hashes are unchanged by the pull (`23fe428f222f`, `40544bf73c8c`, `a589b4f05632`). The
+jobs will therefore stamp a different `git describe` from the sets they train on, with identical
+ladder code. From the first job start the tree is PINNED.
+
 ### 3.2 What the cluster build has to reproduce, and from whom
 
 Lane 12b landed `paper/R2D_LADDERN_SMOKE_2026-09-11.md` (commit `f9828d4`) into this shared
