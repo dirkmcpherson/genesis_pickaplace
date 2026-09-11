@@ -23,6 +23,9 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--frames', required=True, help='dir containing frames/ep*.npz')
     ap.add_argument('--verbose', action='store_true')
+    ap.add_argument('--per-uid', default=None,
+                    help='paper/slide_per_uid_2026-09-07.txt -- the in-repo per-uid honest '
+                         'reference (columns: uid outcome entry push_cm sim15 push>=3 dist_cm)')
     a = ap.parse_args()
     fs = sorted(glob.glob(os.path.join(a.frames, 'frames', 'ep*.npz'))
                 or glob.glob(os.path.join(a.frames, 'ep*.npz')))
@@ -51,6 +54,24 @@ def main():
     print(f'  replay reward total {sum(r["r_rep"] for r in rows):.0f} '
           f'vs tape total {sum(r["r_tape"] for r in rows):.0f}')
     print(f'  honest nested from the replay settle: {sum(r["honest"] for r in rows)}/{n}')
+
+    if a.per_uid:
+        ref = {}
+        for line in open(a.per_uid):
+            p = line.split()
+            if len(p) >= 2 and p[0].isdigit():
+                ref[int(p[0])] = p[1]
+        have = [r for r in rows if r['uid'] in ref]
+        print(f'\n  vs {os.path.basename(a.per_uid)} ({len(ref)} uids; {len(have)} matched):')
+        for lab in sorted({ref[r["uid"]] for r in have}):
+            sub = [r for r in have if ref[r['uid']] == lab]
+            print(f'    {lab:9s} n {len(sub):2d}  replay honest nested {sum(r["honest"] for r in sub):2d}'
+                  f'  replay proxy {sum(r["nested_rep"] for r in sub):2d}'
+                  f'  replay contact {sum(r["contact_rep"] for r in sub):2d}')
+        miss = sorted(set(ref) - {r['uid'] for r in rows})
+        if miss:
+            print(f'    uids in the reference with no replay: {miss}')
+
     if a.verbose:
         print('\n  uid  n_rep/n_tape   r_rep/r_tape   picked  contact  nested  tipped  stage')
         for r in sorted(rows, key=lambda x: x['uid']):
