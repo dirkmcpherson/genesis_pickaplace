@@ -42,8 +42,13 @@ echo "DISK-OK ${FREE_GB} GB free | gp $GP ($(git -C "$GP" describe --always --di
 # {RLPD}: CPU. The launcher bakes -p preempt/--qos=preempt/--gres=gpu:1/--nice=9000/--constraint,
 # all of which have to be overridden on the command line for a CPU smoke.
 RLQ=(-p batch --qos=normal --gres=none --constraint= --nice=0)
-# {r2dreamer}: GPU on the interactive QOS.
-R2Q=(-p gpu --qos=interactive)
+# {r2dreamer}: GPU on the interactive QOS. That QOS caps walltime at 04:00:00 (and 1 GPU / 16 cpu /
+# 64G), while cluster/wmfix_full.sbatch bakes `-t 2-00:00:00` -- so without an explicit -t every
+# submission is refused with `QOSMaxWallDurationPerJobLimit`. 3 h is what the pilot's r2 smoke used
+# and is ~6x its 32 min runtime.
+R2Q=(-p gpu --qos=interactive -t 0-03:00:00)
+# ONLY=rl|r2 submits just that learner's smokes (used when one half has already been submitted).
+ONLY=${ONLY:-all}
 
 smoke_rl() {   # ladder set seed
   local ladder=$1 set=$2 seed=$3 name=ln_smoke_rl_$4
@@ -64,8 +69,12 @@ smoke_r2() {   # ladder set seed tag
   "${cmd[@]}" | sed "s/$/  # $name/"
 }
 
-smoke_rl staged        dHfull_all_rzh  9980 ctl
-smoke_rl nested_ramp   dHfull_all_rnrh 9981 ramp
-smoke_rl nested_sparse dHfull_all_rnsh 9982 sparse
-smoke_r2 nested_ramp   dHfull_all_rnrh 9981 ramp
-smoke_r2 nested_sparse dHfull_all_rnsh 9982 sparse
+if [ "$ONLY" = all ] || [ "$ONLY" = rl ]; then
+  smoke_rl staged        dHfull_all_rzh  9980 ctl
+  smoke_rl nested_ramp   dHfull_all_rnrh 9981 ramp
+  smoke_rl nested_sparse dHfull_all_rnsh 9982 sparse
+fi
+if [ "$ONLY" = all ] || [ "$ONLY" = r2 ]; then
+  smoke_r2 nested_ramp   dHfull_all_rnrh 9981 ramp
+  smoke_r2 nested_sparse dHfull_all_rnsh 9982 sparse
+fi
