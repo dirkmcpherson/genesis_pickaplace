@@ -28,10 +28,15 @@ term, which is the clause that broke every earlier definition.
 The predicates
 --------------
 `in_hand`      |tool_xy - can_xy| < HELD_LEVER_M.  NO gripper term. A held can sits one grasp
-               lever from the tool point (SLIDE_ANATOMY_2026-09-07: median 1.5 cm at set-down);
-               a fist pushing the can contacts its SURFACE, so the tool point cannot be closer
-               than the can radius, 3.3 cm. The default 2.5 cm sits between the two populations.
-               Lane-1 calibration: see paper/NESTED_V2_PREDICATE_2026-09-10.md.
+               lever from the tool point; a fist pushing the can contacts its SURFACE, so the
+               tool point cannot be closer than the can radius, 3.3 cm. MEASURED on the 74 human
+               tapes (paper/NESTED_V2_PREDICATE_2026-09-10.md §3): held 1.24-2.64 cm (p1-p99,
+               n=5575 airborne frames, median 1.54 -- reproducing SLIDE_ANATOMY's 1.5 cm), fist
+               contact 3.53-11.17 cm (p1-p99, n=478), with an EMPTY GAP from 2.64 to 3.53 cm.
+               The registered default 0.025 sits inside the held tail and misreads 219/5575 held
+               frames as free; 0.030 misreads 8 and is the Lane-1 recommendation. It changes no
+               episode-level or tape-level count measured anywhere, so the default is left at the
+               registered value and the change is the coordinator's to make.
 `at_rest`      the can's xy position varied by <= AT_REST_MM across the last AT_REST_FRAMES env
                frames (12 frames = 3 decisions at action_repeat 4). Requires a full window:
                before AT_REST_FRAMES updates exist it is False, never vacuously True.
