@@ -134,3 +134,77 @@ is touched.
 Disk after both trees: **273 GB free** (the r2dreamer copy cost 4 GB, mostly `.git`).
 
 ---
+
+## Step 3 — stage records and the six demonstration sets
+
+### 3.0 The builder
+
+`cluster/relabel_e2e_sets.sbatch` (Lane 4's) re-EXECUTES once per ladder. Six sets that way is six
+simulations of the same 146 tapes (~3.5 h) and — the part that matters more than the time — it
+leaves each set free to differ from the others by something other than its reward column.
+`cluster/ladderN_sets.sbatch` (new, commit `b65bd07`) does what
+`paper/LADDER_N_DEMO_CHECK_2026-09-11.md` §1 established instead:
+
+* **phase 1** — one termination-suppressed re-execution per tape → a per-env-frame stage record.
+  Ladder- and guard-INDEPENDENT by construction (`relabel_reward.run_record_shard`: `never_terminate`
+  means nothing stops, and the record holds both guards' inputs).
+* **phase 2** — every ladder applied OFFLINE to those records in numpy. Verified against direct
+  re-execution by `--verify-against` and, independently, against Lane 5's own census re-execution,
+  146/146 tapes identical in reward column AND terminal decision.
+
+So all six sets come from ONE simulation on ONE node, and a difference between two of them can only
+be the reward column. The script also re-opens both sets after each build and compares action
+sha256 itself (`ACTION-SHA` lines) rather than trusting the builder's internal assertions.
+
+Set names come from `relabel_reward.LADDER_SUFFIX` + `TIP_GUARD_SUFFIX`, which the tool ASSERTS
+against `--ladder`/`--tip-guard` and refuses to write if they disagree. With `far_release` OFF and
+`tip_guard=not_in_hand` (amendment (aa)) that is:
+
+| ladder | suffix | human set | machine set |
+|---|---|---|---|
+| `nested_ramp` (v2) | `_rnrh` | `dHfull_all_rnrh` | `dDPfull_first_rnrh` |
+| `nested_sparse` | `_rnsh` | `dHfull_all_rnsh` | `dDPfull_first_rnsh` |
+| `staged` (control arm) | `_rzh` | `dHfull_all_rzh` | `dDPfull_first_rzh` |
+
+Not `_rh`/`_rn` as the handoff brief guessed — `TIP_GUARD_IMPL_2026-09-11.md` §7(b) flagged exactly
+this and declined to guess; these are the names the tool computes, and they are the names of record.
+
+Sources (`$W/demos_state_full`), unchanged, checked before the build:
+
+    dHfull_all      n_written 74  total_reward 118.0  n_pick 64  n_nopick 10  one_per_ic_first None
+    dDPfull_first   n_written 72  total_reward 131.0  n_pick 63  n_nopick  9  one_per_ic_first True
+
+No `stage_records*` directory existed on the cluster before this step.
+
+### 3.1 FAILURE, verbatim: the 64-core guard fired on a node Slurm calls 64-core
+
+First submission, job **3575659**, excluding the 33 batch nodes `sinfo` reports as not-64-CPU:
+
+    [hw] host=pax012 cores=128 isa=avx512 model=Intel(R) Xeon(R) Gold 6438M
+    FATAL: 128 cores != REQUIRE_CORES=64 -- refusing to build a set on the wrong hardware class
+    JOB ENDED: STATE=FAILED
+
+**The guard was right and my node filter was wrong.** `REQUIRE_CORES` is compared against
+`grep -c '^processor' /proc/cpuinfo` = LOGICAL processors, while `sinfo -o %c` reports Slurm's
+CONFIGURED CPUs. On pax012 Slurm advertises `64 CPUs, S2 C32 T1` and the machine actually presents
+**128** logical processors (same Xeon Gold 6438M as pax080, hyper-threading enabled where pax080 has
+it off). This is the documented "Slurm labels lie on this cluster" hazard (pax001 advertises
+`broadwell` and is Cascade Lake) in a new place: not the feature string this time but the CPU count.
+
+Corrected by using the 09-08 hardware census `$LAB/gp_e2e/hw_map.json` (READ ONLY — gp_e2e is a
+do-not-touch tree), which records `cores` and `logical` separately from `/proc/cpuinfo`:
+
+    of the 47 batch nodes Slurm calls 64-CPU:  20 are census logical==64
+                                               10 are census logical==128  (pax036-046, pax056)
+                                               17 are not in the 09-08 census at all (pax012 among them)
+
+The 20 confirmed ones —
+`pax004,005,015,019,030,031,032,033,054,055,058,059,060,061,078,079,080,146,148,149` — include
+**pax080, the node that built the pilot's `_rz`/`_rs` sets** (`relabel_node` in all four
+`repeat.json` files: `host pax080, cores 64, isa avx512, Xeon Gold 6438M`), so the new sets land in
+the same hardware class as the sets they will be compared against. Resubmitted as job **3575953**
+with the other 60 batch nodes excluded.
+
+Cost: one minute of compute. Nothing was built on the wrong class, because the assertion runs before
+the first tape.
+
