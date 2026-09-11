@@ -6,7 +6,9 @@ Protocol -- the world model's end-to-end cells (amendment (d), PHASE_RESULTS §5
   * `FullTaskEnv(scope='full')` in the corrected world (--sim-variant, also exported as GENESIS_SIM_VARIANT so the
     env's shelf band follows the world's shelf), horizon --max-steps SIM steps (1200 = 300 decisions at repeat 4),
     action_repeat / delta_joint cap 0.025 / leash 5x / delta_ref target asserted against the checkpoint sidecar.
-    The UNIFIED ladder (picked 1 / placed_v2 1 / contact_push 2 / slide_success 4), slide_success and the tip rule
+    A UNIFIED ladder, named by --ladder and taken from the checkpoint sidecar when it records one:
+    'staged' = picked 1 / placed_v2 1 / contact_push 2 / slide_success 4 (terminal), max return 8;
+    'sparse' = nested_v2 1 (terminal), max return 1. That ladder's terminal stage and the tip rule
     terminate and NOTHING else does -- i.e. exactly the training MDP.
   * Starts come from an IC FILE (--ic-file/--ic-set), one episode per start, IN ORDER, each exactly once:
     `hold` (training starts -- in-distribution, NOT held out, REVIEW_GUIDE §8 item 7), `rnd` (the random box,
@@ -18,13 +20,14 @@ Protocol -- the world model's end-to-end cells (amendment (d), PHASE_RESULTS §5
     per_episode['ic'].
   * ONE post-episode settle per episode, after the last decision: `GenesisCanEnv.end_of_episode()` -- the landed
     (j)/(l') implementation, never re-implemented here. It returns the honest settled `nested` and the
-    `slide_success` window with its route. In scope='full' the env terminates on the nested PROXY and
+    `slide_success` window with its route. The settle is now a REFERENCE reading only: `nested_honest` is
+    what `nested_v2` is validated against, and the (l) settle route is kept as a legacy column.
     `GenesisCanEnv` never reaches its own horizon, so this call is the only settle that ever runs.
 
 Stage columns (success-by-stage = granted at any time in the episode), LADDER_UNIFY_BRIEF D3/D4 2026-09-10:
   HEADLINE  picked, placed_v2, contact_push, slide_success, nested_v2, nested_honest
   LEGACY    placed, contact, nested_proxy, contact_push_legacy, slide_success_settle
-`slide_success` is now the env's IN-EPISODE value -- the ladder's paid top rung and its only non-tip terminal --
+`slide_success` is now the env's IN-EPISODE value -- under 'staged' the paid top rung and the only non-tip terminal --
 not the post-episode settle route. `nested_v2` replaces `nested_proxy` everywhere; `nested_honest` stays as the
 settled REFERENCE column nested_v2 is validated against. `nested_proxy` is kept only for continuity with stored
 rows: its precision is 0.114 (human) / 0.029 (machine) and it REVERSES the arm ordering, so nesting must never be
@@ -59,6 +62,11 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
+ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged',
+                help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
+                     "checkpoint's -- a policy trained under one objective scored under another is a different "
+                     "experiment, and the stamp in metrics.json is what a table builder checks. Taken from the "
+                     "checkpoint sidecar when the sidecar records one; --ladder then only has to AGREE with it.")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
@@ -220,7 +228,13 @@ from full_env import FullTaskEnv, STAGE_REWARD, refuse_legacy_gates   # noqa: E4
 refuse_legacy_gates()   # D1: this tree has no reward gates; a stale export must not pass
 import sim_variants as _sv                       # noqa: E402
 from replay_harness import BOX_TOP_Z             # noqa: E402
-env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full',
+# The ladder comes from the CHECKPOINT when its sidecar records one (runs trained before the
+# `ladder` argument existed do not), and --ladder must agree with it. Scoring a policy under a
+# different objective from the one it optimised is a different experiment, not a detail.
+LADDER_NAME = side.get('ladder') or args.ladder
+if side.get('ladder') and side['ladder'] != args.ladder:
+    sys.exit(f"FATAL: checkpoint sidecar says ladder={side['ladder']!r} but --ladder is {args.ladder!r}")
+env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
 apply_post(env, args.sim_variant)
@@ -229,7 +243,8 @@ assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
 assert env.scope == 'full' and env.action_repeat == REPEAT and env.delta_ref == 'target' and not env.phase_sparse
 assert env.max_steps == args.max_steps, (env.max_steps, args.max_steps)
 print(f'[eval-e2e] shelf_top_z {env.shelf_top_z:.3f} (placed_v2 band {env.shelf_top_z + 0.01:.3f}..{env.shelf_top_z + 0.07:.3f}); '
-      f'delta cap {env.delta_cap} leash {env.delta_leash}; staged reward {STAGE_REWARD}', flush=True)
+      f'delta cap {env.delta_cap} leash {env.delta_leash}; ladder {env.ladder} {env.stage_reward} '
+      f'terminal {env.terminal_stages}+tipped', flush=True)
 LADDER = env.provenance()   # D6: written into metrics.json below
 
 # ---- IC injection: run the env's OWN reset, redirect its single GenesisCanEnv.reset call to this episode's start.

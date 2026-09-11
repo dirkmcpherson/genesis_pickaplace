@@ -131,6 +131,16 @@ def main():
                          "+1 and ends the episode. bare_contact = the (m)/world-model-of-record grant; slide_success = "
                          "the WITHDRAWN (o) reward (refused unless CONTACT_GRANT_ALLOW_WITHDRAWN=1); prior_release = "
                          "(p)'s corrected predicate, not implemented until its clause-5 threshold is calibrated.")
+    ap.add_argument('--ladder', choices=['staged', 'sparse'], default='staged',
+                    help="scope=full ONLY: WHICH reward ladder (a constructor argument of FullTaskEnv, "
+                         "never an env var -- the reward structure must not be selectable by something a "
+                         "job can silently fail to receive; that is exactly how {RLPD} and {r2dreamer} "
+                         "came to optimise different objectives for 32 runs each). "
+                         "'staged' = picked 1 / placed_v2 1 / contact_push 2 / slide_success 4, terminal "
+                         "slide_success, max return 8. 'sparse' = nested_v2 1, terminal nested_v2, max "
+                         "return 1. The two differ in reward and terminal ONLY. It is carried in the "
+                         "ladder provenance stamp, so a sparse row can never merge with a staged one. "
+                         "The launchers REQUIRE it explicitly.")
     ap.add_argument('--goalward-shaping', choices=['off', 'on'], default='off',
                     help="scope=full ONLY (LADDER_UNIFY_BRIEF D7): potential-based goalward shaping, "
                          "phi = -2 * xy-dist(can, goal), active only while placed_v2 is granted, the can "
@@ -315,6 +325,7 @@ def main():
                       # equal; before 08-23 the env silently used 0.998 whatever --gamma was)
                       pick_shaping_gamma=args.gamma,
                       pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'),
+                      ladder=args.ladder,
                       # D7: constructor argument, gamma matched to the AGENT's discount so
                       # the potential is exactly policy-invariant (Ng et al. 1999)
                       goalward_shaping=(args.goalward_shaping == 'on'),
@@ -328,6 +339,8 @@ def main():
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
     assert env.goalward_shaping is (args.goalward_shaping == 'on'), env.goalward_shaping
     assert args.goalward_shaping == 'off' or args.scope == 'full', 'goalward shaping is a scope=full lever'
+    assert env.ladder == args.ladder, (env.ladder, args.ladder)
+    assert args.ladder == 'staged' or args.scope == 'full', 'ladder is a scope=full lever'
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
     if args.scope in PHASE_SCOPES:
@@ -362,7 +375,9 @@ def main():
         _max_ret = (1.0 - args.gamma ** args.pick_hold_k) / (1.0 - args.gamma)
         q_watch = 2.0 * _max_ret
     elif args.scope == 'full':
-        q_watch = 2.0 * float(sum(STAGE_REWARD.values()))
+        # the LADDER's max return, not the module default: a sparse run's ceiling is 1.0, so
+        # a watchdog keyed on 8.0 would never fire and a staged one keyed on 1.0 would always
+        q_watch = 2.0 * float(sum(env.stage_reward.values()))
     else:
         q_watch = 2.0
     model = make_rlpd(env, args.seed, args.device, q_watchdog=q_watch,
@@ -521,6 +536,8 @@ def main():
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
     sidecar['goalward_shaping'] = args.goalward_shaping
+    sidecar['ladder'] = args.ladder
+    sidecar['max_return'] = float(sum(env.stage_reward.values()))
     (out / 'wandb_eval').mkdir(parents=True, exist_ok=True)
     (out / 'wandb_eval' / 'snapshot.action_mode.json').write_text(json.dumps(sidecar))
     # ---- LADDER PROVENANCE (LADDER_UNIFY_BRIEF D6) -----------------------------------

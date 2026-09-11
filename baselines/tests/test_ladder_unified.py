@@ -135,11 +135,13 @@ class FakeTracker:
         return dict(self.flags)
 
 
-def make_env(goalward=False):
+def make_env(goalward=False, ladder='staged'):
     """A scope='full' FullTaskEnv with no Genesis: __init__ is bypassed on purpose."""
     e = FullTaskEnv.__new__(FullTaskEnv)
     e.genv = FakeGenv()
     e.scope = 'full'
+    e.ladder = ladder
+    e.stage_reward, e.terminal_stages = full_env.ladder_spec(ladder)
     e.action_mode = 'absolute'
     e.action_repeat = 1
     e.max_steps = 1200
@@ -297,7 +299,7 @@ def test_4_provenance_stamp():
     for k in ('full_env', 'genesis_can_env', 'stage_predicates'):
         assert len(p['sha256'][k]) == 64 and p['sha256'][k] != 'unreadable', (k, p['sha256'][k])
     assert full_env.ladder_stamp() == full_env.ladder_stamp(), 'stamp must be stable'
-    shaped = full_env.ladder_stamp(dict(kind='goalward_potential', scale=2.0, gamma=0.999))
+    shaped = full_env.ladder_stamp('staged', dict(kind='goalward_potential', scale=2.0, gamma=0.999))
     assert shaped != full_env.ladder_stamp(), 'shaping must change the stamp'
     assert 'shaping=off' in full_env.ladder_stamp()
     env = make_env()
@@ -358,6 +360,79 @@ def test_6_goalward_shaping_off_by_default_and_is_a_potential():
     print('6. goalward shaping: off by default, constructor-only, exact potential form  OK')
 
 
+def _drive_full_episode(env):
+    """picked -> placed_v2 -> contact_push -> pushed+nested_v2 (-> slide_success).
+
+    The SAME fake episode for both ladders: identical actions, identical tracker flags,
+    identical logged stages. Only the reward and the terminal may differ."""
+    out = []
+    env.genv.info['picked'] = True
+    out.append(env.step(act(1.0)))                                  # the pick
+    for _ in range(FullTaskEnv.PLACE_SUSTAIN):                      # the release, sustained
+        place_can_on_shelf(env)
+        out.append(env.step(act(0.0)))
+    env.genv.info.update(contact=True, can_goal_touch=True)
+    env.tracker.flags.update(released=True, contact_push=True)
+    out.append(env.step(act(0.0)))                                  # the push
+    env.tracker.flags.update(pushed=True, nested_v2=True, slide_success=True)
+    out.append(env.step(act(0.0)))                                  # arrival
+    return out
+
+
+def test_9a_sparse_ladder_pays_one_and_terminates_on_nested_v2():
+    """User, 2026-09-11: a SPARSE ladder as a first-class option. Same episode, same logged
+    stages, same diagnostics -- reward and terminal are the only differences."""
+    staged = make_env(ladder='staged')
+    sparse = make_env(ladder='sparse')
+    r_staged = sum(s[1] for s in _drive_full_episode(staged))
+    r_sparse = sum(s[1] for s in _drive_full_episode(sparse))
+    assert r_staged == 8.0, r_staged
+    assert r_sparse == 1.0, r_sparse
+    # terminals: staged ends on slide_success, sparse on nested_v2
+    assert full_env.ladder_spec('staged')[1] == ('slide_success',)
+    assert full_env.ladder_spec('sparse')[1] == ('nested_v2',)
+    assert full_env.max_return('staged') == 8.0 and full_env.max_return('sparse') == 1.0
+    # the logged stage set is IDENTICAL -- the arms differ only in what was paid
+    assert staged._granted == sparse._granted, (staged._granted, sparse._granted)
+    for k in ('picked', 'placed_v2', 'contact_push', 'nested_v2', 'slide_success'):
+        assert k in staged._granted, k
+    # sparse terminates EARLIER in general: nested_v2 fires no later than slide_success
+    # (slide_success requires it). Here they fire on the same decision, so both end there.
+    assert _drive_full_episode(make_env(ladder='sparse'))[-1][2] is True, 'sparse must terminate'
+    assert _drive_full_episode(make_env(ladder='staged'))[-1][2] is True, 'staged must terminate'
+    # an unknown ladder must RAISE, not fall back to the default objective
+    try:
+        full_env.ladder_spec('stagd')
+    except ValueError as e:
+        assert 'unknown ladder' in str(e)
+    else:
+        raise AssertionError('a typo in the ladder name must not silently select a default')
+    print('9a. sparse ladder: same episode pays 8 staged / 1 sparse, same logged stages  OK')
+
+
+def test_9b_nested_v2_pays_nothing_under_staged_and_terminates_only_under_sparse():
+    """The discriminating case: arrival WITHOUT a push (a drop at the goal). Under staged it
+    is worth 0 and does not end the episode; under sparse it is the whole reward."""
+    for ladder, want_r, want_term in (('staged', 0.0, False), ('sparse', 1.0, True)):
+        env = make_env(ladder=ladder)
+        env.genv.info['picked'] = True
+        env.step(act(1.0))
+        run_placed_v2(env)
+        env.tracker.flags.update(released=True, nested_v2=True, pushed=False, slide_success=False)
+        _, r, term, _, info = env.step(act(0.0))
+        assert info['nested_v2'] is True
+        assert r == want_r, (ladder, r, want_r)
+        assert term is want_term, (ladder, term, want_term)
+    # and the provenance distinguishes them
+    assert full_env.ladder_stamp('staged') != full_env.ladder_stamp('sparse')
+    for L in ('staged', 'sparse'):
+        p = full_env.ladder_provenance(L)
+        assert p['ladder'] == L and p['stage_reward'] == full_env.ladder_spec(L)[0]
+        assert p['terminal_stages'] == list(full_env.ladder_spec(L)[1]) + ['tipped']
+        assert p['return_clamp_required'] == full_env.max_return(L)
+    print('9b. nested_v2 alone: 0 and non-terminal under staged, 1 and terminal under sparse  OK')
+
+
 def test_9_constructor_signature_matches_its_callers():
     """Lane 3's BLOCKER: 809601d copied full_env.py in from another tree and silently reverted
     the PHASE_PLAN (p) `contact_grant` parameter, while train_rlpd.py:298 and eval_place.py:162
@@ -373,7 +448,7 @@ def test_9_constructor_signature_matches_its_callers():
     sig.bind(None, backend='cpu', max_steps=1200, scope='full', action_mode='delta_joint',
              action_repeat=4, delta_ref='target', entry_bank=None, phase_sparse=False,
              contact_grant=None, pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
-             pick_shaping_gamma=0.99, pick_shaping_terminal_zero=True,
+             pick_shaping_gamma=0.99, pick_shaping_terminal_zero=True, ladder='staged',
              goalward_shaping=False, goalward_gamma=0.99)
     # exactly the call eval_place.py makes
     sig.bind(None, backend='cpu', max_steps=600, scope='place', entry_bank='bank.json',
@@ -384,7 +459,7 @@ def test_9_constructor_signature_matches_its_callers():
              delta_cap=0.025, delta_leash_mult=5.0, action_repeat=4, delta_ref='target',
              camera_rig=True, pick_shaping=False)
     sig.bind(None, backend='cpu', max_steps=10 ** 9, scope='full', render_size=(64, 64),
-             camera_rig=True, shaping=False, pick_shaping=False, entry_bank=None)
+             camera_rig=True, shaping=False, pick_shaping=False, entry_bank=None, ladder='sparse')
     # the (p) guards are reachable: a contact-scope env still refuses an unnamed grant
     src = (REPO / 'baselines' / 'rl' / 'full_env.py').read_text()
     assert 'scope=contact needs an explicit contact_grant' in src

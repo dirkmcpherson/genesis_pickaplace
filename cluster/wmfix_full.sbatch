@@ -30,6 +30,13 @@ set -euo pipefail
 # per-job torch.compile cache: two jobs compiling on one node with a shared inductor cache crash (InductorError SubprocException, 09-03)
 export TORCHINDUCTOR_CACHE_DIR=/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/inductor_cache/${SLURM_JOB_ID:-local}
 ARM=$1; SEED=$2; STEPS=$3; shift 3
+# LADDER IS REQUIRED (user 2026-09-11), and the RETURN CLAMP FOLLOWS IT. r2dreamer's clamp is
+# the task's maximum return, so a sparse run needs 1.0 where a staged run needs 8.0; leaving
+# the config's 8.0 in place for a sparse arm would disable the clamp that made this port
+# stable in the first place. Both env.return_clamp and model.return_clamp are set from the
+# ladder below and printed, so the pair can never silently disagree with the reward.
+LADDER=${LADDER:?set LADDER (staged | sparse) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse) ;; *) echo "FATAL: LADDER must be staged | sparse (got $LADDER)"; exit 2 ;; esac
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
 TREE=$W/r2dreamer_fix
@@ -81,17 +88,22 @@ RECIPE=${RECIPE:-"env.actor_dist=bounded_normal env.act_entropy=3e-5"}
 # LOADED -- and the export was inert in the other learner's tree for 32 runs. This prints the
 # ladder actually compiled into $GENESIS_PICKAPLACE_ROOT plus the sha256 of the three files
 # that define it, and FAILS the job if it cannot. The trainer also writes it to the logdir.
-"$PY" - <<'PYL' || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
+CLAMP=$(LADDER=$LADDER "$PY" - <<'PYL'
 import os, sys
 R = os.environ['GENESIS_PICKAPLACE_ROOT']
 for p in (R + '/baselines', R + '/baselines/rl', R + '/can_pos_recovery'):
     sys.path.insert(0, p)
 import full_env
 full_env.refuse_legacy_gates()
-print('[ladder]', full_env.ladder_stamp())
-assert sum(full_env.STAGE_REWARD.values()) == 8.0, full_env.STAGE_REWARD   # return_clamp 8
+L = os.environ['LADDER']
+print('[ladder]', full_env.ladder_stamp(L), file=sys.stderr)
+print(repr(full_env.max_return(L)))          # stdout: the return clamp this ladder requires
 PYL
-CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
+) || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
+echo "[ladder] ladder=$LADDER return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
+CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
+     env.ladder=$LADDER env.return_clamp=$CLAMP model.return_clamp=$CLAMP
+     buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
 printf '%q ' "${CMD[@]}"; echo
 printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log
 "${CMD[@]}"

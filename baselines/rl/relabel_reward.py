@@ -75,7 +75,7 @@ def scalar(z, k, default=None):
 
 
 # ------------------------------------------------------------------------------- worker
-def build_env(sim_variant, max_sim_steps):
+def build_env(sim_variant, max_sim_steps, ladder):
     """FullTaskEnv in the END-TO-END contract MDP -- the same knobs baselines/record_demos.py
     build_env and cluster/sbatch_rlpd_e2e.sh use, every one asserted (silent-default rule)."""
     sys.path.insert(0, str(REPO / 'baselines'))
@@ -87,7 +87,7 @@ def build_env(sim_variant, max_sim_steps):
     refuse_legacy_gates()
     apply_pre(sim_variant)
     t0 = time.time()
-    env = FullTaskEnv(backend='cpu', max_steps=int(max_sim_steps), scope='full',
+    env = FullTaskEnv(backend='cpu', max_steps=int(max_sim_steps), scope='full', ladder=ladder,
                       action_mode='delta_joint', delta_cap=0.025, delta_leash_mult=5.0,
                       action_repeat=4, delta_ref='target', camera_rig=False)
     apply_post(env, sim_variant)
@@ -101,15 +101,53 @@ def build_env(sim_variant, max_sim_steps):
     return env
 
 
+def tape_layout(z):
+    """'segment' = the r2dreamer-native FULL-scope rows BOTH launchers assert on
+    ($W/demos_state_full/<arm>, keys state/action/reward/is_terminal, action backward-shifted
+    so action[t] led INTO state[t] and action[0] == 0). 'v1' = a contract-v1 recorder tape
+    (states/actions_delta/rewards/n). The `_rx` sets in flight are segment sets, so that is
+    the primary format; v1 is supported because the recorder writes it and the DP set builder
+    reads it."""
+    keys = set(z.files)
+    if {'state', 'action', 'reward', 'is_terminal'} <= keys:
+        return 'segment'
+    if {'states', 'actions_delta', 'rewards', 'n'} <= keys:
+        return 'v1'
+    raise ValueError(f'unrecognised tape layout; keys = {sorted(keys)}')
+
+
+def tape_stream(z, layout):
+    """-> (first_state (17,), executed actions (n,7), recorded per-decision rewards (n,),
+    expected next states (n,17) or None). `n` is the number of DECISIONS actually executed."""
+    if layout == 'segment':
+        st = np.asarray(z['state'], np.float64)
+        ac = np.asarray(z['action'], np.float32)
+        rw = np.asarray(z['reward'], np.float64).reshape(-1)
+        T = st.shape[0]
+        assert ac.shape == (T, 7) and rw.shape == (T,), (ac.shape, rw.shape, T)
+        assert not np.abs(ac[0]).any(), 'segment layout: action[0] must be 0 (backward-shifted)'
+        # decision t executes action[t+1] and lands on state[t+1]
+        return st[0], ac[1:], rw[1:], st[1:]
+    n = int(scalar(z, 'n'))
+    st = np.asarray(z['states'], np.float64)
+    return (st[0], np.asarray(z['actions_delta'], np.float32)[:n],
+            np.asarray(z['rewards'], np.float64)[:n],
+            np.concatenate([st[1:n], np.asarray(z['final_state'], np.float64)[None, :]]) if n >= 1 else None)
+
+
 def reset_to_tape_ic(env, z):
     """Restore the tape's initial condition and PROVE it matched.
 
     uid ICs go through the env's own `reset(options={'uid': ...})`, so the placement table,
     the corrected static goal and every piece of FullTaskEnv bookkeeping are the env's code,
     not a copy of it. The restored can pose is then checked against the tape's own first
-    state -- an IC that silently differs is the whole failure mode of a re-execution."""
+    state -- an IC that silently differs is the whole failure mode of a re-execution.
+
+    Segment tapes carry no `ic_uid`, so their start is restored from state[0] directly
+    (can xyz 8:11, can quat 11:15, goal xy 15:17) -- which is the SAME information the uid
+    path would look up, and it is then verified against that state either way."""
     ic_uid = scalar(z, 'ic_uid')
-    s0 = np.asarray(z['states'], np.float64)[0]
+    s0 = tape_stream(z, tape_layout(z))[0]
     if ic_uid is not None and int(ic_uid) in env.genv.placements:
         obs, _ = env.reset(options={'uid': int(ic_uid)})
         how = f'uid {int(ic_uid)}'
@@ -130,10 +168,12 @@ def reset_to_tape_ic(env, z):
 
 def relabel_one(env, path, out_dir, ic_tol):
     z = np.load(path, allow_pickle=True)
-    assert str(scalar(z, 'scope')) == 'full', f'{path}: scope={scalar(z, "scope")!r}, expected full'
-    assert str(scalar(z, 'contract')) == 'v1', f'{path}: not a contract-v1 tape'
-    n = int(scalar(z, 'n'))
-    acts = np.asarray(z['actions_delta'], np.float32)[:n]
+    layout = tape_layout(z)
+    if layout == 'v1':
+        assert str(scalar(z, 'scope')) == 'full', f'{path}: scope={scalar(z, "scope")!r}, expected full'
+        assert str(scalar(z, 'contract')) == 'v1', f'{path}: not a contract-v1 tape'
+    _s0, acts, old_rew, want_states = tape_stream(z, layout)
+    n = int(acts.shape[0])
     src_sha = sha_actions(acts)
 
     how, d_can, d_goal = reset_to_tape_ic(env, z)
@@ -146,10 +186,21 @@ def relabel_one(env, path, out_dir, ic_tol):
     grants, end_reason, end_dec = {}, 'stream_exhausted', n
     seen = set()
     tipped = False
+    # FIDELITY, measured rather than assumed: a re-execution is only a RELABEL if it follows
+    # the recorded trajectory. Reported PER CHANNEL GROUP, because a raw max over the 17-dim
+    # state is meaningless -- state[7] is grip EFFORT, a summed control force of order 1-5 N,
+    # which dominates every other channel and would read as a catastrophic divergence when
+    # the arm is tracking to 0.0004 rad (measured, 2026-09-11). What matters is the CAN.
+    can_dev = 0.0        # m, centre-to-centre
+    joint_dev = 0.0      # rad, worst arm joint
     t0 = time.time()
     for t in range(n):
-        _, r, term, trunc, info = env.step(acts[t])
+        obs, r, term, trunc, info = env.step(acts[t])
         rew[t] = float(r)
+        if want_states is not None and t < len(want_states):
+            got = np.asarray(obs, np.float64)
+            can_dev = max(can_dev, float(np.linalg.norm(got[8:11] - want_states[t][8:11])))
+            joint_dev = max(joint_dev, float(np.abs(got[:6] - want_states[t][:6]).max()))
         tipped = tipped or bool(info.get('tipped'))
         gr = set(env._granted) | {k for k in REPORT_STAGES if info.get(k)}
         for k in gr - seen:
@@ -158,16 +209,28 @@ def relabel_one(env, path, out_dir, ic_tol):
         seen |= gr
         if term or trunc:
             end_reason = ('tipped' if info.get('tipped') else
-                          'slide_success' if info.get('slide_success') else
-                          'truncated' if trunc else 'terminated')
+                          'truncated' if trunc else
+                          next((s for s in env.terminal_stages if info.get(s)), 'terminated'))
             end_dec = t + 1
             break
 
     d = {k: z[k] for k in z.files}
-    assert sha_actions(np.asarray(d['actions_delta'], np.float32)[:n]) == src_sha, 'action stream moved'
-    old_sum = float(np.asarray(d['rewards'], np.float64)[:n].sum()) if 'rewards' in d else 0.0
-    d['rewards'] = rew
-    d['reward_ladder'] = json.dumps(dict(__import__('full_env').STAGE_REWARD))
+    old_sum = float(np.asarray(old_rew, np.float64).sum())
+    if layout == 'segment':
+        # reward[t+1] is the reward of the transition INTO state[t+1]; row 0 carries none,
+        # exactly as the source set has it.
+        out_rew = np.zeros(d['reward'].shape, np.float32)
+        out_rew[1:1 + n] = rew
+        d['reward'] = out_rew
+        assert sha_actions(np.asarray(d['action'], np.float32)[1:]) == src_sha, 'action stream moved'
+    else:
+        d['rewards'] = rew
+        assert sha_actions(np.asarray(d['actions_delta'], np.float32)[:n]) == src_sha, 'action stream moved'
+    d['rz_layout'] = layout
+    d['rz_can_dev_max_m'] = np.float64(can_dev)
+    d['rz_joint_dev_max_rad'] = np.float64(joint_dev)
+    d['reward_ladder'] = json.dumps(dict(env.stage_reward))
+    d['reward_ladder_name'] = str(env.ladder)
     d['reward_relabelled'] = 'reexecution_2026-09-10'
     d['rz_grants'] = json.dumps(grants)
     d['rz_end_reason'] = end_reason
@@ -188,34 +251,54 @@ def relabel_one(env, path, out_dir, ic_tol):
     d['rz_recorded_vs_reexecuted'] = json.dumps(agree)
     out = os.path.join(out_dir, os.path.basename(path))
     np.savez_compressed(out, **d)
-    return dict(file=os.path.basename(path), n=n, ic=how, ic_can_mm=round(d_can * 1000, 2),
-                ic_goal_mm=round(d_goal * 1000, 2), old_reward=old_sum,
+    return dict(file=os.path.basename(path), n=n, layout=layout, ic=how,
+                ic_can_mm=round(d_can * 1000, 2), ic_goal_mm=round(d_goal * 1000, 2),
+                can_dev_max_m=round(can_dev, 6), joint_dev_max_rad=round(joint_dev, 6),
+                old_reward=old_sum,
                 new_reward=float(rew.sum()), grants=grants, end_reason=end_reason,
                 end_decision=end_dec, actions_sha256=src_sha,
                 agree=agree, seconds=round(time.time() - t0, 1))
 
 
-def run_shard(args, files):
+def set_meta(in_dir, files, args):
+    """Provenance of the SOURCE set, read from repeat.json (segment sets, what both launchers
+    assert on) or from the tapes' own stamps (contract-v1 sets). Never defaulted."""
+    rj = os.path.join(in_dir, 'repeat.json')
+    if os.path.exists(rj):
+        m = json.load(open(rj))
+        assert str(m.get('scope')) == 'full', f'{rj}: scope={m.get("scope")!r}, expected full'
+        assert m.get('with_state') is True and int(m.get('state_dim') or 0) == 17, m
+        assert m.get('reward_from_tape') is True, f'{rj}: rewards must come from the tape'
+        assert int(m['action_repeat']) == 4 and abs(float(m['delta_cap']) - 0.025) < 1e-9, m
+        return dict(kind='segment', sim_variant=str(m['sim_variant']),
+                    max_sim_steps=int(args.max_sim_steps or 2400), repeat_json=m)
     z0 = np.load(files[0], allow_pickle=True)
-    sv = args.sim_variant or str(scalar(z0, 'sim_variant'))
-    max_sim = int(args.max_sim_steps or scalar(z0, 'max_sim_steps', 2400))
-    env = build_env(sv, max_sim)
+    return dict(kind='v1', sim_variant=str(scalar(z0, 'sim_variant')),
+                max_sim_steps=int(args.max_sim_steps or scalar(z0, 'max_sim_steps', 2400)),
+                repeat_json=None)
+
+
+def run_shard(args, files, meta):
+    sv = args.sim_variant or meta['sim_variant']
+    env = build_env(sv, meta['max_sim_steps'], args.ladder)
     rows = []
     for i, f in enumerate(files):
         z = np.load(f, allow_pickle=True)
-        assert str(scalar(z, 'sim_variant')) == sv, (f, scalar(z, 'sim_variant'), sv)
-        assert int(scalar(z, 'action_repeat')) == 4 and abs(float(scalar(z, 'delta_cap')) - 0.025) < 1e-9, f
-        assert str(scalar(z, 'delta_ref')) == 'target', f
+        if meta['kind'] == 'v1':     # per-tape stamps exist only on recorder tapes
+            assert str(scalar(z, 'sim_variant')) == sv, (f, scalar(z, 'sim_variant'), sv)
+            assert int(scalar(z, 'action_repeat')) == 4 and abs(float(scalar(z, 'delta_cap')) - 0.025) < 1e-9, f
+            assert str(scalar(z, 'delta_ref')) == 'target', f
         r = relabel_one(env, f, args.out, args.ic_tol)
         rows.append(r)
         print(f'[{i + 1}/{len(files)}] {r["file"]}: {r["n"]} decisions, reward {r["old_reward"]:.1f} -> '
-              f'{r["new_reward"]:.1f}, end {r["end_reason"]}@{r["end_decision"]}, grants '
-              f'{ {k: v for k, v in sorted(r["grants"].items())} } [{r["seconds"]:.0f}s]', flush=True)
+              f'{r["new_reward"]:.1f}, end {r["end_reason"]}@{r["end_decision"]}, '
+              f'can_dev {r["can_dev_max_m"] * 1000:.1f} mm / joint {r["joint_dev_max_rad"]:.5f} rad, '
+              f'grants { {k: v for k, v in sorted(r["grants"].items())} } [{r["seconds"]:.0f}s]', flush=True)
     return rows, sv
 
 
 # -------------------------------------------------------------------------------- driver
-def summarize(rows, files, in_dir, out_dir, sv):
+def summarize(rows, files, in_dir, out_dir, sv, ladder):
     sys.path.insert(0, str(REPO / 'baselines'))
     sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
     import full_env
@@ -228,22 +311,41 @@ def summarize(rows, files, in_dir, out_dir, sv):
         built=time.strftime('%Y-%m-%dT%H:%M:%S'), builder='baselines/rl/relabel_reward.py (D5 re-execution)',
         method=('re-executed through FullTaskEnv(scope=full) on the training code path; the reward column is '
                 'what the env paid, not what a classifier scored'),
-        sim_variant=sv, scope='full', contract='v1', action_repeat=4, delta_cap=0.025, delta_ref='target',
+        sim_variant=sv, scope='full', ladder=ladder, contract='v1', action_repeat=4, delta_cap=0.025,
+        delta_ref='target',
         n_tapes=len(rows), decisions_total=int(sum(r['n'] for r in rows)),
         reward_total_old=float(sum(r['old_reward'] for r in rows)),
         reward_total_new=float(sum(r['new_reward'] for r in rows)),
         tapes_granting=per_rung, end_reasons=ends,
         actions_sha256=hashlib.sha256(''.join(r['actions_sha256'] for r in
                                               sorted(rows, key=lambda x: x['file'])).encode()).hexdigest(),
-        ladder_provenance=full_env.ladder_provenance(), ladder_stamp=full_env.ladder_stamp(),
+        ladder_provenance=full_env.ladder_provenance(ladder), ladder_stamp=full_env.ladder_stamp(ladder),
+        layout=sorted({r['layout'] for r in rows}),
+        # Trajectory fidelity of the re-execution, per channel group (see relabel_one).
+        # A tape whose CAN diverges is one whose reward column describes a different
+        # trajectory from the recorded one -- the relabel must run on the hardware class the
+        # tapes were recorded on, and these numbers are how a reader checks that it did.
+        can_dev_max_m=max(r['can_dev_max_m'] for r in rows),
+        can_dev_p50_m=float(np.median([r['can_dev_max_m'] for r in rows])),
+        joint_dev_max_rad=max(r['joint_dev_max_rad'] for r in rows),
+        n_tapes_can_dev_over_1cm=sum(1 for r in rows if r['can_dev_max_m'] > 0.01),
         per_tape=sorted(rows, key=lambda r: r['file']))
     return man
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--in', dest='inp', required=True, help='source set of contract-v1 FULL-scope tapes')
-    ap.add_argument('--out', required=True, help="destination; the convention is <set>_rz")
+    ap.add_argument('--in', dest='inp', required=True,
+                    help='source set: an r2dreamer-native FULL-scope SEGMENT dir (with repeat.json -- what both '
+                         'launchers assert on, e.g. $W/demos_state_full/dHfull_all) or a contract-v1 recorder set')
+    ap.add_argument('--out', required=True,
+                    help="destination; the convention is <set>_rz for --ladder staged and <set>_rs for "
+                         "--ladder sparse. The suffix is ASSERTED against --ladder, so a sparse set can "
+                         "never be handed to a launcher expecting a staged one under a staged name.")
+    ap.add_argument('--ladder', choices=['staged', 'sparse'], default='staged',
+                    help="WHICH ladder the re-execution pays (FullTaskEnv(ladder=...)). Same code path, "
+                         "same action streams, same world -- only the reward column differs. It is "
+                         "recorded in the manifest's ladder_provenance.")
     ap.add_argument('--sim-variant', default=None, help="default: the tapes' own stamp (asserted equal across the set)")
     ap.add_argument('--max-sim-steps', type=int, default=None, help="default: the tapes' own max_sim_steps stamp")
     ap.add_argument('--ic-tol', type=float, default=0.002,
@@ -255,19 +357,26 @@ def main():
     ap.add_argument('--dry-run', action='store_true', help='print the plan and exit')
     args = ap.parse_args()
 
+    want_suffix = {'staged': '_rz', 'sparse': '_rs'}[args.ladder]
+    if not os.path.basename(os.path.normpath(args.out)).endswith(want_suffix):
+        sys.exit(f'FATAL: --ladder {args.ladder} writes a {want_suffix} set, but --out is '
+                 f'{os.path.basename(os.path.normpath(args.out))!r}. The suffix is how a launcher tells '
+                 f'the two apart; refusing to write a mislabelled set.')
     files = sorted(glob.glob(os.path.join(args.inp, '*.npz')))
     assert files, f'no npz in {args.inp}'
     if args.limit:
         files = files[:int(args.limit)]
     os.makedirs(args.out, exist_ok=True)
 
+    meta = set_meta(args.inp, files, args)
     if args.dry_run:
-        print(f'[dry] {len(files)} tapes {args.inp} -> {args.out}, procs {args.procs}')
+        print(f'[dry] {len(files)} tapes {args.inp} ({meta["kind"]} layout) -> {args.out}, '
+              f'ladder {args.ladder}, procs {args.procs}, variant {meta["sim_variant"]}')
         for f in files[:5]:
             z = np.load(f, allow_pickle=True)
-            print('   ', os.path.basename(f), 'n', scalar(z, 'n'), 'ic_uid', scalar(z, 'ic_uid'),
-                  'variant', scalar(z, 'sim_variant'), 'recorded reward',
-                  float(np.asarray(z['rewards'])[:int(scalar(z, 'n'))].sum()))
+            _s0, a, r, _ = tape_stream(z, tape_layout(z))
+            print('   ', os.path.basename(f), 'decisions', int(a.shape[0]),
+                  'recorded reward', float(np.asarray(r).sum()))
         return
 
     # ---- worker ----
@@ -275,7 +384,7 @@ def main():
         assert args.nshards and 0 <= args.shard < args.nshards
         mine = [f for i, f in enumerate(files) if i % args.nshards == args.shard]
         print(f'[shard {args.shard}/{args.nshards}] {len(mine)} tapes', flush=True)
-        rows, sv = run_shard(args, mine)
+        rows, sv = run_shard(args, mine, meta)
         json.dump(dict(rows=rows, sim_variant=sv),
                   open(os.path.join(args.out, f'_shard{args.shard}.json'), 'w'), indent=1)
         return
@@ -283,16 +392,15 @@ def main():
     # ---- driver ----
     n_proc = max(1, min(int(args.procs), MAX_PROCS, len(files)))
     if n_proc == 1:
-        rows, sv = run_shard(args, files)
+        rows, sv = run_shard(args, files, meta)
     else:
         base = [sys.executable, os.path.abspath(__file__), '--in', args.inp, '--out', args.out,
-                '--ic-tol', str(args.ic_tol)]
+                '--ladder', args.ladder, '--ic-tol', str(args.ic_tol)]
         if args.limit:
             base += ['--limit', str(args.limit)]
         if args.sim_variant:
             base += ['--sim-variant', args.sim_variant]
-        if args.max_sim_steps:
-            base += ['--max-sim-steps', str(args.max_sim_steps)]
+        base += ['--max-sim-steps', str(meta['max_sim_steps'])]
         procs = [subprocess.Popen(base + ['--shard', str(i), '--nshards', str(n_proc)])
                  for i in range(n_proc)]
         rcs = [p.wait() for p in procs]
@@ -305,7 +413,7 @@ def main():
         sv = svs.pop()
 
     assert len(rows) == len(files), (len(rows), len(files))
-    man = summarize(rows, files, args.inp, args.out, sv)
+    man = summarize(rows, files, args.inp, args.out, sv, args.ladder)
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
     print('\n' + '=' * 78)
     print(f'tapes                : {man["n_tapes"]}  ({man["decisions_total"]} decisions)')

@@ -1,8 +1,13 @@
 """FullTaskEnv: gymnasium wrapper around GenesisCanEnv for the FULL task (plan E).
 
-scope='full' runs the UNIFIED LADDER (LADDER_UNIFY_BRIEF_2026-09-10, D1/D2), one
-definition shared by {RLPD}, {r2dreamer} and {DP}, with no environment-variable gate:
-    picked +1, placed_v2 +1, contact_push +2, slide_success +4 (TERMINAL).
+scope='full' runs a UNIFIED LADDER (LADDER_UNIFY_BRIEF_2026-09-10, D1/D2), one definition
+shared by {RLPD}, {r2dreamer} and {DP}, selected by the `ladder=` CONSTRUCTOR ARGUMENT and
+never by an environment variable:
+    ladder='staged' (default)  picked +1, placed_v2 +1, contact_push +2,
+                               slide_success +4 (TERMINAL)          max return 8
+    ladder='sparse'            nested_v2 +1 (TERMINAL)              max return 1
+The two differ in reward and terminal ONLY: every logged stage, tracker diagnostic, the tip
+rule, the episode record and the observation are identical.
 The tip rule also terminates. Nothing else does -- in particular the legacy `nested`
 proxy is computed and logged but never paid and never terminal, because its clauses are
 a subset of the slide's and it used to end the episode on the first frame of the slide
@@ -66,26 +71,62 @@ import hashlib          # noqa: E402  (ladder provenance stamp, D6)
 import subprocess        # noqa: E402
 from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "one shared module")
 
-# ============================== THE LADDER (LADDER_UNIFY_BRIEF D1/D2, 2026-09-10) =======
-# ONE ladder. No environment-variable gate. `FULLENV_REWARD_X` is GONE -- the two learners
-# trained on different ladders precisely because a gate was silently inert in one of three
-# code trees (E2E_AUDIT_BRIEF §2), so the gate itself is the defect, not its default.
-# Launchers REFUSE to start when the legacy variable is set.
+# ============================== THE LADDERS (LADDER_UNIFY_BRIEF D1/D2, 2026-09-10) ======
+# No environment-variable gate, ever. `FULLENV_REWARD_X` is GONE -- the two learners trained
+# on different ladders precisely because a gate was silently inert in one of three code trees
+# (E2E_AUDIT_BRIEF §2), so the gate itself is the defect, not its default. Which ladder a run
+# uses is a CONSTRUCTOR ARGUMENT (`ladder=`), named by the launcher and carried in the
+# provenance stamp, so no run can be ambiguous about the objective it optimised.
 #
+# 'staged' (default, the D2 ladder):
 #   rung           reward  terminal   definition
 #   picked           1       no       genesis_can_env's hardened held-can flag (unchanged)
 #   placed_v2        1       no       release + shelf footprint + z-band + tilt, 10 frames
 #   contact_push     2       no       placed_v2 GRANTED + can<->goal contact + tool on the
 #                                     far side + no gripper<->goal contact  (stage_predicates)
 #   slide_success    4      YES       placed_v2 granted + pushed + nested_v2 (stage_predicates)
+#   Max return 8.0 -- the registered return_clamp 8 needs no revision.
 #
-# Max episode return 8.0 -- unchanged, so the registered return_clamp 8 needs no revision.
+# 'sparse' (user, 2026-09-11): ONE rung, the outcome itself.
+#   nested_v2        1      YES       the state-only arrived-and-at-rest predicate (D3)
+#   Max return 1.0. NOTE the return clamp must follow the ladder: r2dreamer's clamp is the
+#   task's max return, so a sparse run needs 1.0, not 8.0.
+#
+# The two ladders differ in REWARD AND TERMINAL ONLY. Every logged stage, every tracker
+# diagnostic, the tip rule, the episode record and the observation are identical, so an
+# arm-vs-arm comparison across ladders is a comparison of objectives and nothing else.
+#
 # `tipped` terminates with its existing penalty (0.0 outside scope='place'). NOTHING ELSE
 # TERMINATES: the (x) batch terminated on the UNPAID `nested` proxy, whose clauses are a
 # subset of the slide's, so the episode ended on the first frame of the slide window and
 # the +4 rung could never be paid in training (E2E_AUDIT_BRIEF defect 5).
-STAGE_REWARD = dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0)
-TERMINAL_STAGES = ('slide_success',)            # plus the tip rule; see _step_once
+LADDERS = {
+    'staged': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0),
+                   terminal=('slide_success',)),
+    'sparse': dict(stage_reward=dict(nested_v2=1.0),
+                   terminal=('nested_v2',)),
+}
+LADDER_DEFAULT = 'staged'
+
+
+def ladder_spec(ladder=LADDER_DEFAULT):
+    """(stage_reward dict, terminal-stage tuple) for a named ladder. Unknown names RAISE --
+    a typo must not silently fall back to the default objective."""
+    if ladder not in LADDERS:
+        raise ValueError(f'unknown ladder {ladder!r}; choose from {sorted(LADDERS)}')
+    spec = LADDERS[ladder]
+    return dict(spec['stage_reward']), tuple(spec['terminal'])
+
+
+def max_return(ladder=LADDER_DEFAULT):
+    """Maximum per-episode return. r2dreamer's return_clamp MUST equal this."""
+    return float(sum(ladder_spec(ladder)[0].values()))
+
+
+# Module-level view of the DEFAULT ladder. Kept because callers import it by name
+# (terminal_from_tape's pick reward, evaluator banners); a run's actual ladder is
+# env.stage_reward / env.terminal_stages, which is what the reward loop reads.
+STAGE_REWARD, TERMINAL_STAGES = ladder_spec(LADDER_DEFAULT)
 # Computed, logged, and entered into `_granted` -- but paying NOTHING (D2/D3). Kept for
 # continuity with every stored row: `nested` is the withdrawn training proxy, `placed` the
 # stale base-world band, `contact` the carry-in predicate, `nested_v2` its replacement.
@@ -117,24 +158,20 @@ def _git_describe():
 _PROV_CACHE = {}
 
 
-def ladder_provenance(shaping=None):
+def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None):
     """D6: the stamp that says WHICH ladder and WHICH code produced a number.
 
-    `shaping` is the goalward-shaping configuration of the env being stamped (None from a
-    module-level call). Every trainer writes this to <logdir>/ladder_provenance.json and
-    every evaluator into metrics.json; a table builder REFUSES to merge rows whose stamps
-    differ. Motivation: three trees diverged in both directions and no run stamped the code
-    it loaded, so a gate could be set at submission and inert in the job (audit brief §2/§4).
+    `ladder` names the reward/terminal structure; `shaping` is the goalward-shaping
+    configuration of the env being stamped (None when off). Every trainer writes this to
+    <logdir>/ladder_provenance.json and every evaluator into metrics.json; a table builder
+    REFUSES to merge rows whose stamps differ. Motivation: three trees diverged in both
+    directions and no run stamped the code it loaded, so a gate could be set at submission
+    and inert in the job (audit brief §2/§4).
     """
-    key = 'base'
-    if key not in _PROV_CACHE:
+    stage_reward, terminal = ladder_spec(ladder)
+    if 'code' not in _PROV_CACHE:
         here = pl.Path(__file__).resolve()
-        _PROV_CACHE[key] = dict(
-            ladder='unified-2026-09-10',
-            stage_reward=dict(STAGE_REWARD),
-            terminal_stages=list(TERMINAL_STAGES) + ['tipped'],
-            logged_stages=list(LOGGED_STAGES),
-            max_return=float(sum(STAGE_REWARD.values())),
+        _PROV_CACHE['code'] = dict(
             sha256=dict(
                 full_env=_sha256_file(here),
                 genesis_can_env=_sha256_file(REPO / 'baselines' / 'genesis_can_env.py'),
@@ -143,21 +180,30 @@ def ladder_provenance(shaping=None):
             git=_git_describe(),
             repo=str(REPO),
         )
-    prov = dict(_PROV_CACHE[key])
-    prov['sha256'] = dict(prov['sha256'])
-    prov['shaping'] = (dict(shaping) if shaping else None)
-    return prov
+    code = _PROV_CACHE['code']
+    return dict(
+        ladder=str(ladder),
+        spec_version='unified-2026-09-10',
+        stage_reward=stage_reward,
+        terminal_stages=list(terminal) + ['tipped'],
+        logged_stages=list(LOGGED_STAGES),
+        max_return=max_return(ladder),
+        return_clamp_required=max_return(ladder),   # r2dreamer's clamp MUST equal this
+        shaping=(dict(shaping) if shaping else None),
+        sha256=dict(code['sha256']), git=code['git'], repo=code['repo'],
+    )
 
 
-def ladder_stamp(shaping=None):
+def ladder_stamp(ladder=LADDER_DEFAULT, shaping=None):
     """One-line form of ladder_provenance() -- what the `[ladder]` log line prints and what
     a table builder compares. Two rows with the same stamp ran the same ladder AND the same
     predicate/env code."""
-    p = ladder_provenance(shaping)
+    p = ladder_provenance(ladder, shaping)
     rungs = ' '.join(f'{k}={v:g}' for k, v in p['stage_reward'].items())
     sh = 'off' if not p['shaping'] else ('goalward scale=%g gamma=%g' % (
         p['shaping'].get('scale'), p['shaping'].get('gamma')))
-    return (f"{p['ladder']} | {rungs} | terminal={'+'.join(p['terminal_stages'])} | shaping={sh} | "
+    return (f"{p['spec_version']} | ladder={p['ladder']} | {rungs} | max_return={p['max_return']:g} | "
+            f"terminal={'+'.join(p['terminal_stages'])} | shaping={sh} | "
             f"full_env={p['sha256']['full_env'][:12]} genesis_can_env={p['sha256']['genesis_can_env'][:12]} "
             f"stage_predicates={p['sha256']['stage_predicates'][:12]} | git={p['git']}")
 
@@ -413,9 +459,20 @@ class FullTaskEnv(gym.Env):
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True,
+                 ladder=LADDER_DEFAULT,
                  goalward_shaping=False, goalward_gamma=None, goalward_scale=None,
                  quiet_ladder=False):
         super().__init__()
+        # --- which ladder (user, 2026-09-11). A CONSTRUCTOR ARGUMENT, never an env var: the
+        # reward structure is the one thing that must never be selectable by something a job
+        # can silently fail to receive. 'staged' is the D2 ladder; 'sparse' pays only the
+        # outcome (nested_v2 = 1) and terminates on it. The two differ in reward and terminal
+        # ONLY -- every logged stage, diagnostic and observation is identical.
+        self.ladder = str(ladder)
+        self.stage_reward, self.terminal_stages = ladder_spec(self.ladder)
+        assert self.ladder == LADDER_DEFAULT or scope == 'full', (
+            f'ladder={self.ladder!r} is a scope=full lever (the phase scopes pay exactly '
+            f'their own terminal); got scope={scope!r}')
         # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
         # authoritative validation with the full explanation runs below, after the scope fields are set.
         if scope == 'contact':
@@ -620,7 +677,7 @@ class FullTaskEnv(gym.Env):
         # not stamp the code it loaded is how a gate can be set at submission and inert in
         # the job (audit brief §2/§4).
         if not quiet_ladder:
-            print('[ladder] ' + ladder_stamp(self.shaping_config()), flush=True)
+            print('[ladder] ' + ladder_stamp(self.ladder, self.shaping_config()), flush=True)
 
     def shaping_config(self):
         """The goalward-shaping configuration, for the provenance stamp. None when off."""
@@ -631,9 +688,9 @@ class FullTaskEnv(gym.Env):
 
     def provenance(self):
         """This env's ladder provenance (D6) -- what trainers and evaluators write out."""
-        p = ladder_provenance(self.shaping_config())
+        p = ladder_provenance(self.ladder, self.shaping_config())
         p['scope'] = self.scope
-        p['stamp'] = ladder_stamp(self.shaping_config())
+        p['stamp'] = ladder_stamp(self.ladder, self.shaping_config())
         return p
 
     def _world_shelf_top(self):
@@ -1035,7 +1092,9 @@ class FullTaskEnv(gym.Env):
                     and tilt_deg(np_(w['goal'].get_quat())) < 20:
                 info['nested'] = True
         reward = 0.0
-        for stage, r in STAGE_REWARD.items():
+        # self.stage_reward, NOT the module-level STAGE_REWARD: which rungs pay is this
+        # env's `ladder` argument. Under ladder='sparse' this dict is {nested_v2: 1.0}.
+        for stage, r in self.stage_reward.items():
             if info.get(stage) and stage not in self._granted:
                 # scope='place' pays ONLY the +1 placed_v2 terminal (below); stage
                 # grants are still tracked for logging (r2dreamer adapter reads
@@ -1184,11 +1243,12 @@ class FullTaskEnv(gym.Env):
         # scope='full' placed_v2 / tracker now run at the TOP of this method
         # (_full_scope_predicates), because the ladder conditions on them.
         if self.scope == 'full':
-            # THE ONLY full-scope terminal besides the tip rule (brief D2): the PAID top
-            # rung. The legacy `nested` proxy no longer terminates anything -- its clauses
-            # are a subset of the slide's, so it used to end the episode on the first frame
-            # of the slide window and the +4 could never be paid (audit brief defect 5).
-            terminated = bool(info.get('slide_success'))
+            # THE ONLY full-scope terminals besides the tip rule (brief D2): this ladder's
+            # own terminal stage(s), which are PAID by construction -- 'slide_success' under
+            # staged, 'nested_v2' under sparse. The legacy `nested` proxy terminates nothing:
+            # its clauses are a subset of the slide's, so it used to end the episode on the
+            # first frame of the slide window and the +4 could never be paid (defect 5).
+            terminated = any(bool(info.get(s)) for s in self.terminal_stages)
         else:
             terminated = bool(info.get('nested')) and self.scope != 'place'
         # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --

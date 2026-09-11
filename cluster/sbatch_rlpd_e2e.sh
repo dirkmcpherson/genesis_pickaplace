@@ -7,10 +7,12 @@
 # cluster/e2e_eval_cells.sh on the LAST checkpoint.
 #
 # Submit (GENESIS_PICKAPLACE_ROOT is REQUIRED -- see the note at `set -eo pipefail`):
-#   for S in $(seq 0 7); do GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified ARM=dH  SEED=$S \
+#   for S in $(seq 0 7); do GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified LADDER=staged ARM=dH  SEED=$S \
 #       sbatch -J e2e_rlpd_dH_s$S  cluster/sbatch_rlpd_e2e.sh; done
-#   for S in $(seq 0 7); do GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified ARM=dDP SEED=$S \
-#       sbatch -J e2e_rlpd_dDP_s$S cluster/sbatch_rlpd_e2e.sh; done
+#   for S in $(seq 0 7); do GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified LADDER=staged ARM=dDPfirst SEED=$S \
+#       sbatch -J e2e_rlpd_dM_s$S cluster/sbatch_rlpd_e2e.sh; done
+#   LADDER=sparse is the one-rung arm (nested_v2 = 1, terminal). Its demo set must be the
+#   matching `_rs` relabel, not the `_rz` one -- buffer and env must pay the same thing.
 # The unified ladder (picked 1 / placed_v2 1 / contact_push 2 / slide_success 4) is compiled
 # into the tree, not selected by an env var; FULLENV_REWARD_X / FULLENV_EPISODE_RECORD are
 # REFUSED. The `[ladder] ...` line printed below is the record of which ladder ran.
@@ -63,7 +65,12 @@ for G in FULLENV_REWARD_X FULLENV_EPISODE_RECORD; do
 done
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 W=${W:-/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03}
-ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
+ARM=${ARM:?set ARM (dH | dDP | dDPfirst)}; SEED=${SEED:?set SEED}
+# LADDER IS REQUIRED (user 2026-09-11). Which objective a run optimises is never a default:
+# the two learners trained on different ladders because a flag could be absent and nothing
+# said so. It is passed to the trainer explicitly and printed in the [ladder] stamp below.
+LADDER=${LADDER:?set LADDER (staged | sparse) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse) ;; *) echo "FATAL: LADDER must be staged | sparse (got $LADDER)"; exit 1 ;; esac
 STEPS=${STEPS:-250000}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; GAMMA=${GAMMA:-0.99}
 ACTION_REPEAT=4; TRAIN_HORIZON=1200; EVAL_HORIZON=1200; DEVICE=${DEVICE:-cuda}
 case "$ARM" in
@@ -111,7 +118,7 @@ print(h.hexdigest()[:16])
 PY
 ) || exit 1
 
-TRAIN_ARGS=(--steps "$STEPS" --scope full --demo-format segment --demo-dir "$DEMO"
+TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" --demo-format segment --demo-dir "$DEMO"
   --action-mode delta_joint --delta-ref target --action-repeat "$ACTION_REPEAT"
   --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON" --eval-freq 0
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off
@@ -121,7 +128,7 @@ TRAIN_ARGS=(--steps "$STEPS" --scope full --demo-format segment --demo-dir "$DEM
   --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper --seed "$SEED" --device "$DEVICE")
 REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=full action_mode=delta_joint delta_ref=target action_repeat="$ACTION_REPEAT"
            train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON" gamma="$GAMMA" backup_entropy=off per_member_ln=off utd=10
-           ensemble_size=10 subset_size=2 demo_batch=128 reward=staged_sparse demo_format=segment demo_sha="$DEMO_SHA" wave="$WAVE"
+           ensemble_size=10 subset_size=2 demo_batch=128 ladder="$LADDER" demo_format=segment demo_sha="$DEMO_SHA" wave="$WAVE"
            sim_variant="$SIM_VARIANT" entry_bank=none phase_sparse=off amendment=n)
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS(decisions = $((STEPS * ACTION_REPEAT)) sim steps) DEMO=$DEMO sha=$DEMO_SHA OUT=$OUT NODE=$NODE_CLASS"
@@ -145,15 +152,16 @@ python -c 'import stable_baselines3' 2>/dev/null || pip install --no-input 'stab
 # that works; a stamp you cannot read in the log proves nothing. This prints the ladder and
 # the sha256 of the code that defines it, from the tree this job actually imports. It is
 # also written to $OUT/ladder_provenance.json by the trainer itself.
-python - <<'PYL' || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 1; }
+LADDER=$LADDER python - <<'PYL' || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 1; }
 import os, sys
 R = os.environ['GENESIS_PICKAPLACE_ROOT']
 sys.path.insert(0, R + '/baselines'); sys.path.insert(0, R + '/baselines/rl')
 sys.path.insert(0, R + '/can_pos_recovery')
 import full_env
 full_env.refuse_legacy_gates()
-print('[ladder]', full_env.ladder_stamp())
-assert sum(full_env.STAGE_REWARD.values()) == 8.0, full_env.STAGE_REWARD
+L = os.environ['LADDER']
+print('[ladder]', full_env.ladder_stamp(L))
+print('[ladder] max_return', full_env.max_return(L))
 PYL
 python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}"
 FINAL_CK=$OUT/rlpd_final.zip
