@@ -1105,7 +1105,7 @@ all four `repeat.json` manifests exist, and that the filesystem is above the reg
 floor. Every job id, its full command and the `[ladder]` line from its own log go in
 `paper/LADDER_PILOT_LOG_2026-09-11.md`.
 
-### (z).10 Eight defects found and fixed around the merge and the submission
+### (z).10 Nine defects found and fixed around the merge and the submission
 
 Seven of the eight were found by RUNNING the thing, not by reading it. Two would have stopped
 every job at the gate; two would have made a run lie about its own objective; one killed a
@@ -1166,6 +1166,20 @@ launched at the end of a job, so the fix reaches every pilot run.
    whose logdir, config and training stamp all say sparse. The ladder now comes from
    `cfg.env.ladder`, the source is printed, and the env's own provenance stamp is asserted against
    the config before any episode runs. (r2dreamer `f1c134c`)
+9. **The outcome taxonomy's success was a hardcoded `slide_success` in BOTH evaluators.** That is
+   the paid terminal of the `staged` ladder only; under `sparse` it is `nested_v2`, so every sparse
+   success that did not also satisfy `pushed` was recorded as a **`timeout`** — an arm's outcome
+   column contradicting its own stage column, in a project where `timeout` is already a residual
+   label. **The stage columns were never affected** (they are read from the env's sticky grants, so
+   `nested_v2` — the sparse arm's statistic of record, and what P7 is read from — was correct
+   throughout); this is the outcome / `success_rate` half only. The terminal now comes from the
+   env's own D6 provenance stamp in both evaluators, and `eval_e2e.py` writes it into
+   `metrics.json` as `terminal_stage` so a reader can see which taxonomy a row used.
+   (`7913caa`, r2dreamer `903c6a2`)
+
+Defects 8 and 9 both landed AFTER the 16 jobs were submitted and BEFORE any of them started; all
+16 were still PENDING, so `$LAB/gp_unified` was fast-forwarded and every pilot job runs the fixed
+code and stamps one `git describe`.
 
 `pytest` was also run on the cluster for the first time (Lane 2 could not): **37 passed**
 (`test_ladder_unified.py`, `test_stage_predicates.py`, `test_terminal_guard.py`).
