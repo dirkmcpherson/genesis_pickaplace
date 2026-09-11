@@ -71,6 +71,17 @@ ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'neste
                      "two disagree. A checkpoint with no ladder in its sidecar (trained before the argument "
                      "existed) falls back to 'staged' and says so.")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
+ap.add_argument('--records-out', default=None,
+                help="Write ONE PER-ENV-FRAME STAGE RECORD per episode into this directory, in the SAME format "
+                     "baselines/rl/relabel_reward.py --records-out writes for demonstration tapes (its FrameRecorder "
+                     "is imported, not re-implemented, so there is one format and one reader). A recorded episode is "
+                     "re-scorable OFFLINE under any ladder with relabel_reward.offline_episode -- the policy question "
+                     "that Lane 9's rollouts could not answer, because they stored outcomes and not trajectories. "
+                     "~50 KB per episode. DEFAULT OFF, and off it changes nothing: the recorder wraps "
+                     "FullTaskEnv._step_once on the INSTANCE and only reads post-step state, so the rollout it "
+                     "records is the rollout that would have run. NOT a never-terminate recording: the episode still "
+                     "ends where the ladder it ran under ends it, so a ladder whose terminal comes LATER than this "
+                     "one's is right-censored on the episodes that terminated (see PILOT_RESCORE_2026-09-11).")
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
                 help='EPISODE ISOLATION (coordinator 2026-09-07): evaluate ONLY the k-th start of the (already '
@@ -310,6 +321,25 @@ else:
 # ---- episodes: one per start, in order ----
 import cv2   # noqa: E402
 OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
+# ---- stage records (optional): the DEMONSTRATION-side recorder, reused verbatim -------------
+# One format, one reader. `FrameRecorder` wraps `FullTaskEnv._step_once` on the instance and
+# appends one row per ENV FRAME of every input StageTracker and the reward loop consume;
+# `relabel_reward.offline_episode` replays that record through the SAME LadderAccountant the env
+# runs, in pure numpy. Importing them (rather than copying) is what makes a policy episode and a
+# demonstration tape scoreable by one code path.
+REC_DIR = None
+if args.records_out:
+    from relabel_reward import FrameRecorder, grip_phys_from_action, _cpu_stamp   # noqa: E402
+    REC_DIR = pl.Path(args.records_out); REC_DIR.mkdir(parents=True, exist_ok=True)
+    print(f'[eval-e2e] stage records -> {REC_DIR} (one npz per episode, '
+          f'relabel_reward format; re-score with baselines/diagnostics/pilot_rescore.py)', flush=True)
+rec_rows = []
+
+
+def _ic_json(ic):
+    """The episode's start, JSON-safe (numpy arrays -> lists). Same normalisation per_episode['ic']
+    already does; factored out so the record and the metrics row cannot describe different starts."""
+    return {kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()}
 # Stage columns (LADDER_UNIFY_BRIEF D3/D4, 2026-09-10). HEADLINE = the unified ladder's own
 # rungs plus nested_v2 (which REPLACES nested_proxy in every log, table and figure) and the
 # settled nested_honest, which stays as the post-hoc REFERENCE column nested_v2 is validated
@@ -345,13 +375,29 @@ for k, ic in enumerate(ics):
     if args.video:
         frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
     done = False; t = 0; ep_r = 0.0; info = {}
-    while not done:
-        a = act(np.asarray(obs, np.float32))
-        obs, r, term, trunc, info = env.step(a)
-        ep_r += float(r); t += 1
-        if args.video:
-            frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
-        done = bool(term or trunc)
+    rec = FrameRecorder(env) if REC_DIR is not None else None
+    end_reason = 'truncated'
+    try:
+        while not done:
+            a = act(np.asarray(obs, np.float32))
+            if rec is not None:
+                # the decision index and the PHYSICAL grip command this decision will apply --
+                # the two things the per-frame wrapper cannot read back off the env.
+                rec.new_decision(t, grip_phys_from_action(a))
+            obs, r, term, trunc, info = env.step(a)
+            ep_r += float(r); t += 1
+            if args.video:
+                frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
+            done = bool(term or trunc)
+            if done:
+                end_reason = ('tipped' if info.get('tipped') else
+                              (next((s for s in env.terminal_stages
+                                     if s != 'tipped' and info.get(s)), None)
+                               or ('truncated' if trunc else 'terminated')))
+        rec_arrays = rec.arrays() if rec is not None else None
+    finally:
+        if rec is not None:
+            rec.detach()
     # The IN-EPISODE slide_success is now the statistic (D4): it is the env's own PAID,
     # TERMINAL rung, decided by the shared stage tracker during the episode. The post-episode
     # settle still runs, for two reasons and two only: `nested_honest` is the reference
@@ -389,6 +435,32 @@ for k, ic in enumerate(ics):
         stage_counts[s] += int(st[s])
     route = end.get('slide_route')
     routes[str(route)] = routes.get(str(route), 0) + 1
+    rec_path = None
+    if REC_DIR is not None:
+        # meta mirrors relabel_reward.record_one's, with the tape identity replaced by the
+        # POLICY identity (checkpoint / ic / seed / mode). `shelf_top_z` and `max_steps` are
+        # what offline_episode reads back; the live stage columns are stamped so an offline
+        # re-score can be checked against the run that produced it.
+        rec_path = str(REC_DIR / f'ep{IC_OFFSET + k}_uid{uid if uid is not None else "rnd"}.npz')
+        _meta = dict(
+            kind='policy_rollout', layout='policy_rollout', checkpoint=str(ck), policy_kind=args.kind,
+            arm=(args.arm or ''), tag=(args.tag or ''), mode=args.mode, seed=int(args.seed),
+            ic_file=str(args.ic_file), ic_set=str(args.ic_set), ep=int(IC_OFFSET + k), order=int(k),
+            uid=(-1 if uid is None else int(uid)), ic=json.dumps(_ic_json(ic)),
+            n_decisions=int(t), action_repeat=int(env.action_repeat), max_steps=int(env.max_steps),
+            shelf_top_z=float(env.shelf_top_z), sim_variant=str(args.sim_variant),
+            reward_recorded_total=float(ep_r), end_reason=str(end_reason),
+            nested_honest=bool(end['nested']), slide_success_settle=bool(end['slide_success']),
+            slide_route=str(route),
+            record_ladder=str(env.ladder), never_terminate=False,
+            live_stages=json.dumps({s: bool(st[s]) for s in STAGES}),
+            node=json.dumps(_cpu_stamp()), provenance=json.dumps(env.provenance()))
+        np.savez_compressed(rec_path, **rec_arrays,
+                            **{kk: np.asarray(vv) for kk, vv in _meta.items()})
+        rec_rows.append(dict(file=os.path.basename(rec_path), ep=int(IC_OFFSET + k),
+                             uid=(None if uid is None else int(uid)), n_decisions=int(t),
+                             frames=int(rec_arrays['dec'].shape[0]), end_reason=str(end_reason),
+                             reward=float(ep_r), nested_honest=bool(end['nested'])))
     vid = None
     if args.video and frames:
         vid = str(OUT / f'ep{IC_OFFSET + k}_uid{uid if uid is not None else "rnd"}_{"slide" if st["slide_success"] else outcome}.mp4')
@@ -402,9 +474,12 @@ for k, ic in enumerate(ics):
     results.append(dict(ep=IC_OFFSET + k, order=k, node=socket.gethostname(), pid=os.getpid(),
                         **{k: HW[k] for k in ('cpu_model', 'isa', 'avx512f', 'cpu_cores_physical', 'cpu_sockets',
                                               'cpu_logical', 'cpu_affinity', 'torch_num_threads', 'omp_num_threads')},
-                        ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
+                        ic=_ic_json(ic),
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
-                        slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
+                        slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st,
+                        # present ONLY when --records-out is given, so a cell produced without it is
+                        # byte-for-byte what it was before the option existed.
+                        **({'record': rec_path} if REC_DIR is not None else {})))
     print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome} slide={int(st["slide_success"])} '
           f'nested_v2={int(st["nested_v2"])} nestedH={int(st["nested_honest"])} '
           f'push={int(st["contact_push"])} placed_v2={int(st["placed_v2"])} picked={int(st["picked"])} '
@@ -466,6 +541,26 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                node=dict(hostname=socket.gethostname(), slurm_job_id=os.environ.get('SLURM_JOB_ID'), slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
                          cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES')), git=git, sidecar=str(sc_path),
                per_episode=results)
+if REC_DIR is not None:
+    summary['records_out'] = str(REC_DIR)
+    (REC_DIR / 'manifest.json').write_text(json.dumps(dict(
+        kind='stage_records', source='policy_rollout',
+        builder='baselines/eval_e2e.py --records-out',
+        method=('one row per ENV FRAME of every input the stage predicates and the reward loop consume, '
+                'captured by relabel_reward.FrameRecorder during the rollout that produced this cell. '
+                'The episode ends where the ladder it RAN under ends it (termination NOT suppressed), so a '
+                'ladder whose terminal comes later is right-censored on terminated episodes.'),
+        cell=str(OUT), checkpoint=str(ck), kind_policy=args.kind, arm=args.arm, tag=args.tag,
+        mode=args.mode, seed=args.seed, ic_file=str(args.ic_file), ic_set=str(args.ic_set),
+        sim_variant=args.sim_variant, record_ladder=str(env.ladder), never_terminate=False,
+        max_steps=int(env.max_steps), action_repeat=REPEAT, shelf_top_z=float(env.shelf_top_z),
+        ladder_provenance=LADDER, n_episodes=len(rec_rows),
+        frames_total=int(sum(r['frames'] for r in rec_rows)),
+        decisions_total=int(sum(r['n_decisions'] for r in rec_rows)),
+        node=_cpu_stamp(),
+        hardware_caveat=('Genesis is not bit-identical across CPU classes; a record made on one class '
+                         'does not reproduce a cell made on another.'),
+        per_episode=rec_rows), indent=1))
 (OUT / 'metrics.json').write_text(json.dumps(summary, indent=1))
 print(f'\n[eval-e2e] {len(results)} episodes ({args.mode}, {args.ic_set}): '
       + '  '.join(f'{s} {stage_counts[s]}/{len(results)}' for s in HEADLINE_STAGES)
