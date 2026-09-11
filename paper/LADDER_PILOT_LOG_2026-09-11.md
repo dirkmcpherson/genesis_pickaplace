@@ -189,6 +189,13 @@ in amendment (z) §(z).9. Run dirs: {RLPD}
 `$LAB/gp_unified/e2e_rlpd_<jobid>.out`; {r2dreamer}
 `$W/runs/full_r2d_state_<set>_s<seed>` with logs `$W/slurm/lz_r2_<ladder>_<arm>_s<seed>_<jobid>.out`.
 
+**The cluster tree is PINNED at the registration commit `877eb2b` for the duration of the pilot.**
+Later commits on this branch are documentation only and are deliberately NOT pulled into
+`$LAB/gp_unified`: pulling would change `git describe` in the stamp, so jobs that start after the
+pull would carry a different `git=` suffix from jobs that started before, for no gain. Pull only
+when the pilot has finished, or when a code fix is needed — and if a code fix IS needed mid-pilot,
+say which jobs ran which commit.
+
 **Pick up with** `squeue -u jstale02 -o "%.10i %.24j %.9T %.6M %R" | grep lz_` and, once a job
 starts, `grep -h '^\[ladder\]' <its log>` to record its stamp here.
 
