@@ -1105,12 +1105,15 @@ all four `repeat.json` manifests exist, and that the filesystem is above the reg
 floor. Every job id, its full command and the `[ladder]` line from its own log go in
 `paper/LADDER_PILOT_LOG_2026-09-11.md`.
 
-### (z).10 Seven defects found and fixed between the merge and the submission
+### (z).10 Eight defects found and fixed around the merge and the submission
 
-Six of the seven were found by RUNNING the thing, not by reading it, and all seven are committed
-before any pilot job. Two would have stopped every job at the gate; two would have made a run lie
-about its own objective; one killed a training run three minutes in; and two would have let an arm
-train to its full budget and then produce no cell at all.
+Seven of the eight were found by RUNNING the thing, not by reading it. Two would have stopped
+every job at the gate; two would have made a run lie about its own objective; one killed a
+training run three minutes in; two would have let an arm train to its full budget and then produce
+no cell at all; and the last would have produced eight plausible, wrong cells. The first seven are
+committed before any pilot job; **the eighth (below) was found AFTER submission, from the smoke's
+own written cell, and fixed before any pilot job started** — the evaluator is a separate process
+launched at the end of a job, so the fix reaches every pilot run.
 
 1. **Relabelled sets had no `repeat.json`.** `relabel_reward.py` wrote only `manifest.json`, which
    NEITHER launcher reads. Both gate on `<set>/repeat.json`. Every pilot job would have exited at
@@ -1152,6 +1155,17 @@ train to its full budget and then produce no cell at all.
    episodes. All eight {r2dreamer} pilot cells would have been lost. Both quantities (an outcome
    rate over the terminal taxonomy, and a stage-grant rate) are now kept under names that cannot
    collide. Found by the staged smoke, job 3538337. (r2dreamer `197a1a3`)
+
+8. **The world-model evaluator built a STAGED environment for a SPARSE run.**
+   `eval_genesis.py` constructed `GenesisPick(...)` without `ladder=`, so it took the constructor
+   default. A sparse policy would have been rolled out under a different terminal
+   (`slide_success` rather than `nested_v2`) and a different reward from the one it optimised —
+   all eight sparse {r2dreamer} cells wrong, and wrong in the quiet way, with a plausible number
+   in every column. **Caught by the D6 stamp doing exactly its job**: the sparse smoke's own
+   `fresh_eval_hold15_sample/metrics.json` carries `ladder: staged, max_return: 8.0` on a run
+   whose logdir, config and training stamp all say sparse. The ladder now comes from
+   `cfg.env.ladder`, the source is printed, and the env's own provenance stamp is asserted against
+   the config before any episode runs. (r2dreamer `f1c134c`)
 
 `pytest` was also run on the cluster for the first time (Lane 2 could not): **37 passed**
 (`test_ladder_unified.py`, `test_stage_predicates.py`, `test_terminal_guard.py`).
