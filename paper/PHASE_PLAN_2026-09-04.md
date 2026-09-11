@@ -1394,10 +1394,25 @@ against 7.80 and 0 at 0.10 m — a human slide should earn the full ramp).
 **Tip rule (Lane 6, `paper/TIP_RULE_2026-09-11.md`), applied to EVERY run of this batch:**
 threshold 60° and termination unchanged (0 of 25 tipped demonstration tapes recovers at any
 threshold; a free can passes its tipping point at ~33°); the guard `grip cmd < 0.3` is replaced
-by the tracker's `not in_hand` sustained 4 env frames (in-hand firings on demos 6 → 0, missed
-flat cans 29 → 2, cost 2 reward on one tape). Because this changes `tipped` and termination for
+by the tracker's `not in_hand`: the episode ends when the CONJUNCTION `tilt > 60° ∧ not in_hand`
+has held for 4 consecutive env frames (that is what Lane 6 measured and what reproduces its
+counts; "not in_hand sustained 4 frames" alone differs on 1 machine tape of 146). Implemented as
+the explicit, stamped constructor argument `tip_guard='not_in_hand'` (`paper/TIP_GUARD_IMPL_2026-09-11.md`;
+class default stays `'grip'` so every prior run is bit-identical); on the 146 demonstrations,
+from Lane 7's stage records: in-hand firings 6 → 0, missed flat cans 29 → 2, recoveries lost 0,
+tapes ending `tipped` 25 → 46, cost 2 reward on one tape (human 274), and the `home`-paying
+tapes are the same tapes under both guards. Because this changes `tipped` and termination for
 all arms, a CONTROL arm runs the pilot's `staged` ladder with the new guard ({RLPD} 2 v 2) so
-the guard's effect is separable from the ladder's.
+the guard's effect is separable from the ladder's. Demo-set naming follows
+`relabel_reward.py`'s suffix map (the sets for this batch are nested_ramp / nested_sparse with
+`far_release` OFF and `tip_guard=not_in_hand`; the exact directory names are recorded in the
+pilot log, not assumed here). Ruling on the relabel's `is_terminal`: the D5 rule stands — every
+tape keeps its full action stream (the action-hash gate) with `is_terminal` on its last row, even
+where the new guard would have ended the episode earlier (46 tapes, median 88 decisions earlier);
+the post-terminal rows are zero-reward and are disclosed here, not removed. Known and not fixed:
+`eval_genesis.py` never passes `far_release` to the adapter (every {r2dreamer} cell scores
+`far_release=False`); irrelevant for this batch (`far_release` OFF) and must be fixed before any
+`far_release` run.
 
 **Batch (registered here; submit only after both smokes stamp identically and the `_rh`/`_rn`
 sets exist with action sha256 identical to the sources):**
