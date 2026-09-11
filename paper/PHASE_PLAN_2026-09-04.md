@@ -1453,3 +1453,31 @@ cells will be re-scored with `slide_event`/`home` from stage records before bein
 (4) Lane 5's `placed_only`/`push_no_nest` boundary used that predicate, so 8 human
 `slide_event` firings called false positives are unadjudicated. (5) Demo counts above were made
 on a 32-core AVX2 box; cluster (64-core) regeneration is P-aa-7.
+
+### (aa) REVISION 1 — `nested_ramp` v2 (2026-09-11 evening, BEFORE submission)
+
+**Why.** On 600 sampled {RLPD} policy rollouts (`paper/PILOT_RESCORE_2026-09-11.md`), the
+checkpoint scoring highest per episode under the v1 ramp (`dDPfirst_s920`, 2.14 of 9) never
+arrives: a gripper withdrawing straight back from a set-down passes through the far-side band and
+collects the `farside` +1 (Lane 7 disclosure 7), so "place and back off" earned 3 of 9 with no push.
+
+**Change (`baselines/rl/full_env.py` `LADDERS['nested_ramp']`, lane 12c, commit 266998a):**
+`farside` becomes a LOGGED prerequisite that pays nothing; its +1 folds into the slide ramp, which
+pays **+3 × min(1, slide_gain / 0.05 m)** on new minima and requires `farside`; picked 1,
+placed_v2 1, `home` +4 terminal; max return 9 unchanged; `requires` unchanged (home needs
+farside → slide_event). Stamp: `picked=1 placed_v2=1 home=4 ramp:slide_gain_m=3/0.05m`. Tests:
+withdrawal-only pays exactly 2.0; a 3 cm far-side push pays 3.8; 5 cm + arrival pays 9.0
+(`test_10g`); 68/68.
+
+**Measured (this box, 32-core; regenerate on 64-core before quotation, P-aa-7):** demonstrations
+from the stage records — {human 74} Σ 215.9 (v1: 235.9), {machine 72} Σ 217.8; the 13 human /
+14 machine sim-slide tapes pay mean 8.20 / 8.08 of 9 (min 6.6 / 6.8; 4/13 and 6/14 saturate);
+`nested_drop` tapes pay exactly 2.0. Policy rollouts (Lane 11's 600 records): `dDPfirst_s920`
+mean 2.21 → **1.61**, i.e. onto its own picked+placed level (1.50) — the exploit is closed;
+predicates and terminals byte-identical before/after (only the reward column moves).
+**Disclosed ladder property, unchanged by this revision:** `home` fires at arrival, which can
+precede the ramp saturating its 5 cm span, so arriving episodes pay 6.8–8.5, not always 9 (the
+four `dH_s901` `home` episodes: 6.83–8.51). `paper/LADDER_N_RAMP_V2_2026-09-11.md`.
+
+Predictions P-aa-2…7 stand as written; P-aa-3 now reads "shows `slide_gain_m > 0`", which under v2
+is also the first paid event past placement.
