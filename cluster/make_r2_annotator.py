@@ -5,10 +5,24 @@ A copy, not an edit: eval_genesis.py is read at runtime by in-flight eval stages
 per-decision snapshot of the SAME union the evaluator itself scores with (line ~369,
 `_granted | {k for k in STAGES if info[k]}`) and replaces only the video writer. It never
 recomputes a predicate, so the overlay shows exactly what was scored.
+
+usage: make_r2_annotator.py [SRC eval_genesis.py] [DST eval_genesis_annot.py]
+
+2026-09-10 (LADDER_UNIFY_BRIEF): the chips follow the UNIFIED LADDER -- PICK / PLACE /
+PUSH are the three non-terminal rungs, NEST2 is nested_v2 and SLIDE is the paid terminal.
+The withdrawn `nested` proxy is deliberately NOT a chip any more: an overlay that lights it
+invites reading nesting off a predicate whose precision is 0.114 (human) / 0.029 (machine)
+and which REVERSES the arm ordering. It is still in the evaluator's legacy columns.
+
+SRC/DST default to the in-flight cluster tree for backward compatibility, but note that
+writing into $W/r2dreamer_fix TOUCHES a tree in-flight jobs import at runtime -- pass
+explicit paths (e.g. into $LAB/gp_unified's r2dreamer) once that tree exists.
 """
 import shutil, sys
-src = '/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/r2dreamer_fix/eval_genesis.py'
-dst = '/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/r2dreamer_fix/eval_genesis_annot.py'
+src = sys.argv[1] if len(sys.argv) > 1 else \
+    '/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/r2dreamer_fix/eval_genesis.py'
+dst = sys.argv[2] if len(sys.argv) > 2 else \
+    '/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/r2dreamer_fix/eval_genesis_annot.py'
 s = open(src).read()
 
 old_init = """    frames = [obs["image"]]
@@ -37,17 +51,17 @@ old_vid = """    vw = cv2.VideoWriter(str(vid), cv2.VideoWriter_fourcc(*"mp4v"),
         vw.write(cv2.resize(tile, (w, h), interpolation=cv2.INTER_NEAREST))
     vw.release()"""
 new_vid = """    PANEL = 78
-    CHIPS = [("PICK", "picked"), ("PLACE", "placed_v2"), ("CONTACT", "contact"),
-             ("PUSH", "contact_push"), ("NEST", "nested")]
+    CHIPS = [("PICK", "picked"), ("PLACE", "placed_v2"), ("PUSH", "contact_push"),
+             ("NEST2", "nested_v2"), ("SLIDE", "slide_success")]
     first = {}
     for _i, _sn in enumerate(snaps):
         for _, _key in CHIPS:
             if _key in _sn and _key not in first:
                 first[_key] = _i
     _F = cv2.FONT_HERSHEY_SIMPLEX
-    _verdict = "slide=%d  nested_honest=%d  nested_proxy=%d  tipped=%d" % (
-        int(bool(info.get("slide_success"))), int(bool(info.get("nested_honest"))),
-        int(bool(info.get("nested_proxy"))), int(bool(tipped)))
+    _verdict = "slide=%d  nested_v2=%d  nested_honest=%d  tipped=%d" % (
+        int(bool(info.get("slide_success"))), int(bool(info.get("nested_v2"))),
+        int(bool(info.get("nested_honest"))), int(bool(tipped)))
     vw = cv2.VideoWriter(str(vid), cv2.VideoWriter_fourcc(*"mp4v"), args.fps, (w, h + PANEL))
     for _i, f in enumerate(frames):
         tile = np.hstack([f[..., :3], f[..., 3:]])[:, :, ::-1]   # top|wrist, BGR

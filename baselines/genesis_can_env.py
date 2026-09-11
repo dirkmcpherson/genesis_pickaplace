@@ -288,6 +288,16 @@ class GenesisCanEnv:
         # any pick/place/slide (confirmed on trial 284: contact at table level, z=0.10)
         c = np_(w['bottle'].get_contacts(w['goal'])['position'])
         bg_touch = bool(c.size and c.shape[0])
+        # gripper<->goal solver contact, read on EVERY can<->goal contact frame (2026-09-10,
+        # LADDER_UNIFY_BRIEF D1): the shared stage tracker needs the PER-FRAME value, and one
+        # read in one place is the alternative to full_env re-reading the same solver state.
+        # Previously this was read only inside the `picked and bg_touch` branch below; the
+        # branch now consumes this value rather than re-reading it, so nothing double-reads.
+        # Reads do not perturb the solver (established by the #26 trace ablation).
+        gg_touch = False
+        if bg_touch:
+            _gg = np_(w['goal'].get_contacts(w['kinova'])['position'])
+            gg_touch = bool(_gg.size and _gg.shape[0])
         if self._picked and bg_touch and \
            float(ee[0]) < float(bp[0]):
             if not self._contact:
@@ -315,8 +325,6 @@ class GenesisCanEnv:
             dot_w = float((ee[0] - bp[0]) * (gp_[0] - bp[0]) + (ee[1] - bp[1]) * (gp_[1] - bp[1]))
             if dot_w < 0.0:
                 self._contact_farside_wrist = True
-            gg = np_(w['goal'].get_contacts(w['kinova'])['position'])
-            gg_touch = bool(gg.size and gg.shape[0])
             if gg_touch:
                 self._contact_gripper_goal = True
             if dot < 0.0:
@@ -333,6 +341,9 @@ class GenesisCanEnv:
             self._slide_success = True; self._slide_frame = self._t; self._slide_route = 'sustained'
         done = self._t >= self.max_steps
         info = dict(picked=self._picked, placed=self._placed, contact=self._contact,
+                    # PER-FRAME solver contacts (2026-09-10): what the shared stage tracker
+                    # consumes. Instantaneous, NOT sticky -- unlike `contact`/`contact_push`.
+                    can_goal_touch=bool(bg_touch), gripper_goal_touch=bool(gg_touch),
                     contact_push=self._contact_push, contact_frame=self._contact_frame,
                     contact_push_frame=self._contact_push_frame,
                     contact_gripper_goal=self._contact_gripper_goal,

@@ -6,7 +6,10 @@ Protocol -- the world model's end-to-end cells (amendment (d), PHASE_RESULTS §5
   * `FullTaskEnv(scope='full')` in the corrected world (--sim-variant, also exported as GENESIS_SIM_VARIANT so the
     env's shelf band follows the world's shelf), horizon --max-steps SIM steps (1200 = 300 decisions at repeat 4),
     action_repeat / delta_joint cap 0.025 / leash 5x / delta_ref target asserted against the checkpoint sidecar.
-    STAGED sparse reward, the nested PROXY terminates, tips terminate -- i.e. exactly the training MDP.
+    A UNIFIED ladder, named by --ladder and taken from the checkpoint sidecar when it records one:
+    'staged' = picked 1 / placed_v2 1 / contact_push 2 / slide_success 4 (terminal), max return 8;
+    'sparse' = nested_v2 1 (terminal), max return 1. That ladder's terminal stage and the tip rule
+    terminate and NOTHING else does -- i.e. exactly the training MDP.
   * Starts come from an IC FILE (--ic-file/--ic-set), one episode per start, IN ORDER, each exactly once:
     `hold` (training starts -- in-distribution, NOT held out, REVIEW_GUIDE §8 item 7), `rnd` (the random box,
     out-of-distribution), `spots60` (amendment (k), the in-training-distribution test set), `rnd300`.
@@ -17,14 +20,19 @@ Protocol -- the world model's end-to-end cells (amendment (d), PHASE_RESULTS §5
     per_episode['ic'].
   * ONE post-episode settle per episode, after the last decision: `GenesisCanEnv.end_of_episode()` -- the landed
     (j)/(l') implementation, never re-implemented here. It returns the honest settled `nested` and the
-    `slide_success` window with its route. In scope='full' the env terminates on the nested PROXY and
+    `slide_success` window with its route. The settle is now a REFERENCE reading only: `nested_honest` is
+    what `nested_v2` is validated against, and the (l) settle route is kept as a legacy column.
     `GenesisCanEnv` never reaches its own horizon, so this call is the only settle that ever runs.
 
-Stage columns (success-by-stage = granted at any time in the episode): picked, placed (LEGACY: stale base-world
-z-band, reported as stale), placed_v2 ((j) S1-2, logged in the full scope), contact, contact_push ((g')),
-slide_success ((l)/(l'), the statistic of record), nested_proxy (the sticky training proxy the episode terminates
-on) and nested_honest (the settled proximity predicate). `nested_proxy` is the column comparable with
-PHASE_RESULTS §5.1; `nested_honest` is not, until the world-model cells are re-scored.
+Stage columns (success-by-stage = granted at any time in the episode), LADDER_UNIFY_BRIEF D3/D4 2026-09-10:
+  HEADLINE  picked, placed_v2, contact_push, slide_success, nested_v2, nested_honest
+  LEGACY    placed, contact, nested_proxy, contact_push_legacy, slide_success_settle
+`slide_success` is now the env's IN-EPISODE value -- under 'staged' the paid top rung and the only non-tip terminal --
+not the post-episode settle route. `nested_v2` replaces `nested_proxy` everywhere; `nested_honest` stays as the
+settled REFERENCE column nested_v2 is validated against. `nested_proxy` is kept only for continuity with stored
+rows: its precision is 0.114 (human) / 0.029 (machine) and it REVERSES the arm ordering, so nesting must never be
+reported on it. Every metrics.json carries `ladder_provenance` (D6); a table builder refuses to merge rows with
+different stamps.
 
 Action selection: sac --mode sample = predict(deterministic=False) (one draw per decision, torch seeded by
 --seed), --mode mode = predict(deterministic=True). dp is sampled by construction (diffusion noise, seeded by
@@ -54,6 +62,11 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
+ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged',
+                help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
+                     "checkpoint's -- a policy trained under one objective scored under another is a different "
+                     "experiment, and the stamp in metrics.json is what a table builder checks. Taken from the "
+                     "checkpoint sidecar when the sidecar records one; --ladder then only has to AGREE with it.")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
@@ -211,10 +224,17 @@ print(f'[eval-e2e] {len(ics)} start(s) from {args.ic_file}:{args.ic_set} (offset
 os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
 from sim_variant_hook import apply_pre, apply_post   # noqa: E402
 apply_pre(args.sim_variant)
-from full_env import FullTaskEnv, STAGE_REWARD   # noqa: E402
+from full_env import FullTaskEnv, STAGE_REWARD, refuse_legacy_gates   # noqa: E402
+refuse_legacy_gates()   # D1: this tree has no reward gates; a stale export must not pass
 import sim_variants as _sv                       # noqa: E402
 from replay_harness import BOX_TOP_Z             # noqa: E402
-env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full',
+# The ladder comes from the CHECKPOINT when its sidecar records one (runs trained before the
+# `ladder` argument existed do not), and --ladder must agree with it. Scoring a policy under a
+# different objective from the one it optimised is a different experiment, not a detail.
+LADDER_NAME = side.get('ladder') or args.ladder
+if side.get('ladder') and side['ladder'] != args.ladder:
+    sys.exit(f"FATAL: checkpoint sidecar says ladder={side['ladder']!r} but --ladder is {args.ladder!r}")
+env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
 apply_post(env, args.sim_variant)
@@ -223,7 +243,9 @@ assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
 assert env.scope == 'full' and env.action_repeat == REPEAT and env.delta_ref == 'target' and not env.phase_sparse
 assert env.max_steps == args.max_steps, (env.max_steps, args.max_steps)
 print(f'[eval-e2e] shelf_top_z {env.shelf_top_z:.3f} (placed_v2 band {env.shelf_top_z + 0.01:.3f}..{env.shelf_top_z + 0.07:.3f}); '
-      f'delta cap {env.delta_cap} leash {env.delta_leash}; staged reward {STAGE_REWARD}', flush=True)
+      f'delta cap {env.delta_cap} leash {env.delta_leash}; ladder {env.ladder} {env.stage_reward} '
+      f'terminal {env.terminal_stages}+tipped', flush=True)
+LADDER = env.provenance()   # D6: written into metrics.json below
 
 # ---- IC injection: run the env's OWN reset, redirect its single GenesisCanEnv.reset call to this episode's start.
 # FullTaskEnv.reset(options={'uid': u}) does its own bookkeeping and then calls self.genv.reset(uid=int(u)); it has no
@@ -276,8 +298,18 @@ else:
 # ---- episodes: one per start, in order ----
 import cv2   # noqa: E402
 OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
-STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push', 'slide_success', 'nested_proxy', 'nested_honest')
-OUTCOMES = ('nested_proxy', 'tipped', 'timeout')
+# Stage columns (LADDER_UNIFY_BRIEF D3/D4, 2026-09-10). HEADLINE = the unified ladder's own
+# rungs plus nested_v2 (which REPLACES nested_proxy in every log, table and figure) and the
+# settled nested_honest, which stays as the post-hoc REFERENCE column nested_v2 is validated
+# against. LEGACY = kept so old rows stay readable, never in a headline: `placed` is the
+# stale base-world band, `contact` the carry-in predicate, `nested_proxy` the withdrawn
+# training proxy (precision 0.114 human / 0.029 machine, and it REVERSES the arm ordering --
+# audit brief §4a), `contact_push_legacy` the (g) predicate that needs no release, and
+# `slide_success_settle` the (l) settle route with its withdrawn grip clause.
+HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
+LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
+STAGES = HEADLINE_STAGES + LEGACY_STAGES
+OUTCOMES = ('slide_success', 'tipped', 'timeout')
 counts = {k: 0 for k in OUTCOMES}
 stage_counts = {k: 0 for k in STAGES}
 routes = {}
@@ -300,21 +332,33 @@ for k, ic in enumerate(ics):
         if args.video:
             frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
         done = bool(term or trunc)
-    # ONE post-episode settle (the landed (j)/(l') implementation) -> honest nested + the slide window
+    # The IN-EPISODE slide_success is now the statistic (D4): it is the env's own PAID,
+    # TERMINAL rung, decided by the shared stage tracker during the episode. The post-episode
+    # settle still runs, for two reasons and two only: `nested_honest` is the reference
+    # column nested_v2 is validated against, and the (l) settle-route slide is kept as a
+    # legacy column. Neither is what the reward paid.
     end = env.genv.end_of_episode()
     gr = set(env._granted)
+
+    def _g(k):
+        return bool(k in gr or info.get(k))
+
     st = {
-        'picked': bool('picked' in gr or info.get('picked')),
-        'placed': bool('placed' in gr or info.get('placed')),
-        'placed_v2': bool('placed_v2' in gr or info.get('placed_v2')),
-        'contact': bool('contact' in gr or info.get('contact')),
-        'contact_push': bool('contact_push' in gr or info.get('contact_push')),
-        'slide_success': bool(end['slide_success']),
-        'nested_proxy': bool('nested' in gr or info.get('nested')),
-        'nested_honest': bool(end['nested']),
+        'picked': _g('picked'),
+        'placed_v2': _g('placed_v2'),
+        'contact_push': _g('contact_push'),
+        'slide_success': _g('slide_success'),          # in-episode, paid, terminal
+        'nested_v2': _g('nested_v2'),
+        'nested_honest': bool(end['nested']),          # settled reference
+        # --- legacy columns, never a headline ---
+        'placed': _g('placed'),
+        'contact': _g('contact'),
+        'nested_proxy': _g('nested'),
+        'contact_push_legacy': bool(info.get('contact_push_legacy')),
+        'slide_success_settle': bool(end['slide_success']),
     }
     tipped = bool(info.get('tipped'))
-    outcome = 'nested_proxy' if st['nested_proxy'] else ('tipped' if tipped else 'timeout')
+    outcome = 'slide_success' if st['slide_success'] else ('tipped' if tipped else 'timeout')
     counts[outcome] += 1
     for s in STAGES:
         stage_counts[s] += int(st[s])
@@ -336,8 +380,9 @@ for k, ic in enumerate(ics):
                         ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
                         slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
-    print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome} slide={int(st["slide_success"])}'
-          f'({route}) nestedH={int(st["nested_honest"])} contact={int(st["contact"])} picked={int(st["picked"])} '
+    print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome} slide={int(st["slide_success"])} '
+          f'nested_v2={int(st["nested_v2"])} nestedH={int(st["nested_honest"])} '
+          f'push={int(st["contact_push"])} placed_v2={int(st["placed_v2"])} picked={int(st["picked"])} '
           f'({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)', flush=True)
 
 n = max(len(results), 1)
@@ -361,15 +406,34 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                         'with a 36-core machine on one side). The instruction-set question is UNRESOLVED, not ruled '
                         'out: the CPU-family labels behind both the original AVX claim and its withdrawal are '
                         'unreliable on this cluster. isa/avx512f are stamped for a future re-check.'),
-               delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n', eval_fixes='j+l-prime',
+               delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n+ladder-unify',
+               eval_fixes='j+l-prime+ladder-unify',
+               # D6: the stamp that says WHICH ladder and WHICH code produced this cell.
+               # baselines/e2e_table_all.py REFUSES to merge rows whose stamps differ.
+               ladder_provenance=LADDER, ladder_stamp=LADDER['stamp'],
                slide_success=stage_counts['slide_success'] / n,
+               headline_stages={s: stage_counts[s] / n for s in HEADLINE_STAGES},
                stages={s: stage_counts[s] / n for s in STAGES},
                stage_counts={s: stage_counts[s] for s in STAGES},
+               legacy_stages=list(LEGACY_STAGES),
                outcomes={k: counts[k] / n for k in OUTCOMES}, slide_routes=routes,
-               stage_notes=dict(placed='LEGACY: stale base-world z-band (0.12-0.18) -- do not read in the corrected world',
-                                nested_proxy='the sticky training proxy the episode terminates on (comparable with PHASE_RESULTS 5.1)',
-                                nested_honest='settled proximity predicate from the single end-of-episode settle',
-                                slide_success="amendment (l)/(l'): on the shelf, released, touching the goal -- statistic of record"),
+               stage_notes=dict(
+                   slide_success='IN-EPISODE, the ladder top rung (+4) and the only non-tip terminal: '
+                                 'placed_v2 granted AND pushed AND nested_v2 (stage_predicates). STATISTIC OF RECORD.',
+                   nested_v2='state-only, no settle: picked AND placed_v2 granted AND dist_xy <= 0.081 AND both '
+                             'cans upright AND can in the shelf band AND not in hand AND at rest. REPLACES '
+                             'nested_proxy in every log, table and figure.',
+                   nested_honest='settled proximity predicate from the single end-of-episode settle -- the '
+                                 'post-hoc REFERENCE column nested_v2 is validated against (D4).',
+                   placed='LEGACY: stale base-world z-band (0.12-0.18) -- do not read in the corrected world',
+                   contact='LEGACY: carry-in credit (84-86% of policy grants were a carry, not a push)',
+                   nested_proxy='LEGACY, WITHDRAWN as a statistic: the old training proxy. Precision 0.114 '
+                                '(human) / 0.029 (machine) against the settled predicate, and it REVERSES the '
+                                'arm ordering (audit brief §4a). Never report nesting on it.',
+                   contact_push_legacy='LEGACY (g): the same geometry WITHOUT requiring a prior release, so it '
+                                       'fires while the robot still holds the can.',
+                   slide_success_settle="LEGACY (l): the post-episode settle route, with the grip < 0.3 clause "
+                                        "that (p) withdrew (it passed 2 of 74 human demonstrations)."),
                mean_steps=float(np.mean([r['steps'] for r in results])) if results else 0.0,
                mean_reward=float(np.mean([r['reward'] for r in results])) if results else 0.0,
                sample_dev_mean=(float(np.mean(_dev)) if _dev else None), sample_dev_max=(float(np.max(_dev)) if _dev else None),
@@ -379,7 +443,8 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                per_episode=results)
 (OUT / 'metrics.json').write_text(json.dumps(summary, indent=1))
 print(f'\n[eval-e2e] {len(results)} episodes ({args.mode}, {args.ic_set}): '
-      + '  '.join(f'{s} {stage_counts[s]}/{len(results)}' for s in STAGES)
+      + '  '.join(f'{s} {stage_counts[s]}/{len(results)}' for s in HEADLINE_STAGES)
+      + '  | legacy: ' + ' '.join(f'{s} {stage_counts[s]}' for s in LEGACY_STAGES)
       + f'  | tipped {counts["tipped"]} timeout {counts["timeout"]}  mean_steps {summary["mean_steps"]:.0f}'
       + (f'  sample_dev_mean {summary["sample_dev_mean"]:.4f}' if _dev else '') + f'  [{summary["seconds"]:.0f} s]', flush=True)
 print(f'[eval-e2e] wrote {OUT}/metrics.json' + (f' + {len([r for r in results if r["video"]])} mp4s' if args.video else ''), flush=True)
