@@ -134,7 +134,43 @@ fields P1 compares are identical. The pilot itself runs at one commit.
 
 ## 4. Pilot submissions
 
-*(job ids and the exact command per job)*
+Submitted 2026-09-11 03:2x by `bash cluster/submit_lz_pilot.sh` from `$LAB/gp_unified` — one
+command, whose text is the registered one (amendment (z) §(z).9). All 16 went in together; all 16
+were PENDING with reason `QOSMaxGRESPerUser` at submission, which is expected and is the reason the
+pilot is on QOS `normal` rather than `preempt`: the live 64-run batch holds 21 GPUs across both
+QOSes (14 normal + 7 preempt against caps of 10 and 20), so the pilot starts as that batch drains
+and never competes with it for the preempt allocation. The tree was fast-forwarded to the
+registration commit `877eb2b` while all 16 were still pending, so every one of them stamps
+`git=known-good-2026-08-27-818-g877eb2b6-dirty` and the three file hashes are unchanged
+(`full_env=f9e9538d9fc6 genesis_can_env=40544bf73c8c stage_predicates=de4ffde57cd7`).
+
+| job | name | learner | ladder | arm | seed | demo set | budget | checkpoints / milestones |
+|---|---|---|---|---|---:|---|---|---|
+| 3539249 | `lz_rl_staged_dH_s940` | {RLPD} | staged | human | 940 | `dHfull_all_rz` | 100k decisions | 0.4, 1.0 |
+| 3539250 | `lz_rl_staged_dH_s941` | {RLPD} | staged | human | 941 | `dHfull_all_rz` | 100k | 0.4, 1.0 |
+| 3539251 | `lz_rl_staged_dM_s960` | {RLPD} | staged | machine-first | 960 | `dDPfull_first_rz` | 100k | 0.4, 1.0 |
+| 3539252 | `lz_rl_staged_dM_s961` | {RLPD} | staged | machine-first | 961 | `dDPfull_first_rz` | 100k | 0.4, 1.0 |
+| 3539253 | `lz_rl_sparse_dH_s945` | {RLPD} | sparse | human | 945 | `dHfull_all_rs` | 250k | 0.16, 0.4, 1.0 |
+| 3539254 | `lz_rl_sparse_dH_s946` | {RLPD} | sparse | human | 946 | `dHfull_all_rs` | 250k | 0.16, 0.4, 1.0 |
+| 3539255 | `lz_rl_sparse_dM_s965` | {RLPD} | sparse | machine-first | 965 | `dDPfull_first_rs` | 250k | 0.16, 0.4, 1.0 |
+| 3539256 | `lz_rl_sparse_dM_s966` | {RLPD} | sparse | machine-first | 966 | `dDPfull_first_rs` | 250k | 0.16, 0.4, 1.0 |
+| 3539257 | `lz_r2_staged_dH_s940` | {r2dreamer} | staged | human | 940 | `dHfull_all_rz` | 1M online | 0.5M, 1M |
+| 3539258 | `lz_r2_staged_dH_s941` | {r2dreamer} | staged | human | 941 | `dHfull_all_rz` | 1M online | 0.5M, 1M |
+| 3539259 | `lz_r2_staged_dM_s960` | {r2dreamer} | staged | machine-first | 960 | `dDPfull_first_rz` | 1M online | 0.5M, 1M |
+| 3539260 | `lz_r2_staged_dM_s961` | {r2dreamer} | staged | machine-first | 961 | `dDPfull_first_rz` | 1M online | 0.5M, 1M |
+| 3539261 | `lz_r2_sparse_dH_s945` | {r2dreamer} | sparse | human | 945 | `dHfull_all_rs` | 4M online | 0.5M, 1M, 2M, 4M |
+| 3539262 | `lz_r2_sparse_dH_s946` | {r2dreamer} | sparse | human | 946 | `dHfull_all_rs` | 4M online | 0.5M, 1M, 2M, 4M |
+| 3539263 | `lz_r2_sparse_dM_s965` | {r2dreamer} | sparse | machine-first | 965 | `dDPfull_first_rs` | 4M online | 0.5M, 1M, 2M, 4M |
+| 3539264 | `lz_r2_sparse_dM_s966` | {r2dreamer} | sparse | machine-first | 966 | `dDPfull_first_rs` | 4M online | 0.5M, 1M, 2M, 4M |
+
+The exact commands are what `DRYRUN=1 bash cluster/submit_lz_pilot.sh` prints; the two forms are
+in amendment (z) §(z).9. Run dirs: {RLPD}
+`$LAB/gp_unified/baselines/rl/checkpoints/e2e/e2e_rlpd_<ARM>_s<seed>` with Slurm logs
+`$LAB/gp_unified/e2e_rlpd_<jobid>.out`; {r2dreamer}
+`$W/runs/full_r2d_state_<set>_s<seed>` with logs `$W/slurm/lz_r2_<ladder>_<arm>_s<seed>_<jobid>.out`.
+
+**Pick up with** `squeue -u jstale02 -o "%.10i %.24j %.9T %.6M %R" | grep lz_` and, once a job
+starts, `grep -h '^\[ladder\]' <its log>` to record its stamp here.
 
 ---
 
