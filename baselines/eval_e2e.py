@@ -62,11 +62,13 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
-ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged',
+ap.add_argument('--ladder', choices=('staged', 'sparse'), default=None,
                 help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
                      "checkpoint's -- a policy trained under one objective scored under another is a different "
-                     "experiment, and the stamp in metrics.json is what a table builder checks. Taken from the "
-                     "checkpoint sidecar when the sidecar records one; --ladder then only has to AGREE with it.")
+                     "experiment, and the stamp in metrics.json is what a table builder checks. DEFAULT: the "
+                     "checkpoint sidecar's own ladder; pass --ladder only to ASSERT it, and the run dies if the "
+                     "two disagree. A checkpoint with no ladder in its sidecar (trained before the argument "
+                     "existed) falls back to 'staged' and says so.")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
@@ -231,9 +233,18 @@ from replay_harness import BOX_TOP_Z             # noqa: E402
 # The ladder comes from the CHECKPOINT when its sidecar records one (runs trained before the
 # `ladder` argument existed do not), and --ladder must agree with it. Scoring a policy under a
 # different objective from the one it optimised is a different experiment, not a detail.
-LADDER_NAME = side.get('ladder') or args.ladder
-if side.get('ladder') and side['ladder'] != args.ladder:
+# 2026-09-11: `--ladder` used to DEFAULT to 'staged', and the disagreement check fired against
+# that default -- so a sparse checkpoint could not be evaluated at all through
+# cluster/e2e_eval_cells.sh, which passes no --ladder ("FATAL: checkpoint sidecar says
+# ladder='sparse' but --ladder is 'staged'", Lane 4 smoke 3538260). The sparse pilot arm would
+# have trained and then produced no cells. The sidecar is now the SOURCE and --ladder is an
+# optional ASSERTION; only an explicit disagreement is fatal.
+LADDER_NAME = side.get('ladder') or args.ladder or 'staged'
+if side.get('ladder') and args.ladder and side['ladder'] != args.ladder:
     sys.exit(f"FATAL: checkpoint sidecar says ladder={side['ladder']!r} but --ladder is {args.ladder!r}")
+print(f"[eval-e2e] ladder {LADDER_NAME!r} from "
+      f"{'the checkpoint sidecar' if side.get('ladder') else ('--ladder' if args.ladder else 'the fallback (sidecar records none)')}"
+      + ('' if args.ladder is None else f'; --ladder {args.ladder!r} agrees'), flush=True)
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
