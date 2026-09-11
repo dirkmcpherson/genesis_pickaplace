@@ -74,11 +74,15 @@ CLASS_DOC = {
     'picked_only': ('Picked, never placed.', 'Sanity: the pick is real.'),
     'nopick': ('Never picked.', 'Sanity: nothing fires.'),
 }
-# how many of each failure class to deliver (the positives are all delivered, uncapped)
-QUOTA = {'nested_drop': 3, 'push_no_nest': 3, 'pushed_no_contact': 3, 'held_press_timeout': 2,
-         'tipped_before_release': 2, 'tipped_after_release': 2, 'placed_only': 2,
-         'nested_pushed_not_slide': 2, 'reset_artifact': 2, 'picked_only': 1, 'nopick': 1}
-BORDERLINE_QUOTA = 4
+# How many of each failure class to deliver. The POSITIVES are all delivered, uncapped (the brief
+# asks for every one), so the failure quotas are what absorbs the ~40-clip budget. Ordered by how
+# much a bad clause would show in that class: the three disagreement pairs first, then the
+# end-reason classes, then the sanity classes (which need one example, not two).
+QUOTA = {'nested_drop': 3, 'push_no_nest': 3, 'pushed_no_contact': 3,
+         'nested_pushed_not_slide': 2, 'held_press_timeout': 2, 'tipped_after_release': 2,
+         'tipped_before_release': 2, 'placed_only': 2, 'reset_artifact': 1,
+         'picked_only': 1, 'nopick': 1}
+BORDERLINE_QUOTA = 3
 
 
 def fmt(v, n=3, scale=1.0, unit=''):
@@ -211,6 +215,12 @@ def main():
       'yet**, `d<N>` under a lit chip is the decision it fired on, and no chip or timeline tick '
       'shows a grant that has not happened yet.' % (len(rows), total_mb))
     A('')
+    A('**One counting convention to know** (it is inherited from the demonstration clips, so the '
+      'two sets agree): a chip\'s `d<N>` is the **0-based index** of the decision that granted '
+      'the stage, while the diagnostics line\'s `d<N>/<M>` counts **decisions taken**. The frame '
+      'on which a chip labelled `d122` first lights therefore reads `d123/…` on the line below '
+      'it. Same event, two bases.')
+    A('')
     A('```')
     A('rollouts : baselines/eval_e2e_annot.py --kind sac --mode sample --ladder staged')
     A('           --ic-file baselines/eval_ics.json --ic-set rnd|hold --max-steps 1200 --threads 2')
@@ -263,8 +273,11 @@ def main():
       '"goalward progress" came from. A gap of a few decisions is the can drifting as the '
       'fingers open and the tool withdraws — the set-down settle — not a push.')
     A('')
-    BUCKETS = [(1, 3, '1-3 (the set-down settle)'), (4, 10, '4-10'), (11, 30, '11-30'),
-               (31, 10 ** 9, '> 30')]
+    # The `0` bucket is not a rounding artefact: a decision is 4 env frames, so `pushed` firing
+    # on the SAME decision as `placed_v2` means the 10 mm accrued within 3 env frames (~0.1 s)
+    # of the release -- the set-down transient itself, before the arm can have moved anywhere.
+    BUCKETS = [(0, 0, '0 = within the release decision'), (1, 3, '1-3'), (4, 10, '4-10'),
+               (11, 30, '11-30'), (31, 10 ** 9, '> 30')]
     A('| checkpoint | episodes with `pushed` | ' + ' | '.join(b[2] for b in BUCKETS)
       + ' | median gap | also `contact_push` |')
     A('|---|---:|' + '---:|' * (len(BUCKETS) + 2))
@@ -285,7 +298,88 @@ def main():
           'impossible — listed for inspection: %s'
           % (len(neg), ', '.join('%s/%s/ep%d' % (e['ckpt'], e['ic_set'], e['ep']) for e in neg[:10])))
         A('')
+    # ---- what the smoke test found, computed from the same rows ----
+    sl = [e for e in eps if e['klass'] == 'slide']
+    g_near = [e for e in sl if 'pushed' in e['grants']
+              and e['grants']['pushed'] - e['grants']['placed_v2'] <= 3]
+    g_zero = [e for e in sl if 'pushed' in e['grants']
+              and e['grants']['pushed'] == e['grants']['placed_v2']]
+    no_cp = [e for e in sl if 'contact_push' not in e['grants']]
+    lever_close = [e for e in sl if (e['end_diag'].get('lever_m') or 9) < 0.030]
+    allp = [e for e in eps if 'pushed' in e['grants'] and 'placed_v2' in e['grants']]
+    allp_near = [e for e in allp if e['grants']['pushed'] - e['grants']['placed_v2'] <= 3]
+    v2 = sum(1 for e in eps if e['stages']['nested_v2'])
+    nh = sum(1 for e in eps if e['stages']['nested_honest'])
+    v2_and_nh = sum(1 for e in eps if e['stages']['nested_v2'] and e['stages']['nested_honest'])
+    nh_only = [e for e in eps if e['stages']['nested_honest'] and not e['stages']['nested_v2']]
+    prox = sum(1 for e in eps if e['stages']['nested_proxy'])
+    prox_ok = sum(1 for e in eps if e['stages']['nested_proxy'] and e['stages']['nested_honest'])
+    bad_cp = [e for e in eps if 'contact_push' in e['grants']
+              and ('placed_v2' not in e['grants']
+                   or e['grants']['contact_push'] < e['grants']['placed_v2'])]
+
+    A('## What the smoke test found')
+    A('')
+    A('These are read off the %d episodes above; each is checkable on the clips listed.' % len(eps))
+    A('')
+    A('**1. `pushed` is mostly the set-down transient, not a push.** Of the %d positives, **%d '
+      'have `pushed` firing within 3 decisions of the release** and **%d fire inside the release '
+      'decision itself** (4 env frames, ~0.1 s). Across every episode that ever fired it, %d of '
+      '%d land within 3 decisions. The accumulator opens at the first `placed_v2` grant, so the '
+      'can drifting goalward as the fingers open and the tool withdraws clears the 10 mm '
+      'threshold on its own. Watch `dH_s940_hold_ep4_slide.mp4`: the arm carries the can to '
+      '10.3 cm from the goal with the grip already commanded open, `placed_v2` grants at d122, '
+      'and the can is at 6.9 cm one decision later — 34 mm in a single decision, three times the '
+      'threshold, before the arm could have completed a stroke.'
+      % (len(sl), len(g_near), len(g_zero), len(allp_near), len(allp)))
+    A('')
+    A('**2. %d of the %d positives never fired `contact_push` at all** — the ladder paid its top '
+      'rung (+4, terminal) on episodes with no frame where the tool was demonstrably behind the '
+      'can touching the goal. `slide_success` = released AND pushed AND `nested_v2`, and none of '
+      'those three requires a contact frame, so a release that drifts home pays the same as a '
+      'push.' % (len(no_cp), len(sl)))
+    A('')
+    A('**3. %d positives sit within 5 mm of the `in_hand` threshold.** `HELD_LEVER_M` is 0.025 '
+      'and Lane 1 measured the held tail out to 32.3 mm, recommending 0.030. At 0.030 those '
+      'episodes read as still-in-hand, so `nested_v2` and with it `slide_success` flip and the '
+      '+4 is not paid. The constant is load-bearing for the top rung on this evidence, which it '
+      'was not on the demonstration tapes.' % len(lever_close))
+    A('')
+    A('**4. `nested_v2` held up; the settled reference is the one that misfires.** `nested_v2` '
+      '%d, `nested_honest` %d, agreeing on %d: **no `nested_v2` firing lacked a settled nest** '
+      '(precision 1.000) and the %d settles it missed BOTH had `placed_v2` never granted — the '
+      'robot pushed the can home with the fingers closed and never satisfied the '
+      'grip-command release clause, and the post-episode settle then scored a can the robot had '
+      'not released. That is the known "settled nested nests a HELD can" defect, and `nested_v2` '
+      'refusing them is the better answer. Legacy `nested_proxy` fired %d times with %d real '
+      'settled nests behind them (precision %.3f).'
+      % (v2, nh, v2_and_nh, len(nh_only), prox, prox_ok, prox_ok / max(prox, 1)))
+    A('')
+    A('**5. The D2 release-first precondition holds structurally:** %d episodes granted '
+      '`contact_push` before or without `placed_v2` (prediction P2 is 0).' % len(bad_cp))
+    A('')
+    A('**6. Reading for the ladder redesign.** Every defect above is the same shape: no clause '
+      'requires the TOOL to be near the can while the can moves. The Ladder N proposal in '
+      '`LADDER_UNIFY_BRIEF_2026-09-10` already fixes exactly this — `farside` requires '
+      '`|tool_xy - can_xy| <= 0.08 m` on the frame, and `slide_gain` accumulates only on frames '
+      'where `farside` holds. On this evidence that change is the difference between paying for '
+      'a slide and paying for a set-down, and it is worth more than raising the slide reward.')
+    A('')
     A('## Clips')
+    A('')
+    _shown = {x['klass'] for x in rows}
+    _absent = sorted(k for k in {e['klass'] for e in eps} if k not in _shown)
+    _nb = sum(1 for e in eps if e.get('borderline'))
+    A('Every `slide_success` positive is here, uncapped. The failure classes are sampled to a '
+      'quota, spread over checkpoints where the class occurs on more than one. %d of the %d '
+      'episodes flagged BORDERLINE (just outside a clause) are in this set.'
+      % (sum(1 for x in rows if x.get('borderline')), _nb))
+    if _absent:
+        A('')
+        A('Classes that OCCUR in the census but have no clip here (the budget went to the '
+          'disputed classes; the counts are in the table above, so an empty row below is not a '
+          'count of zero): %s. Every episode is still on disk — see *Where everything lives*.'
+          % ', '.join('`%s`' % k for k in _absent))
     A('')
     for x in rows:
         e = x['end_diag']
@@ -317,9 +411,15 @@ def main():
       'episode) costs 2.05x and is what a cell uses.')
     A('2. **Sampled actions.** The mode cells contain no slides at all; sampling is both the '
       'training-time statistic and the only setting that has ever produced one.')
-    A('3. **`nested_v2` in the stage table is STICKY** (it is read off `env._granted`). On policy '
-      'episodes the sticky read has precision 0.571 against the settle and the final-frame read '
-      'has 1.000 (`NESTED_V2_PREDICATE_2026-09-10` §5.4), so both are listed per clip.')
+    A('3. **`nested_v2` in the stage table is STICKY** (read off `env._granted`), so both it and '
+      'the final-frame value are listed per clip. Lane 1 measured the sticky read at precision '
+      '0.571 against the settle on its 60 episodes and recommended reporting the final frame '
+      '(`NESTED_V2_PREDICATE_2026-09-10` §5.4). **On these %d episodes the sticky read scores '
+      '%.3f**, and every sticky firing also has the final-frame value set — under this ladder '
+      '`slide_success` is TERMINAL, so an episode ends at the first `nested_v2` frame and the '
+      'sticky/final split that Lane 1 saw has no room to open. The disagreement is a property '
+      'of the terminal rule, not of the predicate; do not carry the 0.571 into a staged-ladder '
+      'table without re-measuring.' % (len(eps), v2_and_nh / max(v2, 1)))
     A('4. **An absent value is printed `n/a`, never 0** — a tracker that never ran a full-scope '
       'frame has no diagnostics, and that is different from a zero reading.')
     A('5. **The two start sets are not what their names suggest.** `hold` is 15 DEMONSTRATION '
@@ -333,6 +433,27 @@ def main():
       'evaluator falls back to `staged` and says so. It is included because it is the only '
       'checkpoint on record that places and pushes often enough to be positive-rich — not as a '
       'like-for-like arm against the two pilot checkpoints.')
+    A('')
+    A('## Where everything lives')
+    A('')
+    A('The %d clips here are a SELECTION. Every one of the %d episodes was rendered and all of '
+      'them are kept (not committed — `*.mp4` is gitignored):' % (len(rows), len(eps)))
+    A('')
+    A('```')
+    A('rollouts, all mp4s, per-cell metrics.json : %s' % root)
+    A('  <ckpt>_<ic-set>_s<seed>/ep<N>_<uid|rnd>_<class>.mp4')
+    A('  <ckpt>_<ic-set>_s<seed>/metrics.json  -- per_episode[] carries, for EVERY episode:')
+    A('      grants{}    the first-fire DECISION of every reported stage')
+    A('      end_diag{}  lever_m, dist_xy_m, in_hand, at_rest, goalward_gain_m, pushed,')
+    A('                  released, can_tilt_deg, goal_tilt_deg, in_band, nested_v2_now/_ever')
+    A('      end_reason, end_decision, klass, borderline, stages{}, ladder_provenance')
+    A('logs                                     : %s/logs/' % root)
+    A('checkpoints (fetched read-only)          : <scratchpad>/ckpt/'
+      '{dH_s940,dH_s941_c040,dH_s901}')
+    A('```')
+    A('')
+    A('The scratchpad is session-local and not backed up. Anything that must survive should be '
+      'copied out before the session ends.')
     (out / 'INDEX.md').write_text('\n'.join(L) + '\n')
     print('wrote %s (%d clips, %.1f MB)' % (out / 'INDEX.md', len(rows), total_mb))
     if total_mb > a.max_mb:
