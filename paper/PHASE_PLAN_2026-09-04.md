@@ -779,3 +779,367 @@ Registered as two validation clauses; a third was found only by checking arithme
 **Verified after the fix:** converted totals 238 and 237, exactly matching source, with magnitudes intact ({1:136, 2:19, 4:13, 6:2} human; {1:133, 2:17, 4:16, 6:1} machine).
 
 **Note on provenance:** the pre-existing full-scope sets carry {1,2,4,6}, so they predate all three behaviours. The converter accumulated pick-scope assumptions *after* the full-scope data it is meant to produce, and nothing re-derived that data in between.
+
+---
+
+## Amendment (z) — the unified ladder, and a staged-versus-sparse verification pilot (registered 2026-09-11, BEFORE any pilot job)
+
+Registers the design of `paper/LADDER_UNIFY_BRIEF_2026-09-10.md` (D1–D8), the implementation of
+`paper/LADDER_IMPL_NOTES_2026-09-10.md`, the calibration of `paper/NESTED_V2_PREDICATE_2026-09-10.md`,
+and the pilot the user asked for on 2026-09-11 00:40 ("start a set of shorter runs to verify").
+Written and committed before any pilot job was submitted; the four demonstration sets and the four
+smokes below already exist and are reported with the commands that produced them.
+
+**Why there is an amendment at all.** `E2E_AUDIT_BRIEF_2026-09-10.md` §2 established that the two
+learners of the 64-run long batch trained on DIFFERENT reward ladders — `FULLENV_REWARD_X=1` was
+passed to all 64 jobs and was inert in the tree {RLPD} loaded. §8 defect 5 established that the (x)
+ladder's top rung could never be paid in training, because the episode terminated on the UNPAID
+`nested` proxy whose clauses are a subset of the slide's. §4a established that that proxy REVERSES
+the human-versus-machine ordering. This amendment removes the gate, the proxy terminal and the
+proxy itself from every paid and terminal path.
+
+### (z).1 The two ladders
+
+Both are compiled into one tree and selected by a **constructor argument**, never an environment
+variable, and both are stamped into every log, checkpoint sidecar, `ladder_provenance.json` and
+`metrics.json` (D6).
+
+| ladder | rungs (sticky, paid once, in-episode) | terminal | max return = r2dreamer `return_clamp` | demo sets |
+|---|---|---|---|---|
+| `staged` | `picked` 1 / `placed_v2` 1 / `contact_push` 2 / `slide_success` 4 | `slide_success`, `tipped` | 8 | `_rz` |
+| `sparse` | `nested_v2` 1 | `nested_v2`, `tipped` | 1 | `_rs` |
+
+`contact_push` requires `placed_v2` to have been GRANTED first (the release-gated form), so the
+rung a policy could previously farm by pressing the still-held can against the goal no longer
+exists. `nested_v2` replaces `nested_proxy` in every log, table and figure; the legacy `nested`,
+`placed` and bare `contact` are still computed and logged and pay nothing. Everything other than
+reward and terminal — tip rule, every logged stage, the tracker diagnostics, the observation, the
+amendment-(w) episode record (now always on, D8) — is identical between the two ladders, so an
+arm-versus-arm comparison across them is a comparison of objectives and nothing else.
+
+### (z).2 The stamp, and the code of record
+
+`$LAB/gp_unified` @ `21c58b49` (branch `ladder-unify-2026-09-11`; the smoke logs quoted below were
+produced at `b89478d3`, which differs only in the evaluator fix of §(z).10 item 6 — a file that is
+not in the stamp), world-model port `$W/r2dreamer_unified` @ `77b2c61`. `git describe` reads `-dirty` in every job because the run
+registry (`cluster/RUN_REGISTRY.jsonl`, seeded from `$LAB/gp_e2e` so duplicate submissions stay
+detectable) is a tracked file that every {RLPD} job appends to; the state is the same for both
+learners, so the four fields P1 compares are unaffected.
+
+    [ladder] unified-2026-09-10 | ladder=staged | picked=1 placed_v2=1 contact_push=2 slide_success=4 |
+             max_return=8 | terminal=slide_success+tipped | shaping=off |
+             full_env=f9e9538d9fc6 genesis_can_env=40544bf73c8c stage_predicates=de4ffde57cd7 |
+             git=known-good-2026-08-27-815-gb89478d3-dirty
+
+    [ladder] unified-2026-09-10 | ladder=sparse | nested_v2=1 |
+             max_return=1 | terminal=nested_v2+tipped | shaping=off |
+             full_env=f9e9538d9fc6 genesis_can_env=40544bf73c8c stage_predicates=de4ffde57cd7 |
+             git=known-good-2026-08-27-815-gb89478d3-dirty
+
+### (z).3 The demonstration sets (D5: relabel by re-execution)
+
+Built by `cluster/relabel_e2e_sets.sbatch` → `baselines/rl/relabel_reward.py`, job **3537411**, one
+node, four sets in sequence, **pax080, 64 physical cores, AVX-512, Intel Xeon Gold 6438M** (the
+core count is read from `/proc/cpuinfo` inside the job and asserted, never taken from a Slurm
+feature label). Each tape is re-executed through `FullTaskEnv(scope='full', ladder=…)` — the same
+code path training uses — so **tape reward == env reward by construction**. There is no predicate
+in the builder.
+
+| set | ladder | tapes | decisions | Σ recorded | Σ re-exec | picked | placed_v2 | contact_push | slide_success | nested_v2 | pushed |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `dHfull_all_rz` | staged | 74 | 29 221 | 118 | **171** | 65 | 40 | 9 | **12** | 14 | 27 |
+| `dDPfull_first_rz` | staged | 72 | 36 834 | 131 | **183** | 64 | 41 | 13 | **13** | 15 | 25 |
+| `dHfull_all_rs` | sparse | 74 | 29 221 | 118 | **14** | 65 | 40 | 9 | — | **14** | 27 |
+| `dDPfull_first_rs` | sparse | 72 | 36 834 | 131 | **15** | 64 | 41 | 13 | — | **15** | 25 |
+
+(`contact_push` / `slide_success` in the sparse rows are LOGGED, not paid; they are listed to show
+that the two ladders see the same episode.) Episode end reasons: human staged `slide_success` 12 /
+`tipped` 14 / `stream_exhausted` 31 / `truncated` 17; machine staged `slide_success` 13 /
+`tipped` 13 / `stream_exhausted` 7 / `truncated` 39; human sparse `nested_v2` 14 / `tipped` 14 /
+`stream_exhausted` 30 / `truncated` 16; machine sparse `nested_v2` 15 / `tipped` 13 /
+`stream_exhausted` 5 / `truncated` 39.
+
+**Action streams are byte-identical to the sources, checked twice.** The builder asserts the
+sha256 of `action` per tape and over the set; an independent pass
+(`verify_sets.py`, written for this registration) re-loaded all 292 tape pairs and compared every
+array: `action`, `state`, `image`, `discount`, `is_first`, `is_last`, `is_terminal`, `logprob` are
+identical in every tape, **`reward` is the only array that differs**, and the only new keys are
+three `reward_*` provenance fields and nine `rz_*` diagnostics (twelve in all). Reward value census —
+human staged `{1: 104, 2: 8, 3: 1, 4: 12}`, machine staged `{1: 104, 2: 12, 3: 1, 4: 13}`, both
+sparse sets `{1: n_paying}` — every value inside the ladder's reachable subset sums, which is what
+`full_demos.py` validates.
+
+**Selection provenance is INHERITED, never re-derived.** `relabel_reward.py` now writes the
+`repeat.json` both launchers gate on (it previously wrote only its own `manifest.json`, which
+neither launcher reads — that alone would have stopped every pilot job). It copies the source
+manifest and overwrites only the counts the relabel changed. `dDPfull_first_rz` / `_rs` therefore
+carry `one_per_ic_first: true`, the PHASE_PLAN (v) de-selection attestation, taken from the source
+rather than from a command-line flag — the `b756259` defect, where a set selected upstream recorded
+`one_per_ic_first: False`, a false claim rather than a missing key.
+
+**Disclosed: `terminal_reward: 1.0` and the other inherited stamps describe the SOURCE build**
+(`to_dreamer_native.py`), not the re-executed reward column. They are kept because the world-model
+launcher asserts `terminal_reward`; they are not evidence about this ladder.
+
+**Disclosed: `is_terminal` is left exactly as recorded** (LADDER_IMPL_NOTES §4, resolved here in
+favour of keeping the streams whole). A relabelled tape can therefore carry its recorded terminal
+at a different decision from the re-execution's, and decisions after the re-execution's terminal
+are paid 0. The alternative — marking the new terminal — requires truncating the tape, which
+changes the action stream and breaks the sha256 identity that makes this a relabel rather than a
+rebuild. Every tape records `rz_end_reason` and `rz_end_decision`, and the manifest counts them.
+
+**Disclosed: re-execution fidelity is bimodal. WHICH tapes diverge is a property of the tape; HOW
+FAR they diverge, and therefore what they are paid, is machine-dependent** (§(z).4 quantifies the
+second half against an independent build).  `can_dev_max_m` is the largest can-position difference
+between the recording and the re-execution:
+
+| set | p50 | p75 | p90 | max | ≤ 10 mm | 10–50 mm | > 50 mm | worst joint error |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| human | 8.1 mm | 62.3 mm | 168.7 mm | 685.7 mm | 39/74 | 14 | 21 | 0.059 rad |
+| machine | 10.8 mm | 51.3 mm | 157.7 mm | 754.0 mm | 34/72 | 20 | 18 | 0.281 rad |
+
+Lane 2's off-cluster dry run saw the same two of its six tapes diverge (78 mm, 155 mm) that this
+64-core cluster run also diverges on (180 mm, 142 mm) — different magnitudes, same tapes — so the
+mechanism is chaotic amplification after contact, and the machine class sets its size rather than
+its location. **What matters for the
+reward column is where the divergence sits relative to the grants, and it sits after them:** every
+one of the 12 human and 13 machine tapes that pay the top rung re-executes to between 1.3 mm and
+**33.9 mm**, except machine uid 302 at 145.7 mm; the six worst tapes in each set (246–754 mm) pay
+`picked` only, granted early while the trajectory still matches. The residual honest caveat is that
+on a badly diverging tape the STATE column (recorded) and the REWARD column (re-executed) describe
+different trajectories. That is a consequence of D5 as designed and is not fixed here; the
+alternative (writing the re-executed states as well) would make the tape self-consistent at the
+cost of no longer being a relabel of the set of record, and is a coordinator decision.
+
+### (z).4 P3, stated against Lane 1's expectation, with the uids
+
+Expected (LADDER_UNIFY_BRIEF, "Lane 1 outcomes that bind the merge"): the human `_rs` set pays on
+**11** tapes and the human `_rz` top rung fires on **≤ 11**. Measured: `_rs` pays on **14** and
+`_rz`'s top rung on **12**. The uids:
+
+* `_rz` `slide_success` (12): 232 233 236 237 247 251 273 275 302 304 316 317
+* `_rz` / `_rs` `nested_v2` (14): the 12 above plus **244** and **299**
+* `_rz` `contact_push` (9): 233 236 255 259 273 299 305 321 325
+* machine `_rz` `slide_success` (13): 233 242 243 251 259 262 263 265 274 281 302 305 321
+* machine `nested_v2` / `_rs` paying (15): the 13 above plus **295** and **300**
+* machine `_rz` `contact_push` (13): 233 242 251 257 262 275 277 279 295 298 302 305 308
+
+**The second half of P3 is met exactly.** Every paying `_rs` tape pays exactly one +1 and no other
+tape pays anything; the `nested_v2` grant DECISION is identical between the two ladders on all 74
+human and all 72 machine tapes (`cmp.py`, zero disagreements), which is the strongest available
+evidence that the two sets differ in reward and terminal alone.
+
+**The first half is not met, and the reason is that the expectation was keyed to a different
+lineage.** Lane 1's 11 was measured on the `src_dHfull_all` census recording; the pilot trains on
+`dHfull_all`, a DIFFERENT recording of the same 74 initial conditions (CLAUDE.md: the two differ on
+24 of 74 action streams). **Lane 5's independent full-set census, run on the local box through this
+same relabel path, pays the sparse rung on 14 human tapes of `dHfull_all` as well** — so 14, not
+11, is the number for this set, on two machines independently, and P3's "11" is a statement about
+the census lineage. Both counts belong in the record. The 64-core cluster build is the count of
+record because it is the hardware the pilot runs on.
+
+Coarse stages agree across every reading — Lane 1 reports `picked` 65, `placed_v2` 40,
+`released` 40, `tipped` 14, identical to this build — so the environment and the predicate are not
+in dispute; the disagreement lives entirely in the late, contact-rich stages, and there it is a
+MACHINE effect (next paragraph). One reading difference also has to be kept straight: Lane 1's
+headline 11 is an end-of-episode read ("end or lastK") and their sticky variant reads 12, while the
+environment grants stickily.
+
+**Per-tape agreement between the two machines, which is what the `can_dev` column exists to
+measure.** Comparing every tape's six stage grants (cluster manifests versus Lane 5's
+`census_{human,machine}.json`):
+
+| arm | tapes agreeing on all six stages | Σ staged, cluster v box | `nested_v2` | `slide_success` | `placed_v2` | `contact_push` | `pushed` |
+|---|---|---:|---:|---:|---:|---:|---:|
+| human | **68 / 74** | 171 v 179 | 14 v 14 | 12 v 13 | 40 v 42 | 9 v 10 | 27 v 28 |
+| machine | **64 / 72** | 183 v 192 | 15 v 16 | 13 v 14 | 41 v 44 | 13 v 14 | 25 v 28 |
+
+Every disagreeing tape is one whose can diverges: human 236 (22.5 mm, cluster-only slide),
+244 (15.9 mm), 256 (64.9 mm), 259 (14.9 mm), 274 (14.1 mm), 326 (84.0 mm); machine 246 (18.0),
+254 (46.4), 255 (6.0), 266 (64.2), 274 (3.7), 295 (606.3), 311 (308.0), 328 (20.6). Note that the
+human `nested_v2` TOTAL is 14 on both machines with **different membership** — 236 and 244 on the
+cluster, 256 and 259 on the box — so an equal count is not evidence of an equal set. This is
+hardware-class sensitivity of a contact-rich re-execution, the same phenomenon as the eval-cell
+node sensitivity in `cluster/e2e_eval_cells.sh`, and it is why the set of record must be built
+once, on one machine class, and stamped (it is: pax080, 64 cores, in every `repeat.json`).
+
+The three uids the brief names as known misses — **255, 305, 308** — are absent from this build's
+`nested_v2` set too, consistent with Lane 1's account (255 and 305 end while the can is still
+moving, so `at_rest` cannot hold; 308 never gets `placed_v2`; 255 and 305 do appear under
+`contact_push`, which does not require `at_rest`). **Uid 308 additionally differs by lineage**:
+its settled `nested_honest` is 0 on `dHfull_all` (Lane 5's census, both arms checked) and 1 on the
+census recording — a second instance of the same lineage effect, on the reference predicate rather
+than the new one.
+
+The settled `nested_honest` reference has NOT been re-derived on a 64-core node. It is obtained by
+running `baselines/diagnostics/replay_tape_stagerec.py` plus `nested_v2_validate.py` there. No
+pilot number depends on it: the demonstration sets are built and stamped, and the pilot's statistic
+is measured on policies, not on tapes.
+
+### (z).5 P2 in the demonstration sets
+
+Structural, checked on the built sets rather than asserted: every tape granting `contact_push` is
+also a tape granting `placed_v2` (human 9 of 9, machine 13 of 13); every tape granting
+`slide_success` also grants `nested_v2` and `pushed`. No tape grants `contact_push` without a prior
+`placed_v2`, count **0**, which is what P2 predicts for the policy rollouts.
+
+### (z).6 Five properties of this ladder that are REGISTERED, not fixed
+
+Found by Lane 5's census of the demonstrations. Each is a consequence of definitions this
+amendment adopts deliberately. **No predicate and no reward is changed for any of them**; they are
+written down so that a reader of a pilot number knows what it means.
+
+1. **The rungs are not nested.** `slide_success` (+4) pays WITHOUT `contact_push` (+2) on **10 of
+   13** human slides and 6 of 14 machine slides on Lane 5's box census, and on **9 of 12** human
+   and **7 of 13** machine slides in the cluster build of record, because `nested_v2` uses the
+   0.081 m proximity of the metric of record while `contact_push` requires SOLVER contact, and two
+   cans touch at
+   0.066 m. A tape can therefore arrive without the two rungs below it ever firing, and a return of
+   6 (1+1+4) is a complete task, not a partial one. By design; disclosed.
+2. **The sparse rung can be paid by a pure set-down.** `nested_v2` can be granted on the same
+   decision as `placed_v2` with `pushed` False — releasing the can at the goal pays it at the
+   instant of release, because `placed_v2`'s 10-frame sustain already implies at rest. **P8 is
+   therefore already answerable on the demonstrations, and it comes out the opposite way round from
+   P8's prediction**: on Lane 5's box census humans slide 13 v drop 1 and the machine set slides
+   14 v drops 2; on this cluster build, human 12 v 2 (drop-route uids 244 and 299) and machine
+   13 v 2 (295, 300). Both ways round, the demonstrations reach settled contact by the SLIDE route
+   in the large majority. P8 as registered is about what the POLICIES do, and that stays open.
+3. **The reference predicate has no release clause.** `nested_honest` — the settled predicate
+   `nested_v2` was validated against — nests a can that is STILL IN THE GRIPPER on 1 of 146 tapes
+   (machine 283: lever 0.014 m, grip 0.63, `placed_v2` never granted, settled `nested` = 1).
+   `nested_v2` rejects it. The reference is the weaker predicate in this one respect.
+4. **Four tapes' recordings stop mid-push**, so `contact_push` fires on their LAST decision
+   (human 255 and 305, machine 277 and 257). Their rung is real but their episode is truncated by
+   the recording, not by the task.
+5. **`placed_v2` at grip < 0.45 admits a fist push.** Human 232 completes its slide at a commanded
+   grip of 0.41. That is amendment (p)'s intent — (p) withdrew (l)'s `grip < 0.3` clause precisely
+   because humans release and then push with the fingers re-closed — and it is disclosed here
+   rather than treated as a leak.
+
+### (z).7 The pilot
+
+Both learners run from `$LAB/gp_unified`; {r2dreamer} additionally from `$W/r2dreamer_unified`
+(named by `R2_TREE`, which this amendment makes REQUIRED — it used to be hardcoded to the
+in-flight `$W/r2dreamer_fix`). QOS **normal**, partition **gpu**, so the pilot does not compete
+with the old batch's preempt allocation. Job names are `lz_<rl|r2>_<staged|sparse>_<dH|dM>_s<seed>`.
+
+| learner | ladder | arms | seeds | budget | checkpoints / milestones |
+|---|---|---|---|---|---|
+| {RLPD} | staged | human / machine-first | 2 v 2 (940–941 / 960–961) | 100k decisions | `ckpt_040` 40k, `ckpt_100` 100k |
+| {r2dreamer} | staged | same | 2 v 2 (940–941 / 960–961) | 1M ONLINE steps | 0.5M, 1M |
+| {RLPD} | sparse | same | 2 v 2 (945–946 / 965–966) | 250k decisions | `ckpt_016` 40k, `ckpt_040` 100k, `ckpt_100` 250k |
+| {r2dreamer} | sparse | same | 2 v 2 (945–946 / 965–966) | 4M ONLINE steps | 0.5M, 1M, 2M, 4M |
+
+The sparse arm runs at the FULL budget because a sparse null at a short budget is uninformative;
+its 100k / 1M milestones give the like-for-like read against the staged pilot at the same step.
+`R2_LONG_RUN=1` makes the world-model budget explicitly ONLINE (origin + budget), which the (x)
+batch did not: those runs did 3 970 594 and 3 962 512 online steps for a "4M" budget.
+
+n = 2 per arm. **This is a verification pilot and a sparse-feasibility probe; it is NOT a
+demonstration-source comparison**, and no cell from it may be reported as one.
+
+### (z).8 Predictions and decision rules (verbatim from the brief, plus their checks)
+
+* **P1** every run's `ladder_provenance.json` and Slurm `[ladder]` stamp are identical within a
+  ladder and differ between ladders ONLY in `ladder`, `stage_reward`, `terminal_stages`,
+  `return_clamp` (assert; a mismatch aborts the pilot).
+  *Status before submission: MET on four smokes — {RLPD} staged **3537917**, {RLPD} sparse
+  **3538260**, {r2dreamer} staged **3538337**, and a {r2dreamer} sparse smoke in flight at the
+  moment of this registration (its job id and result are in `paper/LADDER_PILOT_LOG_2026-09-11.md`;
+  **the pilot is not submitted until its stamp matches**, which is what P1 requires). Both learners
+  print the stamps in §(z).2 with the same three file hashes, character for character; the
+  world-model launcher and trainer additionally agree on `return_clamp` (8.0 staged / 1.0 sparse)
+  and the trainer refuses to start if `env.return_clamp` and `model.return_clamp` do not both equal
+  the ladder ceiling.*
+* **P2** zero `contact_push` grants without a prior `placed_v2` in every episode record
+  (structural; count = 0).
+* **P3** the `_rz` and `_rs` human sets pay their top rung on the same tapes the (x) classifier
+  selects; `_rs` pays exactly one +1 per paying tape at the `nested_v2` frame.
+  *Status: second clause MET exactly (one +1 per paying tape, at a `nested_v2` decision identical
+  to the staged set's, on all 146 tapes). First clause NOT MET as written — 14 paying human tapes
+  and a top rung of 12, against an expected 11 — because the expectation was keyed to the census
+  lineage and not to `dHfull_all`; §(z).4 gives the uids, the independent confirmation on a second
+  machine, and the per-tape cross-check.*
+* **P4** by the end of the staged budget ≥ 1 seed per arm shows `contact_push` in training
+  rollouts; disconfirm → rerun that arm with D7 `goalward` shaping ON, disclosed.
+* **P5** max episode return ≤ 8 (staged) / ≤ 1 (sparse) and no negative drift in `picked` versus
+  the (x)-batch curves at the same step.
+* **P6** no job ends `FAILED 2:0 00:00:00` (requeue guard).
+* **P7 (the user's question, sparse arm)** settled contact is reached by ≥ 1 seed per arm within
+  the full budget.
+* **P8** the route census — prediction: under BOTH ladders the majority of `nested_v2` events have
+  `pushed` = False (drop route); disconfirm = slide route ≥ 50 % in any arm, which would mean
+  paying the outcome alone induces the slide.
+
+**Decision rule, registered now:** if sparse reaches `nested_v2` at ≥ the staged rate at the
+matched milestone, the intermediate rungs are unnecessary and sparse becomes the primary for the
+16v16; if sparse is 0 in all seeds at the full budget while staged > 0, the shaping is necessary.
+**Readout:** `rnd30` mode cells at every milestone with `nested_v2`, `slide_success`, `pushed`,
+`nested_honest`. NOT a source comparison (n = 2).
+
+### (z).9 The submit commands of record
+
+The 16 commands live in `cluster/submit_lz_pilot.sh`, committed with this amendment, so that what
+was registered and what ran are the same text rather than two retypings of it:
+
+    cd $LAB/gp_unified
+    DRYRUN=1 bash cluster/submit_lz_pilot.sh    # prints the 16 commands, submits nothing
+    bash cluster/submit_lz_pilot.sh             # submits
+
+Each is of the form
+
+    GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified LADDER=<staged|sparse> ARM=<dH|dDPfirst> SEED=<s> \
+      STEPS=<100000|250000> DEMO=$W/demos_state_full/<set> CKPT_FRACS=<0.4,1.0|0.16,0.4,1.0> \
+      sbatch -J lz_rl_<ladder>_<dH|dM>_s<s> -p gpu --qos=normal --nice=0 cluster/sbatch_rlpd_e2e.sh
+
+    R2_TREE=$W/r2dreamer_unified GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified LADDER=<staged|sparse> \
+      R2_LONG_RUN=1 R2_MILESTONES='<list>' \
+      sbatch -J lz_r2_<ladder>_<dH|dM>_s<s> -p gpu --qos=normal \
+        cluster/wmfix_full.sbatch <set> <seed> <1000000|4000000>
+
+The script re-checks, before submitting anything, that both trees are what they claim to be, that
+all four `repeat.json` manifests exist, and that the filesystem is above the registered 150 GB
+floor. Every job id, its full command and the `[ladder]` line from its own log go in
+`paper/LADDER_PILOT_LOG_2026-09-11.md`.
+
+### (z).10 Six defects found and fixed between the merge and the submission
+
+All five were found by RUNNING the thing, not by reading it, and all five are committed before any
+pilot job. Two of them would have stopped every job; two would have made a run lie about its own
+objective; one killed a training run three minutes in.
+
+1. **Relabelled sets had no `repeat.json`.** `relabel_reward.py` wrote only `manifest.json`, which
+   NEITHER launcher reads. Both gate on `<set>/repeat.json`. Every pilot job would have exited at
+   the demo gate. (`9647d58`)
+2. **`cluster/wmfix_full.sbatch` hardcoded its world-model tree** to `$W/r2dreamer_fix` — an
+   in-flight tree, and the same "the launcher, not the submission, decides which code runs" defect
+   as the `GENESIS_PICKAPLACE_ROOT` default that put the two learners on different ladders.
+   `R2_TREE` is now required. (`9647d58`)
+3. **The world-model trainer stamped the module default ladder.** `train.py` called
+   `ladder_provenance()` / `ladder_stamp()` with no argument, so every sparse run would have
+   written `staged` into its own `ladder_provenance.json` and printed a staged `[ladder]` line —
+   D6's failure mode reintroduced one level down. Fixed to read `config.env.ladder`, and to REFUSE
+   to start unless `env.return_clamp` and `model.return_clamp` both equal the ladder's ceiling
+   (a staged clamp of 8.0 on a sparse run silently disables the clamp that made this port stable).
+   (r2dreamer `b4ca104`)
+4. **The online-budget contract was only half ported.** Under `R2_LONG_RUN=1` the trainer
+   re-targets the counter to origin + budget, but `train.py`'s accounting print and its assertion
+   still read `env.steps` as a raw counter target: a long-run job logged "4000000 → 3970594 online
+   env steps" while actually running 4 000 000, and a budget smaller than the prefill died on an
+   assertion that does not apply to it. Found by the 15k-step smoke on a 29 406-row prefill.
+   (r2dreamer `49c02f8`)
+5. **The D8 record certificate was missing from ordinary step rows.** `observation_space` and
+   `reset()` declared `log_ep_record_valid`; `step()` did not, and `envs/parallel.py` stacks the
+   vector observation key by key — so the first time one sub-env sat on a reset row while the
+   others stepped, training died with `KeyError: 'log_ep_record_valid'`. LADDER_IMPL_NOTES §4 had
+   flagged this merge as "sound on paper and untested in a buffer". (r2dreamer `77b2c61`)
+6. **A sparse checkpoint could not be evaluated at all.** `eval_e2e.py`'s `--ladder` DEFAULTED to
+   `staged` and its sidecar-disagreement check fired against that default;
+   `cluster/e2e_eval_cells.sh` passes no `--ladder`, so every cell of a sparse run died with
+   "checkpoint sidecar says ladder='sparse' but --ladder is 'staged'" — the sparse arm would have
+   trained for 250k decisions and produced nothing to read. The sidecar is now the SOURCE and
+   `--ladder` an optional ASSERTION. Found by running the smoke THROUGH its eval stage instead of
+   stopping at TRAIN-OK. (`21c58b4`)
+
+`pytest` was also run on the cluster for the first time (Lane 2 could not): **37 passed**
+(`test_ladder_unified.py`, `test_stage_predicates.py`, `test_terminal_guard.py`).
