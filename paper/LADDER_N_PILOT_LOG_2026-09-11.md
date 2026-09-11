@@ -435,3 +435,131 @@ so the pin is not yet in force. `$LAB/gp_ladderN` is now at `a40c8aa1`. Note the
 carry a `-dirty` suffix: the launcher writes `cluster/RUN_REGISTRY.jsonl` and its Slurm `.out` files
 inside the tree. The pilot's stamps read `-dirty` for the same reason; it is the launcher's own
 bookkeeping, not an uncommitted code edit.
+
+### 4.3 Smoke outcomes — all five stamp correctly
+
+| job | outcome |
+|---|---|
+| 3579596 `ln_smoke_rl_ctl` | COMPLETED 5:15, TRAIN-OK, eval cell written |
+| 3579597 `ln_smoke_rl_ramp` | FAILED 1:04 — the §4.1 defect |
+| 3579598 `ln_smoke_rl_sparse` | COMPLETED 4:39, TRAIN-OK, eval cell written |
+| 3579619 `ln_smoke_r2_ramp` | COMPLETED 36:02, train rc=0, milestone + eval cell written |
+| 3579620 `ln_smoke_r2_sparse` | RUNNING, stamps printed (below) |
+| 3579832 `ln_smoke_rl_ramp2` | COMPLETED 4:27, TRAIN-OK — the re-run after the fix |
+
+**The stamps, verbatim.** The three ladders differ only in the four fields P1 allows (`ladder`, the
+rungs, `max_return`, `terminal`); the three file hashes are identical everywhere, and within a
+ladder the {RLPD} and {r2dreamer} lines are identical character for character apart from the
+`git=` suffix (the three smokes ran at three commits as the fix landed):
+
+    # nested_ramp -- {RLPD} 3579832 and {r2dreamer} 3579619, identical but for git=
+    [ladder] unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4
+             ramp:slide_gain_m=3/0.05m | max_return=9 | terminal=home+tipped | shaping=off |
+             far_release=off | tip=tilt>60deg&not_in_hand@4f |
+             full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632
+    # nested_sparse -- {RLPD} 3579598 and {r2dreamer} 3579620, likewise
+    [ladder] … | ladder=nested_sparse | home=1 | max_return=1 | terminal=home+tipped | …
+    # staged control -- {RLPD} 3579596
+    [ladder] … | ladder=staged | picked=1 placed_v2=1 contact_push=2 slide_success=4 |
+             max_return=8 | terminal=slide_success+tipped | …
+
+Checklist, item by item:
+
+* `tip=tilt>60deg&not_in_hand@4f` — present on all five, plus the explicit
+  `[ladder] tip_guard not_in_hand sustain 4 env frames`.
+* `ramp:slide_gain_m=3/0.05m` — present on both `nested_ramp` stamps, i.e. **revision 1's scale 3
+  and span 0.05 m**, and `farside=` is absent from the reward list, which is the revision's signature.
+* `max_return` 9 / 1 / 8 as registered.
+* **P-aa-5 holds on both {r2dreamer} arms:** `[ladder] ladder=nested_ramp tip_guard=not_in_hand
+  return_clamp=9.0 (env.return_clamp AND model.return_clamp)` plus the trainer's own independent
+  check `[ladder] return_clamp=9.0 (env and model agree)`; sparse reads `1.0` in both places.
+* Demo gates pass on every set (`total_reward` 204.675 / 12.0 / 171.0 as built).
+* Step accounting is right: `prefill 29406 decisions; trainer starts at counter step 117624;
+  env.steps=15000 ONLINE env steps -> counter target 132624`.
+
+**Evaluator, both learners, on a NESTED ladder — the success key follows the ladder.**
+
+    # {r2dreamer} 3579619 (nested_ramp)
+    [eval] ladder='nested_ramp' … [eval] tip_guard='not_in_hand' from the run config
+    [eval] outcome success_key='home' (the ladder's paid terminal)
+    [eval] 15 episodes (mode, demo ICs): home 0.00  tipped 0.00  timeout 1.00  mean_steps 300
+    # its metrics.json: success_key home | ladder nested_ramp | tip_guard not_in_hand
+    #                   max_return 9.0 | terminal_stages ['home','tipped']
+
+    # {RLPD} 3579598 (nested_sparse) metrics.json
+    terminal_stage: home | ladder_provenance: ladder nested_sparse, tip_guard not_in_hand,
+      max_return 1.0, terminal ['home','tipped']
+    outcomes {'home': 0.0, 'tipped': 0.0, 'timeout': 1.0}
+    stages   {… 'farside': 0.0, 'slide_event': 0.0, 'home': 0.0 …}
+
+All zeros, as they must be for a 1000-decision / 15k-step untrained policy; what is being checked
+here is the plumbing, not the policy. The `stages` block carries `farside`, `slide_event` and
+`home`, so the Ladder-N columns exist in the cells the batch will produce.
+
+**Known limitation carried into the batch, not introduced by it** (Lane 12a §7(f)):
+`eval_genesis.py` never passes `far_release` to the adapter, so a {r2dreamer} cell always scores
+`far_release=False`. Harmless here — this batch runs `far_release` OFF — but it must be fixed
+before any `far_release` run.
+
+**One readout gap worth flagging now rather than at analysis time:** `slide_gain_m` is emitted in
+`info` by `full_env` but is NOT in `full_env.LOGGED_STAGES` (which carries `farside`,
+`slide_event`, `home`), nor in the adapter's `FULL_EXTRA_KEYS`. **P-aa-3** asks for
+`slide_gain_m > 0` in training rollouts. The available proxies are `slide_event` (which requires
+≥ 1 cm of credited gain) and, under `nested_ramp`, any episode return above 2.0 — which is ramp
+money and therefore proves gain > 0. A gain of, say, 5 mm would be invisible to both. Flagged for
+the readout lane; no code changed, since changing what is logged mid-batch would split the batch.
+
+---
+
+## Step 5 — the 20 `ln_*` jobs, submitted
+
+`bash cluster/submit_ln_batch.sh` from `$LAB/gp_ladderN` @ **`a40c8aa1`**
+(`known-good-2026-08-27-895-ga40c8aa1-dirty` — the `-dirty` is the launcher's own
+`RUN_REGISTRY.jsonl`, §4.2), r2 tree `$W/r2dreamer_ladderN` @ **`0cf3d9e`**, 272 GB free.
+
+| job | name | learner | ladder | arm | seed | demo set | budget | checkpoints / milestones | QOS |
+|---|---|---|---|---|---:|---|---|---|---|
+| 3581558 | `ln_rl_ramp_dH_s950` | {RLPD} | nested_ramp | human | 950 | `dHfull_all_rnrh` | 250k dec | 0.16/0.4/1.0 | preempt |
+| 3581559 | `ln_rl_ramp_dH_s951` | {RLPD} | nested_ramp | human | 951 | `dHfull_all_rnrh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581560 | `ln_rl_ramp_dM_s970` | {RLPD} | nested_ramp | machine-first | 970 | `dDPfull_first_rnrh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581561 | `ln_rl_ramp_dM_s971` | {RLPD} | nested_ramp | machine-first | 971 | `dDPfull_first_rnrh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581562 | `ln_rl_sparse_dH_s955` | {RLPD} | nested_sparse | human | 955 | `dHfull_all_rnsh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581563 | `ln_rl_sparse_dH_s956` | {RLPD} | nested_sparse | human | 956 | `dHfull_all_rnsh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581564 | `ln_rl_sparse_dM_s975` | {RLPD} | nested_sparse | machine-first | 975 | `dDPfull_first_rnsh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581565 | `ln_rl_sparse_dM_s976` | {RLPD} | nested_sparse | machine-first | 976 | `dDPfull_first_rnsh` | 250k | 0.16/0.4/1.0 | preempt |
+| 3581566 | `ln_rl_ctl_dH_s958` | {RLPD} | staged (control) | human | 958 | `dHfull_all_rzh` | 100k | 0.4/1.0 | preempt |
+| 3581567 | `ln_rl_ctl_dH_s959` | {RLPD} | staged (control) | human | 959 | `dHfull_all_rzh` | 100k | 0.4/1.0 | preempt |
+| 3581568 | `ln_rl_ctl_dM_s978` | {RLPD} | staged (control) | machine-first | 978 | `dDPfull_first_rzh` | 100k | 0.4/1.0 | preempt |
+| 3581569 | `ln_rl_ctl_dM_s979` | {RLPD} | staged (control) | machine-first | 979 | `dDPfull_first_rzh` | 100k | 0.4/1.0 | preempt |
+| 3581570 | `ln_r2_ramp_dH_s950` | {r2dreamer} | nested_ramp | human | 950 | `dHfull_all_rnrh` | 2M online | 0.5M/1M/2M | normal |
+| 3581571 | `ln_r2_ramp_dH_s951` | {r2dreamer} | nested_ramp | human | 951 | `dHfull_all_rnrh` | 2M | 0.5M/1M/2M | normal |
+| 3581572 | `ln_r2_ramp_dM_s970` | {r2dreamer} | nested_ramp | machine-first | 970 | `dDPfull_first_rnrh` | 2M | 0.5M/1M/2M | normal |
+| 3581573 | `ln_r2_ramp_dM_s971` | {r2dreamer} | nested_ramp | machine-first | 971 | `dDPfull_first_rnrh` | 2M | 0.5M/1M/2M | normal |
+| 3581574 | `ln_r2_sparse_dH_s955` | {r2dreamer} | nested_sparse | human | 955 | `dHfull_all_rnsh` | 4M online | 0.5M/1M/2M/4M | normal |
+| 3581575 | `ln_r2_sparse_dH_s956` | {r2dreamer} | nested_sparse | human | 956 | `dHfull_all_rnsh` | 4M | 0.5M/1M/2M/4M | normal |
+| 3581576 | `ln_r2_sparse_dM_s975` | {r2dreamer} | nested_sparse | machine-first | 975 | `dDPfull_first_rnsh` | 4M | 0.5M/1M/2M/4M | normal |
+| 3581577 | `ln_r2_sparse_dM_s976` | {r2dreamer} | nested_sparse | machine-first | 976 | `dDPfull_first_rnsh` | 4M | 0.5M/1M/2M/4M | normal |
+
+Exactly the (aa) table: {RLPD} ramp 2v2 at 250k, {r2dreamer} ramp 2v2 at 2M, {RLPD} sparse 2v2 at
+250k, {r2dreamer} sparse 2v2 at 4M, {RLPD} staged control 2v2 at 100k, every job
+`TIP_GUARD=not_in_hand`, `far_release` off, each ladder paired with the set whose suffix matches it.
+
+**QOS split, disclosed:** the 8 {r2dreamer} runs on QOS `normal` (they are the long pole and a
+preempted world-model run restarts from step 0), the 12 {RLPD} runs on the preempt allocation where
+the capacity is. The split is BETWEEN LEARNERS and never between arms, so it cannot touch the
+human-versus-machine contrast this batch makes; a cross-learner reading carries it as a scheduling
+difference. State at submission: 2 running (`ln_rl_ramp_dH_s950/951` on pax048), 18 pending on
+Priority/Resources behind the four `lz_rl_sparse` pilot jobs still holding normal-QOS GPUs.
+
+**From here the tree is PINNED at `a40c8aa1`.** Run dirs: {RLPD}
+`$LAB/gp_ladderN/baselines/rl/checkpoints/e2e/e2e_rlpd_<ARM>_s<seed>` with logs
+`$LAB/gp_ladderN/e2e_rlpd_<jobid>.out`; {r2dreamer} `$W/runs/full_r2d_state_<set>_s<seed>` with logs
+`$W/slurm/ln_r2_<ladder>_<arm>_s<seed>_<jobid>.out`.
+
+**Pick up with**
+
+    squeue -u jstale02 -o "%.10i %.22j %.9T %.6M %.11q %R" | grep ln_
+    # P1 audit: the four compared fields must be identical within a ladder
+    grep -h '^\[ladder\] unified' $W/slurm/ln_r2_*.out $LAB/gp_ladderN/e2e_rlpd_*.out | sort -u
+    # P6: no job may end FAILED 2:0 00:00:00
+    sacct -S 2026-09-11 -u jstale02 -X -n --format=JobName%24,State%14,Elapsed,ExitCode | grep ln_
