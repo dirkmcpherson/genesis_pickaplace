@@ -310,7 +310,11 @@ OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 STAGES = HEADLINE_STAGES + LEGACY_STAGES
-OUTCOMES = ('slide_success', 'tipped', 'timeout')
+# The outcome taxonomy's success is THE LADDER'S OWN PAID TERMINAL (see eval_e2e.py): under
+# `sparse` that is `nested_v2`, and the hardcoded staged name recorded every sparse success
+# without `pushed` as a `timeout`.
+TERMINAL_STAGE = next((k for k in LADDER['terminal_stages'] if k != 'tipped'), 'slide_success')
+OUTCOMES = (TERMINAL_STAGE, 'tipped', 'timeout')
 counts = {k: 0 for k in OUTCOMES}
 stage_counts = {k: 0 for k in STAGES}
 routes = {}
@@ -366,7 +370,7 @@ for k, ic in enumerate(ics):
         'slide_success_settle': bool(end['slide_success']),
     }
     tipped = bool(info.get('tipped'))
-    outcome = 'slide_success' if st['slide_success'] else ('tipped' if tipped else 'timeout')
+    outcome = TERMINAL_STAGE if st[TERMINAL_STAGE] else ('tipped' if tipped else 'timeout')
     counts[outcome] += 1
     for s in STAGES:
         stage_counts[s] += int(st[s])

@@ -320,7 +320,14 @@ OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 STAGES = HEADLINE_STAGES + LEGACY_STAGES
-OUTCOMES = ('slide_success', 'tipped', 'timeout')
+# The outcome taxonomy's success is THE LADDER'S OWN PAID TERMINAL, not a hardcoded name.
+# `slide_success` is that terminal under `staged`; under `sparse` it is `nested_v2`, and hardcoding
+# the staged name recorded every sparse success that lacked `pushed` as a `timeout` -- an arm's
+# outcome column contradicting its own stage column. (The stage columns below are read from the
+# env's sticky grants and were always right; this is the outcome/`success_rate` half.)
+TERMINAL_STAGE = next((k for k in LADDER['terminal_stages'] if k != 'tipped'), 'slide_success')
+assert TERMINAL_STAGE in STAGES, (TERMINAL_STAGE, STAGES)
+OUTCOMES = (TERMINAL_STAGE, 'tipped', 'timeout')
 counts = {k: 0 for k in OUTCOMES}
 stage_counts = {k: 0 for k in STAGES}
 routes = {}
@@ -369,7 +376,7 @@ for k, ic in enumerate(ics):
         'slide_success_settle': bool(end['slide_success']),
     }
     tipped = bool(info.get('tipped'))
-    outcome = 'slide_success' if st['slide_success'] else ('tipped' if tipped else 'timeout')
+    outcome = TERMINAL_STAGE if st[TERMINAL_STAGE] else ('tipped' if tipped else 'timeout')
     counts[outcome] += 1
     for s in STAGES:
         stage_counts[s] += int(st[s])
@@ -427,7 +434,7 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                stages={s: stage_counts[s] / n for s in STAGES},
                stage_counts={s: stage_counts[s] for s in STAGES},
                legacy_stages=list(LEGACY_STAGES),
-               outcomes={k: counts[k] / n for k in OUTCOMES}, slide_routes=routes,
+               outcomes={k: counts[k] / n for k in OUTCOMES}, terminal_stage=TERMINAL_STAGE, slide_routes=routes,
                stage_notes=dict(
                    slide_success='IN-EPISODE, the ladder top rung (+4) and the only non-tip terminal: '
                                  'placed_v2 granted AND pushed AND nested_v2 (stage_predicates). STATISTIC OF RECORD.',
