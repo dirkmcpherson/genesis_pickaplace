@@ -618,3 +618,47 @@ version. That affects a re-score, not the batch, and it is stated here rather th
 scratch dir, or a second clone) and pointed `GENESIS_PICKAPLACE_ROOT` at `gp_ladderN` from there.
 The pin exists so that "which code ran" has ONE answer per batch; reaching for `git pull` to move a
 file is how that guarantee gets spent for no gain.
+
+### 6.2 Re-score resubmitted and running
+
+First array **3581709** FAILED `1:0` on all four tasks in 4 s, verbatim:
+
+    /cluster/tufts/apps/manual/9/.../conda/deactivate.d/qt-main_deactivate.sh: line 5:
+    CONDA_BACKUP_QT_XCB_GL_INTEGRATION: unbound variable
+
+My `set -euo pipefail`: `conda activate` sources the cluster's qt deactivate hook, which reads an
+unset variable and dies under `-u`. Every other launcher in `cluster/` uses `set -eo pipefail` for
+exactly this reason. Fixed to `set -eo pipefail` with the reason in the header.
+
+**Deployed the fix the way §6.1 says it should have been done the first time:** the corrected script
+was `scp`-ed to `$W/ln13_rescore.sbatch` — **outside** the pinned tree — and submitted from there
+with `GENESIS_PICKAPLACE_ROOT=$LAB/gp_ladderN`. The pin did not move:
+`known-good-2026-08-27-895-ga40c8aa1-dirty` before and after.
+
+Array **3581786**, all four tasks RUNNING, and the hardware guard reports what it landed on:
+
+    [eval-e2e] 30 start(s) from baselines/eval_ics.json:rnd (offset 0, isolation shared_process)
+      node=pax019 pid=571154 cores=64p/64l affinity=8 threads=1 isa=avx512
+      cpu="Intel(R) Xeon(R) Gold 6438M" role=record
+
+`64p/64l` — this node satisfies both the physical guard `eval_e2e` enforces and the logical one the
+set builder uses. Output lands in `$W/pilot_rescore_2026-09-11/<run>/{rnd_mode,records_rnd_mode}/`.
+
+---
+
+## Status at handoff
+
+* **20 `ln_*` jobs live** (3581558–3581577): 8 running, 12 pending, **0 failures**. Every started
+  job stamps `known-good-2026-08-27-895-ga40c8aa1-dirty` and its registered ladder.
+* **Six demonstration sets built and verified** on pax146 (64 cores, AVX-512), actions byte-identical
+  to their sources, both launcher gates passing.
+* **P-aa-7 FAILED on the machine set** (§3.5) — the batch trains on **12 human / 12 machine** `home`
+  tapes, not 13/14.
+* **Re-score array 3581786** running on the pilot's four staged checkpoints.
+* Trees: `$LAB/gp_ladderN` PINNED at `a40c8aa1`; `$W/r2dreamer_ladderN` at `0cf3d9e`. No
+  do-not-touch tree was modified; `$LAB/gp_unified` was read only, for checkpoints.
+* Disk 270 GB free.
+
+**Not done, for whoever picks this up:** no health monitor is armed for this batch (this session's
+would die with it). The readout commands are at the end of §5, and the `slide_gain_m` logging gap is
+in §4.3.
