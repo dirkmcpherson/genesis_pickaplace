@@ -312,7 +312,7 @@ Re-execution fidelity, for the reader who wants to judge the pin rather than tak
 build reads p50 8.1 / 10.8 mm with the same maxima — same family, so the large per-tape divergences
 are a property of 600-decision full-scope re-execution, not of this build.
 
-### 3.6 Tree note
+### 3.6 Tree note (see also §4.2)
 
 The set build ran at `gp_ladderN` = **`b65bd076`** (that is the `git=` suffix inside every set's
 stamp). The tree was then fast-forwarded to **`1f12d056`** to pick up `ladderN_verify_sets.sh` —
@@ -365,3 +365,73 @@ job runs. `farside` is absent from the ramp stamp's reward list — that absence
    on the first `agent.update()`, unrelated to the ladder work, reproduced on all three of Lane
    12b's CPU smokes. My {r2dreamer} smokes run on GPU, where it does not occur.
 
+
+---
+
+## Step 4 — the five smokes
+
+| job | name | learner | ladder | set | where |
+|---|---|---|---|---|---|
+| 3579596 | `ln_smoke_rl_ctl` | {RLPD} | staged | `dHfull_all_rzh` | batch/normal, CPU |
+| 3579597 | `ln_smoke_rl_ramp` | {RLPD} | nested_ramp | `dHfull_all_rnrh` | batch/normal, CPU — **FAILED, see §4.1** |
+| 3579598 | `ln_smoke_rl_sparse` | {RLPD} | nested_sparse | `dHfull_all_rnsh` | batch/normal, CPU |
+| 3579619 | `ln_smoke_r2_ramp` | {r2dreamer} | nested_ramp | `dHfull_all_rnrh` | gpu/interactive |
+| 3579620 | `ln_smoke_r2_sparse` | {r2dreamer} | nested_sparse | `dHfull_all_rnsh` | gpu/interactive |
+| 3579832 | `ln_smoke_rl_ramp2` | {RLPD} | nested_ramp | `dHfull_all_rnrh` | re-run of 3579597 after the fix |
+
+Command of record: `bash cluster/submit_ln_smokes.sh` (`ONLY=rl|r2` submits one half).
+
+**Submission defect, trivial but logged:** both {r2dreamer} smokes were refused outright —
+
+    sbatch: error: QOSMaxWallDurationPerJobLimit
+    sbatch: error: Batch job submission failed: Job violates accounting/QOS policy
+
+`cluster/wmfix_full.sbatch` bakes `-t 2-00:00:00`; the `interactive` QOS caps walltime at
+**04:00:00** (`sacctmgr show qos interactive` → `MaxWall 04:00:00`, `cpu=16,gres/gpu=1,mem=64G`). Fixed
+by adding `-t 0-03:00:00` to the smoke script's interactive block — the same 3 h the pilot's r2 smoke
+used. That QOS also allows only one job at a time, so `ln_smoke_r2_sparse` queues behind
+`ln_smoke_r2_ramp` by design, not by fault.
+
+### 4.1 DEFECT: the {RLPD} demo gate was hardcoded to the STAGED rungs and refused every Ladder-N set
+
+`ln_smoke_rl_ramp` (3579597) died **64 seconds in**, `FAILED 1:0`, with its `[ladder]` stamp already
+printed correctly. Verbatim:
+
+    Traceback (most recent call last):
+      File ".../baselines/rl/full_demos.py", line 93, in segment_transitions_full
+        assert round(float(v), 6) in ladder, f'{f}: reward {v} is not a sum of the staged ladder {sorted(ladder)}'
+    AssertionError: .../demos_state_full/dHfull_all_rnrh/genesis-100000-013-256.npz:
+      reward 0.017715517431497574 is not a sum of the staged ladder [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+
+`segment_transitions_full` validated every per-decision reward against `_reachable_reward_sums()`,
+built from `full_demos`' own legacy `STAGE_REWARD`. That is right for `staged` and wrong for Ladder N:
+`nested_ramp` pays a **continuous** rung — `3.0 × min(1, slide_gain_m / 0.05)` credited on new minima —
+so fractional per-decision values (0.0177 here) are the design working, not corruption.
+
+**Blast radius had the smoke not run: all four {RLPD} `nested_ramp` jobs of amendment (aa) would have
+died at startup**, i.e. a fifth of the batch, silently missing from the table rather than visibly
+failing later. `nested_sparse` (pays 1.0) and the `staged` control were never at risk.
+
+Fix (`a40c8aa`), in two parts:
+
+1. The value check now comes from `full_env.LADDERS` via the named ladder, not from a second copy of
+   the rungs in this module — a discrete ladder keeps the exact reachable-sum test with its own rungs,
+   and a ramp ladder is bounded per decision **and on the episode return**, which is the tightest
+   statement that is true of a continuous rung. Verified that `staged`'s value set is unchanged element
+   for element, so no pre-existing run's gate moves.
+2. **A new check, because the defect showed nothing was watching this:** the set's recorded ladder
+   (`repeat.json` → `relabel.ladder`) must equal the ladder the run trains under (`train_rlpd` passes
+   `args.ladder`). A buffer paying one objective inside an environment paying another is precisely the
+   confound this branch exists to remove, and on the {RLPD} path nothing asserted it.
+
+Tested locally against the real sets before resubmitting: `_rnrh` and `_rnsh` both load (74 tapes,
+29 221 transitions, Σ 215.89 / 13.00 on this box's copies) and a deliberate `nested_ramp`-set-under-a-
+`staged`-run is refused with the new message. Re-run as **3579832**.
+
+### 4.2 Tree note for the batch
+
+The fix landed while three smokes were running and **before any `ln_*` training job was submitted**,
+so the pin is not yet in force. `$LAB/gp_ladderN` is now at `a40c8aa1`. Note the `[ladder]` stamps
+carry a `-dirty` suffix: the launcher writes `cluster/RUN_REGISTRY.jsonl` and its Slurm `.out` files
+inside the tree. The pilot's stamps read `-dirty` for the same reason; it is the launcher's own
+bookkeeping, not an uncommitted code edit.
