@@ -798,7 +798,9 @@ class FullTaskEnv(gym.Env):
         if self.tracker is not None:
             self.tracker.reset()
             _g = np_(self.genv.w['goal'].get_pos())
-            self.tracker.goal_xy0 = (float(_g[0]), float(_g[1]))
+            # the tracker's static goal (its fallback when update() gets goal_pos=None; the
+            # attribute is `goal_xy`, a (2,) array -- a wrong name here would be a silent no-op)
+            self.tracker.goal_xy = np.asarray([float(_g[0]), float(_g[1])], dtype=np.float64)
 
     def _reset_place(self, uid=None):
         tried = []

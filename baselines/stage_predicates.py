@@ -95,6 +95,8 @@ BAND_HI_M = 0.07            # m above shelf_top_z: top of the resting band.
 FLAG_KEYS = ('in_hand', 'at_rest', 'released', 'pushed', 'contact_push', 'nested_v2',
              'slide_success')
 STICKY_KEYS = ('released', 'pushed', 'contact_push', 'slide_success')
+# the two diagnostics full_env copies into info on every frame (the rest are extras)
+DIAG_KEYS = ('goalward_gain_m', 'lever_m')
 
 
 def tilt_deg(quat):
@@ -114,6 +116,9 @@ def tilt_deg(quat):
 def _xy(p):
     a = np.asarray(p, dtype=np.float64).reshape(-1)
     return a[:2]
+
+
+tilt_from_quat = tilt_deg   # the name the Lane-2 interface test uses; same function
 
 
 class StageTracker:
