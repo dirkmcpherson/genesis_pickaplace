@@ -153,6 +153,15 @@ with slide reward across the two learners, which is the strongest single piece o
 the binding constraint on the top rung is the WORLD (§10b: 2-4 cm systematic under-transfer of
 the push), not the incentive. Raising the slide reward is very unlikely to produce slides.
 
+> **UNRECONCILED (added 2026-09-10 at handoff; see `paper/E2E_TRAINING_PROBLEMS_2026-09-10.md` §0).**
+> The argument above is cross-learner, which §2 says is confounded. The WITHIN-learner evidence
+> disagrees (measured from existing cells, same evaluator): {r2dreamer} human arm, OLD ladder
+> 4.1M (4 seeds) nested_honest 0.167 (20/120) and 12 slides, against (x) ladder 4M (6 seeds)
+> 0.017 (3/180) and 0 slides; per-seed exact p 0.048 / 0.033 (one-sided). Under (x),
+> `contact_push` fires 0.444 WITHOUT release, so the policy stalls at rung 3 pressing the held can
+> against the goal. **Do not act on "world, not incentive".** Full table and mechanism:
+> `paper/E2E_TRAINING_PROBLEMS_2026-09-10.md` §0.
+
 {r2dreamer} also nests far less than {RLPD} at every level (proxy 8/180 vs 44/300; honest 3/180
 vs 12/300) **despite the better pick rate** (~0.88 vs ~0.80). It picks more and finishes less.
 Real, but confounded by the ladder split (§2) — do not report it as a learner result.
@@ -257,6 +266,28 @@ still die if preempted. Watch for `FAILED 2:0` with elapsed `00:00:00`.
 This is the third instance of the same class today: code written to handle a case, made
 unreachable by an earlier line. (The others: the launcher's log-name assumption, §9; and
 `full_eval_sweep.sh` skipping every `-J`-renamed run.)
+
+### Defect 5 (verified in code 2026-09-10, late) — under the (x) ladder the +4 slide rung CANNOT be paid in training
+
+    $ sed -n 978p $W/gp_root/baselines/rl/full_env.py        # terminated = bool(info.get('nested'))  (the PROXY)
+    $ sed -n 699,704p $W/gp_root/baselines/rl/full_env.py    # proxy = contact ∧ grip<0.3 ∧ both upright, per env frame
+    $ sed -n 328,333p $W/gp_root/baselines/genesis_can_env.py # slide = same clauses + footprint, 12 CONSECUTIVE frames
+    $ sed -n 325,345p $W/r2dreamer_fix/envs/genesis.py       # end_of_episode() runs AFTER the terminal reward; logging only
+
+The proxy's conditions are a subset of the slide's, so the episode terminates on the first frame
+of the 12-frame slide window. The settle route is post-terminal and unpaid. The reward loop never
+sees `slide_success=True`. **The (x) training ladder was picked 1 / placed_v2 1 / contact_push 2,
+max 4, with an unpaid terminal.** The `_rx` demo prefill still pays +4 in 13/74 human tapes, so
+buffer and env disagree on the objective. And the env's `slide_success` is the (l) predicate
+(`grip < 0.3`, withdrawn by (p)), not the (x) definition that was registered.
+
+Measured effect, {r2dreamer} human arm, rnd30 mode: OLD ladder 4.1M (4 seeds) nested_honest
+0.167, slides 12/120; (x) 4M (6 seeds) 0.017, 0/180. Full table and the equal-config check:
+`paper/E2E_TRAINING_PROBLEMS_2026-09-10.md` §0. This is the reason for the {r2dreamer} numbers in
+§4b, and it removes the basis for "world, not incentive".
+
+Note the {r2dreamer} launcher DOES stamp the ladder (`[gates] STAGE_REWARD in force:` in every
+`e2eL_r2_*` Slurm log); the {RLPD} launcher stamps nothing.
 
 ### Phase annotators (both learners, added 2026-09-10)
 
