@@ -177,3 +177,26 @@ starts, `grep -h '^\[ladder\]' <its log>` to record its stamp here.
 ## 5. Readouts
 
 *(milestone cells; `rnd30` mode with `nested_v2`, `slide_success`, `pushed`, `nested_honest`)*
+
+Not available yet — all 16 jobs were pending at the end of this session. When they land:
+
+    # {RLPD}: the in-job cells, plus the stage columns
+    cd $LAB/gp_unified && python3 baselines/e2e_table_all.py --strat
+    # per-run: baselines/rl/checkpoints/e2e/e2e_rlpd_<ARM>_s<seed>/fresh_eval_rnd30_mode/metrics.json
+    # milestone checkpoints re-scored post hoc with cluster/e2e_eval_cells.sh (CKPT=<run>/ckpt_0NN/rlpd_ckpt.zip)
+
+    # {r2dreamer}: the in-job cells
+    ls $W/runs/full_r2d_state_*_r[zs]_s9[46][0-9]/fresh_eval_rnd30_mode/metrics.json
+    # milestones: $W/runs/<run>/milestones/online_<N>.pt  (+ .json with sha256 and overshoot)
+
+    # P1 audit over the whole batch (the four fields must be identical within a ladder)
+    for f in $W/slurm/lz_r2_*_*.out $LAB/gp_unified/e2e_rlpd_*.out; do grep -h '^\[ladder\] unified' $f; done | sort -u
+
+    # P6: no job may end FAILED 2:0 00:00:00
+    sacct -S 2026-09-11 -u jstale02 -X -n --format=JobName%24,State%14,Elapsed,ExitCode | grep lz_
+
+**The `_rs` sets are the ONLY ones the sparse arm may train on, and the `_rz` sets the only ones
+the staged arm may** — the launcher takes the set from `DEMO`/argv and does not check the suffix
+against `LADDER`, so a mismatched pair would train a buffer on one objective and an environment on
+another, which is the defect this whole amendment exists to remove. `cluster/submit_lz_pilot.sh`
+is the pairing of record.
