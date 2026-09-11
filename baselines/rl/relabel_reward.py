@@ -333,6 +333,67 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder):
     return man
 
 
+def write_repeat_json(man, rows, in_dir, out_dir, ladder):
+    """Emit the set manifest BOTH LAUNCHERS GATE ON (`repeat.json`), inherited from the source.
+
+    `manifest.json` (above) is this builder's own record; neither launcher reads it.
+    `cluster/sbatch_rlpd_e2e.sh` and `cluster/wmfix_full.sbatch` both open
+    `<set>/repeat.json` and assert sim_variant / scope=full / with_state / action_repeat /
+    reward_from_tape / delta_cap / terminal_reward / n_written, and the RLPD one additionally
+    asserts the SELECTION attestation (`one_per_ic_first` for the de-selected machine arm).
+    A relabelled set without this file cannot be trained on at all.
+
+    The selection flags are INHERITED VERBATIM from the source manifest and never re-derived
+    from a CLI flag -- that is the 2026-09-09 defect (`b756259`): `to_dreamer_native.py`
+    stamped `one_per_ic_first` from its own argv, so a set selected upstream recorded
+    `False`, a FALSE CLAIM rather than a missing key, and the launcher gate correctly refused
+    8 jobs. Here the source dict is copied and only the counts the relabel actually changed
+    are overwritten.
+
+    `terminal_reward` is one of the inherited SOURCE stamps: it describes how
+    `to_dreamer_native.py` built the tapes, not the re-executed reward column. It is kept
+    because the world-model launcher asserts it; it is not evidence about this ladder.
+    """
+    rj = os.path.join(in_dir, 'repeat.json')
+    if not os.path.exists(rj):
+        print(f'NOTE: {in_dir} has no repeat.json (contract-v1 layout); none written for {out_dir}')
+        return None
+    raw = open(rj, 'rb').read()
+    src = json.loads(raw.decode())
+    m = dict(src)
+    dec = [int(r['n']) for r in rows]
+    n_pick = sum(1 for r in rows if 'picked' in r['grants'])
+    m.update(
+        n_written=len(rows),
+        total_reward=float(man['reward_total_new']),
+        n_pick=n_pick, n_nopick=len(rows) - n_pick,
+        decisions_min=int(min(dec)), decisions_max=int(max(dec)),
+        decisions_median=int(np.median(dec)),
+        src=os.path.abspath(in_dir),
+        src_manifest_sha=hashlib.sha256(raw).hexdigest(),
+        generator='baselines/rl/relabel_reward.py (D5 re-execution)',
+        created=time.strftime('%Y-%m-%dT%H:%M:%S'),
+        relabel=dict(
+            ladder=ladder, ladder_stamp=man['ladder_stamp'],
+            source_set=os.path.abspath(in_dir), source_generator=src.get('generator'),
+            source_total_reward=src.get('total_reward'),
+            source_n_pick=src.get('n_pick'), source_n_nopick=src.get('n_nopick'),
+            actions_sha256=man['actions_sha256'],
+            selection_inherited={k: src.get(k) for k in ('one_per_ic_best', 'one_per_ic_first')
+                                 if k in src},
+            tapes_granting=man['tapes_granting'], end_reasons=man['end_reasons'],
+            can_dev_max_m=man['can_dev_max_m'], can_dev_p50_m=man['can_dev_p50_m'],
+            n_tapes_can_dev_over_1cm=man['n_tapes_can_dev_over_1cm'],
+            inherited_source_stamps=['terminal_reward', 'reward_from_tape', 'grant_slack_decisions',
+                                     'n_tipped_terminal', 'n_cap_truncated', 'n_double_grant'],
+            is_terminal='unchanged from the source tape (LADDER_IMPL_NOTES §4): the re-execution '
+                        'terminal is recorded per tape as rz_end_reason/rz_end_decision, and the '
+                        'action stream is kept whole so its sha256 still matches the source'),
+    )
+    json.dump(m, open(os.path.join(out_dir, 'repeat.json'), 'w'), indent=1)
+    return m
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--in', dest='inp', required=True,
@@ -415,7 +476,14 @@ def main():
     assert len(rows) == len(files), (len(rows), len(files))
     man = summarize(rows, files, args.inp, args.out, sv, args.ladder)
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
+    rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder)
+    for f in glob.glob(os.path.join(args.out, '_shard*.json')):   # merged into manifest.json
+        os.remove(f)
     print('\n' + '=' * 78)
+    if rep is not None:
+        print(f'repeat.json          : n_written={rep["n_written"]} total_reward={rep["total_reward"]:.1f} '
+              f'n_pick={rep["n_pick"]} one_per_ic_first={rep.get("one_per_ic_first")} '
+              f'one_per_ic_best={rep.get("one_per_ic_best")}')
     print(f'tapes                : {man["n_tapes"]}  ({man["decisions_total"]} decisions)')
     print(f'reward sum  recorded : {man["reward_total_old"]:.1f}')
     print(f'reward sum  RE-EXEC  : {man["reward_total_new"]:.1f}')

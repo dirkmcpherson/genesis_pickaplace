@@ -14,7 +14,11 @@
 #      the handler that clears a partial logdir is reachable. Preemption killed 5 seeds
 #      because it was not.
 # Everything else -- partition, recipe, demo gate, eval loop -- is unchanged.
-# usage: sbatch cluster/wmfix_full.sbatch <ARM> <seed> <steps> [hydra overrides...]
+# usage: R2_TREE=<r2dreamer tree> GENESIS_PICKAPLACE_ROOT=<gp tree> LADDER=staged|sparse \
+#          sbatch cluster/wmfix_full.sbatch <ARM> <seed> <steps> [hydra overrides...]
+#   R2_TREE is REQUIRED for the same reason as GENESIS_PICKAPLACE_ROOT (see below).
+#   R2_LONG_RUN=1 + R2_MILESTONES='[...]' make <steps> mean ONLINE env steps and write
+#   immutable milestone checkpoints (they must be sorted, unique and end at <steps>).
 #SBATCH -J wmfix_full
 #SBATCH -p gpu,preempt
 #SBATCH --gres=gpu:1
@@ -39,7 +43,13 @@ LADDER=${LADDER:?set LADDER (staged | sparse) -- the reward ladder is never defa
 case "$LADDER" in staged|sparse) ;; *) echo "FATAL: LADDER must be staged | sparse (got $LADDER)"; exit 2 ;; esac
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
-TREE=$W/r2dreamer_fix
+# THE WORLD-MODEL TREE IS REQUIRED (LADDER_UNIFY_BRIEF D1, 2026-09-11). It used to be the
+# hardcoded $W/r2dreamer_fix, which (a) is an IN-FLIGHT tree that must not be touched and
+# (b) is the same "the launcher, not the submission, decides which code runs" defect as the
+# GENESIS_PICKAPLACE_ROOT default. Name the tree or do not run.
+R2_TREE=${R2_TREE:?set R2_TREE to the r2dreamer tree this run must use (no default: a launcher default is how the two learners ended up on different ladders)}
+TREE=$R2_TREE
+[ -f "$TREE/train.py" ] && [ -f "$TREE/envs/genesis.py" ] || { echo "FATAL: $TREE is not an r2dreamer tree"; exit 2; }
 PY=$LAB/r2d_venv/bin/python
 DEMO=${DEMO_ROOT:-$W/demos_state_full}/$ARM   # DEMO_ROOT override: the repeat-1 pilot reads demos_state_r1/ (stride-1 tapes)
 NAME=full_r2d_state_${ARM}${TAG:+_$TAG}_s${SEED}
