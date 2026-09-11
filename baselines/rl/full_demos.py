@@ -62,11 +62,23 @@ def seg_uid(path):
     return int(parts[1]), int(parts[3])
 
 
-def segment_transitions_full(seg_dir, expect):
+def segment_transitions_full(seg_dir, expect, ladder=None):
     """-> (transitions [(obs, a, r, next_obs, done)], census) for a FULL-scope r2dreamer-native segment dir.
 
     expect: dict of repeat.json stamps that MUST match this run (silent-default rule); an empty dict skips the
-    check (census use only). Rewards are the recorded staged grants; terminals are the recorded terminals."""
+    check (census use only). Rewards are the recorded grants; terminals are the recorded terminals.
+
+    `ladder` (PHASE_PLAN amendment (aa), 2026-09-11): the ladder THIS RUN trains under. When given, the
+    set's own recorded ladder must equal it -- a buffer paying one objective while the env pays another is
+    the exact confound this branch exists to remove, and until now nothing checked it here. When omitted
+    (census use), the set's recorded ladder is used for the value check and nothing is cross-asserted.
+
+    The per-decision value check used to be hardcoded to the STAGED rungs, so any Ladder-N set was
+    rejected out of hand: `nested_ramp` pays a CONTINUOUS ramp (3.0 x min(1, slide_gain/0.05 m) on new
+    minima), whose per-decision values are fractional by construction. The check is now taken from the
+    named ladder: discrete ladders keep the exact reachable-sum test, and a ramp ladder is checked on the
+    interval [0, max_return] per decision plus max_return on the EPISODE TOTAL, which is the tightest
+    statement that is true of a continuous rung."""
     m, files = segment_meta(seg_dir)
     for k, want in expect.items():
         got = m.get(k)
@@ -76,7 +88,15 @@ def segment_transitions_full(seg_dir, expect):
     assert m.get('with_state') is True and int(m.get('state_dim') or 0) == 17, m
     assert str(m.get('scope')) == 'full', f'{seg_dir}: scope={m.get("scope")!r}, expected full'
     assert m.get('reward_from_tape') is True, f'{seg_dir}: the staged rewards must come from the tape'
-    ladder = {round(v, 6) for v in _reachable_reward_sums()}
+    # WHICH ladder this set was built under. Relabelled sets record it; a set built before the
+    # unification has no `relabel` block and is the staged ladder by construction.
+    set_ladder = str((m.get('relabel') or {}).get('ladder') or 'staged')
+    if ladder is not None:
+        assert set_ladder == str(ladder), (
+            f'{seg_dir}: the demonstration set was built under ladder {set_ladder!r} but this run trains '
+            f'under {ladder!r}. Training a buffer on one objective inside an environment that pays another '
+            f'is the confound PHASE_PLAN (z)/(aa) exist to remove; refusing.')
+    reward_values, ramp = _ladder_reward_check(set_ladder)
     out = []
     census = dict(n_tapes=0, n_transitions=0, n_rewarded=0, n_terminal=0, lens=[], uids=[],
                   reward_total=0.0, reward_values={}, n_multi_reward=0)
@@ -89,8 +109,19 @@ def segment_transitions_full(seg_dir, expect):
         assert T >= 2 and np.isfinite(st).all(), f
         assert np.abs(ac).max() <= 1.0 + 1e-6 and not np.abs(ac[0]).any(), f'{f}: action[0] must be 0 (backward-shifted layout)'
         assert float(rw.min()) >= 0.0, f'{f}: negative reward in a staged-sparse full-task tape'
+        if ramp is None:
+            for v in np.unique(rw[rw != 0]):
+                assert round(float(v), 6) in reward_values, \
+                    f'{f}: reward {v} is not a sum of the {set_ladder} ladder {sorted(reward_values)}'
+        else:
+            # A continuous rung: per-decision values are fractional by design, so the checkable
+            # statements are the bound on each decision and the bound on the episode return.
+            hi = max(reward_values)
+            assert float(rw.max()) <= hi + 1e-4, \
+                f'{f}: reward {float(rw.max())} exceeds the {set_ladder} ladder maximum {hi}'
+            assert float(rw.sum()) <= hi + 1e-4, \
+                f'{f}: episode return {float(rw.sum())} exceeds the {set_ladder} ladder maximum {hi}'
         for v in np.unique(rw[rw != 0]):
-            assert round(float(v), 6) in ladder, f'{f}: reward {v} is not a sum of the staged ladder {sorted(ladder)}'
             census['reward_values'][float(v)] = census['reward_values'].get(float(v), 0) + int((rw == v).sum())
         assert int(term.sum()) <= 1 and (not term.any() or bool(term[-1])), \
             f'{f}: a terminal may only appear on the LAST row (got {np.nonzero(term)[0][:5]} of {T})'
@@ -101,6 +132,25 @@ def segment_transitions_full(seg_dir, expect):
         census['reward_total'] += float(rw.sum()); census['n_multi_reward'] += int((rw != 0).sum() > 1)
         census['lens'].append(T - 1); census['uids'].append(seg_uid(f)[0])
     return out, census
+
+
+def _ladder_reward_check(ladder):
+    """-> (set of reachable per-decision values, ramp spec or None) for a NAMED ladder.
+
+    The rungs come from `full_env.LADDERS` rather than this module's legacy STAGE_REWARD, so a ladder
+    added there is checkable here without a second edit -- the two-places-to-change pattern is what let
+    the learners diverge in the first place. For a ramp ladder the returned set is only used for its
+    maximum (the ramp makes the value set continuous)."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import full_env
+    rungs, _terminal = full_env.ladder_spec(ladder)
+    _requires, ramp = full_env.ladder_extras(ladder)
+    vals = {0.0}
+    for r in rungs.values():
+        vals |= {v + r for v in vals}
+    if ramp:
+        vals |= {v + float(ramp['scale']) for v in vals}
+    return {round(v, 6) for v in vals}, ramp
 
 
 def _reachable_reward_sums():

@@ -434,7 +434,9 @@ def main():
         from full_demos import segment_transitions_full, print_segment_census as print_full_census
         transitions, census = segment_transitions_full(
             str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
-                                                   delta_cap=env.delta_cap, scope='full'))
+                                                   delta_cap=env.delta_cap, scope='full'),
+            # amendment (aa): the set must have been BUILT under the ladder this run TRAINS under.
+            ladder=args.ladder)
         print_full_census(census, tag=args.demo_dir)
         assert census['n_transitions'] > 0, 'empty segment demo set'
         norm = None
