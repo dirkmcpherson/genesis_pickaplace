@@ -14,7 +14,7 @@
 #      the handler that clears a partial logdir is reachable. Preemption killed 5 seeds
 #      because it was not.
 # Everything else -- partition, recipe, demo gate, eval loop -- is unchanged.
-# usage: R2_TREE=<r2dreamer tree> GENESIS_PICKAPLACE_ROOT=<gp tree> LADDER=staged|sparse \
+# usage: R2_TREE=<r2dreamer tree> GENESIS_PICKAPLACE_ROOT=<gp tree> LADDER=staged|sparse|nested_sparse|nested_ramp [FAR_RELEASE=1] \
 #          sbatch cluster/wmfix_full.sbatch <ARM> <seed> <steps> [hydra overrides...]
 #   R2_TREE is REQUIRED for the same reason as GENESIS_PICKAPLACE_ROOT (see below).
 #   R2_LONG_RUN=1 + R2_MILESTONES='[...]' make <steps> mean ONLINE env steps and write
@@ -39,8 +39,16 @@ ARM=$1; SEED=$2; STEPS=$3; shift 3
 # the config's 8.0 in place for a sparse arm would disable the clamp that made this port
 # stable in the first place. Both env.return_clamp and model.return_clamp are set from the
 # ladder below and printed, so the pair can never silently disagree with the reward.
-LADDER=${LADDER:?set LADDER (staged | sparse) -- the reward ladder is never defaulted}
-case "$LADDER" in staged|sparse) ;; *) echo "FATAL: LADDER must be staged | sparse (got $LADDER)"; exit 2 ;; esac
+LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_ramp) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse|nested_sparse|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_ramp (got $LADDER)"; exit 2 ;; esac
+# Ladder N only (see sbatch_rlpd_e2e.sh): passed to the adapter as env.far_release.
+FAR_RELEASE=${FAR_RELEASE:-}
+case "${FAR_RELEASE}" in
+  ""|0) FAR_CFG="env.far_release=false" ;;
+  1) case "$LADDER" in nested_sparse|nested_ramp) FAR_CFG="env.far_release=true" ;;
+       *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 2 ;; esac ;;
+  *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 2 ;;
+esac
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
 # THE WORLD-MODEL TREE IS REQUIRED (LADDER_UNIFY_BRIEF D1, 2026-09-11). It used to be the
@@ -112,7 +120,7 @@ PYL
 ) || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
 echo "[ladder] ladder=$LADDER return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
 CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
-     env.ladder=$LADDER env.return_clamp=$CLAMP model.return_clamp=$CLAMP
+     env.ladder=$LADDER $FAR_CFG env.return_clamp=$CLAMP model.return_clamp=$CLAMP
      buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
 printf '%q ' "${CMD[@]}"; echo
 printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log

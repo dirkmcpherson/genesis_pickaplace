@@ -131,7 +131,11 @@ def main():
                          "+1 and ends the episode. bare_contact = the (m)/world-model-of-record grant; slide_success = "
                          "the WITHDRAWN (o) reward (refused unless CONTACT_GRANT_ALLOW_WITHDRAWN=1); prior_release = "
                          "(p)'s corrected predicate, not implemented until its clause-5 threshold is calibrated.")
-    ap.add_argument('--ladder', choices=['staged', 'sparse'], default='staged',
+    ap.add_argument('--far-release', action='store_true',
+                    help='Ladder N: the release that counts for farside/home must be >= 0.10 m from '
+                         'the goal. Part of the ladder stamp; refused on a non-nested ladder.')
+    ap.add_argument('--ladder', choices=['staged', 'sparse', 'nested_sparse', 'nested_ramp'],
+                    default='staged',
                     help="scope=full ONLY: WHICH reward ladder (a constructor argument of FullTaskEnv, "
                          "never an env var -- the reward structure must not be selectable by something a "
                          "job can silently fail to receive; that is exactly how {RLPD} and {r2dreamer} "
@@ -325,7 +329,7 @@ def main():
                       # equal; before 08-23 the env silently used 0.998 whatever --gamma was)
                       pick_shaping_gamma=args.gamma,
                       pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'),
-                      ladder=args.ladder,
+                      ladder=args.ladder, far_release=args.far_release,
                       # D7: constructor argument, gamma matched to the AGENT's discount so
                       # the potential is exactly policy-invariant (Ng et al. 1999)
                       goalward_shaping=(args.goalward_shaping == 'on'),
@@ -340,6 +344,7 @@ def main():
     assert env.goalward_shaping is (args.goalward_shaping == 'on'), env.goalward_shaping
     assert args.goalward_shaping == 'off' or args.scope == 'full', 'goalward shaping is a scope=full lever'
     assert env.ladder == args.ladder, (env.ladder, args.ladder)
+    assert env.far_release == bool(args.far_release), (env.far_release, args.far_release)
     assert args.ladder == 'staged' or args.scope == 'full', 'ladder is a scope=full lever'
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
@@ -537,6 +542,7 @@ def main():
     # readable record; and the final one next to rlpd_final.
     sidecar['goalward_shaping'] = args.goalward_shaping
     sidecar['ladder'] = args.ladder
+    sidecar['far_release'] = bool(args.far_release)
     sidecar['max_return'] = float(sum(env.stage_reward.values()))
     (out / 'wandb_eval').mkdir(parents=True, exist_ok=True)
     (out / 'wandb_eval' / 'snapshot.action_mode.json').write_text(json.dumps(sidecar))

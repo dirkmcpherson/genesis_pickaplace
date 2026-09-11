@@ -69,8 +69,17 @@ ARM=${ARM:?set ARM (dH | dDP | dDPfirst)}; SEED=${SEED:?set SEED}
 # LADDER IS REQUIRED (user 2026-09-11). Which objective a run optimises is never a default:
 # the two learners trained on different ladders because a flag could be absent and nothing
 # said so. It is passed to the trainer explicitly and printed in the [ladder] stamp below.
-LADDER=${LADDER:?set LADDER (staged | sparse) -- the reward ladder is never defaulted}
-case "$LADDER" in staged|sparse) ;; *) echo "FATAL: LADDER must be staged | sparse (got $LADDER)"; exit 1 ;; esac
+LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_ramp) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse|nested_sparse|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_ramp (got $LADDER)"; exit 1 ;; esac
+# Ladder N only: the release that counts for farside/home must be >= 0.10 m from the goal.
+# Empty by default; refused on a ladder that has no such rung (the trainer asserts it too).
+FAR_RELEASE=${FAR_RELEASE:-}
+case "${FAR_RELEASE}" in
+  ""|0) FAR_FLAG="" ;;
+  1) case "$LADDER" in nested_sparse|nested_ramp) FAR_FLAG="--far-release" ;;
+       *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 1 ;; esac ;;
+  *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 1 ;;
+esac
 STEPS=${STEPS:-250000}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; GAMMA=${GAMMA:-0.99}
 ACTION_REPEAT=4; TRAIN_HORIZON=1200; EVAL_HORIZON=1200; DEVICE=${DEVICE:-cuda}
 case "$ARM" in
@@ -118,7 +127,7 @@ print(h.hexdigest()[:16])
 PY
 ) || exit 1
 
-TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" --demo-format segment --demo-dir "$DEMO"
+TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" ${FAR_FLAG:+$FAR_FLAG} --demo-format segment --demo-dir "$DEMO"
   --action-mode delta_joint --delta-ref target --action-repeat "$ACTION_REPEAT"
   --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON" --eval-freq 0
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off

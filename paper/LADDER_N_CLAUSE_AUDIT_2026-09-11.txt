@@ -1,0 +1,85 @@
+# `nested_sparse` with `far_release` ON -- "a version of sparse that enforces the slide"
+
+`home` = nested_v2 AND farside-granted AND slide_gain >= 1 cm, release at >= 8 cm. One point per tape, nothing else pays.
+
+| reach | arm | tapes paying `home` | of tapes | uids |
+|---|---|---|---|---|
+| 0.10 m | {human demonstrations} | **13** | 74 | 232, 233, 237, 247, 251, 256, 259, 273, 275, 302, 304, 316, 317 |
+| 0.10 m | {machine demonstrations} | **12** | 72 | 233, 242, 243, 251, 259, 262, 263, 265, 281, 305, 311, 321 |
+
+## Clause that fails, reach 0.10 m, far_release ON -- the tapes that complete a slide in sim
+
+### {human demonstrations} -- 13 sim-slide tapes, 13 pay `home`
+
+| uid | pays | release (cm) | farside frames | slide_gain (cm) | nested_v2 frames | failing clause |
+|---|---|---|---|---|---|---|
+| 232 | **yes** | 10.1 | 259 | 3.66 | 175 | - |
+| 233 | **yes** | 8.8 | 242 | 2.12 | 191 | - |
+| 237 | **yes** | 8.4 | 231 | 1.94 | 163 | - |
+| 247 | **yes** | 13.8 | 223 | 6.35 | 131 | - |
+| 251 | **yes** | 10.4 | 258 | 2.76 | 234 | - |
+| 256 | **yes** | 10.8 | 364 | 3.92 | 262 | - |
+| 259 | **yes** | 13.9 | 504 | 6.36 | 3 | - |
+| 273 | **yes** | 14.9 | 668 | 5.80 | 355 | - |
+| 275 | **yes** | 13.9 | 508 | 6.22 | 220 | - |
+| 302 | **yes** | 8.5 | 295 | 2.42 | 155 | - |
+| 304 | **yes** | 11.2 | 1093 | 3.44 | 203 | - |
+| 316 | **yes** | 13.0 | 744 | 4.93 | 125 | - |
+| 317 | **yes** | 12.1 | 698 | 5.62 | 303 | - |
+
+### {machine demonstrations} -- 14 sim-slide tapes, 12 pay `home`
+
+| uid | pays | release (cm) | farside frames | slide_gain (cm) | nested_v2 frames | failing clause |
+|---|---|---|---|---|---|---|
+| 233 | **yes** | 9.5 | 628 | 2.96 | 505 | - |
+| 242 | **yes** | 16.1 | 1521 | 9.30 | 1116 | - |
+| 243 | **yes** | 11.1 | 1739 | 3.00 | 1532 | - |
+| 251 | **yes** | 15.1 | 1530 | 6.53 | 1258 | - |
+| 255 | no | 7.9 | 0 | 0.00 | 1449 | release_too_close |
+| 259 | **yes** | 13.8 | 1486 | 6.32 | 1206 | - |
+| 262 | **yes** | 13.8 | 671 | 7.08 | 474 | - |
+| 263 | **yes** | 15.2 | 809 | 7.14 | 680 | - |
+| 265 | **yes** | 10.4 | 1222 | 2.68 | 1007 | - |
+| 281 | **yes** | 12.3 | 1577 | 5.28 | 1336 | - |
+| 302 | no | 7.8 | 0 | 0.00 | 235 | release_too_close |
+| 305 | **yes** | 9.2 | 583 | 2.64 | 512 | - |
+| 311 | **yes** | 8.6 | 1543 | 1.27 | 1506 | - |
+| 321 | **yes** | 11.3 | 1511 | 3.42 | 1331 | - |
+
+- **release_too_close** (2): released INSIDE the far-release distance (the drop-and-nudge clause)
+
+## Release distance -- dist_xy(can, goal) at the first `placed_v2` grant
+
+| arm | tapes that release | p10 | p25 | p50 | p75 | p90 | >= 8 cm |
+|---|---|---|---|---|---|---|---|
+| {human demonstrations} | 42/74 | 8.4 | 10.2 | 11.8 | 13.9 | 14.9 | 39 (93%) |
+| {machine demonstrations} | 44/72 | 8.6 | 10.3 | 11.8 | 14.1 | 15.2 | 40 (91%) |
+
+### ...by Lane-5 behaviour class (the clause exists to separate a slide from a drop)
+
+| arm | class | tapes | release p50 (cm) | >= 8 cm | kept by the clause |
+|---|---|---|---|---|---|
+| {human demonstrations} | placed_only | 16 | 13.1 | 16/16 | 100% |
+| {human demonstrations} | slide | 13 | 11.2 | 13/13 | 100% |
+| {human demonstrations} | tipped | 11 | 11.3 | 3/3 | 27% |
+| {human demonstrations} | picked_only | 11 | (never releases) | - | 0 |
+| {human demonstrations} | nopick | 9 | (never releases) | - | 0 |
+| {human demonstrations} | carry_in | 7 | 7.9 | 1/3 | 14% |
+| {human demonstrations} | push_no_nest | 6 | 11.9 | 6/6 | 100% |
+| {human demonstrations} | nested_drop | 1 | 6.6 | 0/1 | 0% |
+| {machine demonstrations} | placed_only | 18 | 12.9 | 18/18 | 100% |
+| {machine demonstrations} | slide | 14 | 11.2 | 12/14 | 86% |
+| {machine demonstrations} | picked_only | 12 | (never releases) | - | 0 |
+| {machine demonstrations} | nopick | 8 | (never releases) | - | 0 |
+| {machine demonstrations} | tipped | 8 | 12.8 | 3/3 | 38% |
+| {machine demonstrations} | carry_in | 6 | 11.9 | 3/3 | 50% |
+| {machine demonstrations} | push_no_nest | 4 | 12.9 | 4/4 | 100% |
+| {machine demonstrations} | nested_drop | 2 | 6.7 | 0/2 | 0% |
+
+## What `far_release` costs and buys (reach 0.10 m)
+
+| arm | `home` far_release OFF | ON | tapes lost | of those, class |
+|---|---|---|---|---|
+| {human demonstrations} | 13 | 13 | 0 | - |
+| {machine demonstrations} | 14 | 12 | 2 | slide x2 |
+

@@ -62,7 +62,8 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
-ap.add_argument('--ladder', choices=('staged', 'sparse'), default=None,
+ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'), default=None,   # kept equal to full_env.LADDERS,
+                # which is ASSERTED below once the tree is importable
                 help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
                      "checkpoint's -- a policy trained under one objective scored under another is a different "
                      "experiment, and the stamp in metrics.json is what a table builder checks. DEFAULT: the "
@@ -317,7 +318,8 @@ OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 # training proxy (precision 0.114 human / 0.029 machine, and it REVERSES the arm ordering --
 # audit brief §4a), `contact_push_legacy` the (g) predicate that needs no release, and
 # `slide_success_settle` the (l) settle route with its withdrawn grip clause.
-HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
+HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
+                   'farside', 'slide_event', 'home', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 STAGES = HEADLINE_STAGES + LEGACY_STAGES
 # The outcome taxonomy's success is THE LADDER'S OWN PAID TERMINAL, not a hardcoded name.
@@ -367,6 +369,11 @@ for k, ic in enumerate(ics):
         'contact_push': _g('contact_push'),
         'slide_success': _g('slide_success'),          # in-episode, paid, terminal
         'nested_v2': _g('nested_v2'),
+        # Ladder N (2026-09-11): computed and logged under EVERY ladder, paid under one, so a
+        # staged cell and a nested cell carry the same columns and are readable side by side.
+        'farside': _g('farside'),
+        'slide_event': _g('slide_event'),
+        'home': _g('home'),
         'nested_honest': bool(end['nested']),          # settled reference
         # --- legacy columns, never a headline ---
         'placed': _g('placed'),

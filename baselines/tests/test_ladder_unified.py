@@ -119,28 +119,37 @@ class FakeGenv:
 
 
 class FakeTracker:
-    """Stands in for stage_predicates.StageTracker: flags are whatever the test says."""
+    """Stands in for stage_predicates.StageTracker: flags are whatever the test says.
+
+    The key set is built from the REAL module's FLAG_KEYS + DIAG_KEYS, not hand-written, so a
+    flag Lane 1 adds cannot go missing here and make `_full_scope_predicates` KeyError against
+    a fake that silently lags the contract."""
 
     def __init__(self):
-        self.flags = dict(in_hand=False, at_rest=False, released=False, pushed=False,
-                          contact_push=False, nested_v2=False, slide_success=False,
-                          goalward_gain_m=0.0, lever_m=0.5)
+        self.flags = {k: False for k in SP.FLAG_KEYS}
+        self.flags.update({k: 0.0 for k in SP.DIAG_KEYS})
+        self.flags['lever_m'] = 0.5
         self.calls = []
 
     def reset(self):
         self.calls = []
+
+    def constants(self):
+        return dict(fake=True)
 
     def update(self, **kw):
         self.calls.append(kw)
         return dict(self.flags)
 
 
-def make_env(goalward=False, ladder='staged'):
+def make_env(goalward=False, ladder='staged', far_release=False):
     """A scope='full' FullTaskEnv with no Genesis: __init__ is bypassed on purpose."""
     e = FullTaskEnv.__new__(FullTaskEnv)
     e.genv = FakeGenv()
     e.scope = 'full'
     e.ladder = ladder
+    e.far_release = bool(far_release)
+    e.never_terminate = False
     e.stage_reward, e.terminal_stages = full_env.ladder_spec(ladder)
     e.action_mode = 'absolute'
     e.action_repeat = 1
@@ -161,7 +170,10 @@ def make_env(goalward=False, ladder='staged'):
     e.goalward_gamma = FullTaskEnv.GOALWARD_GAMMA
     e._goalward_phi_prev = 0.0
     e._t = 0
-    e._granted = set()
+    e._acct = full_env.LadderAccountant(
+        ladder, scope='full',
+        pay_stages=full_env.LadderAccountant.pay_stages_for('full', False))
+    e._granted = e._acct.reset()
     e._hold_run = 0
     e._pv2_run = 0
     e._phi = 0.0
@@ -450,6 +462,10 @@ def test_9_constructor_signature_matches_its_callers():
              contact_grant=None, pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
              pick_shaping_gamma=0.99, pick_shaping_terminal_zero=True, ladder='staged',
              goalward_shaping=False, goalward_gamma=0.99)
+    # the Ladder-N call the nested-ladder launchers and the relabel make
+    sig.bind(None, backend='cpu', max_steps=2400, scope='full', ladder='nested_ramp',
+             far_release=True, action_mode='delta_joint', delta_cap=0.025,
+             delta_leash_mult=5.0, action_repeat=4, delta_ref='target', camera_rig=False)
     # exactly the call eval_place.py makes
     sig.bind(None, backend='cpu', max_steps=600, scope='place', entry_bank='bank.json',
              phase_sparse=True, contact_grant=None, action_mode='delta_joint', delta_cap=0.025,
@@ -465,6 +481,218 @@ def test_9_constructor_signature_matches_its_callers():
     assert 'scope=contact needs an explicit contact_grant' in src
     assert "contact_grant in ('bare_contact', 'slide_success', 'prior_release')" in src
     print('9. constructor signature binds every real call site (contact_grant restored)  OK')
+
+
+# ======================================================= LADDER N (user, 2026-09-11) =====
+# These run the REAL StageTracker against the REAL LadderAccountant -- no fakes -- because the
+# ramp's value is a function of a tracker quantity, so a fake tracker would be testing the
+# test. `_ladder_run` reproduces exactly what FullTaskEnv does per env frame: feed the tracker,
+# copy its flags into `info` beside the env-owned `picked`/`placed_v2`, hand `info` to the
+# accountant, stop at the ladder's terminal.
+N_GOAL = np.array([0.700, -0.200, 0.147])
+N_SHELF_TOP = 0.110
+N_REST_Z = 0.148
+
+
+def _n_frame(can_d, tool_gap, *, picked=True, placed_v2=True, z=N_REST_Z,
+             can_quat=UPRIGHT, tool_dir='far', can_goal_contact=False):
+    """One env frame `can_d` metres from the goal (approached from +x) with the tool `tool_gap`
+    from the can centre. `tool_dir`: 'far' = behind the can (dot < 0, the pushing pose),
+    'near' = between can and goal, 'perp' = to the side (dot == 0)."""
+    can = np.array([N_GOAL[0] + can_d, N_GOAL[1]])
+    off = {'far': (tool_gap, 0.0), 'near': (-tool_gap, 0.0), 'perp': (0.0, tool_gap)}[tool_dir]
+    tool = can + np.asarray(off, float)
+    return dict(can_pos=np.array([can[0], can[1], z]), can_quat=can_quat, goal_pos=N_GOAL,
+                goal_quat=UPRIGHT, tool_xy=tool, grip_cmd=0.4, picked=picked,
+                placed_v2=placed_v2, can_goal_contact=can_goal_contact,
+                gripper_goal_contact=False)
+
+
+def _ladder_run(frames, ladder, far_release=False):
+    """-> (total reward, terminal frame index or None, accountant, tracker episode)."""
+    tr = SP.StageTracker(N_GOAL[:2], N_SHELF_TOP, far_release=far_release)
+    acct = full_env.LadderAccountant(
+        ladder, scope='full', pay_stages=full_env.LadderAccountant.pay_stages_for('full', False))
+    acct.reset()
+    total, term_at = 0.0, None
+    for i, f in enumerate(frames):
+        info = dict(tr.update(**f))
+        info['picked'] = bool(f['picked'])
+        info['placed_v2'] = bool(f['placed_v2'])
+        r, term = acct.frame(info)
+        total += r
+        if term:
+            term_at = i
+            break
+    return total, term_at, acct, tr.episode()
+
+
+def _release_farside_push_home(start_d=0.105, end_d=0.005, n_push=40):
+    """Release at `start_d`, tool moves to the far side, pushes the can `start_d - end_d`
+    metres home, then the can settles inside the touch distance."""
+    frames = [_n_frame(start_d, 0.15) for _ in range(SP.AT_REST_FRAMES + 4)]
+    for i in range(n_push):
+        d = start_d + (end_d - start_d) * (i + 1) / n_push
+        frames.append(_n_frame(d, 0.035, can_goal_contact=(d <= 0.070)))
+    frames += [_n_frame(end_d, 0.035 + 0.006 * (i + 1), can_goal_contact=True)
+               for i in range(SP.AT_REST_FRAMES + 8)]
+    return frames
+
+
+def test_10a_nested_ramp_pays_9_for_a_full_slide_and_nested_sparse_pays_1():
+    """The user's ladder, end to end: pick 1, release 1, far side 1, a 10 cm slide 2, home 4."""
+    frames = _release_farside_push_home()          # 10.0 cm of push -> the ramp saturates
+    r, term, acct, ep = _ladder_run(frames, 'nested_ramp')
+    assert abs(ep['slide_gain_m'] - 0.100) < 1e-9, ep['slide_gain_m']
+    assert abs(r - 9.0) < 1e-9, f'nested_ramp paid {r}, expected 1+1+1+2+4 = 9'
+    assert term is not None and ep['home'], 'home must terminate'
+    assert acct.paid == {'picked', 'placed_v2', 'farside', 'home'}
+    assert 'slide_event' in acct.granted, 'the named three-clause flag is logged, not paid'
+    assert 'slide_event' not in acct.paid
+    assert abs(acct.ramp_paid - 2.0) < 1e-9, 'the ramp saturates at its scale'
+    assert full_env.max_return('nested_ramp') == 9.0
+    r, term, acct, ep = _ladder_run(frames, 'nested_sparse')
+    assert abs(r - 1.0) < 1e-9, f'nested_sparse paid {r}, expected 1'
+    assert term is not None and acct.paid == {'home'}
+    assert full_env.max_return('nested_sparse') == 1.0
+    print('10a. full slide: nested_ramp 9 (1+1+1+2+4), nested_sparse 1, both terminal  OK')
+
+
+def _drop_at_the_goal(retreat='far'):
+    """Carry the can to the goal, open the hand, walk away. `retreat` is the DIRECTION the
+    tool withdraws in -- 'far' straight back along the can->goal line, 'perp' sideways."""
+    frames = [_n_frame(0.060, 0.015, placed_v2=False) for _ in range(6)]        # carried in
+    frames += [_n_frame(0.060, 0.015 + 0.01 * i, can_goal_contact=True, tool_dir=retreat)
+               for i in range(4)]                                              # released
+    frames += [_n_frame(0.060, 0.30, can_goal_contact=True, tool_dir=retreat)
+               for _ in range(SP.AT_REST_FRAMES + 8)]                          # tool retreats
+    return frames
+
+
+def test_10b_a_drop_at_the_goal_pays_no_ramp_and_no_home():
+    """The behaviour the redesign exists to stop paying for: carry the can to the goal, open
+    the hand, walk away.
+
+    MEASURED SPEC DEVIATION, disclosed rather than patched away. The brief predicted 2
+    (picked + placed_v2). It is 3, because a gripper that withdraws STRAIGHT BACK from a
+    set-down passes through the far-side band on its way out -- 2.5 to 8 cm behind the can, on
+    the opposite side from the goal -- which is exactly what `farside` says. No clause in the
+    brief's definition excludes a withdrawal, and adding one ("the tool must approach, not
+    leave") would be a new predicate invented in a test. So `farside` is cheap on the drop
+    route, and what carries the contrast is the pair above it: the dense ramp needs goalward
+    motion made from that pose, and `home` needs both. A drop earns neither, under either
+    variant -- and for reference the pilot's `staged` ladder pays this same drop 4.
+
+    A withdrawal to the SIDE does not grant it, which is the control that the clause is the
+    geometry and not a rubber stamp."""
+    frames = _drop_at_the_goal('far')
+    r, term, acct, ep = _ladder_run(frames, 'nested_ramp')
+    assert ep['nested_v2'] and not ep['home'], 'a drop IS a nest and is NOT home'
+    assert ep['farside'] and ep['slide_gain_m'] == 0.0, 'in the pose, no progress from it'
+    assert abs(r - 3.0) < 1e-9, f'nested_ramp paid {r} for a drop, expected 1+1+1'
+    assert acct.paid == {'picked', 'placed_v2', 'farside'} and term is None
+    assert acct.ramp_paid == 0.0, 'the DENSE rung is what a drop cannot earn'
+    r, term, acct, _ = _ladder_run(frames, 'nested_sparse')
+    assert r == 0.0 and term is None, (r, term)
+    # the same drop under the pilot's ladders, for contrast
+    assert _ladder_run(frames, 'staged')[0] == 4.0, 'staged pays a drop 4 of its 8'
+    assert _ladder_run(frames, 'sparse')[0] == 1.0, 'sparse pays a drop-in nest in full'
+    # sideways withdrawal: never behind the can, so not even the cheap rung
+    side = _drop_at_the_goal('perp')
+    r, _, acct, ep = _ladder_run(side, 'nested_ramp')
+    assert not ep['farside'] and abs(r - 2.0) < 1e-9, (r, ep['farside'])
+    print('10b. drop at the goal: ramp 0 and home 0 under both variants (3 / 0 total)  OK')
+
+
+def test_10c_the_ramp_pays_once_for_net_progress():
+    """Oscillating the can cannot farm the dense rung: the ramp is a function of a MONOTONE
+    tracker quantity, so pushing 3 cm, letting it come back, and pushing again pays 3 cm."""
+    once = [_n_frame(0.120, 0.15) for _ in range(SP.AT_REST_FRAMES + 4)]
+    for d in np.linspace(0.120, 0.090, 31):
+        once.append(_n_frame(float(d), 0.035))
+    twice = list(once)
+    for d in np.linspace(0.090, 0.120, 31):
+        twice.append(_n_frame(float(d), 0.035))
+    for d in np.linspace(0.120, 0.090, 31):
+        twice.append(_n_frame(float(d), 0.035))
+    r1, _, a1, e1 = _ladder_run(once, 'nested_ramp')
+    r2, _, a2, e2 = _ladder_run(twice, 'nested_ramp')
+    assert abs(e1['slide_gain_m'] - 0.030) < 1e-9 and abs(e2['slide_gain_m'] - 0.030) < 1e-9
+    assert abs(a1.ramp_paid - 0.6) < 1e-9, '2 * 30mm/100mm'
+    assert abs(r1 - r2) < 1e-9, f'the second lap paid {r2 - r1} extra'
+    assert abs(r1 - (1.0 + 1.0 + 1.0 + 0.6)) < 1e-9, r1
+    print('10c. ramp: paid once for net progress, oscillation adds nothing  OK')
+
+
+def test_10d_far_release_blocks_a_drop_and_nudge():
+    """With the switch on, a release 6 cm from the goal earns no farside, no ramp and no home
+    however far the can is then nudged; the same episode released at 10.5 cm pays in full."""
+    close = _release_farside_push_home(start_d=0.060, end_d=0.005, n_push=40)
+    far = _release_farside_push_home(start_d=0.105, end_d=0.005, n_push=40)
+    r_close_off = _ladder_run(close, 'nested_ramp', far_release=False)[0]
+    r_close_on, term, acct, ep = _ladder_run(close, 'nested_ramp', far_release=True)
+    assert r_close_off > 2.0, 'with the switch OFF the nudge does pay'
+    assert abs(r_close_on - 2.0) < 1e-9, f'gated release paid {r_close_on}, expected 2'
+    assert not ep['farside'] and not ep['home'] and ep['slide_gain_m'] == 0.0
+    assert term is None and acct.ramp_paid == 0.0
+    assert ep['release_far'] is False, 'and the measurement says why'
+    r_far_on, term, _, ep = _ladder_run(far, 'nested_ramp', far_release=True)
+    assert abs(r_far_on - 9.0) < 1e-9 and term is not None and ep['release_far'] is True
+    assert _ladder_run(close, 'nested_sparse', far_release=True)[0] == 0.0
+    print('10d. far_release: a release inside FAR_RELEASE_DIST_M earns no farside/ramp/home  OK')
+
+
+def test_10e_requires_holds_the_rungs_in_order():
+    """`placed_v2` at reset with the arm at home (4 of the 30 rnd30 starts, CONFOUNDS row 82)
+    pays nothing until the pick, and then pays in full -- an out-of-order rung is deferred,
+    never forfeited."""
+    frames = [_n_frame(0.150, 0.30, picked=False, placed_v2=True) for _ in range(8)]
+    r, term, acct, ep = _ladder_run(frames, 'nested_ramp')
+    assert r == 0.0 and acct.paid == set() and not ep['released']
+    assert 'placed_v2' in acct.granted, 'reached, and recorded as reached'
+    frames += [_n_frame(0.150, 0.30, picked=True, placed_v2=True) for _ in range(4)]
+    r, term, acct, _ = _ladder_run(frames, 'nested_ramp')
+    assert abs(r - 2.0) < 1e-9, f'deferred rungs must pay once the pick lands, got {r}'
+    assert acct.paid == {'picked', 'placed_v2'}
+    # ...and a rung whose requirement first fires on the SAME frame pays on that frame, not
+    # the next: `home` is the terminal, so deferring it by one frame would end the episode
+    # with the rung unpaid -- defect 5, re-created one level down.
+    acct = full_env.LadderAccountant('nested_ramp', scope='full', pay_stages=None)
+    acct.reset()
+    r, term = acct.frame(dict(picked=True, placed_v2=True, farside=True, slide_event=True,
+                              home=True, nested_v2=True, slide_gain_m=0.10))
+    assert term and abs(r - 9.0) < 1e-9, f'same-frame chain paid {r}, expected the full 9'
+    print('10e. requires: deferred when out of order, paid when the chain lands together  OK')
+
+
+def test_10f_staged_and_sparse_are_unchanged_by_ladder_n():
+    """The compatibility claim, on histories rather than on inspection: the same frames scored
+    under 'staged' and 'sparse' pay exactly what they paid before Ladder N existed -- the
+    accountant/`_paid` split and the new tracker flags move neither."""
+    cases = [(_release_farside_push_home(), 8.0, 1.0),        # pick+release+push+nest
+             (_drop_at_the_goal('far'), 4.0, 1.0),            # pick+release+contact_push
+             (_drop_at_the_goal('perp'), 2.0, 1.0)]           # pick+release only
+    for frames, want_staged, want_sparse in cases:
+        assert abs(_ladder_run(frames, 'staged')[0] - want_staged) < 1e-9
+        assert abs(_ladder_run(frames, 'sparse')[0] - want_sparse) < 1e-9
+    assert full_env.ladder_spec('staged')[0] == dict(picked=1.0, placed_v2=1.0,
+                                                     contact_push=2.0, slide_success=4.0)
+    assert full_env.ladder_extras('staged') == ({}, None)
+    assert full_env.ladder_extras('sparse') == ({}, None)
+    assert full_env.max_return('staged') == 8.0 and full_env.max_return('sparse') == 1.0
+    # every ladder is distinguishable in the stamp, and far_release is part of it
+    stamps = {L: full_env.ladder_stamp(L) for L in full_env.LADDERS}
+    assert len(set(stamps.values())) == len(stamps), stamps
+    assert full_env.ladder_stamp('nested_ramp', None, True) != full_env.ladder_stamp('nested_ramp')
+    assert 'far_release=on' in full_env.ladder_stamp('nested_ramp', None, True)
+    p = full_env.ladder_provenance('nested_ramp', None, True)
+    assert p['far_release'] is True and p['terminal_stages'] == ['home', 'tipped']
+    assert p['requires'] == dict(placed_v2='picked', farside='placed_v2',
+                                 slide_event='farside', home='slide_event')
+    assert p['ramp']['scale'] == 2.0 and p['ramp']['span'] == 0.10
+    assert p['return_clamp_required'] == 9.0
+    assert full_env.ladder_provenance('nested_sparse')['return_clamp_required'] == 1.0
+    print('10f. staged/sparse unchanged; every ladder and far_release distinct in the stamp  OK')
 
 
 # ---------------------------------------------------------- the Lane-1 interface contract

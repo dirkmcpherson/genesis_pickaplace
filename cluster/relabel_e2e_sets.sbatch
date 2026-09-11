@@ -38,7 +38,7 @@ W=$LAB/wm_fix_2026-09-03
 PY=${PY:-$LAB/r2d_venv/bin/python}
 DEMO_ROOT=${DEMO_ROOT:-$W/demos_state_full}
 SETS=${SETS:-"dHfull_all dDPfull_first"}
-LADDERS=${LADDERS:-"staged sparse"}
+LADDERS=${LADDERS:-"staged sparse"}   # or: nested_ramp nested_sparse (+ FAR_RELEASE=1)
 PROCS=${PROCS:-8}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 REQUIRE_CORES=${REQUIRE_CORES:-64}
@@ -65,7 +65,10 @@ echo "DISK-OK ${FREE_GB} GB free"
 
 echo "[tree] $GENESIS_PICKAPLACE_ROOT ($(git -C "$GENESIS_PICKAPLACE_ROOT" describe --always --dirty 2>/dev/null || echo 'no git'))"
 for L in $LADDERS; do
-  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; *) echo "FATAL: ladder $L"; exit 2 ;; esac
+  # the suffix relabel_reward.py asserts against the ladder (LADDER_SUFFIX there)
+  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;;
+                nested_sparse) SFX=_rns ;; *) echo "FATAL: ladder $L"; exit 2 ;; esac
+  [ "${FAR_RELEASE:-0}" = "1" ] && SFX="${SFX}f" && FAR_FLAG="--far-release" || FAR_FLAG=""
   for S in $SETS; do
     IN=$DEMO_ROOT/$S; OUT=$DEMO_ROOT/${S}${SFX}
     [ -f "$IN/repeat.json" ] || { echo "FATAL: $IN has no repeat.json"; exit 2; }
@@ -75,7 +78,7 @@ for L in $LADDERS; do
     fi
     echo "=================================================================="
     echo "== $(date -Is) relabel $IN -> $OUT  ladder=$L procs=$PROCS"
-    "$PY" baselines/rl/relabel_reward.py --in "$IN" --out "$OUT" --ladder "$L" \
+    "$PY" baselines/rl/relabel_reward.py --in "$IN" --out "$OUT" --ladder "$L" ${FAR_FLAG:+$FAR_FLAG} \
           --sim-variant "$SIM_VARIANT" --procs "$PROCS"
     # Stamp the hardware into the set itself: a reader must be able to see WHICH machine
     # class produced the reward column without going back to the Slurm log.

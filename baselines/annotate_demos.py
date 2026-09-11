@@ -98,14 +98,18 @@ PANEL_H = 140          # 124 + one line for the can-tilt / tip-rule readout (Lan
 
 # (chip label, info/_granted key). LADDER = the rungs of the 'staged' ladder plus nested_v2,
 # which is logged there and is the whole ladder under 'sparse'. LEGACY pays nothing.
+# FAR/HOME are the Ladder-N rungs (2026-09-11): they light under every ladder because the
+# tracker computes them under every ladder -- which is what lets one annotated clip answer
+# 'what would the nested ladder have paid here'.
 LADDER_CHIPS = [('PICK', 'picked'), ('PLACE', 'placed_v2'), ('PUSH', 'contact_push'),
-                ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success')]
+                ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success'),
+                ('FAR', 'farside'), ('SLIDE2', 'slide_event'), ('HOME', 'home')]
 LEGACY_CHIPS = [('nestP', 'nested'), ('pushL', 'contact_push_legacy'),
                 ('slidL', 'slide_success_legacy')]
 ALL_CHIP_KEYS = [k for _, k in LADDER_CHIPS + LEGACY_CHIPS]
 # Stages whose first grant decision is recorded per tape.
 REPORT = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
-          'released', 'pushed', 'nested', 'contact', 'placed',
+          'released', 'pushed', 'farside', 'slide_event', 'home', 'nested', 'contact', 'placed',
           'contact_push_legacy', 'slide_success_legacy')
 
 # --- the TIP rule of record (full_env.FullTaskEnv.TIP_DEG / GRIP_OPEN), kept here as a
@@ -585,7 +589,8 @@ def main():
     ap.add_argument('--out-dir', default=None, help='render: directory for the mp4s')
     ap.add_argument('--set-name', default='set', help='human | machine; prefixes the clip names')
     ap.add_argument('--tapes', nargs='*', default=None, help='render: segment basenames')
-    ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged')
+    ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'),
+                    default='staged')
     # --- Lane 6 (TIP_RULE_2026-09-11). ANALYSIS ONLY: the override is applied to the env
     # INSTANCE, never to FullTaskEnv.TIP_DEG, and build_env asserts the class default is
     # still 60. --no-tip is --tip-deg 1e9 (a tilt no quaternion reaches).

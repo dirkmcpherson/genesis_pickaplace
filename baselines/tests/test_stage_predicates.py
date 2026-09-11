@@ -19,7 +19,8 @@ REPO = pl.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / 'baselines'))
 
 from stage_predicates import (  # noqa: E402
-    AT_REST_FRAMES, HELD_LEVER_M, NESTED_TOUCH_DIST, PUSH_GAIN_MM, StageTracker, replay, tilt_deg,
+    AT_REST_FRAMES, FAR_RELEASE_DIST_M, FARSIDE_REACH_M, HELD_LEVER_M, NESTED_TOUCH_DIST,
+    PUSH_GAIN_MM, SLIDE_GAIN_MIN_M, StageTracker, replay, tilt_deg,
 )
 
 # ---- world geometry for the synthetic scenes -------------------------------------------------
@@ -368,6 +369,247 @@ def test_motion_clears_at_rest_for_exactly_one_window():
     assert seq[:AT_REST_FRAMES - 1] == [False] * (AT_REST_FRAMES - 1), \
         'the jumped-from samples are still inside the window'
     assert all(seq[AT_REST_FRAMES - 1:]), 'and at_rest returns as soon as they age out'
+
+
+# =============================================================================================
+# 7. LADDER N: farside / slide_gain_m / home / release_far   (LADDER_UNIFY_BRIEF "Ladder N")
+# =============================================================================================
+def test_farside_needs_release_reach_and_the_far_side():
+    """The four clauses, one at a time. Baseline: the fist-push episode fires `farside`."""
+    _, ep = replay(_fist_push_episode(), GOAL[:2], SHELF_TOP)
+    assert ep['farside'], 'tool behind the can, within reach, released -> farside'
+
+    # (a) never released
+    frames = [dict(f, placed_v2=False) for f in _fist_push_episode()]
+    assert not replay(frames, GOAL[:2], SHELF_TOP)[1]['farside']
+    # (b) out of reach: the tool is behind the can but 20 cm from it
+    assert not replay(_fist_push_episode(gap=0.20), GOAL[:2], SHELF_TOP)[1]['farside']
+    # (c) in hand: a 1.5 cm lever is the grasp, not a push. (Read on the PUSH frames only --
+    # `_fist_push_episode` then retreats the tool, which legitimately leaves the hand band.)
+    per, ep = replay(_fist_push_episode(gap=0.015), GOAL[:2], SHELF_TOP)
+    push = per[AT_REST_FRAMES + 4:AT_REST_FRAMES + 4 + 30]
+    assert all(f['in_hand'] and not f['farside_now'] for f in push)
+    assert ep['slide_gain_m'] == 0.0, 'a 45 mm CARRY earns no slide gain'
+    assert not ep['home']
+    # (d) near side: the tool between can and goal, pulling rather than pushing
+    frames = []
+    for i in range(30):
+        d = 0.105 - 0.0015 * i
+        c = _near_goal(d)
+        near = GOAL[:2] + (c - GOAL[:2]) * (1.0 - 0.035 / max(d, 1e-9))
+        frames.append(_frame(c, near, can_goal_contact=True))
+    ep = replay(frames, GOAL[:2], SHELF_TOP)[1]
+    assert ep['pushed'] and not ep['farside'], 'a pull is goalward progress but not a push'
+
+
+def test_farside_reach_boundary():
+    c = _near_goal(0.090)
+    inside = replay([_frame(c, _tool_behind(c, FARSIDE_REACH_M - 0.001))], GOAL[:2], SHELF_TOP)[1]
+    outside = replay([_frame(c, _tool_behind(c, FARSIDE_REACH_M + 0.001))], GOAL[:2], SHELF_TOP)[1]
+    assert inside['farside'] and not outside['farside']
+
+
+def test_slide_gain_counts_only_the_frames_the_tool_could_push_on():
+    """`goalward_gain_m` (the (x) push) counts any free goalward motion; `slide_gain_m` counts
+    only motion made while the gripper is behind the can and within reach. A can that slides
+    home on its own, with the tool parked 20 cm away, earns the first and not the second."""
+    near, ep_near = replay(_fist_push_episode(gap=0.035), GOAL[:2], SHELF_TOP)
+    far, ep_far = replay(_fist_push_episode(gap=0.20), GOAL[:2], SHELF_TOP)
+    assert abs(ep_near['slide_gain_m'] - 0.045) < 1e-9, ep_near['slide_gain_m']
+    assert abs(ep_near['goalward_gain_m'] - 0.045) < 1e-9
+    assert abs(ep_far['goalward_gain_m'] - 0.045) < 1e-9, 'the can still travelled 45 mm'
+    assert ep_far['slide_gain_m'] == 0.0, 'but no frame of it had the tool in a pushing pose'
+    assert ep_near['home'] and not ep_far['home']
+
+
+def test_slide_gain_ignores_progress_made_in_hand():
+    """Carrying the can 5 cm closer must not create slide gain, and must not leave the gain
+    available to be claimed later: the running minimum tracks the carry."""
+    tr = StageTracker(GOAL[:2], SHELF_TOP)
+    for d in np.linspace(0.150, 0.100, 30):          # carried in, in hand
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.012)))
+    assert tr.slide_gain_m == 0.0 and tr.released
+    for _ in range(AT_REST_FRAMES + 2):              # the set-down latch: put it down first
+        c = _near_goal(0.100)
+        tr.update(**_frame(c, _tool_behind(c, 0.012)))
+    assert tr.settled_after_release
+    for d in np.linspace(0.100, 0.098, 5):           # 2 mm of real push
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035)))
+    assert abs(tr.slide_gain_m - 0.002) < 1e-9, \
+        'only the 2 mm made from the far side counts, not the 50 mm carried'
+
+
+def test_oscillation_cannot_farm_slide_gain():
+    """Push in 30 mm, let it come back 30 mm, push in 30 mm again: the gain is the NET 30 mm,
+    because only new minima pay."""
+    tr = StageTracker(GOAL[:2], SHELF_TOP)
+    for _ in range(AT_REST_FRAMES + 2):              # set down and settle (the latch)
+        c = _near_goal(0.120)
+        tr.update(**_frame(c, _tool_behind(c, 0.14)))
+    for d in np.linspace(0.120, 0.090, 31):          # push 30 mm
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035)))
+    assert abs(tr.slide_gain_m - 0.030) < 1e-9
+    for d in np.linspace(0.090, 0.120, 31):          # back out 30 mm
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035)))
+    for d in np.linspace(0.120, 0.090, 31):          # and in again
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035)))
+    assert abs(tr.slide_gain_m - 0.030) < 1e-9, f'oscillation banked {tr.slide_gain_m * 1000:.1f} mm'
+    for d in np.linspace(0.090, 0.080, 11):          # 10 mm of genuinely new progress
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035)))
+    assert abs(tr.slide_gain_m - 0.040) < 1e-9
+
+
+def test_home_needs_a_nest_a_farside_and_a_centimetre():
+    # a drop-in nest: released at the goal, tool retreats, no push at all
+    c = _near_goal(0.060)
+    drop = [_frame(c, _tool_behind(c, 0.015 + 0.00375 * i), can_goal_contact=True)
+            for i in range(40)]
+    ep = replay(drop, GOAL[:2], SHELF_TOP)[1]
+    assert ep['nested_v2'] and not ep['home'], 'a drop is a nest but not a home'
+    # a push of 8 mm: farside, nested, but under the 10 mm the rung asks for
+    ep = replay(_fist_push_episode(start_d=0.070, end_d=0.062), GOAL[:2], SHELF_TOP)[1]
+    assert ep['farside'] and ep['nested_v2']
+    assert ep['slide_gain_m'] < SLIDE_GAIN_MIN_M and not ep['home']
+    # and 12 mm clears it
+    ep = replay(_fist_push_episode(start_d=0.074, end_d=0.062), GOAL[:2], SHELF_TOP)[1]
+    assert ep['slide_gain_m'] >= SLIDE_GAIN_MIN_M and ep['home']
+    assert ep['home_frame'] >= ep['farside_frame']
+
+
+def test_home_is_sticky_and_needs_the_can_at_rest():
+    frames = _fist_push_episode(n_rest=4)   # tool stops, but the window still holds the push
+    ep = replay(frames, GOAL[:2], SHELF_TOP)[1]
+    assert ep['farside'] and ep['slide_gain_m'] >= SLIDE_GAIN_MIN_M
+    assert not ep['nested_v2'] and not ep['home'], 'still moving -> not home'
+    per, ep = replay(_fist_push_episode(), GOAL[:2], SHELF_TOP)
+    assert ep['home'] and per[-1]['home'] and all(f['home'] for f in per[ep['home_frame']:])
+
+
+def test_release_far_is_recorded_always_and_gates_only_when_asked():
+    """`far_release` is the switch; `release_far` is the measurement. A release 6 cm from the
+    goal is a drop-and-nudge: with the switch on it earns no farside, no gain and no home."""
+    close = _fist_push_episode(start_d=0.060, end_d=0.020)     # released INSIDE 10 cm
+    far = _fist_push_episode(start_d=0.105, end_d=0.060)       # released outside it
+    for frames, want_far in ((close, False), (far, True)):
+        ep_off = replay(frames, GOAL[:2], SHELF_TOP)[1]
+        ep_on = replay(frames, GOAL[:2], SHELF_TOP, far_release=True)[1]
+        assert ep_off['release_far'] is want_far, 'release_far is measured either way'
+        assert ep_on['release_far'] is want_far
+        assert ep_off['release_dist_m'] >= FAR_RELEASE_DIST_M if want_far else True
+        assert ep_off['farside'] and ep_off['home'], 'the switch OFF: both episodes pay'
+        assert ep_on['farside'] is want_far
+        assert ep_on['home'] is want_far
+        if not want_far:
+            assert ep_on['slide_gain_m'] == 0.0, 'a gated release earns no gain either'
+    # the gate does not touch the (x) predicates: pushed/nested_v2/slide_success are unchanged
+    a = replay(close, GOAL[:2], SHELF_TOP)[1]
+    b = replay(close, GOAL[:2], SHELF_TOP, far_release=True)[1]
+    for k in ('released', 'pushed', 'nested_v2', 'slide_success', 'contact_push',
+              'goalward_gain_m'):
+        assert a[k] == b[k], (k, a[k], b[k])
+
+
+def test_the_setdown_latch_excludes_the_release_transient():
+    """Lane 9's finding, as a unit test: a can that rolls out of the OPENING hand toward the
+    goal, before it has ever come to rest, is a release transient and must earn nothing. The
+    excluded credit is reported, not discarded silently."""
+    tr = StageTracker(GOAL[:2], SHELF_TOP)
+    # the release decision: the can travels 34 mm goalward while the tool retreats behind it
+    for i, d in enumerate(np.linspace(0.120, 0.086, 12)):
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035 + 0.002 * i)))
+    assert not tr.settled_after_release, 'the can has not stopped yet'
+    assert tr.slide_gain_m == 0.0, 'the transient pays nothing'
+    assert abs(tr.gain_during_release_m - 0.034) < 1e-9, 'and it is reported, not hidden'
+    assert not tr.slide_event
+    # now it settles, and a genuine 10 mm push follows
+    for _ in range(AT_REST_FRAMES + 2):
+        c = _near_goal(0.086)
+        tr.update(**_frame(c, _tool_behind(c, 0.05)))
+    assert tr.settled_after_release
+    for d in np.linspace(0.086, 0.076, 11):
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.05)))
+    assert abs(tr.slide_gain_m - 0.010) < 1e-9, 'only the post-set-down 10 mm'
+    assert tr.slide_event, 'which IS a slide event'
+    # with the latch off, the same episode credits the transient too
+    tr2 = StageTracker(GOAL[:2], SHELF_TOP, setdown_latch=False)
+    for i, d in enumerate(np.linspace(0.120, 0.086, 12)):
+        c = _near_goal(d)
+        tr2.update(**_frame(c, _tool_behind(c, 0.035 + 0.002 * i)))
+    assert abs(tr2.slide_gain_m - 0.034) < 1e-9 and tr2.gain_during_release_m == 0.0
+
+
+def test_slide_event_is_the_three_clauses_and_home_adds_arrival():
+    """`slide_event` = put it down, get behind it, move it goalward. `home` = that, arrived."""
+    frames = _fist_push_episode()
+    per, ep = replay(frames, GOAL[:2], SHELF_TOP)
+    assert ep['released'] and ep['settled_after_release'] and ep['farside']
+    assert ep['slide_gain_m'] >= SLIDE_GAIN_MIN_M
+    assert ep['slide_event'] and ep['home']
+    assert ep['home_frame'] >= ep['slide_event_frame'] >= ep['settled_frame']
+    # a slide that does NOT arrive is still a slide event -- that is what the flag is for
+    away = _fist_push_episode(start_d=0.200, end_d=0.150)
+    ep = replay(away, GOAL[:2], SHELF_TOP)[1]
+    assert ep['slide_event'] and not ep['nested_v2'] and not ep['home']
+    # and an arrival that was never slid is not a home
+    c = _near_goal(0.060)
+    drop = [_frame(c, _tool_behind(c, 0.015 + 0.00375 * i), can_goal_contact=True)
+            for i in range(40)]
+    ep = replay(drop, GOAL[:2], SHELF_TOP)[1]
+    assert ep['nested_v2'] and not ep['slide_event'] and not ep['home']
+
+
+def test_the_farside_cone_is_tighter_than_dot_zero():
+    """cone 90 deg is exactly the brief's `dot < 0`; the calibrated 60 deg asks the tool to be
+    more nearly on the line the can would be pushed along."""
+    c = _near_goal(0.090)
+    v = np.asarray(c, float) - GOAL[:2]
+    v = v / np.linalg.norm(v)
+    perp = np.array([-v[1], v[0]])
+    # 75 deg off the away-from-goal ray: inside a 90 deg cone, outside a 60 deg one
+    tool = np.asarray(c, float) + 0.05 * (v * np.cos(np.radians(75)) + perp * np.sin(np.radians(75)))
+    wide = replay([_frame(c, tool)], GOAL[:2], SHELF_TOP, farside_cone_deg=90.0)[0][0]
+    tight = replay([_frame(c, tool)], GOAL[:2], SHELF_TOP, farside_cone_deg=60.0)[0][0]
+    assert abs(wide['far_angle_deg'] - 75.0) < 1e-6
+    assert wide['farside'] and not tight['farside']
+
+
+# =============================================================================================
+# 8. `released` requires `picked` (the rnd30 reset artefact, CONFOUNDS row 82)
+# =============================================================================================
+def test_released_requires_picked():
+    """A can that satisfies placed_v2 with the arm at home and no pick must not count as
+    released. 4 of the 30 rnd30 starts are exactly that state at reset."""
+    c = _near_goal(0.060)
+    frames = [_frame(c, _tool_behind(c, 0.30), picked=False, placed_v2=True) for _ in range(40)]
+    ep = replay(frames, GOAL[:2], SHELF_TOP)[1]
+    assert not ep['released'] and not ep['farside'] and not ep['nested_v2']
+    old = replay(frames, GOAL[:2], SHELF_TOP, released_requires_picked=False)[1]
+    assert old['released'], 'the previous semantics, kept reachable so old rows reproduce'
+
+
+def test_released_requires_picked_changes_nothing_when_the_pick_comes_first():
+    """The invariant that makes this safe for every stored row: on any history where `picked`
+    is true on every frame that `placed_v2` is -- every real demonstration -- the two settings
+    produce identical flags, frame for frame."""
+    batteries = [_fist_push_episode(), _fist_push_episode(gap=0.015),
+                 _fist_push_episode(start_d=0.070, end_d=0.062),
+                 [_frame(_near_goal(0.06), _tool_behind(_near_goal(0.06), 0.15))
+                  for _ in range(40)]]
+    for frames in batteries:
+        assert all(f['picked'] for f in frames if f['placed_v2']), 'battery precondition'
+        new = replay(frames, GOAL[:2], SHELF_TOP)
+        old = replay(frames, GOAL[:2], SHELF_TOP, released_requires_picked=False)
+        assert new[1] == old[1]
+        for a, b in zip(new[0], old[0]):
+            assert a == b, (a, b)
 
 
 # =============================================================================================

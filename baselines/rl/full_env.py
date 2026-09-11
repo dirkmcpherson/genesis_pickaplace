@@ -100,27 +100,78 @@ from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "on
 # TERMINATES: the (x) batch terminated on the UNPAID `nested` proxy, whose clauses are a
 # subset of the slide's, so the episode ended on the first frame of the slide window and
 # the +4 rung could never be paid in training (E2E_AUDIT_BRIEF defect 5).
+# --- LADDER N (user, 2026-09-11; LADDER_UNIFY_BRIEF "Ladder N") -------------------------
+# "nest such that max reward (or sparse reward) comes from release, moving the gripper to the
+# opposite side of the can, and sliding it towards the goal can. If we didn't think sparse was
+# going to work we could ramp up reward for the slide and give a big boost for contact."
+#
+# 'nested_sparse':  home 1.0, TERMINAL. Nothing else pays. Max return 1. This is the
+#                   user's "version of sparse that enforces the slide": `home` is
+#                   slide_event AND nested_v2, and `slide_event` is the three clauses
+#                   they named -- the can was put DOWN, the tool went to the OPPOSITE
+#                   side of it from the goal, and the can TRAVELLED goalward from there.
+#                   Its constants are calibrated on the 74 human tapes, not chosen.
+# 'nested_ramp':    picked 1 -> placed_v2 1 -> farside 1 -> a DENSE slide ramp worth up to 2
+#                   -> home 4, TERMINAL. Max return 9.
+#
+# Two structures the first two ladders did not need, both declared here and read by
+# LadderAccountant, never re-implemented at a call site:
+#   `requires` -- a rung pays only once the rung below it has been REACHED. The tracker
+#       already enforces the chain geometrically (farside needs released needs placed_v2 and
+#       picked), so this is a second, explicit statement of the same order: a ladder whose
+#       rungs are "each REQUIRES the previous one" should say so in the table a reader checks.
+#   `ramp`   -- the one dense term. Paid incrementally as a MONOTONE tracker quantity grows:
+#       reward = scale * min(1, value / span), and each frame pays the increase since the last
+#       frame. `slide_gain_m` only grows on new minima of the can-goal distance made from the
+#       far side, so the ramp cannot be farmed by oscillating the can (stage_predicates
+#       `_update_slide_gain`), and it can never be clawed back.
 LADDERS = {
     'staged': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0),
                    terminal=('slide_success',)),
     'sparse': dict(stage_reward=dict(nested_v2=1.0),
                    terminal=('nested_v2',)),
+    'nested_sparse': dict(stage_reward=dict(home=1.0),
+                          terminal=('home',)),
+    'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, farside=1.0, home=4.0),
+                        requires=dict(placed_v2='picked', farside='placed_v2',
+                                      slide_event='farside', home='slide_event'),
+                        ramp=dict(key='slide_gain_m', scale=2.0, span=0.10, requires='farside'),
+                        terminal=('home',)),
 }
 LADDER_DEFAULT = 'staged'
+# The ladders whose rungs are the Ladder-N predicates. Used by callers that must pick a
+# `far_release` default or a return clamp without hard-coding a name list twice.
+NESTED_LADDERS = ('nested_sparse', 'nested_ramp')
 
 
 def ladder_spec(ladder=LADDER_DEFAULT):
     """(stage_reward dict, terminal-stage tuple) for a named ladder. Unknown names RAISE --
-    a typo must not silently fall back to the default objective."""
+    a typo must not silently fall back to the default objective.
+
+    NOTE this returns the two fields every caller has always read. The `requires` and `ramp`
+    fields of a Ladder-N spec are read through `ladder_extras()`; a caller that only knows
+    about stage_reward/terminal therefore sees a truthful (if incomplete) view rather than a
+    wrong one."""
     if ladder not in LADDERS:
         raise ValueError(f'unknown ladder {ladder!r}; choose from {sorted(LADDERS)}')
     spec = LADDERS[ladder]
     return dict(spec['stage_reward']), tuple(spec['terminal'])
 
 
+def ladder_extras(ladder=LADDER_DEFAULT):
+    """(requires dict, ramp dict or None) -- the Ladder-N structure. Empty/None elsewhere."""
+    if ladder not in LADDERS:
+        raise ValueError(f'unknown ladder {ladder!r}; choose from {sorted(LADDERS)}')
+    spec = LADDERS[ladder]
+    ramp = spec.get('ramp')
+    return dict(spec.get('requires') or {}), (dict(ramp) if ramp else None)
+
+
 def max_return(ladder=LADDER_DEFAULT):
     """Maximum per-episode return. r2dreamer's return_clamp MUST equal this."""
-    return float(sum(ladder_spec(ladder)[0].values()))
+    _ramp = ladder_extras(ladder)[1]
+    return float(sum(ladder_spec(ladder)[0].values())
+                 + (float(_ramp['scale']) if _ramp else 0.0))
 
 
 # Module-level view of the DEFAULT ladder. Kept because callers import it by name
@@ -131,7 +182,7 @@ STAGE_REWARD, TERMINAL_STAGES = ladder_spec(LADDER_DEFAULT)
 # continuity with every stored row: `nested` is the withdrawn training proxy, `placed` the
 # stale base-world band, `contact` the carry-in predicate, `nested_v2` its replacement.
 LOGGED_STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push',
-                 'nested', 'nested_v2', 'slide_success')
+                 'nested', 'nested_v2', 'slide_success', 'farside', 'slide_event', 'home')
 # CartesianFullTaskEnv is a DIFFERENT arm (4-DOF teleop actions) and is not part of the
 # end-to-end unification. It keeps the ladder it has always run so its behaviour is
 # byte-identical to every cartesian run on record.
@@ -158,17 +209,20 @@ def _git_describe():
 _PROV_CACHE = {}
 
 
-def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None):
+def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
     """D6: the stamp that says WHICH ladder and WHICH code produced a number.
 
     `ladder` names the reward/terminal structure; `shaping` is the goalward-shaping
-    configuration of the env being stamped (None when off). Every trainer writes this to
+    configuration of the env being stamped (None when off); `far_release` is the Ladder-N
+    switch (the release that counts for farside/home must be >= 0.10 m from the goal), which
+    changes what the SAME ladder pays and therefore belongs in the stamp. Every trainer writes this to
     <logdir>/ladder_provenance.json and every evaluator into metrics.json; a table builder
     REFUSES to merge rows whose stamps differ. Motivation: three trees diverged in both
     directions and no run stamped the code it loaded, so a gate could be set at submission
     and inert in the job (audit brief §2/§4).
     """
     stage_reward, terminal = ladder_spec(ladder)
+    requires, ramp = ladder_extras(ladder)
     if 'code' not in _PROV_CACHE:
         here = pl.Path(__file__).resolve()
         _PROV_CACHE['code'] = dict(
@@ -185,27 +239,131 @@ def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None):
         ladder=str(ladder),
         spec_version='unified-2026-09-10',
         stage_reward=stage_reward,
+        requires=requires,
+        ramp=ramp,
         terminal_stages=list(terminal) + ['tipped'],
         logged_stages=list(LOGGED_STAGES),
         max_return=max_return(ladder),
         return_clamp_required=max_return(ladder),   # r2dreamer's clamp MUST equal this
         shaping=(dict(shaping) if shaping else None),
+        far_release=bool(far_release),
         sha256=dict(code['sha256']), git=code['git'], repo=code['repo'],
     )
 
 
-def ladder_stamp(ladder=LADDER_DEFAULT, shaping=None):
+def ladder_stamp(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
     """One-line form of ladder_provenance() -- what the `[ladder]` log line prints and what
     a table builder compares. Two rows with the same stamp ran the same ladder AND the same
     predicate/env code."""
-    p = ladder_provenance(ladder, shaping)
+    p = ladder_provenance(ladder, shaping, far_release)
     rungs = ' '.join(f'{k}={v:g}' for k, v in p['stage_reward'].items())
+    if p['ramp']:
+        rungs += ' ramp:%s=%g/%gm' % (p['ramp']['key'], p['ramp']['scale'], p['ramp']['span'])
     sh = 'off' if not p['shaping'] else ('goalward scale=%g gamma=%g' % (
         p['shaping'].get('scale'), p['shaping'].get('gamma')))
     return (f"{p['spec_version']} | ladder={p['ladder']} | {rungs} | max_return={p['max_return']:g} | "
             f"terminal={'+'.join(p['terminal_stages'])} | shaping={sh} | "
+            f"far_release={'on' if p['far_release'] else 'off'} | "
             f"full_env={p['sha256']['full_env'][:12]} genesis_can_env={p['sha256']['genesis_can_env'][:12]} "
             f"stage_predicates={p['sha256']['stage_predicates'][:12]} | git={p['git']}")
+
+
+class LadderAccountant:
+    """THE reward loop. One definition, two call sites.
+
+    `FullTaskEnv._step_once` feeds it the live `info` dict once per ENV FRAME; the offline
+    relabel (`relabel_reward.py --from-records`) feeds it the same dict reconstructed from a
+    recorded stage record. Those two must pay the same reward for the same trajectory, and
+    the only way to guarantee that is for there to be one implementation -- this project's
+    recurring bug family (the grip column three times, the control mode three times, the (x)
+    gate inert in one of three trees) is re-implemented predicate/reward math every time.
+
+    What it does, in the order `_step_once` has always done it:
+      1. pay each unpaid rung whose flag is set in `info` and whose `requires` rung has been
+         REACHED, then record it as paid;
+      2. pay the ramp increment, if the ladder has one;
+      3. record every LOGGED_STAGES flag in `granted` (paid or not);
+      4. report whether any terminal stage fired.
+
+    `granted` ("reached") and `paid` are deliberately separate sets. `granted` is what every
+    evaluator, annotator and the r2dreamer adapter read as the sticky episode record, and it
+    also collects rungs that were reached before their requirement was -- which must NOT
+    silently forfeit the payment when the requirement arrives later. `paid` alone gates money.
+    On the 'staged'/'sparse' ladders the two sets move together frame for frame, so those
+    ladders' rewards are unchanged by the split (test_ladder_unified covers this)."""
+
+    # Which rungs a given configuration is allowed to pay -- verbatim from the reward loop
+    # this class replaces: scope='full' pays the whole ladder; scope='pick' pays only its own
+    # `picked` terminal; every other scope pays only its own terminal (handled outside this
+    # class) and the ladder pays nothing; the pick_hold_reward lever replaces the one-shot
+    # pick grant with a per-step hold reward, so it pays no rung at all.
+    @staticmethod
+    def pay_stages_for(scope, pick_hold_reward=False):
+        if pick_hold_reward:
+            return frozenset()
+        if scope == 'full':
+            return None                    # None = every rung in the ladder
+        if scope == 'pick':
+            return frozenset({'picked'})
+        return frozenset()
+
+    def __init__(self, ladder=LADDER_DEFAULT, scope='full', pay_stages=None):
+        self.ladder = str(ladder)
+        self.stage_reward, self.terminal_stages = ladder_spec(self.ladder)
+        self.requires, self.ramp = ladder_extras(self.ladder)
+        self.scope = str(scope)
+        # None = every rung pays; a frozenset = only those rungs; empty = nothing pays, but
+        # grants are still tracked so the logged record is identical.
+        self.pay_stages = pay_stages
+        self.granted = set()
+        self.paid = set()
+        self.ramp_paid = 0.0
+
+    def reset(self, granted=()):
+        """New episode. `granted` pre-grants stages (the place/contact scopes restore a
+        post-pick state, so `picked` is already true and must not be paid again)."""
+        self.granted = set(granted)
+        self.paid = set(granted)
+        self.ramp_paid = 0.0
+        return self.granted
+
+    def frame(self, info):
+        """-> (reward, terminated). Call once per ENV FRAME, after the predicates are in
+        `info`. Mutates `granted` / `paid` / `ramp_paid`."""
+        reward = 0.0
+        # `requires` is checked against what has been reached INCLUDING this frame, not only
+        # what was reached before it. Two rungs can first become true on the same frame (the
+        # tracker's flags are sticky and are all computed from one state), and if the upper one
+        # is also the ladder's TERMINAL, deferring it to the next frame would end the episode
+        # with the rung unpaid -- the shape of defect 5, re-created one level down.
+        reached = self.granted | {s for s in LOGGED_STAGES if info.get(s)}
+        for stage, r in self.stage_reward.items():
+            if not info.get(stage) or stage in self.paid:
+                continue
+            req = self.requires.get(stage)
+            if req is not None and req not in reached:
+                # reached out of order (e.g. `placed_v2` true at reset with no pick,
+                # CONFOUNDS row 82). Not paid, and NOT marked paid: if the requirement is
+                # met later while the flag is still set, the rung pays then.
+                continue
+            if self.pay_stages is None or stage in self.pay_stages:
+                reward += r
+            self.granted.add(stage)
+            self.paid.add(stage)
+        if self.ramp is not None:
+            req = self.ramp.get('requires')
+            if req is None or req in reached:
+                v = float(info.get(self.ramp['key']) or 0.0)
+                want = float(self.ramp['scale']) * min(1.0, v / float(self.ramp['span']))
+                if want > self.ramp_paid:
+                    if self.pay_stages is None:
+                        reward += want - self.ramp_paid
+                    self.ramp_paid = want
+        for _s in LOGGED_STAGES:
+            if info.get(_s):
+                self.granted.add(_s)
+        terminated = any(bool(info.get(s)) for s in self.terminal_stages)
+        return reward, terminated
 
 
 def refuse_legacy_gates():
@@ -459,20 +617,29 @@ class FullTaskEnv(gym.Env):
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True,
-                 ladder=LADDER_DEFAULT,
+                 ladder=LADDER_DEFAULT, far_release=False,
                  goalward_shaping=False, goalward_gamma=None, goalward_scale=None,
                  quiet_ladder=False):
         super().__init__()
         # --- which ladder (user, 2026-09-11). A CONSTRUCTOR ARGUMENT, never an env var: the
         # reward structure is the one thing that must never be selectable by something a job
         # can silently fail to receive. 'staged' is the D2 ladder; 'sparse' pays only the
-        # outcome (nested_v2 = 1) and terminates on it. The two differ in reward and terminal
-        # ONLY -- every logged stage, diagnostic and observation is identical.
+        # outcome (nested_v2 = 1) and terminates on it; 'nested_sparse'/'nested_ramp' are
+        # Ladder N. They differ in reward and terminal ONLY -- every logged stage, diagnostic
+        # and observation is identical.
         self.ladder = str(ladder)
         self.stage_reward, self.terminal_stages = ladder_spec(self.ladder)
         assert self.ladder == LADDER_DEFAULT or scope == 'full', (
             f'ladder={self.ladder!r} is a scope=full lever (the phase scopes pay exactly '
             f'their own terminal); got scope={scope!r}')
+        # Ladder N's `far_release` switch: the release that counts for farside/home must have
+        # happened at least stage_predicates.FAR_RELEASE_DIST_M from the goal, so a
+        # drop-and-nudge at the goal cannot pay for a slide. A constructor argument for the
+        # same reason the ladder is, and part of the provenance stamp.
+        self.far_release = bool(far_release)
+        assert not (self.far_release and self.ladder not in NESTED_LADDERS), (
+            f'far_release is a Ladder-N switch (it gates farside/home); ladder={self.ladder!r} '
+            f'has no such rung, so setting it would be a silent no-op')
         # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
         # authoritative validation with the full explanation runs below, after the scope fields are set.
         if scope == 'contact':
@@ -658,7 +825,19 @@ class FullTaskEnv(gym.Env):
         self.observation_space = spaces.Box(-np.inf, np.inf, (STATE_DIM,), np.float32)
         self.action_space = spaces.Box(-1.0, 1.0, (ACT_DIM,), np.float32)
         self._t = 0
-        self._granted = set()
+        # THE reward loop, shared with the offline relabel (see LadderAccountant). `_granted`
+        # IS the accountant's own set object, so every existing reader of `env._granted`
+        # (evaluators, annotators, the r2dreamer adapter) is unchanged.
+        self._acct = LadderAccountant(
+            self.ladder, scope=self.scope,
+            pay_stages=LadderAccountant.pay_stages_for(self.scope, self.pick_hold_reward))
+        self._granted = self._acct.reset()
+        # RECORDING-ONLY instance knob (never a constructor default, never an env var): when
+        # True, step() runs the whole action stream and reports terminated/truncated without
+        # stopping. Only baselines/rl/relabel_reward.py --records-out sets it, so that one
+        # re-execution can carry every ladder's terminal instead of one re-execution per
+        # ladder. A training or evaluation env that set this would score a different MDP.
+        self.never_terminate = False
         self._pv2_run = 0
         self._attempted = False
         self._phi = 0.0
@@ -671,13 +850,15 @@ class FullTaskEnv(gym.Env):
         if scope == 'full':
             _g = np_(self.genv.w['goal'].get_pos())
             self.tracker = StageTracker(goal_xy=(float(_g[0]), float(_g[1])),
-                                        shelf_top_z=float(self.shelf_top_z))
+                                        shelf_top_z=float(self.shelf_top_z),
+                                        far_release=self.far_release)
         self._track = {}          # last tracker output (diagnostics -> info)
         # D6: say out loud which ladder and which code this env is running. A run that does
         # not stamp the code it loaded is how a gate can be set at submission and inert in
         # the job (audit brief §2/§4).
         if not quiet_ladder:
-            print('[ladder] ' + ladder_stamp(self.ladder, self.shaping_config()), flush=True)
+            print('[ladder] ' + ladder_stamp(self.ladder, self.shaping_config(), self.far_release),
+                  flush=True)
 
     def shaping_config(self):
         """The goalward-shaping configuration, for the provenance stamp. None when off."""
@@ -688,9 +869,14 @@ class FullTaskEnv(gym.Env):
 
     def provenance(self):
         """This env's ladder provenance (D6) -- what trainers and evaluators write out."""
-        p = ladder_provenance(self.ladder, self.shaping_config())
+        p = ladder_provenance(self.ladder, self.shaping_config(), self.far_release)
         p['scope'] = self.scope
-        p['stamp'] = ladder_stamp(self.ladder, self.shaping_config())
+        p['stamp'] = ladder_stamp(self.ladder, self.shaping_config(), self.far_release)
+        if self.tracker is not None:
+            p['predicate_constants'] = self.tracker.constants()
+        if self.never_terminate:
+            # only the offline stage recorder sets this; a cell stamped with it is not a cell
+            p['never_terminate'] = True
         return p
 
     def _world_shelf_top(self):
@@ -779,7 +965,7 @@ class FullTaskEnv(gym.Env):
             uid = int(self.np_random.choice(self.success_uids))
         obs = self.genv.reset(uid=int(uid))
         self._t = 0
-        self._granted = set()
+        self._granted = self._acct.reset()
         self._hold_run = 0
         self._pv2_run = 0   # amendment (j): placed_v2 is computed in scope=full too
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
@@ -831,7 +1017,7 @@ class FullTaskEnv(gym.Env):
                 # env-level picked flag must be up for placed/contact predicates,
                 # and 'picked' is pre-granted so the restored pick pays no reward
                 self.genv._picked = True
-                self._granted = {'picked'}
+                self._granted = self._acct.reset({'picked'})
                 self._sync_dj_target()
                 return (self.genv._obs()['state'].astype(np.float32),
                         {'uid': u, 'entry_frame': int(e['frame']),
@@ -887,7 +1073,7 @@ class FullTaskEnv(gym.Env):
                 self._t = 0
                 # the pick and the release already happened in the demo this state came from
                 self.genv._picked = True
-                self._granted = {'picked', 'placed_v2'}
+                self._granted = self._acct.reset({'picked', 'placed_v2'})
                 self._sync_dj_target()
                 return (self.genv._obs()['state'].astype(np.float32),
                         {'uid': u, 'entry_frame': int(e['frame'])})
@@ -899,7 +1085,7 @@ class FullTaskEnv(gym.Env):
         """Reset to an explicit IC dict (ic_sampling-style) -- random-IC eval."""
         obs = self.genv.reset(**ic)
         self._t = 0
-        self._granted = set()
+        self._granted = self._acct.reset()
         self._hold_run = 0
         self._pv2_run = 0   # amendment (j)
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
@@ -917,7 +1103,7 @@ class FullTaskEnv(gym.Env):
         for _ in range(self.action_repeat):
             obs, reward, terminated, truncated, info = self._step_once(action)
             total_reward += reward
-            if terminated or truncated:
+            if (terminated or truncated) and not self.never_terminate:
                 break
         if self.pick_shaping:
             # TRAINING-ONLY approach potential, applied ONCE per step() call --
@@ -1033,6 +1219,15 @@ class FullTaskEnv(gym.Env):
         info['at_rest'] = bool(flags['at_rest'])
         info['goalward_gain_m'] = float(flags['goalward_gain_m'])
         info['lever_m'] = float(flags['lever_m'])
+        # Ladder N: computed and logged under EVERY ladder (so a staged run's records can be
+        # re-scored under a nested ladder without re-simulating), paid only under one.
+        info['farside'] = bool(flags['farside'])
+        info['slide_event'] = bool(flags['slide_event'])
+        info['home'] = bool(flags['home'])
+        info['release_far'] = bool(flags['release_far'])
+        info['settled_after_release'] = bool(flags['settled_after_release'])
+        info['slide_gain_m'] = float(flags['slide_gain_m'])
+        info['gain_during_release_m'] = float(flags['gain_during_release_m'])
 
     def _goalward_phi(self):
         """D7 potential: -scale * xy-dist(can, goal) while the gate holds, else 0.
@@ -1093,42 +1288,29 @@ class FullTaskEnv(gym.Env):
             if tilt_deg(np_(w['bottle'].get_quat())) < 20 \
                     and tilt_deg(np_(w['goal'].get_quat())) < 20:
                 info['nested'] = True
-        reward = 0.0
-        # self.stage_reward, NOT the module-level STAGE_REWARD: which rungs pay is this
-        # env's `ladder` argument. Under ladder='sparse' this dict is {nested_v2: 1.0}.
-        for stage, r in self.stage_reward.items():
-            if info.get(stage) and stage not in self._granted:
-                # scope='place' pays ONLY the +1 placed_v2 terminal (below); stage
-                # grants are still tracked for logging (r2dreamer adapter reads
-                # _granted) but carry no reward -- the restored pick is pre-granted.
-                # pick_hold_reward likewise pays ONLY the per-step hold reward below:
-                # keeping the one-shot 'picked' grant too would double-pay the lift
-                # and re-import the terminal-only signal the lever exists to replace.
-                # 2026-08-28 (r2dreamer health audit): a SINGLE-STAGE scope pays exactly its own
-                # terminal. Before this, pick scope also paid any other stage that flipped in the
-                # same step (e.g. 'placed' when the lifted can crossed the shelf plane), giving
-                # +2 on 8/56 dR2D demos and up to 31% of online episodes -- the max return was
-                # 2, not 1, and every learner saw it. scope='full' keeps the staged ladder.
-                if self.scope == 'full' and not self.pick_hold_reward:
-                    reward += r
-                elif self.scope == 'pick' and stage == 'picked' and not self.pick_hold_reward:
-                    reward += r
-                self._granted.add(stage)
+        # THE reward loop -- LadderAccountant, the SAME object the offline relabel runs
+        # (relabel_reward.py --from-records). It pays each unpaid rung of THIS env's ladder
+        # whose `requires` rung has been reached, pays the Ladder-N ramp increment, records
+        # every LOGGED_STAGES flag in `_granted`, and reports the ladder terminal.
+        #
+        # Which rungs may pay is fixed at construction (pay_stages_for): scope='full' pays the
+        # whole ladder; scope='pick' pays only its own `picked` terminal -- before 2026-08-28
+        # it also paid any other stage that flipped in the same step (e.g. 'placed' when the
+        # lifted can crossed the shelf plane), +2 on 8/56 dR2D demos; scope='place'/'contact'
+        # pay only their own terminal below, and the restored pick is pre-granted so it costs
+        # nothing; pick_hold_reward pays only the per-step hold reward below, because keeping
+        # the one-shot 'picked' grant too would double-pay the lift.
+        #
         # NOTE (Lane 3 audit, 2026-09-10): the 2026-09-09 "contact_push exposure fix" that used
         # to sit here was a NO-OP and is deleted. Its comment claimed genesis_can_env "never
         # puts it into `info`", but `genesis_can_env.step()` has written
         # `contact_push=self._contact_push` into its info dict in every live tree. The real
         # reason contact_push read 0.000 in full scope was that the OLD ladder's STAGE_REWARD
-        # did not contain the key, so no grant bookkeeping ran on it -- which the logged-grant
-        # loop below now handles for every stage, paid or not. In scope='full' the value is the
-        # TRACKER's anyway (it requires a prior release); the (g) predicate is kept beside it as
-        # contact_push_legacy.
-        # Logged grants: every stage the episode reached enters `_granted` whether or not it
-        # pays. `_granted` is what the r2dreamer adapter, both annotators and the evaluators
-        # read as the sticky episode record, so the legacy names must keep entering it.
-        for _s in LOGGED_STAGES:
-            if info.get(_s):
-                self._granted.add(_s)
+        # did not contain the key, so no grant bookkeeping ran on it -- which the accountant's
+        # logged-grant pass handles for every stage, paid or not. In scope='full' the value is
+        # the TRACKER's anyway (it requires a prior release); the (g) predicate is kept beside
+        # it as contact_push_legacy.
+        reward, ladder_terminated = self._acct.frame(info)
         if self.scope == 'touchgoal':
             c = self.genv.w['goal'].get_contacts(self.genv.w['kinova'])
             n_c = int(np.asarray(np_(c['link_a'])).reshape(-1).shape[0])
@@ -1247,10 +1429,12 @@ class FullTaskEnv(gym.Env):
         if self.scope == 'full':
             # THE ONLY full-scope terminals besides the tip rule (brief D2): this ladder's
             # own terminal stage(s), which are PAID by construction -- 'slide_success' under
-            # staged, 'nested_v2' under sparse. The legacy `nested` proxy terminates nothing:
-            # its clauses are a subset of the slide's, so it used to end the episode on the
-            # first frame of the slide window and the +4 could never be paid (defect 5).
-            terminated = any(bool(info.get(s)) for s in self.terminal_stages)
+            # staged, 'nested_v2' under sparse, 'home' under both Ladder-N variants. The
+            # legacy `nested` proxy terminates nothing: its clauses are a subset of the
+            # slide's, so it used to end the episode on the first frame of the slide window
+            # and the +4 could never be paid (defect 5). The accountant computed this from
+            # the same `info` the reward came from -- one read, not two.
+            terminated = ladder_terminated
         else:
             terminated = bool(info.get('nested')) and self.scope != 'place'
         # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --

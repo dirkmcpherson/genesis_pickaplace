@@ -3,12 +3,15 @@ import json
 import math
 from pathlib import Path
 
-STAGES = ("picked", "placed_v2", "contact", "contact_push", "slide_success", "nested")
+STAGES = ("picked", "placed_v2", "contact", "contact_push", "slide_success", "nested",
+          "nested_v2", "farside", "slide_event", "home")
 # Only implications guaranteed by the actual predicates. placed_v2 is NOT a
 # prerequisite of bare contact or nesting; contact_push uses a different side
 # test from bare contact, so neither contact predicate implies the other.
 IMPLICATIONS = (("contact", "picked"), ("contact_push", "picked"),
-                ("nested", "contact"), ("slide_success", "picked"))
+                ("nested", "contact"), ("slide_success", "picked"),
+                ("farside", "placed_v2"), ("slide_event", "farside"),
+                ("home", "slide_event"))
 
 
 def read_records(path, stage, online=False, require_sentinel=True):

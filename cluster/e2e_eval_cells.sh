@@ -161,16 +161,24 @@ def row(suffix, keep):
                 d = json.load(open(f)); n = int(d['episodes']); c = d['stage_counts']
                 nodes = ','.join(d.get('nodes') or [d.get('node', {}).get('hostname', '?')])
                 nodes += '/' + ','.join(d.get('isa_classes') or ['?'])
-                parts.append(f'{tag}=slide{c["slide_success"]}/{n}[p{c["picked"]},pv2{c["placed_v2"]},c{c["contact"]},'
+                # The headline number is the LADDER'S OWN PAID TERMINAL, which the evaluator
+                # stamps as `terminal_stage` -- `slide_success` under staged, `nested_v2` under
+                # sparse, `home` under either Ladder-N variant. Hardcoding the staged name here
+                # printed a 0 beside a cell that had succeeded. `.get` on the extra columns so a
+                # cell written by an older evaluator still prints.
+                key = d.get('terminal_stage') or 'slide_success'
+                parts.append(f'{tag}={key[:5]}{c.get(key, 0)}/{n}[p{c["picked"]},pv2{c["placed_v2"]},'
+                             f'c{c["contact"]},far{c.get("farside", 0)},home{c.get("home", 0)},'
                              f'nH{c["nested_honest"]},nP{c["nested_proxy"]}]@{nodes}')
             elif keep:
                 parts.append(f'{tag}=—')
     return parts
-lines = ['E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=slide_success protocol=shared ' % (kind, arm, seed, role) + ' '.join(row('', True)) + f' out={out}']
+KEY = 'terminal'   # the per-cell key is printed inside each part (the ladder's paid terminal)
+lines = ['E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=%s protocol=shared ' % (kind, arm, seed, role, KEY) + ' '.join(row('', True)) + f' out={out}']
 if iso == '1':
     p = row('_iso', True)
     if p:
-        lines.append('E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=slide_success protocol=ISOLATED ' % (kind, arm, seed, role) + ' '.join(p) + f' out={out}')
+        lines.append('E2E-HEADLINE learner=%s arm=%s seed=%s role=%s key=%s protocol=ISOLATED ' % (kind, arm, seed, role, KEY) + ' '.join(p) + f' out={out}')
 for l in lines:
     print(l)
 open(os.path.join(out, 'E2E_HEADLINE.txt'), 'w').write('\n'.join(lines) + '\n')
