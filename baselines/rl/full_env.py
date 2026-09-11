@@ -1,8 +1,16 @@
 """FullTaskEnv: gymnasium wrapper around GenesisCanEnv for the FULL task (plan E).
 
-Staged sparse reward, each granted the FIRST time the env's own honest predicate flips:
-    picked +1, placed +1, contact +2, nested +4.  Terminates on nested; truncates at
-max_steps (default 900 = 30 s at 30 Hz; demo contact lands well inside that).
+scope='full' runs the UNIFIED LADDER (LADDER_UNIFY_BRIEF_2026-09-10, D1/D2), one
+definition shared by {RLPD}, {r2dreamer} and {DP}, with no environment-variable gate:
+    picked +1, placed_v2 +1, contact_push +2, slide_success +4 (TERMINAL).
+The tip rule also terminates. Nothing else does -- in particular the legacy `nested`
+proxy is computed and logged but never paid and never terminal, because its clauses are
+a subset of the slide's and it used to end the episode on the first frame of the slide
+window, leaving the +4 rung unpayable in training (E2E_AUDIT_BRIEF defect 5).
+`contact_push` and `slide_success` come from baselines/stage_predicates.StageTracker,
+fed once per env frame after the sim step; both require `placed_v2` to have been granted
+first, so pressing a still-HELD can against the goal earns nothing.
+Truncates at max_steps (full/pick default 900 sim steps; the e2e protocol passes 1200).
 Same normalized [-1,1]^7 action convention as PickOnlyEnv (see pick_env.py docstring).
 
 scope='pick':  +1 and terminate on the pick grant.
@@ -54,23 +62,113 @@ sys.path.insert(0, str(REPO / 'can_pos_recovery'))
 from replay_harness import (tilt_deg, in_shelf_footprint, BOX_TOP_Z,  # noqa: E402
                             BOX_POS, HARDCODED_START, gripper_targets)
 
-# Amendment (x) ladder, gated (2026-09-09). The OLD ladder pays its second rung on
-# `placed`, which the corrected predicate shows is essentially NEVER granted; its third
-# on bare `contact`, which counts carrying the can in and parking it (84-86% of policy
-# grants, 12 of 26 human ones); and its top on the `nested` TRAINING PROXY, which
-# over-counts the settled predicate ~2.5x. The demonstration tapes have been relabelled
-# onto the corrected predicates, so leaving the env on the old ladder hands a learner one
-# objective from its demo buffer and a different one from the environment.
+import hashlib          # noqa: E402  (ladder provenance stamp, D6)
+import subprocess        # noqa: E402
+from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "one shared module")
+
+# ============================== THE LADDER (LADDER_UNIFY_BRIEF D1/D2, 2026-09-10) =======
+# ONE ladder. No environment-variable gate. `FULLENV_REWARD_X` is GONE -- the two learners
+# trained on different ladders precisely because a gate was silently inert in one of three
+# code trees (E2E_AUDIT_BRIEF §2), so the gate itself is the defect, not its default.
+# Launchers REFUSE to start when the legacy variable is set.
 #
-# All four new rungs are ALREADY granted by this env -- this only changes which grants pay.
-# Per-episode ceiling is unchanged at 8.0, so the registered return clamp needs no revision.
+#   rung           reward  terminal   definition
+#   picked           1       no       genesis_can_env's hardened held-can flag (unchanged)
+#   placed_v2        1       no       release + shelf footprint + z-band + tilt, 10 frames
+#   contact_push     2       no       placed_v2 GRANTED + can<->goal contact + tool on the
+#                                     far side + no gripper<->goal contact  (stage_predicates)
+#   slide_success    4      YES       placed_v2 granted + pushed + nested_v2 (stage_predicates)
 #
-# DEFAULT OFF: evaluation jobs are running against this file and the rung names drive
-# which stages enter `_granted`, so switching unconditionally would alter cells in flight.
-_STAGE_REWARD_OLD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
-_STAGE_REWARD_X   = dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0)
-STAGE_REWARD = _STAGE_REWARD_X if os.environ.get('FULLENV_REWARD_X', '') == '1' else _STAGE_REWARD_OLD
+# Max episode return 8.0 -- unchanged, so the registered return_clamp 8 needs no revision.
+# `tipped` terminates with its existing penalty (0.0 outside scope='place'). NOTHING ELSE
+# TERMINATES: the (x) batch terminated on the UNPAID `nested` proxy, whose clauses are a
+# subset of the slide's, so the episode ended on the first frame of the slide window and
+# the +4 rung could never be paid in training (E2E_AUDIT_BRIEF defect 5).
+STAGE_REWARD = dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0)
+TERMINAL_STAGES = ('slide_success',)            # plus the tip rule; see _step_once
+# Computed, logged, and entered into `_granted` -- but paying NOTHING (D2/D3). Kept for
+# continuity with every stored row: `nested` is the withdrawn training proxy, `placed` the
+# stale base-world band, `contact` the carry-in predicate, `nested_v2` its replacement.
+LOGGED_STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push',
+                 'nested', 'nested_v2', 'slide_success')
+# CartesianFullTaskEnv is a DIFFERENT arm (4-DOF teleop actions) and is not part of the
+# end-to-end unification. It keeps the ladder it has always run so its behaviour is
+# byte-identical to every cartesian run on record.
+_CARTESIAN_STAGE_REWARD = dict(picked=1.0, placed=1.0, contact=2.0, nested=4.0)
 PLACE_ENTRY_BANK = REPO / 'baselines' / 'pick_entry_states.json'
+
+
+def _sha256_file(p):
+    try:
+        return hashlib.sha256(pl.Path(p).read_bytes()).hexdigest()
+    except Exception:
+        return 'unreadable'
+
+
+def _git_describe():
+    try:
+        r = subprocess.run(['git', 'describe', '--always', '--dirty', '--tags'],
+                           cwd=str(REPO), capture_output=True, text=True, timeout=5)
+        return (r.stdout or '').strip() or 'unknown'
+    except Exception:
+        return 'unknown'
+
+
+_PROV_CACHE = {}
+
+
+def ladder_provenance(shaping=None):
+    """D6: the stamp that says WHICH ladder and WHICH code produced a number.
+
+    `shaping` is the goalward-shaping configuration of the env being stamped (None from a
+    module-level call). Every trainer writes this to <logdir>/ladder_provenance.json and
+    every evaluator into metrics.json; a table builder REFUSES to merge rows whose stamps
+    differ. Motivation: three trees diverged in both directions and no run stamped the code
+    it loaded, so a gate could be set at submission and inert in the job (audit brief §2/§4).
+    """
+    key = 'base'
+    if key not in _PROV_CACHE:
+        here = pl.Path(__file__).resolve()
+        _PROV_CACHE[key] = dict(
+            ladder='unified-2026-09-10',
+            stage_reward=dict(STAGE_REWARD),
+            terminal_stages=list(TERMINAL_STAGES) + ['tipped'],
+            logged_stages=list(LOGGED_STAGES),
+            max_return=float(sum(STAGE_REWARD.values())),
+            sha256=dict(
+                full_env=_sha256_file(here),
+                genesis_can_env=_sha256_file(REPO / 'baselines' / 'genesis_can_env.py'),
+                stage_predicates=_sha256_file(REPO / 'baselines' / 'stage_predicates.py'),
+            ),
+            git=_git_describe(),
+            repo=str(REPO),
+        )
+    prov = dict(_PROV_CACHE[key])
+    prov['sha256'] = dict(prov['sha256'])
+    prov['shaping'] = (dict(shaping) if shaping else None)
+    return prov
+
+
+def ladder_stamp(shaping=None):
+    """One-line form of ladder_provenance() -- what the `[ladder]` log line prints and what
+    a table builder compares. Two rows with the same stamp ran the same ladder AND the same
+    predicate/env code."""
+    p = ladder_provenance(shaping)
+    rungs = ' '.join(f'{k}={v:g}' for k, v in p['stage_reward'].items())
+    sh = 'off' if not p['shaping'] else ('goalward scale=%g gamma=%g' % (
+        p['shaping'].get('scale'), p['shaping'].get('gamma')))
+    return (f"{p['ladder']} | {rungs} | terminal={'+'.join(p['terminal_stages'])} | shaping={sh} | "
+            f"full_env={p['sha256']['full_env'][:12]} genesis_can_env={p['sha256']['genesis_can_env'][:12]} "
+            f"stage_predicates={p['sha256']['stage_predicates'][:12]} | git={p['git']}")
+
+
+def refuse_legacy_gates():
+    """D1: this tree has no reward gates. A launcher or trainer that still exports the old
+    one is running against an assumption that is now false, so stop rather than run."""
+    for _v in ('FULLENV_REWARD_X',):
+        if os.environ.get(_v, ''):
+            raise SystemExit(f'FATAL: legacy gate set ({_v}={os.environ[_v]!r}); '
+                             'this tree has no gates')
 
 # --- reward-density lever (2026-08-14): ONE definition of the honest pick condition -
 # The hold reward is paid per step by the ENV and per frame by the OFFLINE relabeler
@@ -225,6 +323,19 @@ def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
 
 
 
+# Amendment (w) episode record -- ALWAYS ON (brief D8; the FULLENV_EPISODE_RECORD gate is
+# removed). It is logging only: scalars written into `info` on the single exit path both
+# termination and truncation reach. It was gated when e2e jobs were queued against this
+# file; there is nothing in flight against THIS tree, and the gate is what made `placed_v2`
+# and the slide predicate invisible on truncated episodes.
+#
+# NOTE (2026-09-10): this block, and the contact_grant selector below, were both present at
+# 7096fe6 and were silently REVERTED by 809601d, which copied full_env.py in wholesale from
+# another tree. train_rlpd.py has passed `contact_grant=` unconditionally since (h), so on
+# this tree every train_rlpd run raised TypeError. Restored here, unchanged apart from the
+# gate removal. (Lane 3 owns the general tree reconciliation.)
+
+
 class FullTaskEnv(gym.Env):
     TIP_DEG = 60.0
     TIP_PENALTY = 0.0        # pick/full scopes: tip terminates but carries no penalty
@@ -285,13 +396,45 @@ class FullTaskEnv(gym.Env):
     PICK_SHAPING_SCALE = 2.0
     metadata = {'render_modes': []}
 
+    # --- scope='full' OPTIONAL potential-based shaping (brief D7; constructor arg, NEVER an
+    # env var, default OFF, and part of the provenance stamp). phi = -GOALWARD_SCALE *
+    # xy-dist(can, goal), active ONLY while placed_v2 has been granted AND the can is not in
+    # hand AND the can touches the goal; 0 everywhere else. Applied once per DECISION in
+    # step() -- the boundary the agent's discount ticks at (the 08-19 timescale bug).
+    # It exists for the registered sparsity fallback: if by 50% of budget no seed of an arm
+    # has any contact_push in training rollouts, that arm is rerun with shaping on, disclosed.
+    GOALWARD_SCALE = 2.0
+    GOALWARD_GAMMA = 0.999   # override with goalward_gamma= to match the consuming agent
+
     def __init__(self, backend='cpu', max_steps=None, fixed_uid=None, render_size=None,
                  camera_rig=False, workspace_limit=False, scope='full', shaping=False,
-                 entry_bank=None, phase_sparse=False, action_mode='absolute', delta_cap=0.025,
+                 entry_bank=None, phase_sparse=False, contact_grant=None, action_mode='absolute',
+                 delta_cap=0.025,
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
-                 pick_shaping_gamma=None, pick_shaping_terminal_zero=True):
+                 pick_shaping_gamma=None, pick_shaping_terminal_zero=True,
+                 goalward_shaping=False, goalward_gamma=None, goalward_scale=None,
+                 quiet_ladder=False):
         super().__init__()
+        # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
+        # authoritative validation with the full explanation runs below, after the scope fields are set.
+        if scope == 'contact':
+            assert contact_grant in ('bare_contact', 'slide_success', 'prior_release'), (
+                f'scope=contact needs an explicit contact_grant (got {contact_grant!r}) -- PHASE_PLAN (p): (l)\'s grip '
+                'clause is withdrawn, (o) was stopped, and the corrected predicate is uncalibrated, so no default exists.')
+            assert not (contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN')), (
+                'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3, passes 2 of 74 demos); '
+                'set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic.')
+            if contact_grant == 'prior_release':
+                raise NotImplementedError("contact_grant='prior_release' is PHASE_PLAN (p); its clause-5 threshold "
+                                          "(can supported by the shelf, not clamped) is not calibrated yet.")
+        # goalward shaping (D7): a CONSTRUCTOR argument on purpose. An env var would be a
+        # fourth silent lever of exactly the kind that produced the two-ladder confound.
+        assert not (goalward_shaping and scope != 'full'), 'goalward shaping is a scope=full lever'
+        self.goalward_shaping = bool(goalward_shaping)
+        self.goalward_scale = float(goalward_scale) if goalward_scale is not None else self.GOALWARD_SCALE
+        self.goalward_gamma = float(goalward_gamma) if goalward_gamma is not None else self.GOALWARD_GAMMA
+        self._goalward_phi_prev = 0.0
         # pick_hold_reward (2026-08-14, REWARD-DENSITY lever): see class docstring.
         # Default False keeps every existing caller byte-identical (single +1 via the
         # STAGE_REWARD 'picked' grant, terminate on the env's hardened picked flag).
@@ -392,6 +535,29 @@ class FullTaskEnv(gym.Env):
             u for u, r in self.genv.placements.items() if r.get('label') == 'success')
         assert scope in ('full', 'pick', 'place', 'contact', 'carrycontact', 'reach', 'touchgoal', 'reach_goal'), f'unknown scope {scope!r}'
         self.phase_sparse = bool(phase_sparse)   # PHASE PLAN: tips terminate only (no penalty) in place/contact
+        # scope='contact' GRANT SELECTOR -- explicit, no default (PHASE_PLAN (p), 2026-09-07). History: (m) paid on bare
+        # `contact`, which pays for driving a HELD can into the goal; (o) would have paid on `slide_success`, but (p)
+        # WITHDREW that predicate's grip clause -- it passes 2 of 74 demonstrations and 44 failures are the grip clause
+        # alone, because the human releases fully and then pushes the can home with the fingers re-closed to ~0.4.
+        # (p)'s replacement (prior release + can supported-not-clamped at contact) is registered but its clause-5
+        # threshold is NOT calibrated yet, so it is deliberately NOT implemented here. A contact-scope env therefore
+        # REFUSES to build unless the caller names the grant it wants, and the withdrawn one needs an explicit override.
+        self.contact_grant = contact_grant
+        if scope == 'contact':
+            _allowed = ('bare_contact', 'slide_success', 'prior_release')
+            assert contact_grant in _allowed, (
+                f'scope=contact needs contact_grant={_allowed} passed EXPLICITLY (got {contact_grant!r}). '
+                'PHASE_PLAN (p): (l)\'s grip<0.3 clause is withdrawn and (o) was stopped before landing; the corrected '
+                'prior-release predicate awaits its clause-5 calibration, so there is currently NO correct default.')
+            if contact_grant == 'slide_success' and not os.environ.get('CONTACT_GRANT_ALLOW_WITHDRAWN'):
+                raise AssertionError(
+                    'contact_grant="slide_success" is the WITHDRAWN (o)/(l) reward (grip<0.3): it contradicts the '
+                    'demonstrations (2/74) and would train the arm away from the demonstrated half-closed push. '
+                    'Set CONTACT_GRANT_ALLOW_WITHDRAWN=1 only to reproduce the recorded (o) diagnostic runs.')
+            if contact_grant == 'prior_release':
+                raise NotImplementedError(
+                    'contact_grant="prior_release" is PHASE_PLAN (p) clause 1-5; clause 5 (can supported by the shelf, '
+                    'not clamped, at contact) must be calibrated from the demonstration traces before it is implemented.')
         # PHASE PLAN: shelf-referenced band follows the WORLD's shelf (sim_variants shelf_dz), not the stale constant.
         import os as _os, sim_variants as _sv
         _vn = _os.environ.get('R2D_SIM_VARIANT') or _os.environ.get('GENESIS_SIM_VARIANT') or 'base'
@@ -439,6 +605,36 @@ class FullTaskEnv(gym.Env):
         self._pv2_run = 0
         self._attempted = False
         self._phi = 0.0
+        # --- the shared stage tracker (brief D1/D3). scope='full' only: the phase scopes
+        # score their own single terminal and are deliberately left unchanged. The tracker
+        # is fed once per ENV FRAME after the sim step (see _step_once) and owns
+        # contact_push / nested_v2 / slide_success; full_env keeps picked / placed_v2 /
+        # tipped and the reward loop.
+        self.tracker = None
+        if scope == 'full':
+            _g = np_(self.genv.w['goal'].get_pos())
+            self.tracker = StageTracker(goal_xy=(float(_g[0]), float(_g[1])),
+                                        shelf_top_z=float(self.shelf_top_z))
+        self._track = {}          # last tracker output (diagnostics -> info)
+        # D6: say out loud which ladder and which code this env is running. A run that does
+        # not stamp the code it loaded is how a gate can be set at submission and inert in
+        # the job (audit brief §2/§4).
+        if not quiet_ladder:
+            print('[ladder] ' + ladder_stamp(self.shaping_config()), flush=True)
+
+    def shaping_config(self):
+        """The goalward-shaping configuration, for the provenance stamp. None when off."""
+        if not getattr(self, 'goalward_shaping', False):
+            return None
+        return dict(kind='goalward_potential', scale=self.goalward_scale, gamma=self.goalward_gamma,
+                    gate='placed_v2 granted AND not in_hand AND can<->goal contact')
+
+    def provenance(self):
+        """This env's ladder provenance (D6) -- what trainers and evaluators write out."""
+        p = ladder_provenance(self.shaping_config())
+        p['scope'] = self.scope
+        p['stamp'] = ladder_stamp(self.shaping_config())
+        return p
 
     def _world_shelf_top(self):
         """Top z of the shelf box AS BUILT (the Box entity whose morph size is replay_harness.BOX_SIZE; its base-link
@@ -530,8 +726,22 @@ class FullTaskEnv(gym.Env):
         self._hold_run = 0
         self._pv2_run = 0   # amendment (j): placed_v2 is computed in scope=full too
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
+        self._reset_tracker()
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
+
+    def _reset_tracker(self):
+        """Per-episode reset of the shared stage tracker + the goalward potential.
+
+        MUST run on every reset variant that scope='full' can take (reset / reset_to), or
+        the sticky flags carry over from the previous episode -- the same failure mode
+        _sync_dj_target exists for."""
+        self._track = {}
+        self._goalward_phi_prev = 0.0
+        if self.tracker is not None:
+            self.tracker.reset()
+            _g = np_(self.genv.w['goal'].get_pos())
+            self.tracker.goal_xy0 = (float(_g[0]), float(_g[1]))
 
     def _reset_place(self, uid=None):
         tried = []
@@ -634,6 +844,7 @@ class FullTaskEnv(gym.Env):
         self._hold_run = 0
         self._pv2_run = 0   # amendment (j)
         self._pick_phi_prev = self._pick_phi() if self.pick_shaping else 0.0
+        self._reset_tracker()
         self._sync_dj_target()
         return obs['state'].astype(np.float32), {}
 
@@ -664,7 +875,121 @@ class FullTaskEnv(gym.Env):
             phi = 0.0 if (terminated and self.pick_shaping_terminal_zero) else self._pick_phi()
             total_reward += self._pick_gamma * phi - self._pick_phi_prev
             self._pick_phi_prev = phi
+        if self.goalward_shaping:
+            # D7 sparsity fallback, OFF unless the constructor asked for it. Potential-based
+            # (Ng/Harada/Russell): r += gamma*phi(s') - phi(s), applied ONCE per DECISION --
+            # the timescale the agent discounts at, the same lesson as pick_shaping above.
+            # phi = -scale * xy-dist(can, goal) INSIDE the gate and 0 outside it, so the
+            # term is a well-defined potential over the whole state space; phi(terminal)=0.
+            # HONEST CAVEAT, not to be lost in a summary: a gated potential is exactly
+            # policy-invariant only for the potential as defined here (gate included). The
+            # gate makes phi discontinuous at its boundary, so crossing the gate pays a
+            # one-off +/- scale*d -- entering the gate (can released, touching the goal)
+            # costs -scale*d and leaving it refunds it. Bounded and sign-consistent, but it
+            # is shaping, and any arm run with it is DISCLOSED (registered trigger, Lane 4).
+            phi = 0.0 if terminated else self._goalward_phi()
+            total_reward += self.goalward_gamma * phi - self._goalward_phi_prev
+            self._goalward_phi_prev = phi
+        if terminated or truncated:
+            # Amendment (w) episode record -- ALWAYS ON (brief D8). ONE record, emitted from
+            # the SINGLE exit both termination and truncation reach. `self._granted` is
+            # sticky and cumulative, so this reports what the episode actually reached.
+            #
+            # Why it is needed: the per-step stage flags are written only when an episode
+            # terminates INSIDE the adapter, so a horizon truncation logged all zeros even
+            # for an episode that had picked (1198/2911 episodes on one run, every one at
+            # exactly the horizon, 608 of them having scored). That left the accumulated
+            # reward as the only truncation-proof channel -- which is why placed_v2 and the
+            # slide predicate had no full-scope learning curves: neither was a rung.
+            #
+            # LOGGING ONLY. No simulation advanced, no state mutated, no reward term.
+            # Scalars only -- no containers -- so no logger can choke on the type.
+            info = dict(info)
+            info['episode_end'] = True
+            for _stage in LOGGED_STAGES:
+                info['ep_' + _stage] = bool(_stage in self._granted)
+            info['ep_tipped'] = bool(info.get('tipped'))
         return obs, total_reward, terminated, truncated, info
+
+    def _full_scope_predicates(self, a_phys, info):
+        """scope='full' ONLY: settle `placed_v2`, then feed the shared StageTracker ONE
+        env frame (brief D1/D3) and write its answers into `info`.
+
+        Called from _step_once immediately after the sim step and BEFORE the reward loop,
+        because `contact_push` and `slide_success` both require `placed_v2` to have been
+        granted. full_env owns picked / placed_v2 / tipped; the tracker owns everything
+        that needs a short history (in_hand, at_rest, released, pushed, contact_push,
+        nested_v2, slide_success). Neither re-implements the other.
+
+        Everything here is a READ of the solver state plus arithmetic -- no sim step is
+        advanced, so episode dynamics are unchanged by the measurement (the #26 trace
+        ablation established that per-step state reads do not perturb Genesis)."""
+        w = self.genv.w
+        bp = np_(w['bottle'].get_pos())
+        bq = np_(w['bottle'].get_quat())
+        gp = np_(w['goal'].get_pos())
+        gq = np_(w['goal'].get_quat())
+        # --- placed_v2, unchanged predicate (amendment (j)): grip commanded open, can
+        # inside the shelf footprint and the WORLD's shelf band, near-upright, sustained
+        # PLACE_SUSTAIN consecutive frames. It is now a PAID rung (+1) instead of a
+        # logged-only flag; the predicate itself is byte-identical.
+        _ok = (float(a_phys[6]) < self.PLACE_RELEASE and in_shelf_footprint(bp)
+               and self.shelf_top_z + 0.01 < bp[2] < self.shelf_top_z + 0.07
+               and tilt_deg(bq) < self.PLACE_TILT_DEG)
+        self._pv2_run = self._pv2_run + 1 if _ok else 0
+        if self._pv2_run >= self.PLACE_SUSTAIN:
+            info['placed_v2'] = True
+        placed_granted = bool(info.get('placed_v2') or 'placed_v2' in self._granted)
+        # --- the per-frame solver contacts the tracker needs. genesis_can_env computes
+        # both and now exports them per frame, so they are read once, in one place.
+        cg = bool(info.get('can_goal_touch'))
+        gg = bool(info.get('gripper_goal_touch'))
+        tool = np.asarray(self.genv.tool_pos(), dtype=np.float64)
+        flags = self.tracker.update(
+            can_pos=(float(bp[0]), float(bp[1]), float(bp[2])),
+            can_quat=[float(v) for v in np.asarray(bq).reshape(-1)[:4]],
+            goal_pos=(float(gp[0]), float(gp[1]), float(gp[2])),
+            goal_quat=[float(v) for v in np.asarray(gq).reshape(-1)[:4]],
+            tool_xy=(float(tool[0]), float(tool[1])),
+            grip_cmd=float(a_phys[6]),
+            picked=bool(info.get('picked')),
+            can_goal_contact=cg,
+            gripper_goal_contact=gg,
+            placed_v2=placed_granted)
+        flags['can_goal_contact'] = cg          # the goalward gate reads this back
+        self._track = flags
+        # The tracker is AUTHORITATIVE for these three in full scope. genesis_can_env also
+        # computes a `contact_push` ((g): no release required) and a `slide_success` ((l):
+        # grip < 0.3, a clause (p) withdrew); both are kept under *_legacy so the old
+        # columns stay readable, and neither is paid or terminal.
+        info['contact_push_legacy'] = bool(info.get('contact_push')
+                                           or getattr(self.genv, '_contact_push', False))
+        info['slide_success_legacy'] = bool(info.get('slide_success'))
+        info['contact_push'] = bool(flags['contact_push'])
+        info['slide_success'] = bool(flags['slide_success'])
+        info['nested_v2'] = bool(flags['nested_v2'])
+        info['released'] = bool(flags['released'])
+        info['pushed'] = bool(flags['pushed'])
+        info['in_hand'] = bool(flags['in_hand'])
+        info['at_rest'] = bool(flags['at_rest'])
+        info['goalward_gain_m'] = float(flags['goalward_gain_m'])
+        info['lever_m'] = float(flags['lever_m'])
+
+    def _goalward_phi(self):
+        """D7 potential: -scale * xy-dist(can, goal) while the gate holds, else 0.
+
+        Gate (brief D7): placed_v2 GRANTED and the can is NOT in hand and the can touches
+        the goal. `in_hand` and the contact flag come from the tracker's last update, so
+        the gate is the same predicate the ladder uses -- never a second implementation."""
+        if 'placed_v2' not in self._granted:
+            return 0.0
+        tr = self._track or {}
+        if tr.get('in_hand', True) or not tr.get('can_goal_contact', False):
+            return 0.0
+        bp = np_(self.genv.w['bottle'].get_pos())
+        gp = np_(self.genv.w['goal'].get_pos())
+        return -self.goalward_scale * float(np.hypot(float(bp[0]) - float(gp[0]),
+                                                     float(bp[1]) - float(gp[1])))
 
     def _step_once(self, action):
         if self.action_mode == 'delta_joint':
@@ -691,10 +1016,18 @@ class FullTaskEnv(gym.Env):
         if self.action_mode == 'delta_joint':
             self._dj_qmeas = np.asarray(obs['state'][:6], dtype=np.float64)
         self._t += 1
+        # ---- scope='full': placed_v2 FIRST, then the shared tracker, then the reward loop.
+        # Order matters and used to be wrong: placed_v2 was computed at the BOTTOM of this
+        # method, after the reward loop, so the ladder could never condition on it. The
+        # brief's contact_push and slide_success both REQUIRE placed_v2 to be granted, so
+        # the release predicate has to be settled before the tracker is fed.
+        if self.scope == 'full':
+            self._full_scope_predicates(a_phys, info)
         # GenesisCanEnv only computes the honest (settled) nested at its own horizon, and
-        # _nested() steps the sim so it can't run per-step. TRAINING uses a cheap proxy:
-        # contact + can & goal upright + gripper commanded open. EVAL keeps the settled
-        # metric (eval_sac -> eval_core on GenesisCanEnv), so reported numbers stay honest.
+        # _nested() steps the sim so it can't run per-step. The LEGACY training proxy:
+        # contact + can & goal upright + gripper commanded open. It pays NOTHING and
+        # terminates NOTHING now (brief D2); it is kept only so stored rows stay comparable
+        # and is reported as `nested_proxy`. nested_v2 (state-only, no settle) replaces it.
         if info.get('contact') and float(a_phys[6]) < 0.3 \
                 and 'nested' not in self._granted:
             w = self.genv.w
@@ -720,24 +1053,22 @@ class FullTaskEnv(gym.Env):
                 elif self.scope == 'pick' and stage == 'picked' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
-        # 2026-09-09 FIX: the env COMPUTES self._contact_push (genesis_can_env step()
-        # reads tool_pos() on every contact frame and sets it when the tool is on the far
-        # side of the pick-can with no gripper-goal touch) but never puts it into `info`.
-        # full_env only ever read info['contact_push'], so the key was never present and
-        # the grant never fired: contact_push reported EXACTLY 0.000 in full scope while
-        # `contact` read 0.533 and `slide_success` 0.267 on the same cell. That is an
-        # absence, not a measurement -- and contact_push is the discriminating statistic.
-        # Reading the attribute directly is safe: under the old ladder this grant is
-        # logged-only (never rewarded, never terminating), so nothing about training or
-        # episode length changes; it only makes the statistic observable.
-        if not info.get('contact_push') and getattr(self.genv, '_contact_push', False):
-            info['contact_push'] = True
-        if info.get('contact_push'):
-            # contact_push (2026-09-07): logged grant only -- never rewarded, never terminates (amendment (g))
-            self._granted.add('contact_push')
-        if info.get('slide_success'):
-            # slide_success (amendment (l)): logged grant only -- never rewarded, never terminates
-            self._granted.add('slide_success')
+        # 2026-09-09 FIX (non-full scopes): the env COMPUTES self._contact_push
+        # (genesis_can_env step() reads tool_pos() on every contact frame and sets it when
+        # the tool is on the far side of the pick-can with no gripper-goal touch) but old
+        # trees never put it into `info`, so the grant never fired and contact_push reported
+        # EXACTLY 0.000 in full scope -- an absence, not a measurement. In scope='full' the
+        # value now comes from the TRACKER (it must require a prior release), and the (g)
+        # predicate is kept beside it as contact_push_legacy.
+        if self.scope != 'full':
+            if not info.get('contact_push') and getattr(self.genv, '_contact_push', False):
+                info['contact_push'] = True
+        # Logged grants: every stage the episode reached enters `_granted` whether or not it
+        # pays. `_granted` is what the r2dreamer adapter, both annotators and the evaluators
+        # read as the sticky episode record, so the legacy names must keep entering it.
+        for _s in LOGGED_STAGES:
+            if info.get(_s):
+                self._granted.add(_s)
         if self.scope == 'touchgoal':
             c = self.genv.w['goal'].get_contacts(self.genv.w['kinova'])
             n_c = int(np.asarray(np_(c['link_a'])).reshape(-1).shape[0])
@@ -791,10 +1122,31 @@ class FullTaskEnv(gym.Env):
                 if terminated:
                     truncated = False
                     return (obs['state'].astype(np.float32), reward, True, False, info)
-        if self.scope in ('contact', 'carrycontact'):
-            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history, eef behind the can)
+        if self.scope == 'carrycontact':
+            # PHASE PLAN: +1 and terminate on the env's contact predicate (can touches the goal can, picked history,
+            # eef behind the can). UNCHANGED by amendment (o): (l)(c) makes carrycontact the explicit "contact by any
+            # route, including still held" control against which the release-based slide statistic is read.
             if info.get('contact'):
                 self._granted.add('contact')
+                return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
+        if self.scope == 'contact':
+            # PHASE_PLAN (p): the grant is whatever the caller named. 'bare_contact' = the (m)/world-model-of-record
+            # behaviour. 'slide_success' = the WITHDRAWN (o) reward, reachable only under CONTACT_GRANT_ALLOW_WITHDRAWN
+            # and kept so the recorded (o) diagnostic (150-decision episodes, r=0, reason grip_closed) reproduces.
+            # KEPT FROM (o) AND STILL RIGHT (coordinator, 2026-09-07): bare `contact` is logged and granted but does NOT
+            # end the episode when the grant is not bare_contact, so credit for driving a still-carried can into the
+            # goal is not paid; (p)'s prior-release predicate will formalise that.
+            # 2026-09-10: restored verbatim from 7096fe6 (809601d dropped it together with the
+            # contact_grant selector). The slide/contact PHASE is still on hold under (p);
+            # the ladder unification changes scope='full' only.
+            if self.contact_grant == 'bare_contact':
+                if info.get('contact'):
+                    self._granted.add('contact')
+                    return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
+            if info.get('contact'):
+                self._granted.add('contact')
+            if info.get('slide_success'):
+                self._granted.add('slide_success')
                 return (obs['state'].astype(np.float32), reward + 1.0, True, False, info)
         if self.scope == 'place':
             # PLACED_V2 (release-based, supersedes the mid-lift z-band proxy):
@@ -830,21 +1182,16 @@ class FullTaskEnv(gym.Env):
         # needs contact, which needs the hardened picked -- 10 held frames -- plus a
         # carry and release, so it cannot pre-empt a 25-frame hold in practice, and the
         # tip rule below cannot fire mid-hold either: it requires grip OPEN.)
+        # scope='full' placed_v2 / tracker now run at the TOP of this method
+        # (_full_scope_predicates), because the ladder conditions on them.
         if self.scope == 'full':
-            # amendment (j) 2026-09-07 (ADVERSARIAL_REVIEW_eval_env S1-2): the phase-scope release predicate placed_v2
-            # (grip commanded open < PLACE_RELEASE, can inside the shelf footprint and the WORLD's shelf band, tilt <
-            # PLACE_TILT_DEG, sustained PLACE_SUSTAIN frames) is computed here too, LOGGED ONLY: no reward, no termination,
-            # so the staged ladder, every running job and every stored row are unchanged. The legacy `placed` (STAGE_REWARD)
-            # keeps the stale base-world band and is reported as stale by the evaluator.
-            _bp = np_(self.genv.w['bottle'].get_pos())
-            _ok = (float(a_phys[6]) < self.PLACE_RELEASE and in_shelf_footprint(_bp)
-                   and self.shelf_top_z + 0.01 < _bp[2] < self.shelf_top_z + 0.07
-                   and tilt_deg(np_(self.genv.w['bottle'].get_quat())) < self.PLACE_TILT_DEG)
-            self._pv2_run = self._pv2_run + 1 if _ok else 0
-            if self._pv2_run >= self.PLACE_SUSTAIN:
-                info['placed_v2'] = True
-                self._granted.add('placed_v2')
-        terminated = bool(info.get('nested')) and self.scope != 'place'
+            # THE ONLY full-scope terminal besides the tip rule (brief D2): the PAID top
+            # rung. The legacy `nested` proxy no longer terminates anything -- its clauses
+            # are a subset of the slide's, so it used to end the episode on the first frame
+            # of the slide window and the +4 could never be paid (audit brief defect 5).
+            terminated = bool(info.get('slide_success'))
+        else:
+            terminated = bool(info.get('nested')) and self.scope != 'place'
         # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --
         # the grip-column bug, 4th sighting; this block also never ran before
         # 2026-08-01: self.scope and the class constants were missing entirely, so
@@ -954,7 +1301,10 @@ class CartesianFullTaskEnv(gym.Env):
                     and tilt_deg(np_(w['goal'].get_quat())) < 20:
                 info['nested'] = True
         reward = 0.0
-        for stage, r in STAGE_REWARD.items():
+        # _CARTESIAN_STAGE_REWARD, NOT the unified STAGE_REWARD: the 4-DOF teleop arm is a
+        # different experiment and is not part of the end-to-end unification, so it keeps
+        # the ladder every cartesian run on record trained under (2026-09-10).
+        for stage, r in _CARTESIAN_STAGE_REWARD.items():
             if info.get(stage) and stage not in self._granted:
                 reward += r
                 self._granted.add(stage)

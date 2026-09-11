@@ -131,6 +131,14 @@ def main():
                          "+1 and ends the episode. bare_contact = the (m)/world-model-of-record grant; slide_success = "
                          "the WITHDRAWN (o) reward (refused unless CONTACT_GRANT_ALLOW_WITHDRAWN=1); prior_release = "
                          "(p)'s corrected predicate, not implemented until its clause-5 threshold is calibrated.")
+    ap.add_argument('--goalward-shaping', choices=['off', 'on'], default='off',
+                    help="scope=full ONLY (LADDER_UNIFY_BRIEF D7): potential-based goalward shaping, "
+                         "phi = -2 * xy-dist(can, goal), active only while placed_v2 is granted, the can "
+                         "is not in hand and the can touches the goal. DEFAULT OFF and NOT an env var -- a "
+                         "fourth silent lever is what produced the two-ladder confound. It exists for the "
+                         "registered sparsity fallback (no contact_push in any seed of an arm by half the "
+                         "budget -> rerun that arm with it on, DISCLOSED). It is part of the ladder "
+                         "provenance stamp, so a shaped row can never merge with an unshaped one.")
     ap.add_argument('--entry-bank', default=None,
                     help='scope=place/contact: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
                          'REQUIRED for place (the env default bank is the OLD world)')
@@ -206,7 +214,12 @@ def main():
 
     # ---- env (joint only; the cartesian arm rides train_sacfd_full) ----
     t0 = time.time()
-    from full_env import FullTaskEnv, STAGE_REWARD
+    from full_env import FullTaskEnv, STAGE_REWARD, refuse_legacy_gates
+    # LADDER_UNIFY_BRIEF D1: this tree has ONE ladder and no environment-variable gates.
+    # A launcher that still exports the old one is running on an assumption that is now
+    # false, and the whole point of the unification is that such an assumption must not be
+    # able to pass silently (it was inert in one of three trees for 32 runs).
+    refuse_legacy_gates()
     import pick_env
     from train_sacfd_full import (relabel_full, delta_encode_transitions,
                                   delta_encode_transitions_repeat,
@@ -301,7 +314,11 @@ def main():
                       # shaping gamma = the AGENT's discount (Ng invariance needs them
                       # equal; before 08-23 the env silently used 0.998 whatever --gamma was)
                       pick_shaping_gamma=args.gamma,
-                      pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'))
+                      pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'),
+                      # D7: constructor argument, gamma matched to the AGENT's discount so
+                      # the potential is exactly policy-invariant (Ng et al. 1999)
+                      goalward_shaping=(args.goalward_shaping == 'on'),
+                      goalward_gamma=args.gamma)
     # asserts: no silent defaults -- the env must be running the mode we asked for
     assert env.scope == args.scope, (env.scope, args.scope)
     assert env.action_mode == args.action_mode, (env.action_mode, args.action_mode)
@@ -309,6 +326,8 @@ def main():
     assert env.delta_ref == args.delta_ref, (env.delta_ref, args.delta_ref)
     assert env.pick_hold_reward is hold_reward, (env.pick_hold_reward, hold_reward)
     assert env.pick_hold_k == args.pick_hold_k, (env.pick_hold_k, args.pick_hold_k)
+    assert env.goalward_shaping is (args.goalward_shaping == 'on'), env.goalward_shaping
+    assert args.goalward_shaping == 'off' or args.scope == 'full', 'goalward shaping is a scope=full lever'
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
     if args.scope in PHASE_SCOPES:
@@ -501,8 +520,20 @@ def main():
     # STARTUP sidecar next to the VideoEvalCallback snapshot dir, so even the first
     # in-train eval snapshot (which the callback ALSO passes --action-mode for) has a
     # readable record; and the final one next to rlpd_final.
+    sidecar['goalward_shaping'] = args.goalward_shaping
     (out / 'wandb_eval').mkdir(parents=True, exist_ok=True)
     (out / 'wandb_eval' / 'snapshot.action_mode.json').write_text(json.dumps(sidecar))
+    # ---- LADDER PROVENANCE (LADDER_UNIFY_BRIEF D6) -----------------------------------
+    # Every trainer writes the ladder + the sha256 of the code that defines it into its own
+    # logdir, at START, so a run can be traced to the objective it actually optimised. This
+    # is the fix for "no run stamps the code it loaded" (audit brief §4): an env-var gate was
+    # set at submission and inert inside the job, and nothing on disk could have revealed it.
+    _prov = env.provenance()
+    _prov.update(run=out.name, learner='rlpd', arm=args.demo_dir, seed=args.seed,
+                 steps=args.steps, steps_unit='decisions', sim_variant=args.sim_variant,
+                 written='start')
+    (out / 'ladder_provenance.json').write_text(json.dumps(_prov, indent=1))
+    print(f'[ladder] wrote {out}/ladder_provenance.json', flush=True)
 
     from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
     from wandb_utils import init_wandb, WandbScalarCallback, VideoEvalCallback
@@ -568,8 +599,10 @@ def main():
         recipe: ~800 finished episodes per 250k-decision run, ~200 B per row, so ~0.16 MB per run
         and no measurable runtime."""
 
+        # nested_v2 added 2026-09-10 (brief D3): it replaces `nested` (the proxy) in every
+        # log, table and figure. `nested` stays so old and new runs remain comparable.
         FLAGS = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push', 'nested',
-                 'slide_success', 'tipped')
+                 'nested_v2', 'slide_success', 'tipped')
 
         def __init__(self, path):
             super().__init__()
