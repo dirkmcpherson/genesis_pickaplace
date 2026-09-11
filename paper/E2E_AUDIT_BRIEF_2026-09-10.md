@@ -133,6 +133,17 @@ The proxy is not merely noisy, and its error is **not symmetric across arms**: i
 0.114 for the human arm and 0.029 for the machine arm — a 4x difference. The machine arm produces
 68 proxy firings that the settled predicate rejects, against 3 real nests.
 
+**Mechanism, measured 2026-09-11 (Lane 1, `baselines/diagnostics/proxy_firing_frame.py`): the
+proxy's `contact` term is STICKY.** At the frame the proxy fires, the machine arm's can is not
+touching the goal in 0/15 episodes (median 149 mm away); the human arm's is touching in 6/6
+(median 65 mm). The machine policy touches the goal early, carries the can ~15 cm away, sets it
+on the shelf and opens the gripper — and the proxy fires on the stale contact flag. Earlier
+text in this document that blamed "instantaneity" was wrong. The proxy also misses 12 of 14 real
+nests on the human demonstrations (recall 0.143): it fails in both directions, and which failure
+you see depends on the arm. Replacement: `nested_v2` (`baselines/stage_predicates.py`),
+precision 1.000 / recall 1.000 against the settle on 60 policy episodes under the unified
+terminal rule; `paper/NESTED_V2_PREDICATE_2026-09-10.md`.
+
 This matters more than the `placed_v2` artefact in §3, which was symmetric (13/13) and therefore
 left the contrast unbiased. **This one biases the contrast itself.** Any result stated on
 `nested`, `nested_proxy`, or a reward ladder that pays for the proxy (which is what {RLPD}

@@ -103,7 +103,10 @@ at 0.03); the (x) batch is only 13 of 32 seeds trained — recompute when the re
 - The e2e reward paid `nested_proxy` / bare `contact` while the scorer moved to `slide_success` /
   `nested_honest` (commit 5f7b4d9). Drift, not design.
 - `nested_proxy` precision is 0.114 (human) v 0.029 (machine) and REVERSES the arm ordering
-  (brief §4a). {RLPD} trained on exactly this proxy.
+  (brief §4a). {RLPD} trained on exactly this proxy. **Mechanism (Lane 1, 2026-09-11): its
+  `contact` term is sticky** — machine-arm firings happen with the can a median 149 mm from the
+  goal (0/15 touching), after an early touch, a carry-away and a set-down with the gripper
+  opened. It also misses 12 of 14 real nests on the human tapes. Replaced by `nested_v2`.
 - The two learners got different ladders because `FULLENV_REWARD_X=1` was inert in `gp_e2e`
   (brief §2).
 - Predicates with names that do not mean what they say: `timeout` is a residual label; legacy
