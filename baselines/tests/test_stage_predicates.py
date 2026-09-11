@@ -430,6 +430,10 @@ def test_slide_gain_ignores_progress_made_in_hand():
         c = _near_goal(d)
         tr.update(**_frame(c, _tool_behind(c, 0.012)))
     assert tr.slide_gain_m == 0.0 and tr.released
+    for _ in range(AT_REST_FRAMES + 2):              # the set-down latch: put it down first
+        c = _near_goal(0.100)
+        tr.update(**_frame(c, _tool_behind(c, 0.012)))
+    assert tr.settled_after_release
     for d in np.linspace(0.100, 0.098, 5):           # 2 mm of real push
         c = _near_goal(d)
         tr.update(**_frame(c, _tool_behind(c, 0.035)))
@@ -441,6 +445,9 @@ def test_oscillation_cannot_farm_slide_gain():
     """Push in 30 mm, let it come back 30 mm, push in 30 mm again: the gain is the NET 30 mm,
     because only new minima pay."""
     tr = StageTracker(GOAL[:2], SHELF_TOP)
+    for _ in range(AT_REST_FRAMES + 2):              # set down and settle (the latch)
+        c = _near_goal(0.120)
+        tr.update(**_frame(c, _tool_behind(c, 0.14)))
     for d in np.linspace(0.120, 0.090, 31):          # push 30 mm
         c = _near_goal(d)
         tr.update(**_frame(c, _tool_behind(c, 0.035)))
@@ -506,6 +513,72 @@ def test_release_far_is_recorded_always_and_gates_only_when_asked():
     for k in ('released', 'pushed', 'nested_v2', 'slide_success', 'contact_push',
               'goalward_gain_m'):
         assert a[k] == b[k], (k, a[k], b[k])
+
+
+def test_the_setdown_latch_excludes_the_release_transient():
+    """Lane 9's finding, as a unit test: a can that rolls out of the OPENING hand toward the
+    goal, before it has ever come to rest, is a release transient and must earn nothing. The
+    excluded credit is reported, not discarded silently."""
+    tr = StageTracker(GOAL[:2], SHELF_TOP)
+    # the release decision: the can travels 34 mm goalward while the tool retreats behind it
+    for i, d in enumerate(np.linspace(0.120, 0.086, 12)):
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.035 + 0.002 * i)))
+    assert not tr.settled_after_release, 'the can has not stopped yet'
+    assert tr.slide_gain_m == 0.0, 'the transient pays nothing'
+    assert abs(tr.gain_during_release_m - 0.034) < 1e-9, 'and it is reported, not hidden'
+    assert not tr.slide_event
+    # now it settles, and a genuine 10 mm push follows
+    for _ in range(AT_REST_FRAMES + 2):
+        c = _near_goal(0.086)
+        tr.update(**_frame(c, _tool_behind(c, 0.05)))
+    assert tr.settled_after_release
+    for d in np.linspace(0.086, 0.076, 11):
+        c = _near_goal(d)
+        tr.update(**_frame(c, _tool_behind(c, 0.05)))
+    assert abs(tr.slide_gain_m - 0.010) < 1e-9, 'only the post-set-down 10 mm'
+    assert tr.slide_event, 'which IS a slide event'
+    # with the latch off, the same episode credits the transient too
+    tr2 = StageTracker(GOAL[:2], SHELF_TOP, setdown_latch=False)
+    for i, d in enumerate(np.linspace(0.120, 0.086, 12)):
+        c = _near_goal(d)
+        tr2.update(**_frame(c, _tool_behind(c, 0.035 + 0.002 * i)))
+    assert abs(tr2.slide_gain_m - 0.034) < 1e-9 and tr2.gain_during_release_m == 0.0
+
+
+def test_slide_event_is_the_three_clauses_and_home_adds_arrival():
+    """`slide_event` = put it down, get behind it, move it goalward. `home` = that, arrived."""
+    frames = _fist_push_episode()
+    per, ep = replay(frames, GOAL[:2], SHELF_TOP)
+    assert ep['released'] and ep['settled_after_release'] and ep['farside']
+    assert ep['slide_gain_m'] >= SLIDE_GAIN_MIN_M
+    assert ep['slide_event'] and ep['home']
+    assert ep['home_frame'] >= ep['slide_event_frame'] >= ep['settled_frame']
+    # a slide that does NOT arrive is still a slide event -- that is what the flag is for
+    away = _fist_push_episode(start_d=0.200, end_d=0.150)
+    ep = replay(away, GOAL[:2], SHELF_TOP)[1]
+    assert ep['slide_event'] and not ep['nested_v2'] and not ep['home']
+    # and an arrival that was never slid is not a home
+    c = _near_goal(0.060)
+    drop = [_frame(c, _tool_behind(c, 0.015 + 0.00375 * i), can_goal_contact=True)
+            for i in range(40)]
+    ep = replay(drop, GOAL[:2], SHELF_TOP)[1]
+    assert ep['nested_v2'] and not ep['slide_event'] and not ep['home']
+
+
+def test_the_farside_cone_is_tighter_than_dot_zero():
+    """cone 90 deg is exactly the brief's `dot < 0`; the calibrated 60 deg asks the tool to be
+    more nearly on the line the can would be pushed along."""
+    c = _near_goal(0.090)
+    v = np.asarray(c, float) - GOAL[:2]
+    v = v / np.linalg.norm(v)
+    perp = np.array([-v[1], v[0]])
+    # 75 deg off the away-from-goal ray: inside a 90 deg cone, outside a 60 deg one
+    tool = np.asarray(c, float) + 0.05 * (v * np.cos(np.radians(75)) + perp * np.sin(np.radians(75)))
+    wide = replay([_frame(c, tool)], GOAL[:2], SHELF_TOP, farside_cone_deg=90.0)[0][0]
+    tight = replay([_frame(c, tool)], GOAL[:2], SHELF_TOP, farside_cone_deg=60.0)[0][0]
+    assert abs(wide['far_angle_deg'] - 75.0) < 1e-6
+    assert wide['farside'] and not tight['farside']
 
 
 # =============================================================================================

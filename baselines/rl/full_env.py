@@ -105,7 +105,12 @@ from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "on
 # opposite side of the can, and sliding it towards the goal can. If we didn't think sparse was
 # going to work we could ramp up reward for the slide and give a big boost for contact."
 #
-# 'nested_sparse':  home 1.0, TERMINAL. Nothing else pays. Max return 1.
+# 'nested_sparse':  home 1.0, TERMINAL. Nothing else pays. Max return 1. This is the
+#                   user's "version of sparse that enforces the slide": `home` is
+#                   slide_event AND nested_v2, and `slide_event` is the three clauses
+#                   they named -- the can was put DOWN, the tool went to the OPPOSITE
+#                   side of it from the goal, and the can TRAVELLED goalward from there.
+#                   Its constants are calibrated on the 74 human tapes, not chosen.
 # 'nested_ramp':    picked 1 -> placed_v2 1 -> farside 1 -> a DENSE slide ramp worth up to 2
 #                   -> home 4, TERMINAL. Max return 9.
 #
@@ -128,7 +133,8 @@ LADDERS = {
     'nested_sparse': dict(stage_reward=dict(home=1.0),
                           terminal=('home',)),
     'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, farside=1.0, home=4.0),
-                        requires=dict(placed_v2='picked', farside='placed_v2', home='farside'),
+                        requires=dict(placed_v2='picked', farside='placed_v2',
+                                      slide_event='farside', home='slide_event'),
                         ramp=dict(key='slide_gain_m', scale=2.0, span=0.10, requires='farside'),
                         terminal=('home',)),
 }
@@ -176,7 +182,7 @@ STAGE_REWARD, TERMINAL_STAGES = ladder_spec(LADDER_DEFAULT)
 # continuity with every stored row: `nested` is the withdrawn training proxy, `placed` the
 # stale base-world band, `contact` the carry-in predicate, `nested_v2` its replacement.
 LOGGED_STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push',
-                 'nested', 'nested_v2', 'slide_success', 'farside', 'home')
+                 'nested', 'nested_v2', 'slide_success', 'farside', 'slide_event', 'home')
 # CartesianFullTaskEnv is a DIFFERENT arm (4-DOF teleop actions) and is not part of the
 # end-to-end unification. It keeps the ladder it has always run so its behaviour is
 # byte-identical to every cartesian run on record.
@@ -325,11 +331,17 @@ class LadderAccountant:
         """-> (reward, terminated). Call once per ENV FRAME, after the predicates are in
         `info`. Mutates `granted` / `paid` / `ramp_paid`."""
         reward = 0.0
+        # `requires` is checked against what has been reached INCLUDING this frame, not only
+        # what was reached before it. Two rungs can first become true on the same frame (the
+        # tracker's flags are sticky and are all computed from one state), and if the upper one
+        # is also the ladder's TERMINAL, deferring it to the next frame would end the episode
+        # with the rung unpaid -- the shape of defect 5, re-created one level down.
+        reached = self.granted | {s for s in LOGGED_STAGES if info.get(s)}
         for stage, r in self.stage_reward.items():
             if not info.get(stage) or stage in self.paid:
                 continue
             req = self.requires.get(stage)
-            if req is not None and req not in self.granted:
+            if req is not None and req not in reached:
                 # reached out of order (e.g. `placed_v2` true at reset with no pick,
                 # CONFOUNDS row 82). Not paid, and NOT marked paid: if the requirement is
                 # met later while the flag is still set, the rung pays then.
@@ -340,7 +352,7 @@ class LadderAccountant:
             self.paid.add(stage)
         if self.ramp is not None:
             req = self.ramp.get('requires')
-            if req is None or req in self.granted:
+            if req is None or req in reached:
                 v = float(info.get(self.ramp['key']) or 0.0)
                 want = float(self.ramp['scale']) * min(1.0, v / float(self.ramp['span']))
                 if want > self.ramp_paid:
@@ -1210,9 +1222,12 @@ class FullTaskEnv(gym.Env):
         # Ladder N: computed and logged under EVERY ladder (so a staged run's records can be
         # re-scored under a nested ladder without re-simulating), paid only under one.
         info['farside'] = bool(flags['farside'])
+        info['slide_event'] = bool(flags['slide_event'])
         info['home'] = bool(flags['home'])
         info['release_far'] = bool(flags['release_far'])
+        info['settled_after_release'] = bool(flags['settled_after_release'])
         info['slide_gain_m'] = float(flags['slide_gain_m'])
+        info['gain_during_release_m'] = float(flags['gain_during_release_m'])
 
     def _goalward_phi(self):
         """D7 potential: -scale * xy-dist(can, goal) while the gate holds, else 0.

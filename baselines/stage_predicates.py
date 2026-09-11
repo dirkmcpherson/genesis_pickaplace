@@ -129,22 +129,40 @@ HELD_LEVER_M = 0.025        # m. tool-to-can-centre distance below which the can
 TILT_MAX_DEG = 20.0         # deg. "upright", both cans. Same value the settled predicate uses.
 BAND_LO_M = 0.01            # m above shelf_top_z: bottom of the resting band (full_env's band).
 BAND_HI_M = 0.07            # m above shelf_top_z: top of the resting band.
-# --- Ladder N (2026-09-11) ---------------------------------------------------------------
-FARSIDE_REACH_M = 0.08      # m. tool-to-can-centre distance inside which the tool can push.
-                            # 8 cm = the can radius 3.3 cm plus ~4.7 cm of finger/fist; wider
-                            # than that the tool is not in a position to push anything.
-SLIDE_GAIN_MIN_M = 0.01     # m of farside slide gain `home` requires (10 mm, = PUSH_GAIN_MM).
-FAR_RELEASE_DIST_M = 0.10   # m. with far_release=True the release must be at least this far
-                            # from the goal to count. Human set-down remaining distance is
-                            # 10.7-12.3 cm (SLIDE_ANATOMY), so the clause is calibrated to
-                            # pass a human set-down and fail a drop-and-nudge at the goal.
+# --- Ladder N (2026-09-11) -----------------------------------------------------------------
+# CALIBRATED ON THE 74 HUMAN TAPES, not chosen (user: "characterize this so that as many human
+# demos do it as possible"). The grid is `baselines/diagnostics/ladder_n_slide_calibration.py`
+# and the readout is paper/LADDER_N_DEMO_CHECK_2026-09-11.md §2.
+FARSIDE_REACH_M = 0.10      # m. tool-to-can-centre distance inside which the tool counts as
+                            # able to push. MEASURED: over the frames on which the can actually
+                            # travels goalward after the release, the lever is 8-9.4 cm on the
+                            # first tapes examined, and the coverage of the 13 human sim-slides
+                            # is 3/13 at 6 cm, 5/13 at 8 cm (the value the brief proposed) and
+                            # 13/13 at 10 cm. 12 cm buys no further slide. The tool point sits
+                            # ~5 cm behind whatever surface actually contacts the can, which is
+                            # why "the can radius plus a finger" was the wrong model.
+FARSIDE_CONE_DEG = 60.0     # deg. half-angle from the away-from-goal ray. 90 deg == the
+                            # brief's dot < 0. 60 keeps all 13 human slides and admits one
+                            # fewer non-slide tape, so the tighter cone is free.
+SLIDE_GAIN_MIN_M = 0.01     # m of slide gain the slide event requires. 0.5 cm admits the same
+                            # 13 human slides and one more non-slide tape; 2 cm loses one slide
+                            # and 3 cm loses four, so 1 cm is the knee.
+FAR_RELEASE_DIST_M = 0.08   # m. with far_release=True the release that counts must be at least
+                            # this far from the goal. MEASURED (and this is NOT what the brief
+                            # assumed): release distance does not separate a slide from a
+                            # set-down -- human `placed_only` releases at p50 13.1 cm, FARTHER
+                            # than the slides' 11.2 cm. What it does separate is the DROP
+                            # classes: human nested_drop releases at 6.6 cm and carry_in at
+                            # p50 7.9 cm. 8 cm keeps 13/13 human slides while excluding every
+                            # nested_drop tape in both sets; the brief's 10 cm costs 3 slides.
 
 FLAG_KEYS = ('in_hand', 'at_rest', 'released', 'pushed', 'contact_push', 'nested_v2',
-             'slide_success', 'farside', 'home', 'release_far')
-STICKY_KEYS = ('released', 'pushed', 'contact_push', 'slide_success', 'farside', 'home',
-               'release_far')
+             'slide_success', 'farside', 'slide_event', 'home', 'release_far',
+             'settled_after_release')
+STICKY_KEYS = ('released', 'pushed', 'contact_push', 'slide_success', 'farside', 'slide_event',
+               'home', 'release_far', 'settled_after_release')
 # the diagnostics full_env copies into info on every frame (the rest are extras)
-DIAG_KEYS = ('goalward_gain_m', 'lever_m', 'slide_gain_m')
+DIAG_KEYS = ('goalward_gain_m', 'lever_m', 'slide_gain_m', 'gain_during_release_m')
 
 
 def tilt_deg(quat):
@@ -189,9 +207,11 @@ class StageTracker:
                  band_lo_m=BAND_LO_M,
                  band_hi_m=BAND_HI_M,
                  farside_reach_m=FARSIDE_REACH_M,
+                 farside_cone_deg=FARSIDE_CONE_DEG,
                  slide_gain_min_m=SLIDE_GAIN_MIN_M,
                  far_release=False,
                  far_release_dist_m=FAR_RELEASE_DIST_M,
+                 setdown_latch=True,
                  released_requires_picked=True):
         self.goal_xy = _xy(goal_xy).copy()
         self.shelf_top_z = float(shelf_top_z)
@@ -204,9 +224,11 @@ class StageTracker:
         self.band_lo_m = float(band_lo_m)
         self.band_hi_m = float(band_hi_m)
         self.farside_reach_m = float(farside_reach_m)
+        self.farside_cone_deg = float(farside_cone_deg)
         self.slide_gain_min_m = float(slide_gain_min_m)
         self.far_release = bool(far_release)
         self.far_release_dist_m = float(far_release_dist_m)
+        self.setdown_latch = bool(setdown_latch)
         self.released_requires_picked = bool(released_requires_picked)
         assert self.at_rest_frames >= 1, self.at_rest_frames
         self.reset()
@@ -222,8 +244,10 @@ class StageTracker:
         self.slide_success = False
         self.nested_v2_ever = False
         self.farside = False
+        self.slide_event = False
         self.home = False
         self.release_far = False
+        self.settled_after_release = False
         # instantaneous flags (last computed values; False before the first update)
         self.in_hand = False
         self.at_rest = False
@@ -236,7 +260,9 @@ class StageTracker:
         self.pushed_frame = None
         self.nested_v2_frame = None
         self.farside_frame = None
+        self.slide_event_frame = None
         self.home_frame = None
+        self.settled_frame = None
         # push accumulator, see _update_push()
         self._banked_gain = 0.0
         self._run_ref = None     # dist at the start of the current not-in_hand run
@@ -245,6 +271,7 @@ class StageTracker:
         # slide accumulator (Ladder N), see _update_slide_gain()
         self._slide_min = None   # running minimum of dist since the release, ALL frames
         self.slide_gain_m = 0.0
+        self.gain_during_release_m = 0.0   # the credit the set-down latch EXCLUDED
         self.lever_m = float('nan')
         self.dist_xy_m = float('nan')
         self.release_dist_m = float('nan')
@@ -290,20 +317,31 @@ class StageTracker:
 
     # -- the slide accumulator (Ladder N) ---------------------------------------------------
     def _update_slide_gain(self, dist, farside_now):
-        """`slide_gain_m` = metres of NEW goalward progress made while the gripper is in a
-        position to push (the farside condition THIS frame, can not in hand).
+        """`slide_gain_m` = metres of NEW goalward progress made AFTER the can has been set
+        down, while the gripper is in a position to push (the farside condition THIS frame,
+        can not in hand).
 
-        Two rules, and the pair is the whole design:
+        Three rules, and the set is the whole design:
 
           * the running minimum `_slide_min` tracks EVERY frame after the release, so progress
             the robot makes by CARRYING the can lowers the bar without paying anything;
           * credit is added only when a new minimum is reached ON a farside frame, so the
             gain is bounded by the can's actual net displacement and oscillating the can back
             and forth cannot farm it (pulling it away raises dist above the minimum, and
-            pushing it back only returns to a minimum that was already paid for).
+            pushing it back only returns to a minimum that was already paid for);
+          * NOTHING counts until the can has been at rest once since the release -- the
+            set-down latch. This is the user's first clause ("they put the can down") and it
+            is load-bearing on POLICIES: Lane 9's 315 sampled {RLPD} rollouts fired the old
+            `pushed` within 3 decisions of the release on 20 of 23 positives, 5 of them inside
+            the release decision itself, with the can rolling 34 mm out of the opening hand
+            while the tool lever GREW. That is a release transient, not a push. On the 74
+            human tapes the latch costs nothing (0.00 mm excluded at p50, p90 and max), which
+            is the measurement that says it removes an artefact rather than a behaviour.
 
         `slide_gain_m` is therefore monotone non-decreasing, which is what lets the Ladder N
-        ramp be paid incrementally without ever clawing reward back."""
+        ramp be paid incrementally without ever clawing reward back. The credit the latch
+        excluded is kept in `gain_during_release_m` so the exclusion is visible, never silent.
+        """
         if not self.released:
             return
         if self._slide_min is None:
@@ -311,7 +349,10 @@ class StageTracker:
             return
         if dist < self._slide_min:
             if farside_now:
-                self.slide_gain_m += self._slide_min - dist
+                if self.settled_after_release or not self.setdown_latch:
+                    self.slide_gain_m += self._slide_min - dist
+                else:
+                    self.gain_during_release_m += self._slide_min - dist
             self._slide_min = dist
 
     # -- the one entry point ---------------------------------------------------------------
@@ -363,11 +404,23 @@ class StageTracker:
         # not, deliberately: 10 of the 13 human sim-slides never make that contact).
         dot = float((_xy(tool_xy)[0] - can_xy[0]) * (gxy[0] - can_xy[0])
                     + (_xy(tool_xy)[1] - can_xy[1]) * (gxy[1] - can_xy[1]))
+        # the angle between the tool and the AWAY-FROM-GOAL ray, measured from the can. At
+        # cone 90 deg this is exactly `dot <= 0`; a tighter cone asks the tool to be more
+        # nearly behind the can, on the line it would be pushed along.
+        far_angle = math.degrees(math.acos(max(-1.0, min(1.0, -dot / (
+            lever * float(np.hypot(gxy[0] - can_xy[0], gxy[1] - can_xy[1])) + 1e-12)))))
+
+        # the SET-DOWN LATCH: the can has been at rest at least once since the release.
+        if (self.released and at_rest and not self.settled_after_release
+                and self.released_frame is not None and self.t > self.released_frame):
+            self.settled_after_release = True
+            self.settled_frame = self.t
 
         # farside (Ladder N): released, hand off the can, tool behind it and within reach.
         far_gate = (not self.far_release) or self.release_far
         farside_now = bool(self.released and far_gate and (not in_hand)
-                           and dot < 0.0 and lever <= self.farside_reach_m)
+                           and far_angle <= self.farside_cone_deg
+                           and lever <= self.farside_reach_m)
         self._update_slide_gain(dist, farside_now)
         if farside_now and not self.farside:
             self.farside = True
@@ -396,10 +449,19 @@ class StageTracker:
             self.slide_success = True
             self.slide_frame = self.t
 
-        # home (Ladder N): settled arrival reached BY a push from the far side. Sticky, and
-        # the terminal rung of both nested ladders.
-        if (nested_v2 and self.farside and self.slide_gain_m >= self.slide_gain_min_m
-                and not self.home):
+        # slide_event (Ladder N): the user's three clauses -- the can was put down, the tool
+        # went to the opposite side of it from the goal, and the can travelled goalward from
+        # there. Sticky, and LOGGED under every ladder, so the paper can count the slides that
+        # did not arrive as well as the ones that did.
+        if (self.released and self.farside and self.slide_gain_m >= self.slide_gain_min_m
+                and not self.slide_event):
+            self.slide_event = True
+            self.slide_event_frame = self.t
+
+        # home (Ladder N): a slide event that ARRIVED. Sticky, and the terminal rung of both
+        # nested ladders. `nested_v2` is instantaneous, so this is the first frame on which
+        # the can is settled in the goal AND the slide that put it there has already happened.
+        if nested_v2 and self.slide_event and not self.home:
             self.home = True
             self.home_frame = self.t
 
@@ -410,12 +472,15 @@ class StageTracker:
         return dict(in_hand=in_hand, at_rest=at_rest, released=self.released,
                     pushed=self.pushed, contact_push=self.contact_push,
                     nested_v2=nested_v2, slide_success=self.slide_success,
-                    farside=self.farside, home=self.home, release_far=self.release_far,
+                    farside=self.farside, slide_event=self.slide_event, home=self.home,
+                    release_far=self.release_far,
+                    settled_after_release=self.settled_after_release,
                     goalward_gain_m=self.goalward_gain_m, lever_m=lever,
                     slide_gain_m=self.slide_gain_m,
+                    gain_during_release_m=self.gain_during_release_m,
                     # extra diagnostics; not part of the D3 flag set
                     nested_v2_ever=self.nested_v2_ever, dist_xy_m=dist,
-                    farside_now=farside_now, dot_tool_goal=dot,
+                    farside_now=farside_now, dot_tool_goal=dot, far_angle_deg=far_angle,
                     can_tilt_deg=can_tilt, goal_tilt_deg=goal_tilt, in_band=in_band,
                     grip_cmd=(None if grip_cmd is None else float(grip_cmd)), frame=self.t - 1)
 
@@ -426,12 +491,17 @@ class StageTracker:
         return dict(released=self.released, pushed=self.pushed, contact_push=self.contact_push,
                     nested_v2=self.nested_v2_ever, nested_v2_now=self.nested_v2,
                     slide_success=self.slide_success, goalward_gain_m=self.goalward_gain_m,
-                    farside=self.farside, home=self.home, release_far=self.release_far,
-                    slide_gain_m=self.slide_gain_m, release_dist_m=self.release_dist_m,
+                    farside=self.farside, slide_event=self.slide_event, home=self.home,
+                    release_far=self.release_far,
+                    settled_after_release=self.settled_after_release,
+                    slide_gain_m=self.slide_gain_m,
+                    gain_during_release_m=self.gain_during_release_m,
+                    release_dist_m=self.release_dist_m,
                     frames=self.t, released_frame=self.released_frame,
                     pushed_frame=self.pushed_frame, contact_push_frame=self.contact_push_frame,
                     nested_v2_frame=self.nested_v2_frame, slide_frame=self.slide_frame,
-                    farside_frame=self.farside_frame, home_frame=self.home_frame)
+                    farside_frame=self.farside_frame, slide_event_frame=self.slide_event_frame,
+                    home_frame=self.home_frame, settled_frame=self.settled_frame)
 
     def constants(self):
         """The exact constants this instance ran with -- goes into the provenance stamp (D6)."""
@@ -440,8 +510,10 @@ class StageTracker:
                     held_lever_m=self.held_lever_m, tilt_max_deg=self.tilt_max_deg,
                     band_lo_m=self.band_lo_m, band_hi_m=self.band_hi_m,
                     farside_reach_m=self.farside_reach_m,
+                    farside_cone_deg=self.farside_cone_deg,
                     slide_gain_min_m=self.slide_gain_min_m,
                     far_release=self.far_release, far_release_dist_m=self.far_release_dist_m,
+                    setdown_latch=self.setdown_latch,
                     released_requires_picked=self.released_requires_picked,
                     shelf_top_z=self.shelf_top_z, goal_xy=[float(v) for v in self.goal_xy])
 

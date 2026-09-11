@@ -96,8 +96,8 @@ REPO = pl.Path(os.environ.get('GENESIS_PICKAPLACE_ROOT',
 # it did. Recorded under EVERY ladder, so one relabel's manifest answers "how far up any other
 # ladder would this tape have got".
 REPORT_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success',
-                 'nested_v2', 'released', 'pushed', 'farside', 'home',
-                 'placed', 'contact', 'nested')
+                 'nested_v2', 'released', 'pushed', 'farside', 'slide_event', 'home',
+                 'settled_after_release', 'placed', 'contact', 'nested')
 MAX_PROCS = 8
 # --ladder -> the demo-set suffix that names it. A set carrying the wrong suffix is how a
 # launcher trains one objective while believing another, so the suffix is asserted against the

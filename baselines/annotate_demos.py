@@ -102,13 +102,13 @@ PANEL_H = 124
 # 'what would the nested ladder have paid here'.
 LADDER_CHIPS = [('PICK', 'picked'), ('PLACE', 'placed_v2'), ('PUSH', 'contact_push'),
                 ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success'),
-                ('FAR', 'farside'), ('HOME', 'home')]
+                ('FAR', 'farside'), ('SLIDE2', 'slide_event'), ('HOME', 'home')]
 LEGACY_CHIPS = [('nestP', 'nested'), ('pushL', 'contact_push_legacy'),
                 ('slidL', 'slide_success_legacy')]
 ALL_CHIP_KEYS = [k for _, k in LADDER_CHIPS + LEGACY_CHIPS]
 # Stages whose first grant decision is recorded per tape.
 REPORT = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
-          'released', 'pushed', 'farside', 'home', 'nested', 'contact', 'placed',
+          'released', 'pushed', 'farside', 'slide_event', 'home', 'nested', 'contact', 'placed',
           'contact_push_legacy', 'slide_success_legacy')
 
 

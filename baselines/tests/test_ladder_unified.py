@@ -547,6 +547,8 @@ def test_10a_nested_ramp_pays_9_for_a_full_slide_and_nested_sparse_pays_1():
     assert abs(r - 9.0) < 1e-9, f'nested_ramp paid {r}, expected 1+1+1+2+4 = 9'
     assert term is not None and ep['home'], 'home must terminate'
     assert acct.paid == {'picked', 'placed_v2', 'farside', 'home'}
+    assert 'slide_event' in acct.granted, 'the named three-clause flag is logged, not paid'
+    assert 'slide_event' not in acct.paid
     assert abs(acct.ramp_paid - 2.0) < 1e-9, 'the ramp saturates at its scale'
     assert full_env.max_return('nested_ramp') == 9.0
     r, term, acct, ep = _ladder_run(frames, 'nested_sparse')
@@ -637,7 +639,7 @@ def test_10d_far_release_blocks_a_drop_and_nudge():
     r_far_on, term, _, ep = _ladder_run(far, 'nested_ramp', far_release=True)
     assert abs(r_far_on - 9.0) < 1e-9 and term is not None and ep['release_far'] is True
     assert _ladder_run(close, 'nested_sparse', far_release=True)[0] == 0.0
-    print('10d. far_release: a release inside 0.10 m earns no farside/ramp/home  OK')
+    print('10d. far_release: a release inside FAR_RELEASE_DIST_M earns no farside/ramp/home  OK')
 
 
 def test_10e_requires_holds_the_rungs_in_order():
@@ -652,7 +654,15 @@ def test_10e_requires_holds_the_rungs_in_order():
     r, term, acct, _ = _ladder_run(frames, 'nested_ramp')
     assert abs(r - 2.0) < 1e-9, f'deferred rungs must pay once the pick lands, got {r}'
     assert acct.paid == {'picked', 'placed_v2'}
-    print('10e. requires: an out-of-order rung is deferred, not forfeited  OK')
+    # ...and a rung whose requirement first fires on the SAME frame pays on that frame, not
+    # the next: `home` is the terminal, so deferring it by one frame would end the episode
+    # with the rung unpaid -- defect 5, re-created one level down.
+    acct = full_env.LadderAccountant('nested_ramp', scope='full', pay_stages=None)
+    acct.reset()
+    r, term = acct.frame(dict(picked=True, placed_v2=True, farside=True, slide_event=True,
+                              home=True, nested_v2=True, slide_gain_m=0.10))
+    assert term and abs(r - 9.0) < 1e-9, f'same-frame chain paid {r}, expected the full 9'
+    print('10e. requires: deferred when out of order, paid when the chain lands together  OK')
 
 
 def test_10f_staged_and_sparse_are_unchanged_by_ladder_n():
@@ -677,7 +687,8 @@ def test_10f_staged_and_sparse_are_unchanged_by_ladder_n():
     assert 'far_release=on' in full_env.ladder_stamp('nested_ramp', None, True)
     p = full_env.ladder_provenance('nested_ramp', None, True)
     assert p['far_release'] is True and p['terminal_stages'] == ['home', 'tipped']
-    assert p['requires'] == dict(placed_v2='picked', farside='placed_v2', home='farside')
+    assert p['requires'] == dict(placed_v2='picked', farside='placed_v2',
+                                 slide_event='farside', home='slide_event')
     assert p['ramp']['scale'] == 2.0 and p['ramp']['span'] == 0.10
     assert p['return_clamp_required'] == 9.0
     assert full_env.ladder_provenance('nested_sparse')['return_clamp_required'] == 1.0

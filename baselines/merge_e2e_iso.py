@@ -29,7 +29,7 @@ usage: merge_e2e_iso.py --cell <dir> --n <expected episodes> [--out <dir>/metric
 import argparse, json, os, sys
 
 STAGES = ('picked', 'placed', 'placed_v2', 'contact', 'contact_push', 'slide_success',
-          'farside', 'home', 'nested_v2', 'nested_proxy', 'nested_honest')
+          'farside', 'slide_event', 'home', 'nested_v2', 'nested_proxy', 'nested_honest')
 OUTCOMES = ('nested_proxy', 'tipped', 'timeout')
 MUST_AGREE = ('kind', 'mode', 'seed', 'max_steps', 'ic_file', 'ic_set', 'scope', 'sim_variant', 'action_repeat',
               'act_selection', 'delta_cap', 'delta_leash', 'checkpoint', 'amendment', 'eval_fixes',

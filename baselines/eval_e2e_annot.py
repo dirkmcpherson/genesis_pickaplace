@@ -309,7 +309,7 @@ OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 # audit brief §4a), `contact_push_legacy` the (g) predicate that needs no release, and
 # `slide_success_settle` the (l) settle route with its withdrawn grip clause.
 HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
-                   'farside', 'home', 'nested_honest')
+                   'farside', 'slide_event', 'home', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 STAGES = HEADLINE_STAGES + LEGACY_STAGES
 # The outcome taxonomy's success is THE LADDER'S OWN PAID TERMINAL (see eval_e2e.py): under
@@ -367,6 +367,7 @@ for k, ic in enumerate(ics):
         # Ladder N (2026-09-11): computed and logged under EVERY ladder, paid under one, so a
         # staged cell and a nested cell carry the same columns and are readable side by side.
         'farside': _g('farside'),
+        'slide_event': _g('slide_event'),
         'home': _g('home'),
         'nested_honest': bool(end['nested']),          # settled reference
         # --- legacy columns, never a headline ---
