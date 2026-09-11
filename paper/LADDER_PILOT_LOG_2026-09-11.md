@@ -6,7 +6,9 @@ that produced it, and every claim about a job carries its id.
 
 Trees of record for the PILOT: `$LAB/gp_unified` @ **`877eb2b`** (branch
 `ladder-unify-2026-09-11`, the registration commit — see the pin note in §4) and
-`$W/r2dreamer_unified` @ **`197a1a3`** (its own git history; `77b2c61` plus the defect-7 fix), with
+`$W/r2dreamer_unified` @ **`f1c134c`** (its own git history: `77b2c61` plus the defect-7 and
+defect-8 evaluator fixes, both of which reach already-submitted jobs because the evaluator is a
+separate process launched at the END of each job), with
 `LAB=/cluster/tufts/shortlab/jstale02`, `W=$LAB/wm_fix_2026-09-03`. The smokes in §1 and §3 ran at
 earlier commits, each named where it matters.
 
