@@ -311,20 +311,26 @@ All four variants, scored offline from the same stage records, at the calibrated
 | {human demonstrations} | `nested_sparse` | on | 13.0 | 65 | 42 | 37 | 26 | 13 | 14 |
 | {human demonstrations} | **`nested_ramp`** | off | **219.2** | 65 | 42 | 39 | **26** | **13** | 14 |
 | {human demonstrations} | `nested_ramp` | on | 217.2 | 65 | 42 | 37 | 26 | 13 | 14 |
-| {machine demonstrations} (72) | `staged` | off | 192.0 | 64 | 44 | — | — | — | 16 |
-| {machine demonstrations} | `sparse` | off | 16.0 | 64 | 44 | — | — | — | 16 |
+| {machine demonstrations} (72) | `staged` | off | 192.0 | 64 | 44 | 41 | 24 | 14 | 16 |
+| {machine demonstrations} | `sparse` | off | 16.0 | 64 | 44 | 41 | 24 | 14 | 16 |
 | {machine demonstrations} | **`nested_sparse`** | off | **14.0** | 64 | 44 | 41 | **24** | **14** | 16 |
 | {machine demonstrations} | `nested_sparse` | on | 12.0 | 64 | 44 | 37 | 22 | 12 | 16 |
 | {machine demonstrations} | **`nested_ramp`** | off | **225.7** | 64 | 44 | 41 | **24** | **14** | 16 |
 | {machine demonstrations} | `nested_ramp` | on | 213.2 | 64 | 44 | 37 | 22 | 12 | 16 |
 
-The `staged` / `sparse` Σ and their `picked` / `placed_v2` / `nested_v2` counts reproduce Lane
-5's independent census tape for tape. Note that their `slide_event` and `home` columns read one
-LOWER (25/12 rather than 26/13): those ladders **terminate earlier** — `staged` on
-`slide_success` and `sparse` on `nested_v2` — so one tape's episode ends before its slide
-finishes. That is not a disagreement about the predicate; it is the correct observation that a
-logged flag is only observable up to the ladder's own terminal, and it is the reason `home`
-must be read from a run of the ladder that pays it. Rows marked "—" are in the manifests.
+Every `staged` / `sparse` Σ and rung count reproduces Lane 5's independent census tape for tape
+(74/74 and 72/72).
+
+One row deserves attention rather than a footnote: on the HUMAN set the `staged` / `sparse`
+rows read `slide_event` 25 and `home` 12, one lower than the nested rows' 26 and 13, while on
+the MACHINE set all four ladders read 24 and 14. That is not a disagreement about the
+predicate. `staged` terminates on `slide_success` and `sparse` on `nested_v2`, so on one human
+tape the episode ends before its slide finishes and the flag is never observed. The machine
+tapes mostly run to the 601-decision cap, so they terminate early far less often and the
+difference does not appear. **A logged flag is only observable up to the ladder's own
+terminal**, which is exactly why `home` must be read from a run of a ladder that pays it — and
+why a cross-ladder table of logged stages is not a like-for-like comparison even when the
+predicate is identical.
 
 **The statistic this buys the paper.** The pilot's `sparse` ladder pays `nested_v2`: 14 human
 tapes and **16** machine tapes. `nested_sparse` pays `home`: **13 human and 14 machine**. The
