@@ -210,3 +210,50 @@ and reads the flags. Evaluators and the relabel call the same tracker through th
   non-zero. Read code in the tree that ran, not the tree you assume ran.
 - Commit in your worktree with clear messages; do not rebase or touch other branches.
 - Report back: what changed (files), what was measured (numbers + commands), what is unverified.
+
+## Ladder N (NESTED) — design for the batch AFTER the pilot (user, 2026-09-11 ~16:00; PROPOSED, not registered)
+
+User's words: "nest such that max reward (or sparse reward) comes from release, moving the
+gripper to the opposite side of the can, and sliding it towards the goal can. If we didn't
+think sparse was going to work we could ramp up reward for the slide and give a big boost for
+contact." The pilot runs out first; its sparse arm (P7/P8) decides between variants A and B.
+
+**Tracker additions (`stage_predicates.py`):**
+- `released` now requires `picked` (closes the reset artefact: 4 of 30 `rnd30` starts fire
+  `placed_v2` with the arm at home).
+- `farside` (sticky): `released ∧ not in_hand ∧ dot(tool−can, goal−can) < 0 (xy) ∧
+  |tool_xy − can_xy| ≤ 0.08 m` — "the gripper is on the opposite side of the can, close enough
+  to push". No solver-contact term (the (g) `contact_push` needs solver contact, which 10/13
+  human slides never make in sim).
+- `slide_gain` (m, monotone): the decrease of dist_xy(can, goal) below its running MINIMUM since
+  release, accumulated only on frames where `farside` holds THIS frame and the can is not in
+  hand. Paying on new minima only means oscillation cannot farm it.
+- `home` := `nested_v2 ∧ farside-granted ∧ slide_gain ≥ 0.01` (settled arrival by a push from
+  the far side). Terminal.
+- Optional switch `far_release`: the release that counts for `farside`/`home` must happen at
+  dist_xy(can, goal) ≥ 0.10 m, so a drop-and-nudge cannot pay (human set-down remaining
+  distance 10.7–12.3 cm, SLIDE_ANATOMY; count the machine tapes that pass before adopting).
+
+**Variant A — `nested_sparse`:** only `home` pays, +1, terminal. Everything else logged.
+**Variant B — `nested_ramp`** (each rung REQUIRES the previous one):
+
+| rung | pays | requires |
+|---|---|---|
+| `picked` | +1 | — |
+| `placed_v2` | +1 | picked |
+| `farside` | +1 | placed_v2 |
+| slide ramp | dense: +2 × min(1, slide_gain / 0.10 m), paid incrementally on new minima | farside |
+| `home` | **+4** ("the big boost for contact"), terminal | farside ∧ slide_gain ≥ 0.01 ∧ nested_v2 |
+
+Max return 9 (r2dreamer `return_clamp` 9.0). Tip rule unchanged (Lane 6 may move its threshold
+by a separate amendment). `nested_v2` alone pays nothing and terminates nothing in either variant.
+
+**Decision rule (extends the pilot's):** if the pilot's sparse arm reaches `nested_v2` in ≥ 1
+seed per arm, the 16v16 runs Variant A; otherwise Variant B. Either way the ladder is one of
+these two, registered as amendment (aa) with the demo-side counts below, BEFORE submission.
+
+**Demo-side check to run now (Lane 7, no cluster, no jobs):** relabel all 146 tapes by
+re-execution under A and B (and with `far_release` on/off): per-arm reward totals, how many
+human/machine tapes reach `farside`, `slide_gain` distribution, how many reach `home`. The human
+set should earn near the maximum on its 13 sim-slides; if it does not, the definition is wrong,
+not the humans.
