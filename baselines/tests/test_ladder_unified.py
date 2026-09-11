@@ -887,3 +887,19 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+def test_11_max_return_is_scope_aware():
+    """2026-09-11: every non-full scope pays one terminal +1 whatever ladder is nominally
+    configured, so the r2dreamer clamp check must ask for 1.0 there (the pick recipe of record)
+    and for the ladder ceiling only in scope='full'. The first version refused the pick clamp."""
+    assert full_env.max_return('staged') == 8.0 and full_env.max_return('staged', 'full') == 8.0
+    assert full_env.max_return('nested_ramp', 'full') == 9.0
+    for sc in ('pick', 'place', 'contact', 'carrycontact', 'reach', 'touchgoal', 'reach_goal'):
+        assert full_env.max_return('staged', sc) == 1.0, sc
+        assert full_env.max_return('nested_ramp', sc) == 1.0, sc
+    p_full = full_env.ladder_provenance('staged')
+    p_pick = full_env.ladder_provenance('staged', None, False, 'grip', scope='pick')
+    assert p_full['scope'] == 'full' and p_full['return_clamp_required'] == 8.0
+    assert p_pick['scope'] == 'pick' and p_pick['return_clamp_required'] == 1.0
+    print('11. max_return / provenance are scope-aware (pick clamp 1.0, full ladder ceiling)  OK')

@@ -200,8 +200,19 @@ def ladder_extras(ladder=LADDER_DEFAULT):
     return dict(spec.get('requires') or {}), (dict(ramp) if ramp else None)
 
 
-def max_return(ladder=LADDER_DEFAULT):
-    """Maximum per-episode return. r2dreamer's return_clamp MUST equal this."""
+# Every non-full scope pays exactly ONE terminal +1 (pick: STAGE_REWARD['picked'] and terminate;
+# place: the placed_v2 terminal; contact/carrycontact: the contact grant; reach/touchgoal/
+# reach_goal: +1.0) -- the ladder is irrelevant there, and the clamp of record for the pick
+# recipe is 1.0 (DV3_DEBUG_2026-09-05, RESULTS_WM_HUMAN_VS_MACHINE_2026-09-04).
+PHASE_SCOPE_MAX_RETURN = 1.0
+
+
+def max_return(ladder=LADDER_DEFAULT, scope='full'):
+    """Maximum per-episode return for THIS ladder in THIS scope. r2dreamer's return_clamp MUST
+    equal this. Scope-aware since 2026-09-11: the first version ignored `scope` and refused the
+    pick recipe's clamp of 1.0 because the nominal ladder ('staged') sums to 8."""
+    if scope != 'full':
+        return float(PHASE_SCOPE_MAX_RETURN)
     _ramp = ladder_extras(ladder)[1]
     return float(sum(ladder_spec(ladder)[0].values())
                  + (float(_ramp['scale']) if _ramp else 0.0))
@@ -243,7 +254,7 @@ _PROV_CACHE = {}
 
 
 def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False,
-                      tip_guard=TIP_GUARD_DEFAULT):
+                      tip_guard=TIP_GUARD_DEFAULT, scope='full'):
     """D6: the stamp that says WHICH ladder and WHICH code produced a number.
 
     `tip_guard` (amendment (aa)) changes WHERE EVERY EPISODE ENDS and therefore what any of
@@ -285,8 +296,9 @@ def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False,
         ramp=ramp,
         terminal_stages=list(terminal) + ['tipped'],
         logged_stages=list(LOGGED_STAGES),
-        max_return=max_return(ladder),
-        return_clamp_required=max_return(ladder),   # r2dreamer's clamp MUST equal this
+        scope=str(scope),
+        max_return=max_return(ladder, scope),
+        return_clamp_required=max_return(ladder, scope),   # r2dreamer's clamp MUST equal this (scope-aware)
         shaping=(dict(shaping) if shaping else None),
         far_release=bool(far_release),
         tip_guard=str(tip_guard),
