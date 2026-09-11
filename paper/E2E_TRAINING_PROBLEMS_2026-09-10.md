@@ -83,6 +83,17 @@ byte-identical. Code drift: `genesis_can_env.py` (121 diff lines) is logging plu
 `end_of_episode()` replacing `_nested()` with the same step budget; `full_env.py` (178) is the
 gate, `placed_v2`/`contact_push` bookkeeping in full scope, phase scopes and a shelf assertion.
 Nothing in the drift changes full-scope dynamics or the old ladder's payments.
+**Correction (Lane 3 audit, 2026-09-11):** the budgets were NOT identical. `release_v4` counts
+the budget as ONLINE steps (`R2_LONG_RUN=1`: 4,000,000 online, counter target 4.117M human /
+4.150M machine); `r2dreamer_fix` counts TOTAL steps, so the (x) runs got 3,970,594 (human) /
+3,962,512 (machine) online. The gap is 0.74 % / 0.94 % — far too small to carry the effect above,
+but "same budget" was overstated. Also: the (x) batch has no 2M milestone checkpoints, and
+`release_v4/gp` never computed `placed_v2` in full scope, so the old runs' `placed_v2` column
+comes from the post-hoc re-score against `gp_root`, not from the tree they trained in. And the
+09-09 `contact_push` guard in `full_env.py:723-734` is a no-op today (`genesis_can_env.py:336`
+already writes `info['contact_push']` in both live trees), so the cause of the earlier
+`contact_push = 0.000` reading is NOT established by that hunk. Full detail:
+`paper/TREE_RECONCILIATION_2026-09-10.md`.
 
 Remaining caveats: n = 4 v 6 seeds; old-ladder seed variance is large (two of four old seeds sit
 at 0.03); the (x) batch is only 13 of 32 seeds trained — recompute when the rest land.

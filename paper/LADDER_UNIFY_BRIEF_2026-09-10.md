@@ -73,6 +73,28 @@ any `contact_push` in training rollouts, the arm is rerun with shaping on — di
 
 **D8. Episode record (amendment (w)) is always on.** No gate. Logging only.
 
+### Lane 1 outcomes that bind the merge (2026-09-11 02:40)
+
+- **HELD_LEVER stays 0.025.** On the 74 tapes of record the held tail reaches 3.23 cm (p99) and
+  fist contact starts at 3.43 cm; raising the lever triples a second error (a withdrawn tool
+  10 cm BELOW the can vetoing a good nest, since `in_hand` is xy-only). Every count is identical
+  from 1.5 to 4.0 cm; with the clause disabled all collapse to 0 (the control that it is live).
+- **`nested_v2` on the human tapes: precision 1.000, recall 0.786 vs the settle (11 of 14).**
+  Misses: 255/305 (the recording ENDS while the can is still moving, so `at_rest` cannot hold)
+  and 308 (`placed_v2` never granted). Amendment (x) on the same tapes: arrived 15, exactly its
+  registered 15 (the 21 was the reconstruction cohort — corroboration, never a count of record).
+  So P3 expects the `_rs` human set to pay on **11** tapes and `_rz`'s top rung on **≤ 11**
+  (those 11 that also satisfy `pushed`); Lane 4 records the actual counts and lists the uids.
+  Do NOT extend tapes to rescue 255/305 — disclose instead.
+- **(x)'s `released` fires before the pick** (median decision 7 of ~389): the tape classifier's
+  push gain includes the carry. The relabel MUST use the tracker through the env (D5), never
+  `slide_predicate.py`.
+- `nested_proxy` recall on human demonstrations is 0.143 (misses 12 of 14 real nests); with
+  precision 0.000 on the machine policy arm it fails in both directions.
+- Replay fidelity of `dHfull_w3` tapes through `FullTaskEnv`: 68/74 identical in decisions and
+  summed reward (the known non-determinism of that lineage, SLIDE_CLAUSE5_LINEAGE §7). The
+  `_rz`/`_rs` builds must record per-tape whether the re-execution matched the source outcome.
+
 ## Lanes
 
 - **Lane 1 — predicate** (worktree): `baselines/stage_predicates.py` (pure functions over
@@ -97,6 +119,70 @@ any `contact_push` in training rollouts, the arm is rerun with shaping on — di
 - **Lane 4 — smoke + registration** (after 1–2 merge): cluster clone, short smokes of both
   learners with identical stamps in both logs, `_rz` set builds, PHASE_PLAN amendment (z) with
   predictions and disconfirm branches BEFORE any training job.
+- **Lane 5 — annotated DEMONSTRATIONS for the user** (user request 2026-09-11 00:40, priority):
+  the user wants to check the phase annotations on the demonstrations themselves. Re-execute
+  human tapes (`$W/demos_state_full/dHfull_all`) and machine tapes (`dDPfull_first`) through the
+  unified `FullTaskEnv` (the D5 relabel path) and render each with stage chips that light on the
+  frame each stage is granted (`picked`, `placed_v2`, `contact_push` release-gated, `nested_v2`,
+  in-episode `slide_success`) beside the legacy `nested_proxy`, the tracker diagnostics (lever,
+  in_hand, at_rest, goalward gain) and the settled `nested_honest` verdict. Stratify: ≥ 6 human
+  (2 slides, 2 nested-by-drop, 1 carry-in, 1 no-pick) and ≥ 6 machine (same classes where they
+  exist; machine tapes mostly run to the 601 cap). ≤ 400 frames per clip, small resolution.
+  Optional after that: ≥ 4 policy episodes from existing {RLPD} checkpoints (human s901, machine
+  s920) over the disputed classes. Local CPU render; write to
+  `can_pos_recovery/videos_ladder_2026-09-11/` with an `INDEX.md` saying what each clip should
+  show and what the user is checking; the coordinator sends them with SendUserFile.
+
+## Lane 4 pilot design (user 2026-09-11 00:40: "start a set of shorter runs to verify")
+
+Registered as PHASE_PLAN amendment (z) BEFORE submission. Both learners from `$LAB/gp_unified`
+(RLPD via `GENESIS_PICKAPLACE_ROOT`, r2dreamer via `GP_ROOT`), QOS **normal** (separate 10-GPU
+cap; the old batch occupies the preempt cap), demo sets `dHfull_all_rz` / `dDPfull_first_rz`
+built by D5 on the cluster (action sha256 identical to the sources; only reward differs).
+
+**Two ladders, one env, selected by constructor argument and stamped** (user addition 01:00,
+"consider the settled-contact — that is what we want to induce; humans do it with a slide"):
+
+| ladder | pays | terminal | max return / r2d clamp | demo sets |
+|---|---|---|---|---|
+| `staged` (D2) | picked 1 / placed_v2 1 / contact_push 2 / slide_success 4 | slide_success | 8 / 8.0 | `_rz` |
+| `sparse` | **nested_v2 1.0 only** (settled contact: released, at rest, within 0.081 m, both upright, not in hand) | nested_v2 | 1 / 1.0 | `_rs` |
+
+Everything else (tip rule, every logged stage, `pushed`, tracker diagnostics) is identical, so
+the arms differ only in reward and terminal. The sparse arm logs whether each settled contact
+came by the slide route (`pushed` = True) or by a drop.
+
+| learner | ladder | arms | seeds | budget | checkpoints / milestones |
+|---|---|---|---|---|---|
+| {RLPD} | staged (verification pilot) | human / machine-first | 2 v 2 (s940–941 / s960–961) | 100k decisions | 40k / 100k |
+| {r2dreamer} | staged (verification pilot) | same | 2 v 2 | 1M online steps | 0.5M / 1M |
+| {RLPD} | **sparse** (sample batch) | same | 2 v 2 (s945–946 / s965–966) | **250k decisions** (full) | 40k / 100k / 250k |
+| {r2dreamer} | **sparse** (sample batch) | same | 2 v 2 | **4M online steps** (full) | 0.5M / 1M / 2M / 4M |
+
+16 jobs on QOS normal (9 free slots at 01:00; the short staged pilots free slots within ~4 h,
+so the sparse batch finishes by ~2026-09-11 evening). The sparse arm runs at the FULL budget
+because a sparse null at a short budget is uninformative; its milestones at 100k / 1M give the
+like-for-like read against the staged pilot at the same step.
+
+Predictions (each with its check): **P1** every run's `ladder_provenance.json` and Slurm
+`[ladder]` stamp are identical within a ladder and differ between ladders ONLY in `ladder`,
+`stage_reward`, `terminal_stages`, `return_clamp` (assert; a mismatch aborts the pilot). **P2**
+zero `contact_push` grants without a prior `placed_v2` in every episode record (structural;
+count = 0). **P3** the `_rz` and `_rs` human sets pay their top rung on the same tapes the (x)
+classifier selects (Lane 1: 21/74 on the reconstruction cohort; record the re-execution count and
+explain any difference); `_rs` pays exactly one +1 per paying tape at the nested_v2 frame. **P4**
+by the end of the staged budget ≥ 1 seed per arm shows `contact_push` in training rollouts;
+disconfirm → rerun that arm with D7 shaping ON, disclosed. **P5** max episode return ≤ 8 (staged)
+/ ≤ 1 (sparse) and no negative drift in `picked` versus the (x)-batch curves at the same step.
+**P6** no job ends `FAILED 2:0 00:00:00` (requeue guard). **P7 (the user's question, sparse
+arm):** settled contact is reached by ≥ 1 seed per arm within the full budget; **P8** the route
+census — prediction: under BOTH ladders the majority of `nested_v2` events have `pushed` = False
+(drop route); disconfirm = slide route ≥ 50 % in any arm, which would mean paying the outcome
+alone induces the slide. Decision rule registered now: if sparse reaches `nested_v2` at ≥ the
+staged rate at the matched milestone, the intermediate rungs are unnecessary and sparse becomes
+the primary for the 16v16; if sparse is 0 in all seeds at the full budget while staged > 0, the
+shaping is necessary. Readout: rnd30 mode cells at every milestone with `nested_v2`,
+`slide_success`, `pushed`, `nested_honest`; NOT a source comparison (n=2).
 
 ## Lane-1 interface (Lane 2 codes against this)
 

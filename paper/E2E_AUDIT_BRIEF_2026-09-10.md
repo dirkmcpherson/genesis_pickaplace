@@ -277,7 +277,8 @@ unreachable by an earlier line. (The others: the launcher's log-name assumption,
 The proxy's conditions are a subset of the slide's, so the episode terminates on the first frame
 of the 12-frame slide window. The settle route is post-terminal and unpaid. The reward loop never
 sees `slide_success=True`. **The (x) training ladder was picked 1 / placed_v2 1 / contact_push 2,
-max 4, with an unpaid terminal.** The `_rx` demo prefill still pays +4 in 13/74 human tapes, so
+max 4, with an unpaid terminal.** (The proxy terminal itself is in all three gp trees back to the
+08-28 release; what (x) changed is that the terminal became UNPAID — Lane 3 audit, 2026-09-11.) The `_rx` demo prefill still pays +4 in 13/74 human tapes, so
 buffer and env disagree on the objective. And the env's `slide_success` is the (l) predicate
 (`grip < 0.3`, withdrawn by (p)), not the (x) definition that was registered.
 
