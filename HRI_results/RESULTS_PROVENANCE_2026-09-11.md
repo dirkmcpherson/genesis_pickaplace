@@ -646,7 +646,7 @@ expected, from the doc (`{r2dreamer}`, e2e, rnd30, mode):
 | (x), machine (first-attempt set) | 7 | 210 | 0.576 | 0.095 | 0.438 | 0.419 | 0.029 | 0.010 | 0 |
 
 human arm, OLD v (x): `nested_honest` exact one-sided permutation **p = 10/210 = 0.048**; slides
-**p = 7/210 = 0.033`. Read the **human** row only — the machine SET also changed between the two
+**p = 7/210 = 0.033**. Read the **human** row only — the machine SET also changed between the two
 batches (best-of-3 → first attempt), so the machine rows are confounded. Seed counts are small
 (4 v 6) and the (x) batch was 13 of 32 seeds when this was measured; the doc says to recompute when
 the rest land, and the old batch has since been **stopped** (§13), so the (x) half is now frozen at
