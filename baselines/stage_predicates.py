@@ -117,7 +117,7 @@ __all__ = [
     'NESTED_TOUCH_DIST', 'AT_REST_MM', 'AT_REST_FRAMES', 'PUSH_GAIN_MM', 'HELD_LEVER_M',
     'TILT_MAX_DEG', 'BAND_LO_M', 'BAND_HI_M', 'FARSIDE_REACH_M', 'SLIDE_GAIN_MIN_M',
     'FAR_RELEASE_DIST_M', 'FLAG_KEYS', 'STICKY_KEYS', 'DIAG_KEYS',
-    'tilt_deg', 'StageTracker',
+    'tilt_deg', 'lever_m', 'is_in_hand', 'StageTracker',
 ]
 
 # ---- constants of record (all overridable per instance; see StageTracker.__init__) ------------
@@ -185,6 +185,24 @@ def _xy(p):
 
 
 tilt_from_quat = tilt_deg   # the name the Lane-2 interface test uses; same function
+
+
+def lever_m(tool_xy, can_xy):
+    """xy distance from the TOOL point to the can centre, metres. The one place this number
+    is computed: `StageTracker.update` reads it for `in_hand`/`farside`, and the tip guard
+    (PHASE_PLAN (aa)) reads it through `is_in_hand` below."""
+    t, c = _xy(tool_xy), _xy(can_xy)
+    return float(np.hypot(t[0] - c[0], t[1] - c[1]))
+
+
+def is_in_hand(tool_xy, can_xy, held_lever_m=HELD_LEVER_M):
+    """`in_hand`: the can is within one grasp lever of the tool point. NO gripper term --
+    see the module header; a fist-push posture reads as 'closed' with the can on the shelf.
+
+    Exported so the tip guard in `full_env` and `CartesianFullTaskEnv` can ask the SAME
+    question the tracker asks, instead of re-deriving it (the grip column and the control
+    mode were each re-derived three times in this project, wrongly)."""
+    return bool(lever_m(tool_xy, can_xy) < float(held_lever_m))
 
 
 class StageTracker:
@@ -378,8 +396,8 @@ class StageTracker:
         gxy = self.goal_xy if goal_pos is None else _xy(goal_pos)
 
         dist = float(np.hypot(can_xy[0] - gxy[0], can_xy[1] - gxy[1]))
-        lever = float(np.hypot(_xy(tool_xy)[0] - can_xy[0], _xy(tool_xy)[1] - can_xy[1]))
-        in_hand = bool(lever < self.held_lever_m)
+        lever = lever_m(tool_xy, can_xy)
+        in_hand = is_in_hand(tool_xy, can_xy, self.held_lever_m)
 
         # at_rest: full window only. `maxlen` deque, so the window is the last at_rest_frames
         # samples INCLUDING this one; spread is measured against the current position.

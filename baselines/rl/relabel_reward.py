@@ -105,6 +105,12 @@ MAX_PROCS = 8
 LADDER_SUFFIX = {'staged': '_rz', 'sparse': '_rs',
                  'nested_ramp': '_rnr', 'nested_sparse': '_rns'}
 LADDER_CHOICES = tuple(LADDER_SUFFIX)
+# --tip-guard -> the extra suffix letter (PHASE_PLAN amendment (aa)). The guard changes WHERE
+# every tape's episode ends and what it pays after that, so a set built under it is a different
+# set and must not be mistakable for one built under the rule of record. 'grip' adds nothing,
+# so every set built before this amendment keeps its name.
+TIP_GUARD_SUFFIX = {'grip': '', 'not_in_hand': 'h'}
+TIP_GUARD_CLI = tuple(TIP_GUARD_SUFFIX)
 
 
 def sha_actions(a):
@@ -214,7 +220,7 @@ def grip_phys_from_action(action):
 
 
 def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=None,
-                    tracker_kw=None):
+                    tracker_kw=None, tip_guard=None):
     """Replay a stage record through StageTracker + LadderAccountant. PURE NUMPY.
 
     Reproduces `FullTaskEnv.step()` exactly: per ENV FRAME feed the tracker, build the same
@@ -246,6 +252,15 @@ def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=N
     acct.reset()
     GRIP_OPEN = FE.FullTaskEnv.GRIP_OPEN
     TIP_DEG = FE.FullTaskEnv.TIP_DEG
+    # amendment (aa): WHICH tip guard this scoring applies. None = the class default, so an
+    # existing caller is unchanged. Both guards are computable EXACTLY from a stage record:
+    # 'grip' from `grip_cmd`, 'not_in_hand' from the tracker's own per-frame `in_hand`, which
+    # is derived from the recorded `tool_xy`/`can_pos` -- the same numbers the env used.
+    tip_guard = FE.TIP_GUARD_DEFAULT if tip_guard is None else str(tip_guard)
+    if tip_guard not in FE.TIP_GUARD_CHOICES:
+        raise ValueError(f'unknown tip_guard {tip_guard!r}')
+    TIP_SUSTAIN = int(FE.TIP_GUARD_SUSTAIN[tip_guard])
+    tip_run = 0
 
     rewards = np.zeros(n_dec, np.float32)
     grants, end_reason, end_dec = {}, 'stream_exhausted', n_dec
@@ -275,9 +290,15 @@ def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=N
             if k in REPORT_STAGES:
                 grants[k] = d
         seen |= set(acct.granted) | {k for k in REPORT_STAGES if info.get(k)}
-        # the tip rule, verbatim from _step_once (TIP_PENALTY is 0.0 in full scope)
-        tipped = bool((not terminated) and float(rec['grip_cmd'][i]) < GRIP_OPEN
-                      and tilt_deg(rec['can_quat'][i]) > TIP_DEG)
+        # the tip rule, verbatim from _step_once (TIP_PENALTY is 0.0 in full scope): the
+        # guard, then the tilt, then the sustain on the CONJUNCTION. `flags['in_hand']` is
+        # the tracker's own value for this frame -- exactly what the env reads out of
+        # `self._track`. Under 'grip' the sustain is 1, so this branch is the old arithmetic.
+        if not terminated:
+            free = (float(rec['grip_cmd'][i]) < GRIP_OPEN if tip_guard == 'grip'
+                    else (not bool(flags['in_hand'])))
+            tip_run = tip_run + 1 if (free and tilt_deg(rec['can_quat'][i]) > TIP_DEG) else 0
+        tipped = bool((not terminated) and tip_run >= TIP_SUSTAIN)
         if tipped:
             terminated = True
         truncated = (not terminated) and (i + 1) >= max_steps
@@ -297,7 +318,7 @@ def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=N
 
 
 # ------------------------------------------------------------------------------- worker
-def build_env(sim_variant, max_sim_steps, ladder, far_release=False):
+def build_env(sim_variant, max_sim_steps, ladder, far_release=False, tip_guard=None):
     """FullTaskEnv in the END-TO-END contract MDP -- the same knobs baselines/record_demos.py
     build_env and cluster/sbatch_rlpd_e2e.sh use, every one asserted (silent-default rule)."""
     sys.path.insert(0, str(REPO / 'baselines'))
@@ -309,8 +330,10 @@ def build_env(sim_variant, max_sim_steps, ladder, far_release=False):
     refuse_legacy_gates()
     apply_pre(sim_variant)
     t0 = time.time()
+    import full_env as _FE
+    tip_guard = _FE.TIP_GUARD_DEFAULT if tip_guard is None else str(tip_guard)
     env = FullTaskEnv(backend='cpu', max_steps=int(max_sim_steps), scope='full', ladder=ladder,
-                      far_release=bool(far_release),
+                      far_release=bool(far_release), tip_guard=tip_guard,
                       action_mode='delta_joint', delta_cap=0.025, delta_leash_mult=5.0,
                       action_repeat=4, delta_ref='target', camera_rig=False)
     apply_post(env, sim_variant)
@@ -319,8 +342,9 @@ def build_env(sim_variant, max_sim_steps, ladder, far_release=False):
     assert abs(env.delta_leash - 0.125) < 1e-12, env.delta_leash
     assert env.genv.max_steps >= 10 ** 8, 'inner env must never truncate (#26)'
     assert not env.goalward_shaping, 'a relabel must use the unshaped ladder'
+    assert env.tip_guard == tip_guard, (env.tip_guard, tip_guard)
     print(f'[env] built in {time.time() - t0:.1f}s | variant {sim_variant} | max_sim {env.max_steps} | '
-          f'shelf_top_z {env.shelf_top_z:.3f}', flush=True)
+          f'shelf_top_z {env.shelf_top_z:.3f} | tip_guard {env.tip_guard}', flush=True)
     return env
 
 
@@ -480,6 +504,7 @@ def relabel_one(env, path, out_dir, ic_tol):
     d['rz_release_dist_m'] = np.float64(ep.get('release_dist_m', float('nan')))
     d['rz_release_far'] = bool(ep.get('release_far', False))
     d['rz_far_release'] = bool(env.far_release)
+    d['rz_tip_guard'] = str(env.tip_guard)
     out = os.path.join(out_dir, os.path.basename(path))
     np.savez_compressed(out, **d)
     return dict(file=os.path.basename(path), n=n, layout=layout, ic=how,
@@ -568,7 +593,11 @@ def record_one(env, path, out_dir, ic_tol, sim_variant, max_sim_steps):
 
 def run_record_shard(args, files, meta):
     sv = args.sim_variant or meta['sim_variant']
-    env = build_env(sv, meta['max_sim_steps'], 'staged')     # ladder is irrelevant to a record
+    # the ladder is irrelevant to a RECORD, and so is the tip guard: `never_terminate` means
+    # nothing stops, and the record holds the guard's INPUTS (grip_cmd, tool_xy, can_pos) so
+    # either guard can be applied to it offline. The record is stamped with the guard the
+    # recording env carried, for provenance only.
+    env = build_env(sv, meta['max_sim_steps'], 'staged', tip_guard=args.tip_guard)
     rows = []
     for i, f in enumerate(files):
         r = record_one(env, f, args.records_out, args.ic_tol, sv, meta['max_sim_steps'])
@@ -579,12 +608,12 @@ def run_record_shard(args, files, meta):
     return rows, sv
 
 
-def offline_one(rec_path, src_path, out_dir, ladder, far_release):
+def offline_one(rec_path, src_path, out_dir, ladder, far_release, tip_guard=None):
     """Score one stage record under one ladder and write the relabelled tape (same schema the
     direct path writes, so the two are diffable file for file)."""
     t0 = time.time()
     rz = np.load(rec_path, allow_pickle=True)
-    res = offline_episode(rz, ladder, far_release=far_release)
+    res = offline_episode(rz, ladder, far_release=far_release, tip_guard=tip_guard)
     z = np.load(src_path, allow_pickle=True)
     layout = tape_layout(z)
     _s0, acts, old_rew, _ = tape_stream(z, layout)
@@ -619,6 +648,7 @@ def offline_one(rec_path, src_path, out_dir, ladder, far_release):
     d['rz_release_dist_m'] = np.float64(ep['release_dist_m'])
     d['rz_release_far'] = bool(ep['release_far'])
     d['rz_far_release'] = bool(far_release)
+    d['rz_tip_guard'] = str(tip_guard or 'grip')
     d['rz_ramp_paid'] = np.float64(res['ramp_paid'])
     d['rz_nested_honest'] = bool(scalar(rz, 'nested_honest', False))
     d['rz_record'] = os.path.abspath(rec_path)
@@ -650,7 +680,7 @@ def _ladder_reward_dict(ladder):
 
 def run_shard(args, files, meta):
     sv = args.sim_variant or meta['sim_variant']
-    env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release)
+    env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release, args.tip_guard)
     rows = []
     for i, f in enumerate(files):
         z = np.load(f, allow_pickle=True)
@@ -668,7 +698,8 @@ def run_shard(args, files, meta):
 
 
 # -------------------------------------------------------------------------------- driver
-def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, method=None):
+def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, method=None,
+              tip_guard=None):
     sys.path.insert(0, str(REPO / 'baselines'))
     sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
     import full_env
@@ -688,6 +719,9 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
                 're-executed through FullTaskEnv(scope=full) on the training code path; the reward column is '
                 'what the env paid, not what a classifier scored'),
         sim_variant=sv, scope='full', ladder=ladder, far_release=bool(far_release),
+        tip_guard=str(tip_guard or full_env.TIP_GUARD_DEFAULT),
+        tip_guard_sustain_frames=int(full_env.TIP_GUARD_SUSTAIN[
+            str(tip_guard or full_env.TIP_GUARD_DEFAULT)]),
         contract='v1', action_repeat=4, delta_cap=0.025,
         delta_ref='target',
         n_tapes=len(rows), decisions_total=int(sum(r['n'] for r in rows)),
@@ -703,8 +737,10 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
         n_tapes_nested_honest=sum(1 for r in rows if r.get('nested_honest')),
         actions_sha256=hashlib.sha256(''.join(r['actions_sha256'] for r in
                                               sorted(rows, key=lambda x: x['file'])).encode()).hexdigest(),
-        ladder_provenance=full_env.ladder_provenance(ladder, None, far_release),
-        ladder_stamp=full_env.ladder_stamp(ladder, None, far_release),
+        ladder_provenance=full_env.ladder_provenance(
+            ladder, None, far_release, str(tip_guard or full_env.TIP_GUARD_DEFAULT)),
+        ladder_stamp=full_env.ladder_stamp(
+            ladder, None, far_release, str(tip_guard or full_env.TIP_GUARD_DEFAULT)),
         node=_cpu_stamp(),
         layout=sorted({r['layout'] for r in rows}),
         # Trajectory fidelity of the re-execution, per channel group (see relabel_one).
@@ -719,7 +755,7 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
     return man
 
 
-def write_repeat_json(man, rows, in_dir, out_dir, ladder):
+def write_repeat_json(man, rows, in_dir, out_dir, ladder, tip_guard=None):
     """Emit the set manifest BOTH LAUNCHERS GATE ON (`repeat.json`), inherited from the source.
 
     `manifest.json` (above) is this builder's own record; neither launcher reads it.
@@ -761,6 +797,11 @@ def write_repeat_json(man, rows, in_dir, out_dir, ladder):
         created=time.strftime('%Y-%m-%dT%H:%M:%S'),
         relabel=dict(
             ladder=ladder, ladder_stamp=man['ladder_stamp'],
+            # amendment (aa): which tip guard produced this reward column. A launcher gates
+            # on repeat.json, so the guard has to be readable there and not only in the
+            # builder's own manifest.
+            tip_guard=man['tip_guard'],
+            tip_guard_sustain_frames=man['tip_guard_sustain_frames'],
             source_set=os.path.abspath(in_dir), source_generator=src.get('generator'),
             source_total_reward=src.get('total_reward'),
             source_n_pick=src.get('n_pick'), source_n_nopick=src.get('n_nopick'),
@@ -798,6 +839,14 @@ def main():
                     help="Ladder N switch: the release that counts for farside/home must happen at least "
                          "0.10 m from the goal, so a drop-and-nudge cannot pay for a slide. Part of the "
                          "ladder stamp and of the output-set suffix.")
+    ap.add_argument('--tip-guard', choices=TIP_GUARD_CLI, required=True,
+                    help="REQUIRED, no default (PHASE_PLAN amendment (aa)). WHICH guard the tip rule "
+                         "uses -- it decides where every episode ENDS and therefore what the tape pays "
+                         "after that point. 'grip' = the rule of record (commanded grip < 0.3, sustain 1), "
+                         "which every set built before 2026-09-11 used; 'not_in_hand' = the tracker's "
+                         "in_hand (|tool_xy - can_xy| >= 0.025 m, no gripper term) sustained 4 env frames "
+                         "together with the tilt clause. Recorded in the manifest's ladder_provenance and "
+                         "in repeat.json, so a set can never be handed to a launcher expecting the other.")
     ap.add_argument('--records-out', default=None,
                     help='RECORD MODE: re-execute each tape ONCE with termination suppressed and write a '
                          'per-env-frame stage record here. Ladder-independent; score it with --from-records.')
@@ -826,10 +875,12 @@ def main():
     if not args.records_out and not args.verify_against:
         if not args.out:
             sys.exit('FATAL: --out is required unless --records-out or --verify-against is given')
-        want_suffix = LADDER_SUFFIX[args.ladder] + ('f' if args.far_release else '')
+        want_suffix = (LADDER_SUFFIX[args.ladder] + ('f' if args.far_release else '')
+                       + TIP_GUARD_SUFFIX[args.tip_guard])
         if not os.path.basename(os.path.normpath(args.out)).endswith(want_suffix):
             sys.exit(f'FATAL: --ladder {args.ladder}'
-                     f'{" --far-release" if args.far_release else ""} writes a {want_suffix} set, but '
+                     f'{" --far-release" if args.far_release else ""} --tip-guard {args.tip_guard} '
+                     f'writes a {want_suffix} set, but '
                      f'--out is {os.path.basename(os.path.normpath(args.out))!r}. The suffix is how a '
                      f'launcher tells them apart; refusing to write a mislabelled set.')
     files = sorted(glob.glob(os.path.join(args.inp, '*.npz')))
@@ -851,28 +902,28 @@ def main():
             rec = os.path.join(args.from_records, os.path.basename(f))
             if not os.path.exists(rec):
                 sys.exit(f'FATAL: no stage record for {os.path.basename(f)} in {args.from_records}')
-            r = offline_one(rec, f, args.out, args.ladder, args.far_release)
+            r = offline_one(rec, f, args.out, args.ladder, args.far_release, args.tip_guard)
             rows.append(r)
             print(f'[{i + 1}/{len(files)}] {r["file"]}: reward {r["old_reward"]:.1f} -> {r["new_reward"]:.1f}, '
                   f'end {r["end_reason"]}@{r["end_decision"]}, slide_gain {r["slide_gain_m"] * 1000:.1f} mm, '
                   f'release {r["release_dist_m"] * 1000:.0f} mm (far={int(r["release_far"])}), '
                   f'grants { {k: v for k, v in sorted(r["grants"].items())} } [{r["seconds"]:.2f}s]', flush=True)
         man = summarize(rows, files, args.inp, args.out, args.sim_variant or meta['sim_variant'],
-                        args.ladder, args.far_release,
+                        args.ladder, args.far_release, tip_guard=args.tip_guard,
                         method=('scored OFFLINE from per-frame stage records through '
                                 'stage_predicates.StageTracker + full_env.LadderAccountant -- the same '
                                 'accountant object the env runs; records made by --records-out'))
         man['stage_records'] = os.path.abspath(args.from_records)
         man['offline_seconds'] = round(time.time() - t_off, 2)
         json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
-        rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder)
+        rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder, args.tip_guard)
         _report(man, rep, args.out)
         return
 
     # ---- VERIFY MODE: direct re-execution vs the offline replay --------------------------
     if args.verify_against:
         sv = args.sim_variant or meta['sim_variant']
-        env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release)
+        env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release, args.tip_guard)
         bad = 0
         t_dir = t_off = 0.0
         for i, f in enumerate(files):
@@ -898,7 +949,7 @@ def main():
             t_dir += time.time() - t0
             t0 = time.time()
             res = offline_episode(np.load(rec, allow_pickle=True), args.ladder,
-                                  far_release=args.far_release)
+                                  far_release=args.far_release, tip_guard=args.tip_guard)
             t_off += time.time() - t0
             off = np.asarray(res['rewards'], np.float32)
             same_r = bool(np.array_equal(direct, off))
@@ -915,14 +966,16 @@ def main():
                 print(f'[{i + 1}/{len(files)}] {os.path.basename(f)}: OK  reward {direct.sum():.1f}, '
                       f'end {d_reason}@{d_end}', flush=True)
         print('\n' + '=' * 78)
-        print(f'VERIFY ladder={args.ladder} far_release={args.far_release}: '
+        print(f'VERIFY ladder={args.ladder} far_release={args.far_release} '
+              f'tip_guard={args.tip_guard}: '
               f'{len(files) - bad}/{len(files)} tapes identical (reward column AND terminal decision)')
         print(f'wall clock: direct re-execution {t_dir:.1f}s, offline replay {t_off:.2f}s '
               f'({(t_dir / t_off) if t_off else float("nan"):.0f}x)')
         sys.exit(1 if bad else 0)
     if args.dry_run:
         print(f'[dry] {len(files)} tapes {args.inp} ({meta["kind"]} layout) -> {args.out}, '
-              f'ladder {args.ladder}, procs {args.procs}, variant {meta["sim_variant"]}')
+              f'ladder {args.ladder}, tip_guard {args.tip_guard}, procs {args.procs}, '
+              f'variant {meta["sim_variant"]}')
         for f in files[:5]:
             z = np.load(f, allow_pickle=True)
             _s0, a, r, _ = tape_stream(z, tape_layout(z))
@@ -950,7 +1003,8 @@ def main():
         rows, sv = shard_fn(args, files, meta)
     else:
         base = [sys.executable, os.path.abspath(__file__), '--in', args.inp,
-                '--ladder', args.ladder, '--ic-tol', str(args.ic_tol)]
+                '--ladder', args.ladder, '--tip-guard', args.tip_guard,
+                '--ic-tol', str(args.ic_tol)]
         base += ['--records-out', args.records_out] if args.records_out else ['--out', args.out]
         if args.far_release:
             base += ['--far-release']
@@ -982,6 +1036,10 @@ def main():
                            'suppressed; one row per ENV FRAME of every input the stage predicates and the '
                            'reward loop consume. Ladder-independent: score with --from-records.'),
                    sim_variant=sv, n_tapes=len(rows),
+                   # amendment (aa): a record is guard-INDEPENDENT (nothing terminates) and
+                   # holds both guards' inputs, so this stamp is provenance, not a constraint.
+                   recording_env_tip_guard=str(args.tip_guard),
+                   tip_guard_applicable=list(TIP_GUARD_CLI),
                    frames_total=int(sum(r['frames'] for r in rows)),
                    decisions_total=int(sum(r['n_decisions'] for r in rows)),
                    n_nested_honest=sum(1 for r in rows if r['nested_honest']),
@@ -1004,10 +1062,11 @@ def main():
         print(f'wrote                : {args.records_out}')
         return
 
-    man = summarize(rows, files, args.inp, args.out, sv, args.ladder, args.far_release)
+    man = summarize(rows, files, args.inp, args.out, sv, args.ladder, args.far_release,
+                    tip_guard=args.tip_guard)
     man['wall_seconds'] = round(time.time() - t_wall, 1)
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
-    rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder)
+    rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder, args.tip_guard)
     _report(man, rep, args.out)
 
 
@@ -1028,6 +1087,8 @@ def _report(man, rep, out):
               f'>=1cm {man["n_tapes_slide_gain_over_1cm"]}, >=10cm {man["n_tapes_slide_gain_over_10cm"]}')
         print(f'release_far          : {man["n_tapes_release_far"]}/{man["n_tapes"]} tapes released '
               f'>= 0.10 m from the goal')
+    print(f'tip guard            : {man["tip_guard"]} '
+          f'(sustain {man["tip_guard_sustain_frames"]} env frames)')
     print(f'ladder               : {man["ladder_stamp"]}')
     print(f'wrote                : {out}')
 

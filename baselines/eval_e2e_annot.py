@@ -242,7 +242,16 @@ import annotate_demos as AD                      # noqa: E402
 LADDER_NAME = side.get('ladder') or args.ladder or 'staged'
 if side.get('ladder') and args.ladder and side['ladder'] != args.ladder:
     sys.exit(f"FATAL: checkpoint sidecar says ladder={side['ladder']!r} but --ladder is {args.ladder!r}")
+# PHASE_PLAN amendment (aa): the guard comes from the checkpoint's own sidecar, like the
+# ladder. A checkpoint that names none trained before the amendment, so it resolves to the
+# rule of record and this line says so. Annotating a 'not_in_hand' policy under 'grip' would
+# draw chips for an episode that ends somewhere else.
+TIP_GUARD_NAME = side.get('tip_guard') or 'grip'
+print(f"[annot] tip_guard {TIP_GUARD_NAME!r} from "
+      f"{'the checkpoint sidecar' if side.get('tip_guard') else 'the rule of record (sidecar records none)'}",
+      flush=True)
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
+                  tip_guard=TIP_GUARD_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target',
                   # same camera the demonstration clips used, so the two sets are comparable
