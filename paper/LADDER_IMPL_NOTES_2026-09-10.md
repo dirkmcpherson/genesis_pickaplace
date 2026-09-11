@@ -5,8 +5,8 @@ Lane-1 interface, the coordinator's two corrections, Lane 3's blockers, and the 
 2026-09-11 sparse-ladder addition.
 
 Branch `worktree-agent-af1123f4c6cbf6bc7` (worktree), commits `f841cb6`, `f8cd6a5`,
-`3ad2676`. The r2dreamer tree `~/workspace/r2dreamer` is committed separately at
-**`4185e11`**.
+`3ad2676`, `401c8d2`. The r2dreamer tree `~/workspace/r2dreamer` is committed separately at
+**`4185e11`** (sync + ladder) and **`4410bed`** (sparse ladder wiring).
 
 > **Worktree base was wrong and was corrected.** This worktree was branched from `b2113cd`
 > (2026-07), not from `3ad144f`. The working tree was clean, so it was reset to `3ad144f`
