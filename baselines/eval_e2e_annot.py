@@ -229,6 +229,13 @@ from full_env import FullTaskEnv, STAGE_REWARD, refuse_legacy_gates   # noqa: E4
 refuse_legacy_gates()   # D1: this tree has no reward gates; a stale export must not pass
 import sim_variants as _sv                       # noqa: E402
 from replay_harness import BOX_TOP_Z             # noqa: E402
+# The OVERLAY is the one Lane 5 delivered for DEMONSTRATIONS (`annotate_demos._draw_panel`,
+# `_terminal_card`, `write_mp4`, and its chip sets). It is IMPORTED, never re-implemented, for
+# two reasons: a policy clip then reads exactly like the demonstration clips the user has
+# already reviewed (same chips, same colours, same diagnostics line, same terminal card), and
+# there is ONE place where the conventions live. The overlay computes NO predicate of its own --
+# every chip is `info` / `env._granted` and every diagnostic is `env.tracker`, read back.
+import annotate_demos as AD                      # noqa: E402
 # The ladder comes from the CHECKPOINT when its sidecar records one (runs trained before the
 # `ladder` argument existed do not), and --ladder must agree with it. Scoring a policy under a
 # different objective from the one it optimised is a different experiment, not a detail.
@@ -237,7 +244,9 @@ if side.get('ladder') and args.ladder and side['ladder'] != args.ladder:
     sys.exit(f"FATAL: checkpoint sidecar says ladder={side['ladder']!r} but --ladder is {args.ladder!r}")
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
-                  delta_ref='target', render_size=((240, 320) if args.video else None))
+                  delta_ref='target',
+                  # same camera the demonstration clips used, so the two sets are comparable
+                  render_size=(AD.RENDER_HW if args.video else None))
 apply_post(env, args.sim_variant)
 _want_top = float(BOX_TOP_Z) + float(_sv.VARIANTS[args.sim_variant].get('shelf_dz', 0.0))
 assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
@@ -299,6 +308,66 @@ else:
 # ---- episodes: one per start, in order ----
 import cv2   # noqa: E402
 OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
+CKPT_TAG = args.tag or ck.parent.name
+
+# Borderline bands -- the ONLY numbers invented in this file, and they select clips, they never
+# decide a flag. Each is "just outside a clause", i.e. the episodes where a slightly different
+# constant would flip `nested_v2` and therefore `slide_success`.
+BORDER_GAIN = (0.005, 0.010)        # goalward gain 5-9 mm: just under PUSH_GAIN_MM
+BORDER_DIST = (0.081, 0.100)        # can 81-100 mm from the goal: just outside NESTED_TOUCH_DIST
+
+
+def classify_policy(r, e):
+    """Stratification label for ONE policy episode. Ordered, first match wins, so every episode
+    has exactly one class.
+
+    This is BUCKETING OF RECORDED FLAGS, not a predicate: every term is a flag the env already
+    wrote (`r`, from `env._granted` / `info`) or a tracker reading (`e`). It invents no physics
+    and it can change no cell. The classes are the ones the smoke test is looking for -- the
+    pairs where two rungs disagree are where a bad clause would show.
+
+    Returns (class, borderline-reason or None).
+    """
+    g = r['grants']
+    released = bool(r['placed_v2'])          # `released` IS placed_v2-granted (stage_predicates)
+    if r['slide_success']:
+        k = 'slide'
+    elif r['nested_v2'] and not r['pushed']:
+        k = 'nested_drop'                    # arrived, but no 10 mm of post-release goalward gain
+    elif r['nested_v2']:
+        # nested_v2 AND pushed AND released is exactly slide_success, so reaching here means the
+        # STICKY nested_v2 fired on a frame before `pushed` did -- an ordering artefact worth a look.
+        k = 'nested_pushed_not_slide'
+    elif r['tipped'] and not released:
+        k = 'tipped_before_release'
+    elif r['tipped']:
+        k = 'tipped_after_release'
+    elif r['contact_push']:
+        k = 'push_no_nest'                   # far-side contact after release, never settled/arrived
+    elif r['pushed']:
+        k = 'pushed_no_contact'              # goalward gain without a far-side contact frame
+    elif g.get('contact_push_legacy') is not None and not released:
+        k = 'held_press_timeout'             # presses the HELD can into the goal to the horizon
+    elif r['placed_v2'] and not r['picked']:
+        k = 'reset_artifact'                 # rnd30 start already inside the shelf footprint
+    elif r['placed_v2']:
+        k = 'placed_only'
+    elif r['picked']:
+        k = 'picked_only'
+    else:
+        k = 'nopick'
+    why = []
+    if e.get('goalward_gain_m') is not None and BORDER_GAIN[0] <= e['goalward_gain_m'] < BORDER_GAIN[1]:
+        why.append('gain %.1f mm (push needs 10)' % (e['goalward_gain_m'] * 1000))
+    if e.get('dist_xy_m') is not None and BORDER_DIST[0] < e['dist_xy_m'] <= BORDER_DIST[1]:
+        why.append('dist %.1f mm (nest needs <= 81)' % (e['dist_xy_m'] * 1000))
+    if (e.get('dist_xy_m') is not None and e['dist_xy_m'] <= 0.081
+            and e.get('at_rest') is False and not r['nested_v2']):
+        why.append('within 81 mm but at_rest False on the last frame')
+    if (e.get('dist_xy_m') is not None and e['dist_xy_m'] <= 0.081
+            and e.get('in_hand') is True and not r['nested_v2']):
+        why.append('within 81 mm but still in hand (lever %.1f mm)' % ((e.get('lever_m') or 0) * 1000))
+    return k, ('; '.join(why) or None)
 # Stage columns (LADDER_UNIFY_BRIEF D3/D4, 2026-09-10). HEADLINE = the unified ladder's own
 # rungs plus nested_v2 (which REPLACES nested_proxy in every log, table and figure) and the
 # settled nested_honest, which stays as the post-hoc REFERENCE column nested_v2 is validated
@@ -326,24 +395,57 @@ for k, ic in enumerate(ics):
     uid = ic.get('uid')
     obs, info0 = env.reset(options={'uid': int(uid) if uid is not None else _placeholder_uid})
     policy_reset()
-    frames = []
-    snaps = [frozenset()]          # sticky stage set aligned 1:1 with frames
+
+    def _render():
+        return np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1].astype(np.uint8)
+
+    # frame-aligned overlay state, exactly the schedule annotate_demos uses: frame 0 is the
+    # RESET state (no decision taken), frame j>0 shows the world after decision j-1.
+    frames, snaps, diags, decs, rewards = [], [], [], [], []
+    DIAG0 = dict(lever_m=float('nan'), in_hand=False, at_rest=False, goalward_gain_m=0.0,
+                 pushed=False, dist_xy_m=float('nan'), grip_cmd=float('nan'))
     if args.video:
-        frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
+        frames.append(_render()); snaps.append(frozenset()); diags.append(dict(DIAG0))
+        decs.append(0); rewards.append(0.0)
+    first, grants = {}, {}          # chip key -> first decision; REPORT key -> first decision
+    sparse_dec = None               # decision a `sparse` episode would have paid and ENDED on
+    diag = dict(DIAG0)
     done = False; t = 0; ep_r = 0.0; info = {}
+    end_reason, end_dec, tipped_ever = 'truncated', 0, False
     while not done:
         a = act(np.asarray(obs, np.float32))
         obs, r, term, trunc, info = env.step(a)
+        d = t                        # 0-based index of the decision just executed
         ep_r += float(r); t += 1
+        # sticky stage set: the env's own grants ORed with this frame's info, the same rule
+        # eval_e2e.py's `_g()` uses. Read, never recomputed.
+        sticky = set(env._granted) | {kk for kk in AD.ALL_CHIP_KEYS + list(AD.REPORT)
+                                      if info.get(kk)}
+        for kk in sticky:
+            if kk in AD.REPORT and kk not in grants:
+                grants[kk] = d
+        for kk in AD.ALL_CHIP_KEYS:
+            if kk in sticky and kk not in first:
+                first[kk] = d
+        if info.get('nested_v2') and sparse_dec is None:
+            sparse_dec = d
+        tipped_ever = tipped_ever or bool(info.get('tipped'))
+        # diagnostics straight off the shared StageTracker instance the env just updated
+        tr = env.tracker
+        diag = dict(lever_m=float(tr.lever_m), in_hand=bool(tr.in_hand), at_rest=bool(tr.at_rest),
+                    goalward_gain_m=float(tr.goalward_gain_m), pushed=bool(tr.pushed),
+                    dist_xy_m=float(tr.dist_xy_m),
+                    grip_cmd=float((float(np.clip(a[6], -1.0, 1.0)) + 1.0) / 2.0))
         if args.video:
-            frames.append(np.asarray(env.genv.w['cam'].render()[0])[:, :, ::-1])
-            _acc = set(snaps[-1]) | set(env._granted)
-            for _k in ('picked', 'placed', 'placed_v2', 'contact', 'contact_push', 'nested',
-                       'nested_v2', 'slide_success'):
-                if info.get(_k):
-                    _acc.add(_k)                # evaluator ORs _granted with info; mirror it
-            snaps.append(frozenset(_acc))       # read, never recompute
+            frames.append(_render()); snaps.append(frozenset(sticky)); diags.append(dict(diag))
+            decs.append(d + 1); rewards.append(ep_r)
         done = bool(term or trunc)
+        if done:
+            end_dec = d + 1
+            end_reason = ('tipped' if info.get('tipped') else
+                          (next((s for s in env.terminal_stages
+                                 if s != 'tipped' and info.get(s)), None)
+                           or ('truncated' if trunc else 'terminated')))
     # The IN-EPISODE slide_success is now the statistic (D4): it is the env's own PAID,
     # TERMINAL rung, decided by the shared stage tracker during the episode. The post-episode
     # settle still runs, for two reasons and two only: `nested_honest` is the reference
@@ -369,70 +471,88 @@ for k, ic in enumerate(ics):
         'contact_push_legacy': bool(info.get('contact_push_legacy')),
         'slide_success_settle': bool(end['slide_success']),
     }
-    tipped = bool(info.get('tipped'))
+    tipped = bool(info.get('tipped')) or tipped_ever
     outcome = TERMINAL_STAGE if st[TERMINAL_STAGE] else ('tipped' if tipped else 'timeout')
     counts[outcome] += 1
     for s in STAGES:
         stage_counts[s] += int(st[s])
     route = end.get('slide_route')
     routes[str(route)] = routes.get(str(route), 0) + 1
+
+    # ---- end-of-episode diagnostics: the tracker's LAST update, verbatim. `env._track` is the
+    # flag dict the tracker returned on the final frame, so it carries the two tilts and the
+    # band test that `info` does not copy. An absent tracker frame (an episode that ended before
+    # any full-scope predicate ran) leaves them None -- never 0.
+    _tk = getattr(env, '_track', None) or {}
+    endiag = dict(
+        lever_m=(float(env.tracker.lever_m) if env.tracker.t else None),
+        dist_xy_m=(float(env.tracker.dist_xy_m) if env.tracker.t else None),
+        in_hand=(bool(env.tracker.in_hand) if env.tracker.t else None),
+        at_rest=(bool(env.tracker.at_rest) if env.tracker.t else None),
+        goalward_gain_m=(float(env.tracker.goalward_gain_m) if env.tracker.t else None),
+        pushed=bool(env.tracker.pushed), released=bool(env.tracker.released),
+        can_tilt_deg=(float(_tk['can_tilt_deg']) if 'can_tilt_deg' in _tk else None),
+        goal_tilt_deg=(float(_tk['goal_tilt_deg']) if 'goal_tilt_deg' in _tk else None),
+        in_band=(bool(_tk['in_band']) if 'in_band' in _tk else None),
+        # `nested_v2` in the stage table above is STICKY (`_granted`). On policy episodes the
+        # sticky read has precision 0.571 against the settle and the final-frame read has 1.000
+        # (NESTED_V2_PREDICATE §5.4, recommendation 2), so BOTH are recorded and the class is
+        # decided on the sticky one only where the sticky/now split is itself the finding.
+        nested_v2_now=bool(env.tracker.nested_v2), nested_v2_ever=bool(env.tracker.nested_v2_ever),
+        tracker_frames=int(env.tracker.t))
+    row = dict(
+        decisions=int(t), end_decision=int(end_dec or t), end_reason=end_reason,
+        ladder=str(env.ladder), reward_staged=float(ep_r), reward_recorded=None,
+        reward_label='earned', reward_sparse=(1.0 if sparse_dec is not None else 0.0),
+        sparse_decision=(None if sparse_dec is None else int(sparse_dec)),
+        grants={kk: int(vv) for kk, vv in sorted(grants.items())},
+        picked=st['picked'], placed_v2=st['placed_v2'], contact_push=st['contact_push'],
+        nested_v2=st['nested_v2'], slide_success=st['slide_success'],
+        pushed=bool(env.tracker.pushed), nested_proxy=st['nested_proxy'], contact=st['contact'],
+        nested_honest=st['nested_honest'], tipped=bool(tipped),
+        header='{RLPD} %s | %s %s | ep%d %s' % (CKPT_TAG, args.ic_set, args.mode, IC_OFFSET + k,
+                                                ('uid%d' % uid) if uid is not None else 'rnd'))
+    klass, borderline = classify_policy(row, endiag)
+
     vid = None
     if args.video and frames:
-        vid = str(OUT / f'ep{IC_OFFSET + k}_uid{uid if uid is not None else "rnd"}_{"slide" if st["slide_success"] else outcome}.mp4')
-        SC = 2
-        H0, W0 = frames[0].shape[:2]
-        W, H = W0 * SC, H0 * SC
-        PANEL = 74
-        # The chips follow the LADDER (D2): PICK/PLACE/PUSH are the three non-terminal
-        # rungs and NEST2 is nested_v2. `nested` (the withdrawn proxy) is deliberately no
-        # longer a chip -- an overlay that lights it invites reading nesting off it.
-        CHIPS = [('PICK', 'picked'), ('PLACE', 'placed_v2'), ('PUSH', 'contact_push'),
-                 ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success')]
-        first = {}
-        for i, sn in enumerate(snaps):
-            for _, key in CHIPS:
-                if key in sn and key not in first:
-                    first[key] = i
-        vw = cv2.VideoWriter(vid, cv2.VideoWriter_fourcc(*'mp4v'), 30.0 / REPEAT, (W, H + PANEL))
-        F = cv2.FONT_HERSHEY_SIMPLEX
-        for i, fr in enumerate(frames):
-            im = cv2.resize(np.ascontiguousarray(fr.astype(np.uint8)), (W, H),
-                            interpolation=cv2.INTER_NEAREST)
-            pan = np.full((PANEL, W, 3), 24, np.uint8)
-            sn = snaps[i] if i < len(snaps) else snaps[-1]
-            x = 6
-            for label, key in CHIPS:
-                on = key in sn
-                fresh = on and 0 <= i - first.get(key, -99) < 6
-                col = (90, 240, 90) if on else (90, 90, 90)
-                if fresh:
-                    col = (60, 255, 255)
-                w_ = 11 * len(label) + 12
-                cv2.rectangle(pan, (x, 6), (x + w_, 28), col, -1 if on else 1)
-                cv2.putText(pan, label, (x + 6, 23), F, 0.44,
-                            (20, 20, 20) if on else (170, 170, 170), 1, cv2.LINE_AA)
-                if key in first:
-                    cv2.putText(pan, 'd%d' % first[key], (x + 6, 41), F, 0.33, (150, 220, 150), 1, cv2.LINE_AA)
-                x += w_ + 7
-            cv2.putText(pan, 'decision %d/%d' % (i, len(frames) - 1), (6, 60), F, 0.40,
-                        (200, 200, 200), 1, cv2.LINE_AA)
-            # slide_success now lights as a CHIP too (it is an in-episode, paid rung), but
-            # nested_honest is decided by the post-episode settle and can only ever be a
-            # terminal verdict -- that is inherent to the predicate, not to the overlay.
-            verdict = 'slide=%s  nested_v2=%s  nested_honest=%s  tipped=%s' % (
-                int(st['slide_success']), int(st['nested_v2']), int(st['nested_honest']), int(tipped))
-            cv2.putText(pan, verdict, (150, 60), F, 0.40,
-                        (60, 255, 255) if st['slide_success'] else (190, 190, 190), 1, cv2.LINE_AA)
-            bar_y = PANEL - 5
-            cv2.line(pan, (6, bar_y), (W - 6, bar_y), (70, 70, 70), 2)
-            if len(frames) > 1:
-                px = int(6 + (W - 12) * i / (len(frames) - 1))
-                cv2.line(pan, (px, bar_y - 3), (px, bar_y + 3), (240, 240, 240), 2)
-                for key, fi in first.items():
-                    fx = int(6 + (W - 12) * fi / (len(frames) - 1))
-                    cv2.line(pan, (fx, bar_y - 4), (fx, bar_y + 4), (90, 240, 90), 1)
-            vw.write(np.ascontiguousarray(np.vstack([im, pan])))
-        vw.release()
+        vid = str(OUT / ('ep%d_%s_%s.mp4' % (IC_OFFSET + k,
+                                             ('uid%d' % uid) if uid is not None else 'rnd', klass)))
+        # ---- the SHARED overlay (annotate_demos): LADDER chips + legacy row + diagnostics
+        # line + reward line + terminal card, drawn by the same functions that drew the
+        # demonstration clips. Nothing here computes a predicate.
+        keep = list(range(len(frames)))
+        if len(frames) + AD.CARD_FRAMES > AD.MAX_FRAMES:
+            # uniform body, but NEVER drop a grant frame or its predecessor: those are the
+            # frames the clip exists to let the user judge.
+            forced = {0, len(frames) - 1}
+            for _fd in first.values():
+                forced |= {max(0, _fd), min(_fd + 1, len(frames) - 1)}
+            body = AD.MAX_FRAMES - AD.CARD_FRAMES - len(forced)
+            keep = sorted(forced | set(np.linspace(0, len(frames) - 1, num=max(body, 2),
+                                                   dtype=int).tolist()))
+        stride_note = ('' if len(keep) == len(frames)
+                       else 'subsampled %d/%d' % (len(keep), len(frames)))
+        W = int(frames[0].shape[1]) // 2 * 2
+        H = int(frames[0].shape[0]) // 2 * 2
+        staged_max = float(sum(env.stage_reward.values()))
+        n_dec_axis = max(int(end_dec or t), 1)
+        out_frames = []
+        for j in keep:
+            im = cv2.resize(np.ascontiguousarray(frames[j]), (W, H), interpolation=cv2.INTER_LINEAR)
+            pan = AD._draw_panel(cv2, W, j, n_dec_axis, decs[j], first, snaps[j], diags[j],
+                                 rewards[j], staged_max, row['reward_sparse'], sparse_dec,
+                                 stride_note)
+            out_frames.append(np.vstack([im, pan]))
+        card = AD._terminal_card(cv2, out_frames[-1][:H].copy(), row)
+        for _ in range(AD.CARD_FRAMES):
+            out_frames.append(np.vstack([card, out_frames[-1][H:]]))
+        assert len(out_frames) <= AD.MAX_FRAMES, (len(out_frames), AD.MAX_FRAMES)
+        # keep wall-clock: the episode runs at 30/repeat = 7.5 decisions per second
+        fps = float(np.clip((30.0 / REPEAT) * len(frames) / max(len(keep), 1), 6.0, 30.0))
+        row['codec'] = AD.write_mp4(cv2, vid, out_frames, fps)
+        row['video_frames'] = len(out_frames)
+        row['video_bytes'] = os.path.getsize(vid)
     # node / process / order stamps on EVERY episode (coordinator 2026-09-07): long-horizon full-scope episodes are
     # node-sensitive (same ckpt+IC+seed flips outcome across nodes) and, in the shared-process protocol, ORDER-dependent
     # (state leaks between episodes). `order` is the position within THIS process, so it is 0 for every isolated cell.
@@ -441,11 +561,24 @@ for k, ic in enumerate(ics):
                                               'cpu_logical', 'cpu_affinity', 'torch_num_threads', 'omp_num_threads')},
                         ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
-                        slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st))
-    print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome} slide={int(st["slide_success"])} '
-          f'nested_v2={int(st["nested_v2"])} nestedH={int(st["nested_honest"])} '
-          f'push={int(st["contact_push"])} placed_v2={int(st["placed_v2"])} picked={int(st["picked"])} '
-          f'({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)', flush=True)
+                        slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st,
+                        # --- the smoke-test record (Lane 9): the first-fire decision of every
+                        # flag, the tracker's end-of-episode diagnostics, the end reason, and the
+                        # stratification class. Everything here is read back, never recomputed.
+                        klass=klass, borderline=borderline, ckpt=CKPT_TAG,
+                        end_reason=end_reason, end_decision=int(end_dec or t),
+                        grants=row['grants'], end_diag=endiag,
+                        reward_sparse=row['reward_sparse'], sparse_decision=row['sparse_decision'],
+                        codec=row.get('codec'), video_frames=row.get('video_frames'),
+                        video_bytes=row.get('video_bytes')))
+    print(f'ep{k}: {"uid%d" % uid if uid is not None else "rnd"} {outcome}/{klass} '
+          f'slide={int(st["slide_success"])} nested_v2={int(st["nested_v2"])}'
+          f'(now={int(bool(endiag["nested_v2_now"]))}) nestedH={int(st["nested_honest"])} '
+          f'push={int(st["contact_push"])} pushed={int(row["pushed"])} '
+          f'placed_v2={int(st["placed_v2"])} picked={int(st["picked"])} '
+          f'end={end_reason}@d{end_dec} dist={endiag["dist_xy_m"]} gain={endiag["goalward_gain_m"]} '
+          f'({t} decisions, r={ep_r:.1f}, {time.time() - t0:.1f} s)'
+          + (f'  BORDERLINE: {borderline}' if borderline else ''), flush=True)
 
 n = max(len(results), 1)
 try:
@@ -479,6 +612,12 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                stage_counts={s: stage_counts[s] for s in STAGES},
                legacy_stages=list(LEGACY_STAGES),
                outcomes={k: counts[k] / n for k in OUTCOMES}, slide_routes=routes,
+               # Lane 9 smoke test: how many episodes landed in each stratification class, and
+               # which of them sit just outside a clause. Selection metadata, never a cell.
+               class_counts={kk: sum(1 for r in results if r['klass'] == kk)
+                             for kk in sorted({r['klass'] for r in results})},
+               borderline_eps=[r['ep'] for r in results if r.get('borderline')],
+               ckpt_tag=CKPT_TAG,
                stage_notes=dict(
                    slide_success='IN-EPISODE, the ladder top rung (+4) and the only non-tip terminal: '
                                  'placed_v2 granted AND pushed AND nested_v2 (stage_predicates). STATISTIC OF RECORD.',

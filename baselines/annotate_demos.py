@@ -246,18 +246,27 @@ def _draw_panel(cv2, W, i, n_dec, dec, first, sticky, diag, staged_r, staged_max
 
 def _terminal_card(cv2, im, row):
     """Dark card over the last sim frame: what ended the episode, the settled reference, and
-    the recorded reward beside the re-executed one."""
+    the recorded reward beside the re-executed one.
+
+    Serves both producers of clips. For a DEMONSTRATION tape `reward_recorded` is the tape's
+    own old-ladder reward and is shown beside the re-executed one. For a POLICY rollout there
+    is no recorded reward to compare against, so callers pass `reward_recorded=None` and the
+    line simply omits it -- printing a 0.0 there would be a claim about a number that does not
+    exist. `header` is an optional first line (the checkpoint / start a policy clip needs and a
+    tape clip carries in its filename)."""
     F = cv2.FONT_HERSHEY_SIMPLEX
     H, W = im.shape[:2]
     ov = im.copy()
     cv2.rectangle(ov, (0, 0), (W, H), (12, 12, 12), -1)
     im = cv2.addWeighted(ov, 0.80, im, 0.20, 0)
     g = row['grants']
-    lines = [
+    _rec = row.get('reward_recorded')
+    lines = ([(row['header'], (235, 235, 235))] if row.get('header') else []) + [
         ('END: %s @ decision %d of %d' % (row['end_reason'], row['end_decision'], row['decisions']),
          (80, 230, 255)),
-        ('reward  re-executed %.1f (%s)   recorded %.1f (old ladder)'
-         % (row['reward_staged'], row['ladder'], row['reward_recorded']), (215, 215, 215)),
+        ('reward  %s %.1f (%s)%s'
+         % (row.get('reward_label', 're-executed'), row['reward_staged'], row['ladder'],
+            '' if _rec is None else '   recorded %.1f (old ladder)' % _rec), (215, 215, 215)),
         ('sparse ladder would pay %.1f%s'
          % (row['reward_sparse'],
             '' if row['sparse_decision'] is None else ' @d%d' % row['sparse_decision']), (215, 215, 215)),
