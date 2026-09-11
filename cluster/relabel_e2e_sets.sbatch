@@ -22,7 +22,7 @@
 # usage:
 #   GENESIS_PICKAPLACE_ROOT=$LAB/gp_unified sbatch -J lz_relabel \
 #     --exclude=<non-64-core nodes> cluster/relabel_e2e_sets.sbatch
-# env: SETS="dHfull_all dDPfull_first"  LADDERS="staged sparse"  PROCS=8
+# env: SETS="dHfull_all dDPfull_first"  LADDERS="staged sparse"  PROCS=8  TIP_GUARD=grip|not_in_hand
 #      REQUIRE_CORES=64  DEMO_ROOT=$W/demos_state_full  FORCE=1 (overwrite an existing set)
 #SBATCH -J lz_relabel
 #SBATCH -p batch
@@ -39,6 +39,9 @@ PY=${PY:-$LAB/r2d_venv/bin/python}
 DEMO_ROOT=${DEMO_ROOT:-$W/demos_state_full}
 SETS=${SETS:-"dHfull_all dDPfull_first"}
 LADDERS=${LADDERS:-"staged sparse"}   # or: nested_ramp nested_sparse (+ FAR_RELEASE=1)
+# PHASE_PLAN amendment (aa): REQUIRED, no default. A set is defined by its ladder AND its tip
+# guard; a set built under one and trained under the other is the two-ladder confound again.
+TIP_GUARD=${TIP_GUARD:?set TIP_GUARD (grip | not_in_hand) -- a demo set carries the guard that built it}
 PROCS=${PROCS:-8}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 REQUIRE_CORES=${REQUIRE_CORES:-64}
@@ -69,6 +72,11 @@ for L in $LADDERS; do
   case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;;
                 nested_sparse) SFX=_rns ;; *) echo "FATAL: ladder $L"; exit 2 ;; esac
   [ "${FAR_RELEASE:-0}" = "1" ] && SFX="${SFX}f" && FAR_FLAG="--far-release" || FAR_FLAG=""
+  # PHASE_PLAN amendment (aa): the TIP GUARD is part of what a set IS -- it decides where each
+  # tape's episode ends and therefore what it is paid after that point -- so it is required
+  # here too, and it appends 'h' to the suffix (relabel_reward.TIP_GUARD_SUFFIX).
+  case "$TIP_GUARD" in grip) ;; not_in_hand) SFX="${SFX}h" ;;
+                *) echo "FATAL: TIP_GUARD must be grip | not_in_hand (got $TIP_GUARD)"; exit 2 ;; esac
   for S in $SETS; do
     IN=$DEMO_ROOT/$S; OUT=$DEMO_ROOT/${S}${SFX}
     [ -f "$IN/repeat.json" ] || { echo "FATAL: $IN has no repeat.json"; exit 2; }
@@ -77,9 +85,9 @@ for L in $LADDERS; do
       echo "# FORCE: removing $OUT"; rm -rf "$OUT"
     fi
     echo "=================================================================="
-    echo "== $(date -Is) relabel $IN -> $OUT  ladder=$L procs=$PROCS"
+    echo "== $(date -Is) relabel $IN -> $OUT  ladder=$L tip_guard=$TIP_GUARD procs=$PROCS"
     "$PY" baselines/rl/relabel_reward.py --in "$IN" --out "$OUT" --ladder "$L" ${FAR_FLAG:+$FAR_FLAG} \
-          --sim-variant "$SIM_VARIANT" --procs "$PROCS"
+          --tip-guard "$TIP_GUARD" --sim-variant "$SIM_VARIANT" --procs "$PROCS"
     # Stamp the hardware into the set itself: a reader must be able to see WHICH machine
     # class produced the reward column without going back to the Slurm log.
     "$PY" - "$OUT" "$(hostname)" "$CORES" "$ISA" "$MODEL" "${SLURM_JOB_ID:-none}" <<'PY'

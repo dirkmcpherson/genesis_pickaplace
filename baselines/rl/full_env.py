@@ -147,6 +147,35 @@ LADDER_DEFAULT = 'staged'
 # `far_release` default or a return clamp without hard-coding a name list twice.
 NESTED_LADDERS = ('nested_sparse', 'nested_ramp')
 
+# --- THE TIP GUARD (PHASE_PLAN amendment (aa); measured in paper/TIP_RULE_2026-09-11.md) ---
+# The tip rule is `tilt_deg(can) > TIP_DEG` AND a GUARD that says the can is not being held.
+# Threshold (60 deg), termination and penalty (0.0 outside scope='place') are UNCHANGED by
+# this amendment; only the guard moves, and only when a caller asks for it.
+#
+#   'grip'        the rule of record and the class default: the COMMANDED grip
+#                 `a_phys[6] < GRIP_OPEN (0.3)`, fired on the first frame that satisfies it.
+#                 Every run before 2026-09-11, the ladder pilot included, ran this.
+#   'not_in_hand' amendment (aa): the StageTracker's `not in_hand`
+#                 (|tool_xy - can_xy| >= stage_predicates.HELD_LEVER_M), NO gripper term,
+#                 required on TIP_GUARD_SUSTAIN consecutive ENV FRAMES (= one decision at
+#                 action_repeat 4) TOGETHER with the tilt clause.
+#
+# Why (Lane 6, all 146 demonstration tapes of the pilot sets): the grip guard fires on 6 of
+# its 25 firings while the can is still in the gripper (lever 0.002-0.021 m), so `tipped`
+# labels a leaning RELEASE; and it is silent on 29 of the 48 tapes that put a free can flat,
+# because the demonstrator's fingers are commanded >= 0.31 then (the amendment-(p) fist
+# posture). The tracker guard measures 0 in-hand firings, 2 misses and 0 lost recoveries.
+#
+# THE SUSTAIN IS ON THE CONJUNCTION, not on the guard alone -- that is what Lane 6 measured
+# (`tip_rule_probe._first_sustained((tilt > T) & guard, k)`), and the 4 frames are what
+# removes the corpus's single recovery (machine 250: free at 67.7 deg on one decision, back
+# at 18.8 deg on the next).
+TIP_GUARD_CHOICES = ('grip', 'not_in_hand')
+TIP_GUARD_DEFAULT = 'grip'          # NEVER change: it is the pilot's and every prior run's rule
+# Consecutive env frames the (tilt AND guard) conjunction must hold before the rule fires.
+# 'grip' keeps 1 so the rule of record is bit-identical, sustain and all.
+TIP_GUARD_SUSTAIN = {'grip': 1, 'not_in_hand': 4}
+
 
 def ladder_spec(ladder=LADDER_DEFAULT):
     """(stage_reward dict, terminal-stage tuple) for a named ladder. Unknown names RAISE --
@@ -213,8 +242,15 @@ def _git_describe():
 _PROV_CACHE = {}
 
 
-def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
+def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False,
+                      tip_guard=TIP_GUARD_DEFAULT):
     """D6: the stamp that says WHICH ladder and WHICH code produced a number.
+
+    `tip_guard` (amendment (aa)) changes WHERE EVERY EPISODE ENDS and therefore what any of
+    it pays, so it is part of the stamp. The parameter defaults to the class default 'grip'
+    so a stamp printed for a configuration nobody named still describes the rule of record --
+    but every trainer, launcher, relabel and annotator passes it EXPLICITLY, and their own
+    flags have no default.
 
     `ladder` names the reward/terminal structure; `shaping` is the goalward-shaping
     configuration of the env being stamped (None when off); `far_release` is the Ladder-N
@@ -227,6 +263,8 @@ def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
     """
     stage_reward, terminal = ladder_spec(ladder)
     requires, ramp = ladder_extras(ladder)
+    if tip_guard not in TIP_GUARD_CHOICES:
+        raise ValueError(f'unknown tip_guard {tip_guard!r}; choose from {list(TIP_GUARD_CHOICES)}')
     if 'code' not in _PROV_CACHE:
         here = pl.Path(__file__).resolve()
         _PROV_CACHE['code'] = dict(
@@ -251,23 +289,31 @@ def ladder_provenance(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
         return_clamp_required=max_return(ladder),   # r2dreamer's clamp MUST equal this
         shaping=(dict(shaping) if shaping else None),
         far_release=bool(far_release),
+        tip_guard=str(tip_guard),
+        tip_deg=float(FullTaskEnv.TIP_DEG),
+        tip_penalty=float(FullTaskEnv.TIP_PENALTY),
+        tip_guard_sustain_frames=int(TIP_GUARD_SUSTAIN[tip_guard]),
         sha256=dict(code['sha256']), git=code['git'], repo=code['repo'],
     )
 
 
-def ladder_stamp(ladder=LADDER_DEFAULT, shaping=None, far_release=False):
+def ladder_stamp(ladder=LADDER_DEFAULT, shaping=None, far_release=False,
+                 tip_guard=TIP_GUARD_DEFAULT):
     """One-line form of ladder_provenance() -- what the `[ladder]` log line prints and what
     a table builder compares. Two rows with the same stamp ran the same ladder AND the same
-    predicate/env code."""
-    p = ladder_provenance(ladder, shaping, far_release)
+    tip guard AND the same predicate/env code."""
+    p = ladder_provenance(ladder, shaping, far_release, tip_guard)
     rungs = ' '.join(f'{k}={v:g}' for k, v in p['stage_reward'].items())
     if p['ramp']:
         rungs += ' ramp:%s=%g/%gm' % (p['ramp']['key'], p['ramp']['scale'], p['ramp']['span'])
     sh = 'off' if not p['shaping'] else ('goalward scale=%g gamma=%g' % (
         p['shaping'].get('scale'), p['shaping'].get('gamma')))
+    tip = (f"tilt>{p['tip_deg']:g}deg&{p['tip_guard']}"
+           f"@{p['tip_guard_sustain_frames']}f")
     return (f"{p['spec_version']} | ladder={p['ladder']} | {rungs} | max_return={p['max_return']:g} | "
             f"terminal={'+'.join(p['terminal_stages'])} | shaping={sh} | "
             f"far_release={'on' if p['far_release'] else 'off'} | "
+            f"tip={tip} | "
             f"full_env={p['sha256']['full_env'][:12]} genesis_can_env={p['sha256']['genesis_can_env'][:12]} "
             f"stage_predicates={p['sha256']['stage_predicates'][:12]} | git={p['git']}")
 
@@ -372,11 +418,17 @@ class LadderAccountant:
 
 def refuse_legacy_gates():
     """D1: this tree has no reward gates. A launcher or trainer that still exports the old
-    one is running against an assumption that is now false, so stop rather than run."""
-    for _v in ('FULLENV_REWARD_X',):
+    one is running against an assumption that is now false, so stop rather than run.
+
+    `FULLENV_TIP_GUARD` is listed for the same reason even though it never existed: the
+    launchers export TIP_GUARD (a shell variable they read themselves and pass as a FLAG),
+    and someone reading that could reasonably guess the env also reads a variable of its
+    own. It does not, and a tree that silently ignored one would be the (x) defect again."""
+    for _v in ('FULLENV_REWARD_X', 'FULLENV_TIP_GUARD'):
         if os.environ.get(_v, ''):
             raise SystemExit(f'FATAL: legacy gate set ({_v}={os.environ[_v]!r}); '
-                             'this tree has no gates')
+                             'this tree has no gates -- the tip guard is a constructor '
+                             'argument (PHASE_PLAN (aa)), never an environment variable')
 
 # --- reward-density lever (2026-08-14): ONE definition of the honest pick condition -
 # The hold reward is paid per step by the ENV and per frame by the OFFLINE relabeler
@@ -454,7 +506,7 @@ def tape_tilt_deg(quats):
 
 
 def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
-                       tip_deg=None, grip_open=None):
+                       tip_deg=None, grip_open=None, tip_guard=TIP_GUARD_DEFAULT):
     """-> dict(t_term, kind, reward, layout). t_term = index of the terminal
     TRANSITION (row for contract-v1, transition index for legacy) or None when the
     tape ends by truncation/cap; kind in {'pick','tip','nested','other','none'}.
@@ -464,6 +516,18 @@ def terminal_from_tape(tape, pick_z=None, scope='pick', j_pick=None,
     'pick' terminates on the pick; 'full' only on tip (and nested, which relabel_full
     itself marks). tip_deg/grip_open default to FullTaskEnv's constants.
     """
+    # amendment (aa): this function reads DEMO TAPES, and neither tape layout carries the
+    # tool point, so `not_in_hand` is not computable here -- a legacy stride-1 tape has
+    # states/actions only, and a contract-v1 tape's `tipped` column is whatever guard the
+    # RECORDER ran (stated, since that provenance is not otherwise visible). Refuse rather
+    # than silently apply the old guard to a caller who asked for the new one. Nothing in the
+    # end-to-end path reaches here: `--demo-format segment` reads `is_terminal` off the tape
+    # (full_demos.segment_transitions_full); this is the pick/SACfD/legacy route.
+    if tip_guard != TIP_GUARD_DEFAULT:
+        raise NotImplementedError(
+            f"terminal_from_tape(tip_guard={tip_guard!r}): the demo tape layouts carry no "
+            f"tool_xy, so the tracker's in_hand cannot be recomputed offline from them. Score "
+            f"a stage record instead (relabel_reward.py --from-records --tip-guard).")
     tip_deg = FullTaskEnv.TIP_DEG if tip_deg is None else float(tip_deg)
     grip_open = FullTaskEnv.GRIP_OPEN if grip_open is None else float(grip_open)
     keys = set(tape.files) if hasattr(tape, 'files') else set(tape.keys())
@@ -621,7 +685,7 @@ class FullTaskEnv(gym.Env):
                  delta_leash_mult=5.0, action_repeat=1, delta_ref='target',
                  pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
                  pick_shaping_gamma=None, pick_shaping_terminal_zero=True,
-                 ladder=LADDER_DEFAULT, far_release=False,
+                 ladder=LADDER_DEFAULT, far_release=False, tip_guard=TIP_GUARD_DEFAULT,
                  goalward_shaping=False, goalward_gamma=None, goalward_scale=None,
                  quiet_ladder=False):
         super().__init__()
@@ -644,6 +708,26 @@ class FullTaskEnv(gym.Env):
         assert not (self.far_release and self.ladder not in NESTED_LADDERS), (
             f'far_release is a Ladder-N switch (it gates farside/home); ladder={self.ladder!r} '
             f'has no such rung, so setting it would be a silent no-op')
+        # --- the tip guard (amendment (aa)). A CONSTRUCTOR ARGUMENT, never an env var, for
+        # the same reason the ladder is: it decides where every episode ENDS, and the two
+        # learners already once optimised different objectives because a gate could be absent
+        # and nothing said so. The class default stays 'grip' -- the rule the ladder pilot and
+        # every prior run ran -- so no existing caller moves; the launchers and trainers
+        # REQUIRE their own flag and pass it explicitly.
+        assert tip_guard in TIP_GUARD_CHOICES, (
+            f'tip_guard must be one of {list(TIP_GUARD_CHOICES)}, got {tip_guard!r}')
+        self.tip_guard = str(tip_guard)
+        self.tip_guard_sustain = int(TIP_GUARD_SUSTAIN[self.tip_guard])
+        # 'not_in_hand' reads the StageTracker's per-frame `in_hand`, and the tracker only
+        # runs in scope='full' (the phase scopes score their own single terminal and are
+        # deliberately left on the rule of record). Refuse rather than silently fall back:
+        # a phase env asked for the new guard and given the old one is exactly the class of
+        # defect this whole amendment exists to remove.
+        assert self.tip_guard == TIP_GUARD_DEFAULT or scope == 'full', (
+            f"tip_guard={self.tip_guard!r} needs the StageTracker's in_hand, which only "
+            f"scope='full' runs; got scope={scope!r}. The phase scopes stay on 'grip'.")
+        # consecutive ENV FRAMES the (tilt AND guard) conjunction has held; reset every reset
+        self._tip_free_run = 0
         # FAST pre-check (PHASE_PLAN (p)): reject a contact-scope misconfiguration BEFORE the ~60 s world build; the
         # authoritative validation with the full explanation runs below, after the scope fields are set.
         if scope == 'contact':
@@ -861,7 +945,8 @@ class FullTaskEnv(gym.Env):
         # not stamp the code it loaded is how a gate can be set at submission and inert in
         # the job (audit brief §2/§4).
         if not quiet_ladder:
-            print('[ladder] ' + ladder_stamp(self.ladder, self.shaping_config(), self.far_release),
+            print('[ladder] ' + ladder_stamp(self.ladder, self.shaping_config(), self.far_release,
+                                             self.tip_guard),
                   flush=True)
 
     def shaping_config(self):
@@ -873,9 +958,11 @@ class FullTaskEnv(gym.Env):
 
     def provenance(self):
         """This env's ladder provenance (D6) -- what trainers and evaluators write out."""
-        p = ladder_provenance(self.ladder, self.shaping_config(), self.far_release)
+        p = ladder_provenance(self.ladder, self.shaping_config(), self.far_release,
+                              self.tip_guard)
         p['scope'] = self.scope
-        p['stamp'] = ladder_stamp(self.ladder, self.shaping_config(), self.far_release)
+        p['stamp'] = ladder_stamp(self.ladder, self.shaping_config(), self.far_release,
+                                  self.tip_guard)
         if self.tracker is not None:
             p['predicate_constants'] = self.tracker.constants()
         if self.never_terminate:
@@ -985,6 +1072,11 @@ class FullTaskEnv(gym.Env):
         _sync_dj_target exists for."""
         self._track = {}
         self._goalward_phi_prev = 0.0
+        # amendment (aa): the tip guard's sustain run is per-EPISODE state and resets here
+        # for the same reason. (It cannot change behaviour under tip_guard='grip', whose
+        # sustain is 1, but a counter that survives a reset is a bug waiting for a longer
+        # sustain to expose it.)
+        self._tip_free_run = 0
         if self.tracker is not None:
             self.tracker.reset()
             _g = np_(self.genv.w['goal'].get_pos())
@@ -1013,6 +1105,7 @@ class FullTaskEnv(gym.Env):
                 self._survival_reported = True
             if ok:
                 self._t = 0
+                self._tip_free_run = 0          # amendment (aa), per-episode state
                 self._pv2_run = 0; self._attempted = False
                 # seed the shaping potential at the settled entry state (cheap;
                 # computed unconditionally so shaping toggling never desyncs it)
@@ -1075,6 +1168,7 @@ class FullTaskEnv(gym.Env):
                 self._survival_reported = True
             if ok:
                 self._t = 0
+                self._tip_free_run = 0          # amendment (aa), per-episode state
                 # the pick and the release already happened in the demo this state came from
                 self.genv._picked = True
                 self._granted = self._acct.reset({'picked', 'placed_v2'})
@@ -1441,12 +1535,29 @@ class FullTaskEnv(gym.Env):
             terminated = ladder_terminated
         else:
             terminated = bool(info.get('nested')) and self.scope != 'place'
-        # grip is a_phys[6] in the 7-dim joint action (a_phys[4] is a JOINT angle --
-        # the grip-column bug, 4th sighting; this block also never ran before
-        # 2026-08-01: self.scope and the class constants were missing entirely, so
-        # every FullTaskEnv.step crashed and all joint dv3 periodic evals failed)
-        if not terminated and float(a_phys[6]) < self.GRIP_OPEN \
-                and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
+        # THE TIP RULE. Threshold (TIP_DEG), termination and penalty are the rule of record;
+        # the GUARD is selected by the constructor's tip_guard (amendment (aa), see the
+        # TIP_GUARD_* block at the top of this file).
+        #   'grip'        commanded grip open. a_phys[6] in the 7-dim joint action -- a_phys[4]
+        #                 is a JOINT angle (the grip-column bug, 4th sighting). Sustain 1, so
+        #                 this branch is bit-identical to every run before 2026-09-11.
+        #   'not_in_hand' the tracker's own `in_hand`, already computed this frame by
+        #                 _full_scope_predicates (scope='full' only, asserted in __init__).
+        #                 NOT re-derived here: one definition, two readers.
+        # The sustain counts consecutive ENV FRAMES of the CONJUNCTION (tilt AND guard), which
+        # is what Lane 6 measured; 4 frames = 1 decision at action_repeat 4.
+        if not terminated:
+            if self.tip_guard == 'grip':
+                _free = float(a_phys[6]) < self.GRIP_OPEN
+            else:
+                # `in_hand` missing would mean the tracker did not run this frame; treat that
+                # as "held" (never fire) rather than as a fall-through to firing.
+                _free = not bool((self._track or {}).get('in_hand', True))
+            self._tip_free_run = (
+                self._tip_free_run + 1
+                if (_free and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG)
+                else 0)
+        if not terminated and self._tip_free_run >= self.tip_guard_sustain:
             # scope='place' ONLY pays a penalty for the tip (dropped the held
             # can); pick/full keep TIP_PENALTY = 0.0 (termination only).
             if self.scope == 'place' and not self.phase_sparse:
@@ -1484,8 +1595,19 @@ class CartesianFullTaskEnv(gym.Env):
     GRIP_OPEN = 0.3          # grip command below this = not holding
 
     def __init__(self, backend='cpu', max_steps=900, fixed_uid=None, render_size=None,
-                 camera_rig=False, control='vel', scope='full'):
+                 camera_rig=False, control='vel', scope='full',
+                 tip_guard=TIP_GUARD_DEFAULT):
         super().__init__()
+        # Amendment (aa)'s guard, the same two choices FullTaskEnv takes and the same default
+        # 'grip' (this class has no live runs; the argument exists so the two tip sites cannot
+        # drift apart again). This class runs no StageTracker, so `not_in_hand` is answered by
+        # stage_predicates.is_in_hand -- the function the tracker itself calls, applied to the
+        # tool point and the can centre. `in_hand` is instantaneous, so nothing is lost.
+        assert tip_guard in TIP_GUARD_CHOICES, (
+            f'tip_guard must be one of {list(TIP_GUARD_CHOICES)}, got {tip_guard!r}')
+        self.tip_guard = str(tip_guard)
+        self.tip_guard_sustain = int(TIP_GUARD_SUSTAIN[self.tip_guard])
+        self._tip_free_run = 0
         from cartesian_env import CartesianCanEnv
         self.control = control
         # scope='pick': +1 and TERMINATE on the pick. Collapses the credit-assignment
@@ -1514,12 +1636,14 @@ class CartesianFullTaskEnv(gym.Env):
             uid = int(self.np_random.choice(self.success_uids))
         obs = self.cenv.reset(uid=int(uid))
         self._t = 0
+        self._tip_free_run = 0          # amendment (aa), per-episode state
         self._granted = set()
         return obs['state'].astype(np.float32), {'uid': int(uid)}
 
     def reset_to(self, ic):
         obs = self.cenv.reset(**ic)
         self._t = 0
+        self._tip_free_run = 0          # amendment (aa), per-episode state
         self._granted = set()
         return obs['state'].astype(np.float32), {}
 
@@ -1581,8 +1705,19 @@ class CartesianFullTaskEnv(gym.Env):
         # wrist rotation in 6-DOF modes, a candidate cause of the abs6-RL
         # 13-33-step degenerate episodes)
         _grip = float(a_phys[6] if len(a_phys) >= 7 else a_phys[4])
-        if not terminated and _grip < self.GRIP_OPEN \
-                and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG:
+        if not terminated:
+            if self.tip_guard == 'grip':
+                _free = _grip < self.GRIP_OPEN
+            else:
+                from stage_predicates import is_in_hand
+                _bp = np_(self.genv.w['bottle'].get_pos())
+                _free = not is_in_hand(np.asarray(self.genv.tool_pos(), np.float64)[:2],
+                                       np.asarray(_bp, np.float64)[:2])
+            self._tip_free_run = (
+                self._tip_free_run + 1
+                if (_free and tilt_deg(np_(self.genv.w['bottle'].get_quat())) > self.TIP_DEG)
+                else 0)
+        if not terminated and self._tip_free_run >= self.tip_guard_sustain:
             reward += self.TIP_PENALTY
             terminated = True
             info['tipped'] = True

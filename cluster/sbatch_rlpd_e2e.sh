@@ -80,6 +80,13 @@ case "${FAR_RELEASE}" in
        *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 1 ;; esac ;;
   *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 1 ;;
 esac
+# TIP_GUARD IS REQUIRED (PHASE_PLAN amendment (aa)). The guard on the tip TERMINATION decides
+# where every episode ENDS, so it is never a default, for the same reason LADDER is not.
+#   grip        = the rule of record (commanded grip < 0.3, first frame) -- the ladder pilot
+#   not_in_hand = amendment (aa): the tracker's in_hand (no gripper term), 4 env frames
+# Threshold (60 deg), termination and penalty (0.0) are UNCHANGED either way.
+TIP_GUARD=${TIP_GUARD:?set TIP_GUARD (grip | not_in_hand) -- the tip guard is never defaulted; PHASE_PLAN (aa)}
+case "$TIP_GUARD" in grip|not_in_hand) ;; *) echo "FATAL: TIP_GUARD must be grip | not_in_hand (got $TIP_GUARD)"; exit 1 ;; esac
 STEPS=${STEPS:-250000}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; GAMMA=${GAMMA:-0.99}
 ACTION_REPEAT=4; TRAIN_HORIZON=1200; EVAL_HORIZON=1200; DEVICE=${DEVICE:-cuda}
 case "$ARM" in
@@ -127,7 +134,7 @@ print(h.hexdigest()[:16])
 PY
 ) || exit 1
 
-TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" ${FAR_FLAG:+$FAR_FLAG} --demo-format segment --demo-dir "$DEMO"
+TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" ${FAR_FLAG:+$FAR_FLAG} --tip-guard "$TIP_GUARD" --demo-format segment --demo-dir "$DEMO"
   --action-mode delta_joint --delta-ref target --action-repeat "$ACTION_REPEAT"
   --train-max-steps "$TRAIN_HORIZON" --eval-max-steps "$EVAL_HORIZON" --eval-freq 0
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off
@@ -138,7 +145,7 @@ TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" ${FAR_FLAG:+$FAR_FL
 REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=full action_mode=delta_joint delta_ref=target action_repeat="$ACTION_REPEAT"
            train_horizon="$TRAIN_HORIZON" eval_horizon="$EVAL_HORIZON" gamma="$GAMMA" backup_entropy=off per_member_ln=off utd=10
            ensemble_size=10 subset_size=2 demo_batch=128 ladder="$LADDER" demo_format=segment demo_sha="$DEMO_SHA" wave="$WAVE"
-           sim_variant="$SIM_VARIANT" entry_bank=none phase_sparse=off amendment=n)
+           sim_variant="$SIM_VARIANT" entry_bank=none phase_sparse=off tip_guard="$TIP_GUARD" amendment=n)
 if [ -n "${DRYRUN:-}" ]; then
   echo "[dry] ARM=$ARM SEED=$SEED STEPS=$STEPS(decisions = $((STEPS * ACTION_REPEAT)) sim steps) DEMO=$DEMO sha=$DEMO_SHA OUT=$OUT NODE=$NODE_CLASS"
   echo "[dry] train: python baselines/rl/train_rlpd.py ${TRAIN_ARGS[*]}"
@@ -161,16 +168,20 @@ python -c 'import stable_baselines3' 2>/dev/null || pip install --no-input 'stab
 # that works; a stamp you cannot read in the log proves nothing. This prints the ladder and
 # the sha256 of the code that defines it, from the tree this job actually imports. It is
 # also written to $OUT/ladder_provenance.json by the trainer itself.
-LADDER=$LADDER python - <<'PYL' || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 1; }
+LADDER=$LADDER TIP_GUARD=$TIP_GUARD python - <<'PYL' || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 1; }
 import os, sys
 R = os.environ['GENESIS_PICKAPLACE_ROOT']
 sys.path.insert(0, R + '/baselines'); sys.path.insert(0, R + '/baselines/rl')
 sys.path.insert(0, R + '/can_pos_recovery')
 import full_env
 full_env.refuse_legacy_gates()
-L = os.environ['LADDER']
-print('[ladder]', full_env.ladder_stamp(L))
+L, TG = os.environ['LADDER'], os.environ['TIP_GUARD']
+# The stamp carries the TIP GUARD too (amendment (aa)). Passing it POSITIONALLY on purpose:
+# a tree too old to accept the argument raises here instead of stamping the rule of record
+# for a job that asked for the new guard -- that is the FULLENV_REWARD_X failure repeated.
+print('[ladder]', full_env.ladder_stamp(L, None, False, TG))
 print('[ladder] max_return', full_env.max_return(L))
+print('[ladder] tip_guard', TG, 'sustain', full_env.TIP_GUARD_SUSTAIN[TG], 'env frames')
 PYL
 python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}"
 FINAL_CK=$OUT/rlpd_final.zip

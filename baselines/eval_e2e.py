@@ -70,6 +70,13 @@ ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'neste
                      "checkpoint sidecar's own ladder; pass --ladder only to ASSERT it, and the run dies if the "
                      "two disagree. A checkpoint with no ladder in its sidecar (trained before the argument "
                      "existed) falls back to 'staged' and says so.")
+ap.add_argument('--tip-guard', choices=('grip', 'not_in_hand'), default=None,
+                help="PHASE_PLAN amendment (aa): WHICH guard the tip termination uses. Same contract as "
+                     "--ladder -- DEFAULT is the checkpoint sidecar's own guard, and passing this only "
+                     "ASSERTS it (a disagreement is fatal). A checkpoint whose sidecar names none was "
+                     "trained before the argument existed, so it falls back to 'grip' (the rule of record) "
+                     "and says so. Scoring a 'not_in_hand' policy under 'grip' is a different MDP: the "
+                     "episode ends somewhere else.")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
@@ -246,7 +253,19 @@ if side.get('ladder') and args.ladder and side['ladder'] != args.ladder:
 print(f"[eval-e2e] ladder {LADDER_NAME!r} from "
       f"{'the checkpoint sidecar' if side.get('ladder') else ('--ladder' if args.ladder else 'the fallback (sidecar records none)')}"
       + ('' if args.ladder is None else f'; --ladder {args.ladder!r} agrees'), flush=True)
+# amendment (aa): same source-of-truth rule as the ladder -- the sidecar is the SOURCE and
+# --tip-guard is an optional ASSERTION, so a run cannot be scored under the wrong guard by
+# a launcher that forgot a flag.
+TIP_GUARD_NAME = side.get('tip_guard') or args.tip_guard or 'grip'
+if side.get('tip_guard') and args.tip_guard and side['tip_guard'] != args.tip_guard:
+    sys.exit(f"FATAL: checkpoint sidecar says tip_guard={side['tip_guard']!r} but --tip-guard is "
+             f"{args.tip_guard!r}. A policy trained under one guard scored under the other is a "
+             f"different MDP -- its episodes end somewhere else.")
+print(f"[eval-e2e] tip_guard {TIP_GUARD_NAME!r} from "
+      f"{'the checkpoint sidecar' if side.get('tip_guard') else ('--tip-guard' if args.tip_guard else 'the fallback (sidecar records none: trained before amendment (aa))')}",
+      flush=True)
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
+                  tip_guard=TIP_GUARD_NAME,
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
 apply_post(env, args.sim_variant)
@@ -255,7 +274,8 @@ assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
 assert env.scope == 'full' and env.action_repeat == REPEAT and env.delta_ref == 'target' and not env.phase_sparse
 assert env.max_steps == args.max_steps, (env.max_steps, args.max_steps)
 print(f'[eval-e2e] shelf_top_z {env.shelf_top_z:.3f} (placed_v2 band {env.shelf_top_z + 0.01:.3f}..{env.shelf_top_z + 0.07:.3f}); '
-      f'delta cap {env.delta_cap} leash {env.delta_leash}; ladder {env.ladder} {env.stage_reward} '
+      f'delta cap {env.delta_cap} leash {env.delta_leash}; tip_guard {env.tip_guard}@{env.tip_guard_sustain}f; '
+      f'ladder {env.ladder} {env.stage_reward} '
       f'terminal {env.terminal_stages}+tipped', flush=True)
 LADDER = env.provenance()   # D6: written into metrics.json below
 

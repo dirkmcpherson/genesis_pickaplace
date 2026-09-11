@@ -162,7 +162,7 @@ def uid_map(set_dir, src_dir):
 
 
 # ----------------------------------------------------------------- env
-def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None):
+def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None, tip_guard=None):
     """FullTaskEnv in the end-to-end contract MDP. Every knob asserted (the silent-default
     rule); identical to relabel_reward.build_env except for `render_size`, which is what makes
     the camera exist.
@@ -178,7 +178,10 @@ def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None):
     refuse_legacy_gates()
     apply_pre(sim_variant)
     t0 = time.time()
+    import full_env as _FE
+    tip_guard = _FE.TIP_GUARD_DEFAULT if tip_guard is None else str(tip_guard)
     env = FullTaskEnv(backend='cpu', max_steps=int(max_sim_steps), scope='full', ladder=ladder,
+                      tip_guard=tip_guard,
                       action_mode='delta_joint', delta_cap=0.025, delta_leash_mult=5.0,
                       action_repeat=4, delta_ref='target', camera_rig=False,
                       render_size=(RENDER_HW if with_video else None))
@@ -188,6 +191,7 @@ def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None):
     assert abs(env.delta_leash - 0.125) < 1e-12, env.delta_leash
     assert env.genv.max_steps >= 10 ** 8, 'inner env must never truncate (#26)'
     assert not env.goalward_shaping, 'an annotation must show the unshaped ladder'
+    assert env.tip_guard == tip_guard, (env.tip_guard, tip_guard)
     if with_video:
         assert env.genv.w.get('cam') is not None, 'render_size set but no camera in the world'
     if tip_deg is not None:
@@ -196,7 +200,8 @@ def build_env(sim_variant, max_sim_steps, ladder, with_video, tip_deg=None):
         print(f'[tip] instance TIP_DEG {env.TIP_DEG:g} (class default '
               f'{FullTaskEnv.TIP_DEG:g} untouched)', flush=True)
     print(f'[env] built in {time.time() - t0:.1f}s | variant {sim_variant} | ladder {env.ladder} '
-          f'{env.stage_reward} terminal {env.terminal_stages}+tipped | shelf_top_z {env.shelf_top_z:.3f}',
+          f'{env.stage_reward} terminal {env.terminal_stages}+tipped | tip_guard {env.tip_guard}'
+          f'@{env.tip_guard_sustain}f | shelf_top_z {env.shelf_top_z:.3f}',
           flush=True)
     return env
 
@@ -327,6 +332,9 @@ def _terminal_card(cv2, im, row):
           if row.get('tip_ref_decision') is not None else
           'tip rule never met on this tape' if row.get('tip_watched') else
           'tip rule LIVE (TIP_DEG %g)' % row.get('tip_deg_instance', float('nan'))),
+         (60, 60, 255)),
+        ('LIVE guard: %s, sustain %s env frames'
+         % (row.get('tip_guard', '?'), row.get('tip_guard_sustain_frames', '?')),
          (60, 60, 255)),
         ('legacy: nested_proxy %d   contact %d   pushL %d   slideL %d'
          % (int('nested' in g), int('contact' in g), int('contact_push_legacy' in g),
@@ -480,7 +488,9 @@ def annotate_one(env, path, out_mp4, ic_tol, ic_uid=None, set_name='', mark_tip=
         slide_success_legacy=bool('slide_success_legacy' in grants),
         nested_honest=bool(end['nested']), slide_settle=bool(end['slide_success']),
         slide_route=str(end.get('slide_route')),
-        tip_deg_instance=float(env.TIP_DEG), final_tilt_deg=round(float(final_tilt), 2),
+        tip_deg_instance=float(env.TIP_DEG), tip_guard=str(env.tip_guard),
+        tip_guard_sustain_frames=int(env.tip_guard_sustain),
+        final_tilt_deg=round(float(final_tilt), 2),
         tip_watched=bool(mark_tip), tip_ref_decision=tip_ref['dec'],
         tip_ref_tilt_deg=(None if tip_ref['tilt'] is None else round(tip_ref['tilt'], 2)),
         tip_ref_grip=(None if tip_ref['grip'] is None else round(tip_ref['grip'], 3)),
@@ -554,7 +564,8 @@ def files_of(set_dir, names=None):
 
 def run_shard(args, files, meta, umap):
     env = build_env(args.sim_variant or meta['sim_variant'], meta['max_sim_steps'],
-                    args.ladder, args.cmd == 'render', tip_deg=args.tip_deg)
+                    args.ladder, args.cmd == 'render', tip_deg=args.tip_deg,
+                    tip_guard=args.tip_guard)
     rows = []
     for i, f in enumerate(files):
         u, ic = umap.get(f.name, (None, None))
@@ -599,7 +610,16 @@ def main():
     ap.add_argument('--no-tip', action='store_true',
                     help='disable the tip rule for this render (implies --mark-tip)')
     ap.add_argument('--mark-tip', action='store_true',
-                    help='mark the frame on which the LIVE rule (60 deg AND grip<0.3) fires')
+                    help='mark the frame on which the REFERENCE rule (60 deg AND grip<0.3) fires. '
+                         'The marker is always the rule of record, whatever --tip-guard the env '
+                         'runs, so a clip under the new guard shows both.')
+    # --- PHASE_PLAN amendment (aa): WHICH guard the LIVE env runs. Required, no default:
+    # a clip is evidence about an episode, and the guard decides where that episode ends.
+    ap.add_argument('--tip-guard', choices=('grip', 'not_in_hand'), required=True,
+                    help="REQUIRED, no default. 'grip' = the rule of record (commanded grip "
+                         "< 0.3, sustain 1); 'not_in_hand' = amendment (aa)'s guard (the "
+                         "tracker's in_hand, no gripper term, sustained 4 env frames together "
+                         "with the tilt clause). Stamped on every census row.")
     ap.add_argument('--sim-variant', default=None, help="default: the set's own stamp")
     ap.add_argument('--max-sim-steps', type=int, default=None)
     ap.add_argument('--ic-tol', type=float, default=0.002)
@@ -649,6 +669,7 @@ def main():
             base += ['--limit', str(args.limit)]
         if args.sim_variant:
             base += ['--sim-variant', args.sim_variant]
+        base += ['--tip-guard', args.tip_guard]
         if args.tip_deg is not None:
             base += ['--tip-deg', repr(float(args.tip_deg))]
         if args.mark_tip:

@@ -49,6 +49,13 @@ case "${FAR_RELEASE}" in
        *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 2 ;; esac ;;
   *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 2 ;;
 esac
+# TIP_GUARD IS REQUIRED (PHASE_PLAN amendment (aa)). It decides where every episode ENDS, so
+# it is never a default, for the same reason LADDER is not. grip = the rule of record
+# (commanded grip < 0.3, first frame); not_in_hand = the tracker's in_hand (no gripper term)
+# sustained 4 env frames. Threshold (60 deg), termination and penalty (0.0) are unchanged.
+# Passed to the adapter as env.tip_guard, which passes it to FullTaskEnv's constructor.
+TIP_GUARD=${TIP_GUARD:?set TIP_GUARD (grip | not_in_hand) -- the tip guard is never defaulted; PHASE_PLAN (aa)}
+case "$TIP_GUARD" in grip|not_in_hand) ;; *) echo "FATAL: TIP_GUARD must be grip | not_in_hand (got $TIP_GUARD)"; exit 2 ;; esac
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
 # THE WORLD-MODEL TREE IS REQUIRED (LADDER_UNIFY_BRIEF D1, 2026-09-11). It used to be the
@@ -106,21 +113,26 @@ RECIPE=${RECIPE:-"env.actor_dist=bounded_normal env.act_entropy=3e-5"}
 # LOADED -- and the export was inert in the other learner's tree for 32 runs. This prints the
 # ladder actually compiled into $GENESIS_PICKAPLACE_ROOT plus the sha256 of the three files
 # that define it, and FAILS the job if it cannot. The trainer also writes it to the logdir.
-CLAMP=$(LADDER=$LADDER "$PY" - <<'PYL'
+CLAMP=$(LADDER=$LADDER TIP_GUARD=$TIP_GUARD "$PY" - <<'PYL'
 import os, sys
 R = os.environ['GENESIS_PICKAPLACE_ROOT']
 for p in (R + '/baselines', R + '/baselines/rl', R + '/can_pos_recovery'):
     sys.path.insert(0, p)
 import full_env
 full_env.refuse_legacy_gates()
-L = os.environ['LADDER']
-print('[ladder]', full_env.ladder_stamp(L), file=sys.stderr)
+L, TG = os.environ['LADDER'], os.environ['TIP_GUARD']
+# The stamp carries the TIP GUARD (amendment (aa)), passed POSITIONALLY on purpose: a tree
+# too old to accept it raises here instead of stamping the rule of record for a job that
+# asked for the new guard -- the FULLENV_REWARD_X failure repeated.
+print('[ladder]', full_env.ladder_stamp(L, None, False, TG), file=sys.stderr)
+print('[ladder] tip_guard', TG, 'sustain', full_env.TIP_GUARD_SUSTAIN[TG], 'env frames',
+      file=sys.stderr)
 print(repr(full_env.max_return(L)))          # stdout: the return clamp this ladder requires
 PYL
 ) || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
-echo "[ladder] ladder=$LADDER return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
+echo "[ladder] ladder=$LADDER tip_guard=$TIP_GUARD return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
 CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
-     env.ladder=$LADDER $FAR_CFG env.return_clamp=$CLAMP model.return_clamp=$CLAMP
+     env.ladder=$LADDER $FAR_CFG env.tip_guard=$TIP_GUARD env.return_clamp=$CLAMP model.return_clamp=$CLAMP
      buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
 printf '%q ' "${CMD[@]}"; echo
 printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log

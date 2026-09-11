@@ -145,6 +145,17 @@ def main():
                          "return 1. The two differ in reward and terminal ONLY. It is carried in the "
                          "ladder provenance stamp, so a sparse row can never merge with a staged one. "
                          "The launchers REQUIRE it explicitly.")
+    ap.add_argument('--tip-guard', choices=['grip', 'not_in_hand'], required=True,
+                    help="REQUIRED, no default (PHASE_PLAN amendment (aa)). WHICH guard the tip "
+                         "termination uses -- it decides where every episode ENDS, so it is never "
+                         "a default for the same reason the ladder is not. 'grip' = the rule of "
+                         "record (commanded grip < 0.3, fired on the first frame), which the "
+                         "ladder pilot and every earlier run trained under. 'not_in_hand' = the "
+                         "StageTracker's in_hand (|tool_xy - can_xy| >= 0.025 m, NO gripper term) "
+                         "required on 4 consecutive env frames together with tilt > 60 deg. "
+                         "Threshold, termination and penalty are UNCHANGED either way. It is part "
+                         "of the ladder provenance stamp, so a row run under one guard can never "
+                         "merge with a row run under the other. scope=full only.")
     ap.add_argument('--goalward-shaping', choices=['off', 'on'], default='off',
                     help="scope=full ONLY (LADDER_UNIFY_BRIEF D7): potential-based goalward shaping, "
                          "phi = -2 * xy-dist(can, goal), active only while placed_v2 is granted, the can "
@@ -330,6 +341,7 @@ def main():
                       pick_shaping_gamma=args.gamma,
                       pick_shaping_terminal_zero=(args.pick_shaping_terminal_zero == 'on'),
                       ladder=args.ladder, far_release=args.far_release,
+                      tip_guard=args.tip_guard,
                       # D7: constructor argument, gamma matched to the AGENT's discount so
                       # the potential is exactly policy-invariant (Ng et al. 1999)
                       goalward_shaping=(args.goalward_shaping == 'on'),
@@ -345,6 +357,8 @@ def main():
     assert args.goalward_shaping == 'off' or args.scope == 'full', 'goalward shaping is a scope=full lever'
     assert env.ladder == args.ladder, (env.ladder, args.ladder)
     assert env.far_release == bool(args.far_release), (env.far_release, args.far_release)
+    assert env.tip_guard == args.tip_guard, (env.tip_guard, args.tip_guard)
+    assert args.tip_guard == 'grip' or args.scope == 'full', 'tip_guard is a scope=full lever'
     assert args.ladder == 'staged' or args.scope == 'full', 'ladder is a scope=full lever'
     apply_post(env, args.sim_variant)
     assert abs(env._pick_gamma - args.gamma) < 1e-12, (env._pick_gamma, args.gamma)
@@ -543,6 +557,7 @@ def main():
     sidecar['goalward_shaping'] = args.goalward_shaping
     sidecar['ladder'] = args.ladder
     sidecar['far_release'] = bool(args.far_release)
+    sidecar['tip_guard'] = args.tip_guard
     sidecar['max_return'] = float(sum(env.stage_reward.values()))
     (out / 'wandb_eval').mkdir(parents=True, exist_ok=True)
     (out / 'wandb_eval' / 'snapshot.action_mode.json').write_text(json.dumps(sidecar))

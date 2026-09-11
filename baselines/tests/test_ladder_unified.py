@@ -142,13 +142,16 @@ class FakeTracker:
         return dict(self.flags)
 
 
-def make_env(goalward=False, ladder='staged', far_release=False):
+def make_env(goalward=False, ladder='staged', far_release=False, tip_guard='grip'):
     """A scope='full' FullTaskEnv with no Genesis: __init__ is bypassed on purpose."""
     e = FullTaskEnv.__new__(FullTaskEnv)
     e.genv = FakeGenv()
     e.scope = 'full'
     e.ladder = ladder
     e.far_release = bool(far_release)
+    e.tip_guard = str(tip_guard)                       # amendment (aa)
+    e.tip_guard_sustain = int(full_env.TIP_GUARD_SUSTAIN[str(tip_guard)])
+    e._tip_free_run = 0
     e.never_terminate = False
     e.stage_reward, e.terminal_stages = full_env.ladder_spec(ladder)
     e.action_mode = 'absolute'
@@ -299,6 +302,124 @@ def test_3_nested_v2_and_the_legacy_proxy_never_terminate():
     assert term and info.get('tipped') is True, 'the tip rule must still terminate'
     assert info['episode_end'] is True and info['ep_tipped'] is True
     print('3. nested_v2 / legacy proxy: logged, unpaid, non-terminal; tip still terminates  OK')
+
+
+# =========================================== THE TIP GUARD (PHASE_PLAN amendment (aa)) ====
+# Lane 6's two measured defects of the guard of record, as unit tests, plus the sustain and
+# the stamp. The fake tracker supplies `in_hand`; the fake world supplies the can quaternion.
+# HELD_LEVER_M is read from the real predicate module, never restated here.
+def _tip_env(tip_guard):
+    """A full-scope env at the moment of a tip: picked, past placed_v2, can lying flat."""
+    e = make_env(tip_guard=tip_guard)
+    e.genv.info['picked'] = True
+    e.step(act(1.0))
+    e.genv.w['bottle'].set(quat=TIPPED)      # 90 deg about x -- well past TIP_DEG = 60
+    return e
+
+
+def test_aa1_a_held_can_tilted_past_60_with_the_fingers_open():
+    """Lane 6 defect 1: 6 of the rule of record's 25 demonstration firings happen while the
+    can is STILL IN THE GRIPPER (lever 0.002-0.021 m) -- `tipped` labels a leaning RELEASE.
+    Under `not_in_hand` that episode does not end; under `grip` it does."""
+    for guard, want_term in (('grip', True), ('not_in_hand', False)):
+        e = _tip_env(guard)
+        e.tracker.flags.update(in_hand=True, lever_m=0.010)    # inside HELD_LEVER_M = 0.025
+        assert 0.010 < SP.HELD_LEVER_M, 'the fixture must sit inside the lever'
+        term = False
+        for _ in range(8):                                     # more than any sustain
+            _, _, term, _, info = e.step(act(0.0))             # fingers COMMANDED OPEN
+            if term:
+                break
+        assert term is want_term, (guard, term, want_term)
+        if want_term:
+            assert info.get('tipped') is True, guard
+    print('aa1. held can past 60 deg, fingers open: terminates under grip, NOT under not_in_hand  OK')
+
+
+def test_aa2_a_free_flat_can_with_the_fingers_in_a_fist():
+    """Lane 6 defect 2: the rule of record is SILENT on 29 of the 48 tapes that put a free can
+    flat, because the demonstrator's fingers are commanded >= 0.31 then (the amendment-(p)
+    fist posture: release fully, re-close to ~0.4, push). Grip 0.41 is `machine 245`'s value.
+    Under `not_in_hand` the episode ends; under `grip` it runs on."""
+    for guard, want_term in (('grip', False), ('not_in_hand', True)):
+        e = _tip_env(guard)
+        e.tracker.flags.update(in_hand=False, lever_m=0.30)
+        assert 0.30 > SP.HELD_LEVER_M
+        term = False
+        for _ in range(8):
+            _, _, term, _, info = e.step(act(0.41))            # a FIST, not an open hand
+            if term:
+                break
+        assert term is want_term, (guard, term, want_term)
+        if want_term:
+            assert info.get('tipped') is True
+    print('aa2. free flat can, fingers at 0.41: terminates under not_in_hand, NOT under grip  OK')
+
+
+def test_aa3_the_four_frame_sustain():
+    """The sustain is on the CONJUNCTION (tilt AND guard) and is 4 ENV FRAMES = 1 decision at
+    action_repeat 4 -- which is what removes the corpus's single recovery (machine 250: free
+    at 67.7 deg on one decision, back at 18.8 deg on the next). Three free frames then back in
+    hand must NOT terminate; four consecutive free frames must."""
+    e = _tip_env('not_in_hand')
+    for _ in range(3):                                         # 3 free frames: not enough
+        e.tracker.flags.update(in_hand=False, lever_m=0.30)
+        _, _, term, _, _ = e.step(act(0.41))
+        assert not term, 'a 3-frame transient must not fire a 4-frame sustain'
+    assert e._tip_free_run == 3, e._tip_free_run
+    e.tracker.flags.update(in_hand=True, lever_m=0.010)        # back in hand -> run resets
+    _, _, term, _, _ = e.step(act(0.41))
+    assert not term and e._tip_free_run == 0, (term, e._tip_free_run)
+    for i in range(4):                                         # now four in a row
+        e.tracker.flags.update(in_hand=False, lever_m=0.30)
+        _, _, term, _, info = e.step(act(0.41))
+        assert term is (i == 3), (i, term)
+    assert info.get('tipped') is True
+    # the tilt clause is part of the conjunction: an upright free can never accumulates
+    e2 = _tip_env('not_in_hand')
+    e2.genv.w['bottle'].set(quat=UPRIGHT)
+    for _ in range(8):
+        e2.tracker.flags.update(in_hand=False, lever_m=0.30)
+        _, _, term, _, _ = e2.step(act(0.41))
+        assert not term
+    assert e2._tip_free_run == 0
+    # and 'grip' keeps sustain 1, so the rule of record is unchanged frame for frame
+    assert full_env.TIP_GUARD_SUSTAIN['grip'] == 1
+    assert full_env.TIP_GUARD_SUSTAIN['not_in_hand'] == 4
+    assert full_env.TIP_GUARD_DEFAULT == 'grip', 'the class default must never move'
+    assert FullTaskEnv.TIP_DEG == 60.0 and FullTaskEnv.TIP_PENALTY == 0.0, 'threshold/penalty unchanged'
+    print('aa3. sustain: 3 free frames + back in hand = no fire; 4 consecutive = fire; tilt in the AND  OK')
+
+
+def test_aa4_the_guard_is_in_the_stamp_and_is_never_an_env_var():
+    """D6: a row run under one guard must never merge with a row run under the other, so the
+    guard is in the provenance dict AND in the one-line stamp. And it is a CONSTRUCTOR
+    argument: no env var may select it."""
+    a = full_env.ladder_stamp('staged', None, False, 'grip')
+    b = full_env.ladder_stamp('staged', None, False, 'not_in_hand')
+    assert a != b, 'the stamp must move with the guard'
+    assert 'tip=tilt>60deg&grip@1f' in a, a
+    assert 'tip=tilt>60deg&not_in_hand@4f' in b, b
+    pa = full_env.ladder_provenance('staged', None, False, 'not_in_hand')
+    assert pa['tip_guard'] == 'not_in_hand' and pa['tip_guard_sustain_frames'] == 4
+    assert pa['tip_deg'] == 60.0 and pa['tip_penalty'] == 0.0
+    assert full_env.ladder_provenance()['tip_guard'] == 'grip', 'the bare stamp is the rule of record'
+    try:
+        full_env.ladder_provenance('staged', None, False, 'not_in_had')
+    except ValueError as e:
+        assert 'unknown tip_guard' in str(e)
+    else:
+        raise AssertionError('a typo in the guard name must not silently select a default')
+    # the env stamps its own guard
+    assert make_env(tip_guard='not_in_hand').provenance()['tip_guard'] == 'not_in_hand'
+    src = (REPO / 'baselines' / 'rl' / 'full_env.py').read_text()
+    for _read in ("environ.get('TIP_GUARD'", "environ['TIP_GUARD'", 'environ.get("TIP_GUARD"'):
+        assert _read not in src, 'the tip guard must never be selectable by an env var'
+    # and the constructor takes it
+    import inspect
+    assert 'tip_guard' in inspect.signature(FullTaskEnv.__init__).parameters
+    assert 'tip_guard' in inspect.signature(full_env.CartesianFullTaskEnv.__init__).parameters
+    print('aa4. tip guard in the provenance dict and the stamp; constructor-only  OK')
 
 
 def test_4_provenance_stamp():
