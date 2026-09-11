@@ -1352,3 +1352,89 @@ registry and in every sidecar.
 This gate is written the way it is because of the `one_per_ic_first` incident: the failure mode
 that has actually bitten this project is a manifest **attesting** something its data does not
 support, so the new gate checks the data and refuses the attestation shortcut.
+
+## Amendment (aa) — Ladder N: the nested ladders that pay the slide (registered 2026-09-11, coordinator; BEFORE any Ladder-N job)
+
+**Motivation (user, 2026-09-11).** Both pilot ladders pay their top rung for an outcome a DROP at
+the goal satisfies. Ladder N pays the behaviour: *put the can down, move the gripper to the
+opposite side of the can from the goal, slide it home.* Lane 9's smoke test on 315 {RLPD}
+rollouts showed the pilot's `slide_success` firing on set-down transients (20 of 23 positives
+within 3 decisions of the release; 8 with no frame of the tool behind the can), so the slide
+clauses below carry a set-down latch. Calibration and acceptance: `paper/LADDER_N_DEMO_CHECK_2026-09-11.md`.
+
+**Definitions** (`baselines/stage_predicates.py` at the commit stamped in every run's
+`ladder_provenance.json`): `released` = `placed_v2` granted after `picked`; `farside` (sticky) =
+released ∧ not in hand ∧ tool within `FARSIDE_REACH_M` 0.10 m of the can centre inside a 60°
+cone behind it on the can→goal axis; `slide_gain_m` = goalward progress on NEW minima of
+dist_xy(can, goal), counted only after the released can has come to rest once (the set-down
+latch) and only on frames where the farside condition holds and the can is not in hand;
+`slide_event` (sticky, logged, unpaid) = farside ∧ slide_gain ≥ 0.01 m; `home` (sticky) =
+`slide_event` ∧ `nested_v2`. `far_release` OFF (measured: it removes 2 machine slides and 0
+human ones and excludes no drop the slide clauses do not already exclude). `HELD_LEVER_M`
+stays 0.025 (registered; Lane 9 found two policy positives at 25–27 mm, so the value is
+load-bearing and is disclosed, not moved).
+
+**Demonstration side, MEASURED (P-aa-1, this box, 32-core; to be regenerated on the 64-core
+class before quotation):** `home` fires on **13/74 human** and **14/72 machine** tapes — exactly
+the sim-slide tapes, 100 % recall and precision against Lane 5's classes; `slide_event` on 26
+human / 24 machine. Human uids paying `home`: 232 233 237 247 251 256 259 273 275 302 304 316
+317; machine: 233 242 243 251 255 259 262 263 265 281 302 305 311 321.
+
+**The ladders** (both run; the pilot's sparse arm no longer chooses — the user wants the slide
+ASAP and the contrast between them is itself the question):
+
+| ladder | pays | terminal | max / r2d clamp | demo sets |
+|---|---|---|---|---|
+| `nested_sparse` | `home` 1.0 only | `home` | 1 / 1.0 | `_rh` |
+| `nested_ramp` | picked 1 → placed_v2 1 → farside 1 → slide ramp +2 × min(1, slide_gain / **0.05 m**) on new minima → `home` 4 | `home` | 9 / 9.0 | `_rn` |
+
+Ramp span **0.05 m** (decision: the 13 human slides average 8.39 of 9 with 4 at the maximum,
+against 7.80 and 0 at 0.10 m — a human slide should earn the full ramp).
+
+**Tip rule (Lane 6, `paper/TIP_RULE_2026-09-11.md`), applied to EVERY run of this batch:**
+threshold 60° and termination unchanged (0 of 25 tipped demonstration tapes recovers at any
+threshold; a free can passes its tipping point at ~33°); the guard `grip cmd < 0.3` is replaced
+by the tracker's `not in_hand` sustained 4 env frames (in-hand firings on demos 6 → 0, missed
+flat cans 29 → 2, cost 2 reward on one tape). Because this changes `tipped` and termination for
+all arms, a CONTROL arm runs the pilot's `staged` ladder with the new guard ({RLPD} 2 v 2) so
+the guard's effect is separable from the ladder's.
+
+**Batch (registered here; submit only after both smokes stamp identically and the `_rh`/`_rn`
+sets exist with action sha256 identical to the sources):**
+
+| learner | ladder | arms | seeds | budget | milestones |
+|---|---|---|---|---|---|
+| {RLPD} | nested_ramp | human / machine-first | 2 v 2 (s950–951 / s970–971) | 250k decisions | 40k / 100k / 250k |
+| {r2dreamer} | nested_ramp | same | 2 v 2 | 2M online steps | 0.5M / 1M / 2M |
+| {RLPD} | nested_sparse | same | 2 v 2 (s955–956 / s975–976) | 250k | 40k / 100k / 250k |
+| {r2dreamer} | nested_sparse | same | 2 v 2 | 4M online steps | 0.5M / 1M / 2M / 4M |
+| {RLPD} | staged + new tip guard (control) | same | 2 v 2 (s958–959 / s978–979) | 100k | 40k / 100k |
+
+Job names `ln_<rl|r2>_<ramp|sparse|ctl>_<dH|dM>_s<seed>`; QOS normal first, preempt for the
+overflow (the fixed requeue guard restarts a preempted run clean); disk guard ≥ 150 GB.
+
+**Predictions.** **P-aa-2** every `home` grant in training has prior `slide_event`, `farside`
+and `placed_v2` grants in the same episode (structural; violations = 0). **P-aa-3** under
+`nested_ramp`, by 50 % of budget ≥ 1 seed per arm shows `slide_gain_m > 0` in training rollouts
+— the rung no pilot ladder could express; disconfirm → that arm is rerun with D7 goalward
+shaping ON, disclosed. **P-aa-4 (route census)** of the `nested_v2` events in training rollouts,
+the share that are also `home` is the slide share; prediction: under 50 % in every arm at every
+milestone; above 50 % in any arm means paying the outcome alone induces the slide. **P-aa-5**
+max return ≤ 9 / ≤ 1 and the r2dreamer clamp equals the ladder's max in every stamp.
+**P-aa-6** the control arm's `tipped` rate in training rollouts is within ±0.05 of the pilot's
+staged arm at the matched step (the guard removes in-hand firings on demonstrations; policies
+had 0 of 22 in-hand firings, so the rate should not move); disconfirm → the guard changed policy
+termination and the ladder comparison must be read with that caveat. **P-aa-7** the
+demonstration `home` counts reproduce on the 64-core class within ±1 tape per set.
+
+**Readout:** rnd30 mode + hold15 mode cells at every milestone with `home`, `slide_event`,
+`nested_v2`, `nested_honest`, `tipped`; training-rollout stage rates per 100 episodes. NOT a
+source comparison (n=2 per arm). Any ladder change after this is a retrain.
+
+**Disclosures.** (1) `released` requiring `picked` moves nothing on the 146 demonstrations and
+removes 4 spurious `placed_v2` firings per arm on `rnd30`. (2) `far_release` implemented, OFF.
+(3) The pilot's `slide_success` column is a transient detector on policies (Lane 9); pilot
+cells will be re-scored with `slide_event`/`home` from stage records before being quoted.
+(4) Lane 5's `placed_only`/`push_no_nest` boundary used that predicate, so 8 human
+`slide_event` firings called false positives are unadjudicated. (5) Demo counts above were made
+on a 32-core AVX2 box; cluster (64-core) regeneration is P-aa-7.
