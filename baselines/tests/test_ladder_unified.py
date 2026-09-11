@@ -358,6 +358,40 @@ def test_6_goalward_shaping_off_by_default_and_is_a_potential():
     print('6. goalward shaping: off by default, constructor-only, exact potential form  OK')
 
 
+def test_9_constructor_signature_matches_its_callers():
+    """Lane 3's BLOCKER: 809601d copied full_env.py in from another tree and silently reverted
+    the PHASE_PLAN (p) `contact_grant` parameter, while train_rlpd.py:298 and eval_place.py:162
+    still pass `contact_grant=` -- on EVERY scope, not only contact. FullTaskEnv construction
+    therefore raised TypeError for every train_rlpd run on this branch. This test asserts the
+    signature against its real callers so the revert cannot happen silently again.
+
+    Signature only: building the env needs Genesis, so the call is checked with
+    inspect.signature().bind() rather than executed."""
+    import inspect
+    sig = inspect.signature(FullTaskEnv.__init__)
+    # exactly the call train_rlpd.py makes
+    sig.bind(None, backend='cpu', max_steps=1200, scope='full', action_mode='delta_joint',
+             action_repeat=4, delta_ref='target', entry_bank=None, phase_sparse=False,
+             contact_grant=None, pick_hold_reward=False, pick_hold_k=25, pick_shaping=False,
+             pick_shaping_gamma=0.99, pick_shaping_terminal_zero=True,
+             goalward_shaping=False, goalward_gamma=0.99)
+    # exactly the call eval_place.py makes
+    sig.bind(None, backend='cpu', max_steps=600, scope='place', entry_bank='bank.json',
+             phase_sparse=True, contact_grant=None, action_mode='delta_joint', delta_cap=0.025,
+             delta_leash_mult=5.0, action_repeat=4, delta_ref='target', render_size=None)
+    # and the calls the recorder / the two evaluators / the r2dreamer adapter make
+    sig.bind(None, backend='cpu', max_steps=2400, scope='full', action_mode='delta_joint',
+             delta_cap=0.025, delta_leash_mult=5.0, action_repeat=4, delta_ref='target',
+             camera_rig=True, pick_shaping=False)
+    sig.bind(None, backend='cpu', max_steps=10 ** 9, scope='full', render_size=(64, 64),
+             camera_rig=True, shaping=False, pick_shaping=False, entry_bank=None)
+    # the (p) guards are reachable: a contact-scope env still refuses an unnamed grant
+    src = (REPO / 'baselines' / 'rl' / 'full_env.py').read_text()
+    assert 'scope=contact needs an explicit contact_grant' in src
+    assert "contact_grant in ('bare_contact', 'slide_success', 'prior_release')" in src
+    print('9. constructor signature binds every real call site (contact_grant restored)  OK')
+
+
 # ---------------------------------------------------------- the Lane-1 interface contract
 def test_7_stage_tracker_interface():
     """The contract `full_env` codes against (brief "Lane-1 interface"). These assertions

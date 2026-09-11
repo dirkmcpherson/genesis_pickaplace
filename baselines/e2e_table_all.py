@@ -22,7 +22,12 @@ Numbers only from the json files; a missing cell prints '—' and is excluded fr
 """
 import argparse, itertools, json, os
 
-ALL_STAGES = ('picked', 'placed_v2', 'contact', 'contact_push', 'slide_success', 'nested_proxy', 'nested_honest')
+# 2026-09-10 (LADDER_UNIFY_BRIEF D3): nested_v2 joins the default stage list and REPLACES
+# nested_proxy as the nesting column. nested_proxy stays available via --stages for
+# continuity with stored rows, but it must never carry a nesting claim: precision 0.114
+# (human) / 0.029 (machine) and it REVERSES the arm ordering (audit brief §4a).
+ALL_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
+LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 WM_ALIAS = {'nested_proxy': 'nested'}   # the WM evaluator's `nested` IS the proxy
 
 
@@ -48,6 +53,12 @@ def cell(run_dir, iset, mode, suffix='', root=''):
                 nodes=d.get('nodes') or [((d.get('node') or {}).get('hostname')) or '?'],
                 isas=isas, cpus=d.get('cpu_models') or sorted({str(e.get('cpu_model', 'unknown')) for e in pe}),
                 role=d.get('role', 'legacy'),
+                # D6 ladder provenance. 'unstamped' = a cell produced before the stamp
+                # existed. That is NOT the same as "the same ladder": those cells are
+                # exactly the ones whose ladder cannot be recovered from the artefact,
+                # which is the defect the stamp exists to close.
+                ladder=str(d.get('ladder_stamp')
+                           or (d.get('ladder_provenance') or {}).get('stamp') or 'unstamped'),
                 cores=d.get('core_counts') or sorted({e.get('cpu_cores_physical') for e in pe if e.get('cpu_cores_physical')}),
                 threads=d.get('thread_counts') or sorted({e.get('torch_num_threads') for e in pe if e.get('torch_num_threads')}))
 
@@ -163,6 +174,24 @@ def main():
                           f'comparable with a pinned `record` cell (or with the `legacy` world-model cells); '
                           f're-run the missing side of the pinned pass rather than mixing. Rows skipped.')
                     continue
+                # --- LADDER PROVENANCE GATE (LADDER_UNIFY_BRIEF D6) -----------------------
+                # Two cells belong in one row only if they were produced by the same ladder
+                # AND the same predicate/env code. THIS is the check that would have caught
+                # the defect of record: {RLPD} and {r2dreamer} optimised different objectives
+                # for 32 runs each because an env-var gate was inert in one of three trees,
+                # and nothing written to disk could have revealed it.
+                ladders = sorted({c['ladder'] for cs in cells.values() for c in cs if c})
+                if len(ladders) > 1:
+                    print(f'\n### {learner.strip()} | {iset} | {mode} — REFUSED: this row mixes LADDER PROVENANCE '
+                          f'stamps, i.e. the cells were not produced by the same objective and/or the same '
+                          f'predicate code:')
+                    for L in ladders:
+                        who = {arm: [s for s, c in zip(seeds, cells[arm]) if c and c['ladder'] == L]
+                               for arm in ('dH', 'dDP')}
+                        print(f'    {L}\n      human seeds {who["dH"]} | machine seeds {who["dDP"]}')
+                    print('  A difference here is not a nuisance parameter -- it is a different experiment. '
+                          'Re-score (or retrain) one side under the other ladder; do not merge. Rows skipped.')
+                    continue
                 for flag, key, label in ((args.cores, 'cores', 'physical cores'), (args.isa, 'isas', 'instruction set')):
                     if flag is None:
                         continue
@@ -187,6 +216,12 @@ def main():
                 print(f'\n### {learner.strip()} | {iset} | {mode} | {n_eps} starts x {len(seeds)} seeds | '
                       f'role {"/".join(roles)} | protocol {"/".join(isol)} | cores {core_all} threads {thr_all} | '
                       f'isa {",".join(isa_all)} | nodes {len(nodes)}: {",".join(nodes)}')
+                print(f'  ladder: {ladders[0]}')
+                if ladders == ['unstamped']:
+                    print('  LADDER UNSTAMPED -- these cells predate the provenance stamp, so which reward ladder '
+                          'and which predicate code produced them cannot be read off the artefact. Treat the '
+                          'objective as unverified (audit brief §2: a gate was set at submission and inert in the '
+                          'job for 32 runs).')
                 if roles == ['preview']:
                     print('  PREVIEW ONLY -- these cells came from the in-job evaluation of training jobs that ran '
                           'wherever the scheduler put them. Descriptive only; the cells of record are the pinned '

@@ -1053,16 +1053,15 @@ class FullTaskEnv(gym.Env):
                 elif self.scope == 'pick' and stage == 'picked' and not self.pick_hold_reward:
                     reward += r
                 self._granted.add(stage)
-        # 2026-09-09 FIX (non-full scopes): the env COMPUTES self._contact_push
-        # (genesis_can_env step() reads tool_pos() on every contact frame and sets it when
-        # the tool is on the far side of the pick-can with no gripper-goal touch) but old
-        # trees never put it into `info`, so the grant never fired and contact_push reported
-        # EXACTLY 0.000 in full scope -- an absence, not a measurement. In scope='full' the
-        # value now comes from the TRACKER (it must require a prior release), and the (g)
-        # predicate is kept beside it as contact_push_legacy.
-        if self.scope != 'full':
-            if not info.get('contact_push') and getattr(self.genv, '_contact_push', False):
-                info['contact_push'] = True
+        # NOTE (Lane 3 audit, 2026-09-10): the 2026-09-09 "contact_push exposure fix" that used
+        # to sit here was a NO-OP and is deleted. Its comment claimed genesis_can_env "never
+        # puts it into `info`", but `genesis_can_env.step()` has written
+        # `contact_push=self._contact_push` into its info dict in every live tree. The real
+        # reason contact_push read 0.000 in full scope was that the OLD ladder's STAGE_REWARD
+        # did not contain the key, so no grant bookkeeping ran on it -- which the logged-grant
+        # loop below now handles for every stage, paid or not. In scope='full' the value is the
+        # TRACKER's anyway (it requires a prior release); the (g) predicate is kept beside it as
+        # contact_push_legacy.
         # Logged grants: every stage the episode reached enters `_granted` whether or not it
         # pays. `_granted` is what the r2dreamer adapter, both annotators and the evaluators
         # read as the sticky episode record, so the legacy names must keep entering it.

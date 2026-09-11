@@ -37,16 +37,26 @@
 #SBATCH --error=e2e_dp_%j.out
 
 set -eo pipefail
-cd "${GENESIS_PICKAPLACE_ROOT:=$PWD}"
+# GENESIS_PICKAPLACE_ROOT IS REQUIRED -- no `:=$PWD` default (LADDER_UNIFY_BRIEF D1). DP never
+# reads a reward, so its TRAINING is ladder-independent; but its EVALUATION goes through
+# baselines/eval_e2e.py and therefore through this tree's full_env, so which tree it runs is
+# exactly as load-bearing here as for the other two learners.
+: "${GENESIS_PICKAPLACE_ROOT:?set GENESIS_PICKAPLACE_ROOT to the code tree this run must use (no default: a launcher that silently takes \$PWD is how the two learners ended up on different ladders)}"
+[ -f "$GENESIS_PICKAPLACE_ROOT/baselines/rl/full_env.py" ] || { echo "FATAL: $GENESIS_PICKAPLACE_ROOT is not a genesis_pickaplace tree"; exit 1; }
+cd "$GENESIS_PICKAPLACE_ROOT"
+for G in FULLENV_REWARD_X FULLENV_EPISODE_RECORD; do
+  if [ -n "$(eval echo \"\${$G:-}\")" ]; then echo "FATAL: legacy gate set ($G); this tree has no gates"; exit 1; fi
+done
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
-ARM=${ARM:?set ARM (dH | dDP)}; SEED=${SEED:?set SEED}
+ARM=${ARM:?set ARM (dH | dDP | dDPfirst)}; SEED=${SEED:?set SEED}
 STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-e2e}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 ACTION_REPEAT=4; EVAL_HORIZON=1200; DEVFLAG=(); [ -n "${DEVICE:-}" ] && DEVFLAG=(--policy.device="$DEVICE")
 DEMO_ROOT=${DEMO_ROOT:-/cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3}
 case "$ARM" in
   dH)  SET=dHfull_all; N_EXP=74 ;;
   dDP) SET=dDPfull;    N_EXP=72 ;;
-  *) echo "FATAL: ARM must be dH | dDP (got $ARM)"; exit 1 ;;
+  dDPfirst) SET=dDPfull_first; N_EXP=72 ;;   # PHASE_PLAN (v): FIRST attempt per IC (de-selected)
+  *) echo "FATAL: ARM must be dH | dDP | dDPfirst (got $ARM)"; exit 1 ;;
 esac
 RAW=$DEMO_ROOT/$SET; DATASET=$RAW/lerobot
 OUT_ROOT=${OUT_ROOT:-baselines/outputs/dp_e2e}
@@ -73,6 +83,7 @@ assert m.get('contract') == 'v1' and m.get('scope') == 'full' and m.get('sim_var
 assert int(m['n_kept']) == len(files) == n_exp, (m.get('n_kept'), len(files), n_exp)
 assert m.get('builder') == 'baselines/rl/full_demos.py select', m.get('builder')
 assert (m.get('one_per_ic_best') is True) == (arm == 'dDP'), m
+assert (m.get('one_per_ic_first') is True) == (arm == 'dDPfirst'), m   # PHASE_PLAN (v)
 print(f'DEMO-SHA {arm} full n={len(files)} sha={m["content_sha256"][:16]} decisions={m["decisions_total"]} '
       f'tape_reward={m["tape_reward_total"]:.0f} idle={m["idle_frac"]:.3f} (pre-pick {m["idle_frac_prepick"]:.3f}) '
       f'stages={m["stage_yields"]}', file=sys.stderr)
@@ -136,11 +147,17 @@ LAST_D=$(ls -d "$OUT"/checkpoints/[0-9]*/ 2>/dev/null | sort -V | tail -1)
 # ---- DISK RULE (2026-09-07): keep ONLY the final checkpoint's weights ----------------------
 BEFORE_KB=$(du -sk "$OUT" | cut -f1)
 FINAL_N=$(basename "$LAST_D")
+# KEEP_CKPTS=1 (2026-09-09): retain intermediate checkpoints so the convergence
+# sweep has more than one point. DP is offline -- it has no rollouts and therefore no
+# acquisition curve; a checkpoint-vs-performance sweep is the ONLY convergence evidence
+# available for this learner, and the 100k budget currently rests on none.
+if [ "${KEEP_CKPTS:-0}" = 1 ]; then echo "== KEEP_CKPTS=1: retaining intermediate checkpoints"; else
 for D in $(ls -d "$OUT"/checkpoints/[0-9]*/ | sort -V); do
   N=$(basename "$D")
   [ "$N" = "$FINAL_N" ] && continue
   echo "== pruning superseded checkpoint $D"; rm -rf "$D"
 done
+fi
 [ -d "$LAST_D/training_state" ] && { echo "== pruning $LAST_D/training_state (optimizer state; no eval reads it)"; rm -rf "$LAST_D/training_state"; }
 AFTER_KB=$(du -sk "$OUT" | cut -f1)
 echo "CKPT-PRUNE $OUT: $((BEFORE_KB / 1024)) MB -> $((AFTER_KB / 1024)) MB (kept checkpoints/$FINAL_N/pretrained_model only)"
