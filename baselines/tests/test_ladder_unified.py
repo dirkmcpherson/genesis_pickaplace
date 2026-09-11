@@ -661,22 +661,27 @@ def _release_farside_push_home(start_d=0.105, end_d=0.005, n_push=40):
 
 
 def test_10a_nested_ramp_pays_9_for_a_full_slide_and_nested_sparse_pays_1():
-    """The user's ladder, end to end: pick 1, release 1, far side 1, a 10 cm slide 2, home 4."""
+    """The user's ladder, end to end, AFTER the (aa) revision (2026-09-11, PILOT_RESCORE
+    exploit fix): pick 1, release 1, a 10 cm slide ramp worth up to 3, home 4. `farside` is
+    reached but pays nothing of its own -- its old 1.0 moved onto the ramp's scale."""
     frames = _release_farside_push_home()          # 10.0 cm of push -> the ramp saturates
     r, term, acct, ep = _ladder_run(frames, 'nested_ramp')
     assert abs(ep['slide_gain_m'] - 0.100) < 1e-9, ep['slide_gain_m']
-    assert abs(r - 9.0) < 1e-9, f'nested_ramp paid {r}, expected 1+1+1+2+4 = 9'
+    assert abs(r - 9.0) < 1e-9, f'nested_ramp paid {r}, expected 1+1+3+4 = 9'
     assert term is not None and ep['home'], 'home must terminate'
-    assert acct.paid == {'picked', 'placed_v2', 'farside', 'home'}
+    assert acct.paid == {'picked', 'placed_v2', 'home'}, 'farside is granted but never paid'
+    assert 'farside' in acct.granted and 'farside' not in acct.paid
     assert 'slide_event' in acct.granted, 'the named three-clause flag is logged, not paid'
     assert 'slide_event' not in acct.paid
-    assert abs(acct.ramp_paid - 2.0) < 1e-9, 'the ramp saturates at its scale'
+    assert abs(acct.ramp_paid - 3.0) < 1e-9, 'the ramp saturates at its (aa-revision) scale'
     assert full_env.max_return('nested_ramp') == 9.0
+    assert full_env.ladder_spec('nested_ramp')[0] == dict(picked=1.0, placed_v2=1.0, home=4.0), (
+        'farside must not be a paid rung')
     r, term, acct, ep = _ladder_run(frames, 'nested_sparse')
     assert abs(r - 1.0) < 1e-9, f'nested_sparse paid {r}, expected 1'
     assert term is not None and acct.paid == {'home'}
     assert full_env.max_return('nested_sparse') == 1.0
-    print('10a. full slide: nested_ramp 9 (1+1+1+2+4), nested_sparse 1, both terminal  OK')
+    print('10a. full slide: nested_ramp 9 (1+1+3+4, farside unpaid), nested_sparse 1, both terminal  OK')
 
 
 def _drop_at_the_goal(retreat='far'):
@@ -690,39 +695,36 @@ def _drop_at_the_goal(retreat='far'):
     return frames
 
 
-def test_10b_a_drop_at_the_goal_pays_no_ramp_and_no_home():
-    """The behaviour the redesign exists to stop paying for: carry the can to the goal, open
-    the hand, walk away.
-
-    MEASURED SPEC DEVIATION, disclosed rather than patched away. The brief predicted 2
-    (picked + placed_v2). It is 3, because a gripper that withdraws STRAIGHT BACK from a
-    set-down passes through the far-side band on its way out -- 2.5 to 8 cm behind the can, on
-    the opposite side from the goal -- which is exactly what `farside` says. No clause in the
-    brief's definition excludes a withdrawal, and adding one ("the tool must approach, not
-    leave") would be a new predicate invented in a test. So `farside` is cheap on the drop
-    route, and what carries the contrast is the pair above it: the dense ramp needs goalward
-    motion made from that pose, and `home` needs both. A drop earns neither, under either
-    variant -- and for reference the pilot's `staged` ladder pays this same drop 4.
-
-    A withdrawal to the SIDE does not grant it, which is the control that the clause is the
-    geometry and not a rubber stamp."""
+def test_10b_a_drop_at_the_goal_pays_only_picked_and_placed():
+    """The behaviour the (aa) revision exists to stop paying for: carry the can to the goal,
+    open the hand, walk away. This is the exploit measured in Lane 11's PILOT_RESCORE
+    (`dDPfirst_s920`, mean 2.14 of 9 over 600 rollouts, never arriving): a gripper that
+    withdraws STRAIGHT BACK from a set-down crosses the far-side band on its way out -- 2.5 to
+    8 cm behind the can, the opposite side from the goal -- so `farside` GRANTS regardless of
+    retreat direction. Before the revision that was worth 1 of 9 on its own (r = 3); now it is
+    worth nothing on its own, because it moved from `stage_reward` into the ramp's `requires`:
+    reaching it is necessary for the ramp and for `slide_event`/`home`, but insufficient for
+    any of them. A drop now earns exactly picked + placed_v2 = 2, WHICHEVER WAY the tool
+    withdraws -- the exploit is closed by construction, not by detecting retreat direction (no
+    new predicate). For reference the pilot's `staged` ladder still pays this same drop 4."""
     frames = _drop_at_the_goal('far')
     r, term, acct, ep = _ladder_run(frames, 'nested_ramp')
     assert ep['nested_v2'] and not ep['home'], 'a drop IS a nest and is NOT home'
-    assert ep['farside'] and ep['slide_gain_m'] == 0.0, 'in the pose, no progress from it'
-    assert abs(r - 3.0) < 1e-9, f'nested_ramp paid {r} for a drop, expected 1+1+1'
-    assert acct.paid == {'picked', 'placed_v2', 'farside'} and term is None
+    assert ep['farside'] and ep['slide_gain_m'] == 0.0, 'granted (logged) but pays nothing now'
+    assert abs(r - 2.0) < 1e-9, f'nested_ramp paid {r} for a drop, expected 1+1 = 2'
+    assert acct.paid == {'picked', 'placed_v2'} and term is None, 'farside never enters paid'
     assert acct.ramp_paid == 0.0, 'the DENSE rung is what a drop cannot earn'
     r, term, acct, _ = _ladder_run(frames, 'nested_sparse')
     assert r == 0.0 and term is None, (r, term)
-    # the same drop under the pilot's ladders, for contrast
+    # the same drop under the pilot's ladders, for contrast (unaffected by this revision)
     assert _ladder_run(frames, 'staged')[0] == 4.0, 'staged pays a drop 4 of its 8'
     assert _ladder_run(frames, 'sparse')[0] == 1.0, 'sparse pays a drop-in nest in full'
-    # sideways withdrawal: never behind the can, so not even the cheap rung
+    # sideways withdrawal never enters the far-side band at all -- but now pays the SAME as the
+    # straight-back retreat, because farside was the only thing that ever distinguished them
     side = _drop_at_the_goal('perp')
     r, _, acct, ep = _ladder_run(side, 'nested_ramp')
     assert not ep['farside'] and abs(r - 2.0) < 1e-9, (r, ep['farside'])
-    print('10b. drop at the goal: ramp 0 and home 0 under both variants (3 / 0 total)  OK')
+    print('10b. drop at the goal: 2 of 9 either way now (farside logged, never paid)  OK')
 
 
 def test_10c_the_ramp_pays_once_for_net_progress():
@@ -739,10 +741,10 @@ def test_10c_the_ramp_pays_once_for_net_progress():
     r1, _, a1, e1 = _ladder_run(once, 'nested_ramp')
     r2, _, a2, e2 = _ladder_run(twice, 'nested_ramp')
     assert abs(e1['slide_gain_m'] - 0.030) < 1e-9 and abs(e2['slide_gain_m'] - 0.030) < 1e-9
-    # span 0.05 m per amendment (aa): 30 mm of net progress pays 2 * 30/50 = 1.2
-    assert abs(a1.ramp_paid - 1.2) < 1e-9, '2 * 30mm/50mm'
+    # span 0.05 m, scale 3.0 per the (aa) revision: 30 mm of net progress pays 3 * 30/50 = 1.8
+    assert abs(a1.ramp_paid - 1.8) < 1e-9, '3 * 30mm/50mm'
     assert abs(r1 - r2) < 1e-9, f'the second lap paid {r2 - r1} extra'
-    assert abs(r1 - (1.0 + 1.0 + 1.0 + 1.2)) < 1e-9, r1
+    assert abs(r1 - (1.0 + 1.0 + 1.8)) < 1e-9, r1     # picked + placed_v2 + ramp; farside unpaid
     print('10c. ramp: paid once for net progress, oscillation adds nothing  OK')
 
 
@@ -811,10 +813,58 @@ def test_10f_staged_and_sparse_are_unchanged_by_ladder_n():
     assert p['far_release'] is True and p['terminal_stages'] == ['home', 'tipped']
     assert p['requires'] == dict(placed_v2='picked', farside='placed_v2',
                                  slide_event='farside', home='slide_event')
-    assert p['ramp']['scale'] == 2.0 and p['ramp']['span'] == 0.05   # amendment (aa)
+    assert 'farside' not in p['stage_reward'], 'the (aa) revision: farside pays nothing'
+    assert p['stage_reward'] == dict(picked=1.0, placed_v2=1.0, home=4.0)
+    assert p['ramp']['scale'] == 3.0 and p['ramp']['span'] == 0.05   # (aa) revision 2026-09-11
+    assert p['ramp']['requires'] == 'farside'
     assert p['return_clamp_required'] == 9.0
     assert full_env.ladder_provenance('nested_sparse')['return_clamp_required'] == 1.0
+    # the stamp text shows the new rungs, not the old one
+    stamp = full_env.ladder_stamp('nested_ramp')
+    assert 'farside=' not in stamp, stamp
+    assert 'ramp:slide_gain_m=3/0.05m' in stamp, stamp
     print('10f. staged/sparse unchanged; every ladder and far_release distinct in the stamp  OK')
+
+
+def test_10g_withdrawal_vs_push_pays_the_folded_farside_rung():
+    """The three numbers the (aa) revision was built to produce (coordinator's brief,
+    2026-09-11), on one family of episodes so the only thing that varies is how far the can
+    is pushed after the set-down latch:
+
+      * a set-down followed by a STRAIGHT-BACK WITHDRAWAL through the far-side band
+        (farside granted, slide_gain 0) pays exactly 2.0 -- picked + placed_v2, nothing more;
+      * the same episode with a 3 cm far-side PUSH after the latch pays 2 + 3*0.6 = 3.8 (the
+        ramp's first 3 cm of 5, scale 3.0 over span 0.05 m: 3 * 0.03/0.05 = 1.8);
+      * with a 5 cm push that ARRIVES (nested_v2 + slide_gain >= SLIDE_GAIN_MIN_M), the ramp
+        saturates and `home` pays its 4: 1 + 1 + 3 + 4 = 9.0, the ladder's max_return.
+
+    All three share the same release pose and differ only in how far `end_d` is from
+    `start_d`; the withdrawal case (`start_d == end_d`) never decreases the can-goal distance,
+    so `slide_gain_m` stays exactly 0 even though the tool visits the far-side band on its way
+    out -- the case test_10b makes with a different construction (a drop-and-retreat rather
+    than a release-and-withdraw). end_d is kept a few cm past NESTED_TOUCH_DIST (0.081 m) in
+    the first two cases so neither accidentally arrives."""
+    withdraw = _release_farside_push_home(start_d=0.105, end_d=0.105, n_push=40)
+    push_3cm = _release_farside_push_home(start_d=0.115, end_d=0.085, n_push=40)
+    push_5cm_arrival = _release_farside_push_home(start_d=0.115, end_d=0.065, n_push=40)
+
+    r, term, acct, ep = _ladder_run(withdraw, 'nested_ramp')
+    assert ep['farside'] and abs(ep['slide_gain_m']) < 1e-9 and not ep['home']
+    assert abs(r - 2.0) < 1e-9, f'withdrawal paid {r}, expected 2.0'
+    assert acct.paid == {'picked', 'placed_v2'} and term is None
+
+    r, term, acct, ep = _ladder_run(push_3cm, 'nested_ramp')
+    assert ep['farside'] and abs(ep['slide_gain_m'] - 0.030) < 1e-9 and not ep['home']
+    assert abs(r - 3.8) < 1e-9, f'3 cm push paid {r}, expected 2 + 3*0.6 = 3.8'
+    assert acct.paid == {'picked', 'placed_v2'} and term is None
+    assert abs(acct.ramp_paid - 1.8) < 1e-9
+
+    r, term, acct, ep = _ladder_run(push_5cm_arrival, 'nested_ramp')
+    assert ep['farside'] and abs(ep['slide_gain_m'] - 0.050) < 1e-9 and ep['home']
+    assert abs(r - 9.0) < 1e-9, f'5 cm push + arrival paid {r}, expected the full 9.0'
+    assert term is not None and acct.paid == {'picked', 'placed_v2', 'home'}
+    assert abs(acct.ramp_paid - 3.0) < 1e-9
+    print('10g. withdrawal 2.0, 3cm push 3.8, 5cm push+arrival 9.0  OK')
 
 
 # ---------------------------------------------------------- the Lane-1 interface contract

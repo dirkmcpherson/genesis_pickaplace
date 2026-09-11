@@ -111,8 +111,22 @@ from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "on
 #                   they named -- the can was put DOWN, the tool went to the OPPOSITE
 #                   side of it from the goal, and the can TRAVELLED goalward from there.
 #                   Its constants are calibrated on the 74 human tapes, not chosen.
-# 'nested_ramp':    picked 1 -> placed_v2 1 -> farside 1 -> a DENSE slide ramp worth up to 2
-#                   -> home 4, TERMINAL. Max return 9.
+# 'nested_ramp':    picked 1 -> placed_v2 1 -> a DENSE slide ramp worth up to 3 -> home 4,
+#                   TERMINAL. Max return 9. `farside` pays NOTHING -- it is a LOGGED
+#                   PREREQUISITE for the ramp (and, transitively, for slide_event/home),
+#                   not a rung of its own.
+#
+# --- REVISION of amendment (aa), 2026-09-11 (Lane 11's PILOT_RESCORE finding): `farside`
+# used to pay 1.0 of the 9 on its own. A gripper that sets the can down and then withdraws
+# STRAIGHT BACK crosses the far-side band on its way out (2.5-8 cm behind the can, the
+# opposite side from the goal) with zero goalward progress -- test_10b measured this exactly,
+# and the pilot's own top checkpoint (`dDPfirst_s920`, 2.14 of 9 mean return over 600
+# rollouts) never arrives at the goal; it earns picked + placed_v2 + farside = 3 of 9 by
+# backing off. Folding farside's payment into the ramp's `requires` (the ramp cannot start
+# accumulating until farside has been reached, but reaching it alone earns nothing) removes
+# the exploit by construction: a withdrawal now earns exactly picked + placed_v2 = 2, and the
+# first credited centimetre of a REAL far-side push pays scale/span = 3.0/0.05 = 0.6 per cm.
+# The vacated 1.0 moves onto the ramp's `scale` (2.0 -> 3.0) so max_return is unchanged at 9.
 #
 # Two structures the first two ladders did not need, both declared here and read by
 # LadderAccountant, never re-implemented at a call site:
@@ -120,11 +134,16 @@ from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "on
 #       already enforces the chain geometrically (farside needs released needs placed_v2 and
 #       picked), so this is a second, explicit statement of the same order: a ladder whose
 #       rungs are "each REQUIRES the previous one" should say so in the table a reader checks.
+#       `farside`'s own entry is kept even though `farside` no longer pays -- it still
+#       documents the geometric chain a reader checks, and it is inert-but-harmless: the
+#       payment loop only consults a `requires` entry for a stage that is a stage_reward key.
 #   `ramp`   -- the one dense term. Paid incrementally as a MONOTONE tracker quantity grows:
 #       reward = scale * min(1, value / span), and each frame pays the increase since the last
 #       frame. `slide_gain_m` only grows on new minima of the can-goal distance made from the
 #       far side, so the ramp cannot be farmed by oscillating the can (stage_predicates
-#       `_update_slide_gain`), and it can never be clawed back.
+#       `_update_slide_gain`), and it can never be clawed back. Since 2026-09-11 the ramp also
+#       carries the rung `farside` used to pay (`requires='farside'`): the ramp cannot start
+#       accumulating until farside has been reached, but reaching it alone earns nothing.
 LADDERS = {
     'staged': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, contact_push=2.0, slide_success=4.0),
                    terminal=('slide_success',)),
@@ -132,14 +151,15 @@ LADDERS = {
                    terminal=('nested_v2',)),
     'nested_sparse': dict(stage_reward=dict(home=1.0),
                           terminal=('home',)),
-    'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, farside=1.0, home=4.0),
+    'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, home=4.0),
                         requires=dict(placed_v2='picked', farside='placed_v2',
                                       slide_event='farside', home='slide_event'),
                         # span 0.05 m per PHASE_PLAN amendment (aa): the 13 human sim-slides
                         # gain 1.1-6.4 cm, so at 0.10 m none reached the ramp maximum (mean
                         # 7.80 of 9); at 0.05 m they average 8.39 and four saturate it
-                        # (paper/LADDER_N_DEMO_CHECK_2026-09-11.md section 5).
-                        ramp=dict(key='slide_gain_m', scale=2.0, span=0.05, requires='farside'),
+                        # (paper/LADDER_N_DEMO_CHECK_2026-09-11.md section 5). scale 3.0 per
+                        # the (aa) revision above (farside's vacated 1.0 moved here).
+                        ramp=dict(key='slide_gain_m', scale=3.0, span=0.05, requires='farside'),
                         terminal=('home',)),
 }
 LADDER_DEFAULT = 'staged'
