@@ -62,7 +62,8 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
-ap.add_argument('--ladder', choices=('staged', 'sparse'), default=None,
+ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'), default=None,   # kept equal to full_env.LADDERS,
+                # which is ASSERTED below once the tree is importable
                 help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
                      "checkpoint's -- a policy trained under one objective scored under another is a different "
                      "experiment, and the stamp in metrics.json is what a table builder checks. Taken from the "
@@ -307,13 +308,15 @@ OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 # training proxy (precision 0.114 human / 0.029 machine, and it REVERSES the arm ordering --
 # audit brief §4a), `contact_push_legacy` the (g) predicate that needs no release, and
 # `slide_success_settle` the (l) settle route with its withdrawn grip clause.
-HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
+HEADLINE_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
+                   'farside', 'home', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 STAGES = HEADLINE_STAGES + LEGACY_STAGES
 # The outcome taxonomy's success is THE LADDER'S OWN PAID TERMINAL (see eval_e2e.py): under
 # `sparse` that is `nested_v2`, and the hardcoded staged name recorded every sparse success
 # without `pushed` as a `timeout`.
 TERMINAL_STAGE = next((k for k in LADDER['terminal_stages'] if k != 'tipped'), 'slide_success')
+assert TERMINAL_STAGE in STAGES, (TERMINAL_STAGE, STAGES)   # refuse before the world build
 OUTCOMES = (TERMINAL_STAGE, 'tipped', 'timeout')
 counts = {k: 0 for k in OUTCOMES}
 stage_counts = {k: 0 for k in STAGES}
@@ -361,6 +364,10 @@ for k, ic in enumerate(ics):
         'contact_push': _g('contact_push'),
         'slide_success': _g('slide_success'),          # in-episode, paid, terminal
         'nested_v2': _g('nested_v2'),
+        # Ladder N (2026-09-11): computed and logged under EVERY ladder, paid under one, so a
+        # staged cell and a nested cell carry the same columns and are readable side by side.
+        'farside': _g('farside'),
+        'home': _g('home'),
         'nested_honest': bool(end['nested']),          # settled reference
         # --- legacy columns, never a headline ---
         'placed': _g('placed'),
@@ -387,7 +394,8 @@ for k, ic in enumerate(ics):
         # rungs and NEST2 is nested_v2. `nested` (the withdrawn proxy) is deliberately no
         # longer a chip -- an overlay that lights it invites reading nesting off it.
         CHIPS = [('PICK', 'picked'), ('PLACE', 'placed_v2'), ('PUSH', 'contact_push'),
-                 ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success')]
+                 ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success'),
+                 ('FAR', 'farside'), ('HOME', 'home')]
         first = {}
         for i, sn in enumerate(snaps):
             for _, key in CHIPS:
@@ -472,7 +480,7 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                eval_fixes='j+l-prime+ladder-unify',
                # D6: the stamp that says WHICH ladder and WHICH code produced this cell.
                # baselines/e2e_table_all.py REFUSES to merge rows whose stamps differ.
-               ladder_provenance=LADDER, ladder_stamp=LADDER['stamp'],
+               ladder_provenance=LADDER, ladder_stamp=LADDER['stamp'], terminal_stage=TERMINAL_STAGE,
                slide_success=stage_counts['slide_success'] / n,
                headline_stages={s: stage_counts[s] / n for s in HEADLINE_STAGES},
                stages={s: stage_counts[s] / n for s in STAGES},

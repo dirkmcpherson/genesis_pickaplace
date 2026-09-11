@@ -26,7 +26,8 @@ import argparse, itertools, json, os
 # nested_proxy as the nesting column. nested_proxy stays available via --stages for
 # continuity with stored rows, but it must never carry a nesting claim: precision 0.114
 # (human) / 0.029 (machine) and it REVERSES the arm ordering (audit brief §4a).
-ALL_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2', 'nested_honest')
+ALL_STAGES = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
+              'farside', 'home', 'nested_honest')
 LEGACY_STAGES = ('placed', 'contact', 'nested_proxy', 'contact_push_legacy', 'slide_success_settle')
 WM_ALIAS = {'nested_proxy': 'nested'}   # the WM evaluator's `nested` IS the proxy
 

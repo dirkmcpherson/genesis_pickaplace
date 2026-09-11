@@ -97,14 +97,18 @@ PANEL_H = 124
 
 # (chip label, info/_granted key). LADDER = the rungs of the 'staged' ladder plus nested_v2,
 # which is logged there and is the whole ladder under 'sparse'. LEGACY pays nothing.
+# FAR/HOME are the Ladder-N rungs (2026-09-11): they light under every ladder because the
+# tracker computes them under every ladder -- which is what lets one annotated clip answer
+# 'what would the nested ladder have paid here'.
 LADDER_CHIPS = [('PICK', 'picked'), ('PLACE', 'placed_v2'), ('PUSH', 'contact_push'),
-                ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success')]
+                ('NEST2', 'nested_v2'), ('SLIDE', 'slide_success'),
+                ('FAR', 'farside'), ('HOME', 'home')]
 LEGACY_CHIPS = [('nestP', 'nested'), ('pushL', 'contact_push_legacy'),
                 ('slidL', 'slide_success_legacy')]
 ALL_CHIP_KEYS = [k for _, k in LADDER_CHIPS + LEGACY_CHIPS]
 # Stages whose first grant decision is recorded per tape.
 REPORT = ('picked', 'placed_v2', 'contact_push', 'slide_success', 'nested_v2',
-          'released', 'pushed', 'nested', 'contact', 'placed',
+          'released', 'pushed', 'farside', 'home', 'nested', 'contact', 'placed',
           'contact_push_legacy', 'slide_success_legacy')
 
 
@@ -498,7 +502,8 @@ def main():
     ap.add_argument('--out-dir', default=None, help='render: directory for the mp4s')
     ap.add_argument('--set-name', default='set', help='human | machine; prefixes the clip names')
     ap.add_argument('--tapes', nargs='*', default=None, help='render: segment basenames')
-    ap.add_argument('--ladder', choices=('staged', 'sparse'), default='staged')
+    ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'),
+                    default='staged')
     ap.add_argument('--sim-variant', default=None, help="default: the set's own stamp")
     ap.add_argument('--max-sim-steps', type=int, default=None)
     ap.add_argument('--ic-tol', type=float, default=0.002)

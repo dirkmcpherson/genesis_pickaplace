@@ -52,7 +52,8 @@ old_vid = """    vw = cv2.VideoWriter(str(vid), cv2.VideoWriter_fourcc(*"mp4v"),
     vw.release()"""
 new_vid = """    PANEL = 78
     CHIPS = [("PICK", "picked"), ("PLACE", "placed_v2"), ("PUSH", "contact_push"),
-             ("NEST2", "nested_v2"), ("SLIDE", "slide_success")]
+             ("NEST2", "nested_v2"), ("SLIDE", "slide_success"),
+             ("FAR", "farside"), ("HOME", "home")]
     first = {}
     for _i, _sn in enumerate(snaps):
         for _, _key in CHIPS:
