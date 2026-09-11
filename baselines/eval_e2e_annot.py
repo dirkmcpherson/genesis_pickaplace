@@ -69,6 +69,12 @@ ap.add_argument('--ladder', choices=('staged', 'sparse'), default=None,
                      "checkpoint sidecar, which is the SOURCE; --ladder is an optional ASSERTION and only an "
                      "explicit disagreement is fatal (a 'staged' default made sparse checkpoints unevaluable).")
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
+ap.add_argument('--records-out', default=None,
+                help="Per-episode PER-ENV-FRAME stage record, in the format "
+                     "baselines/rl/relabel_reward.py --records-out writes for demonstration tapes (its FrameRecorder "
+                     "is imported, not re-implemented). Re-score offline under any ladder with "
+                     "baselines/diagnostics/pilot_rescore.py. DEFAULT OFF; off, nothing changes. Termination is NOT "
+                     "suppressed, so the episode ends where the ladder it ran under ends it.")
 ap.add_argument('--limit', type=int, default=None, help='first N starts only (smokes)')
 ap.add_argument('--ic-index', type=int, default=None,
                 help='EPISODE ISOLATION (coordinator 2026-09-07): evaluate ONLY the k-th start of the (already '
@@ -318,6 +324,16 @@ else:
 import cv2   # noqa: E402
 OUT = pl.Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
 CKPT_TAG = args.tag or ck.parent.name
+REC_DIR = None
+if args.records_out:
+    from relabel_reward import FrameRecorder, grip_phys_from_action, _cpu_stamp   # noqa: E402
+    REC_DIR = pl.Path(args.records_out); REC_DIR.mkdir(parents=True, exist_ok=True)
+    print(f'[eval-e2e] stage records -> {REC_DIR}', flush=True)
+rec_rows = []
+
+
+def _ic_json(ic):
+    return {kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()}
 
 # Borderline bands -- the ONLY numbers invented in this file, and they select clips, they never
 # decide a flag. Each is "just outside a clause", i.e. the episodes where a slightly different
@@ -421,8 +437,12 @@ for k, ic in enumerate(ics):
     diag = dict(DIAG0)
     done = False; t = 0; ep_r = 0.0; info = {}
     end_reason, end_dec, tipped_ever = 'truncated', 0, False
+    rec = FrameRecorder(env) if REC_DIR is not None else None
+    rec_arrays = None
     while not done:
         a = act(np.asarray(obs, np.float32))
+        if rec is not None:
+            rec.new_decision(t, grip_phys_from_action(a))
         obs, r, term, trunc, info = env.step(a)
         d = t                        # 0-based index of the decision just executed
         ep_r += float(r); t += 1
@@ -460,6 +480,8 @@ for k, ic in enumerate(ics):
     # settle still runs, for two reasons and two only: `nested_honest` is the reference
     # column nested_v2 is validated against, and the (l) settle-route slide is kept as a
     # legacy column. Neither is what the reward paid.
+    if rec is not None:
+        rec_arrays = rec.arrays(); rec.detach()
     end = env.genv.end_of_episode()
     gr = set(env._granted)
 
@@ -562,15 +584,36 @@ for k, ic in enumerate(ics):
         row['codec'] = AD.write_mp4(cv2, vid, out_frames, fps)
         row['video_frames'] = len(out_frames)
         row['video_bytes'] = os.path.getsize(vid)
+    rec_path = None
+    if REC_DIR is not None:
+        rec_path = str(REC_DIR / f'ep{IC_OFFSET + k}_uid{uid if uid is not None else "rnd"}.npz')
+        _meta = dict(
+            kind='policy_rollout', layout='policy_rollout', checkpoint=str(ck), policy_kind=args.kind,
+            arm=(args.arm or ''), tag=(args.tag or ''), mode=args.mode, seed=int(args.seed),
+            ic_file=str(args.ic_file), ic_set=str(args.ic_set), ep=int(IC_OFFSET + k), order=int(k),
+            uid=(-1 if uid is None else int(uid)), ic=json.dumps(_ic_json(ic)),
+            n_decisions=int(t), action_repeat=int(env.action_repeat), max_steps=int(env.max_steps),
+            shelf_top_z=float(env.shelf_top_z), sim_variant=str(args.sim_variant),
+            reward_recorded_total=float(ep_r), end_reason=str(end_reason),
+            nested_honest=bool(end['nested']), slide_success_settle=bool(end['slide_success']),
+            slide_route=str(route), record_ladder=str(env.ladder), never_terminate=False,
+            live_stages=json.dumps({sk: bool(st[sk]) for sk in STAGES}),
+            node=json.dumps(_cpu_stamp()), provenance=json.dumps(env.provenance()))
+        np.savez_compressed(rec_path, **rec_arrays, **{kk: np.asarray(vv) for kk, vv in _meta.items()})
+        rec_rows.append(dict(file=os.path.basename(rec_path), ep=int(IC_OFFSET + k),
+                             uid=(None if uid is None else int(uid)), n_decisions=int(t),
+                             frames=int(rec_arrays['dec'].shape[0]), end_reason=str(end_reason),
+                             reward=float(ep_r), nested_honest=bool(end['nested'])))
     # node / process / order stamps on EVERY episode (coordinator 2026-09-07): long-horizon full-scope episodes are
     # node-sensitive (same ckpt+IC+seed flips outcome across nodes) and, in the shared-process protocol, ORDER-dependent
     # (state leaks between episodes). `order` is the position within THIS process, so it is 0 for every isolated cell.
     results.append(dict(ep=IC_OFFSET + k, order=k, node=socket.gethostname(), pid=os.getpid(),
                         **{k: HW[k] for k in ('cpu_model', 'isa', 'avx512f', 'cpu_cores_physical', 'cpu_sockets',
                                               'cpu_logical', 'cpu_affinity', 'torch_num_threads', 'omp_num_threads')},
-                        ic={kk: (list(vv) if isinstance(vv, (tuple, list, np.ndarray)) else vv) for kk, vv in ic.items()},
+                        ic=_ic_json(ic),
                         uid=(int(uid) if uid is not None else None), outcome=outcome, tipped=tipped, steps=t, reward=ep_r,
                         slide_route=route, seconds=round(time.time() - t0, 1), video=vid, stages=st,
+                        **({'record': rec_path} if REC_DIR is not None else {}),
                         # --- the smoke-test record (Lane 9): the first-fire decision of every
                         # flag, the tracker's end-of-episode diagnostics, the end reason, and the
                         # stratification class. Everything here is read back, never recomputed.
@@ -651,6 +694,18 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                node=dict(hostname=socket.gethostname(), slurm_job_id=os.environ.get('SLURM_JOB_ID'), slurm_nodelist=os.environ.get('SLURM_JOB_NODELIST'),
                          cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES')), git=git, sidecar=str(sc_path),
                per_episode=results)
+if REC_DIR is not None:
+    summary['records_out'] = str(REC_DIR)
+    (REC_DIR / 'manifest.json').write_text(json.dumps(dict(
+        kind='stage_records', source='policy_rollout',
+        builder='baselines/eval_e2e_annot.py --records-out',
+        cell=str(OUT), checkpoint=str(ck), arm=args.arm, tag=args.tag, mode=args.mode, seed=args.seed,
+        ic_file=str(args.ic_file), ic_set=str(args.ic_set), sim_variant=args.sim_variant,
+        record_ladder=str(env.ladder), never_terminate=False, max_steps=int(env.max_steps),
+        action_repeat=REPEAT, shelf_top_z=float(env.shelf_top_z), ladder_provenance=LADDER,
+        n_episodes=len(rec_rows), frames_total=int(sum(r['frames'] for r in rec_rows)),
+        decisions_total=int(sum(r['n_decisions'] for r in rec_rows)),
+        node=_cpu_stamp(), per_episode=rec_rows), indent=1))
 (OUT / 'metrics.json').write_text(json.dumps(summary, indent=1))
 print(f'\n[eval-e2e] {len(results)} episodes ({args.mode}, {args.ic_set}): '
       + '  '.join(f'{s} {stage_counts[s]}/{len(results)}' for s in HEADLINE_STAGES)
