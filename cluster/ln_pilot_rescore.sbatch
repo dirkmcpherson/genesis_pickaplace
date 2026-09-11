@@ -30,7 +30,11 @@
 #SBATCH --mem=48g
 #SBATCH -t 0-06:00:00
 #SBATCH -o /cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/slurm/%x_%A_%a.out
-set -euo pipefail
+# NOT `set -u`: `conda activate` sources the cluster's qt deactivate hook, which reads
+# CONDA_BACKUP_QT_XCB_GL_INTEGRATION unset and kills the job under -u (observed: array 3581709,
+# all four tasks FAILED 1:0 in 4 s). The other launchers in this directory use `set -eo pipefail`
+# for the same reason.
+set -eo pipefail
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
 PILOT=${PILOT:-$LAB/gp_unified/baselines/rl/checkpoints/e2e}
