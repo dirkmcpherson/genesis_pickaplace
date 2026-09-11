@@ -146,6 +146,26 @@ This is the P1 evidence for the sparse world-model arm: the same three file hash
 stamp, the ladder fields the only difference, and the clamp following the ladder ceiling on both
 the env and the model.
 
+**Its eval cell then verified defect 7's fix and exposed defect 8.** The cell was written — no
+`TypeError` — with `success_key=slide_success` and `success_rate=0.0` sitting beside
+`slide_success=0.0`, so the two names no longer collide. But the same cell carries
+`ladder_provenance.ladder = staged, max_return = 8.0` **on a sparse run**: `eval_genesis.py` built
+`GenesisPick(...)` without `ladder=` and took the constructor default, so the policy was rolled out
+under the wrong terminal and the wrong reward. That is amendment (z) §(z).10 defect 8, and it is
+the D6 stamp doing precisely the job it was added for — without the stamp in the cell, the row
+would have looked entirely normal. Fixed in r2dreamer `f1c134c` (ladder from `cfg.env.ladder`,
+source printed, and the env's own provenance asserted against the config before any episode runs)
+and verified on the same sparse checkpoint in job **3539729**:
+
+    [eval] ladder='sparse' from the run config
+    [ladder] unified-2026-09-10 | ladder=sparse | nested_v2=1 | max_return=1 | terminal=nested_v2+tipped | …
+
+The evaluator is a separate process launched at the end of a job, so both fixes reach every pilot
+run even though all 16 were already submitted when they landed. **The two sparse smoke cells
+written before the fix (`fresh_eval_hold15_{sample,mode}` under
+`full_r2d_state_dHfull_all_rs_lzsmokeS_s9991`) are scored under the WRONG ladder and must not be
+read as sparse-arm numbers.**
+
 **One provenance wrinkle, stated rather than smoothed over.** The four smokes did not all run at
 the same commit: 3537917 / 3538260 / 3538337 at `b89478d3`, 3539030 at `21c58b49`. The difference
 is `baselines/eval_e2e.py` (defect 6), which is not one of the three files in the stamp, so the
