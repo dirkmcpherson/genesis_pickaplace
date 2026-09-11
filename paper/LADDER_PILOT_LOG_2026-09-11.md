@@ -107,9 +107,29 @@ Its END-OF-JOB evaluation then crashed — `TypeError: dict() got multiple value
 argument 'slide_success'` at `eval_genesis.py` line 469, after 15 evaluated episodes. That is
 defect 7 in amendment (z) §(z).10: `scope='full'` now names `slide_success` as its success key and
 the summary splatted it into a `dict()` that already passed it explicitly. **All eight
-{r2dreamer} pilot cells would have been lost.** Fixed in r2dreamer `197a1a3`, deployed to
-`$W/r2dreamer_unified`, and verified by re-running the evaluator on this same checkpoint
-(job **3539098**, 2 episodes, CPU).
+{r2dreamer} pilot cells would have been lost.** Fixed in r2dreamer `197a1a3` and deployed to
+`$W/r2dreamer_unified`.
+
+Verification of that fix, in two parts, because the first attempt was the wrong instrument:
+
+* **Static, complete.** An AST pass over the fixed `eval_genesis.py` finds the `summary = dict(…)`
+  call has 38 keywords, **0 `**`-splats and 0 duplicate keywords**, so no scope can collide there
+  any more, and the three replacement lines (`success_key`, `success_rate`, `setdefault`) are all
+  present. The splat was the only way a duplicate could arise.
+* **Live.** Job **3539098** re-ran the evaluator on the staged smoke's own `latest.pt` — but it
+  landed on a 36-core node at ~250 s per episode and ignored `--episodes 2` in favour of the whole
+  15-IC `hold` set, so it would have hit its walltime before writing anything; it was cancelled.
+  The real live check is the sparse smoke's OWN end-of-job evaluation (job **3539030**), which runs
+  the fixed file — the evaluator is a separate process launched at the end of the job, so it picked
+  up the fix that landed while it was training. **This was still running at the end of the Lane 4
+  session; read it with**
+
+      python3 -c "import json; m=json.load(open('$W/runs/full_r2d_state_dHfull_all_rs_lzsmokeS_s9991/fresh_eval_hold15_sample/metrics.json')); print(m['scope'], m.get('success_key'), m.get('success_rate'), m.get('slide_success'), m.get('nested_v2'))"
+
+  A `metrics.json` there means defect 7 is closed on the path the pilot uses. If it is absent and
+  the log shows another `TypeError`, **no pilot training is lost** — the {r2dreamer} cells are
+  recoverable post hoc from `latest.pt` and the milestone checkpoints, which is the workflow
+  `cluster/e2e_posthoc_sweep.sh` already exists for.
 
 **{r2dreamer} sparse — 3539030, 15k ONLINE steps, `dHfull_all_rs`, interactive QOS.**
 
