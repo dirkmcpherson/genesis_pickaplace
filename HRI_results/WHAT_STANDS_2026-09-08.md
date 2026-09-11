@@ -71,3 +71,11 @@ result can support.
 **If you read only one thing:** place and slide nulls survive the corrections; end-to-end passes every registered
 prediction but is underpowered at five of seven stages; the single result pointing anywhere is `nested_honest`, favouring
 the **machine** arm at p 0.087.
+
+**2026-09-11 addendum.** The two end-to-end demonstration sets are matched by phase under the
+unified predicates (slide 13/74 human v 14/72 machine; every stage within 0.06) — provenance,
+method and table in `HRI_results/DEMO_SETS_2026-09-11.md`. The machine set's teacher was trained
+on the pruned human set; state that as a property of the machine set. All e2e learner cells
+produced before 2026-09-11 were trained under ladders now known to be defective (RLPD: the
+proxy; r2dreamer: an unpayable top rung); the unified-ladder pilot and its sparse-versus-staged
+question are in `paper/LADDER_UNIFY_BRIEF_2026-09-10.md`.
