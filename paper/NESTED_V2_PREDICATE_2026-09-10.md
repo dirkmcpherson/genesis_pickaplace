@@ -34,9 +34,11 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
    ≤ 81 mm). On the human arm it is touching in **6 of 6** at a median 65 mm. Same predicate,
    opposite meaning. Project documents describe the proxy as "instantaneous"; it is not.
 5. **The release-first `contact_push` of D2 removes the entire machine-arm rung.** Legacy
-   `contact_push` fires on 15 of 30 machine episodes; the D2 version fires on **0**. On the human
-   arm it keeps 7 of 8. This is the quantitative form of "the policy presses the HELD can against
-   the goal and runs to the horizon" (`E2E_TRAINING_PROBLEMS_2026-09-10.md` §0).
+   `contact_push` fires on 15 of 30 machine episodes; the D2 version fires on **0 of 30** — and
+   on 0 of 30 again in the D2-terminal control, where the legacy count is still 15. On the human
+   arm D2 keeps 7 of the legacy 8 (old terminal) and 8 of 9 (D2 control). This is the
+   quantitative form of "the policy presses the HELD can against the goal and runs to the
+   horizon" (`E2E_TRAINING_PROBLEMS_2026-09-10.md` §0).
 
 ---
 
@@ -49,7 +51,8 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
 | `baselines/eval_e2e_stagerec.py` | a COPY of `eval_e2e.py` that logs per-**env-frame** poses/contacts/flags |
 | `baselines/diagnostics/held_lever_calibration.py` | §3 |
 | `baselines/diagnostics/tape_stage_sweep.py` | §4 |
-| `baselines/diagnostics/nested_v2_validate.py` | §5, §6 |
+| `baselines/diagnostics/nested_v2_validate.py` | §5 |
+| `baselines/diagnostics/proxy_firing_frame.py` | §6 |
 
 Unit tests:
 
@@ -430,6 +433,12 @@ can's current position is not in the predicate at all. Project documents describ
 instantaneous; it is not.
 
 Measured at the exact frame the proxy first fires, from the recorded per-frame logs:
+
+```
+$ ~/workspace/genesis_sim2real/venv/bin/python \
+      baselines/diagnostics/proxy_firing_frame.py --roll <roll>
+```
+
 
 | {RLPD} arm | episodes | can↔goal contact at that frame | can–goal distance at that frame | within 81 mm |
 |---|---:|---:|---|---:|
