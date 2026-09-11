@@ -13,12 +13,14 @@ file was modified and no Slurm job was submitted; the cluster was used read-only
 
 ## 0. Summary
 
-1. **`in_hand` separates cleanly, and 2.5 cm is inside the held population's tail.** On the 74
-   human tapes the grasp lever is 1.24–2.64 cm (p1–p99, n = 5 575 airborne frames) and
-   geometrically-certain fist contact is 3.53–11.17 cm (p1–p99, n = 478). **Recommended
-   `HELD_LEVER_M` = 0.030**, in the empty gap between them; 2.5 cm misreads 219 of 5 575 held
-   frames as free, 3.0 cm misreads 8. The choice changes no episode-level or tape-level count
-   anywhere in this document, so it is a margin decision, not a results decision.
+1. **`in_hand` separates cleanly and the registered 2.5 cm should stand.** On the 74 human census
+   tapes the grasp lever is 1.03–3.23 cm (p1–p99, n = 5 094 airborne frames) and
+   geometrically-certain fist contact is 3.43–10.73 cm (p1–p99, n = 387) — disjoint populations.
+   2.5 cm misreads 155 of 5 094 held frames as free; 3.0 cm misreads 69, but because `in_hand` is
+   xy-only it also triples a second error (a withdrawn tool, a median 10 cm *below* the can,
+   falsely vetoing a good nest: 41 frames at 2.5 cm, 140 at 3.0 cm). **I earlier recommended
+   raising it to 0.030 on a reconstruction cohort; that is withdrawn.** No count anywhere in this
+   document moves over 1.5–4.0 cm, so this is a margin decision either way.
 2. **`nested_v2` reproduces amendment (x)'s `arrived` set exactly on the human tapes: 21 of 74,
    the same 21 uids, zero disagreement** — two independently written predicates, one reading
    final distance and tilt, one reading seven clauses including `in_hand` and `at_rest`.
@@ -98,42 +100,70 @@ against a 20° threshold, but a test asserting exact zero would fail.
 
 ---
 
-## 2. Data sources, and what does not exist locally
+## 2. Data sources
 
-The 74 human census tapes in the recorder's own format (`dHfull_w3`, `demos_state_full`,
-`fulltapes`, `matched_w3`, `census_*`) **do not exist on this machine** — every doc pointing at
-them points at cluster paths. `can_pos_recovery/render_census.py`, `slide_score.py` and
-`render_slide_panel.py` were never committed and are absent from disk, so the re-execution path
-the task suggested as a fallback is not available either.
+**The tapes of record, fetched from the cluster (read-only).**
+`$W/demos_state_full/src_dHfull_all/` (`$W = $LAB/wm_fix_2026-09-03`) is a directory of 74
+symlinks into `$LAB/genesis_pickaplace/baselines/demos_v2/dHfull_w3{,_partial,_fails}` (3 / 61 /
+10). These are the **recorder-format census tapes** (`record_demos.py v1`, `env_class
+FullTaskEnv`, `scope full`, `sim_variant gc_kp4_riser3_shelf6`) that
+`$W/demos_state_full/dHfull_all` — the set both long-run human arms train on — was converted
+from (`repeat.json`: `src` = that directory, `src_sha 3b478c9a…`, `total_reward 118.0`,
+`n_pick 64`). Copied with a streamed tar so nothing was written on the cluster:
 
-What IS local and tracked in git is the amendment-(x) scoring cohort
-`paper/eef_recovery_2026-09-09/slide_metric_of_record/dec18_timestamp/adapted/` — **74 uids,
-232–335, the census uid set**, each a `.npz` carrying `states (T,17)` (can xyz at 8:11, can quat
-at 11:15, goal xy at 15:17, measured gripper motor at 6) and `eef_pos (T,3)`. Per that
-directory's `README.md` and `score_recovered_slides.py:40`, `eef_pos` is the **measured URDF tool
-point**, not the wrist — so the tool-point requirement is met by the stored data.
+```
+$ ssh -o BatchMode=yes jstale02@login.pax.tufts.edu \
+    'tar -czhf - -C $W/demos_state_full src_dHfull_all' > src.tgz     # 74 files, 11 MB
+```
 
-**Provenance caveat, stated once and carried everywhere below.** These are December-18 EEF
-*reconstructions* replayed in sim, not the original processed human recordings. The same README
-records that the original 64-tape cohort scores released 64 / pushed 64 / arrived 15 under the
-(x) classifier, while this 74-tape cohort scores 74 / 74 / **21**. All tape numbers in §3 and §4
-are on the 74-tape reconstruction cohort and should not be quoted as the original-64 numbers.
-They are sampled at 120 ms (one decision), not 30 ms (one env frame), so window-length constants
-are converted: `AT_REST_FRAMES` 12 env frames → 3 samples, `PLACE_SUSTAIN` 10 → 3.
+Each tape carries `states (n,17)`, `eef_pos (n+1,3)`, `actions_delta (n,7)`, the per-decision
+recorder flags `picked/placed/contact/nested/tipped`, and `sim_states (m,17)` at env-frame
+resolution. The 17-dim state is `genesis_can_env._obs()`:
+`[q(6), grip motor, grip effort, can xyz (8:11), can quat (11:15), goal xy (15:17)]`.
+`eef_pos` is the **tool point** — `record_demos.py:263` returns `env.genv.tool_pos()`, i.e. the
+cached wrist→tool offset applied to the wrist pose, not the wrist link. **No FK reconstruction
+was needed.**
+
+**But the tapes do not carry everything the predicate needs**: the tool point is per *decision*
+while `AT_REST_FRAMES` is 12 *env frames*; there are no solver contacts, so `contact_push` is not
+evaluable; there is no `placed_v2` (only the legacy `placed`); and there is no goal orientation.
+So the 74 tapes were **re-executed locally through `FullTaskEnv`** — the coordinator's
+suggestion, and `record_demos.HumanFollower.verify`'s own replay: a fresh reset of the same IC,
+then the tape's `actions_delta` fed back in order. That recovers all four at env-frame
+resolution, plus the honest settle from `end_of_episode()`. §5.5 measures how faithfully the
+replay reproduces the recording before using it for anything.
+
+**Honest per-uid reference.** No `honest*.json` exists — not under
+`$LAB/genesis_pickaplace/baselines/demos_v2` (which holds only `census_*.md` files for the pick
+sets), not under `$W`, and not on this machine; `can_pos_recovery/honest_rescore.py`,
+`render_census.py`, `slide_score.py` and `render_slide_panel.py` were never committed and are
+absent from disk. The two references used instead are **`paper/slide_per_uid_2026-09-07.txt`**
+(in-repo, 74 rows: `uid outcome entry push_cm sim15 push>=3 dist_cm note`) and, better, the
+honest settle **computed live by `end_of_episode()` during the replay**, which is the same code
+path the evaluators call and is computed in the same world.
+
+**A secondary cohort is also used, and labelled as such.**
+`paper/eef_recovery_2026-09-09/slide_metric_of_record/dec18_timestamp/adapted/` is tracked in
+git: 74 uids, same uid set, `states (T,17)` + `eef_pos (T,3)` at 120 ms. These are December-18
+EEF *reconstructions*, not the recordings — that directory's README scores the original 64-tape
+cohort at released 64 / pushed 64 / **arrived 15** and this one at 74 / 74 / **21**. §4 reports
+it beside the tapes of record as an independent cohort, never as a substitute.
 
 Derived world geometry, read off the data rather than from `replay_harness`'s stale
 `BOTTLE_HEIGHT = 0.075`: resting can-centre height **10.05 cm** on the table, **22.05 cm** on the
 shelf, so the can half-height is 5.05 cm and the shelf top is **17.00 cm** — which is exactly what
-`FullTaskEnv` prints for `gc_kp4_riser3_shelf6` (`shelf_top_z 0.170`). That agreement is the check
-that the tape world and the eval world are the same world.
+`FullTaskEnv` prints for `gc_kp4_riser3_shelf6` (`shelf_top_z 0.170`). **Both cohorts give
+10.05 / 22.05 cm to two decimals**, so they are the same world.
 
 ---
 
-## 3. `HELD_LEVER_M` calibration on the 74 human tapes
+## 3. `HELD_LEVER_M` calibration on the 74 human census tapes
 
 ```
 $ ~/workspace/genesis_sim2real/venv/bin/python \
-      baselines/diagnostics/held_lever_calibration.py --cohort dec18_timestamp
+      baselines/diagnostics/held_lever_calibration.py --cohort <local copy of src_dHfull_all>
+$ ~/workspace/genesis_sim2real/venv/bin/python \
+      baselines/diagnostics/held_lever_calibration.py --cohort dec18_timestamp   # secondary
 ```
 
 Both populations are labelled **without the lever and without the gripper**, so the measurement
@@ -141,51 +171,76 @@ is not circular:
 
 * **held** — the can is more than 3 cm above whatever it could be resting on. Nothing in this
   world holds a can in the air except the gripper.
-* **push** — the can is on a support (±1 cm), advanced ≥ 0.5 mm goalward on this 120 ms sample,
-  and the tool is on the far side of the can along the can→goal line.
+* **push** — the can is on a support (±1 cm), advanced ≥ 0.5 mm goalward on this decision, and
+  the tool is on the far side of the can along the can→goal line.
 
-74 tapes, 37 291 samples.
+**Tapes of record: `src_dHfull_all`, 74 tapes, 29 221 decisions** (matching the `dHfull_all` manifest exactly).
 
 | population | n | tapes | p1 | p5 | p25 | **p50** | p75 | p95 | p99 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| HELD (airborne) | 5 575 | 71/74 | 1.24 | 1.39 | 1.45 | **1.54** | 1.97 | 2.36 | 2.64 |
-| PUSH (as labelled above) | 1 152 | 70/74 | 0.11 | 0.48 | 1.42 | **1.76** | 7.15 | 10.08 | 10.75 |
-| PUSH, post-release | 485 | 60/74 | 0.05 | 0.26 | 1.10 | **1.47** | 1.80 | 6.08 | 11.07 |
-| PUSH, lever ≥ can radius | 478 | 46/74 | 3.53 | 4.45 | 5.77 | **7.85** | 9.45 | 10.62 | 11.17 |
+| HELD (airborne) | 5 094 | 65/74 | 1.03 | 1.16 | 1.42 | **1.57** | 1.80 | 2.34 | 3.23 |
+| PUSH (as labelled above) | 934 | 66/74 | 0.18 | 0.51 | 1.37 | **1.78** | 6.47 | 9.66 | 10.68 |
+| PUSH, post-release | 365 | 56/74 | 0.06 | 0.31 | 1.06 | **1.47** | 1.76 | 5.87 | 10.65 |
+| PUSH, lever ≥ can radius | 387 | 42/74 | 3.43 | 4.11 | 5.55 | **7.67** | 8.94 | 10.58 | 10.73 |
 
-xy lever in cm. The HELD median of 1.54 cm reproduces `SLIDE_ANATOMY_2026-09-07`'s 1.5 cm.
+xy lever in cm. The HELD median of 1.57 cm reproduces `SLIDE_ANATOMY_2026-09-07`'s 1.5 cm. The
+secondary dec18 reconstruction cohort agrees closely (held p50 1.54, p99 2.64, n = 5 575; fist
+p1 3.53, p50 7.85, n = 478) — the two cohorts are independent recordings of the same 74 starts
+and give the same picture.
 
 **The push population as labelled is bimodal, and the low mode is gripped drag, not a fist
 push.** A frame is inside a *carry bracket* if the lever stays below 2.8 cm continuously from a
 frame at which the can is **airborne** — the airborne frame establishes "gripped" by physics, the
-lever only supplies continuity. Measured:
+lever only supplies continuity. On the tapes of record:
 
-* push frames with lever < 2.8 cm: **655, of which 617 (94.2 %) lie inside a carry bracket**;
-* push frames with lever ≥ 3.3 cm: **478, of which 0 (0.0 %) do**.
+* push frames with lever < 2.8 cm: **537, of which 493 (91.8 %) lie inside a carry bracket**;
+* push frames with lever ≥ 3.3 cm: **387, of which 0 (0.0 %) do**.
 
-So the two physically distinct populations are held **1.24–2.64 cm** and fist contact
-**3.53–11.17 cm**, with an **empty gap from 2.64 to 3.53 cm**.
+(dec18: 617/655 = 94.2 % and 0/478. Same conclusion, independently.)
 
-Errors against those two populations:
+So the two physically distinct populations are held **1.03–3.23 cm** and fist contact
+**3.43–10.73 cm** — still disjoint, but the real tapes leave a gap of only **0.2 cm**, not the
+0.89 cm the reconstruction cohort suggested.
 
 | threshold | held misread as free | fist misread as in_hand |
 |---|---:|---:|
-| 1.5 cm | 3 349 / 5 575 (0.601) | 0 / 478 |
-| 2.0 cm | 1 313 / 5 575 (0.236) | 0 / 478 |
-| **2.5 cm** (brief default) | **219 / 5 575 (0.0395)** | 0 / 478 |
-| 2.8 cm | 9 / 5 575 (0.0016) | 0 / 478 |
-| **3.0 cm** (recommended) | **8 / 5 575 (0.0014)** | 0 / 478 |
-| 3.3 cm (can radius) | 6 / 5 575 (0.0011) | 0 / 478 |
-| 4.0 cm | 1 / 5 575 (0.0002) | 5 / 478 (p1 3.53) |
+| 1.5 cm | 3 039 / 5 094 (0.597) | 0 / 387 |
+| 2.0 cm | 782 / 5 094 (0.154) | 0 / 387 |
+| **2.5 cm** (registered default) | **155 / 5 094 (0.0304)** | 0 / 387 |
+| 2.8 cm | 85 / 5 094 (0.0167) | 0 / 387 |
+| 3.0 cm | 69 / 5 094 (0.0135) | 0 / 387 |
+| 3.3 cm (can radius) | 17 / 5 094 (0.0033) | 0 / 387 |
+| 4.0 cm | 14 / 5 094 (0.0027) | ~19 / 387 (p1 3.43) |
 
-**Recommendation: `HELD_LEVER_M = 0.030`.** It sits in the empty gap, costs 8 of 5 575 held
-frames instead of 219, and still refuses every fist-contact frame. It is a 28× reduction in the
-one error that matters (a held can read as free is a held can that could satisfy `nested_v2`).
+### The recommendation, and a correction to my own earlier one
 
-**Caveat that keeps this honest: the choice is not load-bearing.** §4 and §5 sweep the threshold
-over 1.5–4.0 cm and every episode-level and tape-level count is identical across that range. So
-2.5 cm as registered would produce the same tables; 3.0 cm is chosen for margin, and the change
-should be made now precisely because it costs nothing to make.
+On the reconstruction cohort alone I recommended raising `HELD_LEVER_M` to 0.030. **That
+recommendation is withdrawn. Keep the registered 0.025.** Two measurements changed it:
+
+1. On the tapes of record the held tail is fatter (p99 3.23 cm, not 2.64), so 3.0 cm is no longer
+   comfortably "in the gap" — the gap is 3.23 to 3.43 cm.
+2. `in_hand` is **xy-only**, so raising it also captures a tool that is nowhere near grasping.
+   Measured on the 60 {RLPD} D2-control episodes over the 4 340 frames that satisfy every
+   `nested_v2` clause except `in_hand`/`at_rest`:
+
+   | threshold | such frames read `in_hand` | of those, tool is > 3 cm away in z |
+   |---|---:|---:|
+   | 2.5 cm | 41 (0.009) | 34 |
+   | 3.0 cm | 140 (0.032) | 121 |
+   | 3.3 cm | 180 (0.041) | 156 |
+
+   The tool sits a median **10 cm below** the can in these frames — it is not hovering to grasp,
+   it has withdrawn under the shelf. Raising the threshold multiplies this false veto ~4×.
+
+Summing the two error classes on their own denominators: 2.5 cm costs 3.04 % + 0.94 %, 3.0 cm
+costs 1.35 % + 3.2 %. **2.5 cm is the better of the two, and it is the registered value, so
+nothing should change.** Neither error class changes any episode-level or tape-level count (§4,
+§5.4), so this is a margin argument, not a results argument either way.
+
+**An optional refinement, flagged as NOT registered and NOT needed by the data:** adding a z term
+to `in_hand` (`|tool_z − can_z|` below ~5 cm) would remove the second error class outright
+without touching the first, and is not a gripper term. It would need its own registration; the
+measurements above do not require it.
 
 **The residual worry, and why it does not bite.** The post-release push frames sit at a median
 lever of 1.47 cm — people release the can and then shove it home with the fingers back around it

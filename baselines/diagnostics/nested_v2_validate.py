@@ -35,9 +35,12 @@ from stage_predicates import HELD_LEVER_M, StageTracker  # noqa: E402
 
 
 def load_episodes(arm_dir):
+    """Accepts both layouts: `<arm>/ep<k>/frames/ep<k>.npz` (eval_e2e_stagerec.py, one output dir
+    per episode) and `<arm>/frames/ep<k>.npz` (replay_tape_stagerec.py, one dir per tape set)."""
+    fs = (glob.glob(os.path.join(arm_dir, 'ep*', 'frames', 'ep*.npz'))
+          or glob.glob(os.path.join(arm_dir, 'frames', 'ep*.npz')))
     eps = []
-    for f in sorted(glob.glob(os.path.join(arm_dir, 'ep*', 'frames', 'ep*.npz')),
-                    key=lambda p: int(pl.Path(p).stem[2:])):
+    for f in sorted(fs, key=lambda p: int(pl.Path(p).stem[2:])):
         z = np.load(f, allow_pickle=True)
         eps.append({k: z[k] for k in z.files} | {'path': f})
     return eps

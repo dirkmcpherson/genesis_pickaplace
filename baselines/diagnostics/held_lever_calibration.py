@@ -52,19 +52,40 @@ MIN_STEP_M = 0.0005         # m of goalward progress in one 120 ms sample = a re
 UPRIGHT_DEG = 20.0
 
 
-def load_cohort(name):
-    d = ROOT / name / 'adapted'
+def load_cohort(name_or_dir):
+    """Load a cohort of tapes as (can, quat, goal, tool, grip) per decision.
+
+    Two accepted layouts, both carrying the 17-dim state vector
+    `[q(6), grip motor, grip effort, can xyz, can quat, goal xy]` and a tool-point stream:
+
+    * RECORDER tapes (`record_demos.py v1`) -- the set of record. `states (n,17)`,
+      `eef_pos (n+1,3)` = `genesis_can_env.tool_pos()` before each decision plus the final one,
+      and the recorded per-decision stage flags `picked/placed/contact/nested/tipped`.
+      Pass a directory path, e.g. the local copy of `$W/demos_state_full/src_dHfull_all`.
+    * the amendment-(x) scoring adapters under
+      `paper/eef_recovery_2026-09-09/slide_metric_of_record/<name>/adapted`. Pass the bare name.
+    """
+    d = pl.Path(name_or_dir)
     if not d.is_dir():
-        d = ROOT / name
+        d = ROOT / name_or_dir / 'adapted'
+        if not d.is_dir():
+            d = ROOT / name_or_dir
     fs = [f for f in sorted(glob.glob(str(d / '*.npz'))) if 'legacy_tip_proxy' not in f]
     out = []
     for f in fs:
         z = np.load(f, allow_pickle=True)
         s = z['states'].astype(np.float64)
-        out.append(dict(uid=int(z['uid']) if 'uid' in z.files else int(pl.Path(f).stem),
-                        can=s[:, 8:11], quat=s[:, 11:15], goal=s[:, 15:17],
-                        tool=z['eef_pos'].astype(np.float64)[:len(s)],
-                        grip=s[:, 6], path=f))
+        rec = dict(uid=int(z['ic_uid']) if 'ic_uid' in z.files
+                   else (int(z['uid']) if 'uid' in z.files else int(pl.Path(f).stem)),
+                   can=s[:, 8:11], quat=s[:, 11:15], goal=s[:, 15:17],
+                   tool=z['eef_pos'].astype(np.float64)[:len(s)],
+                   grip=s[:, 6], path=f)
+        for k in ('picked', 'placed', 'contact', 'nested', 'tipped'):
+            if k in z.files and z[k].shape == (len(s),):
+                rec['rec_' + k] = z[k].astype(bool)
+        if 'stage' in z.files:
+            rec['rec_stage'] = str(z['stage'])
+        out.append(rec)
     return out
 
 
