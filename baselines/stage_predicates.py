@@ -1,208 +1,324 @@
-"""Shared stage predicates for the unified end-to-end ladder (LADDER_UNIFY_BRIEF D3).
+#!/usr/bin/env python3
+"""Stage predicates for the unified end-to-end ladder (LADDER_UNIFY_BRIEF_2026-09-10, D3/D4).
 
-=======================================================================================
-  *** STUB -- LANE 2 PLACEHOLDER.  LANE 1 OWNS THIS FILE AND REPLACES IT WHOLESALE. ***
-=======================================================================================
+PURE NUMPY. No Genesis import, no simulator, no settle. Everything here is a function of a short
+history of poses, contact booleans and the two env-owned stage flags (`picked`, `placed_v2`), so
+the same code runs inside the training env, inside both evaluators, inside the demo relabel, and
+offline over a recorded episode. That is the point: one definition, four call sites.
 
-Why a stub exists at all: `baselines/rl/full_env.py` (Lane 2) must import and drive this
-module, and its unit tests must run, before Lane 1's validated module lands. This file
-therefore implements the brief's D3 text LITERALLY and NOTHING ELSE. It is NOT the
-predicate of record:
+Why this module exists
+----------------------
+Three predicates that shared a name did not share a meaning (E2E_AUDIT_BRIEF_2026-09-10 §4):
 
-  * the constants below are the brief's STARTING values, not calibrated ones -- in
-    particular HELD_LEVER_M is the brief's "start at 2.5 cm", NOT a measured separation;
-  * nothing here has been validated against `nested_honest`, the (l) predicate, the 74
-    human census tapes or any policy rollout;
-  * no confusion matrix exists for it. `paper/NESTED_V2_PREDICATE_2026-09-10.md` (Lane 1)
-    is where the calibrated constants and the validation live.
+* `nested_proxy` = contact AND grip cmd < 0.3 AND both cans upright, read on a single frame.
+  Measured against the settled predicate over 540 {RLPD} episodes its precision is 0.114 (human
+  arm) / 0.029 (machine arm) and it REVERSES the human-vs-machine ordering. It is not merely
+  noisy; its error is arm-dependent.
+* `nested_honest` = the same clauses after a 100-step post-episode settle. Correct, but it
+  simulates, so it can only ever be a post-episode column -- it can never gate a reward.
+* `slide_success` in the env is still amendment (l) (`grip_cmd < 0.3`), which amendment (p)
+  withdrew after measuring that it passes 2 of 74 human demonstrations: people release fully,
+  re-close the fingers to ~0.4 and push the can home with a fist.
 
-Do not quote a number produced with this file in any table.
+`nested_v2` here is the settled predicate's clauses made readable WITHOUT simulating, by
+replacing "let the world settle and see if it stays" with two state facts that a trajectory
+already carries: the can is not in the hand, and the can is not moving. Neither needs a gripper
+term, which is the clause that broke every earlier definition.
 
---------------------------------------------------------------------------------------
-INTERFACE (the contract Lane 2 codes against; Lane 1's module must keep it)
+The predicates
+--------------
+`in_hand`      |tool_xy - can_xy| < HELD_LEVER_M.  NO gripper term. A held can sits one grasp
+               lever from the tool point; a fist pushing the can contacts its SURFACE, so the
+               tool point cannot be closer than the can radius, 3.3 cm. MEASURED on the 74 human
+               tapes (paper/NESTED_V2_PREDICATE_2026-09-10.md §3): held 1.24-2.64 cm (p1-p99,
+               n=5575 airborne frames, median 1.54 -- reproducing SLIDE_ANATOMY's 1.5 cm), fist
+               contact 3.53-11.17 cm (p1-p99, n=478), with an EMPTY GAP from 2.64 to 3.53 cm.
+               The registered default 0.025 sits inside the held tail and misreads 219/5575 held
+               frames as free; 0.030 misreads 8 and is the Lane-1 recommendation. It changes no
+               episode-level or tape-level count measured anywhere, so the default is left at the
+               registered value and the change is the coordinator's to make.
+`at_rest`      the can's xy position varied by <= AT_REST_MM across the last AT_REST_FRAMES env
+               frames (12 frames = 3 decisions at action_repeat 4). Requires a full window:
+               before AT_REST_FRAMES updates exist it is False, never vacuously True.
+`released`     `placed_v2` has been granted at some point (the env owns that flag). Sticky.
+`pushed`       goalward progress of >= PUSH_GAIN_M accumulated over the frames AFTER the first
+               `placed_v2` grant on which the can is NOT in hand. See `goalward_gain_m` below
+               for the exact accumulation rule.
+`contact_push` `placed_v2` granted AND can<->goal contact AND the tool is on the FAR side of the
+               can along the can->goal line (xy dot < 0) AND no gripper<->goal contact. Sticky.
+               Differs from the env's legacy `contact_push` in one clause only: the precondition
+               is `placed_v2`-granted (release first), not `picked` -- the change that stops the
+               rung paying for pressing a HELD can against the goal.
+`nested_v2`    picked AND placed_v2-granted AND dist_xy(can, goal) <= NESTED_TOUCH_DIST AND
+               tilt(can) < TILT_MAX_DEG AND tilt(goal) < TILT_MAX_DEG AND the can's z is in the
+               shelf resting band AND not in_hand AND at_rest.
+`slide_success` released AND pushed AND nested_v2.  Sticky (it is the terminal rung).
 
-    tracker = StageTracker(goal_xy, shelf_top_z)
-    tracker.reset()
-    flags = tracker.update(can_pos=..., can_quat=..., goal_pos=..., goal_quat=...,
-                           tool_xy=..., grip_cmd=..., picked=..., can_goal_contact=...,
-                           gripper_goal_contact=..., placed_v2=...)
+Stickiness, exactly
+-------------------
+STICKY (latch True and never clear): `released`, `pushed`, `contact_push`, `slide_success`.
+INSTANTANEOUS (recomputed every frame): `in_hand`, `at_rest`, `nested_v2`.
 
-`update` is called ONCE PER ENV FRAME, AFTER the sim step (one env frame = the 3 scene
-steps `GenesisCanEnv.step` takes; a decision is `action_repeat` env frames). It returns
+`nested_v2` is deliberately NOT sticky: "the can is resting nested" is a statement about the
+state now, and a can that is nested and then picked back up is not nested. The sticky
+"it happened at some point" reading is available as `nested_v2_ever` for episode-level columns.
+`slide_success` IS sticky because D2 makes it the terminal rung: it is paid once, at the frame
+it first becomes true.
 
-    {'in_hand', 'at_rest',                       instantaneous, this frame
-     'released', 'pushed', 'contact_push',
-     'nested_v2', 'slide_success',               STICKY: once True they stay True
-     'goalward_gain_m', 'lever_m'}               diagnostics (floats)
-
-Pure functions over poses / contacts / a short history. NO Genesis import, no torch, no
-world handle -- so it is unit-testable on synthetic histories and callable offline.
-
---------------------------------------------------------------------------------------
-THE DEFINITIONS THIS STUB IMPLEMENTS (brief D2/D3), verbatim:
-
-  in_hand        |tool_xy - can_xy| < HELD_LEVER_M            (no gripper term: a fist
-                 push contacts the can surface at >= the can radius 3.3 cm, so a lever
-                 test separates carry from push without outlawing a closed-finger push)
-  at_rest        can xy displacement <= AT_REST_MM over the last AT_REST_FRAMES frames
-  released       placed_v2 has been granted (full_env owns placed_v2) AND not in_hand
-  pushed         after the FIRST placed_v2 grant, the can's xy distance to the goal has
-                 decreased by >= PUSH_GAIN_MM cumulatively while not in_hand
-  contact_push   placed_v2 granted AND can<->goal solver contact AND the tool on the far
-                 side of the can along the can->goal line AND no gripper<->goal contact
-  nested_v2      picked AND placed_v2 granted AND dist_xy(can, goal) <= NESTED_TOUCH_DIST
-                 AND tilt(can) < NESTED_TILT_DEG AND tilt(goal) < NESTED_TILT_DEG AND can
-                 z inside the shelf resting band AND not in_hand AND at_rest
-  slide_success  placed_v2 granted AND pushed AND nested_v2        <- the paid, terminal
-                 top rung; the ONE definition the env, the relabel and both evaluators
-                 use (D4)
-
-`grip_cmd` is accepted because the interface names it, and is deliberately UNUSED by
-every predicate above: PHASE_PLAN (p) withdrew (l)'s `grip < 0.3` clause after it passed
-2 of 74 human demonstrations -- the human releases and then pushes the can home with the
-fingers re-closed to ~0.4.
+`grip_cmd` is accepted by `update()` and echoed as a diagnostic. It is used by NO predicate here.
+That is the whole lesson of amendments (l)/(p)/(x): release is a fact about where the can's
+weight is, not about the hand.
 """
+from __future__ import annotations
+
 import math
+from collections import deque
 
-# --- constants (brief D3 starting values; Lane 1 replaces them with calibrated ones) ---
-NESTED_TOUCH_DIST = 0.081   # m, centre-to-centre xy; replay_harness.NESTED_TOUCH_DIST
-AT_REST_MM = 2.0            # mm of xy travel allowed over the at-rest window
-AT_REST_FRAMES = 12         # env frames = 3 decisions at action_repeat 4
-PUSH_GAIN_MM = 10.0         # mm of cumulative goalward gain, not in hand, post-release
-HELD_LEVER_M = 0.025        # m; UNCALIBRATED (brief: "start at 2.5 cm")
-NESTED_TILT_DEG = 20.0      # both cans near-upright (same threshold as placed_v2/_nested)
-SHELF_BAND_LO = 0.01        # can centre z in (shelf_top + LO, shelf_top + HI)
-SHELF_BAND_HI = 0.07
+import numpy as np
 
-FLAG_KEYS = ('in_hand', 'at_rest', 'released', 'pushed', 'contact_push',
-             'nested_v2', 'slide_success')
-DIAG_KEYS = ('goalward_gain_m', 'lever_m')
+__all__ = [
+    'NESTED_TOUCH_DIST', 'AT_REST_MM', 'AT_REST_FRAMES', 'PUSH_GAIN_MM', 'HELD_LEVER_M',
+    'TILT_MAX_DEG', 'BAND_LO_M', 'BAND_HI_M', 'FLAG_KEYS', 'STICKY_KEYS',
+    'tilt_deg', 'StageTracker',
+]
+
+# ---- constants of record (all overridable per instance; see StageTracker.__init__) ------------
+NESTED_TOUCH_DIST = 0.081   # m. can diameter 0.066 + 15 mm noise floor. replay_harness value.
+AT_REST_MM = 2.0            # mm. can xy spread that still counts as stationary.
+AT_REST_FRAMES = 12         # env frames (3 decisions at action_repeat 4) the spread is read over.
+PUSH_GAIN_MM = 10.0         # mm of goalward progress, after release, that counts as a push.
+HELD_LEVER_M = 0.025        # m. tool-to-can-centre distance below which the can is in hand.
+TILT_MAX_DEG = 20.0         # deg. "upright", both cans. Same value the settled predicate uses.
+BAND_LO_M = 0.01            # m above shelf_top_z: bottom of the resting band (full_env's band).
+BAND_HI_M = 0.07            # m above shelf_top_z: top of the resting band.
+
+FLAG_KEYS = ('in_hand', 'at_rest', 'released', 'pushed', 'contact_push', 'nested_v2',
+             'slide_success')
+STICKY_KEYS = ('released', 'pushed', 'contact_push', 'slide_success')
 
 
-def tilt_from_quat(quat):
-    """Angle (deg) between the body z axis and world z, for a wxyz quaternion.
-
-    Same arithmetic as can_pos_recovery.replay_harness.tilt_deg, re-stated here ONLY
-    because this module must import nothing that pulls Genesis in. Kept byte-comparable:
-    a unit test asserts the two agree."""
+def tilt_deg(quat):
+    """Angle in degrees between the body z axis and world z. COPIED from
+    can_pos_recovery/replay_harness.tilt_deg (same arithmetic, same 1e-9 guard, same clip) so
+    that this module needs no Genesis-side import. Quaternion order is (w, x, y, z), which is
+    what Genesis `get_quat()` returns and what every caller in this repo passes."""
     w_, x, y, z = [float(v) for v in quat]
     zz = 1 - 2 * (x * x + y * y)
     zx = 2 * (x * z + w_ * y)
     zy = 2 * (y * z - w_ * x)
-    n = math.sqrt(zx * zx + zy * zy + zz * zz) + 1e-9
+    n = (zx * zx + zy * zy + zz * zz) ** 0.5 + 1e-9
     c = max(-1.0, min(1.0, zz / n))
-    return math.degrees(math.acos(c))
+    return float(math.degrees(math.acos(c)))
 
 
-def _dist_xy(a, b):
-    return math.hypot(float(a[0]) - float(b[0]), float(a[1]) - float(b[1]))
+def _xy(p):
+    a = np.asarray(p, dtype=np.float64).reshape(-1)
+    return a[:2]
 
 
 class StageTracker:
-    """Sticky stage bookkeeping over one episode. One instance per env, reset per episode."""
+    """One instance per episode. Call `update()` once per ENV FRAME, after the sim step.
 
-    def __init__(self, goal_xy, shelf_top_z):
-        # goal_xy is the reset-time goal (the tracker also reads the live goal pose each
-        # frame; the constructor value is kept so a caller can build the tracker before
-        # the first step and so a moved goal is visible as a diagnostic).
-        self.goal_xy0 = (float(goal_xy[0]), float(goal_xy[1]))
+    `goal_xy` is the nominal (static) goal used only when a frame supplies no `goal_pos`; when
+    `goal_pos` is given it wins, because the goal can is a free body and does get bumped.
+    `shelf_top_z` is the WORLD's shelf top (full_env.shelf_top_z), not the base-world constant --
+    the resting band is [shelf_top_z + BAND_LO_M, shelf_top_z + BAND_HI_M], the same band
+    full_env's `placed_v2` uses.
+    """
+
+    def __init__(self, goal_xy, shelf_top_z, *,
+                 nested_touch_dist=NESTED_TOUCH_DIST,
+                 at_rest_mm=AT_REST_MM,
+                 at_rest_frames=AT_REST_FRAMES,
+                 push_gain_mm=PUSH_GAIN_MM,
+                 held_lever_m=HELD_LEVER_M,
+                 tilt_max_deg=TILT_MAX_DEG,
+                 band_lo_m=BAND_LO_M,
+                 band_hi_m=BAND_HI_M):
+        self.goal_xy = _xy(goal_xy).copy()
         self.shelf_top_z = float(shelf_top_z)
+        self.nested_touch_dist = float(nested_touch_dist)
+        self.at_rest_m = float(at_rest_mm) / 1000.0
+        self.at_rest_frames = int(at_rest_frames)
+        self.push_gain_m = float(push_gain_mm) / 1000.0
+        self.held_lever_m = float(held_lever_m)
+        self.tilt_max_deg = float(tilt_max_deg)
+        self.band_lo_m = float(band_lo_m)
+        self.band_hi_m = float(band_hi_m)
+        assert self.at_rest_frames >= 1, self.at_rest_frames
         self.reset()
 
+    # -- lifecycle ------------------------------------------------------------------------
     def reset(self):
-        self._hist = []              # recent can xy, newest last, len <= AT_REST_FRAMES
-        self._released = False
-        self._pushed = False
-        self._contact_push = False
-        self._nested_v2 = False
-        self._slide = False
-        self._gain_m = 0.0           # cumulative goalward gain since the placed_v2 grant
-        self._last_free_dist = None  # last not-in-hand distance used for the gain sum
-        self._lever_m = float('nan')
-        self.frames = 0
+        self.t = 0
+        self._hist = deque(maxlen=self.at_rest_frames)   # can xy, one entry per env frame
+        # sticky flags
+        self.released = False
+        self.pushed = False
+        self.contact_push = False
+        self.slide_success = False
+        self.nested_v2_ever = False
+        # instantaneous flags (last computed values; False before the first update)
+        self.in_hand = False
+        self.at_rest = False
+        self.nested_v2 = False
+        # frame stamps (env-frame index at which a sticky flag first fired; None = never)
+        self.released_frame = None
+        self.contact_push_frame = None
+        self.slide_frame = None
+        self.pushed_frame = None
+        self.nested_v2_frame = None
+        # push accumulator, see _update_push()
+        self._banked_gain = 0.0
+        self._run_ref = None     # dist at the start of the current not-in_hand run
+        self._run_min = None     # smallest dist seen inside the current not-in_hand run
+        self.goalward_gain_m = 0.0
+        self.lever_m = float('nan')
+        self.dist_xy_m = float('nan')
 
-    # ------------------------------------------------------------------ the one update
-    def update(self, *, can_pos, can_quat, goal_pos, goal_quat, tool_xy, grip_cmd,
-               picked, can_goal_contact, gripper_goal_contact, placed_v2):
-        """Call once per env frame AFTER the sim step. Returns the flag dict (see module
-        docstring). `grip_cmd` is accepted and deliberately unused ((p) withdrew the grip
-        clause); `placed_v2` is the env's own sustained release predicate (sticky by the
-        time it reaches here -- full_env passes its granted state, not the raw frame)."""
-        self.frames += 1
-        can_xy = (float(can_pos[0]), float(can_pos[1]))
-        goal_xy = (float(goal_pos[0]), float(goal_pos[1]))
-        can_z = float(can_pos[2])
+    # -- the push accumulator -------------------------------------------------------------
+    def _update_push(self, dist, in_hand):
+        """`pushed` = cumulative goalward progress after the first `placed_v2` grant, counted
+        only on frames where the can is NOT in hand.
 
-        lever = _dist_xy(tool_xy, can_xy)
-        self._lever_m = lever
-        in_hand = lever < HELD_LEVER_M
+        Accumulation rule, stated precisely because "cumulative" admits two readings:
 
-        self._hist.append(can_xy)
-        if len(self._hist) > AT_REST_FRAMES:
-            self._hist.pop(0)
-        if len(self._hist) < AT_REST_FRAMES:
-            at_rest = False          # not enough history yet: an absent value is not a zero
+          The frames after the grant split into maximal RUNS of consecutive not-in_hand frames.
+          Each run contributes max(0, dist at the run's first frame - the smallest dist inside
+          the run).  Runs are summed.
+
+        A single uninterrupted free push therefore gives exactly amendment (x)'s
+        `dist[release] - min(dist[release:])`.  Picking the can back up ends a run and banks it,
+        so a carry never counts AGAINST earned progress (that is what "only over frames where
+        not in_hand" buys), and a second push after a re-place adds its own progress.
+
+        The rejected reading is a per-frame ratchet (sum of every frame-to-frame decrease).
+        It is not noise-safe: an episode is up to 1200 env frames, and summing only the negative
+        half of a symmetric jitter of even 0.05 mm/frame manufactures 30 mm of "push" from a can
+        that never moved. The run-wise net is bounded by the can's actual displacement.
+        """
+        if not self.released:
+            return
+        if in_hand:
+            if self._run_ref is not None:
+                self._banked_gain += max(0.0, self._run_ref - self._run_min)
+                self._run_ref = self._run_min = None
+            live = 0.0
         else:
-            x0, y0 = self._hist[0]
-            at_rest = all(math.hypot(x - x0, y - y0) <= AT_REST_MM / 1000.0
-                          for x, y in self._hist)
-
-        placed = bool(placed_v2)
-        d_goal = _dist_xy(can_xy, goal_xy)
-
-        # released: the can is on the shelf (placed_v2 granted) and the tool has left it
-        if placed and not in_hand:
-            self._released = True
-
-        # pushed: cumulative goalward gain accrued only on not-in-hand frames after the
-        # placed_v2 grant. Carrying the can toward the goal must NOT count, which is why
-        # the reference distance is dropped while in hand and re-seeded on release.
-        if placed:
-            if in_hand:
-                self._last_free_dist = None
+            if self._run_ref is None:
+                self._run_ref = self._run_min = dist
             else:
-                if self._last_free_dist is None:
-                    self._last_free_dist = d_goal
-                elif d_goal < self._last_free_dist:
-                    self._gain_m += (self._last_free_dist - d_goal)
-                    self._last_free_dist = d_goal
-                else:
-                    self._last_free_dist = d_goal
-            if self._gain_m >= PUSH_GAIN_MM / 1000.0:
-                self._pushed = True
+                self._run_min = min(self._run_min, dist)
+            live = max(0.0, self._run_ref - self._run_min)
+        self.goalward_gain_m = self._banked_gain + live
+        if not self.pushed and self.goalward_gain_m >= self.push_gain_m:
+            self.pushed = True
+            self.pushed_frame = self.t
 
-        # contact_push: a push, not a carry -- requires the release to have been granted
-        if placed and can_goal_contact and not gripper_goal_contact:
-            far = ((float(tool_xy[0]) - can_xy[0]) * (goal_xy[0] - can_xy[0])
-                   + (float(tool_xy[1]) - can_xy[1]) * (goal_xy[1] - can_xy[1])) < 0.0
-            if far:
-                self._contact_push = True
+    # -- the one entry point ---------------------------------------------------------------
+    def update(self, *, can_pos, can_quat, goal_pos=None, goal_quat=(1.0, 0.0, 0.0, 0.0),
+               tool_xy, grip_cmd=None, picked=False, can_goal_contact=False,
+               gripper_goal_contact=False, placed_v2=False):
+        """Advance one env frame. All arguments keyword-only (the brief's interface).
 
-        # nested_v2: state only, no settle simulation
-        nested_now = bool(
-            picked and placed
-            and d_goal <= NESTED_TOUCH_DIST
-            and tilt_from_quat(can_quat) < NESTED_TILT_DEG
-            and tilt_from_quat(goal_quat) < NESTED_TILT_DEG
-            and (self.shelf_top_z + SHELF_BAND_LO) < can_z < (self.shelf_top_z + SHELF_BAND_HI)
-            and not in_hand
-            and at_rest)
-        if nested_now:
-            self._nested_v2 = True
+        can_pos  (3,) can centre, world m.      can_quat  (4,) w,x,y,z.
+        goal_pos (3,) or (2,) goal can centre; None -> the constructor's static goal_xy.
+        goal_quat (4,) w,x,y,z; default upright (a fixed goal that cannot tip).
+        tool_xy  (2,) the TOOL point (genv.tool_pos()[:2]), NOT the wrist link -- the wrist sits
+                 ~0.145 m behind the tool and a wrist-based lever test would call every held can
+                 "not in hand".
+        grip_cmd commanded grip 0..1. Diagnostic only; no predicate reads it.
+        picked / placed_v2  the env's own sticky stage flags.
+        can_goal_contact / gripper_goal_contact  solver contact booleans for THIS frame.
 
-        # slide_success: the paid top rung. Sticky, in-episode, one definition (D4).
-        if placed and self._pushed and self._nested_v2:
-            self._slide = True
+        Returns a dict with FLAG_KEYS plus diagnostics.
+        """
+        can = np.asarray(can_pos, dtype=np.float64).reshape(-1)
+        can_xy = can[:2]
+        gxy = self.goal_xy if goal_pos is None else _xy(goal_pos)
 
-        return dict(in_hand=bool(in_hand), at_rest=bool(at_rest),
-                    released=bool(self._released), pushed=bool(self._pushed),
-                    contact_push=bool(self._contact_push), nested_v2=bool(self._nested_v2),
-                    slide_success=bool(self._slide),
-                    goalward_gain_m=float(self._gain_m), lever_m=float(self._lever_m))
+        dist = float(np.hypot(can_xy[0] - gxy[0], can_xy[1] - gxy[1]))
+        lever = float(np.hypot(_xy(tool_xy)[0] - can_xy[0], _xy(tool_xy)[1] - can_xy[1]))
+        in_hand = bool(lever < self.held_lever_m)
+
+        # at_rest: full window only. `maxlen` deque, so the window is the last at_rest_frames
+        # samples INCLUDING this one; spread is measured against the current position.
+        self._hist.append(can_xy.copy())
+        if len(self._hist) < self.at_rest_frames:
+            at_rest = False
+        else:
+            h = np.asarray(self._hist, dtype=np.float64)
+            at_rest = bool(np.max(np.linalg.norm(h - can_xy, axis=1)) <= self.at_rest_m)
+
+        if placed_v2 and not self.released:
+            self.released = True
+            self.released_frame = self.t
+        self._update_push(dist, in_hand)
+
+        # contact_push: release FIRST (this is the change from the legacy predicate), then the
+        # can touching the goal with the tool behind it and the gripper clear of the goal.
+        if self.released and can_goal_contact and not gripper_goal_contact:
+            dot = float((_xy(tool_xy)[0] - can_xy[0]) * (gxy[0] - can_xy[0])
+                        + (_xy(tool_xy)[1] - can_xy[1]) * (gxy[1] - can_xy[1]))
+            if dot < 0.0 and not self.contact_push:
+                self.contact_push = True
+                self.contact_push_frame = self.t
+
+        can_tilt = tilt_deg(can_quat)
+        goal_tilt = tilt_deg(goal_quat)
+        in_band = bool(self.shelf_top_z + self.band_lo_m < can[2] < self.shelf_top_z + self.band_hi_m)
+        nested_v2 = bool(picked and self.released
+                         and dist <= self.nested_touch_dist
+                         and can_tilt < self.tilt_max_deg
+                         and goal_tilt < self.tilt_max_deg
+                         and in_band and (not in_hand) and at_rest)
+        if nested_v2 and not self.nested_v2_ever:
+            self.nested_v2_ever = True
+            self.nested_v2_frame = self.t
+
+        if self.released and self.pushed and nested_v2 and not self.slide_success:
+            self.slide_success = True
+            self.slide_frame = self.t
+
+        self.in_hand, self.at_rest, self.nested_v2 = in_hand, at_rest, nested_v2
+        self.lever_m, self.dist_xy_m = lever, dist
+        self.t += 1
+        return dict(in_hand=in_hand, at_rest=at_rest, released=self.released,
+                    pushed=self.pushed, contact_push=self.contact_push,
+                    nested_v2=nested_v2, slide_success=self.slide_success,
+                    goalward_gain_m=self.goalward_gain_m, lever_m=lever,
+                    # extra diagnostics; not part of the D3 flag set
+                    nested_v2_ever=self.nested_v2_ever, dist_xy_m=dist,
+                    can_tilt_deg=can_tilt, goal_tilt_deg=goal_tilt, in_band=in_band,
+                    grip_cmd=(None if grip_cmd is None else float(grip_cmd)), frame=self.t - 1)
+
+    # -- episode-level view -----------------------------------------------------------------
+    def episode(self):
+        """The sticky, episode-level record. `nested_v2` here is `nested_v2_ever`; `nested_v2_now`
+        is the value on the last frame seen."""
+        return dict(released=self.released, pushed=self.pushed, contact_push=self.contact_push,
+                    nested_v2=self.nested_v2_ever, nested_v2_now=self.nested_v2,
+                    slide_success=self.slide_success, goalward_gain_m=self.goalward_gain_m,
+                    frames=self.t, released_frame=self.released_frame,
+                    pushed_frame=self.pushed_frame, contact_push_frame=self.contact_push_frame,
+                    nested_v2_frame=self.nested_v2_frame, slide_frame=self.slide_frame)
+
+    def constants(self):
+        """The exact constants this instance ran with -- goes into the provenance stamp (D6)."""
+        return dict(nested_touch_dist=self.nested_touch_dist, at_rest_mm=self.at_rest_m * 1000.0,
+                    at_rest_frames=self.at_rest_frames, push_gain_mm=self.push_gain_m * 1000.0,
+                    held_lever_m=self.held_lever_m, tilt_max_deg=self.tilt_max_deg,
+                    band_lo_m=self.band_lo_m, band_hi_m=self.band_hi_m,
+                    shelf_top_z=self.shelf_top_z, goal_xy=[float(v) for v in self.goal_xy])
 
 
-# Marker other code can assert on, so a run cannot silently be scored with the stub.
-IS_STUB = True
-STUB_NOTE = ('baselines/stage_predicates.py is the LANE-2 STUB: brief-literal, '
-             'UNCALIBRATED (HELD_LEVER_M is the starting 2.5 cm), never validated '
-             'against nested_honest. Lane 1 replaces this file.')
+def replay(frames, goal_xy, shelf_top_z, **kw):
+    """Offline convenience: run a whole recorded episode through a fresh tracker.
+
+    `frames` is an iterable of dicts using `update()`'s keyword names. Returns
+    (per_frame_list, episode_dict). Used by the validation harness and the unit tests; the
+    training env calls `update()` directly.
+    """
+    tr = StageTracker(goal_xy, shelf_top_z, **kw)
+    out = [tr.update(**f) for f in frames]
+    return out, tr.episode()
