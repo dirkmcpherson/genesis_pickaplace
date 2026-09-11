@@ -213,7 +213,8 @@ def grip_phys_from_action(action):
     return (float(np.clip(np.asarray(action, np.float64)[6], -1.0, 1.0)) + 1.0) / 2.0
 
 
-def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=None):
+def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=None,
+                    tracker_kw=None):
     """Replay a stage record through StageTracker + LadderAccountant. PURE NUMPY.
 
     Reproduces `FullTaskEnv.step()` exactly: per ENV FRAME feed the tracker, build the same
@@ -234,7 +235,11 @@ def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=N
     shelf_top_z = float(rec['shelf_top_z'])
     max_steps = int(rec['max_steps']) if max_steps is None else int(max_steps)
     g0 = np.asarray(rec['goal_pos'])[0]
-    tr = StageTracker((float(g0[0]), float(g0[1])), shelf_top_z, far_release=far_release)
+    # tracker_kw exists for CALIBRATION SWEEPS only (baselines/diagnostics/ladder_n_*): the
+    # constants of record are stage_predicates' module defaults, and any cell produced with an
+    # override must say so -- `constants()` is what the provenance stamp carries.
+    tr = StageTracker((float(g0[0]), float(g0[1])), shelf_top_z, far_release=far_release,
+                      **(tracker_kw or {}))
     acct = FE.LadderAccountant(
         ladder, scope='full',
         pay_stages=FE.LadderAccountant.pay_stages_for('full', False))
