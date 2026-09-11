@@ -4,9 +4,11 @@ Operational log for PHASE_PLAN amendment **(z)**. The amendment is the registrat
 the record of what was actually submitted and what came back. Every number carries the command
 that produced it, and every claim about a job carries its id.
 
-Trees of record: `$LAB/gp_unified` @ `21c58b49` (branch `ladder-unify-2026-09-11`) and
-`$W/r2dreamer_unified` @ `77b2c61`, with
-`LAB=/cluster/tufts/shortlab/jstale02`, `W=$LAB/wm_fix_2026-09-03`.
+Trees of record for the PILOT: `$LAB/gp_unified` @ **`877eb2b`** (branch
+`ladder-unify-2026-09-11`, the registration commit — see the pin note in §4) and
+`$W/r2dreamer_unified` @ **`197a1a3`** (its own git history; `77b2c61` plus the defect-7 fix), with
+`LAB=/cluster/tufts/shortlab/jstale02`, `W=$LAB/wm_fix_2026-09-03`. The smokes in §1 and §3 ran at
+earlier commits, each named where it matters.
 
 ---
 
