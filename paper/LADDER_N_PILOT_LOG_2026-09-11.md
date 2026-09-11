@@ -563,3 +563,58 @@ Priority/Resources behind the four `lz_rl_sparse` pilot jobs still holding norma
     grep -h '^\[ladder\] unified' $W/slurm/ln_r2_*.out $LAB/gp_ladderN/e2e_rlpd_*.out | sort -u
     # P6: no job may end FAILED 2:0 00:00:00
     sacct -S 2026-09-11 -u jstale02 -X -n --format=JobName%24,State%14,Elapsed,ExitCode | grep ln_
+
+---
+
+## Step 6 (optional) — pinned re-score of the pilot's staged {RLPD} checkpoints
+
+`cluster/ln_pilot_rescore.sbatch`, submitted as array **3581709** (`--array=0-3`), one task per
+pilot staged checkpoint: `e2e_rlpd_{dH_s940, dH_s941, dDPfirst_s960, dDPfirst_s961}/rlpd_final.zip`
+(all four verified present, sidecars `ladder staged`, `steps 100000`).
+
+It rolls each out on `rnd30` in `mode` — the pilot's cell of record — **under the ladder and guard
+the policy trained on**, and writes a per-episode stage record, so `slide_event` and `home` can be
+scored offline afterwards with no second simulation. The sidecars say `tip_guard: None`, i.e. they
+predate the argument, so the evaluator takes the class default `grip`, which IS the rule of record
+those runs ran under; nothing passes `--tip-guard`, because `not_in_hand` would move where episodes
+terminate and make the cells incomparable with the pilot's own.
+
+`$LAB/gp_unified` is **read only** here — checkpoints in, every byte out to
+`$W/pilot_rescore_2026-09-11/`, code from `$LAB/gp_ladderN` — so no running `lz_*` job is disturbed.
+
+Worth knowing before anyone compares guards: `eval_e2e.py --require-cores` counts **physical**
+cores (the project's guard of record for cells), while `cluster/ladderN_sets.sbatch`'s
+`REQUIRE_CORES` counts **logical** processors from `/proc/cpuinfo`. Same name, same number 64, two
+different measurements — which is why §3.1's failure happened on a node that satisfies one and not
+the other.
+
+### 6.1 MY ERROR: I broke the tree pin to deploy that script, then restored it
+
+To get `ln_pilot_rescore.sbatch` onto the cluster I ran `git pull` in `$LAB/gp_ladderN` **after the
+20 `ln_*` jobs were already submitted and 9 were running**, moving the tree `a40c8aa1 → 279a3134`.
+That is exactly the split §4.2 and Lane 4's rule exist to prevent: jobs that had already started
+stamped `…-895-ga40c8aa1-dirty`, and the 12 still pending would have stamped `…-898-g279a3134-dirty`.
+I also ran `git stash` first, which briefly removed `cluster/RUN_REGISTRY.jsonl` — a file the
+running launchers append to.
+
+Both are repaired, and the repair is verifiable rather than asserted:
+
+* `git stash pop` restored the registry (4 lines, intact).
+* `git diff --name-only a40c8aa1 279a3134` is **exactly two files**:
+  `cluster/ln_pilot_rescore.sbatch` (new, imported by no training job) and this log. `git diff
+  --stat` over `full_env.py`, `genesis_can_env.py`, `stage_predicates.py`, `full_demos.py`,
+  `train_rlpd.py`, `eval_e2e.py` is **empty** — no code any `ln_*` job loads was touched.
+* `git reset a40c8aa1` (mixed, so the working tree and the untracked launcher files are untouched)
+  put the pin back. `git describe --always --dirty` now prints
+  **`known-good-2026-08-27-895-ga40c8aa1-dirty`**, character for character what the running jobs
+  printed, and the three ladder hashes are unchanged (`23fe428f222f`, `40544bf73c8c`,
+  `a589b4f05632`). So all 20 jobs will stamp ONE commit after all.
+
+The re-score array keeps its own spooled copy of the script (Slurm spools at submission), so it runs
+regardless; its `git describe` line will read `a40c8aa1` while its script text is the `279a3134`
+version. That affects a re-score, not the batch, and it is stated here rather than left to be found.
+
+**What I should have done:** put the re-score script somewhere outside the pinned tree (the
+scratch dir, or a second clone) and pointed `GENESIS_PICKAPLACE_ROOT` at `gp_ladderN` from there.
+The pin exists so that "which code ran" has ONE answer per batch; reaching for `git pull` to move a
+file is how that guarantee gets spent for no gain.
