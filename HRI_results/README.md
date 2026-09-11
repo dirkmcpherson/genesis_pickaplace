@@ -45,6 +45,7 @@ continues from it, and the staleness is printed into `results.md` rather than hi
 | `METHODOLOGY.md` | how each learner was made to work |
 | `AUDIT_GUIDE_2026-09-08.md` | **how to check writing against the evidence**: the three-hop provenance chain, the registration check, the traps that have fired, and what phrasing each class of result supports |
 | `WHAT_STANDS_2026-09-08.md` | one page: rely on / rely on with a caveat / do not use / still running |
+| `RESULTS_PROVENANCE_2026-09-11.md` | **how each 2026-09-10/11 ladder-unification artefact was made, as commands you can re-run**: the chain from raw trials to sets to relabel to census to pilot, with a `to recreate:` and a `to verify:` block per artefact, every commit and Slurm job id cited, and what cannot be recreated. Hand-maintained. |
 
 **Adding a result:** add an entry to `cells.py`. Do not edit tables.
 
