@@ -339,6 +339,15 @@ def main():
       'those three requires a contact frame, so a release that drifts home pays the same as a '
       'push.' % (len(no_cp), len(sl)))
     A('')
+    nd_cp = [e for e in eps if e['klass'] == 'nested_drop' and 'contact_push' in e['grants']]
+    A('**2b. The rung ORDERING inverts on the evidence.** %d episodes settled nested AND had a '
+      'far-side contact frame (`contact_push` granted) but scored 4 of 8, because their goalward '
+      'gain stopped just short of 10 mm — `dH_s901_hold_ep6_nested_drop.mp4` misses by **0.6 mm** '
+      '(9.4 of 10). Meanwhile %d positives with NO contact frame at all scored 8 of 8. So on this '
+      'sample the episodes with the better evidence of a push are scored below the episodes with '
+      'none, and the separating variable is sub-millimetre settle drift. Put those two clips side '
+      'by side: it is the single clearest thing in this set.' % (len(nd_cp), len(no_cp)))
+    A('')
     A('**3. %d positives sit within 5 mm of the `in_hand` threshold.** `HELD_LEVER_M` is 0.025 '
       'and Lane 1 measured the held tail out to 32.3 mm, recommending 0.030. At 0.030 those '
       'episodes read as still-in-hand, so `nested_v2` and with it `slide_success` flip and the '
