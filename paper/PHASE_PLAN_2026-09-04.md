@@ -1481,3 +1481,26 @@ four `dH_s901` `home` episodes: 6.83–8.51). `paper/LADDER_N_RAMP_V2_2026-09-11
 
 Predictions P-aa-2…7 stand as written; P-aa-3 now reads "shows `slide_gain_m > 0`", which under v2
 is also the first paid event past placement.
+
+### (aa) SUBMITTED 2026-09-11 — jobs 3581558–3581577 (Lane 13, `paper/LADDER_N_PILOT_LOG_2026-09-11.md`)
+
+Trees: `$LAB/gp_ladderN` @ a40c8aa1 (pinned from first job start), `$W/r2dreamer_ladderN` @ 0cf3d9e.
+Sets (64-core pax146, record-once/score-many; action streams identical to the sources 74/74 and
+72/72): `dHfull_all_rnrh`/`dDPfull_first_rnrh` (ramp v2, Σ 204.7 / 206.2), `_rnsh` (sparse, Σ 12 / 12),
+`_rzh` (staged + new guard, Σ 171.0 / 183.0 — reproducing the pilot's `_rz` sums to the unit, so the
+new tip guard costs zero staged reward on the demonstrations). All five smokes stamped
+`ramp:slide_gain_m=3/0.05m` (no farside term), `tip=tilt>60deg&not_in_hand@4f`, r2dreamer clamp =
+ladder ceiling (P-aa-5 met on the smokes), evaluator `success_key='home'` on the nested ladders.
+QOS: 8 {r2dreamer} on normal, 12 {RLPD} on preempt — split between learners, never between arms.
+
+**P-aa-7 NOT MET on the machine set.** `home` on the 64-core class: human 13 → **12** (−1, within
+the registered ±1), machine 14 → **12** (−2, outside). The batch trains on 12 / 12 paying tapes;
+every later demonstration-slide statement uses 12 / 12, not 13 / 14. The local numbers were the
+development artefact the caveat predicted.
+
+Smoke-caught defect (would have killed all four {RLPD} `nested_ramp` jobs at startup): the
+{RLPD} demo gate validated tape rewards against the STAGED rungs; fixed to read the run's ladder
+from `full_env.LADDERS` and to assert set-ladder == run-ladder (a40c8aa). Readout note: `slide_gain_m`
+is in `info` but not a logged stage, so **P-aa-3 is read through `slide_event` (≥ 1 cm) or ramp pay
+above 2.0**; a sub-centimetre gain is invisible to both. Pilot re-score under records on the class
+of record: array 3581786.
