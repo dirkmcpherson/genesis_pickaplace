@@ -281,3 +281,16 @@ the staged arm may** — the launcher takes the set from `DEMO`/argv and does no
 against `LADDER`, so a mismatched pair would train a buffer on one objective and an environment on
 another, which is the defect this whole amendment exists to remove. `cluster/submit_lz_pilot.sh`
 is the pairing of record.
+
+## 2026-09-11 ~14:20 — deviation: four sparse {r2dreamer} jobs moved to the preempt partition
+
+After the user cancelled the old `e2eL_*` batch (13:10), the preempt partition/QOS was empty while
+the pilot sat at the normal-QOS cap of 10 with 6 `lz_r2` pending. The four 4M sparse
+{r2dreamer} runs are the batch's long pole (~14 h each), so the coordinator moved them:
+`scontrol update JobId=<id> Partition=preempt QOS=preempt` for 3539261–3539264
+(`lz_r2_sparse_dH_s945/s946`, `dM_s965/s966`); all four started within seconds (pax141, pax110,
+pax111, pax112). Amendment (z) registered QOS normal for every job; this is a scheduling change
+only — same tree, same launcher, same stamp. Consequence to watch: these four are PREEMPTIBLE.
+The unified `wmfix_full.sbatch` carries the fixed requeue guard, so a preemption restarts the
+run CLEAN from step 0 (the guard clears the partial logdir), which costs time, not the run; the
+hourly monitor reports any `FAILED 2:0 00:00:00`. The two staged `lz_r2_dM` jobs stay on normal.
