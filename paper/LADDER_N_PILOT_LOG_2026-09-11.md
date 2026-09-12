@@ -937,6 +937,28 @@ The checklist is §5's: within a ladder the line must be identical character for
 plus, on the {r2dreamer} jobs, `[ladder] return_clamp=1.0` (sparse) / `8.0` (staged control)
 `(env and model agree)` — P-aa-5.
 
+**Pre-verified while the twelve queue** (not a substitute for the job's own stamp, but it fixes what
+that stamp must say). The three ladder-defining files in this checkout are byte-identical to the ones
+the running batch stamps —
+
+    sha256sum baselines/rl/full_env.py baselines/genesis_can_env.py baselines/stage_predicates.py
+    -> 23fe428f222f1a...  40544bf73c8c69...  a589b4f0563220...
+
+— so `full_env.ladder_stamp(L, None, False, 'not_in_hand')` here produces exactly the lines the jobs
+will print (only the `git=` suffix differs: this checkout is `…-925-g1a0475e`, the jobs stamp
+`gp_ladderN`'s `…-895-ga40c8aa1-dirty`):
+
+    ladder=nested_sparse | home=1 | max_return=1 | terminal=home+tipped | shaping=off |
+      far_release=off | tip=tilt>60deg&not_in_hand@4f | full_env=23fe428f222f
+      genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632
+    ladder=staged | picked=1 placed_v2=1 contact_push=2 slide_success=4 | max_return=8 |
+      terminal=slide_success+tipped | shaping=off | far_release=off |
+      tip=tilt>60deg&not_in_hand@4f | ...same three hashes...
+
+`full_env.max_return` returns 1.0 / 8.0, which is what the launcher passes to `env.return_clamp` and
+`model.return_clamp` — so P-aa-5 is determined for these twelve by the code they will load, and the
+stamp check when they start is a confirmation rather than a discovery.
+
 ---
 
 ## Milestone evaluation sweep (Lane 14, 2026-09-12) — the cells the launcher never makes
