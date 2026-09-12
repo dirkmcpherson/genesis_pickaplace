@@ -49,6 +49,26 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 - Tip rate in the training window is 0.20 — far below the state-based ramp policy's 0.9 — with no tip penalty; the
   sparse ladder pays nothing for pushing past arrival, so there is nothing to over-push for.
 
+## The series so far (every `latest.pt` rewrite, 100k counter steps apart; MODE cells; record window = the 60 training episodes before the capture)
+
+| checkpoint (counter) | online steps | record-60: picked / home / tipped | hold15 MODE picked / home | rnd30 MODE picked / home |
+|---|---|---|---|---|
+| ck_219022 | 101k | 0.00 / 0.00 / — | 0/15 / 0/15 | 0/30 / 0/30 |
+| ck_317776 | 200k | (first picks) | 0/15 / 0/15 | 2/30 / 0/30 |
+| ck_421321 | 304k | 0.82 / 0.37 / 0.17 | 14/15 / **5/15** | 16/30 / **7/30** |
+| ck_519849 | 402k | 0.68 / 0.50 / 0.47 | 2/15 / 1/15 | 6/30 / 3/30 |
+| ck_619574 | 502k | 0.92 / 0.73 / 0.22 | (cells running) | |
+
+ck_519849 is the caution: its 60-episode record window reads picked 0.68 / home 0.50 while the reloaded checkpoint
+reads picked 2/15 / home 1/15 on hold15 MODE. The rolling-30 training `home` rate through the run
+(`0.00 ×6, 0.13, 0.03, 0.30, 0.30, 0.40, 0.30, 0.30, 0.60, 0.77, 0.50, 0.13, 0.33, 0.50, 0.57, 0.37, 0.10, 0.73, 0.80,
+0.70, 0.80, 0.70, 0.77, 0.73, 0.70`) shows the policy swinging between ~0.1 and ~0.8 within a few hundred episodes; a
+60-episode window straddles such swings, and ck_519849 was captured in a trough that even its window averages over.
+Same mechanism as `R2D_LIVE_VS_RELOAD_2026-09-12.md`, one notch more volatile — `act_entropy` 3e-5 (the e2e recipe of
+record; DreamerV3's default is 3e-4) is the obvious suspect for an actor that can swing this far, and is a registered
+change, not a knob to turn on this run. Consequence for reporting: quote the SERIES, never one checkpoint; a "best
+checkpoint" is a selection and must be labelled as such.
+
 ## Reproduce
 
 ```
