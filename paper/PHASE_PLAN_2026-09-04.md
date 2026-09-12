@@ -1504,3 +1504,52 @@ from `full_env.LADDERS` and to assert set-ladder == run-ladder (a40c8aa). Readou
 is in `info` but not a logged stage, so **P-aa-3 is read through `slide_event` (≥ 1 cm) or ramp pay
 above 2.0**; a sub-centimetre gain is invisible to both. Pilot re-score under records on the class
 of record: array 3581786.
+
+### (aa) REVISION 2 — {r2dreamer} `nested_ramp` budget extended to 4M by four additional seeds (registered 2026-09-11 22:23 EDT BEFORE submission)
+
+**Why.** Under the OLD ladder (the staged pilot), 2M steps gave ~0 honest nests and 4.1M steps
+gave 0.167 (PHASE_RESULTS §5.6) — the settled-contact / slide behaviour arrives late in a
+{r2dreamer} run. Two of the four running `nested_ramp` 2M seeds (3581570–73) already show `home`
+in their training records at ~1M steps (`s950`: 1, `s970`: 2 — training-record counts, not eval
+cells), so 2M is the budget most likely to stop just before the behaviour this batch exists to
+measure. The launcher's requeue path restarts a run from step 0 rather than resuming with its
+replay buffer, so lengthening an in-flight seed is not available; extending the budget means new
+seeds, not resumed ones. The 2M seeds stay as the early read (milestones 0.5M/1M/2M); the 4M seeds
+add a milestone at 4M. Predictions P-aa-2…7 apply unchanged. The readout at the matched 2M
+milestone compares the four 2M seeds with the four 4M seeds' own 2M milestones — same code, same
+sets, same stamps — a free within-arm replication at n=4 v 4 per arm at 2M.
+
+**{r2dreamer} extension, as submitted:** human `s952`, `s953`; machine `s972`, `s973`; ladder
+`nested_ramp` (v2), `tip_guard=not_in_hand`, `far_release` off, `R2_LONG_RUN=1`, milestones
+`[500000,1000000,2000000,4000000]`, budget 4 000 000 ONLINE steps, return_clamp 9.0 (from the
+ladder, unchanged), demo sets `dHfull_all_rnrh` / `dDPfull_first_rnrh` (the same cluster builds of
+record as the running batch — not rebuilt), trees `$LAB/gp_ladderN` @ `a40c8aa1` (pinned, not
+pulled or changed) and `$W/r2dreamer_ladderN` @ `0cf3d9e` (unchanged), job names
+`ln_r2_ramp4M_<dH|dM>_s<seed>` — the exact command form of Lane 13's `ln_r2_ramp_*` jobs
+(`cluster/submit_ln_batch.sh`'s `sub_r2`), changing only the seed, the budget (2000000 →
+4000000) and the milestones. **QOS, disclosed:** at submission time normal QOS carried 9 of 10 GPU
+slots (8 `ln_r2_*` + 1 surviving pilot job `lz_rl_sparse_dM_s965`) — the brief's "8 in use, 2 free"
+undercounts by one job; only **1** slot was actually free. Two seeds were submitted to `-p gpu
+--qos=normal` regardless (one human `s952`, one machine `s972`, so the QOS split does not sit on
+one side of the arm contrast) and two to `-p preempt --qos=preempt` (one human `s953`, one machine
+`s973`); Slurm accepts a submission over the running cap and holds it pending rather than refusing
+it, so the second normal-QOS job queues until a slot frees. The fixed requeue guard restarts a
+preempted run clean from step 0, so the two preempt seeds may restart from zero — disclosed, not a
+run of degraded validity, just a possible later start.
+
+**{RLPD} extension (user, same revision: "just put in the extensions"), as submitted:** human
+`s952`, `s953`; machine `s972`, `s973` — the same seed numbers as the {r2dreamer} 4M extension;
+seed numbers are shared across learners throughout this batch (e.g. `s950/951/970/971` above are
+both a {RLPD} and a {r2dreamer} pair). Ladder `nested_ramp`, `tip_guard=not_in_hand`, `far_release`
+off, budget 500 000 decisions, checkpoints at 100k / 250k / 500k (`--ckpt-fracs 0.2,0.5,1.0`), demo
+sets `dHfull_all_rnrh` / `dDPfull_first_rnrh`, tree `$LAB/gp_ladderN` @ `a40c8aa1`, job names
+`ln_rl_ramp500k_<dH|dM>_s<seed>` — the exact command form of Lane 13's `ln_rl_ramp_*` jobs
+(`sub_rl`), changing only the seed and the budget (250000 decisions, fracs `0.16,0.4,1.0` →
+500000 decisions, fracs `0.2,0.5,1.0`). QOS: preempt only — no normal slots remained after the
+{r2dreamer} extension above, so all four queue behind the running preempt jobs until a slot frees;
+disclosed as a queueing delay, not a failure. The running 250k {RLPD} seeds stay the early read
+(checkpoints 40k/100k/250k); the 500k seeds add the 500k checkpoint, and both are read at the
+matched 100k/250k checkpoints — the same free within-arm replication as the {r2dreamer} 2M match,
+at n=4 v 4 per arm.
+
+Predictions P-aa-2…7 apply unchanged to both extensions.
