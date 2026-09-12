@@ -77,10 +77,104 @@ the `nested_ramp`, `nested_sparse` and `staged` runs alike.
 
 ## 3. Cells
 
-<!-- TABLE -->
+**Snapshot: 2026-09-12 03:55 EDT — 26 cells, 645 episodes.** The sweep is still running; re-run it
+and regenerate this table (`python3 cluster/ln_r2_milestone_table.py --md`). The full first pass is
+about 78 cells over 26 (run, milestone) pairs and grows as milestones land.
+
+| run | milestone | cell | n | ladder | picked | placed_v2 | farside | slide_event | home | nested_v2 | nested_honest | tipped | node | cores |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| dDPfull_first_rnrh_s970 | online_1000000 | rnd30_mode | 30 | nested_ramp | 15/30 | 16/30 | 13/30 | 0/30 | 0/30 | 0/30 | 0/30 | 18/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s970 | online_1000000 | hold15_mode | 15 | nested_ramp | 13/15 | 12/15 | 12/15 | 0/15 | 0/15 | 0/15 | 0/15 | 8/15 | pax078 | 64 |
+| dDPfull_first_rnrh_s970 | online_1000000 | rnd30_sample | 30 | nested_ramp | 16/30 | 14/30 | 11/30 | 0/30 | 0/30 | 0/30 | 0/30 | 21/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s970 | online_500000 | rnd30_mode | 30 | nested_ramp | 4/30 | 2/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 17/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s970 | online_500000 | hold15_mode | 15 | nested_ramp | 4/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 6/15 | pax078 | 64 |
+| dDPfull_first_rnrh_s970 | online_500000 | rnd30_sample | 30 | nested_ramp | 9/30 | 4/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 20/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_1000000 | rnd30_mode | 30 | nested_ramp | 18/30 | 10/30 | 6/30 | 0/30 | 0/30 | 1/30 | 1/30 | 21/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_1000000 | hold15_mode | 15 | nested_ramp | 15/15 | 6/15 | 4/15 | 0/15 | 0/15 | 1/15 | 1/15 | 8/15 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_1000000 | rnd30_sample | 30 | nested_ramp | 18/30 | 12/30 | 9/30 | 0/30 | 0/30 | 1/30 | 1/30 | 17/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_500000 | rnd30_mode | 30 | nested_ramp | 7/30 | 4/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 12/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_500000 | hold15_mode | 15 | nested_ramp | 10/15 | 1/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 10/15 | pax078 | 64 |
+| dDPfull_first_rnrh_s971 | online_500000 | rnd30_sample | 30 | nested_ramp | 8/30 | 4/30 | 1/30 | 0/30 | 0/30 | 0/30 | 0/30 | 16/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s973 | online_500000 | rnd30_mode | 30 | nested_ramp | 14/30 | 4/30 | 1/30 | 0/30 | 0/30 | 0/30 | 0/30 | 20/30 | pax078 | 64 |
+| dDPfull_first_rnrh_s973 | online_500000 | hold15_mode | 15 | nested_ramp | 10/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 10/15 | pax078 | 64 |
+| dDPfull_first_rnrh_s973 | online_500000 | rnd30_sample | 30 | nested_ramp | 8/30 | 4/30 | 1/30 | 0/30 | 0/30 | 0/30 | 0/30 | 19/30 | pax078 | 64 |
+| dDPfull_first_rnsh_s975 | online_1000000 | rnd30_mode | 30 | nested_sparse | 0/30 | 3/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 6/30 | pax078 | 64 |
+| dDPfull_first_rnsh_s975 | online_1000000 | hold15_mode | 15 | nested_sparse | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | pax078 | 64 |
+| dDPfull_first_rnsh_s975 | online_1000000 | rnd30_sample | 30 | nested_sparse | 0/30 | 2/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 8/30 | pax078 | 64 |
+| dHfull_all_rnrh_s950 | final | rnd30_mode | 30 | nested_ramp | 16/30 | 12/30 | 11/30 | 9/30 | 0/30 | 0/30 | 0/30 | 15/30 | pax027 | 64 |
+| dHfull_all_rnrh_s950 | online_500000 | rnd30_mode | 30 | nested_ramp | 8/30 | 3/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 19/30 | pax019 | 64 |
+| dHfull_all_rnrh_s950 | online_500000 | hold15_mode | 15 | nested_ramp | 6/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 10/15 | pax019 | 64 |
+| dHfull_all_rnrh_s950 | online_500000 | rnd30_sample | 30 | nested_ramp | 10/30 | 1/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 22/30 | pax019 | 64 |
+| dHfull_all_rnrh_s951 | online_1000000 | rnd30_mode | 30 | nested_ramp | 7/30 | 3/30 | 1/30 | 0/30 | 0/30 | 0/30 | 0/30 | 17/30 | pax004 | 64 |
+| dHfull_all_rnrh_s951 | online_1000000 | hold15_mode | 15 | nested_ramp | 7/15 | 4/15 | 2/15 | 0/15 | 0/15 | 1/15 | 1/15 | 10/15 | pax004 | 64 |
+| dHfull_all_rnrh_s951 | online_500000 | rnd30_mode | 30 | nested_ramp | 4/30 | 3/30 | 0/30 | 0/30 | 0/30 | 0/30 | 0/30 | 22/30 | pax027 | 64 |
+| dHfull_all_rnrh_s951 | online_500000 | hold15_mode | 15 | nested_ramp | 3/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 0/15 | 9/15 | pax027 | 64 |
+
+**Every cell above is 64 physical / 64 logical cores, Intel Xeon Gold 6438M** (pax004, pax019,
+pax027, pax078, pax146) — the same CPU model as pax146, which built the six demonstration sets.
+
+`home`, pooled per run over the cells that exist (**an ignition read, not a rate**):
+
+| run | arm | ladder | `home` | episodes |
+|---|---|---|---:|---:|
+| `dDPfull_first_rnrh_s970` | machine | nested_ramp | **0** | 150 |
+| `dDPfull_first_rnrh_s971` | machine | nested_ramp | **0** | 150 |
+| `dDPfull_first_rnrh_s973` | machine | nested_ramp | **0** | 75 |
+| `dDPfull_first_rnsh_s975` | machine | nested_sparse | **0** | 75 |
+| `dHfull_all_rnrh_s950` | human | nested_ramp | **0** | 105 |
+| `dHfull_all_rnrh_s951` | human | nested_ramp | **0** | 90 |
+| **total** | | | **0** | **645** |
 
 ---
 
 ## 4. What this does and does not establish
 
-*(filled with the table)*
+**1. `home` is 0 in every cell — 645 episodes, 6 seeds, both arms, both nested ladders, 0.5M / 1M /
+2M-final.** This is the first evaluation-cell evidence about `home` for the world model under Ladder
+N, and it is negative at every milestone scored so far. It does **not** say the recipe has failed:
+four of the six runs scored here are at 0.5M–1M of a 2M or 4M budget, and the pilot's own staged
+arm produced ~0 honest nests at 2M and 0.167 at 4.1M (PHASE_RESULTS §5.6).
+
+**2. The first `slide_event` any Ladder-N {r2dreamer} policy has produced in a CELL:
+`dHfull_all_rnrh_s950` at its FINAL 2M checkpoint — `slide_event` 9/30 on `rnd30` mode**, with
+`picked` 16/30, `placed_v2` 12/30, `farside` 11/30, and `nested_v2` **0**/30. The human-arm ramp
+seed, trained out, releases the can and pushes it goalward in nearly a third of random starts and
+**arrives in none of them**. Its outcome taxonomy is `{tipped 15, timeout 15, nested_honest 0}` and
+`slide_routes` is `{sustained 0, settle 0}`; mean episode reward 1.691 of a possible 9. The ramp
+rung is being earned; the terminal is not. Checkpoint sha256 `e45b637b…`, copied at training step
+2,117,636 (= the 2M online budget on a 117,624-step prefill origin).
+
+That is the cell version of the {RLPD} picture in `paper/RL100_READOUT_2026-09-11.md` and of the
+whole project's slide problem: **the push happens, the arrival does not.** It is one seed, one cell,
+and it must not be reported as an arm difference — the machine arm has no `final` cell yet.
+
+**3. `nested_v2` without `home` appears three times** (`dDPfull_first_rnrh_s971` at 1M, all three
+cells, and `dHfull_all_rnrh_s951` 1M `hold15_mode`) — i.e. the can ends in the goal with
+`slide_event` false. That is the DROP route P8 / P-aa-4 predicts, now visible under the nested
+ladders. At these counts (1 episode per cell) it is an existence proof, not a share.
+
+**4. `dDPfull_first_rnsh_s975` (nested_sparse, machine, 1M) has `picked` 0/45 across its three
+cells.** It is not picking at all at 1M, which matches the training-record reading in the audit
+(§1.1 note: s975/s976 last-300 `picked` 0.023 / 0.007). `nested_sparse` pays nothing before the
+terminal, so a seed that has not found the pick has no gradient to follow; whether 4M is enough is
+exactly what (aa) rev 3's four extra seeds per learner exist to answer.
+
+**5. Nothing here is a source comparison.** n is 2 human v 3 machine runs with unequal milestone
+coverage, and the registered statistic is an ignition read at 4 v 4 per arm
+(`AUDIT_STATISTICAL_SHOT` §2: exact-permutation floor p = 0.333 at n = 2 v 2).
+
+### Open / carried
+
+* **Two cells were scored on a 64-physical / 128-logical node** (pax006, pax012 — same Xeon Gold
+  6438M, SMT on) before the sweep asserted both counts. They are quarantined as
+  `<cell>_smt128` under `full_r2d_state_dHfull_all_rnrh_s950/online_{1000000,2000000}/` and are NOT
+  in the table; the sweep re-scores them on a 64/64 node. **They are worth looking at when the
+  re-score lands:** both read `picked` ≈ 0 (`rnd30_mode` 0/30, `hold15_mode` 0/15) for a seed that
+  reads 8/30 at 0.5M and 16/30 at 2M on 64/64 nodes. Either the policy dipped at 1M or the machine
+  class moved the cell; the re-score separates the two, and it is the cheapest available test of the
+  project's own hardware-sensitivity finding.
+* `full_r2d_state_dHfull_all_rnrh_s950` has reached its 2M budget, so `final` cells exist for it.
+  Every other run in scope is still training; their `final` cells appear as they finish.
+* The {r2dreamer} rev-3 runs (`_rnsh` s957/s958/s977/s978, `_rzh` s962/s963/s982/s983) were still
+  PENDING when this snapshot was taken. The sweep picks them up automatically once they write a
+  milestone.
