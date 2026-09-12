@@ -73,7 +73,14 @@ case "$SWEEP_MODE" in
          if [ -s "$CELLROOT/.smt_excluded" ]; then
            SMT_EXCL="$SMT_EXCL,$(sort -u "$CELLROOT/.smt_excluded" | tr '\n' ',' | sed 's/,$//')"
          fi
-         SUBMIT_ARGS=(-p batch --qos=normal --exclude="$(cat "$EXCL64"),$SMT_EXCL")
+         # DEDUPE before sbatch. Measured 2026-09-12 05:10 on slurm 23.11.11: a node named TWICE in
+         # --exclude (pax044 was in the static list above AND in .smt_excluded) is DROPPED from the
+         # job's ExcNodeList while every singly-named node survives -- `scontrol show hostlist`
+         # folds the duplicate happily, the controller does not. So the learned list removed the
+         # very exclusion it was meant to add, and four jobs an hour died on pax044 at 00:00:01
+         # (3605547-49, 3606170-73). One name per node, then submit.
+         EXCL_ALL=$(printf '%s,%s' "$(cat "$EXCL64")" "$SMT_EXCL" | tr ',' '\n' | sed '/^$/d' | sort -u | paste -sd,)
+         SUBMIT_ARGS=(-p batch --qos=normal --exclude="$EXCL_ALL")
          SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=$REQUIRE_LOGICAL) ;;
   gpu)   SUBMIT_ARGS=(-p gpu,preempt --qos=preempt --gres=gpu:1 --constraint=l40s\|a100\|l40\|h200 --exclude=pax077)
          REQUIRE_CORES=0; REQUIRE_LOGICAL=0; SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=0) ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
