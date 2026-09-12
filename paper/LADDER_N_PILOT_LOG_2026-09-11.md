@@ -1238,3 +1238,28 @@ contributor to the sparse arm's non-ignition and should be decided before any sp
 read as "sparse cannot be learned".
 
 **Not submitted:** the 2 v 2 (ac) batch. Awaiting the coordinator's batch paragraph.
+
+### (ac) 2 v 2 batch — SUBMITTED 2026-09-12 (cluster ops handed to this session at 11:10)
+
+Both (ac) smokes complete (3618550 COMPLETED, 3618552 COMPLETED). Submit command of record:
+`GP=$LAB/gp_ac bash cluster/submit_ac_batch.sh` (mirrors `submit_ln_rev3.sh`'s sparse arm line for
+line). Tree `$LAB/gp_ac` @ `98527cb9` (`-dirty` = `cluster/RUN_REGISTRY.jsonl` only, as for rev-3);
+r2dreamer `$W/r2dreamer_ladderN` @ 0cf3d9e unchanged; sets `_rns10h` (Σ 120.0 / 120.0, asserted by
+the script). Seeds PAIRED with rev-3's nested_sparse so the two ladders share initialisation.
+
+| job | name | learner | arm | seed | set | budget | QOS |
+|---|---|---|---|---|---|---|---|
+| 3620808 | `ln_r2_sparse10_dH_s957` | {r2dreamer} | human | 957 | `dHfull_all_rns10h` | 4M online, milestones 0.5/1/2/4M | normal |
+| 3620809 | `ln_r2_sparse10_dH_s958` | {r2dreamer} | human | 958 | " | " | normal |
+| 3620810 | `ln_r2_sparse10_dM_s977` | {r2dreamer} | machine | 977 | `dDPfull_first_rns10h` | " | normal |
+| 3620811 | `ln_r2_sparse10_dM_s978` | {r2dreamer} | machine | 978 | " | " | normal |
+| 3620812 | `ln_rl_sparse10_500k_dH_s957` | {RLPD} | human | 957 | `dHfull_all_rns10h` | 500k dec, ckpt 0.2/0.5/1.0 | preempt |
+| 3620813 | `ln_rl_sparse10_500k_dH_s958` | {RLPD} | human | 958 | " | " | preempt |
+| 3620814 | `ln_rl_sparse10_500k_dM_s977` | {RLPD} | machine | 977 | `dDPfull_first_rns10h` | " | preempt |
+| 3620815 | `ln_rl_sparse10_500k_dM_s978` | {RLPD} | machine | 978 | " | " | preempt |
+
+{RLPD} run dirs: `$LAB/gp_ac/baselines/rl/checkpoints/e2e_ac/e2e_rlpd_<ARM>_s<seed>` (OUT_ROOT `e2e_ac`
+so the paired seeds cannot collide with rev-3's `e2e_rev3`). {r2dreamer}: `$W/runs/full_r2d_state_<set>_s<seed>`.
+State at submission: 3 {RLPD} RUNNING, 1 PENDING; all 4 {r2dreamer} PENDING on the normal-QOS GPU cap
+behind rev-3's three queued controls. Readout: P-ac-1/2 in PHASE_PLAN (ac); milestones via the Lane-14
+sweep; the 4 v 4 ignition decision (rev 3) still waits for the RLPD 500k and r2dreamer 4M seeds; 16 v 16 held.
