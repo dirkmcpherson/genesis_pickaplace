@@ -364,3 +364,103 @@ indistinguishable from the working run's; a `model.rep_loss` swap (dreamer -> r2
 comparison run in this dataset to implicate it one way or the other — it remains a plausible thing to try if the
 clamp/curriculum fix does not resolve the `con` miscalibration, but nothing measured here singles it out over the
 clamp explanation.
+
+## 1M milestone (2026-09-12, lane DV3-7)
+
+Same run, still **TRAINING** (`/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0/`, read-only
+throughout). `milestones/online_1000000.pt` appeared at 00:16 EDT (`online_1000000.json`: `step: 1117628`,
+`online_sim_steps: 1000004`, `prefill_counter_origin: 117624`, `overshoot_sim_steps: 4`), consistent with the
+observed raw-counter rate polled every 5 min from `console.log` (939492 at 23:40:50 -> 1116316 at 00:16:31,
+i.e. ~4900-5100 raw steps/min throughout the wait, no stall). Copied per the same protocol as the 500k eval
+(checkpoint only — no config changed, no training started/stopped):
+```
+cp .../milestones/online_1000000.pt  ~/runs_dv3_local/dv3e2e_ramp_eval_m1000k/latest.pt
+cp .../.hydra/config.yaml             ~/runs_dv3_local/dv3e2e_ramp_eval_m1000k/.hydra/config.yaml
+```
+Ladder/predicate provenance re-checked and **unchanged from training and from the 500k eval**: `sha256`
+`full_env=23fe428f222f...`, `genesis_can_env=40544bf73c8c...`, `stage_predicates=a589b4f05632...` are byte-identical
+across the training run's own `ladder_provenance.json` and both eval build stamps (git advanced
+`known-good-2026-08-27-910-g0c7dae3` -> `-916-ge6faac0` on the shared tree in between, none of it touching these
+three files). `entries_pinned: true`, `pin_stats.n_enumerated=15, n_restored_match=15` on hold15, as before.
+
+### Commands (identical to §2, checkpoint swapped)
+```
+cd ~/workspace/r2dreamer
+export GENESIS_PICKAPLACE_ROOT=/home/j/workspace/genesis_pickaplace
+export R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 GENESIS_SIM_VARIANT=gc_kp4_riser3_shelf6
+export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONUNBUFFERED=1
+RUN=/home/j/runs_dv3_local/dv3e2e_ramp_eval_m1000k
+
+.venv/bin/python eval_genesis.py --checkpoint $RUN/latest.pt --episodes 15 --mode sample --max-steps 1200 \
+  --ic-file /home/j/workspace/genesis_pickaplace/baselines/eval_ics.json --ic-set hold --seed 0 --device cuda \
+  --out $RUN/fresh_eval_hold15_sample
+# --ic-set rnd --episodes 30 -> $RUN/fresh_eval_rnd30_sample
+```
+
+### Results, vs. the 500k cells
+
+| cell | checkpoint | n | picked | placed_v2 | farside/slide_event/home | tipped | timeout | mean steps |
+|---|---|---|---|---|---|---|---|---|
+| hold15 sample, 500k | step 617640 | 15 | 0/15 (0.00) | 0/15 (0.00) | 0/0/0 | 0/15 (0.00) | 15/15 (**1.00**) | 300.0 |
+| **hold15 sample, 1M** | **step 1117628** | 15 | **1/15 (0.067)** | 0/15 (0.00) | 0/0/0 | 3/15 (0.20) | 12/15 (0.80) | 260.8 |
+| rnd30 sample, 500k | step 617640 | 30 | 0/30 (0.00) | 0/30 (0.00) | 0/0/0 | 6/30 (0.20) | 24/30 (0.80) | 240.8 |
+| **rnd30 sample, 1M** | **step 1117628** | 30 | **1/30 (0.033)** | 4/30 (0.133)* | 0/0/0 | 13/30 (0.433) | 17/30 (0.567) | 215.4 |
+
+`home` (success_key) is 0/15 and 0/30 at both milestones — the ladder has still never paid past `picked`.
+`nested_honest`/`proxy_only` are 0 in every cell at both milestones (`outcomes_honest` all-zero on those two keys).
+
+*The 4 rnd30 `placed_v2` grants (episodes 6, 13, 19, 26 — verified from `per_episode`) are **not** real placements:
+every one of them has `stages.picked == False` and `reward == 0.0`, i.e. `placed_v2` fired at reset with the arm
+still at home, before any pick attempt. Episode indices 6/13/19/26 match `CONFOUNDS` row 82's documented rnd30
+IC-vs-shelf-footprint overlap (can x inside the shelf's [0.55, 0.95] band at spawn) exactly — this is the known,
+already-disclosed spurious grant, not a new predicate bug or a sign the policy has reached a downstream stage.
+The one genuine pick in the same cell (rnd, ep9, 44 steps, `reward=1.0`) subsequently tipped
+(`stages.placed_v2=False`) rather than being placed.
+
+hold15 detail (1M): `outcomes_honest {"nested_honest":0,"proxy_only":0,"tipped":3,"timeout":12}`,
+`slide_fails {"not_picked":14,"no_contact":1}` — the single pick (uid284, 27 steps, `reward=1.0`) tipped
+immediately after (`slide_fail_reason: no_contact`), the same "pick-then-tip, no chain into placement" pattern
+as the one rnd30 pick. rnd30 detail (1M): `outcomes_honest {"nested_honest":0,"proxy_only":0,"tipped":13,
+"timeout":17}`, `slide_fails {"not_picked":29,"no_contact":1}`.
+
+**Reading: a real, if narrow, improvement over 500k, not a repeat of the flagged collapse.** hold15 goes from
+total flatline (0/15 picked, 0 tipped, pure 300-step timeout on every episode) to 1/15 picked and 3/15 tipped —
+the checkpoint is no longer purely inert on the identical demo-IC set where the architecturally-identical
+pick-scope run gets 15/15. rnd30's tip rate more than doubled (0.20 -> 0.433), i.e. more of the 30 starts now
+produce an active-but-failing attempt rather than pure inertia. **Still true at 1M, unchanged from 500k and from
+the entire training history (§1a, 0/554 episodes): `placed_v2` (real), `farside`, `slide_event`, and `home` have
+never fired once in an eval cell or in training.** The improvement is confined entirely to the first rung
+(`picked`) and to `tipped`-vs-`timeout` mix; nothing downstream of a pick has ever been reached by this
+checkpoint at either milestone.
+
+### Training-log rates at the milestone (`metrics.jsonl`, `episode/train_ep_*`)
+
+Same file, same key family as §1a/§1c. 1045 episode rows have `step <= 1117628` (the milestone's raw counter).
+
+| window | episodes | step range | picked | placed_v2 | farside | home | tipped | mean len | mean score |
+|---|---|---|---|---|---|---|---|---|---|
+| last 200 (at milestone) | 845-1044 | 937567-1116316 | **0.150** | 0.000 | 0.000 | 0.000 | 0.380 | 224.9 | 0.150 |
+| — sub-window 795-844 | 50 | 886046-936540 | 0.100 | 0.000 | 0.000 | 0.000 | 0.220 | 251.3 | — |
+| — sub-window 845-894 | 50 | 937567-987939 | 0.120 | 0.000 | 0.000 | 0.000 | 0.200 | 260.5 | — |
+| — sub-window 895-944 | 50 | 989876-1031924 | 0.100 | 0.000 | 0.000 | 0.000 | 0.460 | 210.3 | — |
+| — sub-window 945-994 | 50 | 1032468-1070867 | **0.240** | 0.000 | 0.000 | 0.000 | 0.480 | 195.6 | — |
+| — sub-window 995-1044 | 50 | 1071988-1116316 | 0.140 | 0.000 | 0.000 | 0.000 | 0.380 | 233.4 | — |
+| all 1045 episodes since step 0 | 0-1044 | 124824-1116316 | 0.085 | 0.000 | 0.000 | 0.000 | 0.317 | — | — |
+
+**The reactivation is visible in training, not only in the eval cells.** The last-200 window's `picked=0.150`,
+`tipped=0.380` is well above every one of the eleven §1a windows in the original (500k-and-earlier) table (max
+there: `picked=0.120` at window 300-349/450-499, `tipped=0.420` at window 300-349) and far above the flagged dry
+spell itself (`picked=0.040, tipped=0.100` at window 601698-654756). The five 50-episode sub-windows show this is
+not a single lucky burst: `picked` sits at 0.10-0.24 across all five, and `tipped` at 0.20-0.48 — the run has been
+substantially more active, not less, in the half-million steps since the 500k checkpoint. `placed_v2`/`farside`/
+`home` remain exactly 0.000 in every window without exception, training or eval, at either milestone.
+
+**Net read at 1M:** the specific checkpoint frozen at 500k (step 617640) was a real, near-total failure sampled
+from an unusually inert dry spell, not a training-log artifact (§3's own conclusion, unchanged). The checkpoint
+half a million steps later (step 1117628) has partially recovered picking activity, consistent with the run's own
+history of dry-spell/recovery cycles (§1b) — but the recovery is confined to `picked`/`tipped` oscillation; the
+run has NEVER, at any point across 1045 logged training episodes or across four eval cells (hold15/rnd30 x
+500k/1M), converted a pick into a real `placed_v2`. Nothing here changes §4's diagnosis (entropy/advantage do not
+discriminate active from passive periods; `con`/`val` calibration was not re-checked at this milestone) or §5's
+recommendation (return-clamp / terminal-oversampling remain the untried, data-implicated levers). No config was
+changed, no training was started or stopped, for this milestone check.
