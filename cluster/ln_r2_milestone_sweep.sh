@@ -48,6 +48,7 @@ SBATCH_FILE=${SBATCH_FILE:-$W/ln14_milestone_eval.sbatch}   # deployed OUTSIDE t
 MAXJOBS=${MAXJOBS:-6}
 SWEEP_MODE=${SWEEP_MODE:-cpu64}
 REQUIRE_CORES=${REQUIRE_CORES:-64}
+REQUIRE_LOGICAL=${REQUIRE_LOGICAL:-64}
 EXCL64=${EXCL64:-$LAB/gp_dp_e2e/.excl64.txt}   # READ ONLY: "every node that is NOT 64 physical cores"
 
 [ -f "$GP/baselines/rl/full_env.py" ] || { echo "FATAL: GP=$GP is not a genesis_pickaplace tree"; exit 1; }
@@ -66,9 +67,9 @@ case "$SWEEP_MODE" in
          # caught by the sbatch's own REQUIRE_LOGICAL guard instead, at a cost of seconds.
          SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax036,pax037,pax038,pax039,pax040,pax041,pax043,pax045,pax046,pax056,pax066}
          SUBMIT_ARGS=(-p batch --qos=normal --exclude="$(cat "$EXCL64"),$SMT_EXCL")
-         SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=64) ;;
+         SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=$REQUIRE_LOGICAL) ;;
   gpu)   SUBMIT_ARGS=(-p gpu,preempt --qos=preempt --gres=gpu:1 --constraint=l40s\|a100\|l40\|h200 --exclude=pax077)
-         REQUIRE_CORES=0; SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=0) ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
+         REQUIRE_CORES=0; REQUIRE_LOGICAL=0; SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=0) ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
   *) echo "FATAL: SWEEP_MODE must be cpu64 | gpu (got $SWEEP_MODE)"; exit 1 ;;
 esac
 
@@ -77,14 +78,38 @@ INFLIGHT_NAMES=$(squeue -u "$USER" -h -o "%j" | grep -c '^lnms_' || true)
 INFLIGHT_NAMES=${INFLIGHT_NAMES:-0}
 QUEUED=$(squeue -u "$USER" -h -o "%j" | grep '^lnms_' || true)
 SLOTS=$(( MAXJOBS - INFLIGHT_NAMES ))
-echo "DISK-OK ${FREE_GB} GB | mode=$SWEEP_MODE require_cores=$REQUIRE_CORES | lnms_ in queue: $INFLIGHT_NAMES | free slots: $SLOTS"
+echo "DISK-OK ${FREE_GB} GB | mode=$SWEEP_MODE require_cores=$REQUIRE_CORES require_logical=$REQUIRE_LOGICAL | lnms_ in queue: $INFLIGHT_NAMES | free slots: $SLOTS"
 
 # ---- enumerate (run, milestone) pairs that need cells --------------------------------------
 # python does the reading/copying/verifying; bash does the submitting.
-PLAN=$(python3 - "$W" "$CELLROOT" "${DRYRUN:-}" <<'PY'
+PLAN=$(python3 - "$W" "$CELLROOT" "${DRYRUN:-}" "$REQUIRE_LOGICAL" <<'PY'
 import glob, hashlib, json, os, shutil, sys
 W, CELLROOT, DRYRUN = sys.argv[1], sys.argv[2], sys.argv[3]
+REQ_LOGICAL = int(sys.argv[4]) if len(sys.argv) > 4 else 0
 CELLS = ("rnd30_mode", "hold15_mode", "rnd30_sample")
+
+# QUARANTINE any FINISHED cell that was scored on the wrong machine class. `ncpus_machine` in
+# metrics.json is the LOGICAL processor count (eval_genesis.py:545), so a cell written before the
+# REQUIRE_LOGICAL guard existed -- or by a job whose spooled sbatch predates it -- is moved aside
+# rather than deleted, and re-planned. Only cells that HAVE a metrics.json are touched: a cell
+# still being written is left alone.
+if REQ_LOGICAL and not DRYRUN:
+    for mp in sorted(glob.glob(os.path.join(CELLROOT, "*", "*", "*", "metrics.json"))):
+        cell = os.path.dirname(mp)
+        if os.path.basename(cell) not in CELLS:
+            continue
+        try:
+            got = int(json.load(open(mp)).get("ncpus_machine", REQ_LOGICAL))
+        except Exception:
+            continue
+        if got != REQ_LOGICAL:
+            dst = f"{cell}_smt{got}"
+            if os.path.exists(dst):
+                dst = f"{dst}.{int(os.path.getmtime(mp))}"
+            os.rename(cell, dst)
+            print(f"QUARANTINE\t{os.path.basename(os.path.dirname(os.path.dirname(cell)))}"
+                  f"\t{os.path.basename(os.path.dirname(cell))}\t{os.path.basename(cell)} "
+                  f"ncpus_machine={got} != {REQ_LOGICAL} -> {os.path.basename(dst)}")
 
 def sha256(p, buf=1 << 20):
     h = hashlib.sha256()
