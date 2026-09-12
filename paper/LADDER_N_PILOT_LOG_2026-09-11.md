@@ -1065,3 +1065,47 @@ slide_success=4 | max_return=8 | terminal=slide_success+tipped | … tip=tilt>60
 which the {RLPD} control arm already prints from the same `full_env.py`, plus
 `[ladder] return_clamp=8.0 (env and model agree)` (P-aa-5). **Whoever picks this up must confirm
 that line on 3596025–28 and on the four `ln_r2_sparse_*` (3596021–24) once they start.**
+
+### Revision 3 — state at Lane 14's handoff (2026-09-12 03:50 EDT)
+
+`sacct -S 2026-09-12T00:30 -u jstale02 -X --format=JobID,JobName,State,Elapsed,ExitCode,QOS,Partition,NodeList`
+
+| job | name | state | QOS | node |
+|---|---|---|---|---|
+| 3596021 | `ln_r2_sparse_dH_s957` | RUNNING 00:36 | normal | pax007 |
+| 3596022 | `ln_r2_sparse_dH_s958` | RUNNING 00:23 | normal | pax011 |
+| 3596023 | `ln_r2_sparse_dM_s977` | PENDING | normal | — |
+| 3596024 | `ln_r2_sparse_dM_s978` | PENDING | normal | — |
+| 3596025–28 | `ln_r2_ctl_{dH_s962,dH_s963,dM_s982,dM_s983}` | PENDING | normal | — |
+| 3596029 | `ln_rl_sparse500k_dH_s957` | RUNNING 02:59 | preempt | pax110 |
+| 3596030 | `ln_rl_sparse500k_dH_s958` | RUNNING 01:20 | preempt | pax153 |
+| 3596031–32 | `ln_rl_sparse500k_dM_{s977,s978}` | PENDING | preempt | — |
+
+**Nothing has failed** (every row `0:0`, none `FAILED 2:0 00:00:00`). Four of the twelve have started
+and all four stamp the registered `nested_sparse` line; the two {r2dreamer} ones also print
+
+    [ladder] ladder=nested_sparse tip_guard=not_in_hand return_clamp=1.0 (env.return_clamp AND model.return_clamp)
+    [ladder] return_clamp=1.0 (env and model agree)                                      <- P-aa-5
+    Demo prefill: {'episodes': 74, ..., 'transitions_added': 29406, ...}
+    Step accounting [R2_LONG_RUN]: prefill 29406 decisions; trainer starts at counter step 117624;
+      env.steps=4000000 ONLINE env steps -> counter target 4117624.
+
+i.e. the same 74-tape `dHfull_all_rnsh` prefill and the same `start + 4000000` target as the batch's
+own `ln_r2_sparse_dH_s955/s956`. **Still to confirm when they start:** the four machine
+`ln_r2_sparse_dM_*` (expect the machine prefill 37488 / origin 149952) and the four `ln_r2_ctl_*`
+(expect the `staged` line with `max_return=8` and `return_clamp=8.0`, milestone target
+`start + 1000000`).
+
+**Handoff for the next agent**
+
+1. **Re-run the milestone sweep** — `bash $W/ln14_milestone_sweep.sh` — after each milestone lands.
+   It is idempotent, it quarantines any cell scored on the wrong machine class, and there is no cron
+   here. A local top-up loop kept it at its 6-job ceiling during this lane's session; that loop dies
+   with the session.
+2. **Confirm the eight remaining rev-3 stamps** (above).
+3. **The two quarantined `_smt128` cells** of `dHfull_all_rnrh_s950` are the cheapest available test
+   of the project's hardware-sensitivity finding: same checkpoint, 64 physical cores both times, SMT
+   on v off, and the SMT-on cells read `picked` ≈ 0 for a seed that reads 8/30 at 0.5M and 16/30 at
+   2M. Compare when the 64/64 re-score lands.
+4. `paper/LN_R2_MILESTONE_CELLS_2026-09-12.md` is the readout; regenerate its table with
+   `python3 cluster/ln_r2_milestone_table.py --md`.
