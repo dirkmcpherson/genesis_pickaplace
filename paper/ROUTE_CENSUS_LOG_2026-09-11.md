@@ -157,4 +157,38 @@ job failed. No further resubmission was needed.
 
 ## Step 6 — outcomes
 
-(filled in as jobs complete; see `paper/ROUTE_CENSUS_2026-09-11.md` for the scored results)
+All 12 cells completed, `rc=0`, no `FAILED 2:0 00:00:00` and no wrong-hardware cell among them
+(the 3 `--require-cores` refusals in Step 5 ended before scoring any episode and are not counted
+as cells). Wall clock: submitted ~22:26, last cell (`3592097`) finished 23:18:44 — **~52 minutes**
+end to end, almost all of it queueing: the `preempt` QOS's `QOSMaxGRESPerUser` let only **2** of
+this lane's GPU jobs run at once (this account had 20/20 preempt GPU jobs running cluster-wide
+from OTHER lanes at submission time), so the 8 {r2dreamer} cells landed in four sequential pairs
+rather than in parallel; the registered "no more than 8 GPU jobs at once" ceiling was the number
+*submitted*, never the number concurrently running.
+
+| job | cell | elapsed | outcome |
+|---|---|---|---|
+| 3592038 | r2d dHs945 hold15 | 12:24 | nested_v2 0/15 |
+| 3592091 | r2d dHs945 rnd30 | 18:44 | nested_v2 0/30 |
+| 3592092 | r2d dHs946 hold15 | 9:07 | nested_v2 8/15 |
+| 3592093 | r2d dHs946 rnd30 | 17:45 | nested_v2 3/30 |
+| 3592094 | r2d dMs965 hold15 | 4:23 | nested_v2 11/15 |
+| 3592095 | r2d dMs965 rnd30 | 8:33 | nested_v2 17/30 |
+| 3592096 | r2d dMs966 hold15 | 6:13 | nested_v2 11/15 |
+| 3592097 | r2d dMs966 rnd30 | 12:37 | nested_v2 11/30 |
+| 3592167 | rlpd dHs945 hold15 | 4:57 | nested_v2 0/15 |
+| 3592168 | rlpd dHs945 rnd30 | 11:28 | nested_v2 0/30 |
+| 3592130 | rlpd dMs965 hold15 | 5:44 | nested_v2 0/15 |
+| 3592170 | rlpd dMs965 rnd30 | 11:04 | nested_v2 0/30 |
+
+Analysis: `route_census_report.py` (scp'd to `$W/route_census_2026-09-11/`, reads every cell's
+`metrics.json`, computes the `home`-vs-drop split among `nested_v2`-true episodes from
+`per_episode[i]['stages']`, writes `route_census_summary.json`). Full results, per-seed detail,
+and the reading against P8: `paper/ROUTE_CENSUS_2026-09-11.md`.
+
+**Headline: pooled across the 61 `nested_v2` episodes observed (all {r2dreamer} — {RLPD} reached
+`nested_v2` zero times in 90 scored episodes), 44 (72.1 %) are drops and 17 (27.9 %) are slides —
+confirms P8's "majority drop" prediction.** The {r2dreamer} machine arm confirms clearly on both
+seeds individually (14.3 % and 36.4 % slide share); the human arm's 45.5 % slide share (5/11,
+all from one seed, s946 — the other human seed, s945, never reached `nested_v2`) is within noise
+of the 50 % disconfirm line and should not be over-read.
