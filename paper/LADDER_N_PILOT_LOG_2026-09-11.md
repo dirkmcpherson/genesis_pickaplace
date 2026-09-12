@@ -1263,3 +1263,36 @@ so the paired seeds cannot collide with rev-3's `e2e_rev3`). {r2dreamer}: `$W/ru
 State at submission: 3 {RLPD} RUNNING, 1 PENDING; all 4 {r2dreamer} PENDING on the normal-QOS GPU cap
 behind rev-3's three queued controls. Readout: P-ac-1/2 in PHASE_PLAN (ac); milestones via the Lane-14
 sweep; the 4 v 4 ignition decision (rev 3) still waits for the RLPD 500k and r2dreamer 4M seeds; 16 v 16 held.
+
+### (ac) REVISION 1 — world-model runs PACKED; packed smoke PASSED; two packs SUBMITTED (2026-09-12 ~12:50)
+
+User instruction (12:00): pack the sparse10 world-model runs. The four unpacked r2dreamer jobs
+(3620808–11) were still PENDING on the normal-QOS cap and were cancelled before any started
+(logdirs cleared; nothing lost). The {RLPD} half (3620812–15) was untouched and is running.
+
+**Launcher change** (`cluster/wmfix_full.sbatch`, commits dcbb483 → d1038ee): per-seed work moved
+into `run_seed()`; preflight once; `PACK_SEEDS="a b"` runs one process per seed on one GPU with its
+own logdir / inductor cache / log / checks / cells; `wait` returns each seed's own status. Two
+defects found by the smoke and fixed before the batch: (1) `"$@"` inside the function was the seed,
+not the script's Hydra extras → `LexerNoViableAltException: 9985` (fixed: `EXTRA_OVERRIDES=("$@")`
+captured before the function); (2) the interactive QOS refuses `--mem=96g` (its cap is 64 GB) and a
+mid-line `#` had commented out `TAGV`/`NAME` in the submit script. All disclosed here.
+
+**Packed smoke 3621470 — PASSED** (2 seeds × 15k online, one A100, `-n 16 --mem=60g`, 38 min incl.
+4 evals; GPU 3.0 GB for the pair). Job log: `[pack] seeds: 9985 9986 …`, `# pack seed ok` ×2,
+`# PACK DONE rc=0`, and BOTH seeds' `[ladder] return_clamp=10.0 (env and model agree)` appended.
+Per seed: `ladder_provenance.json` {ladder=nested_sparse10, return_clamp=10.0, tip_guard=not_in_hand};
+`fresh_eval_hold15_{sample,mode}` n=15, `ladder=nested_sparse10`, `success_key=home`.
+
+**Batch** (`GP=$LAB/gp_ac bash cluster/submit_ac_r2_pack.sh`, gp_ac @ 294c1fbe):
+
+| job | name | seeds | set | budget | request |
+|---|---|---|---|---|---|
+| 3622513 | `ln_r2_sparse10_pack_dH` | 957, 958 (human) | `dHfull_all_rns10h` | 4M online each, milestones 0.5/1/2/4M | 1 GPU, 16 cpu, 96 GB, QOS normal |
+| 3622514 | `ln_r2_sparse10_pack_dM` | 977, 978 (machine) | `dDPfull_first_rns10h` | " | " |
+
+One pack per ARM (the launcher's once-only demo gate binds one set per job); both arms packed
+identically. Run dirs are the usual `$W/runs/full_r2d_state_<set>_s<seed>`; per-seed logs
+`$W/slurm/ln_r2_sparse10_pack_<arm>_<jobid>_s<seed>.out`, appended into the job log at the end.
+The (ac) 2 v 2 is therefore: {RLPD} unpacked (3620812–15) + {r2dreamer} packed (3622513–14),
+disclosed as a scheduling difference from the rev-3 comparator in PHASE_PLAN (ac) rev 1.
