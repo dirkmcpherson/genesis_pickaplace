@@ -61,6 +61,18 @@ D=/home/j/runs_dv3_local/dv3px_sparse10_series/ck_421321
 # the record window: $D/record_last60_before.txt (the 60 training episodes logged before the capture)
 ```
 
-## Addendum — rnd30 MODE of the same checkpoint
+## Addendum — rnd30 MODE of the same checkpoint (landed 14:58)
 
-(to be filled from `$D/fresh_eval_rnd30_mode/metrics.json` when the watcher finishes it)
+| cell | n | picked | placed_v2 | farside | slide_event | nested_v2 | home | outcomes |
+|---|---|---|---|---|---|---|---|---|
+| ck_421321 rnd30 MODE | 30 | 16/30 | 19/30* | 16/30 | 7/30 | 13/30 | **7/30** (eps 3, 11, 14, 16, 19, 21, 23; 68–271 decisions, reward 10.0 each) | 14 timeout, 9 tipped, 7 home |
+
+\* includes the 3 in-footprint reset grants (CONFOUNDS row 82). `nested_v2` 13/30 > `home` 7/30: six episodes nest by
+the drop/carry route that `nested_sparse10` does not pay — the ladder shapes the policy toward the slide but does not
+eliminate the other route at 0.3M.
+
+So on random starts, one in four episodes ends `home`, one in two picks. For reference on the same cell: {RLPD}
+`nested_ramp` human s950 (250k) `home` 1/30; the state-based {dv3 local} ramp checkpoint at 3.4M steps `home` 1/30;
+every cluster {r2dreamer} 2M cell 0/30. Same caveats as above: n = 1 seed, no attribution among pixels, +10 and the
+removed pose, one checkpoint of a policy that `R2D_LIVE_VS_RELOAD` showed can move within ~1k updates — the series
+continues at every 100k-step save.
