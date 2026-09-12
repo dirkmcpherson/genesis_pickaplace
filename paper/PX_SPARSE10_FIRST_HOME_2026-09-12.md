@@ -68,8 +68,12 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 **Human seed 0, complete series (0.1M → 1.0M), MODE cells:** hold15 `home` 0, 0, 5, 1, 12, 13, 11, 6, 12, **15** of 15;
 rnd30 `home` 0, 0, 7, 3, 18, 16, 10, 8, 11, **16** of 30. **Statistic of record (amendment (ae)) = mean rnd30 MODE `home`
 over the 0.3–1.0M cells = 89/240 = 0.371** (hold15: 75/120 = 0.625). The run ended on its best hold15 cell (15/15) and
-its second-best rnd30 cell; the 0.8M trough (6/15, 8/30) sits inside the same series. 1M milestone sampled cells
-(parent protocol) queued in `dv3px_sparse10_eval_m1000k/`.
+its second-best rnd30 cell; the 0.8M trough (6/15, 8/30) sits inside the same series.
+
+**1M MILESTONE, parent protocol (SAMPLED actions, `online_1000000.pt`, `dv3px_sparse10_eval_m1000k/`, 19:29):** hold15
+picked 15/15, placed 15/15, farside 15/15, slide 15/15, **`home` 15/15** (outcomes: 15 home); rnd30 picked 19/30, placed
+21/30, farside 18/30, slide 17/30, **`home` 17/30** (9 tipped, 4 timeout). Sampled and MODE agree at this checkpoint
+(15/15 v 15/15; 17/30 v 16/30).
 
 Post-eviction trend at 0.7–0.8M: slides keep starting (hold15 14/15, rnd30 19/30 at 0.7M) but fewer arrive
 (`home` 11/15 → 6/15 on hold15; 16/30 → 10/30 on rnd30) — a drift in the slide's finish, not in the approach. The
