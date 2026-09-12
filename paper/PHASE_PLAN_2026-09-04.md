@@ -1674,11 +1674,56 @@ optimizer start fresh. Consequence for attribution: if this run slides, "+10" an
 world model" are confounded HERE; the cluster arm (P-ac-1/2, from scratch) carries the clean scale
 comparison. Recorded in the logdir as `wm_init.json` (source, sha256, loaded prefixes).
 
+**Status 2026-09-12 11:35:** STOPPED at counter 357 640 (230 episodes) — superseded by amendment (ad) below at the
+user's direction; series cells at 100k/200k online show the fresh actor not yet picking (hold15 MODE 0.20 → 0.00),
+which is what 200k steps of a fresh actor looks like; no claim. Checkpoint and lineage kept.
+
 **Predictions.** P-ac-4: milestone cells (hold15 MODE, training world) show `picked` ≥ 0.5 at 1M
 (the cluster's `nested_sparse` r2dreamer s975 picked 0/45 at 1M — if +10 also fails to pick, the
 normalisation-floor account is wrong for this chassis too). P-ac-5: the checkpoint SERIES (every
 `latest.pt` rewrite, hold15 + rnd30 MODE) contains ≥ 1 cell with `home` ≥ 1 by 2M. Neither is a
 rate claim; n = 1 seed. Every cell must carry a `[sim-variant] gc_kp4_riser3_shelf6` log line.
+
+## Amendment (ad) — PIXEL observations + image augmentation, `nested_sparse10`, persistent world models (registered 2026-09-12 ~13:20, BEFORE launch; coordinator, pop-os)
+
+**User's directive (2026-09-12 ~11:30, verbatim intent):** "no i dont want to mess with dv3 training, you should
+bring in pixel obs and image augmentation and try to train sparse10 with some persistent world models." Losses,
+heads and the actor-critic are stock; only the observation and its augmentation change.
+
+**Learner.** {dv3 local} = DreamerV3 losses (`model.rep_loss=dreamer`) in the r2dreamer chassis (r2dreamer local
+`43a0e3c`), `paper/PX_PIXEL_CONFIG_2026-09-12.md`. Observation = **pixels + proprioception**: `image` (64×64×6 uint8,
+top camera ++ wrist camera = the adapter's `rig_obs()`) reconstructed by the decoder, and `state` truncated to its
+first 8 dims (`env.state_slice: 8`: q[:6], gripper motor, grip effort) — the can pose/quaternion and goal xy are
+NOT observed; the policy must read them from the pixels. Augmentation `model.image_aug: shift4` = DrQ random shift
+(replicate-pad 4 px, one offset per sequence, nearest), applied before the encoder AND the decoder (the model
+reconstructs the augmented frame: a data augmentation, not a loss). Everything else as the local `nested_ramp` /
+`nested_sparse10` runs: `tip_guard=not_in_hand`, `far_release` off, `return_clamp` 10.0 (derived from the ladder,
+D6 check), `act_entropy` 3e-5, `bounded_normal` actor, `buffer.max_size` 5e5, 2M online steps, milestones
+0.5M/1M/2M, checkpoint series at every `latest.pt` rewrite with hold15 + rnd30 MODE cells and the matching 60-episode
+record window (`paper/R2D_LIVE_VS_RELOAD_2026-09-12.md`'s rule).
+
+**Data.** Human set `dHfull_all_rns10h_img` (`paper/PX_IMAGE_DEMOS_2026-09-12.md`): the LOCAL-records
+`dHfull_all_rns10h` re-executed with `relabel_reward.py --images` — 74 tapes, Σ 130 (= 10 × 13 `home`; the class of
+record has 12, disclosed under (ac-local)), every state/action/reward column byte-identical to the state-only set,
+images non-zero on 74/74, rendered past each tape's paid terminal so no stored state pairs with a blank frame.
+
+**Persistent world models.** The first pixel world model starts FRESH (a state-only checkpoint cannot warm-start a
+pixel run: 22 encoder/decoder shape mismatches, refused by name). Its milestone checkpoints are the bank: every later
+pixel variant (other ladders, seeds of the actor, the pixels+full-state control) warm-starts its encoder/RSSM/decoder/
+cont from them via `+wm_init=` (136/136 tensors under the pixel config) with reward head, actor, critics, normaliser
+and optimizer fresh — the attached reward/value gradients keep reshaping the latent (PHASE_PLAN discussion 12:xx), so
+this is continued training of one lineage, not a frozen dynamics model. **Concurrency:** measured pixel throughput is
+46.7 fps alone (state-only 81.7); one run now (seed 0, ~12 h to 2M). A second world model (seed 1, same config)
+starts when the first reaches 0.5M with `picked` ≥ 0.5 on hold15 MODE, or sooner on another machine once the image
+set is transferred (datasets by rsync only). Three concurrent runs do not fit this box's 62 GB RAM at 5e5 rows.
+
+**Predictions.** P-ad-1: hold15 MODE `picked` ≥ 0.5 by the 1M milestone (pixels + proprio, sparse +10, demos in
+prefill). Disconfirm: `picked` < 0.2 at 1M → this observation/reward pair is not learnable at this budget with this
+chassis; fall back to the pixels + full-state control (`env.state_slice=null`, smoked, same fps) before any other
+change. P-ad-2: ≥ 1 series cell with `home` ≥ 1 by 2M. P-ad-3 (bank): a second pixel run warm-started from this
+run's 1M checkpoint reaches P-ad-1's bar in ≤ half the steps. n = 1 seed per claim; nothing here is a rate.
+Every cell must carry `[sim-variant] gc_kp4_riser3_shelf6`, and the run's console must carry the `[obs]`,
+`[image]` and `[image_aug]` stamps (printed from the built modules) beside the `[ladder]` stamp.
 
 ### (ac) REVISION 1 — the four {r2dreamer} runs are GPU-PACKED (registered 2026-09-12, BEFORE submission; user's instruction)
 
