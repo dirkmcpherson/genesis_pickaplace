@@ -151,7 +151,11 @@ def last_step(run):
     return None
 
 runs = []
-for suf in ("rnrh", "rnsh", "rzh"):
+# AUDIT_AC_PACKING_2026-09-12 B1: this tuple is the ONLY place that decides which runs get milestone
+# cells. It listed rnrh/rnsh/rzh, so amendment (ac)'s `_rns10h` runs would have produced no cells and
+# P-ac-1 would have been unevaluable at the milestones it registers. Added rns10h; the durable fix is to
+# discover runs from their `ladder_provenance.json` instead of a suffix glob (open follow-up).
+for suf in ("rnrh", "rnsh", "rzh", "rns10h"):
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s9*"))
 runs = sorted(r for r in runs if os.path.isdir(r) and "lnsmoke" not in os.path.basename(r))
 
