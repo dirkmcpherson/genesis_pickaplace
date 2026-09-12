@@ -33,6 +33,7 @@
 set -euo pipefail
 # per-job torch.compile cache: two jobs compiling on one node with a shared inductor cache crash (InductorError SubprocException, 09-03)
 ARM=$1; SEED=$2; STEPS=$3; shift 3
+EXTRA_OVERRIDES=("$@")   # hydra overrides after the three positionals; captured HERE because inside run_seed() "$@" is the seed
 # LADDER IS REQUIRED (user 2026-09-11), and the RETURN CLAMP FOLLOWS IT. r2dreamer's clamp is
 # the task's maximum return, so a sparse run needs 1.0 where a staged run needs 8.0; leaving
 # the config's 8.0 in place for a sparse arm would disable the clamp that made this port
@@ -138,7 +139,7 @@ run_seed() {
   if [ -n "${RESUME_FROM:-}" ]; then cp "$RESUME_FROM" "$LOGDIR/latest.pt"; RESUME="+resume=true"; echo "# RESUME_FROM=$RESUME_FROM (saved step $($PY -c 'import torch,sys; print(torch.load(sys.argv[1],map_location="cpu",weights_only=False).get("step"))' $LOGDIR/latest.pt))"; fi
   CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
        env.ladder=$LADDER $FAR_CFG env.tip_guard=$TIP_GUARD env.return_clamp=$CLAMP model.return_clamp=$CLAMP
-       buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
+       buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "${EXTRA_OVERRIDES[@]}")
   printf '%q ' "${CMD[@]}"; echo
   printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log
   "${CMD[@]}"
