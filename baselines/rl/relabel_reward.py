@@ -41,6 +41,20 @@ every N-th tape. The driver merges the shard manifests.
 
 The sim variant defaults to the tapes' own `sim_variant` stamp and is asserted, not assumed.
 
+PIXELS (`--images`, 2026-09-12, re-execution path only)
+-------------------------------------------------------
+Every demo set on disk carries an all-zero `image` placeholder, because the sets were built
+state-only and `--from-records` copies that column verbatim (a stage record holds no pixels).
+`--images` builds the env with the dv3 camera rig and writes a RENDERED column instead:
+`genv.rig_obs()` -- topB overhead RGB ++ through-gripper wrist RGB, (64,64,6) uint8, the SAME
+call at the SAME point in the loop the r2dreamer adapter (`envs/genesis.py`) makes online, so
+demo and online frames are the same observation function. One frame after the reset and one
+after every decision => (T,64,64,6), row-for-row with `state` and with the backward-shifted
+`action`. The render runs with termination suppressed so the WHOLE stream is covered (a
+relabelled tape keeps all T rows; only its reward column is cut at the terminal), while the
+reward, grant and end-reason bookkeeping is cut at the terminal exactly as without the flag.
+Default off: a run without `--images` writes byte-identical output to before.
+
 RECORD ONCE, SCORE MANY (user, 2026-09-11: "are you re-copying the demos every time, or
 applying it as a reward layer?")
 -------------------------------------------------------------------------------------------
@@ -319,9 +333,13 @@ def offline_episode(rec, ladder, far_release=False, action_repeat=4, max_steps=N
 
 
 # ------------------------------------------------------------------------------- worker
-def build_env(sim_variant, max_sim_steps, ladder, far_release=False, tip_guard=None):
+def build_env(sim_variant, max_sim_steps, ladder, far_release=False, tip_guard=None,
+              camera_rig=False):
     """FullTaskEnv in the END-TO-END contract MDP -- the same knobs baselines/record_demos.py
-    build_env and cluster/sbatch_rlpd_e2e.sh use, every one asserted (silent-default rule)."""
+    build_env and cluster/sbatch_rlpd_e2e.sh use, every one asserted (silent-default rule).
+
+    `camera_rig` (only `--images` sets it) builds the dv3 camera rig so `genv.rig_obs()` can be
+    rendered; it adds two cameras to the world and changes nothing the physics reads."""
     sys.path.insert(0, str(REPO / 'baselines'))
     sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
     sys.path.insert(0, str(REPO / 'can_pos_recovery'))
@@ -336,8 +354,9 @@ def build_env(sim_variant, max_sim_steps, ladder, far_release=False, tip_guard=N
     env = FullTaskEnv(backend='cpu', max_steps=int(max_sim_steps), scope='full', ladder=ladder,
                       far_release=bool(far_release), tip_guard=tip_guard,
                       action_mode='delta_joint', delta_cap=0.025, delta_leash_mult=5.0,
-                      action_repeat=4, delta_ref='target', camera_rig=False)
+                      action_repeat=4, delta_ref='target', camera_rig=bool(camera_rig))
     apply_post(env, sim_variant)
+    assert bool(env.genv.camera_rig) == bool(camera_rig), (env.genv.camera_rig, camera_rig)
     assert env.scope == 'full' and env.action_mode == 'delta_joint' and env.delta_ref == 'target'
     assert env.action_repeat == 4 and abs(env.delta_cap - 0.025) < 1e-12
     assert abs(env.delta_leash - 0.125) < 1e-12, env.delta_leash
@@ -414,7 +433,7 @@ def reset_to_tape_ic(env, z):
     return how, d_can, d_goal
 
 
-def relabel_one(env, path, out_dir, ic_tol):
+def relabel_one(env, path, out_dir, ic_tol, images=False):
     z = np.load(path, allow_pickle=True)
     layout = tape_layout(z)
     if layout == 'v1':
@@ -441,26 +460,62 @@ def relabel_one(env, path, out_dir, ic_tol):
     # the arm is tracking to 0.0004 rad (measured, 2026-09-11). What matters is the CAN.
     can_dev = 0.0        # m, centre-to-centre
     joint_dev = 0.0      # rad, worst arm joint
+
+    # ---- IMAGES (`--images`, default off). The rig obs is rendered once after the reset and
+    # once after every decision, so frame t is the observation the backward-shifted action[t]
+    # led INTO -- row-for-row with `state`, and the same call (`genv.rig_obs()`, topB ++ wrist)
+    # at the same point in the loop that the r2dreamer adapter uses online.
+    #
+    # Termination is SUPPRESSED for the render (`never_terminate`, the mechanism --records-out
+    # already uses): a relabelled tape keeps ALL T rows -- the reward column is zeroed after the
+    # terminal, the state column is not -- so an image column that stopped at the terminal would
+    # contradict its own state column on the 9 % of frames that follow one. Suppression also makes
+    # the physics identical to the stage-record path the `_r*` sets of record were scored from
+    # (every decision runs its full action_repeat). The reward/stage bookkeeping below is cut at
+    # the terminal exactly as the terminating path cuts it, so the reward column is unchanged.
+    frames = None
+    if images:
+        assert layout == 'segment' and 'image' in z.files, (
+            f'{os.path.basename(path)}: --images needs a segment tape with an `image` column')
+        assert env.genv.camera_rig, '--images needs an env built with camera_rig=True'
+        env.never_terminate = True
+        frames = [env.genv.rig_obs()]
+    stopped = False
+    ep_at_stop = None
+
     t0 = time.time()
-    for t in range(n):
-        obs, r, term, trunc, info = env.step(acts[t])
-        rew[t] = float(r)
-        if want_states is not None and t < len(want_states):
-            got = np.asarray(obs, np.float64)
-            can_dev = max(can_dev, float(np.linalg.norm(got[8:11] - want_states[t][8:11])))
-            joint_dev = max(joint_dev, float(np.abs(got[:6] - want_states[t][:6]).max()))
-        tipped = tipped or bool(info.get('tipped'))
-        gr = set(env._granted) | {k for k in REPORT_STAGES if info.get(k)}
-        for k in gr - seen:
-            if k in REPORT_STAGES:
-                grants[k] = int(t)
-        seen |= gr
-        if term or trunc:
-            end_reason = ('tipped' if info.get('tipped') else
-                          'truncated' if trunc else
-                          next((s for s in env.terminal_stages if info.get(s)), 'terminated'))
-            end_dec = t + 1
-            break
+    try:
+        for t in range(n):
+            obs, r, term, trunc, info = env.step(acts[t])
+            if frames is not None:
+                frames.append(env.genv.rig_obs())
+            if want_states is not None and t < len(want_states):
+                got = np.asarray(obs, np.float64)
+                can_dev = max(can_dev, float(np.linalg.norm(got[8:11] - want_states[t][8:11])))
+                joint_dev = max(joint_dev, float(np.abs(got[:6] - want_states[t][:6]).max()))
+            if stopped:
+                continue     # rendering only; nothing after the terminal is scored
+            rew[t] = float(r)
+            tipped = tipped or bool(info.get('tipped'))
+            gr = set(env._granted) | {k for k in REPORT_STAGES if info.get(k)}
+            for k in gr - seen:
+                if k in REPORT_STAGES:
+                    grants[k] = int(t)
+            seen |= gr
+            if term or trunc:
+                end_reason = ('tipped' if info.get('tipped') else
+                              'truncated' if trunc else
+                              next((s for s in env.terminal_stages if info.get(s)), 'terminated'))
+                end_dec = t + 1
+                # the episode columns belong to the episode that ENDED here, not to the tail
+                # the renderer keeps stepping through.
+                ep_at_stop = env.tracker.episode() if env.tracker is not None else {}
+                if frames is None:
+                    break
+                stopped = True
+    finally:
+        if images:
+            env.never_terminate = False
 
     d = {k: z[k] for k in z.files}
     old_sum = float(np.asarray(old_rew, np.float64).sum())
@@ -500,7 +555,18 @@ def relabel_one(env, path, out_dir, ic_tol):
     # Ladder-N diagnostics, produced under EVERY ladder because the tracker computes them
     # under every ladder: how far the can was pushed from the far side, and whether the
     # release that counts was far enough out for the `far_release` switch to accept it.
-    ep = env.tracker.episode() if env.tracker is not None else {}
+    ep = ep_at_stop if ep_at_stop is not None else (
+        env.tracker.episode() if env.tracker is not None else {})
+    if frames is not None:
+        img = np.asarray(d['image'])
+        got = np.stack(frames).astype(np.uint8)
+        assert got.shape == img.shape, (os.path.basename(path), got.shape, img.shape)
+        assert got.shape[0] == np.asarray(d['state']).shape[0], (got.shape, d['state'].shape)
+        d['image'] = got
+        d['rz_images'] = 'rendered'
+        img_nz, img_mean = float((got != 0).mean()), float(got.mean())
+        d['rz_image_nonzero_frac'] = np.float64(img_nz)
+        d['rz_image_mean'] = np.float64(img_mean)
     d['rz_slide_gain_m'] = np.float64(ep.get('slide_gain_m', float('nan')))
     d['rz_release_dist_m'] = np.float64(ep.get('release_dist_m', float('nan')))
     d['rz_release_far'] = bool(ep.get('release_far', False))
@@ -517,6 +583,9 @@ def relabel_one(env, path, out_dir, ic_tol):
                 slide_gain_m=round(float(ep.get('slide_gain_m', float('nan'))), 6),
                 release_dist_m=round(float(ep.get('release_dist_m', float('nan'))), 6),
                 release_far=bool(ep.get('release_far', False)),
+                image_nonzero_frac=(None if frames is None else round(img_nz, 6)),
+                image_mean=(None if frames is None else round(img_mean, 3)),
+                image_frames=(None if frames is None else int(len(frames))),
                 agree=agree, seconds=round(time.time() - t0, 1))
 
 
@@ -681,7 +750,8 @@ def _ladder_reward_dict(ladder):
 
 def run_shard(args, files, meta):
     sv = args.sim_variant or meta['sim_variant']
-    env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release, args.tip_guard)
+    env = build_env(sv, meta['max_sim_steps'], args.ladder, args.far_release, args.tip_guard,
+                    camera_rig=bool(getattr(args, 'images', False)))
     rows = []
     for i, f in enumerate(files):
         z = np.load(f, allow_pickle=True)
@@ -689,18 +759,22 @@ def run_shard(args, files, meta):
             assert str(scalar(z, 'sim_variant')) == sv, (f, scalar(z, 'sim_variant'), sv)
             assert int(scalar(z, 'action_repeat')) == 4 and abs(float(scalar(z, 'delta_cap')) - 0.025) < 1e-9, f
             assert str(scalar(z, 'delta_ref')) == 'target', f
-        r = relabel_one(env, f, args.out, args.ic_tol)
+        r = relabel_one(env, f, args.out, args.ic_tol, images=bool(getattr(args, 'images', False)))
         rows.append(r)
+        img = ('' if r.get('image_frames') is None else
+               f', image {r["image_frames"]}f nonzero {r["image_nonzero_frac"]:.3f} '
+               f'mean {r["image_mean"]:.1f}')
         print(f'[{i + 1}/{len(files)}] {r["file"]}: {r["n"]} decisions, reward {r["old_reward"]:.1f} -> '
               f'{r["new_reward"]:.1f}, end {r["end_reason"]}@{r["end_decision"]}, '
               f'can_dev {r["can_dev_max_m"] * 1000:.1f} mm / joint {r["joint_dev_max_rad"]:.5f} rad, '
-              f'grants { {k: v for k, v in sorted(r["grants"].items())} } [{r["seconds"]:.0f}s]', flush=True)
+              f'grants { {k: v for k, v in sorted(r["grants"].items())} }{img} '
+              f'[{r["seconds"]:.0f}s]', flush=True)
     return rows, sv
 
 
 # -------------------------------------------------------------------------------- driver
 def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, method=None,
-              tip_guard=None):
+              tip_guard=None, images=False):
     sys.path.insert(0, str(REPO / 'baselines'))
     sys.path.insert(0, str(REPO / 'baselines' / 'rl'))
     import full_env
@@ -725,6 +799,12 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
             str(tip_guard or full_env.TIP_GUARD_DEFAULT)]),
         contract='v1', action_repeat=4, delta_cap=0.025,
         delta_ref='target',
+        # `rendered` = genv.rig_obs() (topB ++ wrist, the adapter's own call) captured after the
+        # reset and after every decision, termination suppressed for the render only.
+        # `inherited` = the source set's column, copied verbatim (all-zero in every set on disk).
+        images=('rendered' if images else 'inherited'),
+        image_nonzero_frac_min=(min(r['image_nonzero_frac'] for r in rows) if images else None),
+        image_mean_min=(min(r['image_mean'] for r in rows) if images else None),
         n_tapes=len(rows), decisions_total=int(sum(r['n'] for r in rows)),
         reward_total_old=float(sum(r['old_reward'] for r in rows)),
         reward_total_new=float(sum(r['new_reward'] for r in rows)),
@@ -735,7 +815,12 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
         n_tapes_slide_gain_over_10cm=sum(1 for g in gains if g >= 0.10),
         n_tapes_slide_gain_over_1cm=sum(1 for g in gains if g >= 0.01),
         n_tapes_release_far=sum(1 for r in rows if r.get('release_far')),
-        n_tapes_nested_honest=sum(1 for r in rows if r.get('nested_honest')),
+        # `nested_honest` comes from ONE end-of-episode settle, which only the --records-out
+        # path runs; the direct re-execution never computes it. Absent, not zero: reporting a
+        # count of 0 here read as "no tape settles nested", which is false (the stage records
+        # say 16 of these same 74 do).
+        n_tapes_nested_honest=(sum(1 for r in rows if r.get('nested_honest'))
+                               if any('nested_honest' in r for r in rows) else None),
         actions_sha256=hashlib.sha256(''.join(r['actions_sha256'] for r in
                                               sorted(rows, key=lambda x: x['file'])).encode()).hexdigest(),
         ladder_provenance=full_env.ladder_provenance(
@@ -756,7 +841,7 @@ def summarize(rows, files, in_dir, out_dir, sv, ladder, far_release=False, metho
     return man
 
 
-def write_repeat_json(man, rows, in_dir, out_dir, ladder, tip_guard=None):
+def write_repeat_json(man, rows, in_dir, out_dir, ladder, tip_guard=None, images=False):
     """Emit the set manifest BOTH LAUNCHERS GATE ON (`repeat.json`), inherited from the source.
 
     `manifest.json` (above) is this builder's own record; neither launcher reads it.
@@ -818,6 +903,20 @@ def write_repeat_json(man, rows, in_dir, out_dir, ladder, tip_guard=None):
                         'terminal is recorded per tape as rz_end_reason/rz_end_decision, and the '
                         'action stream is kept whole so its sha256 still matches the source'),
     )
+    if images:
+        # `state_only` is a SOURCE stamp meaning "the image column is a zero placeholder, the
+        # state column is the observation". A rendered set falsifies it, so it is one of the
+        # few inherited stamps this builder overwrites rather than copies -- an inherited
+        # `state_only: true` on a set that carries pixels would be a false claim of the exact
+        # kind the 2026-09-09 `one_per_ic_first` defect was.
+        m['state_only'] = False
+        m['images'] = 'rendered'
+        m['relabel']['images'] = dict(
+            column='rendered', source_column='zero placeholder',
+            call='baselines/genesis_can_env.py GenesisCanEnv.rig_obs() (topB RGB ++ wrist RGB)',
+            layout='(T,64,64,6) uint8, one frame after reset and one after every decision',
+            never_terminate_for_render=True,
+            nonzero_frac_min=man['image_nonzero_frac_min'], mean_min=man['image_mean_min'])
     json.dump(m, open(os.path.join(out_dir, 'repeat.json'), 'w'), indent=1)
     return m
 
@@ -863,6 +962,13 @@ def main():
     ap.add_argument('--max-sim-steps', type=int, default=None, help="default: the tapes' own max_sim_steps stamp")
     ap.add_argument('--ic-tol', type=float, default=0.002,
                     help='m; the restored can/goal must match the tape first state within this (default 2 mm)')
+    ap.add_argument('--images', action='store_true',
+                    help=('RE-EXECUTION PATH ONLY (--in/--out). Build the dv3 camera rig and write a '
+                          'RENDERED `image` column (genv.rig_obs(): topB ++ wrist, (T,64,64,6) uint8) in '
+                          'place of the source set\'s all-zero placeholder, same T, one frame after the '
+                          'reset and one after every decision. Termination is suppressed for the render '
+                          'so the whole stream is covered; the reward column is cut at the terminal '
+                          'exactly as without the flag. Default off: nothing else changes.'))
     ap.add_argument('--procs', type=int, default=1, help=f'parallel worker processes, <= {MAX_PROCS} (one world each)')
     ap.add_argument('--limit', type=int, default=None, help='first N tapes only (dry runs)')
     ap.add_argument('--shard', type=int, default=None, help='worker mode: this shard index')
@@ -873,12 +979,18 @@ def main():
     modes = [bool(args.records_out), bool(args.from_records), bool(args.verify_against)]
     if sum(modes) > 1:
         sys.exit('FATAL: --records-out, --from-records and --verify-against are three modes; pick one')
+    if args.images and any(modes):
+        sys.exit('FATAL: --images belongs to the --in/--out re-execution path only (a stage record '
+                 'holds no pixels and --from-records copies the source `image` column verbatim)')
     if not args.records_out and not args.verify_against:
         if not args.out:
             sys.exit('FATAL: --out is required unless --records-out or --verify-against is given')
         want_suffix = (LADDER_SUFFIX[args.ladder] + ('f' if args.far_release else '')
                        + TIP_GUARD_SUFFIX[args.tip_guard])
-        if not os.path.basename(os.path.normpath(args.out)).endswith(want_suffix):
+        # a rendered set is the same ladder/guard set with pixels, so it keeps the ladder suffix
+        # and adds `_img` -- the launcher gate still reads the ladder off the name.
+        ok_suffixes = (want_suffix,) + ((want_suffix + '_img',) if args.images else ())
+        if not os.path.basename(os.path.normpath(args.out)).endswith(ok_suffixes):
             sys.exit(f'FATAL: --ladder {args.ladder}'
                      f'{" --far-release" if args.far_release else ""} --tip-guard {args.tip_guard} '
                      f'writes a {want_suffix} set, but '
@@ -1009,6 +1121,8 @@ def main():
         base += ['--records-out', args.records_out] if args.records_out else ['--out', args.out]
         if args.far_release:
             base += ['--far-release']
+        if args.images:
+            base += ['--images']
         if args.limit:
             base += ['--limit', str(args.limit)]
         if args.sim_variant:
@@ -1064,10 +1178,11 @@ def main():
         return
 
     man = summarize(rows, files, args.inp, args.out, sv, args.ladder, args.far_release,
-                    tip_guard=args.tip_guard)
+                    tip_guard=args.tip_guard, images=bool(args.images))
     man['wall_seconds'] = round(time.time() - t_wall, 1)
     json.dump(man, open(os.path.join(args.out, 'manifest.json'), 'w'), indent=1)
-    rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder, args.tip_guard)
+    rep = write_repeat_json(man, rows, args.inp, args.out, args.ladder, args.tip_guard,
+                            images=bool(args.images))
     _report(man, rep, args.out)
 
 
@@ -1088,6 +1203,9 @@ def _report(man, rep, out):
               f'>=1cm {man["n_tapes_slide_gain_over_1cm"]}, >=10cm {man["n_tapes_slide_gain_over_10cm"]}')
         print(f'release_far          : {man["n_tapes_release_far"]}/{man["n_tapes"]} tapes released '
               f'>= 0.10 m from the goal')
+    if man.get('images') == 'rendered':
+        print(f'image column         : RENDERED (rig_obs topB++wrist); min nonzero frac '
+              f'{man["image_nonzero_frac_min"]:.3f}, min mean {man["image_mean_min"]:.1f}')
     print(f'tip guard            : {man["tip_guard"]} '
           f'(sustain {man["tip_guard_sustain_frames"]} env frames)')
     print(f'ladder               : {man["ladder_stamp"]}')
