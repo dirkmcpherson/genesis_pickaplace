@@ -12,7 +12,7 @@ FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | 
 [ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 150 GB floor"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free | gp $GP ($(git -C "$GP" describe --always --dirty)) | r2 $R2"
 if [ -n "${SMOKE:-}" ]; then
-  SEEDS="9985 9986"; STEPS=15000; MILES='[15000]'; Q=(-p gpu --qos=interactive -t 0-03:00:00 -n 16 --mem=96g); TAGV=lnsmoke; NAME=ln_smoke_r2_sparse10_pack
+  SEEDS="9985 9986"; STEPS=15000; MILES='[15000]'; Q=(-p gpu --qos=interactive -t 0-03:00:00 -n 16 --mem=60g)   # interactive QOS caps 1 GPU / 16 cpu / 64 GB per user; TAGV=lnsmoke; NAME=ln_smoke_r2_sparse10_pack
   # a smoke pack: both seeds on the HUMAN set (the set is not what packing changes)
   for s in $SEEDS; do rm -rf "$W/runs/full_r2d_state_dHfull_all_rns10h_${TAGV}_s$s"; done
   env R2_TREE=$R2 GENESIS_PICKAPLACE_ROOT=$GP LADDER=nested_sparse10 TIP_GUARD=$TIP_GUARD R2_LONG_RUN=1 \
