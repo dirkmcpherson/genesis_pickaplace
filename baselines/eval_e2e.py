@@ -62,7 +62,7 @@ ap.add_argument('--mode', choices=('sample', 'mode'), default='sample')
 ap.add_argument('--seed', type=int, default=0)
 ap.add_argument('--max-steps', type=int, default=1200, help='SIM steps per episode (1200 = the full-scope cap, 300 decisions at repeat 4)')
 ap.add_argument('--sim-variant', default='gc_kp4_riser3_shelf6')
-ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'), default=None,   # kept equal to full_env.LADDERS,
+ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_sparse10', 'nested_ramp'), default=None,   # kept equal to full_env.LADDERS,
                 # which is ASSERTED below once the tree is importable
                 help="WHICH reward ladder the evaluation env runs (FullTaskEnv(ladder=...)). It must match the "
                      "checkpoint's -- a policy trained under one objective scored under another is a different "

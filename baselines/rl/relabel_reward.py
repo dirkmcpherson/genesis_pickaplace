@@ -103,7 +103,8 @@ MAX_PROCS = 8
 # launcher trains one objective while believing another, so the suffix is asserted against the
 # ladder (and `--far-release` appends 'f': it changes what the same ladder pays).
 LADDER_SUFFIX = {'staged': '_rz', 'sparse': '_rs',
-                 'nested_ramp': '_rnr', 'nested_sparse': '_rns'}
+                 'nested_ramp': '_rnr', 'nested_sparse': '_rns',
+                 'nested_sparse10': '_rns10'}     # amendment (ac); + 'h' for the not_in_hand guard -> _rns10h
 LADDER_CHOICES = tuple(LADDER_SUFFIX)
 # --tip-guard -> the extra suffix letter (PHASE_PLAN amendment (aa)). The guard changes WHERE
 # every tape's episode ends and what it pays after that, so a set built under it is a different

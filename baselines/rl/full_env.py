@@ -111,6 +111,8 @@ from stage_predicates import StageTracker   # noqa: E402  (Lane-1 module; D1 "on
 #                   they named -- the can was put DOWN, the tool went to the OPPOSITE
 #                   side of it from the goal, and the can TRAVELLED goalward from there.
 #                   Its constants are calibrated on the 74 human tapes, not chosen.
+# 'nested_sparse10': nested_sparse with the terminal at 10.0 (amendment (ac)). Max return 10.
+#                   Same predicate, same guard, same terminal; only the scale differs.
 # 'nested_ramp':    picked 1 -> placed_v2 1 -> a DENSE slide ramp worth up to 3 -> home 4,
 #                   TERMINAL. Max return 9. `farside` pays NOTHING -- it is a LOGGED
 #                   PREREQUISITE for the ramp (and, transitively, for slide_event/home),
@@ -151,6 +153,14 @@ LADDERS = {
                    terminal=('nested_v2',)),
     'nested_sparse': dict(stage_reward=dict(home=1.0),
                           terminal=('home',)),
+    # PHASE_PLAN amendment (ac), 2026-09-12: identical to nested_sparse in every respect except
+    # the terminal pays +10. A SCALE change, not a shape change: r2dreamer's ReturnEMA floors the
+    # advantage scale at p95-p05 >= 1, so a +1 terminal at discount 0.997 never reaches the
+    # normalised regime while the ramp ladder does. max_return and the return_clamp are DERIVED
+    # from this entry (D6) -- never hand-set. nested_sparse itself is untouched: running jobs
+    # and existing sets carry its stamp.
+    'nested_sparse10': dict(stage_reward=dict(home=10.0),
+                            terminal=('home',)),
     'nested_ramp': dict(stage_reward=dict(picked=1.0, placed_v2=1.0, home=4.0),
                         requires=dict(placed_v2='picked', farside='placed_v2',
                                       slide_event='farside', home='slide_event'),
@@ -165,7 +175,7 @@ LADDERS = {
 LADDER_DEFAULT = 'staged'
 # The ladders whose rungs are the Ladder-N predicates. Used by callers that must pick a
 # `far_release` default or a return clamp without hard-coding a name list twice.
-NESTED_LADDERS = ('nested_sparse', 'nested_ramp')
+NESTED_LADDERS = ('nested_sparse', 'nested_sparse10', 'nested_ramp')
 
 # --- THE TIP GUARD (PHASE_PLAN amendment (aa); measured in paper/TIP_RULE_2026-09-11.md) ---
 # The tip rule is `tilt_deg(can) > TIP_DEG` AND a GUARD that says the can is not being held.

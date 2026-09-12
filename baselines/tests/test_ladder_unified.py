@@ -935,8 +935,29 @@ def main():
     print('ALL OK')
 
 
-if __name__ == '__main__':
-    main()
+
+
+def test_10h_nested_sparse10_pays_exactly_10_on_home_and_0_otherwise():
+    """PHASE_PLAN amendment (ac), 2026-09-12: nested_sparse10 is nested_sparse with the terminal
+    at +10 -- a SCALE change only. On the full slide it pays exactly 10 and terminates on home;
+    on a drop at the goal (nested but never slid) it pays exactly 0 and does not terminate;
+    max_return and the r2dreamer clamp requirement are DERIVED from the registry as 10.0, and
+    nested_sparse itself is untouched (still 1.0)."""
+    r, term, acct, ep = _ladder_run(_release_farside_push_home(), 'nested_sparse10')
+    assert abs(r - 10.0) < 1e-9, f'nested_sparse10 paid {r} on a home tape, expected 10'
+    assert term is not None and acct.paid == {'home'}, 'only home pays, and it terminates'
+    assert ep['home'] and ep['slide_event'] and ep['nested_v2']
+    r0, term0, acct0, ep0 = _ladder_run(_drop_at_the_goal('far'), 'nested_sparse10')
+    assert abs(r0 - 0.0) < 1e-9, f'nested_sparse10 paid {r0} on a drop, expected 0'
+    assert term0 is None and acct0.paid == set()
+    assert ep0['nested_v2'] and not ep0['home'], 'a drop is a nest and is NOT home'
+    assert full_env.max_return('nested_sparse10') == 10.0
+    assert full_env.ladder_provenance('nested_sparse10')['return_clamp_required'] == 10.0
+    assert full_env.ladder_spec('nested_sparse10') == full_env.ladder_spec('nested_sparse')[:0] + (
+        dict(home=10.0), ('home',)), 'same shape as nested_sparse, only the scale differs'
+    assert full_env.max_return('nested_sparse') == 1.0, 'nested_sparse must be untouched'
+    assert 'nested_sparse10' in full_env.NESTED_LADDERS
+    print('10h. nested_sparse10: home tape 10, drop 0, clamp derived 10, nested_sparse still 1  OK')
 
 
 def test_11_max_return_is_scope_aware():
@@ -953,3 +974,9 @@ def test_11_max_return_is_scope_aware():
     assert p_full['scope'] == 'full' and p_full['return_clamp_required'] == 8.0
     assert p_pick['scope'] == 'pick' and p_pick['return_clamp_required'] == 1.0
     print('11. max_return / provenance are scope-aware (pick clamp 1.0, full ladder ceiling)  OK')
+
+
+# Runner LAST: any test defined below this block is invisible to main() when the file is run as
+# a script. 2026-09-12: test_11 had been silently skipped for that reason since it was added.
+if __name__ == '__main__':
+    main()

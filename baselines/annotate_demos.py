@@ -600,7 +600,7 @@ def main():
     ap.add_argument('--out-dir', default=None, help='render: directory for the mp4s')
     ap.add_argument('--set-name', default='set', help='human | machine; prefixes the clip names')
     ap.add_argument('--tapes', nargs='*', default=None, help='render: segment basenames')
-    ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_ramp'),
+    ap.add_argument('--ladder', choices=('staged', 'sparse', 'nested_sparse', 'nested_sparse10', 'nested_ramp'),
                     default='staged')
     # --- Lane 6 (TIP_RULE_2026-09-11). ANALYSIS ONLY: the override is applied to the env
     # INSTANCE, never to FullTaskEnv.TIP_DEG, and build_env asserts the class default is

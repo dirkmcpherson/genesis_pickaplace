@@ -43,7 +43,7 @@ REPO = os.environ.get('GENESIS_PICKAPLACE_ROOT',
 sys.path.insert(0, os.path.join(REPO, 'baselines'))
 sys.path.insert(0, os.path.join(REPO, 'baselines', 'rl'))
 
-LADDERS = ('staged', 'sparse', 'nested_sparse', 'nested_ramp')
+LADDERS = ('staged', 'sparse', 'nested_sparse', 'nested_sparse10', 'nested_ramp')
 # every column asked for, in the order the doc prints them
 COLS = ('picked', 'placed_v2', 'contact_push', 'pushed', 'farside', 'slide_event', 'home',
         'nested_v2', 'nested_honest', 'tipped', 'slide_success')

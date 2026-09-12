@@ -134,7 +134,7 @@ def main():
     ap.add_argument('--far-release', action='store_true',
                     help='Ladder N: the release that counts for farside/home must be >= 0.10 m from '
                          'the goal. Part of the ladder stamp; refused on a non-nested ladder.')
-    ap.add_argument('--ladder', choices=['staged', 'sparse', 'nested_sparse', 'nested_ramp'],
+    ap.add_argument('--ladder', choices=['staged', 'sparse', 'nested_sparse', 'nested_sparse10', 'nested_ramp'],
                     default='staged',
                     help="scope=full ONLY: WHICH reward ladder (a constructor argument of FullTaskEnv, "
                          "never an env var -- the reward structure must not be selectable by something a "

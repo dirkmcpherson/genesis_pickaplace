@@ -1137,3 +1137,51 @@ seven**, and no other job was affected.
 **Note 2 — the sweep needs a person or a loop.** A local top-up loop kept it at its 6-job ceiling
 from 00:49 to 04:50 (12 passes; it also performed the quarantines above). That loop is gone with the
 session. `bash $W/ln14_milestone_sweep.sh` is idempotent and safe to run at any time.
+
+## Amendment (ac) `nested_sparse10` — built, tested, smoked; NOT submitted (2026-09-12, second workstation)
+
+Registered first (`8ec3f24`). Then, in order:
+
+**Code.** `LADDERS['nested_sparse10'] = dict(stage_reward=dict(home=10.0), terminal=('home',))` in
+`baselines/rl/full_env.py`; `NESTED_LADDERS` extended; suffix `_rns10` in `relabel_reward.py`; the
+name added to every hardcoded `choices` list (`eval_e2e.py`, `train_rlpd.py`, `annotate_demos.py`,
+`diagnostics/pilot_rescore.py`). `full_demos.py`'s demo gate needed NO edit — `_ladder_reward_check`
+derives from `full_env.LADDERS` (its docstring names the two-places-to-change pattern as the reason).
+`nested_sparse` untouched. Test `test_10h`: home tape pays 10, drop pays 0, clamp derives 10.0,
+`nested_sparse` still 1.0 — passes. **Found while adding it:** the suite's `if __name__ == '__main__'`
+block sat ABOVE `test_11`, so `test_11` had never executed when the file was run as a script; runner
+moved to the end, both now run, `ALL OK` in `.venv-eval`.
+
+**Sets (P-ac-3, exact).** Built offline from the stage records of record (`$W/stage_records_2026-09-11/`,
+pax146, 64-core AVX-512; rsynced read-only) with
+`relabel_reward.py --in <set> --out <set>_rns10h --from-records <records> --ladder nested_sparse10
+--tip-guard not_in_hand --sim-variant gc_kp4_riser3_shelf6`:
+
+| set | n | Σ reward | home | n_pick | end_reasons | action sha vs source |
+|---|---|---|---|---|---|---|
+| `dHfull_all_rns10h` | 74 | **120.0** (= 10 × 12) | 12 | 65 | `{home 12, tipped 22, stream_exhausted 26, truncated 14}` = `_rnsh` | 74/74 identical |
+| `dDPfull_first_rns10h` | 72 | **120.0** (= 10 × 12) | 12 | 64 | `{truncated 27, tipped 23, home 12, stream_exhausted 10}` = `_rnsh` | 72/72 identical |
+
+Local copies: `/home/james/data/genesis_pickaplace/demos_state_full/{dHfull_all,dDPfull_first}_rns10h/`
+(rsync to `$W/demos_state_full/` — datasets never travel by git). Both manifests stamp
+`ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped | … | tip=tilt>60deg&not_in_hand@4f`.
+
+**{RLPD} smoke — PASSED locally** (`.venv-eval`, CPU, 300 decisions, human `_rns10h`, the launcher's
+exact `TRAIN_ARGS`): stamp `ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped |
+tip=…not_in_hand@4f`; the ladder-aware demo gate accepted the set; `ladder_provenance.json` carries
+`stage_reward={'home': 10.0}, return_clamp_required=10.0, tip_guard=not_in_hand`; checkpoint archived.
+
+**{r2dreamer} — needs NO code change, smoke is the coordinator's.** Verified read-only on
+`$W/r2dreamer_ladderN`: no ladder-name list anywhere (`configs/env/genesis_full_state.yaml:28` is a
+free string); `train.py:77` computes `want = full_env.max_return(ladder, scope)` and REFUSES the run
+unless both `env.return_clamp` and `model.return_clamp` equal it, then prints
+`[ladder] return_clamp=<want> (env and model agree)`. So `ladder=nested_sparse10` → clamp 10.0 by
+derivation. The local r2dreamer smoke could not run here: every bundle in `cluster/bundles/` requires
+prerequisite commit 6af0ec7, which this workstation's r2dreamer history lacks (`git bundle verify`
+fails; the commit is not on origin either — it exists only on the other workstation).
+
+**For the coordinator (stop point per the brief).** (1) Fresh clone / fast-forward of a Ladder-N tree
+that contains this commit — the r2dreamer smoke must import the full_env WITH `nested_sparse10`, or D6
+will (correctly) refuse a clamp of 10. (2) rsync the two `_rns10h` sets. (3) Cluster smoke of r2dreamer
+gated on `[ladder] … ladder=nested_sparse10 … home=10 | max_return=10` and `return_clamp=10.0 (env and
+model agree)`. (4) Then 2 v 2 per learner, same seeds/budgets/trees as the rev-3 sparse arm.
