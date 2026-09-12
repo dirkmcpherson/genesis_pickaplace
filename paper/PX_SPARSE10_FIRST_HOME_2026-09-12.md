@@ -60,6 +60,12 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 | ck_619574 | 502k | 0.92 / 0.73 / 0.22 | 15/15 / **12/15** (3 tipped; nested_v2 = home, no drop nests) | 21/30 / **18/30** (7 tipped, 5 timeout; nested_v2 20/30) |
 
 | ck_718981 | 601k (post-eviction) | 0.97 / 0.73 / 0.10 | 15/15 / **13/15** (2 tipped) | 20/30 / **16/30** |
+| ck_818916 | 701k | (see record file) | 15/15 / 11/15 (slide 14/15) | 20/30 / 10/30 (slide 19/30) |
+| ck_921211 | 804k | (see record file) | 15/15 / 6/15 (farside 12/15, slide 6/15) | (rnd30 pending) |
+
+Post-eviction trend at 0.7–0.8M: slides keep starting (hold15 14/15, rnd30 19/30 at 0.7M) but fewer arrive
+(`home` 11/15 → 6/15 on hold15; 16/30 → 10/30 on rnd30) — a drift in the slide's finish, not in the approach. The
+series to 1M decides whether this is the oscillation seen earlier or a post-eviction decline.
 
 **0.5M MILESTONE, parent protocol (SAMPLED actions, `online_500000.pt`, `dv3px_sparse10_eval_m500k/`):** hold15 picked
 13/15, placed 11/15, farside 11/15, slide 11/15, `home` **11/15** (4 tipped); rnd30 picked 23/30, placed 21/30, farside
