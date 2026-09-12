@@ -66,7 +66,8 @@ echo
 echo "===================== 5: the two launcher gates ====================="
 for s in $SETS; do
   case "$s" in dH*) ARM=dH ;; dDP*) ARM=dDPfirst ;; esac
-  case "$s" in *_rnrh) L=nested_ramp ;; *_rnsh) L=nested_sparse ;; *_rzh) L=staged ;; esac
+  case "$s" in *_rnrh) L=nested_ramp ;; *_rns10h) L=nested_sparse10 ;; *_rnsh) L=nested_sparse ;; *_rzh) L=staged ;;
+    *) echo "FATAL: no ladder branch for set $s (AUDIT_AC_PACKING S5: add it here AND in relabel_reward.LADDER_SUFFIX)"; exit 1 ;; esac
   echo "--- $s (ARM=$ARM LADDER=$L) ---"
   ( cd "$GP" && DRYRUN=1 GENESIS_PICKAPLACE_ROOT=$GP LADDER=$L TIP_GUARD=not_in_hand ARM=$ARM SEED=0 \
       DEMO=$DEMOS/$s bash cluster/sbatch_rlpd_e2e.sh 2>&1 | grep -E '^DEMO-SHA|^FATAL|Error|^\[dry\] ARM' ) || echo "  RLPD GATE FAILED"
