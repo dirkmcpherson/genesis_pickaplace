@@ -59,6 +59,13 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 | ck_519849 | 402k | 0.68 / 0.50 / 0.47 | 2/15 / 1/15 | 6/30 / 3/30 |
 | ck_619574 | 502k | 0.92 / 0.73 / 0.22 | 15/15 / **12/15** (3 tipped; nested_v2 = home, no drop nests) | 21/30 / **18/30** (7 tipped, 5 timeout; nested_v2 20/30) |
 
+| ck_718981 | 601k (post-eviction) | 0.97 / 0.73 / 0.10 | 15/15 / **13/15** (2 tipped) | 20/30 / **16/30** |
+
+**0.5M MILESTONE, parent protocol (SAMPLED actions, `online_500000.pt`, `dv3px_sparse10_eval_m500k/`):** hold15 picked
+13/15, placed 11/15, farside 11/15, slide 11/15, `home` **11/15** (4 tipped); rnd30 picked 23/30, placed 21/30, farside
+18/30, slide 16/30, `home` **14/30** (11 tipped, 5 timeout). Sampled actions tip more than MODE (11 v 7 on rnd30) and
+nest slightly less — the same ordering the state-based cells showed.
+
 **ck_619574 (0.50M online, 16:20):** `home` 12/15 on demonstration starts and **18/30 on random starts**, deterministic
 actions, fresh process, training world — the full task (pick, place, release, far side, slide, nest) from pixels +
 proprioception on 60 % of random starts at half a million online steps. Matches its record window (home 0.73). Grid
