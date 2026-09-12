@@ -34,6 +34,7 @@ R2=${R2:-$W/r2dreamer_ladderN}
 CELLROOT=${CELLROOT:-$W/ln_milestone_cells}
 PY=$LAB/r2d_venv/bin/python
 REQUIRE_CORES=${REQUIRE_CORES:-64}
+REQUIRE_LOGICAL=${REQUIRE_LOGICAL:-64}
 
 CELL=$CELLROOT/$RUN/$MS
 CKPT=$CELL/latest.pt
@@ -47,6 +48,15 @@ LOGI=$(grep -c '^processor' /proc/cpuinfo)
 echo "[hw] host=$(hostname) physical=$PHYS logical=$LOGI model=$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2-)"
 if [ "$REQUIRE_CORES" != "0" ] && [ "$PHYS" != "$REQUIRE_CORES" ]; then
   echo "FATAL: --require-cores $REQUIRE_CORES but this machine has $PHYS physical cores -- refusing to write a cell on the wrong hardware class"; exit 2
+fi
+# BOTH counts, because "64 cores" names two different measurements on this cluster and the two
+# disagree on real nodes: pax006 and pax012 are 64 PHYSICAL / 128 LOGICAL (SMT on) Xeon Gold 6438M
+# while pax078/pax019/pax004/pax027 are 64/64 (SMT off) of the SAME model. `eval_e2e --require-cores`
+# counts physical, `ladderN_sets.sbatch`'s REQUIRE_CORES counts logical (Ladder-N log §6), and a
+# table that mixes the two is not one hardware class however it is labelled. Refuse before the
+# first episode; the sweep resubmits, and a refusal costs seconds.
+if [ "$REQUIRE_LOGICAL" != "0" ] && [ "$LOGI" != "$REQUIRE_LOGICAL" ]; then
+  echo "FATAL: REQUIRE_LOGICAL=$REQUIRE_LOGICAL but this machine presents $LOGI logical processors (SMT) -- refusing to write a cell on the wrong hardware class"; exit 2
 fi
 
 export GENESIS_PICKAPLACE_ROOT=$GP

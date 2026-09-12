@@ -26,7 +26,9 @@
 # scope by construction (different guard / different ladder / 15k steps).
 #
 # HARDWARE, disclosed. SWEEP_MODE=cpu64 (default) submits to `-p batch --qos=normal` on nodes of
-# 64 PHYSICAL cores, with the sbatch asserting the count itself. That is a deliberate change from
+# 64 PHYSICAL cores AND 64 LOGICAL processors (SMT off), with the sbatch asserting BOTH counts
+# itself -- pax006 and pax012 are 64/128 Xeon Gold 6438M and pax078 is 64/64 of the same model, so
+# one number does not name one machine here. That is a deliberate change from
 # Lane RC's GPU submission and the reasons are: (1) the r2dreamer adapter builds Genesis with
 # backend="cpu" (envs/genesis.py:214) and the policy runs --device cpu, so no part of this
 # evaluation uses a GPU; (2) at the time this sweep was written BOTH GPU allocations were at their
@@ -57,9 +59,16 @@ mkdir -p "$CELLROOT"
 
 case "$SWEEP_MODE" in
   cpu64) [ -f "$EXCL64" ] || { echo "FATAL: no $EXCL64 for the node filter"; exit 1; }
-         SUBMIT_ARGS=(-p batch --qos=normal --exclude="$(cat "$EXCL64")") ;;
+         # .excl64.txt excludes every node that is not 64 PHYSICAL cores. Add the nodes that are
+         # 64 physical but present 128 LOGICAL processors (SMT on) -- same CPU model, different
+         # machine as far as a full-scope cell is concerned. The list is the hw census's own
+         # `cores == 64 and logical != 64`; nodes absent from that census (pax006, pax012) are
+         # caught by the sbatch's own REQUIRE_LOGICAL guard instead, at a cost of seconds.
+         SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax036,pax037,pax038,pax039,pax040,pax041,pax043,pax045,pax046,pax056,pax066}
+         SUBMIT_ARGS=(-p batch --qos=normal --exclude="$(cat "$EXCL64"),$SMT_EXCL")
+         SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=64) ;;
   gpu)   SUBMIT_ARGS=(-p gpu,preempt --qos=preempt --gres=gpu:1 --constraint=l40s\|a100\|l40\|h200 --exclude=pax077)
-         REQUIRE_CORES=0 ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
+         REQUIRE_CORES=0; SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=0) ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
   *) echo "FATAL: SWEEP_MODE must be cpu64 | gpu (got $SWEEP_MODE)"; exit 1 ;;
 esac
 
@@ -182,8 +191,8 @@ while IFS=$'\t' read -r tag name lab rest; do
   if echo "$QUEUED" | grep -qx "$JN"; then echo "# in queue already: $JN"; continue; fi
   if [ "$SUB" -ge "$SLOTS" ]; then echo "# slot limit reached ($MAXJOBS) -- $name $lab deferred to the next sweep"; continue; fi
   CMD=(sbatch -J "$JN" "${SUBMIT_ARGS[@]}" "$SBATCH_FILE" "$name" "$lab")
-  if [ -n "${DRYRUN:-}" ]; then printf '%q ' env CELLROOT="$CELLROOT" GP="$GP" R2="$R2" REQUIRE_CORES="$REQUIRE_CORES" "${CMD[@]}"; echo "   # $JN"; SUB=$((SUB+1)); continue; fi
-  env CELLROOT="$CELLROOT" GP="$GP" R2="$R2" REQUIRE_CORES="$REQUIRE_CORES" \
+  if [ -n "${DRYRUN:-}" ]; then printf '%q ' env CELLROOT="$CELLROOT" GP="$GP" R2="$R2" REQUIRE_CORES="$REQUIRE_CORES" "${SUBMIT_ENV_EXTRA[@]}" "${CMD[@]}"; echo "   # $JN"; SUB=$((SUB+1)); continue; fi
+  env CELLROOT="$CELLROOT" GP="$GP" R2="$R2" REQUIRE_CORES="$REQUIRE_CORES" "${SUBMIT_ENV_EXTRA[@]}" \
       SBATCH_EXPORT=ALL "${CMD[@]}" | sed "s/$/  # $JN/"
   SUB=$((SUB+1))
 done <<< "$PLAN"
