@@ -61,7 +61,15 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 
 | ck_718981 | 601k (post-eviction) | 0.97 / 0.73 / 0.10 | 15/15 / **13/15** (2 tipped) | 20/30 / **16/30** |
 | ck_818916 | 701k | (see record file) | 15/15 / 11/15 (slide 14/15) | 20/30 / 10/30 (slide 19/30) |
-| ck_921211 | 804k | (see record file) | 15/15 / 6/15 (farside 12/15, slide 6/15) | (rnd30 pending) |
+| ck_921211 | 804k | (see record file) | 15/15 / 6/15 (farside 12/15, slide 6/15) | 19/30 / 8/30 |
+| ck_1019364 | 902k | (see record file) | 15/15 / 12/15 (slide 15/15; three slides did not nest) | 16/30 / 11/30 |
+| ck_1119904 | 1 002k (the 1M point; run stopped 19:01 as human s0 of amendment (ae)) | (see record file) | 15/15 / **15/15** | 20/30 / **16/30** |
+
+**Human seed 0, complete series (0.1M → 1.0M), MODE cells:** hold15 `home` 0, 0, 5, 1, 12, 13, 11, 6, 12, **15** of 15;
+rnd30 `home` 0, 0, 7, 3, 18, 16, 10, 8, 11, **16** of 30. **Statistic of record (amendment (ae)) = mean rnd30 MODE `home`
+over the 0.3–1.0M cells = 89/240 = 0.371** (hold15: 75/120 = 0.625). The run ended on its best hold15 cell (15/15) and
+its second-best rnd30 cell; the 0.8M trough (6/15, 8/30) sits inside the same series. 1M milestone sampled cells
+(parent protocol) queued in `dv3px_sparse10_eval_m1000k/`.
 
 Post-eviction trend at 0.7–0.8M: slides keep starting (hold15 14/15, rnd30 19/30 at 0.7M) but fewer arrive
 (`home` 11/15 → 6/15 on hold15; 16/30 → 10/30 on rnd30) — a drift in the slide's finish, not in the approach. The
