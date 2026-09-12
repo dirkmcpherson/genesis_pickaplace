@@ -662,3 +662,98 @@ set builder uses. Output lands in `$W/pilot_rescore_2026-09-11/<run>/{rnd_mode,r
 **Not done, for whoever picks this up:** no health monitor is armed for this batch (this session's
 would die with it). The readout commands are at the end of §5, and the `slide_gain_m` logging gap is
 in §4.3.
+
+---
+
+## Extension (aa rev 2)
+
+Registered `paper/PHASE_PLAN_2026-09-04.md` (aa) REVISION 2, commit `5dcd380`, BEFORE any of the
+eight jobs below was submitted. Trees unchanged and unpulled: `$LAB/gp_ladderN` @ **`a40c8aa1`**,
+`$W/r2dreamer_ladderN` @ **`0cf3d9e`**. Disk at submission: **265 GB free** (≥ 150 GB floor).
+
+**Why (repeated from the registration):** two of the four running `nested_ramp` 2M {r2dreamer}
+seeds (3581570–73) already show `home` in their training records at ~1M steps (`s950`: 1, `s970`:
+2), and the pilot's own staged ladder gave ~0 honest nests at 2M but 0.167 at 4.1M
+(PHASE_RESULTS §5.6) — 2M is the budget most likely to stop just before the behaviour. The
+launcher's requeue path restarts a run from step 0, not from its buffer, so an extension is new
+seeds, never a resumed one.
+
+### QOS state at submission (disclosed discrepancy)
+
+    squeue -u jstale02 -o "%.10i %.28j %.9T %.10P %.10q %.8b"
+    -> normal QOS: 9 of 10 GPU slots in use (8 `ln_r2_*` + 1 surviving pilot job
+       `lz_rl_sparse_dM_s965`) -- only 1 free, not the 2 the brief assumed.
+
+Two {r2dreamer} seeds were submitted to normal QOS anyway (one human, one machine, so the split
+does not sit on one side of the arm contrast); the second of those queued rather than being
+refused (Slurm holds a submission over the running cap as PENDING/`QOSMaxGRESPerUser`, it does not
+reject it). The other two {r2dreamer} seeds and all four {RLPD} seeds went to preempt.
+
+### Jobs submitted (8)
+
+**{r2dreamer}, 4M online steps, milestones `[500000,1000000,2000000,4000000]`, ladder
+`nested_ramp`, `tip_guard=not_in_hand`, `far_release` off — exact command form of
+`cluster/submit_ln_batch.sh`'s `sub_r2`, only seed/steps/milestones changed:**
+
+    MILES="[500000,1000000,2000000,4000000]"
+    env R2_TREE=$W/r2dreamer_ladderN GENESIS_PICKAPLACE_ROOT=$LAB/gp_ladderN LADDER=nested_ramp \
+        TIP_GUARD=not_in_hand R2_LONG_RUN=1 R2_MILESTONES="$MILES" \
+        sbatch -J ln_r2_ramp4M_dH_s952 -p gpu --qos=normal \
+        $LAB/gp_ladderN/cluster/wmfix_full.sbatch dHfull_all_rnrh 952 4000000
+    # (same form) -J ln_r2_ramp4M_dM_s972 -p gpu --qos=normal        ... dDPfull_first_rnrh 972 4000000
+    # (same form) -J ln_r2_ramp4M_dH_s953 -p preempt --qos=preempt   ... dHfull_all_rnrh    953 4000000
+    # (same form) -J ln_r2_ramp4M_dM_s973 -p preempt --qos=preempt   ... dDPfull_first_rnrh 973 4000000
+
+| job | name | QOS/partition | state at submit |
+|---|---|---|---|
+| **3591975** | `ln_r2_ramp4M_dH_s952` | normal / gpu | RUNNING immediately (pax010) |
+| **3591976** | `ln_r2_ramp4M_dM_s972` | normal / gpu | PENDING, `QOSMaxGRESPerUser` |
+| **3591977** | `ln_r2_ramp4M_dH_s953` | preempt / preempt | RUNNING immediately (pax064) |
+| **3591978** | `ln_r2_ramp4M_dM_s973` | preempt / preempt | RUNNING immediately (pax064) |
+
+**{RLPD}, 500k decisions, checkpoints 100k/250k/500k (`--ckpt-fracs 0.2,0.5,1.0`), ladder
+`nested_ramp`, `tip_guard=not_in_hand`, `far_release` off — exact command form of
+`cluster/submit_ln_batch.sh`'s `sub_rl`, only seed/steps/fracs changed (user: "just put in the
+extensions"):**
+
+    env GENESIS_PICKAPLACE_ROOT=$LAB/gp_ladderN LADDER=nested_ramp TIP_GUARD=not_in_hand \
+        ARM=dH SEED=952 STEPS=500000 DEMO=$W/demos_state_full/dHfull_all_rnrh \
+        CKPT_FRACS=0.2,0.5,1.0 \
+        sbatch -J ln_rl_ramp500k_dH_s952 -p preempt --qos=preempt --nice=0 cluster/sbatch_rlpd_e2e.sh
+    # (same form) -J ln_rl_ramp500k_dH_s953  ARM=dH       SEED=953  DEMO=.../dHfull_all_rnrh
+    # (same form) -J ln_rl_ramp500k_dM_s972  ARM=dDPfirst SEED=972  DEMO=.../dDPfull_first_rnrh
+    # (same form) -J ln_rl_ramp500k_dM_s973  ARM=dDPfirst SEED=973  DEMO=.../dDPfull_first_rnrh
+
+| job | name | QOS/partition | state at submit |
+|---|---|---|---|
+| **3591981** | `ln_rl_ramp500k_dH_s952` | preempt / preempt | PENDING, `Priority` |
+| **3591982** | `ln_rl_ramp500k_dH_s953` | preempt / preempt | PENDING, `Priority` |
+| **3591983** | `ln_rl_ramp500k_dM_s972` | preempt / preempt | PENDING, `Priority` |
+| **3591984** | `ln_rl_ramp500k_dM_s973` | preempt / preempt | PENDING, `Priority` |
+
+All four queue behind the running preempt jobs; that is a scheduling delay, not a failure or a
+refusal — nothing about the submission itself was rejected.
+
+### Stamp verification
+
+The three {r2dreamer} jobs that started immediately (3591975, 3591977, 3591978) print the
+identical ladder line, character for character but for `git=` and the run name, matching the
+batch's own ramp stamp exactly:
+
+    [ladder] unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4
+             ramp:slide_gain_m=3/0.05m | max_return=9 | terminal=home+tipped | shaping=off |
+             far_release=off | tip=tilt>60deg&not_in_hand@4f |
+             full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632 |
+             git=known-good-2026-08-27-895-ga40c8aa1-dirty
+    [ladder] tip_guard not_in_hand sustain 4 env frames
+    [ladder] ladder=nested_ramp tip_guard=not_in_hand return_clamp=9.0 (env.return_clamp AND model.return_clamp)
+    [ladder] return_clamp=9.0 (env and model agree)
+
+Tree pin confirmed unmoved after all eight submissions: `git -C $LAB/gp_ladderN describe
+--always --dirty` still reads `known-good-2026-08-27-895-ga40c8aa1-dirty`.
+
+**Still pending at the time of this entry, to be confirmed once the jobs actually run:**
+`3591976` (queued on `QOSMaxGRESPerUser`) and all four `ln_rl_ramp500k_*` (queued on `Priority`);
+the `Step accounting [R2_LONG_RUN]` target line (expected `start + 4000000`) had not yet appeared
+in any of the three running {r2dreamer} logs at first check (still in the model-compile /
+env-creation stage). Follow-up check appended below once available.
