@@ -1109,3 +1109,31 @@ own `ln_r2_sparse_dH_s955/s956`. **Still to confirm when they start:** the four 
    2M. Compare when the 64/64 re-score lands.
 4. `paper/LN_R2_MILESTONE_CELLS_2026-09-12.md` is the readout; regenerate its table with
    `python3 cluster/ln_r2_milestone_table.py --md`.
+
+### Milestone sweep — first-pass result and two operational notes (04:55 EDT)
+
+**34 cells, 855 episodes, `home` = 0 in every one** (`paper/LN_R2_MILESTONE_CELLS_2026-09-12.md`).
+The finding that matters: **`slide_event` is 0 in every 0.5M and 1M cell and then fires on BOTH arms
+at 2M** — human `s950` final 9/30 (rnd30 mode), 12/15 (hold15), machine `s970` 17/30, `s971` 11/30 —
+with `nested_v2` 0 and `home` 0 in all 195 of those episodes. That reproduces
+`paper/LN_RAMP_SATURATION_2026-09-12.md` on evaluation cells rather than training records, and
+extends it to the machine arm.
+
+**Note 1 — two counts, learned the hard way twice.** Five cells were written on 64-physical /
+128-logical nodes (pax006, pax012) before the sbatch asserted the logical count; they are quarantined
+as `<cell>_smt128` and re-scored. Then **seven jobs exited `2:0` within seconds on pax044**, a third
+SMT node also absent from `$LAB/gp_e2e/hw_map.json`, verbatim:
+
+    [hw] host=pax044 physical=64 logical=128 model= Intel(R) Xeon(R) Gold 6438M
+    FATAL: REQUIRE_LOGICAL=64 but this machine presents 128 logical processors (SMT) --
+      refusing to write a cell on the wrong hardware class
+
+The guard was right and the static exclusion list was not — and Slurm kept re-picking the node
+BECAUSE it was free, which it was precisely because every job died on it instantly. The sbatch now
+appends its own hostname to `$CELLROOT/.smt_excluded` before refusing and the sweep unions that file
+into `--exclude`, so the bounce is self-limiting. **No wrong-class cell was written by any of the
+seven**, and no other job was affected.
+
+**Note 2 — the sweep needs a person or a loop.** A local top-up loop kept it at its 6-job ceiling
+from 00:49 to 04:50 (12 passes; it also performed the quarantines above). That loop is gone with the
+session. `bash $W/ln14_milestone_sweep.sh` is idempotent and safe to run at any time.
