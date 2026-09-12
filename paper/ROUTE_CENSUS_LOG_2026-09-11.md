@@ -108,7 +108,12 @@ Test: `sbatch -J rc_r2_dHs945_hold $RC/eval_r2d_route.sbatch full_r2d_state_dHfu
 Confirmed working; the remaining 7 submitted as a batch (`rc_r2_dHs945_rnd` 3592091,
 `rc_r2_dHs946_hold` 3592092, `rc_r2_dHs946_rnd` 3592093, `rc_r2_dMs965_hold` 3592094,
 `rc_r2_dMs965_rnd` 3592095, `rc_r2_dMs966_hold` 3592096, `rc_r2_dMs966_rnd` 3592097) — **8 GPU jobs
-total, the registered ceiling for this lane, at once**. Resource shape: `-p gpu,preempt
+total, the registered ceiling for this lane, submitted at once** (never more than 8 outstanding).
+In practice the cluster's own `QOSMaxGRESPerUser` on `preempt` let only **2 run concurrently**
+across this account (other lanes' jobs occupy the rest of that allocation — `preempt` was at
+20/20 running when this batch went in), so the 8 landed in ~4 sequential waves rather than in
+parallel; the 8-job ceiling this lane registered was never exceeded, only queued behind itself.
+Resource shape: `-p gpu,preempt
 --qos=preempt --gres=gpu:1 --constraint=l40s|a100|l40|h200 --exclude=pax077 -t 0-02:00:00`
 (mirrors `wmfix_full.sbatch`'s GPU request; `--device cpu` inside `eval_genesis.py` itself, same
 as the training launcher's own in-job eval loop — the GPU is for Genesis' world build, not the
@@ -136,6 +141,19 @@ nodes: `pax004,005,015,019,030,031,032,033,034,036,037,038,039,040,041,043,045,0
 `rc_rl_dHs945_rnd` **3592168**, `rc_rl_dMs965_rnd` **3592170** — all three landed on `pax015` and
 ran. Cost: 3 x ~5-8 s of wasted CPU allocation, caught immediately by the guard's own assertion,
 no wrong-hardware cell produced.
+
+**Coordinator flagged this failure mid-run** (verbatim: "Your three {RLPD} route-census jobs
+(3592128/29/31) died in seconds ... Pin them to the 64-core node list Lane 13 used ... note
+`eval_e2e --require-cores` counts PHYSICAL cores while the set builder counted logical — pick
+nodes that satisfy both"). The resubmission above (`--nodelist` from `$LAB/gp_e2e/hw_map.json`'s
+`cores==64` field, which IS the physical-core count, READ ONLY) had already landed and completed
+one of the three (`3592167`, on `pax015`) by the time the message arrived; the other two were
+already `RUNNING` on `pax015`. Cross-checked against the coordinator's own reference,
+`$LAB/gp_dp_e2e/.excl64.txt` (READ ONLY, "every node that is NOT 64 physical cores", 85
+confirmed-64 nodes vs my 55 — a larger, more current census): `grep -x 'pax015\|pax027'
+.excl64.txt` returns **nothing**, i.e. neither node is excluded — both are independently
+confirmed 64-physical-core by the more authoritative list, agreeing with the fact that neither
+job failed. No further resubmission was needed.
 
 ## Step 6 — outcomes
 
