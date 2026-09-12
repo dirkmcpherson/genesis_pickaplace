@@ -781,3 +781,106 @@ point shows all eight `0:0` (no exit yet, none `FAILED 2:0 00:00:00`). Whoever n
 access should re-check `3591976`'s stamp (expect the same ramp/tip/hash line, machine-set prefill
 37488/149952) and the four RLPD jobs' `[ladder]` lines and `nested_ramp`-vs-set assertion once they
 start, per the same P1 checklist as the main batch.
+
+---
+
+## Revision 3 (Lane 14, 2026-09-12) — 12 jobs, equal-n ignition read + the world-model guard control
+
+Registered `paper/PHASE_PLAN_2026-09-04.md` **(aa) REVISION 3**, commit `4cf58af`, BEFORE any of the
+twelve jobs below was submitted. Trees unchanged and unpulled: `$LAB/gp_ladderN` @ **`a40c8aa1`**,
+`$W/r2dreamer_ladderN` @ **`0cf3d9e`** (the launcher printed both back at submission, verbatim:
+`DISK-OK 259 GB free | tree /cluster/tufts/shortlab/jstale02/gp_ladderN
+(known-good-2026-08-27-895-ga40c8aa1-dirty) | r2 …/r2dreamer_ladderN (0cf3d9e)`). Disk at
+submission: **259 GB free** (≥ the registered 150 GB floor).
+
+Submit command of record: `cluster/submit_ln_rev3.sh` (commit `acabb4b` in this branch), deployed to
+the cluster as `$W/ln14_submit_rev3.sh` — **outside** the pinned tree, per §6.1's lesson — and run
+from there. `DRYRUN=1` printed the twelve commands first; they are reproduced by the script itself.
+
+### A defect in the registration, found before submission and worked around, not improvised past
+
+Revision 3 registers {RLPD} `nested_sparse` seeds **s957–958 / s977–978**. The {RLPD} launcher names
+its run directory `$OUT_ROOT/e2e_rlpd_${ARM}_s${SEED}` (`cluster/sbatch_rlpd_e2e.sh:98–100`) with **no
+ladder, set or budget component**, and the batch's staged-control arm already owns seeds **s958 (dH)**
+and **s978 (dDPfirst)**:
+
+    ls $LAB/gp_ladderN/baselines/rl/checkpoints/e2e/
+    -> ... e2e_rlpd_dH_s958  e2e_rlpd_dDPfirst_s978 ...     # jobs 3581566 and 3581568
+
+`sbatch_rlpd_e2e.sh` has **no exists-guard on a fresh start** (the `rm -rf "$OUT"` at line 161 runs
+only on a requeue), and `cluster/run_registry.py check` refuses only a **FULL-key** match — different
+ladder, demo set and budget, so it would have passed. Submitting the registered seeds into the default
+root would therefore have had two new jobs write into the run directories of `ln_rl_ctl_dH_s958`
+(3581566, which COMPLETED `0:0` at 04:10:01, ~5 min before this submission, and whose cells live in
+that directory) and `ln_rl_ctl_dM_s978` (3581568, **still RUNNING** at submission time).
+
+**Resolution, disclosed:** all four {RLPD} rev-3 runs use
+`OUT_ROOT=baselines/rl/checkpoints/e2e_rev3`. `OUT_ROOT` is the launcher's own documented knob
+(header line 28). Seeds, arms, demo sets, ladder, budget, checkpoint fractions, tip guard and job
+names are **exactly as registered**; only the storage root moves, and it moves symmetrically for both
+arms, so it cannot touch the human-versus-machine contrast. `submit_ln_rev3.sh` additionally refuses
+to submit over any run dir that already exists, so the class of accident cannot recur silently.
+
+**Readout consequence, for whoever writes the {RLPD} table:** the four rev-3 {RLPD} runs are NOT under
+`baselines/rl/checkpoints/e2e/`. Any glob that assumes one root will miss them.
+
+### Jobs submitted (12), all PENDING at submission
+
+**{r2dreamer} `nested_sparse`, 4M online steps, milestones `[500000,1000000,2000000,4000000]`,
+`TIP_GUARD=not_in_hand`, `far_release` off, clamp 1.0 (from the ladder):**
+
+| job | name | arm | seed | demo set | QOS/partition | state at submit |
+|---|---|---|---:|---|---|---|
+| **3596021** | `ln_r2_sparse_dH_s957` | human | 957 | `dHfull_all_rnsh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596022** | `ln_r2_sparse_dH_s958` | human | 958 | `dHfull_all_rnsh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596023** | `ln_r2_sparse_dM_s977` | machine-first | 977 | `dDPfull_first_rnsh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596024** | `ln_r2_sparse_dM_s978` | machine-first | 978 | `dDPfull_first_rnsh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+
+**{r2dreamer} `staged` + the new tip guard (the world-model CONTROL), 1M online steps, milestones
+`[500000,1000000]`, clamp 8.0 (from the ladder):**
+
+| job | name | arm | seed | demo set | QOS/partition | state at submit |
+|---|---|---|---:|---|---|---|
+| **3596025** | `ln_r2_ctl_dH_s962` | human | 962 | `dHfull_all_rzh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596026** | `ln_r2_ctl_dH_s963` | human | 963 | `dHfull_all_rzh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596027** | `ln_r2_ctl_dM_s982` | machine-first | 982 | `dDPfull_first_rzh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+| **3596028** | `ln_r2_ctl_dM_s983` | machine-first | 983 | `dDPfull_first_rzh` | normal / gpu | PENDING `QOSMaxGRESPerUser` |
+
+**{RLPD} `nested_sparse`, 500k decisions, checkpoints 100k/250k/500k (`--ckpt-fracs 0.2,0.5,1.0`),
+`OUT_ROOT=baselines/rl/checkpoints/e2e_rev3`:**
+
+| job | name | arm | seed | demo set | QOS/partition | state at submit |
+|---|---|---|---:|---|---|---|
+| **3596029** | `ln_rl_sparse500k_dH_s957` | human | 957 | `dHfull_all_rnsh` | preempt / preempt | PENDING `Priority` |
+| **3596030** | `ln_rl_sparse500k_dH_s958` | human | 958 | `dHfull_all_rnsh` | preempt / preempt | PENDING `Priority` |
+| **3596031** | `ln_rl_sparse500k_dM_s977` | machine-first | 977 | `dDPfull_first_rnsh` | preempt / preempt | PENDING `Priority` |
+| **3596032** | `ln_rl_sparse500k_dM_s978` | machine-first | 978 | `dDPfull_first_rnsh` | preempt / preempt | PENDING `Priority` |
+
+### QOS, disclosed
+
+The same rule as the batch and revision 2: the split is **between learners, never between arms**.
+All 8 {r2dreamer} jobs went to `-p gpu --qos=normal`; all 4 {RLPD} jobs to `-p preempt --qos=preempt`.
+**Neither allocation had a free slot at submission** — `normal` was at 10 of 10 GPU jobs running
+(8 `ln_r2_*` of the batch + 2 of the rev-2 extension) and `preempt` was at its own cap — so every one
+of the twelve queued. Slurm holds a submission over a running cap as PENDING rather than refusing it;
+this is a queueing delay, not a failure, and no job was refused or required a code change.
+
+Nothing was cancelled. No do-not-touch tree was modified: `$LAB/gp_ladderN` was read (and is written
+only by the launchers' own run dirs and `RUN_REGISTRY.jsonl`, exactly as the batch writes them), and
+its `git describe` re-read after all twelve submissions still prints
+`known-good-2026-08-27-895-ga40c8aa1-dirty`.
+
+### Stamp verification
+
+Deferred: all twelve were PENDING at submission, and a `[ladder]` stamp exists only once a job starts.
+The checklist is §5's: within a ladder the line must be identical character for character but for the
+`git=` suffix and the run name —
+
+    nested_sparse: [ladder] unified-2026-09-10 | ladder=nested_sparse | home=1 | max_return=1 |
+                   terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f |
+                   full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632
+    staged (ctl): [ladder] … | ladder=staged | picked=1 placed_v2=1 contact_push=2 slide_success=4 |
+                   max_return=8 | terminal=slide_success+tipped | … same tip= and same three hashes …
+
+plus, on the {r2dreamer} jobs, `[ladder] return_clamp=1.0` (sparse) / `8.0` (staged control)
+`(env and model agree)` — P-aa-5.
