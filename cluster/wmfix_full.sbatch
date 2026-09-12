@@ -32,7 +32,6 @@
 #SBATCH -o /cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/slurm/%x_%j.out
 set -euo pipefail
 # per-job torch.compile cache: two jobs compiling on one node with a shared inductor cache crash (InductorError SubprocException, 09-03)
-export TORCHINDUCTOR_CACHE_DIR=/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/inductor_cache/${SLURM_JOB_ID:-local}
 ARM=$1; SEED=$2; STEPS=$3; shift 3
 # LADDER IS REQUIRED (user 2026-09-11), and the RETURN CLAMP FOLLOWS IT. r2dreamer's clamp is
 # the task's maximum return, so a sparse run needs 1.0 where a staged run needs 8.0; leaving
@@ -67,13 +66,6 @@ TREE=$R2_TREE
 [ -f "$TREE/train.py" ] && [ -f "$TREE/envs/genesis.py" ] || { echo "FATAL: $TREE is not an r2dreamer tree"; exit 2; }
 PY=$LAB/r2d_venv/bin/python
 DEMO=${DEMO_ROOT:-$W/demos_state_full}/$ARM   # DEMO_ROOT override: the repeat-1 pilot reads demos_state_r1/ (stride-1 tapes)
-NAME=full_r2d_state_${ARM}${TAG:+_$TAG}_s${SEED}
-LOGDIR=$W/runs/$NAME
-# A REQUEUED job (preemption) legitimately finds its own partial logdir, and the handler
-# below is written to clear it -- but this guard used to exit 2 first, so that handler was
-# unreachable and every preempted run died instantly with elapsed 00:00:00.
-# 2026-09-10: cost 5 seeds (dH s905/s906/s913, dM s929/s932), all preempted on pax111.
-[ -e "$LOGDIR" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ] && { echo "FATAL: $LOGDIR exists"; exit 2; }
 # REQUIRED, no default (D1). GP_ROOT is still accepted as the spelling the old submissions
 # used, but one of the two must be set explicitly.
 GENESIS_PICKAPLACE_ROOT=${GENESIS_PICKAPLACE_ROOT:-${GP_ROOT:-}}
@@ -100,13 +92,6 @@ fs = sorted(glob.glob(f"{d}/*.npz")); assert len(fs) == int(m["n_written"]), (le
 z = np.load(fs[0]); assert z["state"].shape == (len(z["reward"]), 17), z["state"].shape
 print(f"[demo-gate] {d}: {len(fs)} tapes, variant {m['sim_variant']}, stride {m['action_repeat']} (expected {_o.environ.get('REPEAT', '4')}), with_state, terminal 1.0, total_reward {m['total_reward']}")
 PYG
-if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$LOGDIR" ]; then echo "# requeued (restart ${SLURM_RESTART_COUNT}): clearing the partial logdir and starting clean"; rm -rf "$LOGDIR"; fi
-mkdir -p "$LOGDIR"
-# RESUME_FROM=<latest.pt> (optional): warm restart from that checkpoint (weights+optims; buffer restarts at prefill,
-# step counter re-runs env.steps) -- a DISCLOSED continuation, never a run of record without saying so.
-RESUME=""
-if [ -n "${RESUME_FROM:-}" ]; then cp "$RESUME_FROM" "$LOGDIR/latest.pt"; RESUME="+resume=true"; echo "# RESUME_FROM=$RESUME_FROM (saved step $($PY -c 'import torch,sys; print(torch.load(sys.argv[1],map_location="cpu",weights_only=False).get("step"))' $LOGDIR/latest.pt))"; fi
-# RECIPE OF RECORD baked in (2026-09-05, after the repeat-1 chain was once submitted without them): bnormclamp1ent5 minus the clamp, which is scope-specific (config return_clamp 8 = max staged return)
 RECIPE=${RECIPE:-"env.actor_dist=bounded_normal env.act_entropy=3e-5"}
 # ---- LADDER STAMP into the Slurm log, BEFORE training (LADDER_UNIFY_BRIEF D6) ----
 # The 09-09 version echoed the gate VALUES, which record what was EXPORTED, not what the job
@@ -131,37 +116,79 @@ print(repr(full_env.max_return(L)))          # stdout: the return clamp this lad
 PYL
 ) || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
 echo "[ladder] ladder=$LADDER tip_guard=$TIP_GUARD return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
-CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
-     env.ladder=$LADDER $FAR_CFG env.tip_guard=$TIP_GUARD env.return_clamp=$CLAMP model.return_clamp=$CLAMP
-     buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
-printf '%q ' "${CMD[@]}"; echo
-printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log
-"${CMD[@]}"
-LAST=$(tail -c 4000 $LOGDIR/metrics.jsonl 2>/dev/null | grep -oE "\"step\": [0-9]+" | tail -1 | grep -oE "[0-9]+" || echo 0)
-[ "${LAST:-0}" -ge $((STEPS - 5000)) ] || { echo "FATAL: last logged step $LAST < $((STEPS - 5000)) -- training did not reach its budget; no evaluation"; exit 1; }
-echo "# train rc=$? $(date -Is)"
-# Find this job own log by JOB ID, never by an assumed job NAME: the log is named from
-# #SBATCH -J, so any submission using -J (e.g. -J e2eL_r2_dH_s0) renames it and the old
-# hardcoded "wmfix_full_<id>.out" no longer exists -> grep -c returns empty -> the [ -ge ]
-# test dies with "integer expression expected" AFTER a full 12h training run.
-# (2026-09-10: killed e2eL_r2_dH_s0 at 4M steps, train rc=0, artifacts intact.)
-SLURM_OUT=$(ls -1 $W/slurm/*_${SLURM_JOB_ID}.out 2>/dev/null | head -1)
-[ -n "$SLURM_OUT" ] || SLURM_OUT=$W/slurm/wmfix_full_${SLURM_JOB_ID}.out
-n=$(grep -c '\[sim-variant\] gc_kp4_riser3_shelf6' "$SLURM_OUT" 2>/dev/null || true); n=${n:-0}; echo "# [sim-variant] lines: $n (log: $SLURM_OUT)"
-[ "$n" -ge 1 ] || { echo "FATAL: no [sim-variant] line"; exit 3; }
-grep -E 'Demo prefill:|Step accounting' $SLURM_OUT | head -3
-# FRESH-process evals (sample mode, protocol horizon): 15 hold + 30 rnd (CONFOUNDS row 22: all episodes present)
-for MODE in sample mode; do for SET in ${EVAL_SETS:-hold rnd}; do   # full task: rnd300 + the 74-IC set post hoc (sweep scripts)   # EVAL_SETS override (repeat-1 pilot: "hold rnd", the 74-IC set at 1200 decisions/episode is too slow in-job)   # sample = registered statistic; mode = DP/RLPD-like deterministic counterpart (disclosed); all = FULL demo IC set (user, 2026-09-03)
-  N=15; [ $SET = rnd ] && N=30; [ $SET = all ] && N=1   # N ignored for 'all' (evaluator uses every success uid once)
-  if [ $SET = all ]; then
-    EV=("$PY" eval_genesis.py --checkpoint $LOGDIR/latest.pt --episodes 1 --mode $MODE --max-steps 1200 \
-        --ic-set all --seed 0 --out $LOGDIR/fresh_eval_alldemo_${MODE} --device cpu)
-  else
-    EV=("$PY" eval_genesis.py --checkpoint $LOGDIR/latest.pt --episodes $N --mode $MODE --max-steps 1200 \
-        --ic-file $LAB/genesis_pickaplace/baselines/eval_ics.json --ic-set $SET --seed 0 --out $LOGDIR/fresh_eval_${SET}${N}_${MODE} --device cpu)
-  fi
-  printf '%q ' "${EV[@]}"; echo
-  "${EV[@]}"
-  echo "# eval $SET $MODE rc=$? $(date -Is)"
-done; done
-echo "# DONE $NAME $(date -Is)"
+
+# ---- PER-SEED BODY (2026-09-12, amendment (ac) rev 1: GPU packing) ----
+# Everything below that depends on ONE seed lives here. Single-seed submissions call it once in
+# the foreground and are byte-identical to the pre-packing launcher. PACK_SEEDS="s1 s2 ..." runs
+# one process per seed on the SAME GPU allocation in parallel: each seed gets its own logdir,
+# its own torch.compile cache (two compiles sharing one inductor cache crash, 09-03), its own
+# train.out, and its own post-training checks and eval cells. The preflight above (gates, demo
+# gate, ladder stamp, return clamp) runs ONCE because every seed in a pack shares set + ladder.
+run_seed() {
+  local SEED=$1
+  local NAME=full_r2d_state_${ARM}${TAG:+_$TAG}_s${SEED}
+  local LOGDIR=$W/runs/$NAME
+  export TORCHINDUCTOR_CACHE_DIR=$W/inductor_cache/${SLURM_JOB_ID:-local}_s${SEED}
+  [ -e "$LOGDIR" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ] && { echo "FATAL: $LOGDIR exists"; exit 2; }
+  if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$LOGDIR" ]; then echo "# requeued (restart ${SLURM_RESTART_COUNT}): clearing the partial logdir and starting clean"; rm -rf "$LOGDIR"; fi
+  mkdir -p "$LOGDIR"
+  # RESUME_FROM=<latest.pt> (optional): warm restart from that checkpoint (weights+optims; buffer restarts at prefill,
+  # step counter re-runs env.steps) -- a DISCLOSED continuation, never a run of record without saying so.
+  RESUME=""
+  if [ -n "${RESUME_FROM:-}" ]; then cp "$RESUME_FROM" "$LOGDIR/latest.pt"; RESUME="+resume=true"; echo "# RESUME_FROM=$RESUME_FROM (saved step $($PY -c 'import torch,sys; print(torch.load(sys.argv[1],map_location="cpu",weights_only=False).get("step"))' $LOGDIR/latest.pt))"; fi
+  CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
+       env.ladder=$LADDER $FAR_CFG env.tip_guard=$TIP_GUARD env.return_clamp=$CLAMP model.return_clamp=$CLAMP
+       buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "$@")
+  printf '%q ' "${CMD[@]}"; echo
+  printf '%s %q ' "$(date -Is)" "${CMD[@]}" >> $W/runs/COMMANDS.log; echo >> $W/runs/COMMANDS.log
+  "${CMD[@]}"
+  LAST=$(tail -c 4000 $LOGDIR/metrics.jsonl 2>/dev/null | grep -oE "\"step\": [0-9]+" | tail -1 | grep -oE "[0-9]+" || echo 0)
+  [ "${LAST:-0}" -ge $((STEPS - 5000)) ] || { echo "FATAL: last logged step $LAST < $((STEPS - 5000)) -- training did not reach its budget; no evaluation"; exit 1; }
+  echo "# train rc=$? $(date -Is)"
+  # Find this job own log by JOB ID, never by an assumed job NAME: the log is named from
+  # #SBATCH -J, so any submission using -J (e.g. -J e2eL_r2_dH_s0) renames it and the old
+  # hardcoded "wmfix_full_<id>.out" no longer exists -> grep -c returns empty -> the [ -ge ]
+  # test dies with "integer expression expected" AFTER a full 12h training run.
+  # (2026-09-10: killed e2eL_r2_dH_s0 at 4M steps, train rc=0, artifacts intact.)
+  SLURM_OUT=$(ls -1 $W/slurm/*_${SLURM_JOB_ID}.out 2>/dev/null | head -1)
+  [ -n "$SLURM_OUT" ] || SLURM_OUT=$W/slurm/wmfix_full_${SLURM_JOB_ID}.out
+  SLURM_OUT=${SEED_LOG:-$SLURM_OUT}   # pack mode: this seed's own log; single-seed: the job log
+  n=$(grep -c '\[sim-variant\] gc_kp4_riser3_shelf6' "$SLURM_OUT" 2>/dev/null || true); n=${n:-0}; echo "# [sim-variant] lines: $n (log: $SLURM_OUT)"
+  [ "$n" -ge 1 ] || { echo "FATAL: no [sim-variant] line"; exit 3; }
+  grep -E 'Demo prefill:|Step accounting' $SLURM_OUT | head -3
+  # FRESH-process evals (sample mode, protocol horizon): 15 hold + 30 rnd (CONFOUNDS row 22: all episodes present)
+  for MODE in sample mode; do for SET in ${EVAL_SETS:-hold rnd}; do   # full task: rnd300 + the 74-IC set post hoc (sweep scripts)   # EVAL_SETS override (repeat-1 pilot: "hold rnd", the 74-IC set at 1200 decisions/episode is too slow in-job)   # sample = registered statistic; mode = DP/RLPD-like deterministic counterpart (disclosed); all = FULL demo IC set (user, 2026-09-03)
+    N=15; [ $SET = rnd ] && N=30; [ $SET = all ] && N=1   # N ignored for 'all' (evaluator uses every success uid once)
+    if [ $SET = all ]; then
+      EV=("$PY" eval_genesis.py --checkpoint $LOGDIR/latest.pt --episodes 1 --mode $MODE --max-steps 1200 \
+          --ic-set all --seed 0 --out $LOGDIR/fresh_eval_alldemo_${MODE} --device cpu)
+    else
+      EV=("$PY" eval_genesis.py --checkpoint $LOGDIR/latest.pt --episodes $N --mode $MODE --max-steps 1200 \
+          --ic-file $LAB/genesis_pickaplace/baselines/eval_ics.json --ic-set $SET --seed 0 --out $LOGDIR/fresh_eval_${SET}${N}_${MODE} --device cpu)
+    fi
+    printf '%q ' "${EV[@]}"; echo
+    "${EV[@]}"
+    echo "# eval $SET $MODE rc=$? $(date -Is)"
+  done; done
+  echo "# DONE $NAME $(date -Is)"
+}
+
+if [ -n "${PACK_SEEDS:-}" ]; then
+  echo "[pack] seeds: $PACK_SEEDS (one GPU allocation, $(echo $PACK_SEEDS | wc -w) processes; job $SLURM_JOB_ID)"
+  # Each seed writes its own log (no pipe: `wait` must return run_seed's status, not sed's), and
+  # its own post-training checks read THAT log. The per-seed logs are appended to this job's
+  # log at the end, prefixed, so the P1 audit and the post-hoc sweep still find every stamp here.
+  PIDS=(); SEEDLOGS=()
+  for S in $PACK_SEEDS; do
+    SL=$W/slurm/${SLURM_JOB_NAME:-wmfix_full}_${SLURM_JOB_ID:-local}_s${S}.out; SEEDLOGS+=("$SL")
+    SEED_LOG=$SL run_seed "$S" > "$SL" 2>&1 & PIDS+=($!)
+  done
+  RC=0; i=0
+  for P in "${PIDS[@]}"; do
+    if wait "$P"; then echo "# pack seed ok   ${SEEDLOGS[$i]}"; else RC=1; echo "# pack seed FAIL ${SEEDLOGS[$i]}"; fi; i=$((i+1))
+  done
+  for SL in "${SEEDLOGS[@]}"; do echo "=================== $SL ==================="; sed "s|^|[$(basename "$SL" .out | sed -E 's/.*_(s[0-9]+)$/\1/')] |" "$SL"; done
+  echo "# PACK DONE rc=$RC seeds=$PACK_SEEDS $(date -Is)"; exit $RC
+else
+  run_seed "$SEED"
+fi
