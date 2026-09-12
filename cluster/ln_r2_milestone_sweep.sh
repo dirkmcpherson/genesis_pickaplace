@@ -65,7 +65,14 @@ case "$SWEEP_MODE" in
          # machine as far as a full-scope cell is concerned. The list is the hw census's own
          # `cores == 64 and logical != 64`; nodes absent from that census (pax006, pax012) are
          # caught by the sbatch's own REQUIRE_LOGICAL guard instead, at a cost of seconds.
-         SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax036,pax037,pax038,pax039,pax040,pax041,pax043,pax045,pax046,pax056,pax066}
+         SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax044,pax036,pax037,pax038,pax039,pax040,pax041,pax043,pax045,pax046,pax056,pax066}
+         # ...plus every host the sbatch has caught itself: a refused job appends its hostname to
+         # $CELLROOT/.smt_excluded. Slurm keeps picking an SMT node BECAUSE it is free, and it is
+         # free because these jobs die on it in seconds, so without the learned list the sweep
+         # bounces there indefinitely.
+         if [ -s "$CELLROOT/.smt_excluded" ]; then
+           SMT_EXCL="$SMT_EXCL,$(sort -u "$CELLROOT/.smt_excluded" | tr '\n' ',' | sed 's/,$//')"
+         fi
          SUBMIT_ARGS=(-p batch --qos=normal --exclude="$(cat "$EXCL64"),$SMT_EXCL")
          SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=$REQUIRE_LOGICAL) ;;
   gpu)   SUBMIT_ARGS=(-p gpu,preempt --qos=preempt --gres=gpu:1 --constraint=l40s\|a100\|l40\|h200 --exclude=pax077)

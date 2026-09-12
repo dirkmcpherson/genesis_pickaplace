@@ -56,7 +56,12 @@ fi
 # table that mixes the two is not one hardware class however it is labelled. Refuse before the
 # first episode; the sweep resubmits, and a refusal costs seconds.
 if [ "$REQUIRE_LOGICAL" != "0" ] && [ "$LOGI" != "$REQUIRE_LOGICAL" ]; then
-  echo "FATAL: REQUIRE_LOGICAL=$REQUIRE_LOGICAL but this machine presents $LOGI logical processors (SMT) -- refusing to write a cell on the wrong hardware class"; exit 2
+  # Record the host so the sweep stops sending work here. Without this the job bounces: Slurm keeps
+  # picking the node BECAUSE it is free, and it is free because every one of these jobs dies on it
+  # in seconds. The hw census is incomplete (pax006, pax012, pax044 are all absent from it), so the
+  # exclusion list has to learn from the machines themselves.
+  mkdir -p "$CELLROOT" && echo "$(hostname)" >> "$CELLROOT/.smt_excluded" || true
+  echo "FATAL: REQUIRE_LOGICAL=$REQUIRE_LOGICAL but this machine presents $LOGI logical processors (SMT) -- refusing to write a cell on the wrong hardware class (host recorded in $CELLROOT/.smt_excluded)"; exit 2
 fi
 
 export GENESIS_PICKAPLACE_ROOT=$GP
