@@ -784,6 +784,58 @@ start, per the same P1 checklist as the main batch.
 
 ---
 
+## RLPD 100k readout
+
+Lane RL100 (2026-09-11 into 09-12). Full readout: `paper/RL100_READOUT_2026-09-11.md`. Answers
+HANDOFF §7b: `episode_rollouts.jsonl` lacks `ep_farside`/`ep_slide_event`/`ep_home`, so whether any
+{RLPD} Ladder N run has slid was unknown until its checkpoints were evaluated. Read-only on
+`gp_ladderN` and on every checkpoint it wrote (each copied to `$W/rl100_2026-09-11/<run>/ckpt_100/`
+— with `.provenance.txt` recording source dir + mtime — before any evaluator touched it); the tree
+stayed pinned at `a40c8aa1` throughout, unmoved.
+
+All 12 checkpoints reporting `ckpt_step=100000` in their own sidecar appeared within 18 minutes
+(inside the 60-minute polling budget); `ckpt_040` for the two 250k-budget recipes (`nested_ramp`,
+`nested_sparse`, since 100 000/250 000 = 40 %), `ckpt_100` (the final checkpoint) for the 100k-budget
+staged+tip-guard control. One Slurm job per run, 3 cells each (`rnd30_mode`, `hold15_mode`,
+`rnd30_sample` — the third added because it was cheap), `--role record --require-cores 64`,
+`-p batch --qos=normal`, `--nodelist` restricted to the 55 nodes `$LAB/gp_e2e/hw_map.json`
+(read-only) confirms are 64 physical cores — the census that also explains which nodes satisfied
+Lane 13's `dpRS_*`/`ln_rescore` jobs. No `--ladder`/`--tip-guard` passed (default-from-sidecar).
+
+| job | run | recipe | arm | seed | node | elapsed | state |
+|---:|---|---|---|---:|---|---|---|
+| 3594375 | `e2e_rlpd_dH_s950` | nested_ramp | human | 950 | pax146 | 30:27 | COMPLETED |
+| 3594376 | `e2e_rlpd_dH_s951` | nested_ramp | human | 951 | pax146 | 34:06 | COMPLETED |
+| 3594377 | `e2e_rlpd_dDPfirst_s970` | nested_ramp | machine-first | 970 | pax146 | 22:37 | COMPLETED |
+| 3594378 | `e2e_rlpd_dDPfirst_s971` | nested_ramp | machine-first | 971 | pax146 | 26:56 | COMPLETED |
+| 3594379 | `e2e_rlpd_dH_s955` | nested_sparse | human | 955 | pax146 | 25:35 | COMPLETED |
+| 3594593 | `e2e_rlpd_dH_s956` | nested_sparse | human | 956 | pax146 | 25:57 | COMPLETED |
+| 3594869 | `e2e_rlpd_dDPfirst_s975` | nested_sparse | machine-first | 975 | pax046 | 31:10 | COMPLETED |
+| 3594724 | `e2e_rlpd_dDPfirst_s976` | nested_sparse | machine-first | 976 | pax019 | 20:59 | COMPLETED |
+| 3594729 | `e2e_rlpd_dH_s958` | staged (control) | human | 958 | pax046 | 22:49 | COMPLETED |
+| 3594735 | `e2e_rlpd_dH_s959` | staged (control) | human | 959 | pax046 | 29:20 | COMPLETED |
+| 3594877 | `e2e_rlpd_dDPfirst_s978` | staged (control) | machine-first | 978 | pax045 | 28:15 | COMPLETED |
+| 3594885 | `e2e_rlpd_dDPfirst_s979` | staged (control) | machine-first | 979 | pax045 | 33:24 | COMPLETED |
+
+All 12 `COMPLETED 0:0`; all 36 expected `metrics.json` (900 episodes) exist; every cell stamps
+`git=a40c8aa1`, `require_cores=64`, `core_counts=[64]`.
+
+**Headline: of 900 episodes, exactly ONE reaches `home`** — `e2e_rlpd_dDPfirst_s979` (staged
+control, machine-first), `rnd30_sample` ep19, the full `farside`→`slide_event`→`nested_v2`→`home`
+chain firing together on a run that is not even paid for it. **No `nested_ramp` or `nested_sparse`
+run — the ladders built to pay for this — has a single `home` at 100k decisions** (630 episodes
+across those 8 runs). `farside` is comparatively common (both ladders, both arms); `slide_event` is
+rare (7/900, 4 seeds); the conjunction essentially never lands yet. Full per-run × per-cell tables,
+recipe × arm means, and the per-episode trace of every `farside`/`slide_event`-without-`home` case:
+`paper/RL100_READOUT_2026-09-11.md` §4–§6. NOT a source or ladder comparison (n=2 per arm, one
+early checkpoint, exactly as amendment (aa) registered).
+
+Scripts of record (outside the pinned tree, per §6.1's own corrected practice):
+`$W/rl100_2026-09-11/rl100_eval.sbatch`, `$W/rl100_2026-09-11/summarize.py`,
+`$W/rl100_2026-09-11/nodelist64.txt`.
+
+---
+
 ## Revision 3 (Lane 14, 2026-09-12) — 12 jobs, equal-n ignition read + the world-model guard control
 
 Registered `paper/PHASE_PLAN_2026-09-04.md` **(aa) REVISION 3**, commit `4cf58af`, BEFORE any of the
