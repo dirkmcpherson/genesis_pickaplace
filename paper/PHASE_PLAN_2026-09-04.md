@@ -1643,3 +1643,39 @@ agree)`.
 commit 6af0ec7, which this workstation's r2dreamer history does not contain, so the r2dreamer
 smoke could not be run locally here — it is a cluster smoke for the coordinator, gated on the
 stamp above.
+
+### (ac-local) — the {dv3 local} arm of (ac), registered 2026-09-12 ~11:00 BEFORE launch (coordinator, pop-os)
+
+**What.** One run on the local box: {dv3 local = DreamerV3 losses (`model.rep_loss=dreamer`) in the
+r2dreamer chassis, the recipe of `paper/DV3_LOCAL_E2E_COLLAPSE_2026-09-11.md`}, `nested_sparse10`,
+human set, seed 0, 2M online steps, milestones 0.5M/1M/2M, `tip_guard=not_in_hand`, `far_release`
+off, `return_clamp` 10.0 (derived), `act_entropy` 3e-5, `bounded_normal` actor — everything as the
+local `nested_ramp` run except the ladder and the set. The GPU became free because the warm-restart
+ramp run HUNG at counter 1 417 866 (no output 09:06–10:44, main blocked on its ParallelEnv socket
+during the DV3-9 probe's six extra Genesis worlds; killed, checkpoint preserved as
+`dv3e2e_ramp_resume_series/ck_1417866_hang/`).
+
+**Disclosed deviation.** The cluster (VPN down since ~05:40) holds the `_rns10h` sets of record built
+from the pax146 stage records. This run uses `dHfull_all_rns10h` built on THIS box from the LOCAL
+stage records (`/home/j/data/genesis_pickaplace/stage_records/dHfull_all`, Lane 7, cf66293), which
+score `home` on 13 human tapes where the class-of-record scores 12 (`LADDER_N_DEMO_CHECK`). So this
+set's Σ reward is 130 (= 10 × 13), not 120; action streams are identical to `dHfull_all`. The local
+ramp run used the cluster-of-record `_rnrh` copy, so the two local runs differ in set provenance by
+one tape's terminal; recorded, not hidden.
+
+**World-model warm start (user's suggestion 2026-09-12 ~11:00: "keep the world models around and
+continuously train them").** This run does NOT start its world model from scratch: `+wm_init=` loads
+the encoder, RSSM, state decoder and continuation head (and their frozen acting clones — 12.5 M of
+the 20.4 M parameters) from the ramp run's last checkpoint
+`dv3e2e_ramp_resume_series/ck_1417866_hang/latest.pt` (parent 2M + 1.42M further steps of this
+world, slides included; the terminal set `home+tipped` is the same on both ladders, so the
+continuation head is valid). The reward head, actor, critic, slow critic, return normaliser and the
+optimizer start fresh. Consequence for attribution: if this run slides, "+10" and "transferred
+world model" are confounded HERE; the cluster arm (P-ac-1/2, from scratch) carries the clean scale
+comparison. Recorded in the logdir as `wm_init.json` (source, sha256, loaded prefixes).
+
+**Predictions.** P-ac-4: milestone cells (hold15 MODE, training world) show `picked` ≥ 0.5 at 1M
+(the cluster's `nested_sparse` r2dreamer s975 picked 0/45 at 1M — if +10 also fails to pick, the
+normalisation-floor account is wrong for this chassis too). P-ac-5: the checkpoint SERIES (every
+`latest.pt` rewrite, hold15 + rnd30 MODE) contains ≥ 1 cell with `home` ≥ 1 by 2M. Neither is a
+rate claim; n = 1 seed. Every cell must carry a `[sim-variant] gc_kp4_riser3_shelf6` log line.
