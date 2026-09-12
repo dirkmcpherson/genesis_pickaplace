@@ -1296,3 +1296,19 @@ identically. Run dirs are the usual `$W/runs/full_r2d_state_<set>_s<seed>`; per-
 `$W/slurm/ln_r2_sparse10_pack_<arm>_<jobid>_s<seed>.out`, appended into the job log at the end.
 The (ac) 2 v 2 is therefore: {RLPD} unpacked (3620812–15) + {r2dreamer} packed (3622513–14),
 disclosed as a scheduling difference from the rev-3 comparator in PHASE_PLAN (ac) rev 1.
+
+### Response to `AUDIT_AC_PACKING_2026-09-12.md` (2026-09-12 16:30, cluster-ops box)
+
+| item | action | evidence |
+|---|---|---|
+| **B1** milestone sweep skipped `_rns10h` | fixed sweep deployed to `$W/ln14_milestone_sweep.sh` at ~15:50, BEFORE the first (ac) milestone (s957 at 335k / 500k online, s977 at 125k) | deployed md5 `d8cfb7776a42` = repo; enumerates `("rnrh","rnsh","rzh","rns10h")` |
+| **S5** sets never independently verified | `ladderN_verify_sets.sh` §1–4 could not run as-is: the `_rns10h` manifests record `src=/home/james/data/…` (the BUILD BOX path — a provenance blemish, disclosed; the sets themselves are correct). Re-verified against the CLUSTER sources instead; §5 re-run with `GP=gp_ac` (its default `GP=gp_ladderN` runs the pre-fix launcher, hence the audit's "GATE FAILED") | both sets: keys = source, **0 action/state mismatches**, Σ 120.0 = manifest, reward values exactly {0, 10}, `home` 12 = `_rnsh`, `end_reasons` identical; both gates pass on `gp_ac` (`DEMO-SHA … total_reward=120.0`, `[demo-gate] … 120.0`) |
+| **S3** stalls invisible to the 15-min check | mtime > 45 min rule added to `ladder_health.py` for every running `ln_*`/`lz_*` run (r2dreamer `metrics.jsonl`, RLPD `episode_rollouts.jsonl`) | **fired on its first run:** `dDPfull_first_rnsh_s976` (aa rev-3, 4M) — no logged step since 12:44, process at 105 % CPU / **0 % GPU**, ~66k steps short of target (normally ~1 h). CONFOUNDS 85's signature. Given one more poll, unchanged → **cancelled 16:23** (job 3581577). Kept: milestones 0.5M/1M/2M + `latest.pt` @ 12:36 (~3.93M online). The sweep scores those; the seed's 4M milestone is LOST. One machine sparse seed at 4M therefore comes from `latest.pt` short of budget, disclosed. |
+| **S1** r2dreamer launcher never checked set-ladder == run-ladder | assertion added to `wmfix_full.sbatch`'s demo gate (same convention as `full_demos.py`: no `relabel` block = staged); tested both ways locally | in the REPO for future clones; NOT pulled into `gp_ac` (see S4) |
+| **S4** `gp_ac` fast-forwarded under running RLPD jobs | verified inert: `git diff 8e54346..294c1fbe` over `full_env.py genesis_can_env.py stage_predicates.py full_demos.py train_rlpd.py eval_e2e.py sbatch_rlpd_e2e.sh` is **empty**. **`gp_ac` is now PINNED at 294c1fbe for the life of (ac)** — no further pulls; new work uses a new clone | this row |
+| **S7** preemption loses two seeds | noted in PHASE_PLAN (ac) rev 1 addendum; packs are on QOS `normal` (no preemption) | — |
+| rev-1 wording | P-ac-1 stated as packed-vs-unpacked per seed, closed with the two identical Step-accounting lines | PHASE_PLAN (ac) rev 1 addendum |
+| literal lists (12, not 6/8) | accepted; two missed sites were the sweep (B1) and `ladderN_verify_sets.sh` (S5). Durable fix (derive from `full_env.LADDERS` / `relabel_reward.LADDER_SUFFIX` / `ladder_provenance.json`) still deferred until no batch is spooled from the launchers | — |
+| `is_terminal` | accepted as second-order (biases the value at `home` UPWARD — wrong direction for non-ignition; cannot explain no-pick at 1M). Decisive test only if (ac)'s 1M milestone picks | — |
+
+Also from this pass: the RLPD census must include `$LAB/gp_ac/baselines/rl/checkpoints/e2e_ac/` (added to the ops list); the pixel-observation lane on the other box reports `nested_sparse10` from pixels reaching `home` 12/15 hold15 mode / 18/30 rnd30 mode at 0.5M (`PX_SPARSE10`, its own registration (ad)) — a different arm, not part of (ac).

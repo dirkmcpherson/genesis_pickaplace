@@ -83,11 +83,19 @@ cd $TREE
 echo "# $(date -Is) host=$(hostname) gpu=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1) tree=$TREE variant=$R2D_SIM_VARIANT demo=$DEMO"
 grep -q 'state_obs' envs/genesis.py demo_prefill.py configs/env/genesis_pick_state.yaml || { echo "FATAL: tree lacks the state patches"; exit 2; }
 # demo-dir provenance gate: world + stride + with_state + terminal reward must match this run
-"$PY" - "$DEMO" "$R2D_SIM_VARIANT" <<'PYG'
+LADDER=$LADDER "$PY" - "$DEMO" "$R2D_SIM_VARIANT" <<'PYG'
 import json, sys, glob, numpy as np
 d, want = sys.argv[1], sys.argv[2]
 m = json.load(open(f"{d}/repeat.json"))
 assert m["sim_variant"] == want, (m["sim_variant"], want)
+# S1 (audit 2026-09-12): the SET's recorded ladder must equal the RUN's ladder -- the RLPD gate
+# (full_demos.py) has asserted this since amendment (aa); this launcher never did, so a world-model
+# run could prefill from one objective and be paid another. A set built before the unification has
+# no `relabel` block and is the staged ladder by construction (same convention as full_demos.py).
+import os as _o
+_set_ladder = str((m.get("relabel") or {}).get("ladder") or "staged")
+assert _set_ladder == _o.environ["LADDER"], (
+    f"{d}: set built under ladder {_set_ladder!r} but this run trains under {_o.environ['LADDER']!r}")
 import os as _o; assert int(m["action_repeat"]) == int(_o.environ.get("REPEAT", "4")) and m.get("with_state") is True and abs(float(m["terminal_reward"]) - 1.0) < 1e-9 and m.get("reward_from_tape") is True and m.get("scope") == "full", m
 fs = sorted(glob.glob(f"{d}/*.npz")); assert len(fs) == int(m["n_written"]), (len(fs), m.get("n_written"))  # set-size agnostic (raw pair is N=66)
 z = np.load(fs[0]); assert z["state"].shape == (len(z["reward"]), 17), z["state"].shape

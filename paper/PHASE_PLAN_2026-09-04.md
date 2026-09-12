@@ -1748,3 +1748,17 @@ recorded as CONFOUNDS row 79 and is not specific to packing. Gate before the bat
 smoke (2 seeds × 15k online steps) must show BOTH seeds' `[ladder] … ladder=nested_sparse10 …
 max_return=10`, `return_clamp=10.0 (env and model agree)`, their own `ladder_provenance.json`,
 and `# pack seed ok` for each. The {RLPD} half of (ac) (3620812–15) is unaffected and already running.
+
+**(ac) REVISION 1 — addendum after audit (`paper/AUDIT_AC_PACKING_2026-09-12.md`, 2026-09-12 16:30).**
+Stated explicitly, as the audit asked: P-ac-1 compares the PACKED (ac) `nested_sparse10` seeds
+against rev-3's UNPACKED `nested_sparse` seeds, per seed (s957↔s957 etc.). The only thing packing
+can change is wall-clock and GPU sharing; the computation is step-budgeted. Closed by the two Step
+accounting lines, verbatim from the jobs' own logs, which are identical:
+
+    rev-3 unpacked s957: Step accounting [R2_LONG_RUN]: prefill 29406 decisions; trainer starts at counter step 117624 (env frames); env.steps=4000000 ONLINE env steps -> counter target 4117624.
+    (ac)  packed   s957: Step accounting [R2_LONG_RUN]: prefill 29406 decisions; trainer starts at counter step 117624 (env frames); env.steps=4000000 ONLINE env steps -> counter target 4117624.
+
+Operational exposure, also per the audit: a pack runs up to 12 CPU Genesis worlds per allocation
+(the count that once hung a workstation); the health check now carries a `metrics.jsonl` mtime > 45 min
+STALL rule (S3), and a preemption of a pack loses TWO seeds (S7) — the packs are on QOS `normal`,
+where preemption does not occur, which is why they were placed there.
