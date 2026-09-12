@@ -107,6 +107,15 @@ for suf in ("rnrh", "rnsh", "rzh"):
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s9*"))
 runs = sorted(r for r in runs if os.path.isdir(r) and "lnsmoke" not in os.path.basename(r))
 
+# ARM-INTERLEAVED ORDER. Plain alphabetical puts every `dDPfull_first_*` (machine) run ahead of
+# every `dHfull_all_*` (human) one, so the first wave of a slot-limited sweep is one arm only and a
+# partial table reads as a contrast when it is not one. Interleave human/machine so that whatever
+# subset of the sweep has finished at any moment is roughly balanced. (Cell VALUES do not depend on
+# the order -- each job is a fresh process on a pinned core class -- only which cells exist first.)
+_h = [r for r in runs if "dHfull_all" in os.path.basename(r)]
+_m = [r for r in runs if "dHfull_all" not in os.path.basename(r)]
+runs = [r for pair in __import__("itertools").zip_longest(_h, _m) for r in pair if r]
+
 plan = []
 for run in runs:
     name = os.path.basename(run)
