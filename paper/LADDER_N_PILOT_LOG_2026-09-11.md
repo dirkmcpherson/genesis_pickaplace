@@ -936,3 +936,72 @@ The checklist is §5's: within a ladder the line must be identical character for
 
 plus, on the {r2dreamer} jobs, `[ladder] return_clamp=1.0` (sparse) / `8.0` (staged control)
 `(env and model agree)` — P-aa-5.
+
+---
+
+## Milestone evaluation sweep (Lane 14, 2026-09-12) — the cells the launcher never makes
+
+`cluster/wmfix_full.sbatch:153–165` evaluates **only `latest.pt`, only at the end of the job**. Every
+`milestones/online_*.pt` the launcher writes is therefore unevaluated, which is why the audit found
+the registered "matched milestone" rule unimplementable for the world model
+(`paper/AUDIT_STATISTICAL_SHOT_2026-09-12.md`, VERDICT item 2). **(aa) REVISION 3 schedules the
+sweep**; this is it.
+
+* `cluster/ln_r2_milestone_sweep.sh` — enumerate, copy, verify, submit. Deployed to the cluster as
+  `$W/ln14_milestone_sweep.sh`, **outside** the pinned tree.
+* `cluster/ln_r2_milestone_eval.sbatch` — one job per (run, milestone); three cells each. Deployed as
+  `$W/ln14_milestone_eval.sbatch`.
+* `cluster/ln_r2_milestone_table.py` — the readout. Deployed as `$W/ln14_milestone_table.py`.
+
+**Scope:** `$W/runs/full_r2d_state_*_r{nrh,nsh,zh}_s9*` — the (aa) batch, the rev-2 extension and rev 3
+as its runs appear. The pilot's `_rz_`/`_rs_` runs and the `*_lnsmoke_*` smokes are out of scope by
+construction (different guard, different ladder, 15k steps).
+
+**Cells:** `rnd30_mode` (30 ep, `--ic-set rnd --mode mode`), `hold15_mode` (15, `hold`, `mode`) — the
+two (aa) readout cells — and `rnd30_sample` (30, `rnd`, `sample`), the route census's statistic.
+Everything lands under `$W/ln_milestone_cells/<run>/<milestone>/`.
+
+**Provenance.** The sweep copies the checkpoint on the LOGIN node, before submitting, and verifies the
+copy's sha256 against the milestone sidecar's own `sha256` field — `latest.pt` is rewritten
+periodically while a run is alive, so copying inside the job would not pin what was scored. It also
+copies `.hydra/{config,overrides,hydra}.yaml`, `ladder_provenance.json` and `step_contract.json`, and
+writes a `provenance.json` (source path, source mtime, copy sha256, sidecar sha256, the sidecar
+itself, and the run's training step at the moment of the copy). The evaluator reads the run's own
+ladder / tip guard / clamp out of the copied config; nothing is passed on the command line.
+
+**The final `latest.pt`** is only eligible once `metrics.jsonl`'s last `step` reaches
+`step_contract.json`'s `legacy_counter_target − 5000` — the launcher's own "training reached its
+budget" test. Before that, `latest.pt` is a mid-run snapshot, not a `final` cell.
+
+**Idempotent, and it must be RE-RUN after each milestone lands — there is no cron on this cluster.**
+A (run, milestone) whose three cells all have `metrics.json` is skipped; a partial one is resubmitted
+and the sbatch skips the cells it already has; one that is already PENDING/RUNNING is left alone. It
+never writes into a run dir. Ceiling: `MAXJOBS` (default **6**) jobs in flight.
+
+### HARDWARE — a deviation from Lane RC's submission shape, disclosed
+
+Lane RC evaluated its {r2dreamer} copies on GPU nodes under QOS `preempt`. This sweep defaults to
+`SWEEP_MODE=cpu64`: `-p batch --qos=normal`, `-N 1 -n 8 --mem=48g` (the same CPU shape
+`wmfix_full.sbatch` gives its own in-job evals), excluding every node in
+`$LAB/gp_dp_e2e/.excl64.txt` (READ ONLY, "every node that is NOT 64 physical cores"), and the sbatch
+**asserts the physical core count itself** before the first episode. Three reasons, in order:
+
+1. **No part of this evaluation uses a GPU.** The r2dreamer adapter builds Genesis with
+   `backend="cpu"` (`$W/r2dreamer_ladderN/envs/genesis.py:214`) and the policy runs `--device cpu`.
+   Lane RC's `--gres=gpu:1` reserved a device that the world build never touched.
+2. **There was no GPU to take.** At submission `normal` was at 10 of 10 GPU jobs and `preempt` at its
+   own cap, both with this project's training runs — a GPU sweep would have been paid for out of the
+   batch it exists to read, including the twelve jobs revision 3 had just queued.
+3. **It pins the hardware class.** Full-scope outcomes track machine size in this project; the GPU
+   nodes these runs train on are not one class, and `eval_genesis.py` has no `--require-cores` guard
+   of its own (that is `eval_e2e.py`). Pinning 64 physical cores makes every cell in this table
+   homogeneous and puts it in the same class as the project's other pinned cells.
+
+`SWEEP_MODE=gpu` reproduces Lane RC's exact shape for anyone who wants that comparison. **Do not mix
+the two modes inside one table** — every cell stamps `node` / `cpu_model` / `ncpus_machine`, so it can
+be checked rather than assumed.
+
+Measured throughput on pax078 (64 physical cores, `-n 8`): ~0.44 s per decision, so a 300-decision
+timeout episode ≈ 130 s and a (run, milestone) job's three cells ≈ 2–3 h. 18 (run, milestone) pairs
+existed when the sweep was written, so at the 6-job ceiling the first full pass is ~6–9 h of wall
+clock.
