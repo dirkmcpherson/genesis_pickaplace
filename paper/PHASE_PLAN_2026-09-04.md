@@ -1682,8 +1682,9 @@ rate claim; n = 1 seed. Every cell must carry a `[sim-variant] gc_kp4_riser3_she
 
 ### (ac) REVISION 1 — the four {r2dreamer} runs are GPU-PACKED (registered 2026-09-12, BEFORE submission; user's instruction)
 
-The four (ac) world-model runs (s957/958 human, s977/978 machine) run as ONE Slurm allocation on
-one GPU, four processes, via a `PACK_SEEDS` mode added to the launcher of record
+The four (ac) world-model runs (s957/958 human, s977/978 machine) run as TWO Slurm allocations —
+one pack per ARM (the launcher's once-only demo gate binds one demonstration set per job), two
+processes sharing one GPU each — via a `PACK_SEEDS` mode added to the launcher of record
 (`cluster/wmfix_full.sbatch`) — not the pre-unification `sbatch_r2dreamer_pack.sh`, which carries
 none of the ladder gates, stamps, or the D6 clamp check. Measured basis: a running (aa) r2dreamer
 job uses 1.8 GB of an 80 GB A100 at ~21 % utilisation, and the normal-QOS GPU cap has been binding
@@ -1694,8 +1695,9 @@ log, post-training checks and eval cells; a failed seed fails the pack's exit st
 
 **Disclosure.** This is a SCHEDULING difference from rev-3's sparse comparator (one job, one GPU
 per run, `normal` QOS), of the same kind as the QOS split already disclosed for (aa). The four seeds
-are packed TOGETHER — both arms in one allocation, same node, same GPU, same wall-clock — so it
-cannot introduce a between-arm difference. Computation is step-budgeted and unchanged; only
+are BOTH packed, identically (2 per GPU, same request, same QOS, submitted together), so packing
+is applied symmetrically across arms and cannot by itself introduce a between-arm difference;
+the two packs may land on different nodes, exactly as unpacked runs do. Computation is step-budgeted and unchanged; only
 wall-clock and GPU sharing differ. Any timing-dependent nondeterminism is the class already
 recorded as CONFOUNDS row 79 and is not specific to packing. Gate before the batch: a packed
 smoke (2 seeds × 15k online steps) must show BOTH seeds' `[ladder] … ladder=nested_sparse10 …

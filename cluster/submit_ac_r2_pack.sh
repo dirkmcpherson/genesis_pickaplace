@@ -20,11 +20,9 @@ if [ -n "${SMOKE:-}" ]; then
       sbatch -J $NAME "${Q[@]}" "$GP/cluster/wmfix_full.sbatch" dHfull_all_rns10h 9985 $STEPS | sed "s/$/  # $NAME/"
   exit 0
 fi
-# THE BATCH: one allocation, both arms. Two demo sets in one pack is not something the launcher's
-# once-only demo gate supports (ARM is per pack), so the pack is two invocations of PACK_SEEDS
-# within ONE job is not possible either -- instead submit ONE pack per ARM, both requesting the
-# same node class, and disclose. (Per-arm packs still pack; the symmetry that matters is that
-# BOTH arms are packed, which they are.)
+# THE BATCH: ONE PACK PER ARM (the launcher's once-only demo gate binds one set per job, so a
+# pack cannot mix the two sets). Both arms are packed identically -- that is the symmetry that
+# matters -- and the two packs are submitted together with the same request and QOS.
 for s in 957 958; do [ -e "$W/runs/full_r2d_state_dHfull_all_rns10h_s$s" ] && { echo "FATAL: run dir for s$s exists"; exit 1; }; done
 for s in 977 978; do [ -e "$W/runs/full_r2d_state_dDPfull_first_rns10h_s$s" ] && { echo "FATAL: run dir for s$s exists"; exit 1; }; done
 Q=(-p gpu --qos=normal -n 16 --mem=96g)
