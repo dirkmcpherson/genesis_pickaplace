@@ -1553,3 +1553,42 @@ matched 100k/250k checkpoints — the same free within-arm replication as the {r
 at n=4 v 4 per arm.
 
 Predictions P-aa-2…7 apply unchanged to both extensions.
+
+### (aa) CORRECTIONS from the independent audit (`paper/AUDIT_STATISTICAL_SHOT_2026-09-12.md`, 2026-09-12)
+
+1. Revision 2's rationale cited training-record `home` counts "s950 1, s970 2" at ~1M; the records
+   show s970 at 6 by 1.0M online and s951 at 2. The rationale (two seeds already showing `home` at
+   ~1M) stands; the numbers were read from an earlier snapshot and are superseded. Training-record
+   counters are in any case NOT decision statistics (RC2).
+2. The decision rule of the brief cannot decide at n = 2 v 2: the exact permutation test has 6
+   splits (floor p 0.333) and the observed per-seed spread on `home` gives an MDE of 0.27–0.74,
+   larger than any `home` rate ever measured. The 16 v 16 is HELD until an equal-n ignition read
+   exists: **revision 3 below adds 4 `nested_sparse` seeds per learner (the ramp arm received 4
+   extension seeds in revision 2, `nested_sparse` none) and a {r2dreamer} guard control**, and
+   schedules the milestone evaluations the launcher never runs.
+3. P-aa-6 is NOT met on the {RLPD} control's whole-run tip rate (+0.094 v the pilot's staged arm;
+   last-100 window +0.05, borderline): the new guard changed policy termination for {RLPD}. The
+   registered disconfirm branch fires: every guard-batch v pilot comparison is read with that caveat,
+   and the world model gets its own control (revision 3).
+4. `paper/RL100_READOUT_2026-09-11.md` was cited before it existed; its 27 cells exist
+   (`$W/rl100_2026-09-11/`, `home` = 0 in all), the document follows from lane RL100.
+
+### (aa) REVISION 3 — equal-n ignition read + world-model guard control (registered 2026-09-12 ~01:30 BEFORE submission)
+
+| learner | ladder | arms | seeds | budget | purpose |
+|---|---|---|---|---|---|
+| {r2dreamer} | nested_sparse | human / machine | +2 v +2 (s957–958 / s977–978) | 4M online | equal n with the ramp arm (4 v 4 at 2M and 4M) |
+| {RLPD} | nested_sparse | human / machine | +2 v +2 (s957–958 / s977–978) | 500k decisions | equal n with the ramp arm at 100k/250k/500k |
+| {r2dreamer} | staged + `not_in_hand` guard (control) | human / machine | 2 v 2 (s962–963 / s982–983) | 1M online | the guard's effect on the world model, against the pilot's staged 1M runs with `grip` |
+
+Same trees (`$LAB/gp_ladderN` @ a40c8aa1, `$W/r2dreamer_ladderN` @ 0cf3d9e), same sets of record
+(`_rnsh`, `_rzh`), same stamps required. **Milestone evaluation, now scheduled:** every
+`milestones/online_*.pt` of every `ln_r2_*` run (and each final `latest.pt`) is evaluated on
+`rnd30` mode + `hold15` mode (+ `rnd30` sampled) by a sweep script, so the matched-milestone
+statistic exists for the world model. **Decision procedure replaces the brief's rule:** at 4 v 4
+per arm per learner, report `home` rate per seed at the matched milestone with the exact
+permutation p and the MDE; call a recipe "ignited" if ≥ 2 of 4 seeds per arm show ≥ 1 `home` in
+its cells; if both finalists ignite, the 16 v 16 is split (8 v 8 each) rather than awarded to one on
+an undetectable difference; if one ignites and the other does not, it gets the 16 v 16 with the
+ignition evidence — not a rate difference — stated as the reason. Cost at measured throughput:
+{r2dreamer} 4 × 4M ≈ 60 GPU-h + 4 × 1M ≈ 15 GPU-h; {RLPD} 4 × 500k ≈ 70 GPU-h.
