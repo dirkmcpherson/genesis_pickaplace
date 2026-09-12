@@ -57,7 +57,13 @@ and `rollouts_grid.mp4` (all 15) under `fresh_eval_hold15_mode/`.
 | ck_317776 | 200k | (first picks) | 0/15 / 0/15 | 2/30 / 0/30 |
 | ck_421321 | 304k | 0.82 / 0.37 / 0.17 | 14/15 / **5/15** | 16/30 / **7/30** |
 | ck_519849 | 402k | 0.68 / 0.50 / 0.47 | 2/15 / 1/15 | 6/30 / 3/30 |
-| ck_619574 | 502k | 0.92 / 0.73 / 0.22 | (cells running) | |
+| ck_619574 | 502k | 0.92 / 0.73 / 0.22 | 15/15 / **12/15** (3 tipped; nested_v2 = home, no drop nests) | 21/30 / **18/30** (7 tipped, 5 timeout; nested_v2 20/30) |
+
+**ck_619574 (0.50M online, 16:20):** `home` 12/15 on demonstration starts and **18/30 on random starts**, deterministic
+actions, fresh process, training world — the full task (pick, place, release, far side, slide, nest) from pixels +
+proprioception on 60 % of random starts at half a million online steps. Matches its record window (home 0.73). Grid
+videos of both cells sent to the user. The same caveats hold (n = 1 seed, no attribution, an oscillating policy — the
+next checkpoint may read lower, as ck_519849 did), which is exactly why the series continues to 2M.
 
 ck_519849 is the caution: its 60-episode record window reads picked 0.68 / home 0.50 while the reloaded checkpoint
 reads picked 2/15 / home 1/15 on hold15 MODE. The rolling-30 training `home` rate through the run
