@@ -1185,3 +1185,56 @@ that contains this commit — the r2dreamer smoke must import the full_env WITH 
 will (correctly) refuse a clamp of 10. (2) rsync the two `_rns10h` sets. (3) Cluster smoke of r2dreamer
 gated on `[ladder] … ladder=nested_sparse10 … home=10 | max_return=10` and `return_clamp=10.0 (env and
 model agree)`. (4) Then 2 v 2 per learner, same seeds/budgets/trees as the rev-3 sparse arm.
+
+### (ac) cluster smokes — PASSED on every stated criterion (2026-09-12; authorised by the coordinator, VPN down on its side)
+
+Fresh clone `$LAB/gp_ac` @ `8e54346` (never the pinned `gp_ladderN`); r2dreamer tree of record
+`$W/r2dreamer_ladderN` @ `0cf3d9e`, unchanged; sets `dHfull_all_rns10h` / `dDPfull_first_rns10h`
+rsynced to `$W/demos_state_full/` (n 74/72, Σ 120.0/120.0, `ladder=nested_sparse10` in both manifests).
+Submit command of record: `GP=$LAB/gp_ac bash cluster/submit_ac_smokes.sh` (reuses the (aa) smoke
+functions verbatim; only ladder and set differ).
+
+**First attempt (3618417 / 3618418) was REFUSED at the launcher preflight**, correctly:
+`FATAL: LADDER must be staged | sparse | nested_sparse | nested_ramp (got nested_sparse10)` — literal
+ladder-name lists in `sbatch_rlpd_e2e.sh` and `wmfix_full.sbatch` (validation, usage, far_release
+case) plus the two set-builders' suffix maps, all missed by 5d92a09 because they are bash, not
+`choices=`. Fixed in `8e54346` (the sixth literal copy of the list; deriving them all from
+`full_env.LADDERS` is deferred to a moment with no batch spooled from these launchers).
+
+**Second attempt — stamps, verbatim from each job's stdout:**
+
+{RLPD} `ln_smoke_rl_sparse10` **3618550, COMPLETED 4m50**
+```
+DEMO-SHA dH full-scope segments n=74 sha=bbbd901d68fc4138 total_reward=120.0 pick=65 nopick=9
+[ladder] unified-2026-09-10 | ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f | full_env=584bea6d9c6d genesis_can_env=4054…
+[ladder] max_return 10.0
+[ladder] tip_guard not_in_hand sustain 4 env frames
+[ladder] wrote baselines/rl/checkpoints/ln_smoke/e2e_rlpd_dH_s9984/ladder_provenance.json
+TRAIN-OK … budget 1000 decisions reached
+[eval-e2e] 3 episodes (mode, hold): … slide_event 0/3  home 0/3 …
+```
+{r2dreamer} `ln_smoke_r2_sparse10` **3618552, RUNNING past every gate** (15k online steps)
+```
+[demo-gate] …/dHfull_all_rns10h: 74 tapes, variant gc_kp4_riser3_shelf6, stride 4, with_state, total_reward 120.0
+[ladder] unified-2026-09-10 | ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped | … | tip=tilt>60deg&not_in_hand@4f | full_env=584bea6d9c6d genesis_can_env=4054…
+[ladder] ladder=nested_sparse10 tip_guard=not_in_hand return_clamp=10.0 (env.return_clamp AND model.return_clamp)
+[ladder] return_clamp=10.0 (env and model agree)
+[ladder] wrote …/runs/full_r2d_state_dHfull_all_rns10h_lnsmoke_s9984/ladder_provenance.json
+```
+The `[ladder] unified-…` line is byte-identical between the two learners (same `full_env` /
+`genesis_can_env` shas). Both `ladder_provenance.json` files carry `max_return` /
+`return_clamp_required` 10.0.
+
+**Pre-existing finding surfaced by the smoke, NOT introduced by (ac):** the r2dreamer prefill
+reports `'terminal_reward_values': [], 'rewarded_terminals': 0` for `_rns10h` — and identically
+for the (aa) `_rnsh` smoke (3579620) and its batch jobs (`ln_r2_sparse_dH_s955`). The `_rnrh` ramp
+smoke shows `rewarded_terminals: 2` only because two tapes' RECORDED terminals happen to coincide
+with a paid row. Mechanism: `LADDER_IMPL_NOTES_2026-09-10.md` §4 — `is_terminal` is left as recorded
+in relabelled sets, so the `home` row's reward enters the buffer as a NON-terminal +1 / +10 with
+frames continuing after it, and the world model can bootstrap value past the event the ladder calls
+terminal. That was logged as "open decision for the coordinator" and never taken. It affects
+`nested_sparse` and `nested_sparse10` equally (the (ac) contrast is fair), but it is a plausible
+contributor to the sparse arm's non-ignition and should be decided before any sparse result is
+read as "sparse cannot be learned".
+
+**Not submitted:** the 2 v 2 (ac) batch. Awaiting the coordinator's batch paragraph.
