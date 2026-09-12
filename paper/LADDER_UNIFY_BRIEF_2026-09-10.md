@@ -257,3 +257,32 @@ re-execution under A and B (and with `far_release` on/off): per-arm reward total
 human/machine tapes reach `farside`, `slide_gain` distribution, how many reach `home`. The human
 set should earn near the maximum on its 13 sim-slides; if it does not, the definition is wrong,
 not the humans.
+
+## Decision rule for the ≥ 16-seed batch (user, 2026-09-11 ~21:30: "soon we have to decide which of these reward variants has the best chance and then run ≥ 16")
+
+**Candidates (all with `tip_guard=not_in_hand`, `far_release` off):** `nested_ramp` v2, `nested_sparse`,
+and the pilot's plain `sparse` (settled contact by any route), each per learner. The staged ladders
+are out (their top rung was a set-down-transient detector; pilot policies do not slide under the
+calibrated predicate).
+
+**Primary statistic:** the `home` rate — settled contact reached BY A SLIDE — in the deterministic
+`rnd30` + `hold15` cells at the largest milestone every candidate has reached, plus the
+training-rollout `home` rate over the last 200 episodes at that step. **Secondary:** `slide_event`
+rate (pushes that did not arrive), number of seeds that ignited (≥ 1 `home`), and the P8 route
+split for the plain-sparse arm (a settled contact reached by a DROP does not count).
+
+**Rule:** the variant with the highest `home` rate at the matched milestone goes to 16 v 16; a tie
+is broken by ignition count, then by `slide_event`. If NO variant shows `home` in ≥ 2 seeds per
+learner by the readout, the answer is "not yet decidable" and the 16-seed batch waits for the 4M /
+500k extensions rather than being spent on a coin flip.
+
+**Readouts that decide, in time order:** the route census of the pilot's sparse checkpoints (hours);
+{RLPD} 100k checkpoints of the batch (~2–3 h from 21:30) and 250k (~10 h); {r2dreamer} 2M milestones
+of the ramp arm (~7 h) and the 4M extension seeds (~14 h); the local dv3 ramp run at 2M (~6 h).
+
+**Logistics for 16 v 16 per learner (32 runs each):** GPU ceiling 30 concurrent (normal 10 +
+preempt 20); {r2dreamer} 4M ≈ 14 h per run → two waves ≈ 30 h; {RLPD} 250–500k ≈ 10–20 h per run.
+The sets exist (`_rnrh`/`_rnsh` of record); the launch scripts exist (`cluster/submit_ln_batch.sh`);
+the only new artefacts are the registration (amendment (ab′)/(ac) with the chosen variant, the
+seed ranges, and the predictions) and a fresh clone if the tree moves. Submission is one command
+per learner once the variant is named.
