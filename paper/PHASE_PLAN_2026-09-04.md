@@ -1592,3 +1592,54 @@ its cells; if both finalists ignite, the 16 v 16 is split (8 v 8 each) rather th
 an undetectable difference; if one ignites and the other does not, it gets the 16 v 16 with the
 ignition evidence — not a rate difference — stated as the reason. Cost at measured throughput:
 {r2dreamer} 4 × 4M ≈ 60 GPU-h + 4 × 1M ≈ 15 GPU-h; {RLPD} 4 × 500k ≈ 70 GPU-h.
+
+## Amendment (ac) — `nested_sparse10`: the sparse home terminal at +10 for the world model (registered 2026-09-12, BEFORE any set build or job)
+
+**What.** A new ladder `nested_sparse10`, identical to `nested_sparse` in every respect — same
+predicate (`home` = `slide_event ∧ nested_v2`), same tip guard (`not_in_hand`, sustained 4
+frames), same terminal (`home`), nothing else pays — except that the terminal pays **+10**
+instead of +1. Hence `max_return = 10`, and the r2dreamer `return_clamp` is **10.0**, derived
+from the registry by the D6 check exactly as for every other ladder (never hand-set).
+Implemented as a NEW entry in `LADDERS` (`baselines/rl/full_env.py`); `nested_sparse` itself is
+untouched — running jobs and every existing set carry its stamp. Set suffix `_rns10` (+ `h` for
+the guard): `dHfull_all_rns10h`, `dDPfull_first_rns10h`. Test `test_10h` in
+`baselines/tests/test_ladder_unified.py`: pays exactly 10 on a home tape, exactly 0 on a drop at
+the goal, clamp derives as 10.0, `nested_sparse` still 1.0.
+
+**Why — a SCALE change, not a shape change.** r2dreamer normalises returns with `ReturnEMA`
+(`networks.py:420`): `scale = clip(EMA(p95) − EMA(p05), min = 1.0)`. With a +1 terminal at
+discount 0.997 (`horizon: 333`), the λ-return spread across imagined trajectories stays below 1,
+so the advantage scale is pinned at the floor and the actor gradient never reaches the normalised
+regime; the ramp ladder (max 9) does. Observed: at 2M online steps `nested_ramp` slides on both
+arms (`slide_event` 17/30, 11/30, 9/30; `LN_R2_MILESTONE_CELLS_2026-09-12.md`) while
+`nested_sparse` at 1M is not even picking (`dDPfull_first_rnsh_s975` 0/45). `nested_sparse10`
+separates "sparse cannot be learned" from "sparse at +1 is below this learner's normalisation
+floor". {RLPD} uses SAC with automatic entropy (auto-α) and is expected to be indifferent to a
+uniform scale on a single terminal; it is run as the control for exactly that expectation.
+
+**Predictions (registered before any run).**
+- P-ac-1 ({r2dreamer}): at matched milestones (0.5M / 1M / 2M / 4M), `nested_sparse10` ≥
+  `nested_sparse` on `home` rate per seed, and its `picked` at 1M is > 0 where `nested_sparse`'s
+  was 0. Disconfirm: if `nested_sparse10` also fails to pick at 1M, the sparse deficit is not a
+  normalisation-scale effect and the amendment's mechanism is wrong.
+- P-ac-2 ({RLPD}): `nested_sparse10` within noise of `nested_sparse` on every stage at 250k/500k
+  (|Δ| ≤ the 2-seed spread; n = 2 v 2 is descriptive only). Disconfirm: a systematic shift in
+  either direction means the SAC side is NOT scale-invariant here and the ladder cannot be
+  compared across learners as "the same objective".
+- P-ac-3 (sets): the relabelled sets reproduce the `_rnsh` counts exactly — `home` 12 / 12,
+  `n_pick` 65 / 64, identical `end_reasons` — with `total_reward = 120.0 / 120.0` (= 10 × 12)
+  and action sha256 identical to `dHfull_all` / `dDPfull_first`. This is exact, not ±1: the
+  build is offline numpy over the SAME stage records of record (pax146, 64-core, AVX-512).
+
+**Runs (coordinator's step; NOT submitted by this amendment).** 2 v 2 per learner, same seeds
+and budgets as the (aa) rev-3 sparse arm ({r2dreamer} 4M online with the milestone sweep;
+{RLPD} 500k), same trees, `TIP_GUARD=not_in_hand`, `far_release` off. Stamp required on every
+job: `ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped |
+tip=tilt>60deg&not_in_hand@4f`, and r2dreamer must print `return_clamp=10.0 (env and model
+agree)`.
+
+**Scope note.** The r2dreamer Ladder-N tree exists on the cluster (`$W/r2dreamer_ladderN` @
+0cf3d9e) and on the other workstation; the git bundles in `cluster/bundles/` require prerequisite
+commit 6af0ec7, which this workstation's r2dreamer history does not contain, so the r2dreamer
+smoke could not be run locally here — it is a cluster smoke for the coordinator, gated on the
+stamp above.
