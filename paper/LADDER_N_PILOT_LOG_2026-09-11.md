@@ -1027,3 +1027,41 @@ Measured throughput on pax078 (64 physical cores, `-n 8`): ~0.44 s per decision,
 timeout episode ≈ 130 s and a (run, milestone) job's three cells ≈ 2–3 h. 18 (run, milestone) pairs
 existed when the sweep was written, so at the 6-job ceiling the first full pass is ~6–9 h of wall
 clock.
+
+### Revision 3 — stamps, as they start
+
+`ln_rl_sparse500k_dH_s957` (**3596029**) started 00:50:52 EDT on pax110 and stamps, verbatim:
+
+    DISK-OK 257 GB free
+    DEMO-SHA dH full-scope segments n=74 sha=32b3e4ed36e3b2a4 total_reward=12.0 pick=65 nopick=9 decisions_p50=388
+    == RLPD-E2E e2e_rlpd_dH_s957 start Sat Sep 12 12:50:52 AM EDT 2026 node=pax110 ... restart=0
+    == TREE /cluster/tufts/shortlab/jstale02/gp_ladderN (known-good-2026-08-27-895-ga40c8aa1-dirty)
+    [ladder] unified-2026-09-10 | ladder=nested_sparse | home=1 | max_return=1 | terminal=home+tipped |
+             shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f |
+             full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632 |
+             git=known-good-2026-08-27-895-ga40c8aa1-dirty
+    [ladder] max_return 1.0
+    [ladder] tip_guard not_in_hand sustain 4 env frames
+    [ladder] wrote baselines/rl/checkpoints/e2e_rev3/e2e_rlpd_dH_s957/ladder_provenance.json
+
+`sha=32b3e4ed36e3b2a4 total_reward=12.0` is `dHfull_all_rnsh` exactly as §3.3 built it, and the last
+line shows the `OUT_ROOT` deviation doing its job: the run dir is `e2e_rev3/`, not the `e2e/` one the
+staged control occupies.
+
+**P1 audit over every `ln_*` job that has ever started** (the batch, the rev-2 extension and rev 3):
+
+    grep -h '^\[ladder\] unified' $W/slurm/ln_r2_*.out $LAB/gp_ladderN/e2e_rlpd_*.out | sort -u
+
+returns **three distinct ladder lines** — `nested_ramp`, `nested_sparse`, `staged` — each appearing
+once per `git=` suffix and **identical in every field P1 compares** (`ladder`, the rungs,
+`max_return`, `terminal`, `shaping`, `far_release`, `tip`, and all three file hashes
+`23fe428f222f` / `40544bf73c8c` / `a589b4f05632`). The only variation is the `git=` suffix:
+`…-893-g8088a657` and `…-894-g885438ba` on the three smokes that ran while the §4.1 fix landed, and
+`…-895-ga40c8aa1-dirty` on every training job of the batch, the extension and revision 3.
+
+The four {r2dreamer} `ln_r2_ctl_*` jobs were still PENDING at the time of writing; their required
+line is the `staged` one above (`ladder=staged | picked=1 placed_v2=1 contact_push=2
+slide_success=4 | max_return=8 | terminal=slide_success+tipped | … tip=tilt>60deg&not_in_hand@4f`),
+which the {RLPD} control arm already prints from the same `full_env.py`, plus
+`[ladder] return_clamp=8.0 (env and model agree)` (P-aa-5). **Whoever picks this up must confirm
+that line on 3596025–28 and on the four `ln_r2_sparse_*` (3596021–24) once they start.**
