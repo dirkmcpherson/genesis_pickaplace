@@ -14,7 +14,7 @@
 #      the handler that clears a partial logdir is reachable. Preemption killed 5 seeds
 #      because it was not.
 # Everything else -- partition, recipe, demo gate, eval loop -- is unchanged.
-# usage: R2_TREE=<r2dreamer tree> GENESIS_PICKAPLACE_ROOT=<gp tree> LADDER=staged|sparse|nested_sparse|nested_ramp [FAR_RELEASE=1] \
+# usage: R2_TREE=<r2dreamer tree> GENESIS_PICKAPLACE_ROOT=<gp tree> LADDER=staged|sparse|nested_sparse|nested_sparse10|nested_ramp [FAR_RELEASE=1] \
 #          sbatch cluster/wmfix_full.sbatch <ARM> <seed> <steps> [hydra overrides...]
 #   R2_TREE is REQUIRED for the same reason as GENESIS_PICKAPLACE_ROOT (see below).
 #   R2_LONG_RUN=1 + R2_MILESTONES='[...]' make <steps> mean ONLINE env steps and write
@@ -39,13 +39,13 @@ ARM=$1; SEED=$2; STEPS=$3; shift 3
 # the config's 8.0 in place for a sparse arm would disable the clamp that made this port
 # stable in the first place. Both env.return_clamp and model.return_clamp are set from the
 # ladder below and printed, so the pair can never silently disagree with the reward.
-LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_ramp) -- the reward ladder is never defaulted}
-case "$LADDER" in staged|sparse|nested_sparse|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_ramp (got $LADDER)"; exit 2 ;; esac
+LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_sparse10 | nested_ramp) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse|nested_sparse|nested_sparse10|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_sparse10 | nested_ramp (got $LADDER)"; exit 2 ;; esac
 # Ladder N only (see sbatch_rlpd_e2e.sh): passed to the adapter as env.far_release.
 FAR_RELEASE=${FAR_RELEASE:-}
 case "${FAR_RELEASE}" in
   ""|0) FAR_CFG="env.far_release=false" ;;
-  1) case "$LADDER" in nested_sparse|nested_ramp) FAR_CFG="env.far_release=true" ;;
+  1) case "$LADDER" in nested_sparse|nested_sparse10|nested_ramp) FAR_CFG="env.far_release=true" ;;
        *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 2 ;; esac ;;
   *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 2 ;;
 esac

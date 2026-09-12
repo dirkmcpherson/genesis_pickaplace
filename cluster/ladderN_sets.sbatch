@@ -94,7 +94,7 @@ done
 # ================= PHASE 2: score every ladder offline from those records =================
 for L in $LADDERS; do
   # the suffix relabel_reward.py ASSERTS against the ladder (LADDER_SUFFIX / TIP_GUARD_SUFFIX there)
-  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;;
+  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;; nested_sparse10) SFX=_rns10 ;;
                 nested_sparse) SFX=_rns ;; *) echo "FATAL: ladder $L"; exit 2 ;; esac
   if [ "$FAR_RELEASE" = "1" ]; then SFX="${SFX}f"; FAR_FLAG="--far-release"; else FAR_FLAG=""; fi
   case "$TIP_GUARD" in not_in_hand) SFX="${SFX}h" ;; esac

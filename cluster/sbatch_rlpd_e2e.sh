@@ -69,14 +69,14 @@ ARM=${ARM:?set ARM (dH | dDP | dDPfirst)}; SEED=${SEED:?set SEED}
 # LADDER IS REQUIRED (user 2026-09-11). Which objective a run optimises is never a default:
 # the two learners trained on different ladders because a flag could be absent and nothing
 # said so. It is passed to the trainer explicitly and printed in the [ladder] stamp below.
-LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_ramp) -- the reward ladder is never defaulted}
-case "$LADDER" in staged|sparse|nested_sparse|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_ramp (got $LADDER)"; exit 1 ;; esac
+LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_sparse10 | nested_ramp) -- the reward ladder is never defaulted}
+case "$LADDER" in staged|sparse|nested_sparse|nested_sparse10|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_sparse10 | nested_ramp (got $LADDER)"; exit 1 ;; esac
 # Ladder N only: the release that counts for farside/home must be >= 0.10 m from the goal.
 # Empty by default; refused on a ladder that has no such rung (the trainer asserts it too).
 FAR_RELEASE=${FAR_RELEASE:-}
 case "${FAR_RELEASE}" in
   ""|0) FAR_FLAG="" ;;
-  1) case "$LADDER" in nested_sparse|nested_ramp) FAR_FLAG="--far-release" ;;
+  1) case "$LADDER" in nested_sparse|nested_sparse10|nested_ramp) FAR_FLAG="--far-release" ;;
        *) echo "FATAL: FAR_RELEASE=1 is a Ladder-N switch; ladder $LADDER has no farside rung"; exit 1 ;; esac ;;
   *) echo "FATAL: FAR_RELEASE must be 0 or 1 (got $FAR_RELEASE)"; exit 1 ;;
 esac

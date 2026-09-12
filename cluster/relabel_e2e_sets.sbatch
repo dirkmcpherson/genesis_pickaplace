@@ -69,7 +69,7 @@ echo "DISK-OK ${FREE_GB} GB free"
 echo "[tree] $GENESIS_PICKAPLACE_ROOT ($(git -C "$GENESIS_PICKAPLACE_ROOT" describe --always --dirty 2>/dev/null || echo 'no git'))"
 for L in $LADDERS; do
   # the suffix relabel_reward.py asserts against the ladder (LADDER_SUFFIX there)
-  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;;
+  case "$L" in staged) SFX=_rz ;; sparse) SFX=_rs ;; nested_ramp) SFX=_rnr ;; nested_sparse10) SFX=_rns10 ;;
                 nested_sparse) SFX=_rns ;; *) echo "FATAL: ladder $L"; exit 2 ;; esac
   [ "${FAR_RELEASE:-0}" = "1" ] && SFX="${SFX}f" && FAR_FLAG="--far-release" || FAR_FLAG=""
   # PHASE_PLAN amendment (aa): the TIP GUARD is part of what a set IS -- it decides where each
