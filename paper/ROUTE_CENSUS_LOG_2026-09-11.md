@@ -192,3 +192,32 @@ confirms P8's "majority drop" prediction.** The {r2dreamer} machine arm confirms
 seeds individually (14.3 % and 36.4 % slide share); the human arm's 45.5 % slide share (5/11,
 all from one seed, s946 — the other human seed, s945, never reached `nested_v2`) is within noise
 of the 50 % disconfirm line and should not be over-read.
+
+---
+
+## Lane RC2 (2026-09-11/12) — the s945 discrepancy, investigated
+
+Full write-up: `paper/ROUTE_CENSUS_RC2_2026-09-11.md`. Six additional jobs, all r2dreamer, all against a
+FRESH copy of s945's `latest.pt` (checkpoint step 3,117,624, ~300k steps later than the copy above):
+
+| job | tree | set | mode | outcome |
+|---|---|---|---|---|
+| 3594141 | old (`r2dreamer_unified`/`gp_unified`) | hold15 | sample | nested_v2 0/15, tipped 0.47, timeout 0.53 |
+| 3594142 | old | hold15 | mode | nested_v2 0/15, tipped 0.47, timeout 0.53 |
+| 3594143 | new (`r2dreamer_ladderN`/`gp_ladderN`) | hold15 | sample | nested_v2 0/15, tipped 0.47, timeout 0.53 |
+| 3594144 | new | hold15 | mode | nested_v2 0/15, tipped 0.47, timeout 0.53 |
+| 3594631 | old | rnd30 | sample | nested_v2 0/30, tipped 0.53, timeout 0.47 |
+| 3594632 | new | rnd30 | sample | nested_v2 0/30, tipped 0.53, timeout 0.47 |
+
+All `rc=0`. Old tree and new tree agree to the episode (identical per-episode tip/timeout pattern), ruling out
+a route-census-evaluator-specific defect. **Meanwhile s945's own training-time counter, checked over the
+literal last 300 episodes of its still-running `metrics.jsonl` (steps 3,133,684-3,226,257, i.e. immediately
+after the evaluated checkpoint's step), reads picked 0.940, placed_v2 0.847, nested_v2 0.787, tipped 0.057 —
+stronger than sibling seed s946's own last-300 read (nested_v2 0.713), which DOES reproduce reasonably under
+cold eval.** Eight candidate mechanisms (checkpoint corruption, tip_guard fallback, far_release, the
+rsample()-vs-mode() action formula, IC population mismatch, episode horizon mismatch, live/frozen-actor
+divergence inside the saved checkpoint, config/recipe divergence) were checked directly against source and
+tensor evidence and ruled out one by one — see the RC2 doc for each. The root mechanism inside the training
+loop was NOT found within this lane's budget; the recommended next step is live instrumentation of the training
+process (dump one training episode's exact UID + decision trace and replay it cold). Verdict: trust the cold
+-eval 0/90 figure over the training-time counter for any claim about this checkpoint's reload behaviour.
