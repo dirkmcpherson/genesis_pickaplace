@@ -757,3 +757,27 @@ Tree pin confirmed unmoved after all eight submissions: `git -C $LAB/gp_ladderN 
 the `Step accounting [R2_LONG_RUN]` target line (expected `start + 4000000`) had not yet appeared
 in any of the three running {r2dreamer} logs at first check (still in the model-compile /
 env-creation stage). Follow-up check appended below once available.
+
+### Follow-up (~5 min later): `Step accounting` confirmed on all three running {r2dreamer} jobs
+
+    # s952 (dH, normal), s953 (dH, preempt) -- prefill 29406 decisions, start counter 117624
+    Step accounting [R2_LONG_RUN]: prefill 29406 decisions; trainer starts at counter step
+      117624 (env frames); env.steps=4000000 ONLINE env steps -> counter target 4117624.
+    # s973 (dM, preempt) -- prefill 37488 decisions (72-tape machine set), start counter 149952
+    Step accounting [R2_LONG_RUN]: prefill 37488 decisions; trainer starts at counter step
+      149952 (env frames); env.steps=4000000 ONLINE env steps -> counter target 4149952.
+
+Both targets are exactly `start + 4000000`, as required. Demo prefill matches the running batch's
+own sets exactly (74 human / 72 machine tapes, `transitions_added` 29406 / 37488, same
+`terminal_reward_values` and `eviction_note`) — same demo sets, not rebuilt. Tree pin re-confirmed
+unmoved: `known-good-2026-08-27-895-ga40c8aa1-dirty`.
+
+**Not yet confirmable** at handoff: job `3591976` (`ln_r2_ramp4M_dM_s972`, normal QOS, still
+`PENDING QOSMaxGRESPerUser`) and all four `ln_rl_ramp500k_*` (preempt, `PENDING
+QOSMaxGRESPerUser` — the preempt allocation reached its own 20-GPU cap once the extension's
+preempt jobs joined the running batch's 12). None of the eight jobs has failed, been refused, or
+required a code change; the remaining five are a queueing wait, not a defect. `sacct` at this
+point shows all eight `0:0` (no exit yet, none `FAILED 2:0 00:00:00`). Whoever next has cluster
+access should re-check `3591976`'s stamp (expect the same ramp/tip/hash line, machine-set prefill
+37488/149952) and the four RLPD jobs' `[ladder]` lines and `nested_ramp`-vs-set assertion once they
+start, per the same P1 checklist as the main batch.
