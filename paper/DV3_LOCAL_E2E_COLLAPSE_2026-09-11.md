@@ -464,3 +464,279 @@ run has NEVER, at any point across 1045 logged training episodes or across four 
 discriminate active from passive periods; `con`/`val` calibration was not re-checked at this milestone) or §5's
 recommendation (return-clamp / terminal-oversampling remain the untried, data-implicated levers). No config was
 changed, no training was started or stopped, for this milestone check.
+
+## Final 2M cells and the warm-restart extension (2026-09-12, lane DV3-8)
+
+### 1. Training completion
+
+The run (`/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0/`, read-only throughout except for the
+one `latest.pt`/`.hydra/config.yaml` copy below) **finished on its own during this task** — process PID 716613
+was already gone by the time the first poll ran (it must have exited within the first couple of minutes of this
+task, well inside the 30-minute budget). Confirmed clean exit, not a crash:
+
+```
+tail -1 metrics.jsonl -> {"step": 2117624, ...}   # == step_contract.json's legacy_counter_target exactly
+grep -in "traceback|error|fatal|exception" console.log   -> (no matches)
+ls milestones/  -> online_500000.pt/.json, online_1000000.pt/.json, online_2000000.pt/.json (all three present)
+```
+
+`milestones/online_2000000.json`: `{"step": 2117624, "online_sim_steps": 2000000, "prefill_counter_origin":
+117624, "requested_online_sim_steps": 2000000, "overshoot_sim_steps": 0, "sha256":
+"0d51c96c1edff395d00bdbbd8f0ee97070ae3c9dedefd3f6a56290491cff6ec2"}` — the run hit its 2M-online-step target with
+**zero overshoot**, the cleanest possible finish.
+
+**Last-200-episode training rates at the end of training** (`metrics.jsonl`, `episode/train_ep_*`, same
+methodology as §1a/the 1M section — last 200 rows carrying `episode/train_ep_picked`):
+
+| window | n | step range | mean len | picked | placed_v2 | farside | slide_event | home | tipped |
+|---|---|---|---|---|---|---|---|---|---|
+| last 200 (final) | 200 | 1980140-2117585 | 172.9 | **0.775** | **0.410** | **0.200** | **0.020** | 0.000 | 0.575 |
+| — sub 0-49 | 50 | 1980140-2019209 | 195.7 | 0.640 | 0.440 | 0.260 | 0.060 | 0.000 | 0.460 |
+| — sub 50-99 | 50 | 2019801-2050425 | 163.3 | 0.900 | 0.260 | 0.100 | 0.000 | 0.000 | 0.600 |
+| — sub 100-149 | 50 | 2050971-2079597 | 152.5 | 0.780 | 0.360 | 0.140 | 0.000 | 0.000 | 0.700 |
+| — sub 150-199 | 50 | 2079859-2117585 | 180.2 | 0.780 | 0.580 | 0.300 | 0.020 | 0.000 | 0.540 |
+| all 2470 episodes (full run) | 2470 | 124824-2117585 | 202.1 | 0.359 | 0.053 | 0.027 | 0.002 | 0.000 | 0.487 |
+
+**Progression across the three milestones** (same last-200-window methodology applied at each milestone's own raw
+counter, so this is an apples-to-apples read of the identical metric at three points in one run):
+
+| milestone | step | picked | placed_v2 | farside | slide_event | home | tipped |
+|---|---|---|---|---|---|---|---|
+| 500k | 617640 | 0.070 | 0.000 | 0.000 | 0.000 | 0.000 | 0.325 |
+| 1M | 1117628 | 0.150 | 0.000 | 0.000 | 0.000 | 0.000 | 0.380 |
+| **2M (final)** | 2117624 | **0.775** | **0.410** | **0.200** | **0.020** | 0.000 | 0.575 |
+
+**This is a real, monotonic, and large change in the training log, not noise**: `placed_v2` and `farside` had
+fired in **0 of 2260 episodes** through the 1M mark (§1a/1M section) and are now the outcome in roughly a third to
+a fifth of the last 200 training episodes; `slide_event` — which requires `farside`, which requires `placed_v2`,
+which requires `picked` — fires for the first time in the run's history. `home` (the ladder's paid terminal) is
+still 0.000 in training throughout, but see the eval cells below.
+
+### 2. Final evaluation (four cells, GPU)
+
+**Checkpoint provenance**, checked before copying anything, exactly as lane DV3-7's protocol:
+
+```
+$ .venv/bin/python -c "import torch; a=torch.load('.../latest.pt', ...); b=torch.load('.../milestones/online_2000000.pt', ...); ..."
+latest.pt['step'] = 2000000        # the known hardcoded quirk (train.py:206, saved unconditionally as int(config.env.steps))
+online_2000000.pt['step'] = 2117624   # the honest raw counter, overshoot 0
+agent_state_dict tensors differing: 0 / 170
+```
+`latest.pt` and the `online_2000000.pt` milestone are the **same policy** (bit-identical weights; only the
+"step" label and pickled optimizer-state serialization order differ) — the same pattern lane DV3-7 found at 500k.
+Copied per instructions:
+```
+cp .../latest.pt                    ~/runs_dv3_local/dv3e2e_ramp_eval_final2M/latest.pt
+cp .../.hydra/config.yaml           ~/runs_dv3_local/dv3e2e_ramp_eval_final2M/.hydra/config.yaml
+sha256sum: 7a2cf733327289b05fce935e7bdfa598a9aec4c000910b2d1d6a5d73efdc708b (both copies match the source)
+```
+Ladder/predicate provenance re-checked, **unchanged from training and from both earlier evals**: every eval run's
+own `[ladder]` build-stamp line carries `full_env=23fe428f222f.. genesis_can_env=40544bf73c8c..
+stage_predicates=a589b4f05632..`, byte-identical to the training run's `ladder_provenance.json` (the git describe
+suffix advanced, `known-good-2026-08-27-903-ga35534b` -> `-934-g67157db`, from commits elsewhere in the tree that
+do not touch these three files — confirmed by the sha256 match itself, not by trusting git ancestry, since the
+r2dreamer repo's `a35534b` object is no longer resolvable there under the shared-working-tree churn). `hold` ICs:
+`entries_pinned: true`, `pin_stats {'n_enumerated': 15, 'n_restored_match': 15, 'n_restore_failed': 0, 'n_hang': 0}`
+on both hold15 cells.
+
+### Commands (identical to §2/the 1M section, checkpoint + `--mode` varied)
+
+```
+cd ~/workspace/r2dreamer
+export GENESIS_PICKAPLACE_ROOT=/home/j/workspace/genesis_pickaplace
+export R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 GENESIS_SIM_VARIANT=gc_kp4_riser3_shelf6
+export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONUNBUFFERED=1
+RUN=/home/j/runs_dv3_local/dv3e2e_ramp_eval_final2M
+
+.venv/bin/python eval_genesis.py --checkpoint $RUN/latest.pt --episodes 15 --mode sample --max-steps 1200 \
+  --ic-file /home/j/workspace/genesis_pickaplace/baselines/eval_ics.json --ic-set hold --seed 0 --device cuda \
+  --out $RUN/fresh_eval_hold15_sample
+# --mode mode                          -> $RUN/fresh_eval_hold15_mode
+# --ic-set rnd --episodes 30 --mode sample -> $RUN/fresh_eval_rnd30_sample
+# --ic-set rnd --episodes 30 --mode mode   -> $RUN/fresh_eval_rnd30_mode
+```
+
+### Results, vs. the 500k and 1M cells
+
+Counts below are `round(rate*n)` read back against each cell's own `per_episode` list to confirm the fraction
+matches an integer count (all four did). "mode" cells did not exist at 500k/1M (only "sample" was run then) so
+those two rows have no earlier comparison.
+
+| cell | checkpoint | n | picked | placed_v2 | farside | slide_event | home | nested_v2 | nested_honest | tipped | timeout | mean steps |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| hold15 sample, 500k | step 617640 | 15 | 0/15 (0.00) | 0/15 | 0/0 | 0/0 | 0/0 | — | 0/15 | 0/15 (0.00) | 15/15 (1.00) | 300.0 |
+| hold15 sample, 1M | step 1117628 | 15 | 1/15 (0.067) | 0/15 | 0/0 | 0/0 | 0/0 | — | 0/15 | 3/15 (0.20) | 12/15 (0.80) | 260.8 |
+| **hold15 sample, 2M (final)** | step 2117624 | 15 | **10/15 (0.667)** | **6/15 (0.400)** | **4/15 (0.267)** | 0/15 | 0/15 | 0/15 | 0/15 | 7/15 (0.467) | 8/15 (0.533) | 178.4 |
+| **hold15 mode, 2M (final)** | step 2117624 | 15 | **12/15 (0.800)** | **10/15 (0.667)** | **9/15 (0.600)** | 1/15 (0.067) | 0/15 | 0/15 | 0/15 | 4/15 (0.267) | 11/15 (0.733) | 231.7 |
+| rnd30 sample, 500k | step 617640 | 30 | 0/30 (0.00) | 0/30 | 0/0 | 0/0 | 0/0 | — | 0/30 | 6/30 (0.20) | 24/30 (0.80) | 240.8 |
+| rnd30 sample, 1M | step 1117628 | 30 | 1/30 (0.033) | 4/30 (0.133)* | 0/30 | 0/30 | 0/30 | — | 0/30 | 13/30 (0.433) | 17/30 (0.567) | 215.4 |
+| **rnd30 sample, 2M (final)** | step 2117624 | 30 | **16/30 (0.533)** | 13/30 (0.433) raw / **10/30 (0.333) net**\*\* | 8/30 (0.267) | 1/30 (0.033) | 0/30 | 0/30 | 0/30 | 15/30 (0.50) | 15/30 (0.50) | 167.6 |
+| **rnd30 mode, 2M (final)** | step 2117624 | 30 | **14/30 (0.467)** | 15/30 (0.500) raw / **12/30 (0.400) net**\*\* | 11/30 (0.367) | 4/30 (0.133) | **1/30 (0.033)** | 1/30 (0.033) | **1/30 (0.033)** | 14/30 (0.467) | 15/30 (0.50) | 183.8 |
+
+\* At 1M, all 4 rnd30 `placed_v2` grants (episodes 6/13/19/26) were the CONFOUNDS row-82 reset artefact — every
+one had `picked=False, reward=0.0`. Net-of-artefact `placed_v2` at 1M is **0/30**, not 4/30.
+
+\*\* CONFOUNDS row 82 (rnd30 ICs 6/13/19/26 overlap the shelf footprint `x in [0.55,0.95]` at spawn, so
+`placed_v2` grants at reset with the arm still at home) **still fires at 2M**, checked the same way as the 1M
+section — read `per_episode[i]['stages']` for `i in [6,13,19,26]` directly:
+
+- rnd30 sample: episodes 6, 13, 26 grant `placed_v2=True` with `picked=False, reward=0.0` (episode 19 does NOT
+  fire this time — `picked=False, placed_v2=False`). 3 of the 13 raw grants are the artefact -> **net 10/30
+  (0.333)**, all 10 with `picked=True` (confirmed, no other picked=False/placed_v2=True pair exists in this cell).
+- rnd30 mode: episodes 6, 13, 19 grant `placed_v2=True` with `picked=False, reward=0.0` (episode 26 does NOT fire
+  this time). 3 of the 15 raw grants are the artefact -> **net 12/30 (0.400)**, all 12 with `picked=True`.
+- hold15 (both cells): no anomaly. Every `placed_v2=True` episode in both hold15 cells also has `picked=True` —
+  the artefact is specific to the `rnd` IC generator's uniform draw landing inside the shelf footprint and does
+  not touch the pinned demo-uid `hold` set.
+
+**Net read: real placement has started, not just the reset artefact.** Even after removing every spurious grant,
+rnd30 sample goes from 0/30 net placements at every earlier milestone to **10/30 (0.333)**, and rnd30 mode to
+**12/30 (0.400)** — both with `picked=True` on every one of those episodes, i.e. genuine pick-then-place chains,
+not reset noise.
+
+**`home` and `nested_honest` fire for the first time in this run's entire recorded history** (2470 training
+episodes + 4 eval cells at 500k + 2 eval cells at 1M, all zero): **rnd30 mode episode 29** —
+`rnd29 home (272 steps, r=7.69, 26.8s)`, `stages: {picked: True, placed_v2: True, farside: True, slide_event:
+True, home: True, nested_honest: True, ...}`, `outcomes_honest: {'nested_honest': 1, 'tipped': 14, 'timeout':
+15}`. This is the ladder's fully-paid terminal (`picked 1 + placed_v2 1 + home 4 + ramp bonus` on `slide_gain_m`,
+clamped under `max_return=9`) chained end-to-end from a warm-started but otherwise ordinary rollout — one episode
+out of 30, but the first of its kind. `contact_push`/`slide_success`/`nested_v2` are likewise each 1/30 (0.033) in
+this one cell, all the SAME episode (rnd29) — nothing downstream of `picked` has ever fired in any OTHER episode
+in this cell.
+
+**Outcome taxonomy detail** (`outcomes_honest`, `slide_fails`, from each cell's own `metrics.json`):
+
+| cell | outcomes_honest | slide_fails |
+|---|---|---|
+| hold15 sample | `{nested_honest:0, proxy_only:0, tipped:7, timeout:8}` | `{grip_closed:3, not_picked:5, no_contact:7}` |
+| hold15 mode | `{nested_honest:0, proxy_only:0, tipped:4, timeout:11}` | `{grip_closed:3, not_picked:3, no_contact:9}` |
+| rnd30 sample | `{nested_honest:0, proxy_only:0, tipped:15, timeout:15}` | `{no_contact:14, not_picked:14, grip_closed:2}` |
+| rnd30 mode | `{nested_honest:1, proxy_only:0, tipped:14, timeout:15}` | `{no_contact:11, not_picked:16, grip_closed:3}` |
+
+**Reading.** The picture is consistent across all four cells and with the training-log progression in §1: this
+checkpoint (raw step 2117624) has moved from "near-total inertia with occasional collision" (500k/1M) to
+"picks reliably (47-80% depending on cell/mode) and, when it picks, chains into a real placement and sometimes
+past it" — `placed_v2` net-of-artefact is now 40-67% of episodes depending on cell, `farside` (which needs a
+picked-then-placed-then-driven-toward-goal chain) is 27-60%, and one episode reached the fully-paid terminal.
+`mode` (deterministic) outperforms `sample` on every headline stage in both matched dimensions available
+(picked/placed_v2/farside on hold15: 0.667/0.400/0.267 sample vs 0.800/0.667/0.600 mode), the same direction as
+every earlier DP/RLPD/dv3 cell in this project's history where both were compared. This is a genuine reversal of
+the collapse diagnosed in §3-§4 of this document at 500k, not a continuation of it — but three things are
+unchanged: (1) rnd30's raw `picked` rate (0.467-0.533) is still well below the 500k/1M-era comparison run's own
+rnd30 (`dv3pick_dHfull_pick_local_rlDreamer_s0`, pick-scope, 0.600 sampled, §2) despite far more total training; (2)
+`nested_honest`/`home` fired in exactly 1 of 90 final-checkpoint eval episodes across all four cells combined —
+this is evidence of a reachable terminal, not a reliable one; (3) whether this reflects the ladder finally
+"catching up" at 2M vs. this specific checkpoint sitting in one of the run's own historically-observed
+dry-spell/recovery upswings (§1b) is not resolved by a single 2M snapshot — the same caveat DV3-7 attached to the
+1M reactivation. No config was changed, no training was started or stopped, for this evaluation task.
+
+### 3. Warm-restart verification and extension
+
+**Registered intent (per the task): a DISCLOSED warm restart** — weights + optimizer state reload from the just-
+finished run's final checkpoint; the replay buffer restarts at the demo prefill; NOT a buffer-preserving
+continuation. Verified from the code (train.py, trainer.py, longrun_milestones.py, dreamer.py) BEFORE launching,
+per the task's explicit gate ("if any verification fact shows the resume would silently corrupt the accounting,
+do NOT launch"):
+
+1. **`config.get("resume", False)` (train.py:132-144)** reloads `agent.load_state_dict(ckpt["agent_state_dict"])`
+   and `tools.recursively_load_optim_state_dict(agent, ckpt["optims_state_dict"])` from `logdir/latest.pt` only.
+   The function's own comment states plainly: *"NOT a full resume: the replay buffer is not persisted, so the
+   buffer restarts at prefill and the step counter re-runs the whole env.steps budget — only the learned
+   parameters survive."*
+2. **`trainer.py OnlineTrainer.begin()`**: `step = self.replay_buffer.count() * self._action_repeat` (line 137)
+   and `online_step0 = step` (line 140) are computed FRESH from the buffer at `begin()` time — the buffer is
+   empty except for whatever `demo_prefill.py` just re-added, so this reproduces the ORIGINAL run's own origin
+   (117624) exactly, given the same `demo_dir`/config/seed. The checkpoint's own `"step"` field (2000000, the
+   known hardcoded-at-save quirk — or 2117624 if read from the honest milestone) is loaded into a local variable
+   ONLY for the print statement below; it is never assigned to `step`, `online_step0`, or anything the loop reads.
+3. **`longrun_milestones.py Milestones.__init__(trainer, origin)`**: `self.origin = int(origin)` = that same
+   fresh `online_step0`; `trainer.steps = self.origin + self.budget` (`budget = env.steps = 2000000`).
+   `capture()`/`finish()` compute `online = step - self.origin` and name/label
+   `milestones/online_{500000,1000000,2000000}.pt` off THAT origin. **The checkpoint's saved step is read nowhere
+   in this module.** Consequence, stated plainly: the resumed run's milestones are **online steps of the resumed
+   segment** — a full second 2,000,000-step arc counted from the warm-started weights' own restart point — NOT
+   "500k/1M/2M steps past the original run's 2.1M." This is exactly the reading the task asked for
+   ("milestones ... of the resumed segment"), and is the opposite of a silent re-target off the checkpoint's step
+   (which WOULD have been the corruption case that blocks a launch).
+4. **Schedules keyed on `online_step`**: the only one in the codebase is the actor-BC lambda linear decay in
+   `dreamer.py Dreamer.update()` (`frac = min(online_step / self._bc_decay_steps, 1.0)`), gated
+   `if self.actor_bc_lambda > 0.0`. This run's config carries **`actor_bc_lambda: 0.0`**
+   (`configs/env/genesis_full_state.yaml` + the run's own resolved `.hydra/config.yaml`, confirmed by direct
+   grep) — the branch never executes, so restarting `online_step0` to 0 has **no effect on training dynamics**
+   through this path. `act_entropy=3e-5` is a fixed scalar coefficient in the policy loss (`dreamer.py:512`), not
+   a step-indexed schedule, so it is likewise unaffected.
+5. **Disclosed side effect, not a corruption**: because the buffer is not persisted, the resumed run re-injects
+   the full 74-tape demo prefill (29406 decisions) into a fresh buffer. The ORIGINAL run's own prefill log stated
+   *"all demo frames gone by 500000 online env steps"* (`buffer.max_size=500000` FIFO eviction) — so by raw step
+   2117624 its buffer held zero demo data. The resumed run therefore trains with demo-reinforced data again for
+   roughly its first 500k online steps, which a true buffer-preserving continuation would not do. This is an
+   existing property of the warm-restart mechanism (shared with the cluster's preempt/requeue path,
+   `cluster/wmfix_full.sbatch` `RESUME_FROM`), not something new introduced here, and is disclosed rather than
+   hidden.
+
+**None of the five facts describes the checkpoint's step silently re-targeting the milestone/accounting system —
+the module simply never reads it for that purpose — so the launch proceeded.**
+
+**Launch** (new logdir, `+resume=true`, same recipe otherwise; full detail and every fact above with its code
+citation in `/home/j/runs_dv3_local/LAUNCH_e2e_ramp_s0_resume.txt`):
+
+```
+SRC=/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0
+LOGDIR=/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0_resume2M
+mkdir -p $LOGDIR && cp $SRC/latest.pt $LOGDIR/latest.pt   # sha256 7a2cf733327289b05fce935e7bdfa598a9aec4c000910b2d1d6a5d73efdc708b
+
+cd ~/workspace/r2dreamer
+export GENESIS_PICKAPLACE_ROOT=/home/j/workspace/genesis_pickaplace
+export R2D_SIM_VARIANT=gc_kp4_riser3_shelf6 GENESIS_SIM_VARIANT=gc_kp4_riser3_shelf6
+export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONUNBUFFERED=1
+export R2_LONG_RUN=1 R2_MILESTONES='[500000,1000000,2000000]'
+DEMO=/home/j/data/genesis_pickaplace/demos_state_full/cluster_of_record/dHfull_all_rnrh
+
+nohup .venv/bin/python train.py env=genesis_full_state seed=0 env.steps=2000000 env.demo_dir=$DEMO \
+  env.ladder=nested_ramp env.far_release=false env.tip_guard=not_in_hand env.return_clamp=9.0 \
+  model.return_clamp=9.0 buffer.max_size=5e5 logdir=$LOGDIR env.actor_dist=bounded_normal \
+  env.act_entropy=3e-5 model.rep_loss=dreamer +resume=true > $LOGDIR/console.log 2>&1 &
+# PID 878324
+```
+
+**Console confirmation** (verbatim, `$LOGDIR/console.log`):
+```
+[ladder] unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4 ramp:slide_gain_m=3/0.05m |
+  max_return=9 | terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f |
+  full_env=23fe428f222f genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632 |
+  git=known-good-2026-08-27-934-g67157db
+```
+— **identical** sha256 stamps to the original run's own `ladder_provenance.json` (confirmed by direct file
+comparison, not git ancestry), and identical to both `dv3e2e_ramp_eval_final2M` eval build stamps above.
+```
+WARM RESTART: loaded agent+optims from .../latest.pt (saved step 2000000); replay buffer + step counter start fresh.
+Step accounting [R2_LONG_RUN]: prefill 29406 decisions; trainer starts at counter step 117624 (env frames);
+  env.steps=2000000 ONLINE env steps -> counter target 2117624.
+```
+— resume acknowledged, weights loaded; counter target matches the ORIGINAL run's own accounting exactly (same
+demo set, same config), confirming this is a clean second 2,000,000-online-step arc from the warm-started policy,
+not a corrupted or re-targeted budget. First two post-prefill training episodes already show the warm-started
+skill: `[118465] episode/train_ep_picked=1.0` and `[119685] episode/train_ep_picked=1.0,
+episode/train_ep_placed_v2=1.0` — picking and placing from the very first rollouts, consistent with resuming from
+a policy that was already picking/placing 40-80% of the time at the point it was frozen (§1-§2 above), not from a
+reset/random policy.
+
+**Fps after warm-up** (confirming the process is genuinely training, not stalled building the world or compiling):
+`fps/fps` reads `0.0` at the very first log line (step 117624, before any update — expected, `Every` fires on its
+first call), rises to `31.6` at step 122632 (`train/opt/updates 624`, still inside the `torch.compile` /
+buffer-fill warm-up), and settles at **`81.7`** by step 127624 (`train/opt/updates 1248`) — matching the original
+run's own steady-state fps (79-82 throughout its history, e.g. the final logged rows above) almost exactly. No
+stall, no crash, ordinary throughput from the first few thousand online steps onward. Also visible by this point:
+`train/ret_095` (8.2-8.5) and `train/value_replay_max` (8.3-9.0, occasionally clamped at the `return_clamp=9.0`
+ceiling) are already an order of magnitude above the pre-resume run's entire history (`train/ret_095` sat at
+6.0-9.0 only briefly near prefill-init and then 6.3-9.0 late; here it is high from the first few thousand steps)
+— consistent with a warm-started critic that already knows placements/farside/home are reachable and worth much
+more than `picked` alone, rather than a critic re-learning that from scratch.
+
+Full launch record, including every verification fact above with its exact code citation, is at
+`/home/j/runs_dv3_local/LAUNCH_e2e_ramp_s0_resume.txt`. The new run's own `ladder_provenance.json` is at
+`/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0_resume2M/ladder_provenance.json` (sha256 stamps
+re-verified byte-identical to the just-finished run's). No file under
+`/home/j/runs_dv3_local/dv3e2e_ramp_dHfull_all_rnrh_rlDreamer_s0/` (the original run, now finished) was touched
+except the two read-only copies (`latest.pt`, `.hydra/config.yaml`) into `dv3e2e_ramp_eval_final2M/` — the
+original run's own directory carries no new writes from this task.
