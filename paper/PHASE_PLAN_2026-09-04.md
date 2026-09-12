@@ -1725,6 +1725,50 @@ run's 1M checkpoint reaches P-ad-1's bar in ≤ half the steps. n = 1 seed per c
 Every cell must carry `[sim-variant] gc_kp4_riser3_shelf6`, and the run's console must carry the `[obs]`,
 `[image]` and `[image_aug]` stamps (printed from the built modules) beside the `[ladder]` stamp.
 
+**Status 2026-09-12 16:20:** P-ad-1 and P-ad-2 MET at 0.3M (`paper/PX_SPARSE10_FIRST_HOME_2026-09-12.md`); series
+checkpoint ck_619574 (0.50M) hold15 MODE `home` 12/15, rnd30 MODE `home` 18/30. P-ad-3 not yet run.
+
+## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
+
+**Question.** The project's question (PAPER_PLAN H4) on the configuration that actually learns the task: does the
+pixel DreamerV3 arm of (ad) learn differently from human demonstrations (`dHfull_all`, 74 tapes, every attempt) than
+from machine demonstrations (`dDPfull_first`, 72 tapes, the Diffusion-Policy teacher trained on the PRUNED human set,
+FIRST attempt per start, matched by phase within 0.06 — `HRI_results/DEMO_SETS_2026-09-11.md`)?
+
+**Design.** Everything of (ad) unchanged: pixels + proprioception (`state_slice` 8), `image_aug shift4`,
+`nested_sparse10`, `tip_guard not_in_hand`, `far_release` off, `return_clamp` 10.0, `act_entropy` 3e-5, `bounded_normal`,
+`buffer.max_size` 5e5, fresh world model per seed (no `wm_init`, so the arms share nothing but the chassis).
+**Budget 1M online steps** (the (ad) ignition arrived at 0.3–0.5M and the demonstrations evict from the buffer at
+~470k; 1M gives five post-eviction snapshots per run). Seeds 0–3 per arm; the (ad) run IS human seed 0 and is stopped at
+its 1M milestone (its 2M continuation is forgone for this comparison; disclosed). Order on this box (one run at a
+time — two concurrent halve the fps and do not fit RAM at 5e5 rows): machine s0, human s1, machine s1, human s2, machine
+s2, human s3, machine s3 — alternating so any partial table is balanced. Sets: `dHfull_all_rns10h_img` (built, Σ 130,
+13 `home`) and `dDPfull_first_rns10h_img` (to be built by `relabel_reward.py --images` from the LOCAL stage records of
+`dDPfull_first`, in the gap between runs — never beside a training process; local records score 14 machine `home`
+tapes where the class of record scores 12; both action sha256 sets must be identical to their sources; disclosed).
+
+**Statistic of record.** Per seed: the SERIES cells (every `latest.pt` rewrite, 100k counter steps, hold15 + rnd30
+MODE, fresh process, training world, with the 60-episode record window beside each), and the number of record is the
+**mean `home` rate over the rnd30 MODE cells of snapshots 0.3M–1.0M** (8 cells × 30 episodes per seed) — the series,
+never one checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`; ck_519849 vs ck_619574 in the (ad) run). Secondary: the same
+on hold15 MODE; the first snapshot with `home` ≥ 1 (ignition step); tipped and timeout fractions. Comparison: exact
+permutation test on the per-seed means, 4 v 4 (p floor 1/35 one-sided, 2/35 two-sided — descriptive at this n; MDE
+stated with the result), and the 1M milestone's sampled cells as the parent-protocol check.
+
+**Predictions (before the first machine run).** P-ae-1: both arms ignite — ≥ 3 of 4 seeds per arm with `home` ≥ 1 in
+some rnd30 series cell by 1M. P-ae-2 (the project's standing null, registered here for the pixel learner): the arm
+difference in the statistic of record is within ±0.15; a larger difference in either direction is reported as a
+directional finding at n = 4, not a claim. P-ae-3: the machine arm ignites NO LATER than the human arm (median
+ignition step), because the machine tapes contain no idle segments (idle fraction 0.007 v 0.365) and the same number of
+`home` demonstrations. Disconfirm branches: if either arm fails P-ae-1, the comparison is reported as an ignition
+contrast, not a rate contrast; if P-ae-3 reverses, the idle-fraction account of source effects is wrong for this
+learner.
+
+**Schedule.** ~6.5 h per run at ~45 fps; 4 v 4 complete ≈ 45 h after machine s0 starts (Sunday 2026-09-14
+afternoon) on this box alone. The same 8 runs are launchable on the cluster in parallel (~8–10 h wall) from
+`cluster/bundles/r2dreamer_px_full_main_2026-09-12.bundle` (deployed as a NEW tree) + both `_img` sets + a launcher that
+passes `env=genesis_full_pixel`; if the other workstation does that, local seeds become seeds 4–7 of the same design.
+
 ### (ac) REVISION 1 — the four {r2dreamer} runs are GPU-PACKED (registered 2026-09-12, BEFORE submission; user's instruction)
 
 The four (ac) world-model runs (s957/958 human, s977/978 machine) run as TWO Slurm allocations —
