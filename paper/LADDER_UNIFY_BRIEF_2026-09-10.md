@@ -297,3 +297,15 @@ resolve before quoting the human-arm numbers: seed s945 shows `nested_v2` in 56 
 episodes (2735/4906) but 0/45 in this evaluation; the evaluation was run on a copy of a live
 checkpoint by the new tree — reconcile (step of the copy, IC distribution, per-episode outcomes)
 before any table uses either number.
+
+**RC2 (2026-09-12 ~00:30, `paper/ROUTE_CENSUS_RC2_2026-09-11.md`): the {r2dreamer} TRAINING-RECORD stage
+rates are not trustworthy for decisions.** Pilot sparse seed s945 logs `nested_v2` 0.79 over its last
+300 training episodes, but its checkpoint (intact: byte-identical actor, correct step) reloads to
+**0/90** settled contacts across six cells (old tree and new, sampled and greedy, hold15 and rnd30).
+Mechanism unknown (the adapter's sticky per-episode flags are the top suspect; static trace found no
+leak; not confirmed live). Rule from here: every decision statistic for {r2dreamer} comes from the
+milestone/checkpoint EVALUATION CELLS, never from `metrics.jsonl` episode counters; the per-run
+"training rates" tables of 2026-09-11 are exploration diagnostics only. {RLPD} records are unaffected
+by this finding but lack the Ladder N stages anyway (see handoff). Follow-up registered, not done:
+live-instrument one r2dreamer training process (log the env-side sticky flags and the episode's
+reset boundary) to catch the counter in the act.
