@@ -286,3 +286,14 @@ The sets exist (`_rnrh`/`_rnsh` of record); the launch scripts exist (`cluster/s
 the only new artefacts are the registration (amendment (ab′)/(ac) with the chosen variant, the
 seed ranges, and the predictions) and a fresh clone if the tree moves. Submission is one command
 per learner once the variant is named.
+
+**Route census result (2026-09-11 ~22:30, `paper/ROUTE_CENSUS_2026-09-11.md`): plain `sparse` is
+ELIMINATED as the 16-seed candidate.** The pilot's sparse {r2dreamer} policies (settled contact by
+any route, ~4M steps) reach `nested_v2` mostly by a DROP: pooled 44/61 = 72 % drop (machine arm
+76 %, 38/50, both seeds; human arm 54.5 %, 6/11, all from seed s946). P8 confirmed. {RLPD} sparse
+(250k final): 0/90 `nested_v2` in evaluation — not evaluable for route. Remaining candidates:
+`nested_ramp` v2 and `nested_sparse` (both pay only slide-reached contact). Open discrepancy to
+resolve before quoting the human-arm numbers: seed s945 shows `nested_v2` in 56 % of its TRAINING
+episodes (2735/4906) but 0/45 in this evaluation; the evaluation was run on a copy of a live
+checkpoint by the new tree — reconcile (step of the copy, IC distribution, per-episode outcomes)
+before any table uses either number.
