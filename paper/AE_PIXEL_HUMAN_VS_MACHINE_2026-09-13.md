@@ -16,8 +16,8 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | seed | arm | hold15 (of 15) | rnd30 (of 30) | statistic of record (rnd30 0.3–1.0M) | hold15 mean 0.3–1.0M |
 |---|---|---|---|---|---|
 | s0 | human | 0, 0, 5, 1, 12, 13, 11, 6, 12, 15 | 0, 0, 7, 3, 18, 16, 10, 8, 11, 16 | **89/240 = 0.371** | 75/120 = 0.625 |
-| s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, (1.0M pending) | **≤ (29 + x)/240; 29/210 = 0.138 over 0.3–0.9M** | 33/120 = 0.275 |
-| s1 | human | (launching ~02:10) | | | |
+| s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
+| s1 | human | (launched 01:56, PID 1374701) | | | |
 | s1 | machine | | | | |
 | s2 | human | | | | |
 | s2 | machine | | | | |
@@ -41,7 +41,9 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
 - After ignition the human seed climbs to a 12–15/15 plateau with a single trough at 0.8M; the machine seed peaks at
   10/15 (0.6M) and then collapses to tipping (0/15, 0/30 at 0.8–0.9M; 24 of 30 random starts tipped at 0.9M) before a
   partial recovery at 1.0M (hold15 15/15 picked and placed, 2/15 `home`, 0 tipped — it stops pushing).
-- Interim difference in the statistic of record ≈ 0.23 in favour of human, outside P-ae-2's ±0.15 — at n = 1 v 1 this
+- Machine s0's 1.0M cell: hold15 15/15 picked, placed and far side but only 2/15 slides (0 tipped); rnd30 picked 25/30,
+  `home` 1/30, 22 timeouts, 7 tipped — the policy has stopped pushing rather than pushing into tips.
+- Difference in the statistic of record at n = 1 v 1: 0.371 − 0.125 = 0.246 in favour of human, outside P-ae-2's ±0.15 — this
   is a direction to test, not a finding; the same learner's own seed-to-seed swings (this run's 0.8M trough) are of the
   same size as the arm gap. Seeds 1–3 decide.
 - The behavioural difference worth watching across seeds is the finish of the slide: same slide frequency, different
