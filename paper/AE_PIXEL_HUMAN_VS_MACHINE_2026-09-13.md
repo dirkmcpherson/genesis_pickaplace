@@ -17,7 +17,7 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 |---|---|---|---|---|---|
 | s0 | human | 0, 0, 5, 1, 12, 13, 11, 6, 12, 15 | 0, 0, 7, 3, 18, 16, 10, 8, 11, 16 | **89/240 = 0.371** | 75/120 = 0.625 |
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
-| s1 | human | 0, 0, 0, 0, 14, 13, … (running; launched 01:56) | 0, 0, 0, 0, 18, 12, … | (0.3–0.6M so far: 30/120 = 0.25) | |
+| s1 | human | 0, 0, 0, 0, 14, 13, 6, … (running; launched 01:56) | 0, 0, 0, 0, 18, 12, 9, … | (0.3–0.7M so far: 39/150 = 0.26) | |
 | s1 | machine | | | | |
 | s2 | human | | | | |
 | s2 | machine | | | | |
@@ -33,6 +33,7 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
 |---|---|---|---|
 | s0 | human | 11/15 (4 tipped) / 14/30 (11 tipped, 5 timeout) | **15/15** / 17/30 (9 tipped, 4 timeout) |
 | s0 | machine | 11/15 (3 tipped, 1 timeout) / 10/30 (15 tipped, 5 timeout) | 1/15 (12 timeout, 2 tipped) / 3/30 (21 timeout, 6 tipped) |
+| s1 | human | 13/15 (2 tipped) / 13/30 (13 tipped, 4 timeout) | |
 
 ## Reading so far (n = 1 v 1 — descriptive only)
 
