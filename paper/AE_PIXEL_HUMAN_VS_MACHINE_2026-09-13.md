@@ -36,6 +36,28 @@ is the only one of four outside the band so far. P-ae-1 (ignition, ≥ 3/4 seeds
 (machine ignites no later): first hold15 `home` snapshot — human 0.3M, 0.5M; machine 0.3M, 0.2M — holds so far.
 Nothing here is a claim: two seeds per arm, and the collapse/recovery swings within a run are as large as any gap.
 
+## Rise time (user's ask, 2026-09-13 17:00: "how early a seed takes off")
+
+Online steps (counter minus the prefill origin) at which the TRAINING record's rolling-30-episode rate first reaches
+the threshold (dense in time, sampled actions, the policy's own starts), and the first SERIES snapshot whose cell
+meets the condition (sparse, 100k apart, MODE actions). Script: `baselines/diagnostics/ae_rise_time.py`.
+**Rise time of record = first online step with rolling-30 `home` ≥ 0.5** (the sustained take-off); the others are
+the companions. Registered as a secondary in (ae) ("ignition snapshot") and the quantity P-ae-3 is about.
+
+| seed | picked ≥ 0.5 | home ≥ 0.1 | home ≥ 0.3 | **home ≥ 0.5** | first `home` episode | series: first rnd30 `home` ≥ 1 | series: first hold15 `home` ≥ 5 |
+|---|---|---|---|---|---|---|---|
+| human s0 | 227k | 189k | 244k | **329k** | 188k | 304k | 304k |
+| human s1 | 229k | 241k | 327k | **354k** | 222k | 502k | 502k |
+| human s2 | 158k | 216k | 337k | **360k** | 159k | (running) | (running) |
+| machine s0 | 208k | 254k | 315k | **321k** | 236k | 102k | 403k |
+| machine s1 | 169k | 212k | 296k | **303k** | 205k | 303k | 403k |
+
+Reading at 3 v 2: every seed takes off between 0.30M and 0.36M online steps (rolling `home` ≥ 0.5), inside a 60k
+band; the machine seeds are 20–50k earlier on that measure and 20–60k earlier to sustained picking, the human seeds
+20–80k earlier to the first `home` episode. Differences of that size are one or two rolling windows and well inside
+the seed spread — P-ae-3 ("machine no later") holds so far but is not a finding. The series ignition column lags the
+training measure by 0–150k because the 100k grid and the collapse windows (human s1's 0.3–0.4M) fall where they fall.
+
 ## Milestone cells, parent protocol (SAMPLED actions)
 
 | seed | arm | 0.5M hold15 / rnd30 `home` | 1M hold15 / rnd30 `home` |
