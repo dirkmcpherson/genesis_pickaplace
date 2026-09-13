@@ -1333,3 +1333,50 @@ identical, rung for rung, to the original s950 stamp; only the trailing `full_en
 registered reason. `[pack] seeds: …` lines confirm 2 processes per allocation. The milestone sweep
 (deployed d8cfb777) enumerates `_rnrh`, so these seeds' milestone cells will be scored automatically.
 ETA ≈ 20 h packed (the (ac) packs ran ~6 %/h).
+
+### {r2dreamer} `nested_sparse` (rev 3) — 4M READOUT, n = 4 v 4 (2026-09-13 ~03:00, cluster-ops box)
+
+Cells of record: `$W/ln_milestone_cells/full_r2d_state_<set>_rnsh_s<seed>/online_4000000/{rnd30_mode,hold15_mode,rnd30_sample}`,
+scored by `ln14_milestone_eval.sbatch` on 64-core nodes with the tree from each run's `ladder_provenance.json`
+(the eval-tree fix, c330e60). The in-job `fresh_eval_*` cells (`final`) reproduce the 4M milestone cells
+exactly on every seed checked (s955, s957, s958: same counts), which is the expected determinism check, not
+extra evidence. Ladder: `nested_sparse` = `home` +1, terminal; `tip_guard=not_in_hand`.
+
+| arm | seed | 0.5M | 1M | 2M | **4M rnd30 mode `home`** | 4M hold15 | 4M rnd30 sample | 4M picked (rnd30) |
+|---|---|---|---|---|---|---|---|---|
+| human `dHfull_all_rnsh` | s955 | 0 | 0 | 8/30 | **20/30** | 15/15 | 16/30 | 21/30 |
+| | s956 | 0 | 0 | 0 | 0/30 | 0/15 | 0/30 | **0/30** |
+| | s957 | — | — | 2/30 | **16/30** | 15/15 | 19/30 | — |
+| | s958 | — | 0 | — | **13/30** | 15/15 | 12/30 | — |
+| machine `dDPfull_first_rnsh` | s975 | 0 | 0 | 0 | 0/30 | 0/15 | 0/30 | **0/30** (7/30 at 2M) |
+| | s976 | 0 | 0 | 0 | (no 4M: stalled, cancelled at ~3.93M; CONFOUNDS 85) | — | — | 0/30 at 2M |
+| | s977 | 0 | 0 | 0 | 0/30 | 0/15 | 0/30 | **0/30** (1/30 at 2M) |
+| | s978 | 0 | 0 | 0 | 0/30 | 0/15 | 0/30 | **0/30** (3/30 at 1M) |
+
+**Ignition (rev-3 rule, ≥ 1 `home` in a 4M cell): human 3/4, machine 0/4.** Fisher exact two-sided
+p = 0.14 on the ignition counts — directional, not significant at n = 4. Mean 4M rnd30-mode `home` rate:
+human 0.408 (0.667/0/0.533/0.433), machine 0.000.
+
+Three observations that constrain the interpretation:
+
+1. **The outcome is bimodal.** Every ignited seed reaches `home` on 43–67 % of random starts and 15/15
+   in-distribution; every un-ignited seed — on BOTH arms — ends at 4M with **zero picks**, having had
+   3–9 picks per 30 at 0.5M–2M (s956 7/30 at 2M; s975 7/30 at 2M; s977 3/30 at 0.5M; s978 4/30 at 0.5M).
+   Pick is lost, not merely never extended. There is no seed in between. The per-arm statistic is therefore
+   ignition count, with the home rate of the ignited seeds as a second number; a mean over seeds
+   mixes two populations.
+2. **The un-ignited seeds' pick collapse is the mechanism (ac) was registered against**: a degenerate
+   return distribution under a +1 sparse ladder and the `ReturnEMA` scale floor. (ac)'s +10 packs land
+   at ~13:00 09-13 and are the direct test; if +10 seeds also collapse, the cause is elsewhere.
+3. **Sparse beats ramp for the world model, decisively.** The best ramp seed at 4M (rev 3, s951) shows
+   `home` 1/30; ramp's `slide_event` fires at 12–17/30 but the +3 ramp saturates at the 0.05 m span
+   (`LN_RAMP_SATURATION`). The (aa) rev-4 ramp packs (+4 v +4, ~21 h left) complete that arm's n = 8.
+
+Videos delivered to the user (2026-09-13): `~/data/genesis_pickaplace/videos_sparse_2026-09-13/reel_{s955,s957,s958,dead}.mp4`
+(3 `home` + 1 tipped + 1 timeout per ignited seed; the dead reel = human s956 and machine s975 at 4M),
+built from the cells' own per-episode mp4s (slowed 2×, timeouts strided), plus s955's raw `rollouts_grid.mp4`.
+Tipped starts coincide across seeds (rnd 2/5/6/8/16/19/25/26 tip on all three ignited seeds) — start geometry, not seed noise.
+
+Not yet done: the {RLPD} `nested_sparse` 500k finals (4 v 4) and the (ac) RLPD 2 v 2 are complete on disk
+but untabulated beside these cells (`cluster/ln_cell_census.py`, must include `$LAB/gp_ac/.../e2e_ac/`).
+Cross-learner: RLPD sparse showed 0 `home` on all 4 rev-3 seeds at 500k; the world model needed 2M+ to ignite.
