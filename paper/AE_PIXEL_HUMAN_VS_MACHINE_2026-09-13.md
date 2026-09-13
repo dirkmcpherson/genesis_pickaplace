@@ -18,14 +18,23 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | human | 0, 0, 5, 1, 12, 13, 11, 6, 12, 15 | 0, 0, 7, 3, 18, 16, 10, 8, 11, 16 | **89/240 = 0.371** | 75/120 = 0.625 |
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
-| s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, … (running; launched 08:25) | 0, 0, 4, 11, 0, 14, 20, 7, … | (0.3–0.8M so far: 56/180 = 0.31) | |
-| s2 | human | | | | |
+| s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, 7, 14 | 0, 0, 4, 11, 0, 14, 20, 7, 16, 17 | **89/240 = 0.371** | 64/120 = 0.533 |
+| s2 | human | (launched 14:46, PID 1638622) | | | |
 | s2 | machine | | | | |
 | s3 | human | | | | |
 | s3 | machine | | | | |
 
 Tipped (rnd30 MODE cells, 0.3–0.9M): human s0 9, 7, 7, 9, ?, ?, ?; machine s0 7, 7, 18, 9, 13, 15, 24 — the machine
 seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 of 18 for the human seed).
+
+### Interim at 2 v 2 (2026-09-13 14:50, descriptive)
+
+Statistic of record: **human 0.371, 0.288 (mean 0.33) · machine 0.125, 0.371 (mean 0.25)**. The arm difference
+(0.08) is smaller than the within-arm spread (human 0.08, machine 0.25); machine s1's series is indistinguishable
+from human s0's (both 0.371; final cells 14/15 and 17/30 v 15/15 and 16/30). Machine s0 — the tip-then-stop seed —
+is the only one of four outside the band so far. P-ae-1 (ignition, ≥ 3/4 seeds per arm): 2/2 and 2/2 so far. P-ae-3
+(machine ignites no later): first hold15 `home` snapshot — human 0.3M, 0.5M; machine 0.3M, 0.2M — holds so far.
+Nothing here is a claim: two seeds per arm, and the collapse/recovery swings within a run are as large as any gap.
 
 ## Milestone cells, parent protocol (SAMPLED actions)
 
