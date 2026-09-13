@@ -1638,6 +1638,14 @@ job: `ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped |
 tip=tilt>60deg&not_in_hand@4f`, and r2dreamer must print `return_clamp=10.0 (env and model
 agree)`.
 
+**Status 2026-09-13 20:00 (`paper/CLUSTER_READOUT_2026-09-13_2000.md`).** {r2dreamer} `nested_sparse10` s957/s958
+(human) and s977/s978 (machine) at 3.2–3.5M online: **0 `home` in training on all four**, last-60 picked 0.00;
+machine cells at 0.5/1/2M picked 0–1/30 (human cells failed on a tree-resolution defect, to be retried, and will
+read the same). **P-ac-1's disconfirm branch fires**: +10 did not make the state-based world model pick, so the
+normalisation-floor account is not sufficient for this learner. {RLPD} `nested_sparse10` 500k: human s957 hold15
+`home` 2/15 (places 14/15), s958 picks without placing; machine s977/s978 never pick — P-ac-2 not "within noise" in
+the sense registered (the machine RLPD seeds are dead under +10 while they picked 14/15 under the ramp).
+
 **Scope note.** The r2dreamer Ladder-N tree exists on the cluster (`$W/r2dreamer_ladderN` @
 0cf3d9e) and on the other workstation; the git bundles in `cluster/bundles/` require prerequisite
 commit 6af0ec7, which this workstation's r2dreamer history does not contain, so the r2dreamer
