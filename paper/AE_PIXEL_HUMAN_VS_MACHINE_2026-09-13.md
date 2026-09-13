@@ -32,7 +32,7 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
 | seed | arm | 0.5M hold15 / rnd30 `home` | 1M hold15 / rnd30 `home` |
 |---|---|---|---|
 | s0 | human | 11/15 (4 tipped) / 14/30 (11 tipped, 5 timeout) | **15/15** / 17/30 (9 tipped, 4 timeout) |
-| s0 | machine | 11/15 (3 tipped, 1 timeout) / 10/30 (15 tipped, 5 timeout) | (queued) |
+| s0 | machine | 11/15 (3 tipped, 1 timeout) / 10/30 (15 tipped, 5 timeout) | 1/15 (12 timeout, 2 tipped) / 3/30 (21 timeout, 6 tipped) |
 
 ## Reading so far (n = 1 v 1 — descriptive only)
 
