@@ -18,7 +18,7 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | human | 0, 0, 5, 1, 12, 13, 11, 6, 12, 15 | 0, 0, 7, 3, 18, 16, 10, 8, 11, 16 | **89/240 = 0.371** | 75/120 = 0.625 |
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
-| s1 | machine | (launched 08:25, PID 1508240) | | | |
+| s1 | machine | 0, 1, 2, 5, 0, … (running; launched 08:25) | 0, 0, 4, 11, … | (0.3–0.4M so far: 15/60 = 0.25) | |
 | s2 | human | | | | |
 | s2 | machine | | | | |
 | s3 | human | | | | |
@@ -50,6 +50,17 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
 - The behavioural difference worth watching across seeds is the finish of the slide: same slide frequency, different
   tip rate. If it holds, the candidate mechanism is in the demonstrations' push geometry (DP-teacher pushes v human
   pushes), which the stage records can quantify offline (`slide_gain_m`, tool–can lever at set-down) without any new run.
+
+## MODE-degenerate checkpoints (a protocol note, 2026-09-13 12:00)
+
+Twice so far a series checkpoint's hold15 MODE cell read **0/15 with all 15 episodes timing out** while its own
+60-episode record window (sampled actions) read picked 0.63 / home 0.35 (human s1 `ck_517892`, 0.4M) and picked 0.65 /
+home 0.52 (machine s1 `ck_653443`, 0.5M): the deterministic mean action does nothing at those checkpoints although the
+stochastic policy performs. This is not the window mismatch of `R2D_LIVE_VS_RELOAD` (the windows are not near zero) but
+a MODE-vs-sampled divergence of the actor at particular checkpoints. The statistic of record stays as registered
+(MODE series), so both arms carry the same exposure; the milestone cells (sampled, 0.5M and 1M) are the registered
+check. **Planned post hoc, symmetric across all eight seeds, after the chain finishes:** sampled-action cells on every
+series checkpoint (they are all saved), reported beside the MODE series as a secondary — not in place of it.
 
 ## Records
 
