@@ -25,7 +25,7 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
 | s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, 7, 14 | 0, 0, 4, 11, 0, 14, 20, 7, 16, 17 | **89/240 = 0.371** | 64/120 = 0.533 |
-| s2 | human | 0, 0, 2, 0, … (running; launched 14:46) | 0, 0, 0, 0, … | | |
+| s2 | human | 0, 0, 2, 0, 9, 5, … (running; launched 14:46) | 0, 0, 0, 0, 16, 5, … | (0.3–0.6M so far: 21/120 = 0.18) | |
 | s2 | machine | | | | |
 | s3 | human | | | | |
 | s3 | machine | | | | |
@@ -72,6 +72,7 @@ training measure by 0–150k because the 100k grid and the collapse windows (hum
 | s0 | machine | 11/15 (3 tipped, 1 timeout) / 10/30 (15 tipped, 5 timeout) | 1/15 (12 timeout, 2 tipped) / 3/30 (21 timeout, 6 tipped) |
 | s1 | human | 13/15 (2 tipped) / 13/30 (13 tipped, 4 timeout) | 7/15 (7 tipped, 1 timeout) / 11/30 (12 tipped, 7 timeout) |
 | s1 | machine | 0/15 (15 timeout) / 0/30 (23 timeout, 7 tipped) — a dead checkpoint, see the note | 12/15 (2 tipped, 1 timeout) / 16/30 (8 tipped, 6 timeout) |
+| s2 | human | 11/15 (2 tipped, 2 timeout) / 12/30 (11 tipped, 7 timeout) | |
 
 ## Reading so far (n = 1 v 1 — descriptive only)
 
