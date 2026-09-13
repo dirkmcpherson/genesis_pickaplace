@@ -19,7 +19,7 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
 | s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, 7, 14 | 0, 0, 4, 11, 0, 14, 20, 7, 16, 17 | **89/240 = 0.371** | 64/120 = 0.533 |
-| s2 | human | (launched 14:46, PID 1638622) | | | |
+| s2 | human | 0, 0, 2, 0, … (running; launched 14:46) | 0, 0, 0, 0, … | | |
 | s2 | machine | | | | |
 | s3 | human | | | | |
 | s3 | machine | | | | |
@@ -97,6 +97,11 @@ snapshots: 14/15 and 15/15). The statistic of record stays as registered (MODE s
 exposure). **Planned post hoc, symmetric across all eight seeds, after the chain finishes:** sampled-action cells on every
 series checkpoint (all saved), reported beside the MODE series as a secondary — not in place of it — and the
 collapse count per seed as a descriptive.
+
+Third case 17:42: human s2 `ck_521588` (0.4M) hold15 0/15 (15 timeouts), rnd30 picked 3/30, while the record around it
+reads picked 1.00 / home 0.67. Three of five seeds so far have a dead checkpoint at 0.4M or 0.5M — right after
+take-off (rise time of record 0.30–0.36M). The post-hoc sampled series will say whether these are all full collapses
+(as machine s1's was) and how long they last.
 
 ## Records
 
