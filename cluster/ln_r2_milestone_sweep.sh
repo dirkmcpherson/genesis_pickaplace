@@ -158,6 +158,12 @@ runs = []
 for suf in ("rnrh", "rnsh", "rzh", "rns10h"):
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s9*"))
 runs = sorted(r for r in runs if os.path.isdir(r) and "lnsmoke" not in os.path.basename(r))
+# RUN_FILTER (2026-09-13): an optional regex to PRIORITISE runs -- e.g. RUN_FILTER=rnsh scores the
+# sparse seeds first when a decision hangs on them. No filter = the full alphabetical pass as before.
+_rf = os.environ.get("RUN_FILTER", "")
+if _rf:
+    import re as _re
+    runs = [r for r in runs if _re.search(_rf, os.path.basename(r))]
 
 # ARM-INTERLEAVED ORDER. Plain alphabetical puts every `dDPfull_first_*` (machine) run ahead of
 # every `dHfull_all_*` (human) one, so the first wave of a slot-limited sweep is one arm only and a
