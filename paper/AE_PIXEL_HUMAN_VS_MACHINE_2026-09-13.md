@@ -6,6 +6,12 @@ the r2dreamer chassis, pixels (top ++ wrist 64×64) + 8-dim proprioception, `ima
 Sets: human `dHfull_all_rns10h_img` (74 tapes, Σ 130, 13 `home`), machine `dDPfull_first_rns10h_img` (72 tapes, Σ 140,
 14 `home`; DP teacher trained on the pruned human set, first attempt per start; both built from the LOCAL stage records).
 
+> **CORRECTION 2026-09-13 19:00 (AUDIT_TRAIL_R2D_NESTED_SPARSE_HvM B2):** the (ae) design text says 1M "gives five
+> post-eviction snapshots". A replay row is one decision (4 env frames), so a 5e5-row buffer holds 2.0M online frames and
+> in these 1M-frame runs the demonstrations (29k / 37k rows) are in replay for the WHOLE run (≈ 10 % of rows at 1M).
+> The comparison is therefore "world model trained with its demonstrations present throughout", on both arms; the 1M
+> budget stands as ~3× the rise time. Nothing measured changes.
+
 **Statistic of record (per seed):** mean `home` rate over the rnd30 MODE series cells at 0.3M–1.0M online steps
 (8 cells × 30 episodes; fresh process, deterministic actions, training world, `[sim-variant]` on every cell).
 Secondary: hold15 MODE the same way; ignition snapshot; tipped fraction. The number is the SERIES — never one

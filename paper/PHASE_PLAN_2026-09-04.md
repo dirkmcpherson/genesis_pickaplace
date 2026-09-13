@@ -1764,6 +1764,12 @@ ignition step), because the machine tapes contain no idle segments (idle fractio
 contrast, not a rate contrast; if P-ae-3 reverses, the idle-fraction account of source effects is wrong for this
 learner.
 
+**Correction 2026-09-13 19:00 (not a change of design):** "the demonstrations evict from the buffer at ~470k" above,
+and the same figure in (ad), are a unit error inherited from the trainer's `eviction_note` — a replay row is one
+DECISION (4 env frames), so the 5e5-row buffer holds 2.0M online frames and the demonstrations are present for the
+whole 1M budget (AUDIT_TRAIL_R2D_NESTED_SPARSE_HvM_2026-09-13 B2). The budget and statistic are unchanged; the
+rationale becomes "1M ≈ 3× the rise time, demonstrations present throughout".
+
 **Schedule.** ~6.5 h per run at ~45 fps; 4 v 4 complete ≈ 45 h after machine s0 starts (Sunday 2026-09-14
 afternoon) on this box alone. The same 8 runs are launchable on the cluster in parallel (~8–10 h wall) from
 `cluster/bundles/r2dreamer_px_full_main_2026-09-12.bundle` (deployed as a NEW tree) + both `_img` sets + a launcher that

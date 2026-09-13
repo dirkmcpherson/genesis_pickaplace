@@ -1,5 +1,13 @@
 # {dv3 local} pixels + proprio, shift4, `nested_sparse10` — `home` 5/15 on hold15 MODE at 0.3M online steps (2026-09-12 ~14:50)
 
+> **CORRECTION 2026-09-13 19:00 (AUDIT_TRAIL_R2D_NESTED_SPARSE_HvM B2).** Every "post-eviction" statement in this
+> document is wrong. A replay-buffer ROW is one decision = 4 env frames (`trainer.py:137`, `:201`), so
+> `buffer.max_size=5e5` holds 2.0M online env steps, and the trainer's `eviction_note` ("all demo frames gone by
+> 500000 online env steps") mislabels rows as env steps. In this 2M-frame run the demonstrations began leaving the
+> buffer at ~1.88M online frames, not 0.47M; in the 1M-frame (ae) runs they never leave. The 0.5M "eviction point",
+> the "post-eviction trend at 0.7–0.8M" and the (ae) budget rationale below are therefore about a policy trained
+> WITH its demonstrations in replay throughout; the swings are the policy's own. Numbers are unaffected.
+
 **Run:** `~/runs_dv3_local/dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0` (PHASE_PLAN amendment (ad), registered
 12:3x, launched 12:42; `LAUNCH_px_sparse10_s0.txt`). DreamerV3 losses (`rep_loss=dreamer`) in the r2dreamer chassis;
 observation = top ++ wrist 64×64×6 pixels + the 8-dim proprioception (q[:6], gripper motor, grip effort) — no can pose,
