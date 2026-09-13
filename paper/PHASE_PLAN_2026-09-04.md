@@ -1806,3 +1806,36 @@ Operational exposure, also per the audit: a pack runs up to 12 CPU Genesis world
 (the count that once hung a workstation); the health check now carries a `metrics.jsonl` mtime > 45 min
 STALL rule (S3), and a preemption of a pack loses TWO seeds (S7) — the packs are on QOS `normal`,
 where preemption does not occur, which is why they were placed there.
+
+### (aa) REVISION 4 — {r2dreamer} `nested_ramp` extended by 4 v 4 seeds, PACKED (registered 2026-09-13 BEFORE submission; user's instruction "queue 4 more of each demo-source")
+
+**Condition.** {r2dreamer}, ladder `nested_ramp` (picked 1 → placed_v2 1 → slide ramp ≤ 3 over
+0.05 m → home 4; max 9; `far_release` off; tip guard `not_in_hand`), sets `dHfull_all_rnrh` /
+`dDPfull_first_rnrh` — the arm on which, at 4 v 4, the registered rev-3 ignition read gives
+**human 3/4 seeds with ≥ 1 `home`** (s951, s952, s953) **v machine 1/4** (s970, one sampled
+episode). This revision takes that arm to **8 v 8** so the ignition read stops resting on
+single episodes: **+4 human seeds 954/959/960/961, +4 machine seeds 974/979/980/981** (values
+unused by any r2dreamer run; not paired with anything), **4M online each** with milestones
+0.5M/1M/2M/4M so every seed has the matched 2M and 4M reads.
+
+**Scheduling (disclosed).** Packed 2 per GPU via the launcher's `PACK_SEEDS` mode ((ac) rev 1,
+smoke-passed 3621470): four packs — human (954,959), (960,961); machine (974,979), (980,981) —
+QOS `normal` (no preemption), `-n 16 --mem=96g`, same request for both arms. Original ramp seeds
+950–953 / 970–973 were unpacked; the Step-accounting proof in (ac) rev 1 (identical prefill /
+counter target) applies unchanged.
+
+**Tree (disclosed).** The pinned (aa) tree `gp_ladderN` @ a40c8aa1 has no `PACK_SEEDS` mode, so
+these packs run from a fresh clone `$LAB/gp_aa4` at repo HEAD, pinned for the life of this
+revision. Its runtime-imported files differ from a40c8aa1 by exactly: `full_env.py` gains the
+`nested_sparse10` registry entry and that name in `NESTED_LADDERS`; `train_rlpd.py` and
+`eval_e2e.py` gain the name in a `choices=` list (RLPD-only, never imported by r2dreamer).
+`genesis_can_env.py`, `stage_predicates.py`, `full_demos.py` are byte-identical. The
+`nested_ramp` spec, predicates and guard are therefore unchanged; the `[ladder]` stamp's rung
+fields must be identical to the original eight, its `full_env=` sha will differ, and that is why.
+r2dreamer tree `$W/r2dreamer_ladderN` @ 0cf3d9e, unchanged.
+
+**Prediction.** P-aa4-1: the 8 v 8 ignition read keeps its direction — human ≥ 2 more seeds with
+≥ 1 `home` among the four; machine's count stays below human's. Disconfirm: machine reaches ≥ 2
+new igniting seeds or human adds none, in which case the 4 v 4 direction was single-episode noise
+and the ramp arm is a null on ignition. Either way the rate statistic stays unreported until the
+pinned re-score (cells here are `preview`).
