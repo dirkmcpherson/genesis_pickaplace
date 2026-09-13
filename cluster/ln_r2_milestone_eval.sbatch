@@ -29,9 +29,21 @@ set -eo pipefail          # NOT -u: `conda activate` sources a cluster hook that
 RUN=$1; MS=$2
 LAB=${LAB:-/cluster/tufts/shortlab/jstale02}
 W=${W:-$LAB/wm_fix_2026-09-03}
-GP=${GP:-$LAB/gp_ladderN}
 R2=${R2:-$W/r2dreamer_ladderN}
 CELLROOT=${CELLROOT:-$W/ln_milestone_cells}
+# Score every cell with the genesis_pickaplace tree ITS RUN trained on (the audit's durable fix:
+# run discovery from ladder_provenance.json). A fixed GP silently scores a run on the wrong tree --
+# 2026-09-13: every (ac) nested_sparse10 milestone failed with "unknown ladder" because this
+# defaulted to the pinned (aa) tree, which predates the entry, and the idempotent sweep resubmitted
+# them every pass. An explicit GP= still wins (for a deliberate cross-tree re-score, disclosed).
+# Precedence: GP_OVERRIDE (a deliberate, disclosed cross-tree re-score) > the RUN'S OWN provenance
+# > the inherited GP (the sweep passes its default gp_ladderN to every job, which is exactly the
+# value that must NOT win for a run trained elsewhere) > the pinned (aa) tree.
+_PROV_GP=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('genesis_pickaplace_root',''))" "$CELLROOT/$RUN/$MS/ladder_provenance.json" 2>/dev/null || true)
+if [ -n "${GP_OVERRIDE:-}" ]; then GP=$GP_OVERRIDE; _SRC=GP_OVERRIDE
+elif [ -n "$_PROV_GP" ] && [ -d "$_PROV_GP" ]; then GP=$_PROV_GP; _SRC="run provenance"
+else GP=${GP:-$LAB/gp_ladderN}; _SRC="inherited/default"; fi
+echo "[gp] tree for this cell: $GP (from $_SRC)"
 PY=$LAB/r2d_venv/bin/python
 REQUIRE_CORES=${REQUIRE_CORES:-64}
 REQUIRE_LOGICAL=${REQUIRE_LOGICAL:-64}
