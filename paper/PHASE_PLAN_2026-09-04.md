@@ -1736,6 +1736,60 @@ Every cell must carry `[sim-variant] gc_kp4_riser3_shelf6`, and the run's consol
 **Status 2026-09-12 16:20:** P-ad-1 and P-ad-2 MET at 0.3M (`paper/PX_SPARSE10_FIRST_HOME_2026-09-12.md`); series
 checkpoint ck_619574 (0.50M) hold15 MODE `home` 12/15, rnd30 MODE `home` 18/30. P-ad-3 not yet run.
 
+## Amendment (af) — the PIXEL recipe on the cluster: 20 preempt GPUs split over the world model's two representation losses and the attribution control (registered 2026-09-13 ~20:30, BEFORE any submission; user: "take a chance on this … split the 20 gpus between RLPD, R2, and DV3, keeping in mind someone might preempt our jobs")
+
+**Why.** `paper/CLUSTER_READOUT_2026-09-13_2000.md`: the state-based `nested_sparse10` arm is dead for both
+learners (r2dreamer 0 `home` on 4 seeds at ~3.4M; RLPD human 2/15 at best, machine never picks), while the pixel
+world model on this box ignites on 5/5 seeds of both arms ((ad)/(ae)). The cluster has never run pixels. This
+amendment moves the pixel recipe there, adds the port's own representation loss as a second world-model
+implementation, and runs the one attribution control that separates "pixels" from "+10".
+
+**Recipe (identical to (ae) except the tree paths):** r2dreamer `env=genesis_full_pixel` (image 64×64×6 top ++ wrist
++ `state_slice 8` proprioception, `image_aug shift4`), `nested_sparse10` (+10 on `home`, terminal `home+tipped`,
+`tip_guard not_in_hand`, `far_release` off, `return_clamp` 10.0 derived), `act_entropy` 3e-5, `bounded_normal`,
+`buffer.max_size` 5e5 rows (= 2.0M frames: the demonstrations never evict in a 1M run), 1M online steps, milestones
+0.5M/1M, sets `dHfull_all_rns10h_img` (Σ 130, 13 `home`) / `dDPfull_first_rns10h_img` (Σ 140, 14 `home`) rsynced
+from pop-os, trees `$LAB/gp_px` (repo HEAD) and `$W/r2dreamer_px` (bundle `r2dreamer_px_full_main_2026-09-12`), one run
+per GPU (no packing: the preemption unit is one seed), QOS `preempt`, submission order interleaved human/machine.
+
+**Arms (20 GPUs, this order of priority if the cap is short):**
+1. **DV3 = `rep_loss=dreamer`** (the (ae) learner), `nested_sparse10`, human seeds 4–7 v machine seeds 4–7 = **8 GPUs**.
+   These join the local (ae) seeds 0–3 → 8 v 8 under (ae)'s statistic; cross-machine disclosure: cluster GPU class and
+   node per seed stamped; the sim is CPU on both.
+2. **R2 = `rep_loss=r2dreamer`** (the port's own contrastive loss, no decoder; augmentation still applied before the
+   encoder), `nested_sparse10`, human seeds 0–2 v machine seeds 0–2 = **6 GPUs**. Question: does the second
+   world-model implementation also solve the task from pixels?
+3. **Attribution control, DV3 losses, pixels, `nested_ramp` v2** (the (aa) ramp: 1/1/+3 ramp/+4, clamp 9), human seeds
+   0–1 v machine seeds 0–1 = **4 GPUs**, sets `dHfull_all_rnrh_img` / `dDPfull_first_rnrh_img` (to be rendered with
+   `relabel_reward.py --images --ladder nested_ramp`, same recorder; built on pop-os in a gap between (ae) runs or on
+   a cluster CPU node). Question: pixels + the ramp — does the world model still slide into tips as the state ramp did,
+   or nest? Separates "pixels" from "+10".
+4. **RLPD pixels: 2 GPUs reserved, NOT submitted** until the pipeline (lane PXR-1, being built) passes its smoke; a
+   sub-amendment states its recipe before its first job.
+
+**Preemption policy (registered).** `--requeue`; a preempted run restarts CLEAN (the launcher clears its logdir),
+so a seed's series may restart from zero; the sweep scores whatever milestones exist; a seed preempted after a
+milestone keeps that milestone's cells; seeds are never replaced or re-seeded; every job's `sacct` restart count is
+reported with its cell. With 1M-step runs (~6–7 h) the exposure is bounded; arms are interleaved so a preemption
+wave hits both.
+
+**Statistic and predictions.** Per seed as in (ae) (mean rnd30 MODE `home` over the 0.3–1.0M series; hold15 MODE
+secondary; rise time; tipped fraction); cells from the milestone sweep (`rns10h_img` / `rnrh_img` runs, r2dreamer
+tree `$W/r2dreamer_px`, 64/64-core nodes, `[sim-variant]` on every cell).
+- P-af-1 (DV3, cross-machine): cluster seeds 4–7 ignite (rolling-30 `home` ≥ 0.5) within 0.2–0.5M like the local
+  five; if fewer than 3 of 8 ignite, the cluster environment (GPU class / CPU class / fps) is the first suspect and the
+  local and cluster seeds are NOT pooled.
+- P-af-2 (R2 loss): ≥ 2 of 3 seeds per arm ignite by 1M. Disconfirm: ≤ 1 per arm → the pixel result is specific to
+  the reconstruction loss and is reported as "DreamerV3 losses, pixels"; both outcomes are reportable.
+- P-af-3 (control): pixels + `nested_ramp` reaches `slide_event` ≥ 0.5 on hold15 MODE by 1M on ≥ 3 of 4 seeds AND its
+  tipped fraction exceeds the pixel-`sparse10` seeds' (the state ramp tipped 14/15 at its best checkpoint). If the
+  ramp-with-pixels policy nests as well as `sparse10` does, "+10" is not the active ingredient; if it tips, the
+  reward shape is doing what it did on state and pixels are what fixed the perception.
+- P-af-4 (source, pooled 8 v 8 DV3): as P-ae-2 (±0.15 null margin), exact permutation, MDE reported.
+
+**Not decided by this amendment:** RLPD with pixels (pending PXR-1); the idle-collapsed human control ((n)) for the
+world model; any state-based sparse claim.
+
 ## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
 
 **Question.** The project's question (PAPER_PLAN H4) on the configuration that actually learns the task: does the
