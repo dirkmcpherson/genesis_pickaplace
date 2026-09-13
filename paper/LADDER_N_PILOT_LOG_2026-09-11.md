@@ -1312,3 +1312,24 @@ disclosed as a scheduling difference from the rev-3 comparator in PHASE_PLAN (ac
 | `is_terminal` | accepted as second-order (biases the value at `home` UPWARD — wrong direction for non-ignition; cannot explain no-pick at 1M). Decisive test only if (ac)'s 1M milestone picks | — |
 
 Also from this pass: the RLPD census must include `$LAB/gp_ac/baselines/rl/checkpoints/e2e_ac/` (added to the ops list); the pixel-observation lane on the other box reports `nested_sparse10` from pixels reaching `home` 12/15 hold15 mode / 18/30 rnd30 mode at 0.5M (`PX_SPARSE10`, its own registration (ad)) — a different arm, not part of (ac).
+
+### (aa) REVISION 4 — SUBMITTED 2026-09-13 (four packed {r2dreamer} nested_ramp packs, +4 v +4)
+
+`GP=$LAB/gp_aa4 bash cluster/submit_aa_rev4_packs.sh`; `gp_aa4` @ 01cb8d34 (fresh clone, pinned for
+this revision; `genesis_can_env.py` / `stage_predicates.py` / `full_demos.py` byte-identical to the (aa)
+pin a40c8aa1 — verified on the clone; see PHASE_PLAN (aa) rev 4 for the full diff statement).
+
+| job | pack | seeds | set | budget |
+|---|---|---|---|---|
+| 3642685 | `ln_r2_ramp4M_pack_dH_s954_959` | 954, 959 | `dHfull_all_rnrh` | 4M each, milestones 0.5/1/2/4M |
+| 3642686 | `ln_r2_ramp4M_pack_dH_s960_961` | 960, 961 | " | " |
+| 3642687 | `ln_r2_ramp4M_pack_dM_s974_979` | 974, 979 | `dDPfull_first_rnrh` | " |
+| 3642688 | `ln_r2_ramp4M_pack_dM_s980_981` | 980, 981 | " | " |
+
+All four RUNNING within 2 min (normal QOS had 8 free GPUs). **Stamp check passed:** every pack's
+`[ladder] unified-2026-09-10 | ladder=nested_ramp | picked=1 placed_v2=1 home=4 ramp:slide_gain_m=3/0.05m |
+max_return=9 | terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f` is
+identical, rung for rung, to the original s950 stamp; only the trailing `full_env=` sha differs, for the
+registered reason. `[pack] seeds: …` lines confirm 2 processes per allocation. The milestone sweep
+(deployed d8cfb777) enumerates `_rnrh`, so these seeds' milestone cells will be scored automatically.
+ETA ≈ 20 h packed (the (ac) packs ran ~6 %/h).
