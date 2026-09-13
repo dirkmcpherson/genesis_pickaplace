@@ -18,7 +18,7 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | human | 0, 0, 5, 1, 12, 13, 11, 6, 12, 15 | 0, 0, 7, 3, 18, 16, 10, 8, 11, 16 | **89/240 = 0.371** | 75/120 = 0.625 |
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
-| s1 | machine | 0, 1, 2, 5, 0, … (running; launched 08:25) | 0, 0, 4, 11, … | (0.3–0.4M so far: 15/60 = 0.25) | |
+| s1 | machine | 0, 1, 2, 5, 0, 14, 15, … (running; launched 08:25) | 0, 0, 4, 11, 0, 14, … | (0.3–0.6M so far: 29/120 = 0.24) | |
 | s2 | human | | | | |
 | s2 | machine | | | | |
 | s3 | human | | | | |
@@ -34,6 +34,7 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
 | s0 | human | 11/15 (4 tipped) / 14/30 (11 tipped, 5 timeout) | **15/15** / 17/30 (9 tipped, 4 timeout) |
 | s0 | machine | 11/15 (3 tipped, 1 timeout) / 10/30 (15 tipped, 5 timeout) | 1/15 (12 timeout, 2 tipped) / 3/30 (21 timeout, 6 tipped) |
 | s1 | human | 13/15 (2 tipped) / 13/30 (13 tipped, 4 timeout) | 7/15 (7 tipped, 1 timeout) / 11/30 (12 tipped, 7 timeout) |
+| s1 | machine | 0/15 (15 timeout) / 0/30 (23 timeout, 7 tipped) — a dead checkpoint, see the note | |
 
 ## Reading so far (n = 1 v 1 — descriptive only)
 
@@ -51,16 +52,20 @@ seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 o
   tip rate. If it holds, the candidate mechanism is in the demonstrations' push geometry (DP-teacher pushes v human
   pushes), which the stage records can quantify offline (`slide_gain_m`, tool–can lever at set-down) without any new run.
 
-## MODE-degenerate checkpoints (a protocol note, 2026-09-13 12:00)
+## Dead checkpoints (a protocol note, 2026-09-13 12:00, corrected 13:00)
 
 Twice so far a series checkpoint's hold15 MODE cell read **0/15 with all 15 episodes timing out** while its own
-60-episode record window (sampled actions) read picked 0.63 / home 0.35 (human s1 `ck_517892`, 0.4M) and picked 0.65 /
-home 0.52 (machine s1 `ck_653443`, 0.5M): the deterministic mean action does nothing at those checkpoints although the
-stochastic policy performs. This is not the window mismatch of `R2D_LIVE_VS_RELOAD` (the windows are not near zero) but
-a MODE-vs-sampled divergence of the actor at particular checkpoints. The statistic of record stays as registered
-(MODE series), so both arms carry the same exposure; the milestone cells (sampled, 0.5M and 1M) are the registered
-check. **Planned post hoc, symmetric across all eight seeds, after the chain finishes:** sampled-action cells on every
-series checkpoint (they are all saved), reported beside the MODE series as a secondary — not in place of it.
+60-episode record window read picked 0.63 / home 0.35 (human s1 `ck_517892`, 0.4M) and picked 0.65 / home 0.52
+(machine s1 `ck_653443`, 0.5M). My first reading ("the deterministic action is degenerate while the stochastic policy
+performs") is **withdrawn** for the machine case: the 0.5M MILESTONE checkpoint (counter 649 952, 3.5k frames before
+`ck_653443`) evaluated with SAMPLED actions also reads picked 0/15 (15 timeouts) and 4/30 (23 timeouts, 7 tipped),
+`home` 0 — the policy at that checkpoint does nothing under either action mode. So these are short, complete
+collapses (a few tens of episodes — invisible in a 30-episode rolling window at 0.40, decisive in a checkpoint) of the
+kind `R2D_LIVE_VS_RELOAD` documented at longer timescales; the run recovers within ~50 episodes (machine s1's next
+snapshots: 14/15 and 15/15). The statistic of record stays as registered (MODE series; both arms carry the same
+exposure). **Planned post hoc, symmetric across all eight seeds, after the chain finishes:** sampled-action cells on every
+series checkpoint (all saved), reported beside the MODE series as a secondary — not in place of it — and the
+collapse count per seed as a descriptive.
 
 ## Records
 
