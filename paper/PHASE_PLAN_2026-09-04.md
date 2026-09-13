@@ -1839,3 +1839,48 @@ r2dreamer tree `$W/r2dreamer_ladderN` @ 0cf3d9e, unchanged.
 new igniting seeds or human adds none, in which case the 4 v 4 direction was single-episode noise
 and the ramp arm is a null on ignition. Either way the rate statistic stays unreported until the
 pinned re-score (cells here are `preview`).
+
+### (aa) REVISION 5 — {r2dreamer} `nested_sparse` extended by 4 v 4 seeds, PACKED (registered 2026-09-13 ~14:30 BEFORE submission; user: "spin up 8 more (4 machine, 4 human) of that type to see if that's a real result")
+
+**Condition.** {r2dreamer}, ladder `nested_sparse` (`home` +1 only, terminal on `home` and `tipped`, max return 1,
+`far_release` off, tip guard `not_in_hand`), sets `dHfull_all_rnsh` / `dDPfull_first_rnsh` (unchanged; Σ 12 each,
+12 `home` tapes each), 4M online steps, milestones 0.5M/1M/2M/4M, evaluation as in
+`paper/AUDIT_R2D_NESTED_SPARSE_HvM_2026-09-13.md` §5. The existing 4 v 4 (rev 2 + rev 3 seeds) reads **human
+ignited 3/4 (rnd30 MODE `home` 20/30, 16/30, 13/30 at 4M) v machine 0/4** (Fisher p 0.14). That source contrast
+was NOT a registered prediction of rev 2/3 (they registered the recipe question); this revision is its
+confirmatory test, prediction stated first.
+
+**Seeds.** Human **1955 1956 1957 1958**, machine **1975 1976 1977 1978** (the original seed numbers + 1000;
+unused by any run; no pairing implied). Names `full_r2d_state_<set>_s<seed>`.
+
+**Scheduling (disclosed).** Packed 2 per GPU via `PACK_SEEDS` ((ac) rev 1, smoke 3621470): four packs — human
+(1955,1956), (1957,1958); machine (1975,1976), (1977,1978) — QOS `normal`, `-n 16 --mem=96g`, identical request
+both arms. The original 8 sparse seeds were unpacked; the (ac) rev 1 Step-accounting proof (identical prefill /
+counter target, packed v unpacked) applies unchanged. If the normal cap is short, packs wait in the queue; none go
+to `preempt`.
+
+**Tree (disclosed).** `$LAB/gp_aa4` @ 01cb8d34 (the rev-4 clone, pinned): its runtime files differ from the
+sparse seeds' pin a40c8aa1 exactly as stated in rev 4 (`full_env.py` gains the `nested_sparse10` registry entry;
+`genesis_can_env.py`, `stage_predicates.py`, `full_demos.py` byte-identical), so the `nested_sparse` spec,
+predicates and guard are unchanged; the stamp's rung fields must equal the original eight's and its `full_env=`
+sha will differ. r2dreamer `$W/r2dreamer_ladderN` @ 0cf3d9e unchanged. The sweep enumerates `_rnsh`, so
+milestone cells are scored automatically; the 4M cell of each new seed is read by the same
+`ln14_milestone_table.py` line as the originals.
+
+**Predictions (statistic = per-seed rnd30 MODE `home` at the 4M milestone; ignition = ≥ 1 `home`).**
+- **P-aa5-1 (source, ignition):** among the 4 new human seeds ≥ 2 ignite; among the 4 new machine seeds ≤ 1
+  ignites. Pooled 8 v 8 ignition then reads ≥ 5/8 v ≤ 1/8.
+- **P-aa5-2 (source, rate):** pooled 8 v 8 exact permutation on per-seed `home` rate gives p < 0.05 with human
+  higher; the MDE at that n is reported beside it.
+- **Disconfirm branches:** (i) machine ignites ≥ 2 of 4 new seeds → the source effect is not supported at
+  this budget; report the pooled rates and ignition counts as a null with its MDE, do not write "human beats
+  machine". (ii) human ignites ≤ 1 of 4 new seeds → the original 3/4 was seed luck; same reporting. (iii) any
+  seed stalls (CONFOUNDS 85) → its last milestone is reported and the seed is NOT replaced; n shrinks.
+- **Bimodality check (descriptive, registered):** every un-ignited seed (either arm) is predicted to end 4M
+  with rnd30 `picked` ≤ 2/30 (the pick-collapse seen on all 5 un-ignited originals). If an un-ignited seed keeps
+  picking, the two-population reading is wrong.
+
+**What this does not decide.** Whether the effect is demonstration SOURCE or the 0.5M-step buffer eviction
+(§7.1 of the audit brief) interacting with tape length; whether it holds under `nested_sparse10` ((ac));
+whether it holds for {RLPD} at any budget run so far (0 `home` on every RLPD seed). 16 v 16 stays held.
+
