@@ -178,7 +178,21 @@ run_seed() {
   local SEED=$1
   local NAME=full_r2d_state_${ARM}${TAG:+_$TAG}_s${SEED}
   local LOGDIR=$W/runs/$NAME
-  export TORCHINDUCTOR_CACHE_DIR=$W/inductor_cache/${SLURM_JOB_ID:-local}_s${SEED}
+  # Compile caches on NODE-LOCAL disk when the node has a writable /tmp with room (tmpfs, 252 GB on pax
+  # 2026-09-13), else the per-job NFS dir as before. 2026-09-13 21:35: 2 of the 16 (af) world-model jobs
+  # (3685143, 3685150) died at their first compile with `OSError: [Errno 116] Stale file handle` while an
+  # inductor compile WORKER read back a Triton artifact just written to the per-job NFS cache -- an
+  # intra-job race between the parallel compile workers over NFS, not a cross-job collision (the dirs
+  # were already per job; the other 14 jobs on the same nodes were fine). The cache location does not
+  # enter the computation. Both seeds were resubmitted with this launcher; disclosed in PHASE_PLAN (af).
+  local CACHE_BASE=$W/inductor_cache
+  if mkdir -p "/tmp/${USER}_inductor_cache" 2>/dev/null && [ -w "/tmp/${USER}_inductor_cache" ] \
+     && [ "$(df -Pm /tmp 2>/dev/null | awk 'NR==2{print $4}')" -ge 4000 ] 2>/dev/null; then
+    CACHE_BASE=/tmp/${USER}_inductor_cache
+  fi
+  export TORCHINDUCTOR_CACHE_DIR=$CACHE_BASE/${SLURM_JOB_ID:-local}_s${SEED}
+  export TRITON_CACHE_DIR=$TORCHINDUCTOR_CACHE_DIR/triton
+  echo "[cache] TORCHINDUCTOR_CACHE_DIR=$TORCHINDUCTOR_CACHE_DIR TRITON_CACHE_DIR=$TRITON_CACHE_DIR ($([ "$CACHE_BASE" = "$W/inductor_cache" ] && echo NFS-fallback || echo node-local))"
   [ -e "$LOGDIR" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ] && { echo "FATAL: $LOGDIR exists"; exit 2; }
   # A requeued run (preemption / node failure) starts CLEAN, as before -- but the interrupted attempt is
   # MOVED ASIDE, not deleted (2026-09-13, PX cluster deploy, seen on smoke 3684501: preempted at 20:44
