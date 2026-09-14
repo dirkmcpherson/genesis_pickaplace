@@ -28,11 +28,28 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s2 | human | 0, 0, 2, 0, 9, 5, 12, 8, 11, 15 | 0, 0, 0, 0, 16, 5, 17, 16, 15, 17 | **86/240 = 0.358** | 62/120 = 0.517 |
 | s2 | machine | 0, 0, 0, 0, 11, 13, 0, 14, 7, 3 | 0, 1, 0, 0, 13, 17, 0, 21, 11, 11 | **73/240 = 0.304** | 48/120 = 0.400 |
 | s3 | human | 0, 0, 0, 2, 0, 12, 10, 3, 2, 3 | 1, 0, 0, 7, 0, 16, 12, 4, 5, 6 | **50/240 = 0.208** | 32/120 = 0.267 |
-| s3 | machine | (running; launched 10:02 09-14, the last seed) | | | |
+| s3 | machine | 0, 0, 0, 9, 7, 10, 2, 2, 4, 0 | 0, 0, 1, 7, 6, 8, 4, 5, 4, 0 | **35/240 = 0.146** | 34/120 = 0.283 |
 
 **Pooled two-cell statistic (amendment (ag): mean of the 0.5M and 1.0M rnd30 MODE cells, the statistic every local
 AND cluster seed has):** human s0 (18+16)/60 = 0.567, s1 (18+10)/60 = 0.467, s2 (16+17)/60 = 0.550, s3 (0+6)/60 =
-**0.100**; machine s0 (6+1)/60 = 0.117, s1 (0+17)/60 = 0.283, s2 (13+11)/60 = 0.400, s3 pending.
+**0.100**; machine s0 (6+1)/60 = 0.117, s1 (0+17)/60 = 0.283, s2 (13+11)/60 = 0.400, s3 (7+0)/60 = **0.117**.
+
+## RESULT at 4 v 4 (2026-09-14 16:35 — the registered (ae) readout)
+
+**Statistic of record (mean rnd30 MODE `home`, 0.3–1.0M series, 8 cells per seed): human 0.371, 0.288, 0.358, 0.208
+(mean 0.306) · machine 0.125, 0.371, 0.304, 0.146 (mean 0.237). Δ = +0.070 (human), exact two-sided permutation
+p = 28/70 = 0.400.** Pooled two-cell statistic: human 0.421 v machine 0.229, Δ +0.192, p = 16/70 = 0.229. Both
+inside P-ae-2's ±0.15 null margin on the statistic of record; the two-cell statistic's Δ exceeds the margin but at
+p 0.23 with n = 4 v 4 (MDE at this n is far above 0.15 — every registered null here is "no effect detectable", never
+"equivalent"). P-ae-1 (ignition ≥ 3/4 per arm): 4/4 and 4/4, MET. P-ae-3 (machine ignites no later): first hold15
+`home` snapshot human 0.3M, 0.5M, 0.3M (2/15), 0.4M (2/15) · machine 0.3M, 0.2M, 0.5M, 0.4M — 3 of 4 pairs, holds in
+direction, not a finding. Machine s3 ends the way machine s0 did: picks 15/15 at 1.0M and slides home 0/15 (training
+last-30 `home` 0.10 at the cutoff after 0.63 at 0.55M) — the "stops pushing" finish seen in two of four machine seeds
+and none of the human ones; descriptive. Dead checkpoints (picked ≤ 1/15): human s1 0.4M, s2 0.4M, s3 0.3M; machine s1
+0.5M, s2 0.3M/0.4M/0.7M — 3 human, 4 machine. **Post hoc still owed, symmetric across seeds:** sampled-action cells at
+0.5M/1M for human s3, machine s2, machine s3 (the queue scripts exist; one Genesis world at a time on this box).
+The pooled 8 v 8 with the cluster (af) dreamer seeds and the 16 v 16 of (ag) are read on the two-cell statistic in
+`paper/AF_PIXEL_CLUSTER_TALLY_2026-09-14.md`.
 | s3 | machine | | | | |
 
 Tipped (rnd30 MODE cells, 0.3–0.9M): human s0 9, 7, 7, 9, ?, ?, ?; machine s0 7, 7, 18, 9, 13, 15, 24 — the machine

@@ -160,18 +160,19 @@ wrong or means something else; use the shared cell and the per-episode counts.)
 
 | seed | human 0.5M → 1M | machine 0.5M → 1M |
 |---|---|---|
+| seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
 | s8 | 1 → · | 18 → · |
 | s9 | 8 → · | 12 → · |
-| s10 | 10 → 10 | **0 (picked 0)** → · |
-| s11 | 0 (picked 10) → · | 6 → · |
-| s12 | 12 → · | **0 (picked 0)** → · |
+| s10 | 10 → 10 | **0 (picked 0)** → 15 |
+| s11 | 0 (picked 10) → 12 | 6 → 3 |
+| s12 | 12 → 2 | **0 (picked 0)** → 9 |
 | s13 | 1 (picked 2) → 9 | 13 → 17 |
-| s14 | 11 → · | 9 → 6 |
-| s15 | 8 → · | 18 → · |
+| s14 | 11 → 3 | 9 → 6 → 6 |
+| s15 | 8 → 13 → 17 | 18 → 4 |
 
-(`·` = cell not yet scored; 1.5M/2M columns added as they land.) Three seeds read 0 at 0.5M with 0–2 picks — the
-dead-checkpoint pattern of the local series, or late rise; their 1M cells decide. {r2dreamer loss} s3–s15: first
-0.5M milestones at ~16:00.
+(`·` = cell not yet scored; read 16:35 09-14.) The two machine seeds that read 0 with no picks at 0.5M read 15/30
+and 9/30 at 1M — late rise, not dead seeds; and s12 human / s15 machine drop 12 → 2 and 18 → 4 between milestones —
+the oscillation again. {r2dreamer loss} s3–s15: first 0.5M milestones scored from ~17:00.
 
 ## Reading at 00:35 (descriptive; 0.5M is the FIRST of two milestones)
 
