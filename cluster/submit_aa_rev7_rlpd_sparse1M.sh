@@ -16,7 +16,7 @@ echo "DISK-OK ${FREE_GB} GB | gp $(git -C "$GP" describe --always --dirty) | ste
 # normal QOS (never preempt: user 2026-09-13), 2-day walltime (1M decisions ~36 h at the measured ~18 h/500k), nice 0
 RLQ=(-p gpu --qos=normal --nice=0 --time=2-00:00:00)
 sub_rl() {  # arm demo seed
-  local arm=$1 demo=$2 seed=$3 name=ln_rl_sparse1M_${arm}_s${seed}
+  local arm=$1 demo=$2 seed=$3; local name=ln_rl_sparse1M_${arm}_s${seed}
   [ -e "$GP/$RL_OUT_ROOT/e2e_rlpd_${arm}_s${seed}" ] && { echo "FATAL: $GP/$RL_OUT_ROOT/e2e_rlpd_${arm}_s${seed} exists"; exit 1; }
   ( cd "$GP" && env GENESIS_PICKAPLACE_ROOT=$GP LADDER=nested_sparse TIP_GUARD=$TIP_GUARD ARM=$arm SEED=$seed \
       STEPS=$STEPS DEMO=$DEMOS/$demo CKPT_FRACS=$FRACS OUT_ROOT=$RL_OUT_ROOT \
