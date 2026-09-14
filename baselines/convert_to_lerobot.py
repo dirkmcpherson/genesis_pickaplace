@@ -63,7 +63,53 @@ files = [f for f in sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
          if int(np.load(f)['n']) >= MIN_FRAMES]
 assert files, f'no episodes >= {MIN_FRAMES} frames in {RAW} - run collect_lerobot_dataset.py first'
 probe = np.load(files[0])
-has_images = 'images' in probe
+# --- PHASE_PLAN amendment (ag), 2026-09-14: images from a SEPARATE native `_img` set -----------
+# Two opt-in env vars; unset = byte-identical behaviour to every previous call.
+#   LEROBOT_IMAGES_FROM=<dir>   an r2dreamer-native `_img` set (genesis-<uid>-<ic>-<T>.npz with
+#                               `image` (T,64,64,6) uint8, `action` (T,7) backward-shifted delta,
+#                               `state` (T,17)). The recorder tapes in RAW keep supplying `states`
+#                               and `actions` -- so the ACTION COLUMN of the dataset is the same
+#                               bytes as the state-based DP set of record built from the same RAW
+#                               dir -- and only the pixels come from the re-execution. Three gates
+#                               per tape (T == n+1; the native delta stream equals the tape's
+#                               `actions_delta` byte for byte; the native `state` rows equal the
+#                               tape's `states` byte for byte) make a mismatched pairing impossible.
+#   LEROBOT_NO_ENV_STATE=1      omit observation.environment_state (the ground-truth can pose and
+#                               goal xy) from the dataset entirely -- a pixel policy must not see it.
+IMAGES_FROM = os.environ.get('LEROBOT_IMAGES_FROM') or None
+NO_ENV_STATE = os.environ.get('LEROBOT_NO_ENV_STATE') == '1'
+_NATIVE = {}
+if IMAGES_FROM:
+    _nd = pl.Path(IMAGES_FROM)
+    for _f in sorted(_nd.glob('genesis-*.npz')):
+        _uid = int(_f.name.split('-')[1])
+        assert _uid not in _NATIVE, f'two native tapes for uid {_uid} in {_nd}'
+        _NATIVE[_uid] = _f
+    assert _NATIVE, f'no genesis-*.npz under LEROBOT_IMAGES_FROM={_nd}'
+    print(f'[convert] images from native set {_nd} ({len(_NATIVE)} tapes); actions/states still '
+          f'from the recorder tapes in {RAW}', flush=True)
+
+
+def native_images(rawfile, d, n):
+    """(n,H,W,6) uint8 for one recorder tape, from the native `_img` set + the three gates."""
+    uid = int(rawfile.stem)
+    assert uid in _NATIVE, f'{rawfile.name}: no native tape for uid {uid} in {IMAGES_FROM}'
+    z = np.load(_NATIVE[uid], allow_pickle=True)
+    im = np.asarray(z['image']); act = np.asarray(z['action'], np.float32); st = np.asarray(z['state'], np.float32)
+    assert im.dtype == np.uint8 and im.ndim == 4 and im.shape[3] == 6, (rawfile.name, im.shape, im.dtype)
+    assert im.shape[0] == n + 1, f'{rawfile.name}: native T={im.shape[0]} != n+1={n + 1}'
+    assert act.shape[0] == n + 1 and st.shape[0] == n + 1, (rawfile.name, act.shape, st.shape)
+    assert act[1:].tobytes() == np.asarray(d['actions_delta'], np.float32).tobytes(), (
+        f'{rawfile.name}: native action stream != the tape actions_delta -- wrong pairing')
+    assert st[:n].tobytes() == np.asarray(d['states'], np.float32).tobytes(), (
+        f'{rawfile.name}: native state rows != the tape states -- wrong pairing')
+    assert im.any(), f'{rawfile.name}: native images are the zero placeholder, not renders'
+    return im[:n]
+
+
+has_images = ('images' in probe) or bool(IMAGES_FROM)
+PROBE_IMG = (native_images(files[0], probe, int(probe['n'])) if IMAGES_FROM
+             else (probe['images'] if 'images' in probe else None))
 # 5th argv: which cameras from the (H,W,6) rig stack (ch 0:3 = top, 3:6 = wrist).
 # 'top' | 'top,wrist' | 'none' (ignore images even if present). Split into separate
 # 3-channel streams: video codecs are RGB -- a 6-channel "video" feature would be
@@ -89,8 +135,12 @@ features = {
                                       'names': None},
     'action': {'dtype': 'float32', 'shape': (adim,), 'names': None},
 }
+if NO_ENV_STATE:
+    del features['observation.environment_state']
+    print('[convert] LEROBOT_NO_ENV_STATE=1: observation.environment_state is NOT a dataset '
+          'feature (the can pose and goal xy never reach the policy)', flush=True)
 for cam in (CAMERAS if has_images else []):
-    h, w = probe['images'].shape[1:3]
+    h, w = PROBE_IMG.shape[1:3]
     features[f'observation.images.{cam}'] = {'dtype': IMG_DTYPE, 'shape': (h, w, 3),
                                              'names': ['height', 'width', 'channels']}
 
@@ -103,13 +153,15 @@ ds = LeRobotDataset.create(repo_id='local/genesis_pickaplace', fps=FPS, root=ROO
 for f in files:
     d = np.load(f)
     n = int(d['n'])
+    IMGS = (native_images(f, d, n) if IMAGES_FROM else (d['images'] if has_images else None))
     for i in range(n):
         frame = {'observation.state': d['states'][i][:PROPRIO],
-                 'observation.environment_state': d['states'][i][PROPRIO:],
                  'action': d['actions'][i],
                  'task': TASK}
+        if not NO_ENV_STATE:
+            frame['observation.environment_state'] = d['states'][i][PROPRIO:]
         for cam in (CAMERAS if has_images else []):
-            frame[f'observation.images.{cam}'] = d['images'][i][:, :, CAM_SLICE[cam]]
+            frame[f'observation.images.{cam}'] = IMGS[i][:, :, CAM_SLICE[cam]]
         ds.add_frame(frame)
     ds.save_episode()
     print(f'{f.stem}: {n} frames', flush=True)
@@ -133,7 +185,8 @@ assert _rows == _info['total_episodes'], (
     f'CORRUPT DATASET: info.json says {_info["total_episodes"]} episodes but the '
     f'metadata table has {_rows} rows. Do not use it.')
 _json.dump(dict(src=str(RAW), fps=FPS, contract=('v1' if CONTRACT_V1 else 'legacy'), episodes=[f.name for f in files],
-                min_frames=MIN_FRAMES, proprio=PROPRIO, cameras=CAMERAS if has_images else [], img_dtype=IMG_DTYPE),
+                min_frames=MIN_FRAMES, proprio=PROPRIO, cameras=CAMERAS if has_images else [], img_dtype=IMG_DTYPE,
+                images_from=IMAGES_FROM, no_env_state=NO_ENV_STATE),
            open(ROOT / 'genesis_source.json', 'w'), indent=1)
 print(f'\ndataset at {ROOT}: {len(files)} episodes (finalized, metadata verified; fps {FPS}, '
       f'{"contract-v1" if CONTRACT_V1 else "legacy"} source; genesis_source.json written)')

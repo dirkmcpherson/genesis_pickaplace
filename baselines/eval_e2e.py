@@ -77,6 +77,13 @@ ap.add_argument('--tip-guard', choices=('grip', 'not_in_hand'), default=None,
                      "trained before the argument existed, so it falls back to 'grip' (the rule of record) "
                      "and says so. Scoring a 'not_in_hand' policy under 'grip' is a different MDP: the "
                      "episode ends somewhere else.")
+ap.add_argument('--camera-rig', action='store_true',
+                help='PHASE_PLAN (ag): build the env with the dv3 two-camera rig and feed a PIXEL '
+                     'DP checkpoint from GenesisCanEnv.rig_obs() (top = channels 0:3, wrist = 3:6) -- '
+                     'the same observation function the `_img` demonstration sets were rendered with. '
+                     'Default OFF: without it the env has no rig and a pixel checkpoint is REFUSED '
+                     'rather than silently scored on the wrong observation. Cropping is lerobot\'s own '
+                     'centre crop inside the policy; this flag adds none.')
 ap.add_argument('--video', action='store_true', help='one mp4 per episode (240x320, one frame per decision)')
 ap.add_argument('--records-out', default=None,
                 help="Write ONE PER-ENV-FRAME STAGE RECORD per episode into this directory, in the SAME format "
@@ -276,9 +283,13 @@ print(f"[eval-e2e] tip_guard {TIP_GUARD_NAME!r} from "
       f"{'the checkpoint sidecar' if side.get('tip_guard') else ('--tip-guard' if args.tip_guard else 'the fallback (sidecar records none: trained before amendment (aa))')}",
       flush=True)
 env = FullTaskEnv(backend='cpu', max_steps=args.max_steps, scope='full', ladder=LADDER_NAME,
-                  tip_guard=TIP_GUARD_NAME,
+                  tip_guard=TIP_GUARD_NAME, camera_rig=bool(args.camera_rig),
                   action_mode='delta_joint', delta_cap=DJ_CAP, delta_leash_mult=DJ_LEASH_MULT, action_repeat=REPEAT,
                   delta_ref='target', render_size=((240, 320) if args.video else None))
+if args.camera_rig:
+    assert env.genv.camera_rig, 'camera_rig requested but the env has no rig'
+    print('[eval-e2e] camera rig ON: rig_obs() -> top ch0:3, wrist ch3:6 (64x64 each), rendered once '
+          'per decision at the point the policy is asked to act', flush=True)
 apply_post(env, args.sim_variant)
 _want_top = float(BOX_TOP_Z) + float(_sv.VARIANTS[args.sim_variant].get('shelf_dz', 0.0))
 assert abs(env.shelf_top_z - _want_top) < 1e-9, (env.shelf_top_z, _want_top)
@@ -325,7 +336,17 @@ if args.kind == 'sac':
 else:
     from dp_runner import load_dp_runner
     dev = ('cuda' if torch.cuda.is_available() else 'cpu') if args.device == 'auto' else args.device
-    dp_action, dp_reset, _proprio = load_dp_runner(str(ck), device=dev)
+    # PHASE_PLAN (ag): a checkpoint that consumes observation.images.* is fed from the rig. Without
+    # --camera-rig there is no rig to feed it from, so REFUSE -- load_dp_runner raises on
+    # rig_provider=None, and this message says which flag is missing.
+    _rig = env.genv.rig_obs if args.camera_rig else None
+    try:
+        dp_action, dp_reset, _proprio = load_dp_runner(str(ck), device=dev, rig_provider=_rig)
+    except ValueError as _e:
+        if 'rig_provider' not in str(_e):
+            raise
+        sys.exit(f'FATAL: {_e}. This checkpoint consumes camera images but --camera-rig was not '
+                 f'given; a pixel policy scored without its cameras is a different experiment.')
     print(f'[eval-e2e] dp policy on {dev}; hold-{REPEAT}: q* -> delta clip((q*-target)/({REPEAT}*{DJ_CAP})), grip 0..1 -> [-1,1]', flush=True)
 
     def act(state):
@@ -526,6 +547,7 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                         'with a 36-core machine on one side). The instruction-set question is UNRESOLVED, not ruled '
                         'out: the CPU-family labels behind both the original AVX claim and its withdrawal are '
                         'unreliable on this cluster. isa/avx512f are stamped for a future re-check.'),
+               camera_rig=bool(args.camera_rig),   # PHASE_PLAN (ag): pixel observation for a DP checkpoint
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n+ladder-unify',
                eval_fixes='j+l-prime+ladder-unify',
                # D6: the stamp that says WHICH ladder and WHICH code produced this cell.

@@ -51,6 +51,11 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None,
     proprio = policy.config.input_features['observation.state'].shape[0]
     cam_keys = sorted(k for k in policy.config.input_features
                       if k.startswith('observation.images.'))
+    # PHASE_PLAN (ag), 2026-09-14: a PIXEL checkpoint has no observation.environment_state feature
+    # (the can pose and goal xy are removed from the dataset), so feeding one is at best ignored and
+    # at worst a normalization-stat lookup on a key the pipeline never saw. Send it only when the
+    # checkpoint actually consumes it -- every state checkpoint does, so their behaviour is unchanged.
+    wants_env_state = 'observation.environment_state' in policy.config.input_features
     if cam_keys and rig_provider is None:
         raise ValueError(f'checkpoint consumes {cam_keys} but no rig_provider given')
     CAM_SLICE = {'observation.images.top': slice(0, 3),
@@ -61,10 +66,11 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None,
         batch = {
             'observation.state':
                 torch.from_numpy(s[:proprio]).float().unsqueeze(0).to(device),
-            'observation.environment_state':
-                torch.from_numpy(s[proprio:]).float().unsqueeze(0).to(device),
             'task': [TASK],
         }
+        if wants_env_state:
+            batch['observation.environment_state'] = (
+                torch.from_numpy(s[proprio:]).float().unsqueeze(0).to(device))
         if image:
             img = torch.from_numpy(obs['image']).permute(2, 0, 1).float() / 255.0
             batch['observation.images.cam'] = img.unsqueeze(0).to(device)
