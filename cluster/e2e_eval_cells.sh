@@ -31,7 +31,7 @@
 #   KIND=sac|dp CKPT=<rlpd_final.zip | .../pretrained_model> OUT=<run dir> ARM=<dH|dDP> SEED=<n> \
 #   [SETS="hold15 rnd30 spots60"] [MODES="sample mode"] [ISO=1] [ISO_SETS="rnd30 spots60"] \
 #   [REQUIRE_CORES=<n>] [THREADS=<n>] [REQUIRE_ISA=avx2|avx512] \
-#   [ROLE=preview|record] [CELL_DIR=""|rec] \
+#   [ROLE=preview|record] [CELL_DIR=""|rec] [CAMERA_RIG=1] \
 #   [SIM_VARIANT=gc_kp4_riser3_shelf6] [EVAL_SEED=0] [VIDEO_SETS="rnd30"] [LIMIT=n] [REDO=0] [PAR=3] \
 #   bash cluster/e2e_eval_cells.sh
 # IC sets (amendment (n)): hold15 = baselines/eval_ics.json:hold (15 training starts -- in-distribution, NOT held
@@ -47,6 +47,11 @@ SETS=${SETS:-"hold15 rnd30 spots60"}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; PAR=${PAR:-3}
 VIDEO_SETS=${VIDEO_SETS:-"rnd30"}
 ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}; REQUIRE_ISA=${REQUIRE_ISA:-}
+# CAMERA_RIG=1 (PHASE_PLAN (ag), 2026-09-14): score a PIXEL DP checkpoint -- the evaluator builds the env
+# with the dv3 two-camera rig and feeds the policy from rig_obs(). Default unset = --camera-rig is never
+# passed and every existing cell is produced by exactly the command that produced it before. A pixel
+# checkpoint without it is REFUSED by eval_e2e.py rather than scored on the wrong observation.
+CAMERA_RIG=${CAMERA_RIG:-}
 REQUIRE_CORES=${REQUIRE_CORES:-}; THREADS=${THREADS:-}
 # ROLE: 'preview' (default, so the in-job evaluation of an unpinned training job can never be mistaken for a number)
 # vs 'record', which eval_e2e.py refuses without --require-isa. CELL_DIR puts the pinned pass's cells in their own
@@ -100,7 +105,7 @@ t=open('/proc/cpuinfo').read()
 c=re.search(r'^cpu cores\s*:\s*(\d+)', t, re.M)
 s=len(set(re.findall(r'^physical id\s*:\s*(\d+)', t, re.M))) or 1
 print((int(c.group(1))*s) if c else t.count('processor	'))" 2>/dev/null)
-echo "== e2e_eval_cells kind=$KIND script=$EVAL_SCRIPT ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) cores=${CPU_CORES:-?} isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_cores='${REQUIRE_CORES}' threads='${THREADS}' require_isa='${REQUIRE_ISA}' $(date)"
+echo "== e2e_eval_cells kind=$KIND script=$EVAL_SCRIPT ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED camera_rig='${CAMERA_RIG}' sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) cores=${CPU_CORES:-?} isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_cores='${REQUIRE_CORES}' threads='${THREADS}' require_isa='${REQUIRE_ISA}' $(date)"
 
 eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local D=$1 SET=$2 MODE=$3 IDX=$4 VID=$5
@@ -111,6 +116,7 @@ eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   [ -n "$REQUIRE_CORES" ] && IF+=(--require-cores "$REQUIRE_CORES")
   [ -n "$THREADS" ] && IF+=(--threads "$THREADS")
   IF+=(--role "$ROLE")
+  [ -n "$CAMERA_RIG" ] && IF+=(--camera-rig)
   mkdir -p "$D"
   python "$EVAL_SCRIPT" --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \
       --ic-set "$(ic_set_of "$SET")" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" --max-steps 1200 \
