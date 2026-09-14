@@ -25,13 +25,23 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s0 | machine | 0, 0, 4, 8, 4, 10, 5, 0, 0, 2 | 1, 0, 6, 5, 6, 8, 4, 0, 0, 1 | **30/240 = 0.125** | 33/120 = 0.275 |
 | s1 | human | 0, 0, 0, 0, 14, 13, 6, 8, 9, 10 | 0, 0, 0, 0, 18, 12, 9, 6, 14, 10 | **69/240 = 0.288** | 60/120 = 0.500 |
 | s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, 7, 14 | 0, 0, 4, 11, 0, 14, 20, 7, 16, 17 | **89/240 = 0.371** | 64/120 = 0.533 |
-| s2 | human | 0, 0, 2, 0, 9, 5, 12, 8, 11, … (running; launched 14:46) | 0, 0, 0, 0, 16, 5, 17, 16, 15, … | (0.3–0.9M so far: 69/210 = 0.33) | |
-| s2 | machine | | | | |
-| s3 | human | | | | |
+| s2 | human | 0, 0, 2, 0, 9, 5, 12, 8, 11, 15 | 0, 0, 0, 0, 16, 5, 17, 16, 15, 17 | **86/240 = 0.358** | 62/120 = 0.517 |
+| s2 | machine | 0, 0, 0, 0, 11, 13, 0, 14, 7, 3 | 0, 1, 0, 0, 13, 17, 0, 21, 11, 11 | **73/240 = 0.304** | 48/120 = 0.400 |
+| s3 | human | (running; launched 03:38 09-14) | | | |
 | s3 | machine | | | | |
 
 Tipped (rnd30 MODE cells, 0.3–0.9M): human s0 9, 7, 7, 9, ?, ?, ?; machine s0 7, 7, 18, 9, 13, 15, 24 — the machine
 seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 of 18 for the human seed).
+
+### Interim at 3 v 3 (2026-09-14 03:50, descriptive)
+
+Statistic of record: **human 0.371, 0.288, 0.358 (mean 0.339) · machine 0.125, 0.371, 0.304 (mean 0.267)**. Arm gap
+0.07; within-arm ranges 0.08 (human) and 0.25 (machine). Machine s2 carries three dead checkpoints (0.3M, 0.4M, 0.7M —
+picked 0/15 in each) between cells of 13–21/30, and its 0.8M rnd30 cell (21/30) is the best local cell so far; the
+statistic averages over the collapses as registered. P-ae-1: ignition 3/3 and 3/3. P-ae-3 (machine no later): first
+hold15 `home` snapshot human 0.3M, 0.5M, 0.3M (2/15) · machine 0.3M, 0.2M, 0.5M — holds on 2 of 3 pairs. Sampled-action
+milestone cells for machine s2 not yet run (post hoc, after the chain). Seed 3 of each arm decides the registered
+4 v 4 (human s3 running, then machine s3; ≈ 17:00 09-14).
 
 ### Interim at 2 v 2 (2026-09-13 14:50, descriptive)
 
@@ -106,7 +116,9 @@ series checkpoint (all saved), reported beside the MODE series as a secondary �
 collapse count per seed as a descriptive.
 
 Third case 17:42: human s2 `ck_521588` (0.4M) hold15 0/15 (15 timeouts), rnd30 picked 3/30, while the record around it
-reads picked 1.00 / home 0.67. Three of five seeds so far have a dead checkpoint at 0.4M or 0.5M — right after
+reads picked 1.00 / home 0.67. Machine s2 (09-14): dead at 0.3M, 0.4M AND 0.7M (`ck_451880`, `ck_551513`, `ck_852246`;
+picked 0/15 each) — three in one run, the 0.7M one between cells of 17/30 and 21/30. Tally of dead checkpoints at 3 v 3:
+human s1 (0.4M), human s2 (0.4M), machine s1 (0.5M), machine s2 (0.3M, 0.4M, 0.7M); human s0 and machine s0 none. Three of five seeds so far have a dead checkpoint at 0.4M or 0.5M — right after
 take-off (rise time of record 0.30–0.36M). The post-hoc sampled series will say whether these are all full collapses
 (as machine s1's was) and how long they last.
 

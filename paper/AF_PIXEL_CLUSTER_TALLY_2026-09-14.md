@@ -27,13 +27,19 @@ checkpoints), so quote both milestones together, never one.** Every number below
 
 | seed | human | machine |
 |---|---|---|
-| s4 | 0.43 (13/30) \| 0.47 (7/15) | 0.30 (9/30) \| (pending) |
-| s5 | **0.50 (15/30) \| 0.60 (9/15)** — recovered from 0/30, 0/15 at 0.5M | (queued) |
+| s4 | 0.43 (13/30) \| 0.47 (7/15) | 0.30 (9/30) \| **0.07 (1/15)** — read 03:47 |
+| s5 | **0.50 (15/30) \| 0.60 (9/15)** — recovered from 0/30, 0/15 at 0.5M | 0.53 (16/30) \| 0.73 (11/15) — read 03:47 |
 | s6 | (queued) | (queued) |
-| s7 | (job at 1M, in its end-of-job evals) | (job at 1M, in its end-of-job evals) |
+| s7 | (queued) | (queued) |
 
-{r2dreamer loss}: all six jobs COMPLETED, 1M cells queued (13 `lnms_` in queue, 8 running at 02:35). The `final`
+### ramp control at 1M (read 03:47): **machine s0 0.40 (12/30) \| 0.40 (6/15)** — up from 1/30 at 0.5M; human s0
+cells queued. With both milestones the machine ramp seed is inside the sparse10 band at 1M; P-af-3 waits for the human
+ramp seed's 1M cell.
+
+{r2dreamer loss}: all six jobs COMPLETED, 1M cells queued (8 `lnms_` pending, 8 running at 03:47). The `final`
 cells are the same checkpoint as `online_1000000` (the run ends at 1M) and read identically — count them once.
+Jobs: 15 of 16 world-model runs COMPLETED 0:0 by 03:47 (the human ramp seed at 1M in its end-of-job evals); all 32
+0.5M cells (16 runs × rnd30/hold15 MODE) exist.
 
 ### {r2dreamer = the port's contrastive representation loss}, pixels, `nested_sparse10` — P-af-2
 
