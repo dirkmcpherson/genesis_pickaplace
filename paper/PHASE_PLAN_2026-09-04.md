@@ -1894,6 +1894,15 @@ comparison is reported as the oscillation it is. P-ag-4 (RLPD) as P-af-5 at 16 v
 log `$W/px_submit_2026-09-14_ag.log`; 16 world-model jobs running at submission, 54 pending on the 20-GPU preempt cap;
 disk 149 GB free.
 
+**Queue rule 2026-09-14 14:30 (scheduling, not design).** Slurm backfill here examines at most 20 pending jobs per
+user (`bf_max_job_user=20`, both workstations share the user); the 50 queued GPU jobs (priority 714) sat ahead of
+the CPU eval jobs (500–508), so 24 pixel cells waited 2 h on idle pinned nodes. `$W/px_release.sh` (hourly, after
+the sweep) holds all but 4 of my queued GPU jobs while any of my pixel evals is pending and releases them all
+otherwise; held jobs keep their submit order. Applied 14:29–14:33: all 24 evals started within 3 min. One job of
+the other workstation (`ah_px_build`, 3704393, submitted 14:28) was caught by the first name filter and held for
+4 min before release (it was pending either way); the helper now matches only `px_dreamer_`/`px_r2dreamer_`/
+`e2e_rlpd_px_` names.
+
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
