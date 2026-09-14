@@ -68,8 +68,9 @@ check_set() {   # set ladder: the set exists, is the RENDERED-image build of thi
   python3 - "$DEMOS/$s" "$ladder" <<'PY' || { echo "FATAL: $DEMOS/$s is not the rendered-image $ladder set"; exit 1; }
 import json, sys
 d, L = sys.argv[1:3]; m = json.load(open(d + "/repeat.json")); r = m.get("relabel") or {}
+man = json.load(open(d + "/manifest.json")); node = m.get("relabel_node") or man.get("node") or {}
 assert r.get("ladder") == L and r.get("tip_guard") == "not_in_hand" and m.get("images") == "rendered" and m.get("state_only") is False, (r.get("ladder"), r.get("tip_guard"), m.get("images"), m.get("state_only"))
-print(f"  set {d.split('/')[-1]}: {m['n_written']} tapes, ladder {r['ladder']}, tip_guard {r['tip_guard']}, images {m['images']}, total_reward {m['total_reward']}, built on {(m.get('relabel_node') or {}).get('host', (m.get('node') or {}).get('node', '?'))}")
+print(f"  set {d.split('/')[-1]}: {m['n_written']} tapes, ladder {r['ladder']}, tip_guard {r['tip_guard']}, images {m['images']}, total_reward {m['total_reward']}, home {(man.get('end_reasons') or {}).get('home')}, built on {node.get('host') or node.get('node') or '?'} ({node.get('cores', '?')}c {node.get('isa', '?')})")
 PY
 }
 
@@ -89,8 +90,8 @@ sub_px() {   # rep arm seed ladder
              sbatch -J "$name" "${Q[@]}" "$GP/cluster/wmfix_full.sbatch" "$set" "$seed" "$steps"
              model.rep_loss=$rep model.image_aug=shift4 env.state_slice=8)
   if [ -n "${DRYRUN:-}" ]; then printf '%q ' "${cmd[@]}"; echo "   # $name -> $run"; return; fi
-  "${cmd[@]}" | sed "s/$/  # $name -> $run/"
-  printf '%s %q ' "$(date -Is)" "${cmd[@]}" >> "$W/runs/PX_SUBMISSIONS.log"; echo "  # $name" >> "$W/runs/PX_SUBMISSIONS.log"
+  local out; out=$("${cmd[@]}"); echo "$out  # $name -> $run"
+  printf '%s %s %q ' "$(date -Is)" "$out" "${cmd[@]}" >> "$W/runs/PX_SUBMISSIONS.log"; echo "  # $name -> $run" >> "$W/runs/PX_SUBMISSIONS.log"
 }
 
 if [ -n "${REP:-}${ARM:-}${SEED:-}" ]; then
