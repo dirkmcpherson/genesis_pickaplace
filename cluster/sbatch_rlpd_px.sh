@@ -93,7 +93,7 @@ SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax044,pax036,pax037,pax038,pax039,pax040,pax
 
 # ---- disk guard (2026-09-07 filesystem-full incident; registered floor 150 GB) ----
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9' || true)
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 150 GB floor -- refusing to train"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 100 GB floor (user 2026-09-14; was 150) -- refusing to train"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free"
 # the conda env FIRST: the pixel demo gate below reads a tape with numpy (the login node's python3 has none)
 module load anaconda/2025.06.0
@@ -155,7 +155,7 @@ TRAIN_ARGS=(--steps "$STEPS" --scope full --ladder "$LADDER" ${FAR_FLAG:+$FAR_FL
   --gamma "$GAMMA" --backup-entropy off --per-member-ln off --pick-hold-reward off --pick-shaping off
   --utd 10 --ensemble-size 10 --subset-size 2 --demo-batch 128
   --demo-shaping off --pick-shaping-terminal-zero on --demo-terminal-guard on --sim-variant "$SIM_VARIANT"
-  --ckpt-every 0 --ckpt-fracs "${CKPT_FRACS:-0.4,1.0}"
+  --ckpt-every "${CKPT_EVERY:-0}" --ckpt-fracs "${CKPT_FRACS:-0.4,1.0}"
   --out-dir "$OUT" --run-name "$RUN_NAME" --project genesis_paper --seed "$SEED" --device "$DEVICE")
 REG_KNOBS=(steps="$STEPS" budget_unit=decisions scope=full obs=pixels image_aug="$IMAGE_AUG" buffer_size="$BUFFER_SIZE"
            action_mode=delta_joint delta_ref=target action_repeat="$ACTION_REPEAT"
@@ -201,9 +201,10 @@ T0=$SECONDS
 echo "TRAIN-WALL $((SECONDS - T0)) s (steps=$STEPS decisions, incl. world build + demo load) $(date)"
 FINAL_CK=$OUT/rlpd_final.zip
 [ -f "$FINAL_CK" ] && [ -f "${FINAL_CK%.zip}.action_mode.json" ] || { echo "FATAL: no final checkpoint + sidecar at $FINAL_CK -- no evaluation of a partial run"; exit 1; }
-python3 - "$OUT" "$STEPS" "$IMAGE_AUG" "$BUFFER_SIZE" <<'PY' || exit 1
+python3 - "$OUT" "$STEPS" "$IMAGE_AUG" "$BUFFER_SIZE" "${CKPT_EVERY:-0}" <<'PY' || exit 1
 import json, sys, os
 out, steps, aug, buf = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys.argv[4])
+ckpt_every = int(sys.argv[5])
 sc = json.load(open(os.path.join(out, 'rlpd_final.action_mode.json')))
 assert sc['scope'] == 'full' and int(sc['steps']) == steps and abs(float(sc['delta_cap']) - 0.025) < 1e-9, sc
 assert sc.get('phase_sparse') is False and sc.get('entry_bank') is None, sc
@@ -212,7 +213,13 @@ assert sc.get('obs') == 'pixels' and sc.get('image_aug') == aug and int(sc.get('
 w = sc.get('encoder_wiring') or {}
 assert w.get('actor_sees_critic_encoder') and w.get('encoder_in_critic_optimizer') and not w.get('encoder_in_actor_optimizer'), w
 ck = json.load(open(os.path.join(out, 'ckpt_100', 'rlpd_ckpt.action_mode.json')))
-assert not [f for f in os.listdir(out) if f.endswith('_steps.zip')], 'periodic snapshot zips written despite --ckpt-every 0'
+zips = sorted(f for f in os.listdir(out) if f.endswith('_steps.zip'))
+if ckpt_every == 0:
+    assert not zips, 'periodic snapshot zips written despite --ckpt-every 0'
+else:
+    # CKPT_EVERY=<decisions> (user, 2026-09-14: dense RLPD checkpoints for series/figures): expect steps//ckpt_every snapshots
+    assert len(zips) >= steps // ckpt_every - 1, (len(zips), steps // ckpt_every, zips[-3:])
+    print(f'[ckpt] {len(zips)} periodic snapshots every {ckpt_every} decisions (first {zips[0]}, last {zips[-1]})')
 assert int(ck['ckpt_step']) >= steps, ck
 print(f'TRAIN-OK {out}: budget {steps} decisions reached (ckpt_100 at {ck["ckpt_step"]}), sidecar obs={sc["obs"]} image_aug={sc["image_aug"]} '
       f'buffer_size={sc["buffer_size"]} ladder={sc["ladder"]} tip_guard={sc["tip_guard"]} cap={sc["delta_cap"]} leash={sc["delta_leash"]}')

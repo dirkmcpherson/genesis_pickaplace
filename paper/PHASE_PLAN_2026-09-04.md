@@ -1856,6 +1856,41 @@ ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
 learnable at this budget with this encoder; report as such, no retuning inside the batch. Preemption policy as above.
 
+## Amendment (ag) — 16 v 16 seeds for every `nested_sparse10` PIXEL condition, 2M budget for the new world-model seeds, dense RLPD checkpoints (registered 2026-09-14 ~09:30, BEFORE submission; user: "aim for 16 seeds for every nested_sparse10_pixel condition", "do option 1. Go for it")
+
+**Why.** (ae)+(af) give 8 v 8 {dreamer losses}, 3 v 3 {r2dreamer loss}, 2 v 2 {RLPD pixels}; the user wants
+statistical significance on each, and the training curves the other workstation plotted show `home` still rising at
+the 1M cutoff (last-30 training `home` at 1M: dreamer human 0.27–0.70, machine 0.67–0.87; r2dreamer 0.77–0.97;
+rise 0.24–0.53M), so 1M is a pilot budget, not a converged one.
+
+**Design.**
+- {dreamer losses} pixels `nested_sparse10`: seeds **s8–s15** × human/machine (16 runs) → 16 v 16 with the local
+  s0–3 (ae) and cluster s4–7 (af). {r2dreamer loss}: seeds **s3–s15** × both arms (26 runs) → 16 v 16.
+- **Budget 2M online steps for every new world-model seed**, milestones `[500000, 1000000, 1500000, 2000000]`
+  (legacy points kept), cells rnd30 MODE / hold15 MODE / rnd30 SAMPLED at each via the sweep (`cpu64pre`).
+  Everything else as (af): sets `dHfull_all_rns10h_img` / `dDPfull_first_rns10h_img` (the local-built sets,
+  13/14 `home` tapes — kept so the new seeds are identical to the 14 already run; the class-of-record sets have
+  12/12), pixels + 8-dim proprio, shift4, clamp 10, one seed per GPU, preempt QOS, trees `$LAB/gp_px` (this
+  commit) + `$W/r2dreamer_px` @ 0b1b9d8.
+- {RLPD pixels}: seeds **s2–s15** × dH/dDPfirst (28 runs) at the (af) recipe (250k decisions), **plus periodic
+  checkpoints every 25k decisions** (`CKPT_EVERY=25000`, ten per run) for series and figures; the final-checkpoint
+  eval as before, an intermediate-checkpoint pass to be added while they train. Submitted after the world models
+  (queue order), before the (af) 2 v 2 finals are read — P-af-5's disconfirm branch (0/4 ignition) would stop them.
+- Disk floor lowered 150 → 100 GB in the launchers and the sweep (user; the other workstation is purging).
+
+**Statistics of record (pooled 16 v 16, per condition).** The user accepts the hardware difference of the local
+seeds ("I'll note it in the paper"). Per-seed statistic that EVERY seed has: **mean rnd30 MODE `home` over the
+0.5M and 1M cells** (the local seeds' series contain both). Secondary, for the seeds that have it: the 2M cell
+and the four-milestone mean (new seeds), the ten-cell series (local seeds). Test as P-ae-2/P-af-4: exact
+permutation on the per-seed statistic, ±0.15 null margin, MDE reported; ignition count per arm beside it.
+Predictions: P-ag-1 the pooled dreamer-loss 16 v 16 lands inside ±0.15 (the 4 v 4 and 3 v 3 both did, in opposite
+directions); P-ag-2 the r2dreamer-loss 16 v 16 likewise, with every seed igniting; P-ag-3 the 2M cells of the new
+seeds read ≥ their 1M cells on average (the curves say not converged at 1M) — if they read lower, the 1M-v-2M
+comparison is reported as the oscillation it is. P-ag-4 (RLPD) as P-af-5 at 16 v 16.
+
+**Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
+covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
+
 ## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
 
 **Question.** The project's question (PAPER_PLAN H4) on the configuration that actually learns the task: does the

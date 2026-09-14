@@ -54,7 +54,7 @@ case "$R2D" in *-dirty) echo "FATAL: $R2 is dirty ($R2D)"; exit 1;; esac
 [ -z "$GP_PIN" ] || case "$GPD" in *$GP_PIN*) ;; *) echo "FATAL: $GP is at '$GPD', not the pinned $GP_PIN"; exit 1;; esac
 [ -z "$R2_PIN" ] || case "$R2D" in *$R2_PIN*) ;; *) echo "FATAL: $R2 is at '$R2D', not the pinned $R2_PIN"; exit 1;; esac
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9' || true)
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 150 GB floor -- refusing to submit"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 100 GB floor (user, 2026-09-14 09:10; was 150) -- refusing to submit"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free | gp $GP ($GPD) | r2 $R2 ($R2D) | steps $STEPS milestones $MILES | qos ${Q[*]}"
 
 set_for() {   # arm ladder -> set name
