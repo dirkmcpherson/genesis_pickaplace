@@ -1807,6 +1807,14 @@ learning claim yet.
 - Attribution control (DV3 loss, pixels, `nested_ramp`): human s0 v machine s0 — **2** (was 4; 1 v 1 is a first look,
   not a comparison; its sets `_rnrh_img` are being rendered on a cluster CPU node).
 
+**SUBMITTED 2026-09-13 21:50–21:55 (after both world-model smokes, the RLPD smoke, and the sweep/eval deploy):**
+world model from `$LAB/gp_px` @ 9b50280 / `$W/r2dreamer_px` @ 0b1b9d8 (pins enforced) — dreamer dH/dM s4–7 =
+3685135–3685143, r2dreamer dH/dM s0–2 = 3685144–3685149, ramp control dH s0 / dM s0 = 3685150 / 3685151 (human ramp
+image set accepted with a disclosure note: Σ +0.266 over the class-of-record set on 6 terminal decisions,
+`ACCEPTED_WITH_DISCLOSURE.txt` in the set); RLPD pixels from `$LAB/gp_pxr` @ 9841633 — dH s0/s1 = 3685153/3685155,
+dDPfirst s0/s1 = 3685154/3685156. All 20 PENDING at submission (preempt QOS); submission log
+`$W/px_submit_2026-09-13.log`.
+
 **Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
 ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
