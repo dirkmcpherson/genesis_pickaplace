@@ -167,6 +167,27 @@ def main():
     ap.add_argument('--entry-bank', default=None,
                     help='scope=place/contact: entry-bank JSON (the human pick-grant bank of record, phase_banks/human_place.json); '
                          'REQUIRED for place (the env default bank is the OLD world)')
+    # --- PIXEL observation path (lane PXR-1, 2026-09-13; baselines/rl/rlpd_pixel.py) ---
+    ap.add_argument('--obs', choices=['state', 'pixels'], default='state',
+                    help="WHAT the policy observes. 'state' (default) = the 17-dim state, byte-identical to every "
+                         "run before this flag existed. 'pixels' = {image: rig_obs() uint8 (64,64,6) top++wrist, "
+                         "proprio: state[:8]} -- NO can/goal pose -- through rlpd_pixel.PixelObsWrapper on an env "
+                         "built with camera_rig=True, a DrQ-v2 encoder owned by the critic (actor detached), "
+                         "DrQ random-shift augmentation on every update batch, and demos from an `_img` set "
+                         "(relabel_reward.py --images). End-to-end recipe only (scope=full, --demo-format segment). "
+                         "Travels in the sidecar; eval_e2e_px.py refuses a non-pixel checkpoint and eval_e2e.py "
+                         "cannot feed a pixel one.")
+    ap.add_argument('--image-aug', choices=['shift4', 'none'], default='shift4',
+                    help='--obs pixels only: DrQ random shift (replicate-pad 4 px, random crop, per sample) on '
+                         'the image of obs AND next_obs of every update batch (online and demo halves). '
+                         "'none' disables it (ablation). Recorded in the sidecar.")
+    ap.add_argument('--buffer-size', type=int, default=300_000,
+                    help='ONLINE replay buffer size in decisions (demos live in the immutable demo half). Default '
+                         '300000 = the recipe of record. Under --obs pixels one row is 2 x 24576 B of uint8 image, '
+                         'so 300k rows = 14.7 GB of host RAM; smokes pass a small value.')
+    ap.add_argument('--cnn-feature-dim', type=int, default=50,
+                    help='--obs pixels only: width of the DrQ-v2 trunk (Linear -> LayerNorm -> Tanh) that the '
+                         'proprio vector is concatenated to. 50 = DrQ-v2.')
     ap.add_argument('--action-mode', choices=['absolute', 'delta_joint'],
                     default='delta_joint',
                     help='delta_joint: env actions are per-step joint-target deltas '
@@ -294,6 +315,15 @@ def main():
         assert args.train_max_steps == 1200, f'end-to-end horizon of record is 1200 sim steps (got {args.train_max_steps})'
     else:
         assert not segment and args.entry_bank is None, '--demo-format segment / --entry-bank are scope=place/contact/full levers'
+    pixels = (args.obs == 'pixels')
+    if pixels:
+        # every pixel-path precondition stated, none defaulted
+        assert e2e_segment, '--obs pixels is the end-to-end recipe only (scope=full with --demo-format segment)'
+        assert args.eval_freq == 0, 'the in-train VideoEvalCallback is a state-pick evaluator; pixel runs are scored by eval_e2e_px.py'
+        assert args.buffer_size >= 1000, args.buffer_size
+    else:
+        assert args.image_aug == 'shift4' and args.cnn_feature_dim == 50, (
+            '--image-aug / --cnn-feature-dim are --obs pixels levers; a state run must not carry them')
     if args.demo_shaping == 'auto':
         demo_shaping = native and args.pick_shaping == 'on'
     else:
@@ -330,6 +360,8 @@ def main():
     # the env reads the world's shelf offset (placed_v2 band) from this variable (private full_env copy of record)
     os.environ['GENESIS_SIM_VARIANT'] = args.sim_variant
     env = FullTaskEnv(backend='cpu', max_steps=args.train_max_steps,
+                      # --obs pixels: build the two-camera rig (rig_obs()); a state run builds no camera, as before
+                      camera_rig=pixels,
                       scope=args.scope, action_mode=args.action_mode,
                       action_repeat=args.action_repeat, delta_ref=args.delta_ref,
                       entry_bank=args.entry_bank, phase_sparse=(args.scope in PHASE_SCOPES),
@@ -371,6 +403,14 @@ def main():
               f'{env.shelf_top_z:.3f}, phase_sparse (tips terminate, no penalty), +1 on '
               f'{"placed_v2" if args.scope == "place" else "contact"}', flush=True)
     assert env.pick_shaping_terminal_zero == (args.pick_shaping_terminal_zero == 'on')
+    assert bool(env.genv.camera_rig) is pixels, (env.genv.camera_rig, pixels)
+    train_env = env
+    if pixels:
+        from rlpd_pixel import PixelObsWrapper, make_rlpd_pixel, PixelDemoData, IMG_SHAPE, PROPRIO_DIM
+        train_env = PixelObsWrapper(env)      # renders rig_obs() once per reset and once per decision
+        print(f'[obs] pixels: {train_env.observation_space} (image = genv.rig_obs() top RGB ++ wrist RGB, '
+              f'proprio = state[:{PROPRIO_DIM}] = q[:6], gripper motor, grip effort; NO can/goal pose) '
+              f'image_aug={args.image_aug} cnn_feature_dim={args.cnn_feature_dim} buffer_size={args.buffer_size}', flush=True)
     print(f'[env] {type(env).__name__} built in {time.time() - t0:.1f}s | '
           f'pick_z={env.pick_z:.4f} scope={env.scope} action_mode={env.action_mode} '
           f'delta_cap={env.delta_cap} delta_leash={env.delta_leash} '
@@ -399,13 +439,27 @@ def main():
         q_watch = 2.0 * float(sum(env.stage_reward.values()))
     else:
         q_watch = 2.0
-    model = make_rlpd(env, args.seed, args.device, q_watchdog=q_watch,
-                      backup_entropy=(args.backup_entropy == 'on'),
-                      per_member_ln=(args.per_member_ln == 'on'),
-                      ensemble_size=args.ensemble_size, subset_size=args.subset_size,
-                      utd=args.utd, gamma=args.gamma, ent_coef=args.ent_coef,
-                      target_entropy=args.target_entropy, demo_batch=args.demo_batch)
-    print(f'[cfg] RLPD | E={args.ensemble_size} Z={args.subset_size} UTD={args.utd} '
+    _hyp = dict(q_watchdog=q_watch,
+                backup_entropy=(args.backup_entropy == 'on'),
+                per_member_ln=(args.per_member_ln == 'on'),
+                ensemble_size=args.ensemble_size, subset_size=args.subset_size,
+                utd=args.utd, gamma=args.gamma, ent_coef=args.ent_coef,
+                target_entropy=args.target_entropy, demo_batch=args.demo_batch,
+                buffer_size=args.buffer_size)
+    if pixels:
+        model = make_rlpd_pixel(train_env, args.seed, args.device, image_aug=args.image_aug,
+                                cnn_feature_dim=args.cnn_feature_dim, **_hyp)
+        _wiring = model.policy.encoder_wiring()
+        print(f'[obs] policy={type(model.policy).__name__} algo={type(model).__name__} '
+              f'extractor={type(model.policy.critic.features_extractor).__name__} '
+              f'features_dim={model.policy.critic.features_extractor.features_dim} '
+              f'policy_obs_space={model.observation_space} wiring={_wiring}', flush=True)
+        assert _wiring['actor_sees_critic_encoder'] and not _wiring['encoder_in_actor_optimizer'] \
+            and _wiring['encoder_in_critic_optimizer'] and _wiring['target_encoder_separate'], _wiring
+    else:
+        _wiring = None
+        model = make_rlpd(env, args.seed, args.device, **_hyp)
+    print(f'[cfg] RLPD | obs={args.obs} E={args.ensemble_size} Z={args.subset_size} UTD={args.utd} '
           f'gamma={args.gamma} ent_coef={args.ent_coef} '
           f'target_entropy={model.target_entropy} demo_batch={args.demo_batch}/256 '
           f'backup_entropy={args.backup_entropy} '
@@ -432,12 +486,22 @@ def main():
         # amendment (n): FULL-scope segments -- staged rewards as recorded, terminals only where the recording
         # terminated. Same rows the world model trained on; see baselines/rl/full_demos.py.
         from full_demos import segment_transitions_full, print_segment_census as print_full_census
-        transitions, census = segment_transitions_full(
-            str(REPO / args.demo_dir), expect=dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
-                                                   delta_cap=env.delta_cap, scope='full'),
-            # amendment (aa): the set must have been BUILT under the ladder this run TRAINS under.
-            ladder=args.ladder)
-        print_full_census(census, tag=args.demo_dir)
+        _expect = dict(sim_variant=args.sim_variant, action_repeat=args.action_repeat,
+                       delta_cap=env.delta_cap, scope='full')
+        if pixels:
+            # the SAME transitions (segment_pixels_full calls segment_transitions_full) plus the rendered
+            # image column and state[:8]; refuses a placeholder (state-only) image column.
+            from full_demos import segment_pixels_full, print_pixel_census
+            pixel_demo = segment_pixels_full(str(REPO / args.demo_dir), expect=_expect, ladder=args.ladder)
+            census = pixel_demo[-1]; pixel_demo = pixel_demo[:-1]
+            print_full_census(census, tag=args.demo_dir); print_pixel_census(census, tag=args.demo_dir)
+            transitions = None
+        else:
+            transitions, census = segment_transitions_full(
+                str(REPO / args.demo_dir), expect=_expect,
+                # amendment (aa): the set must have been BUILT under the ladder this run TRAINS under.
+                ladder=args.ladder)
+            print_full_census(census, tag=args.demo_dir)
         assert census['n_transitions'] > 0, 'empty segment demo set'
         norm = None
     elif segment:
@@ -506,10 +570,17 @@ def main():
                            (o, a, r, o2, d) for (o, a, r, o2, d) in transitions]
         norm = pick_env.normalize_action
     import torch as th
-    demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
+    if pixels:
+        frames, proprio, obs_idx, d_act, d_rew, d_done = pixel_demo
+        demo = PixelDemoData(frames, proprio, obs_idx, d_act, d_rew, d_done, th.device(args.device), seed=args.seed)
+        n_done = int(d_done.sum()); n_done_r0 = int(((d_done > 0) & (d_rew <= 0.0)).sum())
+        print(f'[demos] pixel demo half: {demo.n_frames} frames x {IMG_SHAPE} uint8 = {demo.bytes / 1e6:.0f} MB '
+              f'({"pinned host" if demo.device.type == "cuda" else "host"} memory), gathered by index per batch', flush=True)
+    else:
+        demo = DemoData(transitions, norm, th.device(args.device), seed=args.seed)
+        n_done = sum(1 for t in transitions if t[4])
+        n_done_r0 = sum(1 for t in transitions if t[4] and t[2] <= 0.0)
     model.set_demo_data(demo)
-    n_done = sum(1 for t in transitions if t[4])
-    n_done_r0 = sum(1 for t in transitions if t[4] and t[2] <= 0.0)
     print(f'[demos] {len(paths)} eps -> {demo.n} transitions in the IMMUTABLE demo '
           f'buffer (50% of every batch), {demo.n_rewarded} rewarded, {n_done} terminal '
           f'({n_done_r0} zero-reward terminals = tip-guarded fails)', flush=True)
@@ -561,6 +632,15 @@ def main():
     sidecar['far_release'] = bool(args.far_release)
     sidecar['tip_guard'] = args.tip_guard
     sidecar['max_return'] = float(sum(env.stage_reward.values()))
+    # PIXEL path (2026-09-13): what the policy observed travels with the artifact. eval_e2e_px.py
+    # requires obs == 'pixels'; a state evaluator cannot feed a pixel policy (dict obs) and fails.
+    sidecar['obs'] = args.obs
+    sidecar['buffer_size'] = int(args.buffer_size)
+    if pixels:
+        sidecar.update(image_aug=args.image_aug, image_shape=list(IMG_SHAPE), proprio_dim=int(PROPRIO_DIM),
+                       image_source='GenesisCanEnv.rig_obs() (top RGB ++ wrist RGB), camera_rig=True',
+                       cnn_feature_dim=int(args.cnn_feature_dim), encoder='DrQ-v2 conv x4 (32ch) + Linear/LayerNorm/Tanh',
+                       encoder_wiring=_wiring)
     (out / 'wandb_eval').mkdir(parents=True, exist_ok=True)
     (out / 'wandb_eval' / 'snapshot.action_mode.json').write_text(json.dumps(sidecar))
     # ---- LADDER PROVENANCE (LADDER_UNIFY_BRIEF D6) -----------------------------------

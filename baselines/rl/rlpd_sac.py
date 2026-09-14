@@ -193,6 +193,15 @@ class DemoData:
         )
 
 
+def _cat_obs(a, b):
+    """Concatenate two observation batches along the batch axis: tensors as before
+    (th.cat), dict observations key-wise (the pixel path's {'image', 'proprio'})."""
+    if isinstance(a, dict):
+        assert isinstance(b, dict) and set(a) == set(b), (sorted(a), sorted(b))
+        return {k: th.cat([a[k], b[k]]) for k in a}
+    return th.cat([a, b])
+
+
 class RLPDSAC(SAC):
     """SAC that overrides ONLY train(): 50/50 two-buffer batch, Z-of-E min target,
     sum-of-E critic loss, ensemble-mean actor loss, and actor+alpha updated exactly
@@ -221,6 +230,13 @@ class RLPDSAC(SAC):
         # never pickle it into the checkpoint.
         return super()._excluded_save_params() + ['demo_data']
 
+    def _prep_batch(self, obs, nobs):
+        """Hook for a subclass to transform the CONCATENATED (online ++ demo) observation
+        batch before the update (rlpd_pixel.PixelRLPDSAC applies the DrQ random shift here).
+        Identity in this class, so every state-based run is byte-identical to before the
+        hook existed (2026-09-13)."""
+        return obs, nobs
+
     def train(self, gradient_steps, batch_size=256):
         assert self.demo_data is not None, 'call set_demo_data() before learn()'
         self.policy.set_training_mode(True)
@@ -242,11 +258,14 @@ class RLPDSAC(SAC):
             # ---- 50/50 two-buffer batch (explicit, not a monkey-patched sample) ----
             online = self.replay_buffer.sample(online_bs, env=self._vec_normalize_env)
             demo = self.demo_data.sample(self.demo_batch)
-            obs = th.cat([online.observations, demo.observations])
+            # _cat_obs: th.cat for the flat state tensor (unchanged path); key-wise cat for the
+            # dict observations of the pixel path (rlpd_pixel, 2026-09-13).
+            obs = _cat_obs(online.observations, demo.observations)
             act = th.cat([online.actions, demo.actions])
-            nobs = th.cat([online.next_observations, demo.next_observations])
+            nobs = _cat_obs(online.next_observations, demo.next_observations)
             dones = th.cat([online.dones, demo.dones])
             rewards = th.cat([online.rewards, demo.rewards])
+            obs, nobs = self._prep_batch(obs, nobs)
             demo_rew_counts.append(float((demo.rewards > 0).sum().item()))
 
             ent_coef = (th.exp(self.log_ent_coef.detach()) if auto_alpha
@@ -343,19 +362,32 @@ class RLPDSAC(SAC):
 def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
               gamma=0.998, ent_coef='auto', target_entropy=None, demo_batch=128,
               net_arch=(256, 256), q_watchdog=2.0, backup_entropy=False,
-              per_member_ln=False):
+              per_member_ln=False,
+              policy_class=RLPDPolicy, algo_class=RLPDSAC, buffer_size=300_000,
+              policy_kwargs_extra=None, algo_kwargs_extra=None):
     """Construct an RLPDSAC with the pinned RLPD hypers. target_entropy defaults to
-    -dim/2 (RLPD_PLAN: -3.5 for the 7-dim joint action)."""
+    -dim/2 (RLPD_PLAN: -3.5 for the 7-dim joint action).
+
+    policy_class / algo_class / buffer_size / *_kwargs_extra (2026-09-13): the PIXEL path
+    (rlpd_pixel.make_rlpd_pixel) reuses this ONE list of pinned hypers with its own policy
+    and algorithm classes instead of copying the list. The defaults reproduce the previous
+    call exactly."""
     dev = th.device(device)
     act_dim = int(np.prod(env.action_space.shape))
     te = target_entropy if target_entropy is not None else -act_dim / 2.0
     ec = ent_coef if ent_coef == 'auto' else float(ent_coef)
-    model = RLPDSAC(
-        RLPDPolicy, env,
+    policy_kwargs = dict(
+        net_arch=dict(pi=list(net_arch), qf=list(net_arch)),
+        n_critics=ensemble_size,
+        per_member_ln=per_member_ln,
+    )
+    policy_kwargs.update(policy_kwargs_extra or {})
+    model = algo_class(
+        policy_class, env,
         ensemble_size=ensemble_size, subset_size=subset_size, demo_batch=demo_batch,
         q_watchdog=q_watchdog, backup_entropy=backup_entropy,
         learning_rate=3e-4,
-        buffer_size=300_000,          # ONLINE data only; demos live in DemoData
+        buffer_size=int(buffer_size),   # ONLINE data only; demos live in DemoData
         learning_starts=1_000,
         batch_size=256,
         tau=0.005,
@@ -367,10 +399,7 @@ def make_rlpd(env, seed, device, *, ensemble_size=10, subset_size=2, utd=10,
         seed=seed,
         device=device,
         verbose=1,
-        policy_kwargs=dict(
-            net_arch=dict(pi=list(net_arch), qf=list(net_arch)),
-            n_critics=ensemble_size,
-            per_member_ln=per_member_ln,
-        ),
+        policy_kwargs=policy_kwargs,
+        **(algo_kwargs_extra or {}),
     )
     return model

@@ -134,6 +134,63 @@ def segment_transitions_full(seg_dir, expect, ladder=None):
     return out, census
 
 
+def segment_pixels_full(seg_dir, expect, ladder=None):
+    """PIXEL demo half (lane PXR-1, 2026-09-13): the SAME transitions segment_transitions_full builds
+    (same files, same order, same reward/terminal checks, same census) plus the rendered `image` column
+    and the 8-dim proprioception.
+
+    -> (frames (F,64,64,6) uint8, proprio (F,8) float32, obs_idx (N,) int64, actions (N,7), rewards (N,),
+        dones (N,), census)
+    where F = sum over tapes of T (every row of every tape, concatenated in file order) and transition i
+    (obs = frame obs_idx[i], next_obs = frame obs_idx[i] + 1) is the i-th transition of the state loader.
+    Refuses a set whose image column is the state-only placeholder (repeat.json `images` must be
+    'rendered', PX_IMAGE_DEMOS_2026-09-12.md §2) -- a zero image column would train a policy on black frames
+    and nothing downstream would notice. The proprio rows are asserted equal to the state loader's obs[:8] /
+    next_obs[:8] transition by transition, so the two loaders cannot describe different data."""
+    m, files = segment_meta(seg_dir)
+    assert m.get('images') == 'rendered' and m.get('state_only') is False, (
+        f'{seg_dir}: repeat.json images={m.get("images")!r} state_only={m.get("state_only")!r}; the pixel path '
+        f'needs a set whose image column was RENDERED (relabel_reward.py --images), not the zero placeholder')
+    transitions, census = segment_transitions_full(seg_dir, expect, ladder=ladder)
+    frames, proprio, obs_idx = [], [], []
+    off = 0
+    census = dict(census, n_frames=0, image_nonzero_frac_min=1.0, image_mean_min=None, image_mean_max=None,
+                  n_tapes_rewarded=0, n_tapes_max_reward=0)
+    for f in files:
+        z = np.load(f)
+        st = np.asarray(z['state'], np.float32); im = np.asarray(z['image'])
+        T = st.shape[0]
+        assert im.shape == (T, 64, 64, 6) and im.dtype == np.uint8, (f, im.shape, im.dtype)
+        nz = float((im.reshape(T, -1).max(axis=1) > 0).mean()); mean = float(im.mean())
+        assert nz == 1.0, f'{f}: {1 - nz:.3f} of its frames are blank'
+        census['image_nonzero_frac_min'] = min(census['image_nonzero_frac_min'], nz)
+        census['image_mean_min'] = mean if census['image_mean_min'] is None else min(census['image_mean_min'], mean)
+        census['image_mean_max'] = mean if census['image_mean_max'] is None else max(census['image_mean_max'], mean)
+        rw = np.asarray(z['reward'], np.float32).reshape(-1)
+        census['n_tapes_rewarded'] += int((rw != 0).any())
+        frames.append(im); proprio.append(st[:, :8]); obs_idx.append(off + np.arange(T - 1, dtype=np.int64))
+        off += T
+    frames = np.concatenate(frames); proprio = np.concatenate(proprio); obs_idx = np.concatenate(obs_idx)
+    census['n_frames'] = int(frames.shape[0])
+    assert obs_idx.shape[0] == len(transitions) == census['n_transitions'], (obs_idx.shape, len(transitions))
+    # the two loaders describe the same rows: proprio == state[:8] on both ends of every transition
+    o8 = np.stack([t[0][:8] for t in transitions]); n8 = np.stack([t[3][:8] for t in transitions])
+    assert np.array_equal(o8, proprio[obs_idx]) and np.array_equal(n8, proprio[obs_idx + 1]), 'proprio/state mismatch'
+    actions = np.stack([t[1] for t in transitions]).astype(np.float32)
+    rewards = np.array([t[2] for t in transitions], np.float32)
+    dones = np.array([t[4] for t in transitions], np.float32)
+    hi = max(_ladder_reward_check(str((m.get('relabel') or {}).get('ladder') or 'staged'))[0])
+    census['n_tapes_max_reward'] = int(sum(1 for f in files if float(np.asarray(np.load(f)['reward']).sum()) >= hi - 1e-6))
+    return frames, proprio, obs_idx, actions, rewards, dones, census
+
+
+def print_pixel_census(c, tag=''):
+    print(f'[pixels] {tag}: {c["n_tapes"]} tapes -> {c["n_frames"]} frames ({c["n_frames"] * 64 * 64 * 6 / 1e6:.0f} MB uint8), '
+          f'{c["n_transitions"]} transitions, proprio dim 8; image nonzero-frame frac min {c["image_nonzero_frac_min"]:.3f}, '
+          f'frame mean {c["image_mean_min"]:.2f}..{c["image_mean_max"]:.2f}; Sigma reward {c["reward_total"]:.0f}; '
+          f'{c["n_tapes_rewarded"]} tapes rewarded, {c["n_tapes_max_reward"]} tapes at the ladder max', flush=True)
+
+
 def _ladder_reward_check(ladder):
     """-> (set of reachable per-decision values, ramp spec or None) for a NAMED ladder.
 
