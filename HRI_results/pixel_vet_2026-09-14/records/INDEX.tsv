@@ -1,0 +1,17 @@
+learner	set	seed	ladder	budget	n_episodes	last_step	source
+r2dreamer	dDPfull_first_rnrh_img_dreamer	0	nested_ramp	4000000	2161	999434	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0
+r2dreamer	dDPfull_first_rns10h_img_dreamer	4	nested_sparse10	4000000	2795	999706	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4
+r2dreamer	dDPfull_first_rns10h_img_dreamer	5	nested_sparse10	4000000	2212	999737	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5
+r2dreamer	dDPfull_first_rns10h_img_dreamer	6	nested_sparse10	4000000	2106	999989	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6
+r2dreamer	dDPfull_first_rns10h_img_dreamer	7	nested_sparse10	4000000	1887	1000001	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7
+r2dreamer	dDPfull_first_rns10h_img_r2dreamer	0	nested_sparse10	4000000	3487	999869	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0
+r2dreamer	dDPfull_first_rns10h_img_r2dreamer	1	nested_sparse10	4000000	2952	999222	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1
+r2dreamer	dDPfull_first_rns10h_img_r2dreamer	2	nested_sparse10	4000000	3307	999560	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2
+r2dreamer	dHfull_all_rnrh_img_dreamer	0	nested_ramp	4000000	2069	999828	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rnrh_img_dreamer_s0
+r2dreamer	dHfull_all_rns10h_img_dreamer	4	nested_sparse10	4000000	1653	999837	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_dreamer_s4
+r2dreamer	dHfull_all_rns10h_img_dreamer	5	nested_sparse10	4000000	1445	999899	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_dreamer_s5
+r2dreamer	dHfull_all_rns10h_img_dreamer	6	nested_sparse10	4000000	2207	999920	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_dreamer_s6
+r2dreamer	dHfull_all_rns10h_img_dreamer	7	nested_sparse10	4000000	1891	999579	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_dreamer_s7
+r2dreamer	dHfull_all_rns10h_img_r2dreamer	0	nested_sparse10	4000000	3915	999906	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0
+r2dreamer	dHfull_all_rns10h_img_r2dreamer	1	nested_sparse10	4000000	3234	999800	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1
+r2dreamer	dHfull_all_rns10h_img_r2dreamer	2	nested_sparse10	4000000	3257	999993	/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/runs/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2

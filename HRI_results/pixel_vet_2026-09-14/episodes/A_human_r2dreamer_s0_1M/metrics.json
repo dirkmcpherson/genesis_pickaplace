@@ -1,0 +1,1733 @@
+{
+ "checkpoint": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/latest.pt",
+ "episodes": 30,
+ "mode": "mode",
+ "seed": 0,
+ "max_steps": 1200,
+ "ic_mode": "demo",
+ "scope": "full",
+ "tipped": 0.2,
+ "timeout": 0.13333333333333333,
+ "restore_failed": 0.0,
+ "stages": {
+  "picked": 0.7333333333333333,
+  "placed_v2": 0.8,
+  "contact_push": 0.6333333333333333,
+  "slide_success": 0.7333333333333333,
+  "nested_v2": 0.7333333333333333,
+  "farside": 0.7333333333333333,
+  "slide_event": 0.6666666666666666,
+  "home": 0.6666666666666666,
+  "nested_honest": 0.7333333333333333,
+  "placed": 0.0,
+  "contact": 0.6333333333333333,
+  "nested": 0.5666666666666667,
+  "nested_proxy": 0.5666666666666667,
+  "slide_success_settle": 0.4666666666666667
+ },
+ "headline_stages": {
+  "picked": 0.7333333333333333,
+  "placed_v2": 0.8,
+  "contact_push": 0.6333333333333333,
+  "slide_success": 0.7333333333333333,
+  "nested_v2": 0.7333333333333333,
+  "farside": 0.7333333333333333,
+  "slide_event": 0.6666666666666666,
+  "home": 0.6666666666666666,
+  "nested_honest": 0.7333333333333333
+ },
+ "legacy_stages": [
+  "placed",
+  "contact",
+  "nested",
+  "nested_proxy",
+  "slide_success_settle"
+ ],
+ "ladder_provenance": {
+  "ladder": "nested_sparse10",
+  "spec_version": "unified-2026-09-10",
+  "stage_reward": {
+   "home": 10.0
+  },
+  "requires": {},
+  "ramp": null,
+  "terminal_stages": [
+   "home",
+   "tipped"
+  ],
+  "logged_stages": [
+   "picked",
+   "placed",
+   "placed_v2",
+   "contact",
+   "contact_push",
+   "nested",
+   "nested_v2",
+   "slide_success",
+   "farside",
+   "slide_event",
+   "home"
+  ],
+  "scope": "full",
+  "max_return": 10.0,
+  "return_clamp_required": 10.0,
+  "shaping": null,
+  "far_release": false,
+  "tip_guard": "not_in_hand",
+  "tip_deg": 60.0,
+  "tip_penalty": 0.0,
+  "tip_guard_sustain_frames": 4,
+  "sha256": {
+   "full_env": "584bea6d9c6defbeeb03d8d192c4bb82a0a77ba8778761561936f950e9bec75e",
+   "genesis_can_env": "40544bf73c8c69bd87db8618df995855106ed3cbe866810cecc38a2de4b278ab",
+   "stage_predicates": "a589b4f05632209a5d93b6bcd684e6265a2e6276b94078b9890aa9ea8b2e1f17"
+  },
+  "git": "known-good-2026-08-27-1026-g2f33ac60",
+  "repo": "/cluster/tufts/shortlab/jstale02/gp_px",
+  "stamp": "unified-2026-09-10 | ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f | full_env=584bea6d9c6d genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632 | git=known-good-2026-08-27-1026-g2f33ac60",
+  "predicate_constants": {
+   "nested_touch_dist": 0.081,
+   "at_rest_mm": 2.0,
+   "at_rest_frames": 12,
+   "push_gain_mm": 10.0,
+   "held_lever_m": 0.025,
+   "tilt_max_deg": 20.0,
+   "band_lo_m": 0.01,
+   "band_hi_m": 0.07,
+   "farside_reach_m": 0.1,
+   "farside_cone_deg": 60.0,
+   "slide_gain_min_m": 0.01,
+   "far_release": false,
+   "far_release_dist_m": 0.08,
+   "setdown_latch": true,
+   "released_requires_picked": true,
+   "shelf_top_z": 0.16999999999999998,
+   "goal_xy": [
+    0.671999990940094,
+    -0.22100000083446503
+   ]
+  }
+ },
+ "ladder_stamp": "unified-2026-09-10 | ladder=nested_sparse10 | home=10 | max_return=10 | terminal=home+tipped | shaping=off | far_release=off | tip=tilt>60deg&not_in_hand@4f | full_env=584bea6d9c6d genesis_can_env=40544bf73c8c stage_predicates=a589b4f05632 | git=known-good-2026-08-27-1026-g2f33ac60",
+ "nested_v2": 0.7333333333333333,
+ "contact_push_diag": {
+  "n_contact": 19,
+  "n_contact_push": 19,
+  "wrong_side": 0,
+  "gripper_goal": 0,
+  "push_not_contact": 0
+ },
+ "slide_success": 0.7333333333333333,
+ "slide_routes": {
+  "sustained": 7,
+  "settle": 7
+ },
+ "slide_fails": {
+  "grip_closed": 5,
+  "not_picked": 8,
+  "no_contact": 3
+ },
+ "nested_proxy": 0.5666666666666667,
+ "nested_honest": 0.7333333333333333,
+ "outcomes_honest": {
+  "nested_honest": 22,
+  "proxy_only": 0,
+  "tipped": 6,
+  "timeout": 2
+ },
+ "eval_fixes": "j",
+ "entries_pinned": true,
+ "pin_stats": {
+  "n_enumerated": 0,
+  "n_restored_match": 0,
+  "n_restore_failed": 0,
+  "n_hang": 0
+ },
+ "node": "pax027",
+ "cpu_model": "Intel(R) Xeon(R) Gold 6438M",
+ "ncpus_machine": 64,
+ "slurm_job": "3688561",
+ "bank_path": null,
+ "bank_sha256": null,
+ "bank_version": null,
+ "world_shelf_top_z": 0.16999999999999998,
+ "stage_notes": {
+  "placed": "LEGACY, STALE base-world band 0.12-0.18 m (unearnable in gc_kp4_riser3_shelf6; CONFOUNDS row 47) -- use placed_v2",
+  "placed_v2": "release predicate on the WORLD shelf band (shelf_top_z+[0.01,0.07]), sustained 10 frames; a PAID rung (+1) in scope=full since the 2026-09-10 ladder unification",
+  "contact_push": "placed_v2 GRANTED, then can<->goal solver contact with the TOOL on the far side and no gripper<->goal contact (baselines/stage_predicates). +2. Requiring the release first is what stops a policy earning it by pressing a still-HELD can into the goal",
+  "slide_success": "IN-EPISODE: placed_v2 granted AND pushed (>= 10 mm cumulative goalward gain while not in hand, after the release) AND nested_v2. +4, and the ONLY non-tip terminal. STATISTIC OF RECORD",
+  "nested_v2": "state only, no settle: picked AND placed_v2 granted AND dist_xy(can, goal) <= 0.081 AND both cans upright AND can in the shelf resting band AND not in hand AND at rest. REPLACES nested_proxy everywhere",
+  "nested_honest": "genv._nested(): 100 settle steps at the episode end, centre distance <= NESTED_TOUCH_DIST, picked, both upright. The post-hoc REFERENCE column nested_v2 is validated against; scope=full only",
+  "contact": "LEGACY: carry-in credit -- 84-86% of policy grants were a carry, not a push",
+  "nested": "LEGACY == nested_proxy: sticky contact + grip commanded open + both upright. It no longer terminates anything and pays nothing",
+  "nested_proxy": "LEGACY, WITHDRAWN as a statistic: precision 0.114 (human) / 0.029 (machine) against the settled predicate, and it REVERSES the arm ordering (E2E_AUDIT_BRIEF 4a). Never report nesting on it",
+  "slide_success_settle": "LEGACY amendment (l): the post-episode settle route, with the grip < 0.3 clause that (p) withdrew (it passed 2 of 74 human demonstrations)"
+ },
+ "mean_steps": 63.2,
+ "mean_reward": 6.666666666666667,
+ "per_episode": [
+  {
+   "ep": 0,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 93,
+    "contact_push_frame": 93,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5003328260486672,
+     -0.12215179595072041,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 15.5,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep0_rnd0_home.mp4"
+  },
+  {
+   "ep": 1,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": 129,
+    "contact_push_frame": 129,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "grip_closed",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.34984581479388915,
+     -0.22996418555550519,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 47,
+   "reward": 10.0,
+   "seconds": 21.2,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep1_rnd1_home.mp4"
+  },
+  {
+   "ep": 2,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5448507353980687,
+     0.15156004924712616,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 2,
+   "reward": 0.0,
+   "seconds": 1.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep2_rnd2_tipped.mp4"
+  },
+  {
+   "ep": 3,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": 88,
+    "contact_push_frame": 88,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "no_contact",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.4926755333812129,
+     0.07354668601088812,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep3_rnd3_home.mp4"
+  },
+  {
+   "ep": 4,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 100,
+    "contact_push_frame": 100,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.47676531034501923,
+     0.16106033080645296,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 30,
+   "reward": 10.0,
+   "seconds": 14.5,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep4_rnd4_home.mp4"
+  },
+  {
+   "ep": 5,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5455030224156868,
+     -0.23583422047756797,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 2,
+   "reward": 0.0,
+   "seconds": 2.0,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep5_rnd5_tipped.mp4"
+  },
+  {
+   "ep": 6,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5559945798383612,
+     -0.22270262059246385,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 8,
+   "reward": 0.0,
+   "seconds": 4.3,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep6_rnd6_tipped.mp4"
+  },
+  {
+   "ep": 7,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 93,
+    "contact_push_frame": 93,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5237380002235609,
+     -0.16222340230949064,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 28,
+   "reward": 10.0,
+   "seconds": 13.1,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep7_rnd7_home.mp4"
+  },
+  {
+   "ep": 8,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5574526778933463,
+     -0.006499958539961659,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 11,
+   "reward": 0.0,
+   "seconds": 6.0,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep8_rnd8_tipped.mp4"
+  },
+  {
+   "ep": 9,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 90,
+    "contact_push_frame": 90,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.41517725236068964,
+     -0.057062049936156795,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "timeout",
+   "steps": 300,
+   "reward": 0.0,
+   "seconds": 140.3,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep9_rnd9_timeout.mp4"
+  },
+  {
+   "ep": 10,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "timeout",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.3466507169642294,
+     -0.18409260919413564,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "timeout",
+   "steps": 300,
+   "reward": 0.0,
+   "seconds": 131.3,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep10_rnd10_timeout.mp4"
+  },
+  {
+   "ep": 11,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": 164,
+    "contact_push_frame": 164,
+    "contact_gripper_goal": true,
+    "contact_farside": true,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "grip_closed",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5088326647101417,
+     0.03850857507715824,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 46,
+   "reward": 10.0,
+   "seconds": 22.3,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep11_rnd11_home.mp4"
+  },
+  {
+   "ep": 12,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 91,
+    "contact_push_frame": 91,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.49488474064901655,
+     -0.07366846515071623,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.6,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep12_rnd12_home.mp4"
+  },
+  {
+   "ep": 13,
+   "stages": {
+    "picked": false,
+    "placed_v2": true,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "timeout",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5912955087867757,
+     0.18054160371704117,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "timeout",
+   "steps": 300,
+   "reward": 0.0,
+   "seconds": 135.5,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep13_rnd13_timeout.mp4"
+  },
+  {
+   "ep": 14,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": false,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "no_contact",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5125993510813753,
+     0.03990051390720942,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep14_rnd14_home.mp4"
+  },
+  {
+   "ep": 15,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 96,
+    "contact_push_frame": 96,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5133327994691623,
+     -0.07143614981209553,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 28,
+   "reward": 10.0,
+   "seconds": 13.5,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep15_rnd15_home.mp4"
+  },
+  {
+   "ep": 16,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 147,
+    "contact_push_frame": 147,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.3736118675181588,
+     0.0701375864206206,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 41,
+   "reward": 10.0,
+   "seconds": 19.2,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep16_rnd16_home.mp4"
+  },
+  {
+   "ep": 17,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 87,
+    "contact_push_frame": 87,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.47215196642512075,
+     -0.10493003357455258,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.8,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep17_rnd17_home.mp4"
+  },
+  {
+   "ep": 18,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 94,
+    "contact_push_frame": 94,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.4621734281050267,
+     0.14165497108236944,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 29,
+   "reward": 10.0,
+   "seconds": 13.7,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep18_rnd18_home.mp4"
+  },
+  {
+   "ep": 19,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": 150,
+    "contact_push_frame": 150,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "grip_closed",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5753459877789531,
+     -0.08468658476094881,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 42,
+   "reward": 10.0,
+   "seconds": 19.8,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep19_rnd19_home.mp4"
+  },
+  {
+   "ep": 20,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 88,
+    "contact_push_frame": 88,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.4838112822592646,
+     -0.09998020021897144,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 26,
+   "reward": 10.0,
+   "seconds": 12.3,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep20_rnd20_home.mp4"
+  },
+  {
+   "ep": 21,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 89,
+    "contact_push_frame": 89,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.4895607576254234,
+     -0.09315119130161337,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "timeout",
+   "steps": 300,
+   "reward": 0.0,
+   "seconds": 140.1,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep21_rnd21_timeout.mp4"
+  },
+  {
+   "ep": 22,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 95,
+    "contact_push_frame": 95,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.43838379763336066,
+     0.14198979164844008,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 29,
+   "reward": 10.0,
+   "seconds": 13.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep22_rnd22_home.mp4"
+  },
+  {
+   "ep": 23,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": false,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "grip_closed",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.39685729236717837,
+     0.02829076749284823,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 58,
+   "reward": 10.0,
+   "seconds": 28.1,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep23_rnd23_home.mp4"
+  },
+  {
+   "ep": 24,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 142,
+    "contact_push_frame": 142,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "sustained",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.36071387425455215,
+     0.11745661365605145,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 41,
+   "reward": 10.0,
+   "seconds": 19.0,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep24_rnd24_home.mp4"
+  },
+  {
+   "ep": 25,
+   "stages": {
+    "picked": false,
+    "placed_v2": false,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5382423226408926,
+     -0.1351004281179003,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 2,
+   "reward": 0.0,
+   "seconds": 1.8,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep25_rnd25_tipped.mp4"
+  },
+  {
+   "ep": 26,
+   "stages": {
+    "picked": false,
+    "placed_v2": true,
+    "contact_push": false,
+    "slide_success": false,
+    "nested_v2": false,
+    "farside": false,
+    "slide_event": false,
+    "home": false,
+    "nested_honest": false,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "tipped",
+   "slide_route": null,
+   "slide_fail_reason": "not_picked",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.5608122682797027,
+     -0.21206758758342878,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "tipped",
+   "steps": 9,
+   "reward": 0.0,
+   "seconds": 4.6,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep26_rnd26_tipped.mp4"
+  },
+  {
+   "ep": 27,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": true
+   },
+   "contact_diag": {
+    "contact_frame": 87,
+    "contact_push_frame": 87,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": "settle",
+   "slide_fail_reason": null,
+   "slide_fail_frame": null,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.4243695577877792,
+     -0.173026030942867,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep27_rnd27_home.mp4"
+  },
+  {
+   "ep": 28,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": false,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": false,
+    "nested": false,
+    "nested_proxy": false,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": null,
+    "contact_push_frame": null,
+    "contact_gripper_goal": false,
+    "contact_farside": false,
+    "contact_farside_wrist": false
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "no_contact",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.45321069007894493,
+     0.10199524186130118,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 27,
+   "reward": 10.0,
+   "seconds": 12.9,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep28_rnd28_home.mp4"
+  },
+  {
+   "ep": 29,
+   "stages": {
+    "picked": true,
+    "placed_v2": true,
+    "contact_push": true,
+    "slide_success": true,
+    "nested_v2": true,
+    "farside": true,
+    "slide_event": true,
+    "home": true,
+    "nested_honest": true,
+    "placed": false,
+    "contact": true,
+    "nested": true,
+    "nested_proxy": true,
+    "slide_success_settle": false
+   },
+   "contact_diag": {
+    "contact_frame": 87,
+    "contact_push_frame": 87,
+    "contact_gripper_goal": false,
+    "contact_farside": true,
+    "contact_farside_wrist": true
+   },
+   "restored_uid": null,
+   "entry_frame": null,
+   "outcome_honest": "nested_honest",
+   "slide_route": null,
+   "slide_fail_reason": "grip_closed",
+   "slide_fail_frame": 0,
+   "uid": null,
+   "ic": {
+    "can_pos": [
+     0.3977371577709212,
+     -0.21485453213688085,
+     0.113
+    ],
+    "goal_pos": [
+     0.672,
+     -0.221,
+     0.203
+    ],
+    "uid": null
+   },
+   "ic_set": "rnd",
+   "outcome": "home",
+   "steps": 28,
+   "reward": 10.0,
+   "seconds": 13.2,
+   "video": "/cluster/tufts/shortlab/jstale02/wm_fix_2026-09-03/ln_milestone_cells/full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/ep29_rnd29_home.mp4"
+  }
+ ],
+ "success_key": "home",
+ "success_rate": 0.6666666666666666,
+ "home": 0.6666666666666666
+}
