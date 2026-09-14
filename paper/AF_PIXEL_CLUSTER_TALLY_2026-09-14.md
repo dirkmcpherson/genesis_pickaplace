@@ -161,14 +161,16 @@ wrong or means something else; use the shared cell and the per-episode counts.)
 | seed | human 0.5M → 1M | machine 0.5M → 1M |
 |---|---|---|
 | seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
-| s8 | 1 → 4 | 18 → 9 |
+| s8 | 1 → 4 → 8 | 18 → 9 |
 | s9 | 8 → 10 | 12 → 7 |
-| s10 | 10 → 10 | **0 (picked 0)** → 15 |
-| s11 | 0 (picked 10) → 12 | 6 → 3 |
-| s12 | 12 → 2 | **0 (picked 0)** → 9 |
-| s13 | 1 (picked 2) → 9 | 13 → 17 → 16 |
-| s14 | 11 → 3 | 9 → 6 → 6 |
-| s15 | 8 → 13 → 17 | 18 → 4 → 16 |
+| s10 | 10 → 10 → 0 (picked 20) | **0 (picked 0)** → 15 → 5 |
+| s11 | 0 (picked 10) → 12 → 12 | 6 → 3 → 4 |
+| s12 | 12 → 2 → 8 | **0 (picked 0)** → 9 → 10 |
+| s13 | 1 (picked 2) → 9 → 13 | 13 → 17 → 16 → · |
+| s14 | 11 → 3 → 16 | 9 → 6 → 6 → **0 (picked 19)** |
+| s15 | 8 → 13 → 17 → 5 | 18 → 4 → 16 → 16 |
+
+(read 18:35 09-14; the `final` cell = the 2M checkpoint, counted once.)
 
 {r2dreamer loss}, `nested_sparse10`, the 13 new seeds per arm (same columns):
 
