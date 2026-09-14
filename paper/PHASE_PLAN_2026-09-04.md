@@ -2146,6 +2146,14 @@ Statistic: per-seed rnd30 `home` count at the final checkpoint; ignition ≥ 1.
 rate ≤ 0.15 (the (af) reading: no source effect under pixels). Disconfirm P-ah-1: 0/8 `home` → pixels are not a
 learner-independent lever; the DP row is reported as such.
 
+**Build outcome (2026-09-14 ~14:30, `paper/AH_DP_PIXEL_BUILD_2026-09-14.md`).** All gates met locally. Two
+disclosed choices: (i) the lerobot dataset stores frames as PNG (torchcodec cannot load in either venv; video
+would not decode); (ii) evaluation cells terminate under `ladder=nested_sparse10`, `tip_guard=not_in_hand`
+(DP ignores reward; this only fixes WHERE an episode ends, and it is where the (af)/(ag) pixel world-model cells
+end, so the `home` counts are comparable across learners — accepted by the coordinator). The dataset's action
+column is byte-identical to the (ab) DP dataset's by construction (states/actions from the same recorder tapes;
+only the pixels come from the `_img` re-executions).
+
 **Gates before submission.** (1) A local smoke (this box): convert 2 tapes per arm → 200-step train → 1-episode
 eval with the rig, verifying the checkpoint consumes `observation.images.top/wrist` + 8-d state and no
 `environment_state`; (2) the converter's action stream must be byte-identical to the (ab) DP dataset's for the
