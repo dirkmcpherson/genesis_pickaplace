@@ -134,6 +134,45 @@ pixels" clause.
   next; ≈ 17:00 09-14). Cluster dreamer 4 v 4 alone: human 0.329 v machine 0.379 (two-milestone means).
 - **P-af-5 (RLPD pixels): pending** (165k of 250k at 06:47; Q-watchdog 20–27 on all four).
 
+## P-af-5 — {RLPD} pixels, the (af) 2 v 2 at 250k decisions (final checkpoint; read 2026-09-14 15:35)
+
+`home` (hold15 MODE | rnd30 MODE | rnd30 SAMPLED), outcomes from the cells' `per_episode`:
+
+| seed | human `dH` | machine `dDPfirst` |
+|---|---|---|
+| s0 | 1/15 \| 0/30 \| 0/30 (picked 6/15, 4/30; 11 tipped on rnd30) | 0/15 \| (cell running) \| 0/30 (picked 0/15, 0/30) |
+| s1 | 0/15 \| 0/30 \| 0/30 (picked 1/15, 3/30) | **10/15 \| 16/30 \| 19/30** (picked 15/15, 20/30; 9 tipped) |
+
+Verdict on the registered letter (ignition = ≥ 1 `home` in any final cell, ≥ 1 of 2 seeds per arm): **met on
+both arms (human s0 by a single hold15 episode; machine s1 outright).** Substance: ONE of four RLPD-from-pixels seeds
+solves the task at 250k decisions — machine s1 reaches `home` on 53–63 % of random starts, on par with the world
+models at 1M — while the other three barely pick (4–6 of 30). RLPD from pixels is learnable at this budget with this
+encoder, and it is the least reliable of the three learners here (1/4 v 21/21 world-model seeds); the Q-watchdog
+(Q 20–40 against a max return of 10, all four runs) did not separate the igniting seed from the others (its last
+value 20.0, human s0's 20.2). The 28 (ag) seeds with 25k-step checkpoints will say whether the three quiet seeds
+ignite later or never. (The merged `rnd30_mode_iso/metrics.json` headline for machine s1 reads picked 1.0 / home 1.0
+while its per-episode outcomes are the shared cell's 16 home / 9 tipped / 5 timeout — the merged headline field is
+wrong or means something else; use the shared cell and the per-episode counts.)
+
+## (ag) cells — 2M runs, milestones 0.5M / 1M / 1.5M / 2M (rnd30 MODE `home`, count of 30; read 15:35 09-14)
+
+{dreamer losses}, `nested_sparse10`, the 16 new seeds:
+
+| seed | human 0.5M → 1M | machine 0.5M → 1M |
+|---|---|---|
+| s8 | 1 → · | 18 → · |
+| s9 | 8 → · | 12 → · |
+| s10 | 10 → 10 | **0 (picked 0)** → · |
+| s11 | 0 (picked 10) → · | 6 → · |
+| s12 | 12 → · | **0 (picked 0)** → · |
+| s13 | 1 (picked 2) → 9 | 13 → 17 |
+| s14 | 11 → · | 9 → 6 |
+| s15 | 8 → · | 18 → · |
+
+(`·` = cell not yet scored; 1.5M/2M columns added as they land.) Three seeds read 0 at 0.5M with 0–2 picks — the
+dead-checkpoint pattern of the local series, or late rise; their 1M cells decide. {r2dreamer loss} s3–s15: first
+0.5M milestones at ~16:00.
+
 ## Reading at 00:35 (descriptive; 0.5M is the FIRST of two milestones)
 
 - **The contrastive (r2dreamer) loss also solves the task from pixels**: 5/5 scored seeds reach `home` on 40–63 % of

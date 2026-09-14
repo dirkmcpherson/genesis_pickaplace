@@ -1851,6 +1851,12 @@ P-af-3 partly met on 2 seeds: the ramp reaches `home` from pixels at its better 
 (human 1M 20/30 slides, 2/30 home) and tips at a checkpoint (machine 0.5M 26/30) — "both ingredients". P-af-4 waits
 for the local 4 v 4; P-af-5 pending (RLPD at 165k/250k, Q-watchdog 20–27 on all four).
 
+**Status 2026-09-14 15:35 — P-af-5 read out (three of four eval cells complete):** ignition met on both arms by the
+registered letter (human s0 one hold15 `home`; machine s1 hold15 10/15, rnd30 MODE 16/30, sampled 19/30), i.e. RLPD
+from pixels is learnable at 250k with this encoder, on 1 of 4 seeds outright; the other three barely pick. Details
+and the caveat on the merged `_iso` headline: `paper/AF_PIXEL_CLUSTER_TALLY_2026-09-14.md` §P-af-5. The (ag) 28 seeds
+with 25k checkpoints decide the rate.
+
 **Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
 ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
