@@ -2087,7 +2087,7 @@ ignition count ≥ human's at any look ends the extension as a null.
 **Prediction P-aa6-1.** At whichever look stops the extension, human ignition ≥ 0.5 of seeds and machine ≤ 0.15.
 
 
-### (aa) REVISION 7 — {RLPD} `nested_sparse` at the world-model-matched budget, 4 v 4 (registered 2026-09-13 ~21:15 BEFORE submission; user: "Queue 8 seeds of the RLPD config that is comparable to nested-sparse-4M. Comparisons between algorithms is more important than getting > 8 seeds for any single algorithm right now")
+### (aa) REVISION 7 — {RLPD} `nested_sparse` at the world-model-matched budget, 4 v 4 — **WITHDRAWN 2026-09-14 ~11:30 before any job started** (all 8 jobs 3685235–42 cancelled while PENDING on the `gpu`-partition per-user GPU limit; user redirected the slots to a pixel-observation Diffusion Policy arm, (ag) below) (registered 2026-09-13 ~21:15 BEFORE submission; user: "Queue 8 seeds of the RLPD config that is comparable to nested-sparse-4M. Comparisons between algorithms is more important than getting > 8 seeds for any single algorithm right now")
 
 **Priority change.** Rev 6's waves A/B (more world-model sparse seeds) are DEFERRED; the normal-QOS GPUs that free
 up go to this revision first. Rev 6 stays registered and resumes only after these 8 have started.
