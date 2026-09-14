@@ -30,10 +30,25 @@ checkpoints), so quote both milestones together, never one.** Every number below
 | s4 | 0.43 (13/30) \| 0.47 (7/15) | 0.30 (9/30) \| **0.07 (1/15)** — read 03:47 |
 | s5 | **0.50 (15/30) \| 0.60 (9/15)** — recovered from 0/30, 0/15 at 0.5M | 0.53 (16/30) \| 0.73 (11/15) — read 03:47 |
 | s6 | 0.33 (10/30) \| 0.53 (8/15) — read 04:47 | 0.27 (8/30) \| 0.40 (6/15) — read 04:47 |
-| s7 | **0.07 (2/30; picked 0.60)** \| (pending) — read 04:47 (0.5M was 15/30) | (queued) |
+| s7 | **0.07 (2/30; picked 0.60)** \| 0.13 (2/15) — read 04:47/05:47 (0.5M was 15/30) | 0.33 (10/30) \| 0.67 (10/15) — read 05:47 |
+
+**Dreamer-loss sparse10, 4 v 4, both milestones in (05:47).** Two-milestone mean of rnd30 MODE `home` (0.5M, 1M), per
+seed: human s4 12.0, s5 7.5, s6 11.5, s7 8.5 of 30 (mean 9.9/30 = **0.329**); machine s4 14.0, s5 16.5, s6 9.0, s7 6.0
+of 30 (mean 11.4/30 = **0.379**). Arm gap 0.05 in favour of machine; within-arm ranges 4.5/30 (human) and 10.5/30
+(machine). Beside the local (ae) 3 v 3 at the same recipe (ten-point series: human 0.339, machine 0.267), the two
+batches lean opposite ways by less than either's within-arm spread — P-af-1's "same picture as local" reading: no arm
+separation at this n, on either machine class. Ignition (any `home` cell ≥ 5/30 at either milestone): 4/4 and 4/4.
+
+### {r2dreamer loss} at 1M (read 05:47)
+
+| seed | human | machine |
+|---|---|---|
+| s0 | **0.67 (20/30) \| 0.93 (14/15)** | 0.53 (16/30) \| 0.73 (11/15) |
+| s1 | (queued) | (queued) |
+| s2 | (queued) | (queued) |
 
 ### ramp control at 1M: **machine s0 0.40 (12/30) \| 0.40 (6/15)** (read 03:47; up from 1/30 at 0.5M); **human s0
-0.07 (2/30; picked 0.67)** (read 04:47; down from 13/30 at 0.5M), hold15 pending. The two ramp seeds swap places
+0.07 (2/30; picked 0.67) \| 0.13 (2/15)** (read 04:47/05:47; down from 13/30 at 0.5M). The two ramp seeds swap places
 between the milestones — the checkpoint lottery of `R2D_LIVE_VS_RELOAD` at full size; per seed, the two-milestone
 mean is 6.5/30 (machine) and 7.5/30 (human), both below the sparse10 seeds' two-milestone means so far (human s4 12,
 s5 7.5, s6 11.5, s7 8.5; machine s4 14, s5 16.5, s6 9 of 30). P-af-3 is read on those means once every cell exists.
@@ -46,8 +61,8 @@ points per seed) remains the statistic the human-v-machine question is read on.
 
 {r2dreamer loss}: all six jobs COMPLETED, 1M cells queued (8 `lnms_` pending, 8 running at 03:47). The `final`
 cells are the same checkpoint as `online_1000000` (the run ends at 1M) and read identically — count them once.
-Jobs: 15 of 16 world-model runs COMPLETED 0:0 by 03:47 (the human ramp seed at 1M in its end-of-job evals); all 32
-0.5M cells (16 runs × rnd30/hold15 MODE) exist.
+Jobs: **all 16 world-model runs COMPLETED 0:0 by 05:47** (4.1–5.1 h each; no preemption in the whole batch); all 32
+0.5M cells exist; 1M rnd30 MODE cells exist for 12 of 16 runs at 05:47 (r2dreamer s1/s2 both arms queued).
 
 ### {r2dreamer = the port's contrastive representation loss}, pixels, `nested_sparse10` — P-af-2
 
