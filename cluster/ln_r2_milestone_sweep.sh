@@ -83,9 +83,28 @@ case "$SWEEP_MODE" in
          EXCL_ALL=$(printf '%s,%s' "$(cat "$EXCL64")" "$SMT_EXCL" | tr ',' '\n' | sed '/^$/d' | sort -u | paste -sd,)
          SUBMIT_ARGS=(-p batch --qos=normal --exclude="$EXCL_ALL")
          SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=$REQUIRE_LOGICAL) ;;
+  cpu64pre)
+         # SAME node class and guards as cpu64 (64 physical / 64 logical, the pinned hardware of record),
+         # submitted through the PREEMPT QOS on the `preempt` partition (which spans the batch nodes: 58 of
+         # the eligible 64/64 nodes, 2026-09-13 22:20) instead of `-p batch --qos=normal`. Why (2026-09-13
+         # 22:15): the normal QOS caps a user at cpu=250 and ten 16-CPU r2dreamer packs hold it for 15-43 h,
+         # so every `lnms_` eval sat on QOSMaxCpuPerUserLimit and the (af) pixel cells would have waited a
+         # day; the preempt QOS caps at cpu=1000 (160 used). The cost: a cell job can be preempted
+         # (PreemptMode=REQUEUE) -- `--requeue` restarts it and the sbatch skips every cell whose
+         # metrics.json exists, so a preemption re-runs at most the cell in progress. Cells stamp their node
+         # as always; the QOS is a scheduling difference, not a hardware one. Opt-in (the default stays
+         # cpu64 for the other workstation's sweeps): SWEEP_MODE=cpu64pre RUN_FILTER=_img MAXJOBS=16.
+         [ -f "$EXCL64" ] || { echo "FATAL: no $EXCL64 for the node filter"; exit 1; }
+         SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax044,pax036,pax037,pax038,pax039,pax040,pax041,pax043,pax045,pax046,pax056,pax066}
+         if [ -s "$CELLROOT/.smt_excluded" ]; then
+           SMT_EXCL="$SMT_EXCL,$(sort -u "$CELLROOT/.smt_excluded" | tr '\n' ',' | sed 's/,$//')"
+         fi
+         EXCL_ALL=$(printf '%s,%s' "$(cat "$EXCL64")" "$SMT_EXCL" | tr ',' '\n' | sed '/^$/d' | sort -u | paste -sd,)
+         SUBMIT_ARGS=(-p preempt --qos=preempt --requeue --exclude="$EXCL_ALL")
+         SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=$REQUIRE_LOGICAL) ;;
   gpu)   SUBMIT_ARGS=(-p gpu,preempt --qos=preempt --gres=gpu:1 --constraint=l40s\|a100\|l40\|h200 --exclude=pax077)
          REQUIRE_CORES=0; REQUIRE_LOGICAL=0; SUBMIT_ENV_EXTRA=(REQUIRE_LOGICAL=0) ;;   # Lane RC's GPU nodes are not one core class; the cells stamp what they landed on
-  *) echo "FATAL: SWEEP_MODE must be cpu64 | gpu (got $SWEEP_MODE)"; exit 1 ;;
+  *) echo "FATAL: SWEEP_MODE must be cpu64 | cpu64pre | gpu (got $SWEEP_MODE)"; exit 1 ;;
 esac
 
 # ---- how many of this sweep's jobs are already in the queue -------------------------------

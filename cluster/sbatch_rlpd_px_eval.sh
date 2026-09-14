@@ -11,8 +11,14 @@
 # REQUIRE_CORES=64 is the guard of record (eval_e2e_px.py refuses to produce a cell on another machine size);
 # ROLE stays 'preview' unless the caller pins THREADS too and asks for 'record' (eval_e2e.py's rule, unchanged).
 #SBATCH -J e2e_rlpd_px_eval
-#SBATCH -p batch
-#SBATCH --qos=normal
+#SBATCH -p preempt
+#SBATCH --qos=preempt
+#SBATCH --requeue
+# QOS (2026-09-13 22:25): preempt instead of `-p batch --qos=normal`. The normal QOS caps a user at cpu=250 and the
+# ten r2dreamer packs hold it for 15-43 h (every CPU eval sat on QOSMaxCpuPerUserLimit); preempt caps at cpu=1000 and
+# its partition spans the same 64/64 batch nodes (the --exclude list from the caller still pins the node class;
+# REQUIRE_CORES=64 still refuses anything else). A preempted eval is requeued and re-runs -- a scheduling
+# difference, not a hardware one; the cells stamp their node as always.
 #SBATCH -N 1
 #SBATCH -n 8
 #SBATCH --mem=24g
