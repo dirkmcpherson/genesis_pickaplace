@@ -2117,3 +2117,37 @@ slide at any budget run). P-aa7-2 (source, conditional): if RLPD ignites on ≥ 
 machine's. Disconfirm P-aa7-1: RLPD ignites on ≥ 2 seeds → the world model's advantage is not "only a world model
 can solve sparse `home`" and the cross-learner section must say so; the source contrast then reads on both learners.
 
+
+### (ag) — {Diffusion Policy} on PIXEL observations, human v machine, 4 v 4 (registered 2026-09-14 ~12:00 BEFORE any build; user: "We need a DP-pixel to at least say we checked performance. Make sure you use image-augmentation as is being used in the other runs")
+
+**Why.** The pixel-observation world-model runs ((af), other box) reach `home` on 14/14 seeds at 1M where every
+state-based arm is at 0; the three-learner table needs the DP row under the same observation before "pixels"
+can be written as a learner-independent lever (`HRI_results/pixel_vet_2026-09-14/README.md`).
+
+**Condition.** lerobot Diffusion Policy, full task, world `gc_kp4_riser3_shelf6`, the SAME tapes as the DP
+end-to-end arm of record (human `dHfull_all` 74, machine `dDPfull_first` 72) with their rendered 64×64 top and
+wrist cameras (the `_img` re-executions: real renders 74/74 and 72/72, actions sha-identical to the sources), the
+SAME action representation and evaluator action handling as amendments (n)/(ab) (to be verified by the build,
+not assumed), observation = **proprio only (8-d: q6 + gripper motor + grip effort) + `observation.images.top` +
+`observation.images.wrist`** — the ground-truth can pose and goal xy are REMOVED exactly as `env.state_slice 8`
+removes them in (af). Augmentation = the lerobot analogue of (af)'s `shift4` (DrQ replicate-pad 4 px + random
+crop back to 64): **`crop_shape` 56×56 with `crop_is_random=true` in training, centre crop at evaluation**
+(±4 px random translation; lerobot crops rather than pads, disclosed). Vision backbone = lerobot default
+(ResNet-18, group norm, spatial softmax, no pretrained weights — the (af) encoder is also trained from scratch).
+100k gradient steps, batch 64, final checkpoint only, seeds 0–3 per arm.
+
+**Evaluation.** `eval_e2e.py` with `camera_rig=True` and the rig wired into the DP runner (top = channels 0:3,
+wrist = 3:6 of `rig_obs()`, the same split the demonstrations were rendered with); fresh process per cell,
+rnd30 MODE and hold15 MODE (DP is deterministic given the seed; "mode" = its standard inference), 64-core nodes.
+Statistic: per-seed rnd30 `home` count at the final checkpoint; ignition ≥ 1.
+
+**Predictions.** P-ag-1 (learner): DP-pixel reaches `home` on ≥ 1 seed in ≥ 1 arm (the DP state-based e2e arm has
+`nested_honest` ≤ 0.10 and no registered `home` cell). P-ag-2 (source): |human − machine| on the pooled `home`
+rate ≤ 0.15 (the (af) reading: no source effect under pixels). Disconfirm P-ag-1: 0/8 `home` → pixels are not a
+learner-independent lever; the DP row is reported as such.
+
+**Gates before submission.** (1) A local smoke (this box): convert 2 tapes per arm → 200-step train → 1-episode
+eval with the rig, verifying the checkpoint consumes `observation.images.top/wrist` + 8-d state and no
+`environment_state`; (2) the converter's action stream must be byte-identical to the (ab) DP dataset's for the
+same tape; (3) `crop_is_random=true` confirmed in the saved policy config. Tree: a fresh clone `$LAB/gp_ag`.
+
