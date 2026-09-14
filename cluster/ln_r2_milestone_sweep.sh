@@ -166,7 +166,10 @@ for suf in ("rnrh", "rnsh", "rzh", "rns10h"):
 for suf in ("rns10h_img", "rnrh_img"):
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_*_s[0-9]*"))
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s[0-9]*"))
-runs = sorted(set(r for r in runs if os.path.isdir(r) and "smoke" not in os.path.basename(r)))
+# `*.preempted<N>` = an interrupted attempt the launcher moved aside on requeue (not a run: its
+# milestones are scored only by a deliberate, labelled staging, never by this enumeration).
+runs = sorted(set(r for r in runs if os.path.isdir(r) and "smoke" not in os.path.basename(r)
+                  and ".preempted" not in os.path.basename(r)))
 # RUN_FILTER (2026-09-13): an optional regex to PRIORITISE runs -- e.g. RUN_FILTER=rnsh scores the
 # sparse seeds first when a decision hangs on them. No filter = the full alphabetical pass as before.
 _rf = os.environ.get("RUN_FILTER", "")

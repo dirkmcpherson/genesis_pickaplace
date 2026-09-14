@@ -166,7 +166,17 @@ run_seed() {
   local LOGDIR=$W/runs/$NAME
   export TORCHINDUCTOR_CACHE_DIR=$W/inductor_cache/${SLURM_JOB_ID:-local}_s${SEED}
   [ -e "$LOGDIR" ] && [ "${SLURM_RESTART_COUNT:-0}" -eq 0 ] && { echo "FATAL: $LOGDIR exists"; exit 2; }
-  if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$LOGDIR" ]; then echo "# requeued (restart ${SLURM_RESTART_COUNT}): clearing the partial logdir and starting clean"; rm -rf "$LOGDIR"; fi
+  # A requeued run (preemption / node failure) starts CLEAN, as before -- but the interrupted attempt is
+  # MOVED ASIDE, not deleted (2026-09-13, PX cluster deploy, seen on smoke 3684501: preempted at 20:44
+  # after writing milestones/online_20000.pt, requeued at 20:46, and `rm -rf` took the milestone with it).
+  # A milestone the hourly sweep has not yet copied would otherwise not survive a preemption, which
+  # contradicts (af)'s "a seed preempted after a milestone keeps that milestone's cells". The kept dir is
+  # NOT a run: the sweep skips `*.preempted*`; scoring its milestones is a deliberate, labelled staging.
+  if [ "${SLURM_RESTART_COUNT:-0}" -gt 0 ] && [ -d "$LOGDIR" ]; then
+    KEEP="${LOGDIR}.preempted${SLURM_RESTART_COUNT}"; [ -e "$KEEP" ] && KEEP="${KEEP}.$(date +%s)"
+    echo "# requeued (restart ${SLURM_RESTART_COUNT}): moving the partial logdir to $KEEP (interrupted attempt kept: $(ls "$LOGDIR/milestones" 2>/dev/null | tr '\n' ' ')) and starting clean"
+    mv "$LOGDIR" "$KEEP"
+  fi
   mkdir -p "$LOGDIR"
   # RESUME_FROM=<latest.pt> (optional): warm restart from that checkpoint (weights+optims; buffer restarts at prefill,
   # step counter re-runs env.steps) -- a DISCLOSED continuation, never a run of record without saying so.
