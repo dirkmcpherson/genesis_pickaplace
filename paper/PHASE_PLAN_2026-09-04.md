@@ -1883,8 +1883,8 @@ seeds ("I'll note it in the paper"). Per-seed statistic that EVERY seed has: **m
 0.5M and 1M cells** (the local seeds' series contain both). Secondary, for the seeds that have it: the 2M cell
 and the four-milestone mean (new seeds), the ten-cell series (local seeds). Test as P-ae-2/P-af-4: exact
 permutation on the per-seed statistic, ±0.15 null margin, MDE reported; ignition count per arm beside it.
-Predictions: P-ag-1 the pooled dreamer-loss 16 v 16 lands inside ±0.15 (the 4 v 4 and 3 v 3 both did, in opposite
-directions); P-ag-2 the r2dreamer-loss 16 v 16 likewise, with every seed igniting; P-ag-3 the 2M cells of the new
+Predictions: P-ah-1 the pooled dreamer-loss 16 v 16 lands inside ±0.15 (the 4 v 4 and 3 v 3 both did, in opposite
+directions); P-ah-2 the r2dreamer-loss 16 v 16 likewise, with every seed igniting; P-ag-3 the 2M cells of the new
 seeds read ≥ their 1M cells on average (the curves say not converged at 1M) — if they read lower, the 1M-v-2M
 comparison is reported as the oscillation it is. P-ag-4 (RLPD) as P-af-5 at 16 v 16.
 
@@ -2087,7 +2087,7 @@ ignition count ≥ human's at any look ends the extension as a null.
 **Prediction P-aa6-1.** At whichever look stops the extension, human ignition ≥ 0.5 of seeds and machine ≤ 0.15.
 
 
-### (aa) REVISION 7 — {RLPD} `nested_sparse` at the world-model-matched budget, 4 v 4 — **WITHDRAWN 2026-09-14 ~11:30 before any job started** (all 8 jobs 3685235–42 cancelled while PENDING on the `gpu`-partition per-user GPU limit; user redirected the slots to a pixel-observation Diffusion Policy arm, (ag) below) (registered 2026-09-13 ~21:15 BEFORE submission; user: "Queue 8 seeds of the RLPD config that is comparable to nested-sparse-4M. Comparisons between algorithms is more important than getting > 8 seeds for any single algorithm right now")
+### (aa) REVISION 7 — {RLPD} `nested_sparse` at the world-model-matched budget, 4 v 4 — **WITHDRAWN 2026-09-14 ~11:30 before any job started** (all 8 jobs 3685235–42 cancelled while PENDING on the `gpu`-partition per-user GPU limit; user redirected the slots to a pixel-observation Diffusion Policy arm, (ah) below) (registered 2026-09-13 ~21:15 BEFORE submission; user: "Queue 8 seeds of the RLPD config that is comparable to nested-sparse-4M. Comparisons between algorithms is more important than getting > 8 seeds for any single algorithm right now")
 
 **Priority change.** Rev 6's waves A/B (more world-model sparse seeds) are DEFERRED; the normal-QOS GPUs that free
 up go to this revision first. Rev 6 stays registered and resumes only after these 8 have started.
@@ -2118,7 +2118,7 @@ machine's. Disconfirm P-aa7-1: RLPD ignites on ≥ 2 seeds → the world model's
 can solve sparse `home`" and the cross-learner section must say so; the source contrast then reads on both learners.
 
 
-### (ag) — {Diffusion Policy} on PIXEL observations, human v machine, 4 v 4 (registered 2026-09-14 ~12:00 BEFORE any build; user: "We need a DP-pixel to at least say we checked performance. Make sure you use image-augmentation as is being used in the other runs")
+### (ah) — {Diffusion Policy} on PIXEL observations, human v machine, 4 v 4 (registered 2026-09-14 ~12:00 as "(ag)" BEFORE any build; RENAMED (ah) at 13:10 because the other box had registered (ag) = the pixel 16 v 16 at 09:30 — same day, two boxes, no shared counter; user: "We need a DP-pixel to at least say we checked performance. Make sure you use image-augmentation as is being used in the other runs")
 
 **Why.** The pixel-observation world-model runs ((af), other box) reach `home` on 14/14 seeds at 1M where every
 state-based arm is at 0; the three-learner table needs the DP row under the same observation before "pixels"
@@ -2141,9 +2141,9 @@ wrist = 3:6 of `rig_obs()`, the same split the demonstrations were rendered with
 rnd30 MODE and hold15 MODE (DP is deterministic given the seed; "mode" = its standard inference), 64-core nodes.
 Statistic: per-seed rnd30 `home` count at the final checkpoint; ignition ≥ 1.
 
-**Predictions.** P-ag-1 (learner): DP-pixel reaches `home` on ≥ 1 seed in ≥ 1 arm (the DP state-based e2e arm has
-`nested_honest` ≤ 0.10 and no registered `home` cell). P-ag-2 (source): |human − machine| on the pooled `home`
-rate ≤ 0.15 (the (af) reading: no source effect under pixels). Disconfirm P-ag-1: 0/8 `home` → pixels are not a
+**Predictions.** P-ah-1 (learner): DP-pixel reaches `home` on ≥ 1 seed in ≥ 1 arm (the DP state-based e2e arm has
+`nested_honest` ≤ 0.10 and no registered `home` cell). P-ah-2 (source): |human − machine| on the pooled `home`
+rate ≤ 0.15 (the (af) reading: no source effect under pixels). Disconfirm P-ah-1: 0/8 `home` → pixels are not a
 learner-independent lever; the DP row is reported as such.
 
 **Gates before submission.** (1) A local smoke (this box): convert 2 tapes per arm → 200-step train → 1-episode
