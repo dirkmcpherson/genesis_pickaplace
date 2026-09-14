@@ -27,11 +27,24 @@ checkpoint (`R2D_LIVE_VS_RELOAD_2026-09-12.md`).
 | s1 | machine | 0, 1, 2, 5, 0, 14, 15, 7, 7, 14 | 0, 0, 4, 11, 0, 14, 20, 7, 16, 17 | **89/240 = 0.371** | 64/120 = 0.533 |
 | s2 | human | 0, 0, 2, 0, 9, 5, 12, 8, 11, 15 | 0, 0, 0, 0, 16, 5, 17, 16, 15, 17 | **86/240 = 0.358** | 62/120 = 0.517 |
 | s2 | machine | 0, 0, 0, 0, 11, 13, 0, 14, 7, 3 | 0, 1, 0, 0, 13, 17, 0, 21, 11, 11 | **73/240 = 0.304** | 48/120 = 0.400 |
-| s3 | human | (running; launched 03:38 09-14) | | | |
+| s3 | human | 0, 0, 0, 2, 0, 12, 10, 3, 2, 3 | 1, 0, 0, 7, 0, 16, 12, 4, 5, 6 | **50/240 = 0.208** | 32/120 = 0.267 |
+| s3 | machine | (running; launched 10:02 09-14, the last seed) | | | |
+
+**Pooled two-cell statistic (amendment (ag): mean of the 0.5M and 1.0M rnd30 MODE cells, the statistic every local
+AND cluster seed has):** human s0 (18+16)/60 = 0.567, s1 (18+10)/60 = 0.467, s2 (16+17)/60 = 0.550, s3 (0+6)/60 =
+**0.100**; machine s0 (6+1)/60 = 0.117, s1 (0+17)/60 = 0.283, s2 (13+11)/60 = 0.400, s3 pending.
 | s3 | machine | | | | |
 
 Tipped (rnd30 MODE cells, 0.3–0.9M): human s0 9, 7, 7, 9, ?, ?, ?; machine s0 7, 7, 18, 9, 13, 15, 24 — the machine
 seed's slides end in a tip far more often (at 0.5M: 12 of 18 slides tipped v 0 of 18 for the human seed).
+
+### Interim at 4 v 3 (2026-09-14 10:25, descriptive)
+
+Human s3 DONE at 1M: statistic **0.208** — the lowest human seed. Its training record read `home` 0.87–0.90 over
+0.68–0.84M while the series cells read 4/30, 5/30, 6/30 at 0.8–1.0M (hold15 3/15, 2/15, 3/15): the largest
+record-v-checkpoint gap of the eight seeds so far (the R2D_LIVE_VS_RELOAD pattern), not a non-igniting seed (rise
+time ≈ 0.35M; 746 training homes by 0.84M). Statistic of record at 4 v 3: **human 0.371, 0.288, 0.358, 0.208 (mean
+0.306) · machine 0.125, 0.371, 0.304**. Machine s3 (the last seed) launched 10:02; 4 v 4 ≈ 17:00.
 
 ### Interim at 3 v 3 (2026-09-14 03:50, descriptive)
 
