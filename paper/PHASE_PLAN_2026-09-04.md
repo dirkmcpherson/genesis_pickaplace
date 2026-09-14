@@ -1888,6 +1888,12 @@ directions); P-ag-2 the r2dreamer-loss 16 v 16 likewise, with every seed ignitin
 seeds read ≥ their 1M cells on average (the curves say not converged at 1M) — if they read lower, the 1M-v-2M
 comparison is reported as the oscillation it is. P-ag-4 (RLPD) as P-af-5 at 16 v 16.
 
+**SUBMITTED 2026-09-14 09:45** from `$LAB/gp_px` @ 8492a2e / `$W/r2dreamer_px` @ 0b1b9d8 (world models: jobs
+3692502–3692543, dreamer s8–15 then r2dreamer s3–15, human/machine interleaved, `STEPS=2000000`
+`MILES=[500000,1000000,1500000,2000000]`) and `$LAB/gp_pxr` @ 8492a2e (RLPD: jobs 3692544–3692571, `CKPT_EVERY=25000`);
+log `$W/px_submit_2026-09-14_ag.log`; 16 world-model jobs running at submission, 54 pending on the 20-GPU preempt cap;
+disk 149 GB free.
+
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
