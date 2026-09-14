@@ -36,7 +36,7 @@ for SET in dHfull_all dDPfull_first; do
 done
 
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9' || true)
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 150 GB floor"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 100 GB floor"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free | gp $GP ($(git -C "$GP" describe --always --dirty)) | steps $STEPS | ladder $LADDER | tip_guard $TIP_GUARD"
 
 Q=(-p gpu --qos=normal)

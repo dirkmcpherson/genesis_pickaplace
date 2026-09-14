@@ -75,9 +75,9 @@ NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
 SAVE_FREQ=${SAVE_FREQ:-$(( STEPS / 2 ))}; [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
 export GENESIS_SIM_VARIANT=$SIM_VARIANT SIM_VARIANT_FOR_SIDECAR=$SIM_VARIANT
 
-# ---- disk guard (2026-09-07 filesystem-full incident; registered floor 150 GB) ----
+# ---- disk guard (2026-09-07 filesystem-full incident; registered floor 150 GB; lowered to 100 GB 2026-09-14 09:10 by the user) ----
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9')
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 150 GB floor -- refusing to train"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 100 GB floor -- refusing to train"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free"
 
 # ---- provenance gates: the raw tapes are the (n)/(ab) tapes; the dataset is the PIXEL one ----
