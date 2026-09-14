@@ -53,6 +53,12 @@ REQUIRE_CORES=${REQUIRE_CORES:-}; THREADS=${THREADS:-}
 # subdirectory of the run dir, so a preview cell and a cell of record never share a path.
 ROLE=${ROLE:-preview}; CELL_DIR=${CELL_DIR:-}
 CELLS_ROOT="$OUT"; [ -n "$CELL_DIR" ] && CELLS_ROOT="$OUT/$CELL_DIR"
+# EVAL_SCRIPT (lane PXR-1, 2026-09-13): the evaluator to drive. Default = the live state evaluator, unchanged;
+# a PIXEL checkpoint (sidecar obs=pixels) is scored by baselines/eval_e2e_px.py, which takes the same arguments
+# and writes the same metrics.json layout (cluster/sbatch_rlpd_px_eval.sh sets it). Never a silent switch: the
+# script name is printed in the header line below and each evaluator refuses the other's checkpoints.
+EVAL_SCRIPT=${EVAL_SCRIPT:-baselines/eval_e2e.py}
+[ -f "$EVAL_SCRIPT" ] || { echo "FATAL: EVAL_SCRIPT $EVAL_SCRIPT not found under $GENESIS_PICKAPLACE_ROOT"; exit 1; }
 if [ "$ROLE" = record ] && [ -z "$REQUIRE_CORES" ] && [ -z "$THREADS" ]; then
   echo "FATAL: ROLE=record needs REQUIRE_CORES and/or THREADS -- a cell of record is pinned by construction, and the"
   echo "       axis is MACHINE SIZE (coordinator verdict 2026-09-07: \`cores\`); prefer REQUIRE_CORES."; exit 1
@@ -94,7 +100,7 @@ t=open('/proc/cpuinfo').read()
 c=re.search(r'^cpu cores\s*:\s*(\d+)', t, re.M)
 s=len(set(re.findall(r'^physical id\s*:\s*(\d+)', t, re.M))) or 1
 print((int(c.group(1))*s) if c else t.count('processor	'))" 2>/dev/null)
-echo "== e2e_eval_cells kind=$KIND ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) cores=${CPU_CORES:-?} isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_cores='${REQUIRE_CORES}' threads='${THREADS}' require_isa='${REQUIRE_ISA}' $(date)"
+echo "== e2e_eval_cells kind=$KIND script=$EVAL_SCRIPT ckpt=$CKPT out=$OUT cells=$CELLS_ROOT role=$ROLE arm=$ARM seed=$SEED sets='$SETS' modes='$MODES' iso=$ISO iso_sets='$ISO_SETS' video='$VIDEO_SETS' variant=$SIM_VARIANT eval_seed=$EVAL_SEED par=$PAR node=$(hostname) cores=${CPU_CORES:-?} isa=${CPU_ISA:-?} cpu='${CPU_MODEL:-?}' require_cores='${REQUIRE_CORES}' threads='${THREADS}' require_isa='${REQUIRE_ISA}' $(date)"
 
 eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   local D=$1 SET=$2 MODE=$3 IDX=$4 VID=$5
@@ -106,7 +112,7 @@ eval_one() {   # $1 out dir, $2 set, $3 mode, $4 '' | ic-index, $5 '' | --video
   [ -n "$THREADS" ] && IF+=(--threads "$THREADS")
   IF+=(--role "$ROLE")
   mkdir -p "$D"
-  python baselines/eval_e2e.py --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \
+  python "$EVAL_SCRIPT" --kind "$KIND" --checkpoint "$CKPT" --ic-file "$(ic_file_of "$SET")" \
       --ic-set "$(ic_set_of "$SET")" --out "$D" --mode "$MODE" --seed "$EVAL_SEED" --max-steps 1200 \
       --sim-variant "$SIM_VARIANT" --arm "$ARM" --tag "${SET}_${MODE}" "${XF[@]}" "${VF[@]}" "${LF[@]}" "${IF[@]}" \
       > "$D/eval.log" 2>&1

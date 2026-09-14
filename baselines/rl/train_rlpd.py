@@ -787,7 +787,13 @@ def main():
             seed=args.seed, cartesian=False,
             action_mode=(args.action_mode if args.action_mode != 'absolute' else None),
             action_repeat=args.action_repeat, delta_ref=args.delta_ref))
+    t_learn = time.time()
     model.learn(total_timesteps=args.steps, log_interval=10, callback=CallbackList(cbs))
+    _dt = time.time() - t_learn
+    # throughput of the learn() call itself (world build and demo load excluded); the first
+    # `learning_starts` decisions are random actions without updates, every later one carries UTD updates
+    print(f'[rlpd] learn: {args.steps} decisions in {_dt:.1f} s = {args.steps / max(_dt, 1e-9):.2f} decisions/s '
+          f'({model.learning_starts} random-action decisions before updates, then UTD {args.utd}; obs={args.obs})', flush=True)
     model.save(str(out / 'rlpd_final'))
     (out / 'rlpd_final.action_mode.json').write_text(json.dumps(sidecar))
     if run is not None:
