@@ -1843,6 +1843,14 @@ skips cells whose `metrics.json` exists; the RLPD eval re-runs from the start). 
 unchanged (each cell stamps its node). The hourly check in this session runs
 `SWEEP_MODE=cpu64pre RUN_FILTER=_img MAXJOBS=16` at :23.
 
+**Status 2026-09-14 06:50 — WORLD-MODEL PART READ OUT** (`paper/AF_PIXEL_CLUSTER_TALLY_2026-09-14.md`, section
+"(af) READOUT"): all 16 world-model runs COMPLETED 0:0 (4.1–5.1 h each, no preemption), 32 + 32 cells scored. P-af-1
+MET (8/8 ignite; 6/8 inside 0.2–0.5M; pooling allowed with the 2-cell v 8-cell protocol difference stated). P-af-2 MET
+3/3 + 3/3 — the contrastive loss is the better pixel learner (two-milestone `home` 0.622 / 0.533 v 0.329 / 0.379).
+P-af-3 partly met on 2 seeds: the ramp reaches `home` from pixels at its better milestone but slides without nesting
+(human 1M 20/30 slides, 2/30 home) and tips at a checkpoint (machine 0.5M 26/30) — "both ingredients". P-af-4 waits
+for the local 4 v 4; P-af-5 pending (RLPD at 165k/250k, Q-watchdog 20–27 on all four).
+
 **Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
 ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not

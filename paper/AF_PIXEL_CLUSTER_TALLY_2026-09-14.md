@@ -44,8 +44,14 @@ separation at this n, on either machine class. Ignition (any `home` cell ≥ 5/3
 | seed | human | machine |
 |---|---|---|
 | s0 | **0.67 (20/30) \| 0.93 (14/15)** | 0.53 (16/30) \| 0.73 (11/15) |
-| s1 | (queued) | (queued) |
-| s2 | (queued) | (queued) |
+| s1 | 0.67 (20/30) \| 0.93 (14/15) — read 06:47 | 0.53 (16/30) \| 0.93 (14/15) — read 06:47 |
+| s2 | 0.60 (18/30) \| 0.93 (14/15) — read 06:47 | 0.63 (19/30) \| 0.80 (12/15) — read 06:47 |
+
+**r2dreamer-loss sparse10, 3 v 3, both milestones in (06:47).** Two-milestone mean of rnd30 MODE `home` (0.5M, 1M):
+human s0 18.5, s1 19.5, s2 18.0 of 30 (mean 18.7/30 = **0.622**); machine s0 15.5, s1 14.0, s2 18.5 of 30 (mean
+16.0/30 = **0.533**). Gap 0.09 toward human; within-arm ranges 1.5/30 (human) and 4.5/30 (machine). Every one of the
+twelve cells is ≥ 12/30 and every hold15 cell ≥ 7/15 — no dead checkpoint among the six seeds, where the dreamer-loss
+seeds show 2/30, 0/30 and 1/15 cells. Ignition 3/3 and 3/3.
 
 ### ramp control at 1M: **machine s0 0.40 (12/30) \| 0.40 (6/15)** (read 03:47; up from 1/30 at 0.5M); **human s0
 0.07 (2/30; picked 0.67) \| 0.13 (2/15)** (read 04:47/05:47; down from 13/30 at 0.5M). The two ramp seeds swap places
@@ -87,6 +93,46 @@ warning, not an abort — the runs continue — and the same class of value infl
 09-01 (Q → 3 082 there), far milder here and not monotonic. Read the 250k finals with this in hand; a policy that still
 solves the task at the end is the result of record, an exploding Q is the disconfirm branch of P-af-5's "RLPD from
 pixels" clause.
+
+## (af) READOUT — 2026-09-14 06:50: every world-model run has both milestones scored (16 runs × 0.5M/1M × rnd30/hold15 MODE)
+
+**Rise time on the TRAINING record** (first online step at which the rolling-30 `train_ep_home` ≥ 0.5; the (ae)
+"rise time of record"; parsed from each run's `console.log`, origin = the run's first counter line):
+
+| learner / arm | seeds → rise (online steps) | first `home` episode |
+|---|---|---|
+| {dreamer} human s4 s5 s6 s7 | **507k, 526k**, 258k, 299k | 222k, 324k, 182k, 284k |
+| {dreamer} machine s4 s5 s6 s7 | 343k, 300k, 338k, 447k | 225k, 222k, 278k, 237k |
+| {r2dreamer} human s0 s1 s2 | 293k, 257k, 290k | 154k, 169k, 238k |
+| {r2dreamer} machine s0 s1 s2 | 258k, 308k, 240k | 178k, 151k, 154k |
+| ramp human s0 / machine s0 | 448k / 341k | 307k / 165k |
+
+- **P-af-1 (cross-machine, dreamer losses): MET.** 8/8 cluster seeds ignite by 1M; 6/8 inside the registered 0.2–0.5M
+  window (human s4/s5 at 0.507M/0.526M are the exceptions, 1–3 rolling windows past it). The ≥ 3-of-8 pooling
+  condition holds, so the local and cluster dreamer seeds may be pooled for P-af-4 — with the protocol difference
+  stated: the local per-seed statistic averages EIGHT series cells (0.3–1.0M), the cluster one TWO (0.5M, 1M).
+  Local rise times were 0.30–0.36M (five seeds); the cluster human seeds spread wider (0.26–0.53M).
+- **P-af-2 (contrastive loss from pixels): MET, 3/3 and 3/3** (criterion ≥ 2 of 3 per arm by 1M). The r2dreamer-loss
+  seeds are the best pixel policies of the batch: two-milestone `home` 0.622 (human) / 0.533 (machine) v 0.329 / 0.379
+  for the dreamer losses, rise 240–308k on all six, no cell below 12/30. The pixel result is NOT specific to the
+  reconstruction loss; report as "world model from pixels, both representation losses".
+- **P-af-3 (ramp control, 2 seeds under rev 1 instead of the 4 the clause was written for): PARTLY met, and the
+  reading it was written to give is "both ingredients".** Cells (slide_event | home | tipped): human s0 0.5M hold15
+  9/15 | 9/15 | 3/15, rnd30 14/30 | 13/30 | 11/30; 1M hold15 **15/15 | 2/15 | 0/15** (13 timeouts), rnd30 20/30 | 2/30 |
+  8/30. Machine s0 0.5M hold15 15/15 | 1/15 | **14/15**, rnd30 21/30 | 1/30 | **26/30**; 1M hold15 6/15 | 6/15 | 1/15,
+  rnd30 12/30 | 12/30 | 8/30. Clause (i) `slide_event` ≥ 0.5 on hold15 by 1M: 2/2 seeds at some milestone, 1/2 on the
+  1M cell itself. Clause (ii) tipped above the sparse10 seeds (sparse10 1M rnd30 tipped: dreamer human 0.40, machine
+  0.28; r2dreamer 0.23 / 0.28): the machine ramp seed at 0.5M tips 26/30 = 0.87 — the state-ramp signature — then
+  reads 0.27 at 1M; the human ramp seed never exceeds the band. So under pixels the ramp DOES reach `home` (13/30,
+  12/30 at its better milestone, inside the dreamer-sparse10 band), which says "+10 alone" is not the active
+  ingredient; and it also shows what the state ramp showed — sliding far without nesting (human 1M: 20/30 slides,
+  2/30 home) and a tipping checkpoint (machine 0.5M) — which the sparse10 seeds do not. Two-milestone `home` means
+  6.5/30 and 7.5/30 sit at the bottom of the sparse10 range (6.0–16.5). n = 1 per arm, 2 cells each: the ramp is
+  learnable from pixels but less reliably; pixels are what fixed the perception, and the terminal +10 is what makes
+  the finish consistent. Not a source contrast.
+- **P-af-4 (pooled 8 v 8, ±0.15 margin, exact permutation): waits for the local 4 v 4** (human s3 running, machine s3
+  next; ≈ 17:00 09-14). Cluster dreamer 4 v 4 alone: human 0.329 v machine 0.379 (two-milestone means).
+- **P-af-5 (RLPD pixels): pending** (165k of 250k at 06:47; Q-watchdog 20–27 on all four).
 
 ## Reading at 00:35 (descriptive; 0.5M is the FIRST of two milestones)
 
