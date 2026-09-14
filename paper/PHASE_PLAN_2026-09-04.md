@@ -1829,6 +1829,20 @@ same pins otherwise (`r2dreamer_px` 0b1b9d8). The 18 running jobs keep the NFS c
 job of theirs that recompiles later (a requeue after preemption restarts the launcher as spooled, i.e. the old
 one) carries the same small risk and would be resubmitted the same way.
 
+**Status 2026-09-13 22:30 — the cells of this batch are scored through the PREEMPT QOS (disclosed).** The milestone
+evals (`lnms_*`, CPU-only, pinned 64/64 nodes) and the RLPD pixel evals were written for `-p batch --qos=normal`.
+That QOS caps a user at cpu=250, and the ten r2dreamer packs of (aa)/(ac) (16 CPUs each) hold it for the next 15–43 h:
+every `lnms_` job in the queue at 22:10 sat on `QOSMaxCpuPerUserLimit` with none running, so the (af) 0.5M cells
+would have waited a day or more. The preempt QOS caps at cpu=1000 (160 used) and its partition contains 58 of the
+eligible 64/64 nodes. Change (b9635ef): `SWEEP_MODE=cpu64pre` in the milestone sweep (same node exclusion, same
+in-job core guards, `-p preempt --qos=preempt --requeue`; opt-in, the default `cpu64` is untouched for the other
+workstation's sweeps) and the RLPD pixel eval sbatch header moved to the preempt QOS with `--requeue` (in
+`$LAB/gp_pxr`, which the four RLPD training jobs read at their end when they submit the eval; no file those runs
+import changed since their pin 9841633). Consequence: a cell job can be preempted and re-run (the sweep's sbatch
+skips cells whose `metrics.json` exists; the RLPD eval re-runs from the start). Hardware class of the cells is
+unchanged (each cell stamps its node). The hourly check in this session runs
+`SWEEP_MODE=cpu64pre RUN_FILTER=_img MAXJOBS=16` at :23.
+
 **Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
 ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
