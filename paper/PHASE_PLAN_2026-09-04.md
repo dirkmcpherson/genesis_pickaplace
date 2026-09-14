@@ -1815,6 +1815,20 @@ image set accepted with a disclosure note: Σ +0.266 over the class-of-record se
 dDPfirst s0/s1 = 3685154/3685156. All 20 PENDING at submission, all 20 RUNNING from 21:29 on pax008/020/021/022/023/024/025 (preempt QOS); submission log
 `$W/px_submit_2026-09-13.log`.
 
+**Status 2026-09-13 22:00 — two launch failures, resubmitted (disclosed).** Jobs 3685143 (dreamer dM s7) and 3685150
+(dreamer ramp dH s0) died at 6 min, exit 1:0, inside their first `torch.compile`: `OSError: [Errno 116] Stale file
+handle` while an inductor compile worker read back a Triton artifact it had just written to the per-job NFS cache
+(`$W/inductor_cache/<job>_s<seed>`); an intra-job race between the parallel compile workers over NFS (the dirs were
+per job; the 14 other world-model jobs, including the ones on the same nodes, passed the same compile). Neither run
+had trained (no milestones; the initial save only) — the dirs are kept as `$W/runs_failed/<name>.estale_<job>`,
+outside the sweep's path. Fix: `cluster/wmfix_full.sbatch` now puts `TORCHINDUCTOR_CACHE_DIR`/`TRITON_CACHE_DIR` on
+the node's local `/tmp` (tmpfs, 252 GB, ≥ 4 GB free required, else the NFS dir as before) — the cache location
+does not enter the computation. Resubmitted 22:00 from `$LAB/gp_px` @ **2f33ac6** (= 9b50280 + this launcher change
++ the other workstation's rev-7 files, nothing the runs import) as **3685494 (dM s7)** and **3685495 (ramp dH s0)**,
+same pins otherwise (`r2dreamer_px` 0b1b9d8). The 18 running jobs keep the NFS cache and the 9b50280 launcher; a
+job of theirs that recompiles later (a requeue after preemption restarts the launcher as spooled, i.e. the old
+one) carries the same small risk and would be resubmitted the same way.
+
 **Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
 ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
 seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
