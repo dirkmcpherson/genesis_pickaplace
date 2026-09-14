@@ -161,16 +161,23 @@ wrong or means something else; use the shared cell and the per-episode counts.)
 | seed | human 0.5M → 1M | machine 0.5M → 1M |
 |---|---|---|
 | seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
-| s8 | 1 → · | 18 → · |
-| s9 | 8 → · | 12 → · |
+| s8 | 1 → 4 | 18 → 9 |
+| s9 | 8 → 10 | 12 → 7 |
 | s10 | 10 → 10 | **0 (picked 0)** → 15 |
 | s11 | 0 (picked 10) → 12 | 6 → 3 |
 | s12 | 12 → 2 | **0 (picked 0)** → 9 |
-| s13 | 1 (picked 2) → 9 | 13 → 17 |
+| s13 | 1 (picked 2) → 9 | 13 → 17 → 16 |
 | s14 | 11 → 3 | 9 → 6 → 6 |
-| s15 | 8 → 13 → 17 | 18 → 4 |
+| s15 | 8 → 13 → 17 | 18 → 4 → 16 |
 
-(`·` = cell not yet scored; read 16:35 09-14.) The two machine seeds that read 0 with no picks at 0.5M read 15/30
+{r2dreamer loss}, `nested_sparse10`, the 13 new seeds per arm (same columns):
+
+| seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
+|---|---|---|
+| s3 | 20 → 20 | 17 → 21 |
+| s4 | · → 17 | · |
+
+(`·` = cell not yet scored; read 17:35 09-14.) The two machine seeds that read 0 with no picks at 0.5M read 15/30
 and 9/30 at 1M — late rise, not dead seeds; and s12 human / s15 machine drop 12 → 2 and 18 → 4 between milestones —
 the oscillation again. {r2dreamer loss} s3–s15: first 0.5M milestones scored from ~17:00.
 
