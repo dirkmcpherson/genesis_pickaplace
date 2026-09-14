@@ -1974,3 +1974,30 @@ milestone cells are scored automatically; the 4M cell of each new seed is read b
 (§7.1 of the audit brief) interacting with tape length; whether it holds under `nested_sparse10` ((ac));
 whether it holds for {RLPD} at any budget run so far (0 `home` on every RLPD seed). 16 v 16 stays held.
 
+
+### (aa) REVISION 6 — `nested_sparse` 4M to n = 16 v 16, sequential stopping rule (registered 2026-09-13 ~20:30 BEFORE submission; user: "keep that cluster full until we have statistically significant results for nested-sparse-4M")
+
+**Condition.** Identical to rev 5 (sets `_rnsh`, 4M online, `gp_aa4` @ 01cb8d34, r2dreamer 0cf3d9e, tip guard
+`not_in_hand`, return clamp 1.0). Milestones: the new dense schedule `R2_MILESTONES_4M` (every 250k), a strict
+superset of the legacy 0.5/1/2/4M cells (`cluster/r2_milestones.sh`; launcher guard).
+
+**Seeds, in waves as normal-QOS GPUs free up (both arms at the same pack density within a wave):**
+- Wave A (when the (ac) packs exit): human **1959 1960 1961 1962**, machine **1979 1980 1981 1982**, ONE pack of 4
+  per arm (4 seeds per GPU — first use of that density; per-seed throughput will be measured and disclosed).
+- Wave B (when the rev-4 ramp packs exit): human **1963 1964 1965 1966**, machine **1983 1984 1985 1986**, packs of
+  2 per arm (the rev-5 density).
+Pooled n after both waves: 16 v 16 (rev 2/3: 955–958 / 975–978; rev 5: 1955–1958 / 1975–1978; rev 6 above).
+
+**Statistic.** Per-seed rnd30 MODE `home` count at the 4M milestone (s976 enters at its last milestone, 2M, and is
+not replaced). Two tests, both reported: Fisher exact two-sided on ignition (≥ 1 `home`), and exact permutation
+two-sided on the per-seed rate. Look at n = 8 v 8 (rev 5 lands ~09-14 midday), 12 v 12, 16 v 16.
+
+**Stopping rule.** Stop ADDING seeds at the first look where BOTH tests give p < 0.05 with human higher, or at
+16 v 16, whichever comes first; seeds already submitted always run to 4M and are always reported. Three looks at
+α 0.05 inflate the family-wise rate to ≈ 0.12 under the null; the paper reports the look at which stopping
+occurred and the nominal p, and the 16 v 16 result if it is reached. Disconfirm: at 16 v 16 neither test reaches
+p < 0.05 → the source effect on this arm is reported as not established at n = 16 with its MDE; a machine
+ignition count ≥ human's at any look ends the extension as a null.
+
+**Prediction P-aa6-1.** At whichever look stops the extension, human ignition ≥ 0.5 of seeds and machine ≤ 0.15.
+
