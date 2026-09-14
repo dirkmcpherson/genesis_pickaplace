@@ -40,6 +40,20 @@ EXTRA_OVERRIDES=("$@")   # hydra overrides after the three positionals; captured
 # stable in the first place. Both env.return_clamp and model.return_clamp are set from the
 # ladder below and printed, so the pair can never silently disagree with the reward.
 LADDER=${LADDER:?set LADDER (staged | sparse | nested_sparse | nested_sparse10 | nested_ramp) -- the reward ladder is never defaulted}
+# Milestone schedule guard (user, 2026-09-13): under R2_LONG_RUN the list may be as dense as we like, but it MUST
+# contain every LEGACY point <= budget ([500000,1000000,2000000,4000000]) so new seeds stay comparable with old
+# ones at those cells. See cluster/r2_milestones.sh for the canonical dense schedules.
+if [ "${R2_LONG_RUN:-0}" = 1 ]; then
+  python3 - "$STEPS" "${R2_MILESTONES:?R2_LONG_RUN=1 needs R2_MILESTONES (source cluster/r2_milestones.sh)}" <<'PYM'
+import json, sys
+budget, ms = int(float(sys.argv[1])), json.loads(sys.argv[2])
+legacy = [m for m in (500000, 1000000, 2000000, 4000000) if m <= budget]
+missing = [m for m in legacy if m not in ms]
+assert not missing, f"R2_MILESTONES {ms} omits legacy point(s) {missing}; new runs must keep the legacy cells"
+assert ms == sorted(set(ms)) and ms[-1] == budget, f"R2_MILESTONES must be sorted, unique and end at the budget {budget}"
+print(f"[milestones] {len(ms)} checkpoints, legacy points {legacy} all present")
+PYM
+fi
 case "$LADDER" in staged|sparse|nested_sparse|nested_sparse10|nested_ramp) ;; *) echo "FATAL: LADDER must be staged | sparse | nested_sparse | nested_sparse10 | nested_ramp (got $LADDER)"; exit 2 ;; esac
 # Ladder N only (see sbatch_rlpd_e2e.sh): passed to the adapter as env.far_release.
 FAR_RELEASE=${FAR_RELEASE:-}

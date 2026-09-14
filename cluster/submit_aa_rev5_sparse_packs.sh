@@ -4,6 +4,7 @@
 #   GP=$LAB/gp_aa4 bash cluster/submit_aa_rev5_sparse_packs.sh
 set -euo pipefail
 LAB=${LAB:-/cluster/tufts/shortlab/jstale02}; W=${W:-$LAB/wm_fix_2026-09-03}
+source "$(dirname "$0")/r2_milestones.sh"   # dense schedule, superset of the legacy points (2026-09-13)
 : "${GP:?set GP to the pinned rev-4/5 clone (gp_aa4); never gp_ladderN or gp_ac}"
 case "$GP" in *gp_ladderN*|*gp_ac) echo "FATAL: refusing pinned tree $GP"; exit 1;; esac
 R2=${R2:-$W/r2dreamer_ladderN}; DEMOS=$W/demos_state_full; TIP_GUARD=${TIP_GUARD:-not_in_hand}
@@ -19,7 +20,7 @@ pack () {  # arm set seedA seedB
   local arm=$1 set=$2 a=$3 b=$4
   for s in $a $b; do [ -e "$W/runs/full_r2d_state_${set}_s$s" ] && { echo "FATAL: run dir for s$s exists"; exit 1; }; done
   env R2_TREE=$R2 GENESIS_PICKAPLACE_ROOT=$GP LADDER=nested_sparse TIP_GUARD=$TIP_GUARD R2_LONG_RUN=1 \
-      R2_MILESTONES='[500000,1000000,2000000,4000000]' PACK_SEEDS="$a $b" \
+      R2_MILESTONES="$R2_MILESTONES_4M" PACK_SEEDS="$a $b" \
       sbatch -J ln_r2_sparse4M_pack_${arm}_s${a}_${b} "${Q[@]}" "$GP/cluster/wmfix_full.sbatch" "$set" "$a" 4000000 | sed "s/$/  # ln_r2_sparse4M_pack_${arm} (s$a s$b)/"
 }
 pack dH dHfull_all_rnsh    1955 1956

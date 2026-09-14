@@ -192,6 +192,13 @@ for run in runs:
     cand = []                                              # (label, src_pt, sidecar_or_None)
     for pt in sorted(glob.glob(os.path.join(run, "milestones", "online_*.pt"))):
         lab = os.path.basename(pt)[:-3]                    # online_500000
+        # MS_FILTER (2026-09-13): new runs save a DENSE schedule (cluster/r2_milestones.sh); by default only the
+        # LEGACY points are scored so the of-record cells land first. MS_FILTER=all scores every milestone.
+        _mf = os.environ.get("MS_FILTER", "legacy")
+        if _mf == "legacy" and int(lab.split("_")[1]) not in (500000, 1000000, 2000000, 4000000):
+            continue
+        if _mf not in ("legacy", "all") and not _re.search(_mf, lab):
+            continue
         side = pt[:-3] + ".json"
         cand.append((lab, pt, side if os.path.exists(side) else None))
     # the FINAL checkpoint, only once training has reached its budget -- latest.pt is rewritten
