@@ -201,4 +201,17 @@ set +e   # evals never fail an already-trained job
 KIND=sac CKPT="$FINAL_CK" OUT="$OUT" ARM="$ARM" SEED="$SEED" SIM_VARIANT="$SIM_VARIANT" \
   SETS="${SETS:-hold15 rnd30 spots60}" MODES="${MODES:-sample mode}" VIDEO_SETS="${VIDEO_SETS:-rnd30}" PAR=${PAR:-6} \
   bash cluster/e2e_eval_cells.sh 2>&1 | tee "$OUT/e2e_eval.log"
+# Checkpoint guard (user, 2026-09-13): CKPT_FRACS may be dense (cluster/r2_milestones.sh RLPD_FRACS_*), but must
+# still produce every LEGACY checkpoint of that budget (250k runs: 40k/100k/250k; 500k runs: 100k/250k/500k) so new
+# seeds compare with old.
+python3 - "$STEPS" "${CKPT_FRACS:-0.4,1.0}" <<'PYK'
+import sys
+steps = int(sys.argv[1]); fr = [float(x) for x in sys.argv[2].split(',') if x.strip()]
+pts = {round(f * steps) for f in fr}
+legacy = {250000: [40000, 100000, 250000], 500000: [100000, 250000, 500000]}.get(steps) or [p for p in (40000, 100000, 250000, 500000) if p <= steps]
+missing = [p for p in legacy if p not in pts]
+assert not missing, f"CKPT_FRACS {fr} at {steps} decisions omits legacy checkpoint(s) {missing}"
+assert fr == sorted(set(fr)) and fr[-1] == 1.0, "CKPT_FRACS must be sorted, unique, end at 1.0"
+print(f"[ckpt] {len(fr)} archive checkpoints; legacy points {legacy} all present")
+PYK
 echo "JOB DONE $(date)"
