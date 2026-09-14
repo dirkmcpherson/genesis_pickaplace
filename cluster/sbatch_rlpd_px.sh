@@ -193,7 +193,12 @@ print('[ladder]', full_env.ladder_stamp(L, None, False, TG))
 print('[ladder] max_return', full_env.max_return(L))
 print('[ladder] tip_guard', TG, 'sustain', full_env.TIP_GUARD_SUSTAIN[TG], 'env frames')
 PYL
-/usr/bin/time -v python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}"
+# GNU time is not installed on the compute nodes (job 3684599 died with exit 127 on it): use it only where it
+# exists; the wall clock below and the trainer's own "[rlpd] learn: ... decisions/s" line are the record either way.
+TIMER=(); [ -x /usr/bin/time ] && TIMER=(/usr/bin/time -v)
+T0=$SECONDS
+"${TIMER[@]}" python baselines/rl/train_rlpd.py "${TRAIN_ARGS[@]}"
+echo "TRAIN-WALL $((SECONDS - T0)) s (steps=$STEPS decisions, incl. world build + demo load) $(date)"
 FINAL_CK=$OUT/rlpd_final.zip
 [ -f "$FINAL_CK" ] && [ -f "${FINAL_CK%.zip}.action_mode.json" ] || { echo "FATAL: no final checkpoint + sidecar at $FINAL_CK -- no evaluation of a partial run"; exit 1; }
 python3 - "$OUT" "$STEPS" "$IMAGE_AUG" "$BUFFER_SIZE" <<'PY' || exit 1
