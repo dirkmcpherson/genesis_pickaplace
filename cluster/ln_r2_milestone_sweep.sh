@@ -176,7 +176,8 @@ runs = []
 # P-ac-1 would have been unevaluable at the milestones it registers. Added rns10h; the durable fix is to
 # discover runs from their `ladder_provenance.json` instead of a suffix glob (open follow-up).
 for suf in ("rnrh", "rnsh", "rzh", "rns10h"):
-    runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s9*"))
+    # any seed number (2026-09-14: the rev-5/6 seeds are 1955-1986; the old `_s9*` glob silently skipped them)
+    runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s[0-9]*"))
 # PIXEL runs (PHASE_PLAN (af), 2026-09-13): sets `_rns10h_img` / `_rnrh_img`, run dirs
 # full_r2d_state_<set>_<rep_loss>_s<seed> (the launcher's TAG carries model.rep_loss so the two
 # world-model losses cannot collide on one set+seed), any seed. Their checkpoints need the PIXEL
