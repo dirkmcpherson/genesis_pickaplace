@@ -1787,8 +1787,30 @@ tree `$W/r2dreamer_px`, 64/64-core nodes, `[sim-variant]` on every cell).
   reward shape is doing what it did on state and pixels are what fixed the perception.
 - P-af-4 (source, pooled 8 v 8 DV3): as P-ae-2 (±0.15 null margin), exact permutation, MDE reported.
 
-**Not decided by this amendment:** RLPD with pixels (pending PXR-1); the idle-collapsed human control ((n)) for the
-world model; any state-based sparse claim.
+**Not decided by this amendment:** the idle-collapsed human control ((n)) for the world model; any state-based sparse claim.
+
+### (af) REVISION 1 — the RLPD pixel arm is ready; final 20-GPU split (registered 2026-09-13 ~21:00, BEFORE submission)
+
+Lane PXR-1 delivered `train_rlpd.py --obs pixels` (`paper/PX_RLPD_PIPELINE_2026-09-13.md`: rig image 64×64×6 ++
+8-dim proprio, DrQ-v2-style shared CNN encoder trained through the RLPD LayerNorm-critic ensemble, actor reading it
+detached, random-shift augmentation on online+demo batches, image demo loader, `eval_e2e_px.py`; recipe of record
+otherwise unchanged: UTD 10, E10/Z2, LN critics, 50/50 demo batches, γ 0.99) and its cluster launcher
+`cluster/sbatch_rlpd_px.sh` + `sbatch_rlpd_px_eval.sh` (dependent CPU eval on 64-core nodes). Cluster smoke 3684603
+(L40S): all stamps, **8.16 decisions/s** → 250k decisions ≈ 8.5 h. Disclosed deviations from DrQ-v2 in the doc; no
+learning claim yet.
+
+**Final split of the 20 preempt GPUs (one seed per GPU):**
+- DV3-loss pixels `nested_sparse10`: human s4–7 v machine s4–7 — **8** (arm 1 above, unchanged).
+- R2-loss pixels `nested_sparse10`: human s0–2 v machine s0–2 — **6** (arm 2, unchanged).
+- **RLPD pixels `nested_sparse10`, 250k decisions**, checkpoints 40 % / final, human s0–1 v machine s0–1 — **4**
+  (was 2 reserved). Cells: the launcher's dependent eval (hold15 + rnd30 × sampled/MODE, `eval_e2e_px.py`, 64-core).
+- Attribution control (DV3 loss, pixels, `nested_ramp`): human s0 v machine s0 — **2** (was 4; 1 v 1 is a first look,
+  not a comparison; its sets `_rnrh_img` are being rendered on a cluster CPU node).
+
+**Prediction for the RLPD pixel arm.** P-af-5: ignition = ≥ 1 `home` in any final cell; ≥ 1 of 2 seeds per arm
+ignites at 250k (the state RLPD ramp human s950 reached `home` in every cell at 250k; the state RLPD `sparse10` machine
+seeds never picked at 500k — this arm asks whether pixels change that). Disconfirm: 0/4 → RLPD from pixels is not
+learnable at this budget with this encoder; report as such, no retuning inside the batch. Preemption policy as above.
 
 ## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
 
