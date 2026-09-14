@@ -19,7 +19,21 @@ checkpoints), so quote both milestones together, never one.** Every number below
 | s4 | 0.37 (11/30) \| 0.60 (9/15) \| (cell pending) | 0.63 (19/30) \| 1.00 (15/15) \| 0.60 |
 | s5 | **0.00 (0/30; picked 0.70)** \| **0.00 (0/15; picked 1.00)** \| (cell pending) | 0.57 (17/30) \| 1.00 (15/15) \| 0.67 |
 | s6 | 0.43 (13/30) \| 0.67 (10/15) \| 0.50 | 0.33 (10/30) \| 0.73 (11/15) \| (pending) — read 01:35 |
-| s7 | 0.50 (15/30) \| 0.80 (12/15) \| (pending) — read 01:35 | **0.07 (2/30; picked 0.73)** \| (pending) \| (pending) — resubmitted seed, read 01:35 |
+| s7 | 0.50 (15/30) \| 0.80 (12/15) \| (pending) — read 01:35 | **0.07 (2/30; picked 0.73)** \| **0.13 (2/15; picked 1.00)** \| (pending) — resubmitted seed, read 02:35 |
+
+## 1M online — `home` rate (rnd30 MODE | hold15 MODE), landing from 02:35 (jobs COMPLETED 0:0 after 4.1–5.1 h)
+
+### {dreamer losses}, `nested_sparse10`
+
+| seed | human | machine |
+|---|---|---|
+| s4 | 0.43 (13/30) \| 0.47 (7/15) | 0.30 (9/30) \| (pending) |
+| s5 | **0.50 (15/30) \| 0.60 (9/15)** — recovered from 0/30, 0/15 at 0.5M | (queued) |
+| s6 | (queued) | (queued) |
+| s7 | (job at 1M, in its end-of-job evals) | (job at 1M, in its end-of-job evals) |
+
+{r2dreamer loss}: all six jobs COMPLETED, 1M cells queued (13 `lnms_` in queue, 8 running at 02:35). The `final`
+cells are the same checkpoint as `online_1000000` (the run ends at 1M) and read identically — count them once.
 
 ### {r2dreamer = the port's contrastive representation loss}, pixels, `nested_sparse10` — P-af-2
 
@@ -32,7 +46,9 @@ checkpoints), so quote both milestones together, never one.** Every number below
 ### ramp control (`nested_ramp`, dreamer losses) — P-af-3
 Machine s0 at 0.5M (read 01:35): rnd30 MODE `home` **0.03 (1/30)**, hold15 MODE **0.07 (1/15)**, picked 0.70 / 1.00 —
 the pixel world model picks and places under the ramp but barely arrives home, where every sparse10 seed but two is at
-0.33–0.63 at the same milestone (one seed, one milestone). Human s0 (resubmitted) at 0.63M counter, cells queued.
+0.33–0.63 at the same milestone (one seed, one milestone). **Human s0 at 0.5M (read 02:35): rnd30 MODE 0.43 (13/30),
+hold15 MODE 0.60 (9/15)** — the human ramp seed reaches home at the sparse10 seeds' rate while the machine ramp seed
+does not (1 v 1, one milestone; the 1M cells decide whether this is the ramp or the seed).
 
 ### {RLPD} pixels — P-af-5: 47–51k of 250k decisions at 00:35 (~4 decisions/s, half the smoke's rate; four jobs on
 two shared nodes); finals and their dependent evals ≈ Monday afternoon. **01:35 — Q-WATCHDOG on all four runs** (7
@@ -58,6 +74,8 @@ pixels" clause.
 ## Local (ae) beside it — {dv3 local} machine s2 (started 21:14 09-13)
 
 Series `home` (hold15 | rnd30 MODE): 0.1M 0|0, 0.2M 0|1, 0.3M 0|0 (dead: picked 0/15, 0/30), 0.4M 0|0 (dead: picked
-0/15, 2/30), **0.5M 11/15 | 13/30, 0.6M 13/15 | 17/30** (read 01:35; 0.7M snapshot taken 01:32, cells running). Training last-30 at 0.55M: picked 1.00, home 0.90, tipped 0.07; 169 training homes
+0/15, 2/30), **0.5M 11/15 | 13/30, 0.6M 13/15 | 17/30, 0.7M 0/15 | 0/30 (dead: picked 0/15, 4/30), 0.8M 14/15 |
+21/30** (read 02:35; 21/30 is the best rnd30 cell of any local seed so far — the previous best was machine s1's 20/30).
+Three dead checkpoints in one run (0.3M, 0.4M, 0.7M), each between cells at 0.43–0.70. Training last-30 at 0.55M: picked 1.00, home 0.90, tipped 0.07; 169 training homes
 by 722 episodes. Two consecutive dead checkpoints (0.3M, 0.4M) right at take-off — the largest collapse window seen so
 far; the post-hoc sampled series will size it.
