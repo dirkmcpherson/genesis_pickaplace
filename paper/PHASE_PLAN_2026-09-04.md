@@ -2009,3 +2009,34 @@ ignition count ≥ human's at any look ends the extension as a null.
 
 **Prediction P-aa6-1.** At whichever look stops the extension, human ignition ≥ 0.5 of seeds and machine ≤ 0.15.
 
+
+### (aa) REVISION 7 — {RLPD} `nested_sparse` at the world-model-matched budget, 4 v 4 (registered 2026-09-13 ~21:15 BEFORE submission; user: "Queue 8 seeds of the RLPD config that is comparable to nested-sparse-4M. Comparisons between algorithms is more important than getting > 8 seeds for any single algorithm right now")
+
+**Priority change.** Rev 6's waves A/B (more world-model sparse seeds) are DEFERRED; the normal-QOS GPUs that free
+up go to this revision first. Rev 6 stays registered and resumes only after these 8 have started.
+
+**Condition.** {RLPD} (`baselines/rl/train_rlpd.py`, scope full, delta_joint, UTD/recipe of record), ladder
+`nested_sparse` (`home` +1, terminal home+tipped), sets `dHfull_all_rnsh` / `dDPfull_first_rnsh` (the same files the
+world-model arm prefills from), tip guard `not_in_hand`, world `gc_kp4_riser3_shelf6`, tree `$LAB/gp_aa4` @ 01cb8d34.
+**Budget 1,000,000 decisions = 4,000,000 sim steps at action_repeat 4 — the same environment-interaction budget as
+the world model's 4M online steps.** Seeds human **1955–1958**, machine **1975–1978** (same numbers as the WM rev-5
+seeds; no pairing implied). Checkpoints `RLPD_FRACS_1M` (40k 100k 200k 250k 300k … 1M; the legacy 40k/100k/250k/500k
+points are included). One seed per GPU, QOS normal, `--time 2-00:00:00`; jobs pend until the running packs free
+GPUs (2 at ~00:00, 4 at ~10:00, 4 at ~19:00 on 09-14) and take ~36 h each → last seed ≈ 09-16 morning.
+
+**What "comparable" does and does not mean.** Same task, world, predicates, demonstration files, reward, tip rule
+and sim-step budget. NOT the same data regime: RLPD samples 50 % of every batch from the demonstrations for the
+whole run, whereas the world model's demo rows are evicted from its FIFO buffer by 0.5M online steps
+(`AUDIT_R2D_NESTED_SPARSE_HvM_2026-09-13.md` §7.1). Update-to-data and model class differ by construction. The
+cross-learner statement licensed by this design is "under the same task, data and interaction budget, learner X
+reached `home` and learner Y did not", never a rate comparison between learners.
+
+**Statistic.** Per-seed rnd30 MODE `home` at the final (1M) checkpoint, plus the 500k archive checkpoint scored
+post hoc (fresh process, 64-core) for the budget-matched-to-rev-3 read. Ignition = ≥ 1 `home`.
+
+**Predictions.** P-aa7-1 (learner): at 1M decisions RLPD ignites on ≤ 1 of 8 seeds (its 500k seeds show 0/8 and
+no `slide_event` beyond 2/120; RLPD's sparse-reward credit assignment over 300-decision episodes has not produced a
+slide at any budget run). P-aa7-2 (source, conditional): if RLPD ignites on ≥ 2 seeds, human ignition count ≥
+machine's. Disconfirm P-aa7-1: RLPD ignites on ≥ 2 seeds → the world model's advantage is not "only a world model
+can solve sparse `home`" and the cross-learner section must say so; the source contrast then reads on both learners.
+
