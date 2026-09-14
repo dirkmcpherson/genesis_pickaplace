@@ -51,7 +51,7 @@ def load_dp_runner(checkpoint, image=False, device=None, rig_provider=None,
     proprio = policy.config.input_features['observation.state'].shape[0]
     cam_keys = sorted(k for k in policy.config.input_features
                       if k.startswith('observation.images.'))
-    # PHASE_PLAN (ag), 2026-09-14: a PIXEL checkpoint has no observation.environment_state feature
+    # PHASE_PLAN (ah), 2026-09-14: a PIXEL checkpoint has no observation.environment_state feature
     # (the can pose and goal xy are removed from the dataset), so feeding one is at best ignored and
     # at worst a normalization-stat lookup on a key the pipeline never saw. Send it only when the
     # checkpoint actually consumes it -- every state checkpoint does, so their behaviour is unchanged.

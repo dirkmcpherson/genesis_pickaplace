@@ -63,7 +63,7 @@ files = [f for f in sorted(RAW.glob('*.npz'), key=lambda p: int(p.stem))
          if int(np.load(f)['n']) >= MIN_FRAMES]
 assert files, f'no episodes >= {MIN_FRAMES} frames in {RAW} - run collect_lerobot_dataset.py first'
 probe = np.load(files[0])
-# --- PHASE_PLAN amendment (ag), 2026-09-14: images from a SEPARATE native `_img` set -----------
+# --- PHASE_PLAN amendment (ah), 2026-09-14: images from a SEPARATE native `_img` set -----------
 # Two opt-in env vars; unset = byte-identical behaviour to every previous call.
 #   LEROBOT_IMAGES_FROM=<dir>   an r2dreamer-native `_img` set (genesis-<uid>-<ic>-<T>.npz with
 #                               `image` (T,64,64,6) uint8, `action` (T,7) backward-shifted delta,

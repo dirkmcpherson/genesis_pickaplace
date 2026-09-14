@@ -47,7 +47,7 @@ SETS=${SETS:-"hold15 rnd30 spots60"}
 SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}; EVAL_SEED=${EVAL_SEED:-0}; PAR=${PAR:-3}
 VIDEO_SETS=${VIDEO_SETS:-"rnd30"}
 ISO=${ISO:-1}; ISO_SETS=${ISO_SETS:-"rnd30 spots60"}; REQUIRE_ISA=${REQUIRE_ISA:-}
-# CAMERA_RIG=1 (PHASE_PLAN (ag), 2026-09-14): score a PIXEL DP checkpoint -- the evaluator builds the env
+# CAMERA_RIG=1 (PHASE_PLAN (ah), 2026-09-14): score a PIXEL DP checkpoint -- the evaluator builds the env
 # with the dv3 two-camera rig and feeds the policy from rig_obs(). Default unset = --camera-rig is never
 # passed and every existing cell is produced by exactly the command that produced it before. A pixel
 # checkpoint without it is REFUSED by eval_e2e.py rather than scored on the wrong observation.

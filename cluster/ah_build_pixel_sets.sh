@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the PIXEL lerobot datasets for PHASE_PLAN amendment (ag) (2026-09-14).
+# Build the PIXEL lerobot datasets for PHASE_PLAN amendment (ah) (2026-09-14).
 #
 # Same tapes as the end-to-end DP arm of record (amendments (n)/(ab)) -- the RECORDER npz under
 # $DEMO_ROOT/{dHfull_all,dDPfull_first} keep supplying `states` and `actions`, so the action column
@@ -21,8 +21,8 @@
 #   DEMO_ROOT  default /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3
 #   W          default $LAB/wm_fix_2026-09-03      REDO=1 rebuilds an existing dataset
 # Usage (conda env with lerobot active, from the code checkout root):
-#   GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/ag_build_pixel_sets.sh      # or: bash cluster/ag_build_pixel_sets.sh
-#SBATCH -J ag_px_build
+#   GENESIS_PICKAPLACE_ROOT=$PWD sbatch cluster/ah_build_pixel_sets.sh      # or: bash cluster/ah_build_pixel_sets.sh
+#SBATCH -J ah_px_build
 #SBATCH -p preempt
 #SBATCH --qos=preempt
 #SBATCH --nice=9000
@@ -30,7 +30,7 @@
 #SBATCH -c 8
 #SBATCH --mem=32g
 #SBATCH --time=4:00:00
-#SBATCH --output=ag_px_build_%j.out
+#SBATCH --output=ah_px_build_%j.out
 set -eo pipefail
 : "${GENESIS_PICKAPLACE_ROOT:?set GENESIS_PICKAPLACE_ROOT to the code tree this build must use}"
 cd "$GENESIS_PICKAPLACE_ROOT"; export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1
@@ -39,7 +39,7 @@ W=${W:-$LAB/wm_fix_2026-09-03}; DEMO_ROOT=${DEMO_ROOT:-$LAB/genesis_pickaplace/b
 if [ -n "${SLURM_JOB_ID:-}" ]; then module load anaconda/2025.06.0; conda activate "${CONDA_ENV:-$LAB/condaenv/genesis}"; fi
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9')
 [ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 150 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 150 GB floor"; exit 1; }
-echo "== ag_build_pixel_sets $(date) host=$(hostname) git=$(git rev-parse --short HEAD) DEMO_ROOT=$DEMO_ROOT W=$W free=${FREE_GB}G"
+echo "== ah_build_pixel_sets $(date) host=$(hostname) git=$(git rev-parse --short HEAD) DEMO_ROOT=$DEMO_ROOT W=$W free=${FREE_GB}G"
 
 build_one() {   # $1 = raw set name, $2 = native _img set name, $3 = expected tape count
   local SET=$1 IMG=$2 N=$3
@@ -73,4 +73,4 @@ PY
 
 build_one dHfull_all       dHfull_all_rns10h_img       74
 build_one dDPfull_first    dDPfull_first_rns10h_img    72
-echo "== ag_build_pixel_sets done $(date)"
+echo "== ah_build_pixel_sets done $(date)"

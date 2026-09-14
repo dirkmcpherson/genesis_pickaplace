@@ -1,5 +1,5 @@
 #!/bin/bash
-# {Diffusion Policy} on PIXEL observations, end-to-end (full task) -- PHASE_PLAN amendment (ag), 2026-09-14.
+# {Diffusion Policy} on PIXEL observations, end-to-end (full task) -- PHASE_PLAN amendment (ah), 2026-09-14.
 #
 # A copy of cluster/sbatch_dp_e2e.sh (the DP e2e recipe of record: lerobot Diffusion Policy, 100k grad steps,
 # batch 64, ABSOLUTE window-end joint targets at fps 7.5, executed hold-4 through the env's delta integrator,
@@ -15,14 +15,14 @@
 # discarded) where shift4 PADS and keeps 64x64. The vision backbone is the lerobot default (ResNet-18, group
 # norm, spatial softmax, pretrained_backbone_weights=None -- trained from scratch, as the (af) encoder is).
 #
-# Submit (from the code checkout root; cluster/submit_ag_dp_px.sh does this with the guards):
-#   for S in 0 1 2 3; do ARM=dH SEED=$S sbatch -J ag_dp_px_dH_s$S cluster/sbatch_dp_px.sh; done
-#   for S in 0 1 2 3; do ARM=dM SEED=$S sbatch -J ag_dp_px_dM_s$S cluster/sbatch_dp_px.sh; done
+# Submit (from the code checkout root; cluster/submit_ah_dp_px.sh does this with the guards):
+#   for S in 0 1 2 3; do ARM=dH SEED=$S sbatch -J ah_dp_px_dH_s$S cluster/sbatch_dp_px.sh; done
+#   for S in 0 1 2 3; do ARM=dM SEED=$S sbatch -J ah_dp_px_dM_s$S cluster/sbatch_dp_px.sh; done
 # Env vars:
 #   ARM        dH (-> $DEMO_ROOT/dHfull_all, 74 human tapes) | dM (-> dDPfull_first, 72 machine tapes,
 #              PHASE_PLAN (v) FIRST-attempt-per-IC, de-selected). SEED required. STEPS 100000.
 #   DEMO_ROOT  /cluster/tufts/shortlab/jstale02/genesis_pickaplace/baselines/matched_w3
-#   OUT_ROOT   baselines/outputs/dp_px  -> $OUT_ROOT/ag_dp_px_${ARM}_s${SEED}     PROJ genesis_paper   DRYRUN=1
+#   OUT_ROOT   baselines/outputs/dp_px  -> $OUT_ROOT/ah_dp_px_${ARM}_s${SEED}     PROJ genesis_paper   DRYRUN=1
 #   LADDER     nested_sparse10 | TIP_GUARD not_in_hand -- the EVALUATION objective, stamped into the sidecar so
 #              eval_e2e.py takes it from there. NOT specified by the registration: chosen so the cells are
 #              comparable with the (af) pixel world-model `home` cells, which terminate on `home` under the same
@@ -30,7 +30,7 @@
 #              which stage is the paid terminal. Override both to score under a different objective.
 #   SAVE_FREQ  STEPS/2 (the disk rule of 2026-09-07: at most two numbered checkpoints during a run; after
 #              training every checkpoint except the final is deleted together with the final's training_state).
-#SBATCH -J ag_dp_px
+#SBATCH -J ah_dp_px
 #SBATCH -p gpu
 #SBATCH --qos=normal
 #SBATCH --requeue
@@ -41,8 +41,8 @@
 #SBATCH -n 8
 #SBATCH --mem=48g
 #SBATCH --time=0-16:00:00
-#SBATCH --output=ag_dp_px_%j.out
-#SBATCH --error=ag_dp_px_%j.out
+#SBATCH --output=ah_dp_px_%j.out
+#SBATCH --error=ah_dp_px_%j.out
 
 set -eo pipefail
 # GENESIS_PICKAPLACE_ROOT IS REQUIRED -- no `:=$PWD` default (LADDER_UNIFY_BRIEF D1). DP never reads a reward,
@@ -56,7 +56,7 @@ for G in FULLENV_REWARD_X FULLENV_EPISODE_RECORD; do
 done
 export GENESIS_PICKAPLACE_ROOT PYTHONUNBUFFERED=1 MUJOCO_GL=egl
 ARM=${ARM:?set ARM (dH | dM)}; SEED=${SEED:?set SEED}
-STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-ag_px}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
+STEPS=${STEPS:-100000}; PROJ=${PROJ:-genesis_paper}; WAVE=${WAVE:-ah_px}; SIM_VARIANT=${SIM_VARIANT:-gc_kp4_riser3_shelf6}
 LADDER=${LADDER:-nested_sparse10}; TIP_GUARD=${TIP_GUARD:-not_in_hand}
 CROP=${CROP:-56}                      # square crop side; 56 of 64 = the +-4 px shift budget
 ACTION_REPEAT=4; EVAL_HORIZON=1200; DEVFLAG=(); [ -n "${DEVICE:-}" ] && DEVFLAG=(--policy.device="$DEVICE")
@@ -66,11 +66,11 @@ case "$ARM" in
   dM) SET=dDPfull_first; N_EXP=72 ;;   # PHASE_PLAN (v): FIRST attempt per IC (de-selected)
   *) echo "FATAL: ARM must be dH | dM (got $ARM)"; exit 1 ;;
 esac
-AMEND=ag
+AMEND=ah
 RAW=$DEMO_ROOT/$SET; DATASET=$RAW/lerobot_px; REF_DATASET=$RAW/lerobot
 OUT_ROOT=${OUT_ROOT:-baselines/outputs/dp_px}
-OUT=$OUT_ROOT/ag_dp_px_${ARM}_s${SEED}
-RUN_NAME="ag_dp_px_${ARM}_s${SEED}"
+OUT=$OUT_ROOT/ah_dp_px_${ARM}_s${SEED}
+RUN_NAME="ah_dp_px_${ARM}_s${SEED}"
 NODE_CLASS="${SLURM_JOB_NODELIST:-$(hostname)}"
 SAVE_FREQ=${SAVE_FREQ:-$(( STEPS / 2 ))}; [ "$SAVE_FREQ" -ge 1 ] || SAVE_FREQ=1
 export GENESIS_SIM_VARIANT=$SIM_VARIANT SIM_VARIANT_FOR_SIDECAR=$SIM_VARIANT
@@ -94,14 +94,14 @@ assert int(m['n_kept']) == len(files) == n_exp, (m.get('n_kept'), len(files), n_
 assert m.get('builder') == 'baselines/rl/full_demos.py select', m.get('builder')
 # the machine arm is the DE-SELECTED first-attempt set (PHASE_PLAN (v)); the human arm is every tape
 assert (m.get('one_per_ic_first') is True) == (arm == 'dM'), m
-assert m.get('one_per_ic_best') is not True, ('best-of-3 selection is not the (ag) machine arm', m)
+assert m.get('one_per_ic_best') is not True, ('best-of-3 selection is not the (ah) machine arm', m)
 print(f'DEMO-SHA {arm} full n={len(files)} sha={m["content_sha256"][:16]} decisions={m["decisions_total"]} '
       f'tape_reward={m["tape_reward_total"]:.0f} idle={m["idle_frac"]:.3f} (pre-pick {m["idle_frac_prepick"]:.3f}) '
       f'stages={m["stage_yields"]}', file=sys.stderr)
 print(m['content_sha256'][:16])
 PY
 ) || exit 1
-[ -d "$DATASET" ] || { echo "FATAL: pixel lerobot dataset $DATASET missing (cluster/ag_build_pixel_sets.sh)"; exit 1; }
+[ -d "$DATASET" ] || { echo "FATAL: pixel lerobot dataset $DATASET missing (cluster/ah_build_pixel_sets.sh)"; exit 1; }
 [ -d "$REF_DATASET" ] || { echo "FATAL: state dataset of record $REF_DATASET missing -- the action gate has nothing to compare to"; exit 1; }
 # gate 2 of the registration, re-run in the job: the action column IS the (n)/(ab) column, and the dataset
 # carries no environment_state. Cheap (parquet only) and it makes a swapped dataset impossible to train on.
@@ -174,10 +174,12 @@ cfg = json.loads((pl.Path(sys.argv[1]) / 'config.json').read_text()); crop = int
 feats = {k: v for k, v in (cfg.get('input_features') or {}).items()}
 shape = lambda k: tuple((feats[k].get('shape') or feats[k].get('_shape') or []))
 print('POLICY-CONFIG crop_shape=%s crop_is_random=%s vision_backbone=%s pretrained_backbone_weights=%s '
-      'use_group_norm=%s n_obs_steps=%s horizon=%s n_action_steps=%s' % (
+      'use_group_norm=%s separate_rgb_encoder_per_camera=%s spatial_softmax_num_keypoints=%s n_obs_steps=%s '
+      'horizon=%s n_action_steps=%s' % (
           cfg.get('crop_shape'), cfg.get('crop_is_random'), cfg.get('vision_backbone'),
-          cfg.get('pretrained_backbone_weights'), cfg.get('use_group_norm'), cfg.get('n_obs_steps'),
-          cfg.get('horizon'), cfg.get('n_action_steps')))
+          cfg.get('pretrained_backbone_weights'), cfg.get('use_group_norm'),
+          cfg.get('use_separate_rgb_encoder_per_camera'), cfg.get('spatial_softmax_num_keypoints'),
+          cfg.get('n_obs_steps'), cfg.get('horizon'), cfg.get('n_action_steps')))
 print('POLICY-INPUTS ' + ' '.join(f'{k}{shape(k)}' for k in sorted(feats)))
 assert tuple(cfg.get('crop_shape') or ()) == (crop, crop), ('crop_shape', cfg.get('crop_shape'))
 assert cfg.get('crop_is_random') is True, ('crop_is_random', cfg.get('crop_is_random'))

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-"""Gate a PIXEL lerobot dataset (PHASE_PLAN amendment (ag), 2026-09-14) against the STATE dataset
+"""Gate a PIXEL lerobot dataset (PHASE_PLAN amendment (ah), 2026-09-14) against the STATE dataset
 of record it must share an action column with.
 
-The (ag) arm trains a Diffusion Policy on the SAME tapes as the end-to-end DP arm of record
+The (ah) arm trains a Diffusion Policy on the SAME tapes as the end-to-end DP arm of record
 (amendments (n)/(ab)) with the observation swapped for proprioception + two 64x64 cameras. Two
 things therefore have to be true of the dataset, and neither is safe to assume:
 

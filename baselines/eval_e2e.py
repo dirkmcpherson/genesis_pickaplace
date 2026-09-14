@@ -78,7 +78,7 @@ ap.add_argument('--tip-guard', choices=('grip', 'not_in_hand'), default=None,
                      "and says so. Scoring a 'not_in_hand' policy under 'grip' is a different MDP: the "
                      "episode ends somewhere else.")
 ap.add_argument('--camera-rig', action='store_true',
-                help='PHASE_PLAN (ag): build the env with the dv3 two-camera rig and feed a PIXEL '
+                help='PHASE_PLAN (ah): build the env with the dv3 two-camera rig and feed a PIXEL '
                      'DP checkpoint from GenesisCanEnv.rig_obs() (top = channels 0:3, wrist = 3:6) -- '
                      'the same observation function the `_img` demonstration sets were rendered with. '
                      'Default OFF: without it the env has no rig and a pixel checkpoint is REFUSED '
@@ -336,7 +336,7 @@ if args.kind == 'sac':
 else:
     from dp_runner import load_dp_runner
     dev = ('cuda' if torch.cuda.is_available() else 'cpu') if args.device == 'auto' else args.device
-    # PHASE_PLAN (ag): a checkpoint that consumes observation.images.* is fed from the rig. Without
+    # PHASE_PLAN (ah): a checkpoint that consumes observation.images.* is fed from the rig. Without
     # --camera-rig there is no rig to feed it from, so REFUSE -- load_dp_runner raises on
     # rig_provider=None, and this message says which flag is missing.
     _rig = env.genv.rig_obs if args.camera_rig else None
@@ -547,7 +547,7 @@ summary = dict(checkpoint=str(ck), kind=args.kind, arm=args.arm, tag=args.tag, e
                         'with a 36-core machine on one side). The instruction-set question is UNRESOLVED, not ruled '
                         'out: the CPU-family labels behind both the original AVX claim and its withdrawal are '
                         'unreliable on this cluster. isa/avx512f are stamped for a future re-check.'),
-               camera_rig=bool(args.camera_rig),   # PHASE_PLAN (ag): pixel observation for a DP checkpoint
+               camera_rig=bool(args.camera_rig),   # PHASE_PLAN (ah): pixel observation for a DP checkpoint
                delta_cap=env.delta_cap, delta_leash=env.delta_leash, amendment='n+ladder-unify',
                eval_fixes='j+l-prime+ladder-unify',
                # D6: the stamp that says WHICH ladder and WHICH code produced this cell.
