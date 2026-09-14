@@ -109,10 +109,16 @@ for f in fs:
         n_act += 1
     else:
         bad.append((b, 'action/state differ from source or sha differs from record'))
-    if zo['reward'].shape == zr['reward'].shape and np.array_equal(np.asarray(zo['reward'], np.float64), np.asarray(zr['reward'], np.float64)):
+    # element-wise at 1e-6 (the ramp rung is a float; exact equality over-counts float32 rounding),
+    # and NAME the decisions that differ: on a nested_ramp build the direct path pays the slide gain
+    # accrued in the terminal `home` decision's own sub-frames, which the records scorer cuts at the
+    # terminal FRAME (PX_IMAGE_DEMOS_2026-09-12 §4.4) -- a one-decision, always-positive difference.
+    rb, rr = np.asarray(zo['reward'], np.float64), np.asarray(zr['reward'], np.float64)
+    if rb.shape == rr.shape and np.allclose(rb, rr, atol=1e-6, rtol=0):
         n_rew += 1
     else:
-        bad.append((b, f"reward column differs from set of record (sum {float(zo['reward'].sum()):.4f} vs {float(zr['reward'].sum()):.4f})"))
+        dd = np.nonzero(~np.isclose(rb, rr, atol=1e-6, rtol=0))[0] if rb.shape == rr.shape else np.arange(len(rb))
+        bad.append((b, f"reward differs on {len(dd)} decision(s) {dd[:6].tolist()} (sum {rb.sum():.4f} vs {rr.sum():.4f}, diff {rb.sum() - rr.sum():+.4f}; end {zo['rz_end_reason']}@{zo['rz_end_decision']})"))
     im = zo['image']
     if im.shape == (len(zo['reward']), 64, 64, 6) and im.dtype == np.uint8 and bool((im.reshape(len(im), -1) != 0).any(1).all()):
         n_img += 1
@@ -123,7 +129,7 @@ so, sr = float(rep_o['total_reward']), float(rep_r['total_reward'])
 eo, er = man_o.get('end_reasons'), man_r.get('end_reasons')
 print(f"  tapes: source {n}, build {len(glob.glob(out + '/*.npz'))} (n_written {rep_o['n_written']}), record {len(glob.glob(ref + '/*.npz'))}")
 print(f"  action+state identical to source AND action sha == record: {n_act}/{n}")
-print(f"  reward column identical to set of record: {n_rew}/{n}")
+print(f"  reward column identical to set of record (atol 1e-6): {n_rew}/{n}")
 print(f"  image column (T,64,64,6) uint8 non-blank on every frame: {n_img}/{n}")
 print(f"  Sigma reward: build {so:.6f} vs record {sr:.6f} (diff {so - sr:+.2e})")
 print(f"  end_reasons: build {eo} vs record {er} -> {'identical' if eo == er else 'DIFFER'}")
