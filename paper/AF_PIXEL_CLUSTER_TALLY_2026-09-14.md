@@ -29,12 +29,20 @@ checkpoints), so quote both milestones together, never one.** Every number below
 |---|---|---|
 | s4 | 0.43 (13/30) \| 0.47 (7/15) | 0.30 (9/30) \| **0.07 (1/15)** — read 03:47 |
 | s5 | **0.50 (15/30) \| 0.60 (9/15)** — recovered from 0/30, 0/15 at 0.5M | 0.53 (16/30) \| 0.73 (11/15) — read 03:47 |
-| s6 | (queued) | (queued) |
-| s7 | (queued) | (queued) |
+| s6 | 0.33 (10/30) \| 0.53 (8/15) — read 04:47 | 0.27 (8/30) \| 0.40 (6/15) — read 04:47 |
+| s7 | **0.07 (2/30; picked 0.60)** \| (pending) — read 04:47 (0.5M was 15/30) | (queued) |
 
-### ramp control at 1M (read 03:47): **machine s0 0.40 (12/30) \| 0.40 (6/15)** — up from 1/30 at 0.5M; human s0
-cells queued. With both milestones the machine ramp seed is inside the sparse10 band at 1M; P-af-3 waits for the human
-ramp seed's 1M cell.
+### ramp control at 1M: **machine s0 0.40 (12/30) \| 0.40 (6/15)** (read 03:47; up from 1/30 at 0.5M); **human s0
+0.07 (2/30; picked 0.67)** (read 04:47; down from 13/30 at 0.5M), hold15 pending. The two ramp seeds swap places
+between the milestones — the checkpoint lottery of `R2D_LIVE_VS_RELOAD` at full size; per seed, the two-milestone
+mean is 6.5/30 (machine) and 7.5/30 (human), both below the sparse10 seeds' two-milestone means so far (human s4 12,
+s5 7.5, s6 11.5, s7 8.5; machine s4 14, s5 16.5, s6 9 of 30). P-af-3 is read on those means once every cell exists.
+
+**Note on the 1M cells (04:47):** of the seven dreamer sparse10 seeds with both milestones, six read LOWER at 1M than
+at 0.5M (human s7 15 → 2, machine s4 19 → 9 the largest drops); the local (ae) series show the same run-to-run swings
+(machine s2: 21/30 at 0.8M, 11/30 at 1.0M) with no trend over 0.5–1.0M, so this is the oscillation sampled at two
+points, not a decline — but two points per seed is all this batch has, which is why the (ae) local series (ten
+points per seed) remains the statistic the human-v-machine question is read on.
 
 {r2dreamer loss}: all six jobs COMPLETED, 1M cells queued (8 `lnms_` pending, 8 running at 03:47). The `final`
 cells are the same checkpoint as `online_1000000` (the run ends at 1M) and read identically — count them once.
