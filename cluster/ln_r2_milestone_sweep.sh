@@ -21,9 +21,10 @@
 # It NEVER writes into a run dir: it reads `milestones/*.pt`, `latest.pt`, `.hydra/`,
 # `metrics.jsonl` and `step_contract.json`, and everything it produces lands under $CELLROOT.
 #
-# SCOPE: $W/runs/full_r2d_state_*_r{nrh,nsh,zh}_s9* -- the (aa) batch, the rev-2 extension and
-# rev 3 as its runs appear. The pilot's `_rz_`/`_rs_` runs and the `*_lnsmoke_*` smokes are OUT of
-# scope by construction (different guard / different ladder / 15k steps).
+# SCOPE: $W/runs/full_r2d_state_*_r{nrh,nsh,zh,ns10h}_s9* -- the (aa) batch, the rev-2 extension,
+# rev 3 and (ac) as their runs appear -- plus the PIXEL runs of (af), *_r{ns10h,nrh}_img_*, any seed
+# (2026-09-13). The pilot's `_rz_`/`_rs_` runs and every `*smoke*` run are OUT of scope by
+# construction (different guard / different ladder / 15-20k steps).
 #
 # HARDWARE, disclosed. SWEEP_MODE=cpu64 (default) submits to `-p batch --qos=normal` on nodes of
 # 64 PHYSICAL cores AND 64 LOGICAL processors (SMT off), with the sbatch asserting BOTH counts
@@ -157,7 +158,15 @@ runs = []
 # discover runs from their `ladder_provenance.json` instead of a suffix glob (open follow-up).
 for suf in ("rnrh", "rnsh", "rzh", "rns10h"):
     runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s9*"))
-runs = sorted(r for r in runs if os.path.isdir(r) and "lnsmoke" not in os.path.basename(r))
+# PIXEL runs (PHASE_PLAN (af), 2026-09-13): sets `_rns10h_img` / `_rnrh_img`, run dirs
+# full_r2d_state_<set>_<rep_loss>_s<seed> (the launcher's TAG carries model.rep_loss so the two
+# world-model losses cannot collide on one set+seed), any seed. Their checkpoints need the PIXEL
+# r2dreamer tree ($W/r2dreamer_px): the eval sbatch reads it from the run's own
+# ladder_provenance.json (`r2dreamer_tree`), which this sweep already copies into the cell.
+for suf in ("rns10h_img", "rnrh_img"):
+    runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_*_s[0-9]*"))
+    runs += glob.glob(os.path.join(W, "runs", f"full_r2d_state_*_{suf}_s[0-9]*"))
+runs = sorted(set(r for r in runs if os.path.isdir(r) and "smoke" not in os.path.basename(r)))
 # RUN_FILTER (2026-09-13): an optional regex to PRIORITISE runs -- e.g. RUN_FILTER=rnsh scores the
 # sparse seeds first when a decision hangs on them. No filter = the full alphabetical pass as before.
 _rf = os.environ.get("RUN_FILTER", "")

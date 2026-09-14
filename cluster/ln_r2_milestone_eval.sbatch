@@ -44,6 +44,18 @@ if [ -n "${GP_OVERRIDE:-}" ]; then GP=$GP_OVERRIDE; _SRC=GP_OVERRIDE
 elif [ -n "$_PROV_GP" ] && [ -d "$_PROV_GP" ]; then GP=$_PROV_GP; _SRC="run provenance"
 else GP=${GP:-$LAB/gp_ladderN}; _SRC="inherited/default"; fi
 echo "[gp] tree for this cell: $GP (from $_SRC)"
+# The r2dreamer tree, by the same rule (PX cluster deploy, 2026-09-13, PHASE_PLAN (af)): a PIXEL
+# checkpoint carries CNN encoder/decoder tensors and an `env.state_slice` that the state-only tree
+# of record cannot load, and the sweep passes ONE default R2 to every job. train.py (r2dreamer_px)
+# writes `r2dreamer_tree` + `r2dreamer_git` into ladder_provenance.json at start; precedence
+# R2_OVERRIDE (deliberate, disclosed) > the RUN'S OWN provenance > the inherited/default tree.
+_PROV_R2=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('r2dreamer_tree',''))" "$CELLROOT/$RUN/$MS/ladder_provenance.json" 2>/dev/null || true)
+if [ -n "${R2_OVERRIDE:-}" ]; then R2=$R2_OVERRIDE; _RSRC=R2_OVERRIDE
+elif [ -n "$_PROV_R2" ] && [ -f "$_PROV_R2/eval_genesis.py" ]; then R2=$_PROV_R2; _RSRC="run provenance"
+else R2=${R2:-$W/r2dreamer_ladderN}; _RSRC="inherited/default"; fi
+echo "[r2] tree for this cell: $R2 (from $_RSRC)"
+# fail closed: a run named for an image set scored by a tree that has no pixel config
+case "$RUN" in *_img_*) [ -f "$R2/configs/env/genesis_full_pixel.yaml" ] || { echo "FATAL: $RUN is a pixel run but $R2 has no configs/env/genesis_full_pixel.yaml (set R2_OVERRIDE to the pixel tree)"; exit 2; } ;; esac
 PY=$LAB/r2d_venv/bin/python
 REQUIRE_CORES=${REQUIRE_CORES:-64}
 REQUIRE_LOGICAL=${REQUIRE_LOGICAL:-64}
@@ -81,14 +93,27 @@ export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl PYTHONUNBUFFERED=1
 export R2D_SIM_VARIANT=gc_kp4_riser3_shelf6
 
 echo "# $(date -Is) RUN=$RUN MS=$MS CKPT=$CKPT"
-echo "# gp_ladderN describe: $(git -C "$GP" describe --always --dirty 2>/dev/null || echo 'no git')"
-echo "# r2dreamer_ladderN rev: $(git -C "$R2" rev-parse --short HEAD 2>/dev/null || echo '?')"
+echo "# gp tree describe: $(git -C "$GP" describe --always --dirty 2>/dev/null || echo 'no git')"
+echo "# r2 tree rev: $(git -C "$R2" describe --always --dirty 2>/dev/null || echo '?')"
 echo "# provenance:"; cat "$CELL/provenance.json" 2>/dev/null || echo "  (none)"
+# stamp the two trees this cell was scored with, beside the cells (the cells' metrics.json carry
+# the ladder + node; which CODE scored them was only in the Slurm log before 2026-09-13)
+python3 - "$CELL/trees.json" "$GP" "$_SRC" "$R2" "$_RSRC" <<'PY' || true
+import json, subprocess, sys
+p, gp, gsrc, r2, rsrc = sys.argv[1:6]
+def rev(t):
+    try: return subprocess.run(["git", "-C", t, "describe", "--always", "--dirty"], capture_output=True, text=True, timeout=20).stdout.strip() or "no git"
+    except Exception: return "no git"
+json.dump(dict(gp_tree=gp, gp_git=rev(gp), gp_from=gsrc, r2_tree=r2, r2_git=rev(r2), r2_from=rsrc), open(p, "w"), indent=1)
+PY
 
 cd "$R2"
 rc_all=0
-# set  episodes  mode   -> cell dir
-for SPEC in "rnd 30 mode" "hold 15 mode" "rnd 30 sample"; do
+# set  episodes  mode   -> cell dir. CELL_SPECS="<set> <n> <mode>;..." overrides the three (aa)
+# cells (2026-09-13; a smoke wants one hold15 MODE cell, not 75 episodes).
+CELL_SPECS=${CELL_SPECS:-"rnd 30 mode;hold 15 mode;rnd 30 sample"}
+IFS=';' read -ra _SPECS <<< "$CELL_SPECS"
+for SPEC in "${_SPECS[@]}"; do
   set -- $SPEC; S=$1; N=$2; M=$3
   OUT=$CELL/${S}${N}_${M}
   if [ -f "$OUT/metrics.json" ]; then echo "# SKIP $OUT (metrics.json exists)"; continue; fi

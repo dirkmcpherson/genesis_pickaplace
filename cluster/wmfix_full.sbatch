@@ -56,6 +56,15 @@ esac
 # Passed to the adapter as env.tip_guard, which passes it to FullTaskEnv's constructor.
 TIP_GUARD=${TIP_GUARD:?set TIP_GUARD (grip | not_in_hand) -- the tip guard is never defaulted; PHASE_PLAN (aa)}
 case "$TIP_GUARD" in grip|not_in_hand) ;; *) echo "FATAL: TIP_GUARD must be grip | not_in_hand (got $TIP_GUARD)"; exit 2 ;; esac
+# ENVCFG (PX cluster deploy, 2026-09-13, PHASE_PLAN (af)): the r2dreamer env config this run trains
+# under. genesis_full_state = every run before 09-13 (default, unchanged); genesis_full_pixel = the
+# 64x64x6 two-camera image + a state vector (PX_PIXEL_CONFIG_2026-09-12). Anything else is refused
+# here, not by hydra after the demo gate. A pixel run is additionally held to (a) a RENDERED-image
+# demo set (the demo gate below) and (b) a non-blank first ONLINE frame in its own log (after
+# training), because the stride-only check in demo_prefill.py can see neither.
+ENVCFG=${ENVCFG:-genesis_full_state}
+case "$ENVCFG" in genesis_full_state|genesis_full_pixel) ;; *) echo "FATAL: ENVCFG must be genesis_full_state | genesis_full_pixel (got $ENVCFG)"; exit 2 ;; esac
+export ENVCFG
 LAB=/cluster/tufts/shortlab/jstale02
 W=$LAB/wm_fix_2026-09-03
 # THE WORLD-MODEL TREE IS REQUIRED (LADDER_UNIFY_BRIEF D1, 2026-09-11). It used to be the
@@ -99,7 +108,24 @@ assert _set_ladder == _o.environ["LADDER"], (
 import os as _o; assert int(m["action_repeat"]) == int(_o.environ.get("REPEAT", "4")) and m.get("with_state") is True and abs(float(m["terminal_reward"]) - 1.0) < 1e-9 and m.get("reward_from_tape") is True and m.get("scope") == "full", m
 fs = sorted(glob.glob(f"{d}/*.npz")); assert len(fs) == int(m["n_written"]), (len(fs), m.get("n_written"))  # set-size agnostic (raw pair is N=66)
 z = np.load(fs[0]); assert z["state"].shape == (len(z["reward"]), 17), z["state"].shape
-print(f"[demo-gate] {d}: {len(fs)} tapes, variant {m['sim_variant']}, stride {m['action_repeat']} (expected {_o.environ.get('REPEAT', '4')}), with_state, terminal 1.0, total_reward {m['total_reward']}")
+# PIXEL GATE (PX cluster deploy, 2026-09-13; PX_PIXEL_CONFIG_2026-09-12 §5). A pixel run must
+# prefill from a set whose image column was RENDERED. Every state-only set on disk carries a zero
+# (T,64,64,6) placeholder, and a pixel encoder prefilled from it is taught that the world is blank;
+# demo_prefill.py checks only the stride, so this is the only place that can refuse it. Fail-closed
+# on the manifest (`images: rendered` AND `state_only: false` -- both written only by
+# relabel_reward.py --images) and on the frames themselves (first tape non-blank on every frame).
+# A state run (ENVCFG=genesis_full_state) is untouched: its sets have no `images` key and are not read here.
+_env = _o.environ.get("ENVCFG", "genesis_full_state")
+_img = m.get("images")
+if _env == "genesis_full_pixel":
+    assert _img == "rendered" and m.get("state_only") is False, (
+        f"{d}: ENVCFG=genesis_full_pixel needs a RENDERED-image set (images={_img!r}, "
+        f"state_only={m.get('state_only')!r}); build one with relabel_reward.py --images")
+    _im = z["image"]; assert _im.shape[1:] == (64, 64, 6) and _im.dtype == np.uint8, (_im.shape, _im.dtype)
+    _nz = float((_im.reshape(len(_im), -1) != 0).any(1).mean())
+    assert _nz > 0.999, f"{d}: {fs[0]} has blank frames (non-blank frame fraction {_nz:.4f})"
+    print(f"[demo-gate] pixel set: images={_img} state_only={m.get('state_only')} first tape {len(_im)} frames non-blank frac {_nz:.4f} mean {float(_im.mean()):.2f}")
+print(f"[demo-gate] {d}: {len(fs)} tapes, variant {m['sim_variant']}, stride {m['action_repeat']} (expected {_o.environ.get('REPEAT', '4')}), with_state, terminal 1.0, ladder {_set_ladder}, images {_img}, total_reward {m['total_reward']}")
 PYG
 RECIPE=${RECIPE:-"env.actor_dist=bounded_normal env.act_entropy=3e-5"}
 # ---- LADDER STAMP into the Slurm log, BEFORE training (LADDER_UNIFY_BRIEF D6) ----
@@ -125,6 +151,7 @@ print(repr(full_env.max_return(L)))          # stdout: the return clamp this lad
 PYL
 ) || { echo "FATAL: could not read the ladder from $GENESIS_PICKAPLACE_ROOT"; exit 2; }
 echo "[ladder] ladder=$LADDER tip_guard=$TIP_GUARD return_clamp=$CLAMP (env.return_clamp AND model.return_clamp)"
+echo "[envcfg] env=$ENVCFG recipe='$RECIPE' extra_overrides='${EXTRA_OVERRIDES[*]:-}' r2_tree=$TREE ($(git -C "$TREE" describe --always --dirty 2>/dev/null || echo 'no git')) gp_tree=$GENESIS_PICKAPLACE_ROOT ($(git -C "$GENESIS_PICKAPLACE_ROOT" describe --always --dirty 2>/dev/null || echo 'no git'))"
 
 # ---- PER-SEED BODY (2026-09-12, amendment (ac) rev 1: GPU packing) ----
 # Everything below that depends on ONE seed lives here. Single-seed submissions call it once in
@@ -145,7 +172,7 @@ run_seed() {
   # step counter re-runs env.steps) -- a DISCLOSED continuation, never a run of record without saying so.
   RESUME=""
   if [ -n "${RESUME_FROM:-}" ]; then cp "$RESUME_FROM" "$LOGDIR/latest.pt"; RESUME="+resume=true"; echo "# RESUME_FROM=$RESUME_FROM (saved step $($PY -c 'import torch,sys; print(torch.load(sys.argv[1],map_location="cpu",weights_only=False).get("step"))' $LOGDIR/latest.pt))"; fi
-  CMD=("$PY" train.py env=${ENVCFG:-genesis_full_state} seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
+  CMD=("$PY" train.py env=$ENVCFG seed=$SEED env.steps=$STEPS env.demo_dir=$DEMO
        env.ladder=$LADDER $FAR_CFG env.tip_guard=$TIP_GUARD env.return_clamp=$CLAMP model.return_clamp=$CLAMP
        buffer.max_size=5e5 logdir=$LOGDIR $RESUME $RECIPE "${EXTRA_OVERRIDES[@]}")
   printf '%q ' "${CMD[@]}"; echo
@@ -165,6 +192,13 @@ run_seed() {
   n=$(grep -c '\[sim-variant\] gc_kp4_riser3_shelf6' "$SLURM_OUT" 2>/dev/null || true); n=${n:-0}; echo "# [sim-variant] lines: $n (log: $SLURM_OUT)"
   [ "$n" -ge 1 ] || { echo "FATAL: no [sim-variant] line"; exit 3; }
   grep -E 'Demo prefill:|Step accounting' $SLURM_OUT | head -3
+  if [ "$ENVCFG" = genesis_full_pixel ]; then
+    # the pixel run's own evidence that REAL frames reached the buffer (trainer.py's one-shot
+    # `[image] first ONLINE transition` stamp) and what the encoder was built over (`[obs]`).
+    grep -E '^\[obs\] (encoder|state_slice|image_aug)|^\[image\] first ONLINE|^\[image_aug\] shift4' "$SLURM_OUT" | head -6
+    NZ=$(grep -oE '\[image\] first ONLINE transition.*nonzero_frac=[0-9.]+' "$SLURM_OUT" | head -1 | grep -oE 'nonzero_frac=[0-9.]+' | cut -d= -f2)
+    [ -n "$NZ" ] && awk -v v="$NZ" 'BEGIN{exit !(v >= 0.99)}' || { echo "FATAL: pixel run without a non-blank first ONLINE frame stamp (nonzero_frac='${NZ:-absent}')"; exit 3; }
+  fi
   # FRESH-process evals (sample mode, protocol horizon): 15 hold + 30 rnd (CONFOUNDS row 22: all episodes present)
   for MODE in sample mode; do for SET in ${EVAL_SETS:-hold rnd}; do   # full task: rnd300 + the 74-IC set post hoc (sweep scripts)   # EVAL_SETS override (repeat-1 pilot: "hold rnd", the 74-IC set at 1200 decisions/episode is too slow in-job)   # sample = registered statistic; mode = DP/RLPD-like deterministic counterpart (disclosed); all = FULL demo IC set (user, 2026-09-03)
     N=15; [ $SET = rnd ] && N=30; [ $SET = all ] && N=1   # N ignored for 'all' (evaluator uses every success uid once)
