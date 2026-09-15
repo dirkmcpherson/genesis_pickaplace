@@ -1909,6 +1909,15 @@ the other workstation (`ah_px_build`, 3704393, submitted 14:28) was caught by th
 4 min before release (it was pending either way); the helper now matches only `px_dreamer_`/`px_r2dreamer_`/
 `e2e_rlpd_px_` names.
 
+**Status 2026-09-15 08:55 — disk-guard deaths + resubmission.** Free space fell below the 100 GB floor overnight
+(98 GB at 08:47); the 15 RLPD jobs that started at 07:35 (3692557–3692571, seeds dDPfirst s8 … s15) died on the
+launcher guard at 0–1 s without training, and the milestone sweep refused to run (r2dreamer 1M/2M cells unscored
+for ~10 h). User: floor lowered 100 → **20 GB** in the launchers and the sweep (e8287af, deployed to gp_px, gp_pxr,
+`$W/ln14_milestone_sweep.sh`); finished jobs' compile caches deleted (16 dirs, ~4 GB). The 15 seeds resubmitted
+08:57 as **3718804–3718818** (same recipe, `CKPT_EVERY=25000`, gp_pxr @ e8287af); the sweep then submitted 48
+cells. World models: 40/42 (ag) runs COMPLETED 0:0 by 08:47, r2dreamer s15 both arms finishing; still no
+preemption. Monitoring cadence reduced to every 3 h (user).
+
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
