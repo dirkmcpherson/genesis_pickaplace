@@ -1926,6 +1926,14 @@ while fewer than 8 DP jobs run (my 9 pending RLPD held 11:08; all my pending job
 10:36 so new starts stay off the gpu-partition nodes). Effect: the next 8 slots my finishing runs free go to DP
 (~3 h each at 100k steps), then RLPD resumes — RLPD 8 v 8 slips ~4 h. Scheduling only; no recipe changed.
 
+**Status 2026-09-15 13:25 — six RLPD seeds CANCELLED and restarted for the DP split (user: "cancel them and delete
+their records, we need those seeds for DP, I need a base set to write about by tomorrow morning").** Jobs 3718804–3718809
+(dDPfirst s8/s9/s10, dH s9/s10/s11; 3–4.3 h and 51–81k of 250k decisions in) were scancelled at 13:23, their run dirs and
+Slurm logs deleted (nothing of theirs is cited anywhere; the wandb runs remain), and the six seeds resubmitted as
+3725281–3725286 (same recipe, `-p preempt --qos=preempt`), HELD by the queue rule behind the (ah) DP jobs. Result within
+a minute: 7 DP jobs running + 1 pending, 13 RLPD running (s2–s8 + dH s8), 15 RLPD held. The RLPD 8 v 8 now lands
+Tuesday night/Wednesday morning; the DP 4 v 4 (100k steps, ~3 h + eval) tonight.
+
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
