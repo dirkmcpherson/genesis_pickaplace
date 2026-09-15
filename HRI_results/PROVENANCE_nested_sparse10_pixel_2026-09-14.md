@@ -369,5 +369,5 @@ Per condition × arm, two criteria with Wilson 95 % CIs:
 7. **Two seeds per arm is a pilot.** The {RLPD} pixel cells are n = 2 v 2; the (ag) {RLPD} seeds
    s2–s15 were still queued.
 
-Commit: `px phase analysis: rise-time table, learning curves, steady state, ignition for the
-nested_sparse10 pixel conditions` on branch `ladder-unify-2026-09-11`.
+Commit: `8be9038` ("px phase analysis: rise time, learning curves, steady state, ignition for the
+nested_sparse10 pixel conditions") on branch `ladder-unify-2026-09-11`.
