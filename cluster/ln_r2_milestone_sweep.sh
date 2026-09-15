@@ -56,7 +56,7 @@ EXCL64=${EXCL64:-$LAB/gp_dp_e2e/.excl64.txt}   # READ ONLY: "every node that is 
 [ -f "$R2/eval_genesis.py" ] || { echo "FATAL: R2=$R2 is not an r2dreamer tree"; exit 1; }
 [ -f "$SBATCH_FILE" ] || { echo "FATAL: no sbatch at $SBATCH_FILE (scp cluster/ln_r2_milestone_eval.sbatch there)"; exit 1; }
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9' || true)
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 100 GB floor (user, 2026-09-14 09:10; was 150) -- refusing"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 20 ] || { echo "FATAL: free ${FREE_GB:-?} GB < 20 GB floor (user, 2026-09-15 08:55; was 100)"; exit 1; }
 mkdir -p "$CELLROOT"
 
 case "$SWEEP_MODE" in

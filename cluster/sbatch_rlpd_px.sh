@@ -93,7 +93,7 @@ SMT_EXCL=${SMT_EXCL:-pax006,pax012,pax044,pax036,pax037,pax038,pax039,pax040,pax
 
 # ---- disk guard (2026-09-07 filesystem-full incident; registered floor 150 GB) ----
 FREE_GB=$(df -BG --output=avail /cluster/tufts/shortlab 2>/dev/null | tail -1 | tr -dc '0-9' || true)
-[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 100 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 100 GB floor (user 2026-09-14; was 150) -- refusing to train"; exit 1; }
+[ -n "$FREE_GB" ] && [ "$FREE_GB" -ge 20 ] || { echo "FATAL: /cluster/tufts/shortlab free ${FREE_GB:-?} GB < 20 GB floor (user 2026-09-15; was 100) -- refusing to train"; exit 1; }
 echo "DISK-OK ${FREE_GB} GB free"
 # the conda env FIRST: the pixel demo gate below reads a tape with numpy (the login node's python3 has none)
 module load anaconda/2025.06.0
