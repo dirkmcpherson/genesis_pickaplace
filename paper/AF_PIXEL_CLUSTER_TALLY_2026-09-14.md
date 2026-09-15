@@ -212,7 +212,7 @@ hardware difference of the local seeds (user: to be noted in the paper) does not
 
 ### {r2dreamer loss} — READOUT at 16 v 16 (2026-09-15 15:25; s9 landed: human pooled 0.500, machine 0.583)
 
-**16 v 16, pooled 0.5M + 1M rnd30 MODE `home`: human 0.588 v machine 0.530, Δ +0.057, MC permutation p 0.10** (300k);
+**16 v 16, pooled 0.5M + 1M rnd30 MODE `home`: human 0.587 v machine 0.530, Δ +0.057, MC permutation p 0.09** (300k);
 (ag) single 2M cell, 12 v 13: 0.558 v 0.552, p 0.93. Inside ±0.15 (P-ag-2 MET); ignition 32/32. The 15 v 15
 numbers below are superseded by this line.
 
