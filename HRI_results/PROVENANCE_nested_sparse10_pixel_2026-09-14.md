@@ -240,3 +240,134 @@ Job ids: (af) 3685153–3685156 (evals 3697480–3698039); (ag) 3692544–369257
 - Disk floor in the launchers: 150 GB until 2026-09-14 09:10, 100 GB after (user).
 - The other workstation's state-based `nested_sparse10` runs (amendment (ac)) used the cluster-built `_rns10h`
   sets (12/12 `home`) and `$W/r2dreamer_ladderN` @ 0cf3d9e — the pixel tree is that tree plus the pixel commits.
+
+## 7. Rise time, learning curves, steady state, ignition — how they are computed
+
+One script produces every figure, table and CSV of the by-phase analysis:
+`baselines/diagnostics/px_phase_analysis.py`. It reads a **local rsync mirror** of the cluster and of
+`~/runs_dv3_local`; the cluster is read-only and nothing on it was created or modified.
+
+```bash
+~/workspace/genesis_sim2real/venv/bin/python baselines/diagnostics/px_phase_analysis.py \
+  --data-root ~/data/genesis_pickaplace/px_analysis_2026-09-14 \
+  --out-dir   paper/figures/px_phase_2026-09-14 \
+  --tex       paper/figures/px_rise_time_by_phase.tex
+```
+
+Outputs are listed file-by-file in `paper/figures/px_phase_2026-09-14/README.md`. The script is
+deterministic: the bootstrap RNG is seeded (`--seed`, default 20260914) and the jitter of the
+strip plots is a per-seed `RandomState`.
+
+### 7.1 The two kinds of number, never mixed
+
+- **TRAINING RECORD** — sampled actions, on the policy's own training starts, read from the sticky
+  per-episode stage flags the trainer prints (`episode/train_ep_<phase>`). These are the learning
+  curves, the rise times, steady state (a) and the solid ignition bars.
+- **EVAL CELLS** — deterministic (`mode`) actions, fixed starts, a fresh process per cell, read from
+  each cell's `metrics.json` `headline_stages`. These are steady state (b) and the hatched ignition
+  bars. Cell of record: `rnd30_mode` (30 fixed random starts); `hold15_mode` is also harvested.
+
+Every figure caption and the table caption state which kind it is.
+
+### 7.2 Data paths
+
+| mirror path (`~/data/genesis_pickaplace/px_analysis_2026-09-14/`) | source |
+|---|---|
+| `W/runs/full_r2d_state_{dHfull_all,dDPfull_first}_{rns10h,rnrh}_img_{dreamer,r2dreamer}_s*/console.log` (+ `step_contract.json`, `ladder_provenance.json`) | `$W/runs/` (§3a) |
+| `W/ln_milestone_cells/<run>/online_<N>/{rnd30_mode,hold15_mode}/metrics.json` | `$W/ln_milestone_cells/` (§4a) |
+| `LAB/gp_pxr/e2e_px/e2e_rlpd_px_{dH,dDPfirst}_s{0,1}/episode_rollouts.jsonl` and `fresh_eval_{rnd30_mode,hold15_mode}/metrics.json` | `$LAB/gp_pxr/baselines/rl/checkpoints/e2e_px/` (§5) |
+| `local/runs_dv3_local/dv3px_sparse10_*_rlDreamer_s{0..3}/console.log` | `~/runs_dv3_local/` on pop-os (§3b) |
+| `local/runs_dv3_local/dv3px_sparse10_series[_{dH,dM}_s{0..3}]/ck_<counter>/fresh_eval_{rnd30_mode,hold15_mode}/metrics.json` | the series watcher (§4b); human s0's series dir is `dv3px_sparse10_series/` |
+
+Runs whose name contains `smoke` are skipped; so are `final/` cells (a duplicate of the last
+milestone), `*_smt128` cells, `*.preempted*` and `runs_failed`.
+
+### 7.3 The x-axis
+
+`online step = counter − origin`, where `origin` is the first `[<counter>]` line of the run's
+console log. Verified per log and cross-checked against `step_contract.json`
+`prefill_counter_origin`: **117624** for every human (`dHfull_all`) run and **149952** for every
+machine (`dDPfull_first`) run, on the cluster and locally alike. Local series checkpoints
+`ck_<counter>` are converted with the same origin.
+
+{RLPD} logs `step` in **decisions**. Its x-axis is `step × 4` (`--action-repeat 4`), so its
+250 k-decision budget is 1 M sim frames and shares the world-model x-axis. This conversion is
+stated in the figure caption and in the table caption.
+
+### 7.4 Phases
+
+`picked`, `placed_v2` (the `placed` field is used only if `placed_v2` is absent), `farside`,
+`slide_event`, `home`, `tipped` — the sticky `episode/train_ep_*` flags. **The {RLPD} episode
+record carries no `farside`, `slide_event` or `home` key at all.** They are reported as *absent*,
+never as zero: the table prints `— (absent)`, the learning-curve panel prints "not recorded
+(absent, not zero)", and {RLPD} has no bar in the training half of the ignition figure.
+
+### 7.5 Learning curves
+
+Per run, a rolling mean over the **last 30 training episodes** of each phase flag, plotted against
+the online step of the window's last episode. Per condition (learner × arm), each run's curve is
+linearly interpolated onto a common **50 k-step grid** (only inside the run's own range), then the
+grid points are averaged over seeds; the band is a **95 % bootstrap CI over seeds** (2000
+resamples, percentile). The band is **truncated where fewer than 3 seeds have data** — this is why
+the {r2dreamer} bands stop near 1.05 M even though two seeds per arm reach 2 M. Where an arm has
+fewer than 3 seeds ({RLPD}, the ramp control) no band is drawn at all: the individual seed traces
+are plotted instead and the caption says so. Every plotted point is in `px_learning_curves.csv`.
+
+### 7.6 Rise time
+
+Per run and phase: the **first online step at which the rolling-30 rate reaches the threshold**
+(≥ 0.5 for every phase; `home` is additionally reported at ≥ 0.1), and separately the online step
+of the **first episode that reached the phase at all** (`first_event_step` in
+`px_rise_time_per_seed.csv`; it is in the CSV, not in the table).
+
+Table cells are the **median over seeds, with [min, max], in thousands of online sim steps**,
+followed by `(crossed / determined seeds)`. A run that has neither crossed nor finished its budget
+is **undetermined**, not a failure: it leaves the denominator and is reported as "p run." in the
+cell. `n/a` means no determined seed crossed. LaTeX: `paper/figures/px_rise_time_by_phase.tex`
+(booktabs `table*` inside `\resizebox`); per-seed values:
+`paper/figures/px_phase_2026-09-14/px_rise_time_per_seed.csv`.
+
+### 7.7 Steady state
+
+Two versions, in two panels of `fig_steady_state`, never combined:
+
+- **(a) training record** — the mean of each phase flag over the episodes in the **last 20 % of the
+  run's achieved online steps** (a run needs ≥ 5 episodes there). A run that has not finished its
+  budget is drawn as a **hollow** point: its last 20 % is not a steady state.
+- **(b) eval cells** — the mean of `home` (and `picked`) over **all `rnd30_mode` milestone cells at
+  ≥ 0.5 M online steps** for that run. A seed with no such cell yet is absent from the panel, not
+  zero.
+
+### 7.8 Ignition
+
+Per condition × arm, two criteria with Wilson 95 % CIs:
+
+- **training**: the fraction of seeds whose rolling-30 `home` rate reaches **≥ 0.5** within budget.
+  Undetermined seeds (see §7.6) are out of the denominator and shown as `+p?`.
+- **eval**: the fraction of seeds with **≥ 1 `home` episode in any `rnd30_mode` cell** (any
+  milestone). Seeds with no cell yet are out of this denominator.
+
+### 7.9 Caveats a reader must carry
+
+1. **Training record ≠ eval cells.** Sampled actions on self-generated starts run well above
+   deterministic actions on fixed random starts for every condition here. Quote the kind.
+2. **The {r2dreamer} (ag) seeds are incomplete.** 8 of 15 seeds per arm had not reached 2 M when
+   the mirror was taken, and 8 per arm have no eval cell yet. Their curves end early, their band is
+   truncated below 3 seeds, and their non-crossings are undetermined rather than failures.
+3. **{RLPD} budget unit.** 250 k decisions, converted to 1 M sim frames by `× action_repeat 4`
+   for a shared x-axis. Its training record also lacks the three late-phase flags (§7.4), so
+   {RLPD} contributes only `picked`, `placed_v2` and `tipped` rise times, and only an eval
+   ignition bar.
+4. **The ramp control is a different ladder.** `nested_ramp` pays differently; it is plotted for
+   reference and must not be pooled with the `nested_sparse10` conditions.
+5. **Hardware is not uniform.** The 4 + 4 {dv3} local seeds ran on the pop-os workstation
+   (AMD 5950X, AVX2, local GPU); every other condition ran on pax cluster GPU nodes. This is
+   marked in every caption that shows them side by side.
+6. **The local human s0 run** (the (ad) run) was launched at 2 M and deliberately stopped at its
+   1 M milestone by the (ae) chain. The script carries that as an explicit note
+   (`stopped_at_1M_by_chain`) so it is not mis-read as an interrupted run.
+7. **Two seeds per arm is a pilot.** The {RLPD} pixel cells are n = 2 v 2; the (ag) {RLPD} seeds
+   s2–s15 were still queued.
+
+Commit: `px phase analysis: rise-time table, learning curves, steady state, ignition for the
+nested_sparse10 pixel conditions` on branch `ladder-unify-2026-09-11`.

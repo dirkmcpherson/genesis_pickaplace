@@ -1,0 +1,477 @@
+condition,arm,seed,run,phase,threshold,rise_step,first_event_step,budget,achieved,note
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,picked,0.5,220552,125015,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,picked,0.5,222239,167059,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,picked,0.5,150752,138716,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,picked,0.5,200903,91792,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,placed_v2,0.5,223530,133755,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,placed_v2,0.5,278482,167059,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,placed_v2,0.5,231306,138716,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,placed_v2,0.5,226112,196164,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,farside,0.5,223840,133755,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,farside,0.5,278482,167059,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,farside,0.5,231306,138716,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,farside,0.5,340131,199978,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,slide_event,0.5,259907,181429,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,slide_event,0.5,346932,214684,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,slide_event,0.5,335657,138716,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,slide_event,0.5,361119,211585,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,home,0.5,322681,181500,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,home,0.5,347052,214684,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,home,0.5,352984,151491,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,home,0.5,361119,211585,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,home,0.1,183163,181500,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,home,0.1,233944,214684,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,home,0.1,209228,151491,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,home,0.1,219166,211585,1000000,999690,
+dreamer_local,human,0,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s0,tipped,0.5,141807,0,1000000,996156,stopped_at_1M_by_chain
+dreamer_local,human,1,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s1,tipped,0.5,224145,14424,1000000,992053,
+dreamer_local,human,2,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s2,tipped,0.5,150228,28829,1000000,992788,
+dreamer_local,human,3,dv3px_sparse10_dHfull_all_rns10h_img_rlDreamer_s3,tipped,0.5,190510,0,1000000,999690,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,picked,0.5,200941,94224,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,picked,0.5,162034,117363,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,picked,0.5,154166,124146,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,picked,0.5,200193,110184,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,placed_v2,0.5,257966,183304,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,placed_v2,0.5,210411,150776,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,placed_v2,0.5,348894,146990,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,placed_v2,0.5,316572,191176,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,farside,0.5,311857,183304,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,farside,0.5,291360,162034,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,farside,0.5,348894,146990,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,farside,0.5,316755,191176,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,slide_event,0.5,311857,183304,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,slide_event,0.5,295996,198221,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,slide_event,0.5,504786,146990,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,slide_event,0.5,325732,246071,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,home,0.5,314168,228924,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,home,0.5,295996,198221,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,home,0.5,504786,192370,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,home,0.5,325732,246071,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,home,0.1,247112,228924,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,home,0.1,204896,198221,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,home,0.1,341718,192370,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,home,0.1,312100,246071,1000000,998215,
+dreamer_local,machine,0,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s0,tipped,0.5,202013,0,1000000,992755,
+dreamer_local,machine,1,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s1,tipped,0.5,161037,14424,1000000,992769,
+dreamer_local,machine,2,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s2,tipped,0.5,203290,0,1000000,992440,
+dreamer_local,machine,3,dv3px_sparse10_dDPfull_first_rns10h_img_rlDreamer_s3,tipped,0.5,215768,0,1000000,998215,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,picked,0.5,166346,155126,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,picked,0.5,219040,106566,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,picked,0.5,187619,85947,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,picked,0.5,180010,80840,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,picked,0.5,181177,159296,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,picked,0.5,201081,132496,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,picked,0.5,234973,101719,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,picked,0.5,236278,104806,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,picked,0.5,196621,152258,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,picked,0.5,172073,155752,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,picked,0.5,225485,105127,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,picked,0.5,147519,101566,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,placed_v2,0.5,235723,169127,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,placed_v2,0.5,340216,129656,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,placed_v2,0.5,241259,95334,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,placed_v2,0.5,242496,118977,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,placed_v2,0.5,235804,166924,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,placed_v2,0.5,291159,165840,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,placed_v2,0.5,318112,101719,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,placed_v2,0.5,300330,197011,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,placed_v2,0.5,245146,158828,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,placed_v2,0.5,326695,155771,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,placed_v2,0.5,306297,136411,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,placed_v2,0.5,222316,124848,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,farside,0.5,235723,169127,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,farside,0.5,340589,129656,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,farside,0.5,241259,95334,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,farside,0.5,243977,118977,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,farside,0.5,239066,166924,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,farside,0.5,291748,165840,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,farside,0.5,320240,101719,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,farside,0.5,300330,197011,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,farside,0.5,245146,158828,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,farside,0.5,326766,155771,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,farside,0.5,306297,136411,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,farside,0.5,222483,139240,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,slide_event,0.5,468533,221764,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,slide_event,0.5,517829,283130,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,slide_event,0.5,249327,138297,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,slide_event,0.5,292013,167544,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,slide_event,0.5,513921,216121,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,slide_event,0.5,312855,165840,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,slide_event,0.5,481107,267094,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,slide_event,0.5,380047,229201,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,slide_event,0.5,295998,227837,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,slide_event,0.5,558676,250796,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,slide_event,0.5,345512,161187,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,slide_event,0.5,397266,139240,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,home,0.5,507279,221764,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,home,0.5,518618,316721,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,home,0.5,257484,181538,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,home,0.5,292013,276747,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,home,0.5,514136,216121,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,home,0.5,428681,165840,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,home,0.5,778042,267094,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,home,0.5,385236,249445,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,home,0.5,327227,227837,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,home,0.5,558676,278625,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,home,0.5,385836,161187,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,home,0.5,456569,150223,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,home,0.1,230656,221764,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,home,0.1,340216,316721,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,home,0.1,219009,181538,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,home,0.1,282938,276747,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,home,0.1,231334,216121,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,home,0.1,214440,165840,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,home,0.1,270033,267094,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,home,0.1,293384,249445,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,home,0.1,232113,227837,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,home,0.1,287290,278625,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,home,0.1,227855,161187,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,home,0.1,205610,150223,2000000,1999712,
+dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_dreamer_s4,tipped,0.5,161943,0,1000000,999688,
+dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_dreamer_s5,tipped,0.5,221947,2353,1000000,992699,
+dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_dreamer_s6,tipped,0.5,143623,0,1000000,999507,
+dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_dreamer_s7,tipped,0.5,178723,14617,1000000,992379,
+dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_dreamer_s8,tipped,0.5,176184,4947,2000000,1992758,
+dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_dreamer_s9,tipped,0.5,150565,0,2000000,1999907,
+dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_dreamer_s10,tipped,0.5,230293,0,2000000,1999790,
+dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_dreamer_s11,tipped,0.5,119173,0,2000000,1999663,
+dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_dreamer_s12,tipped,0.5,188561,0,2000000,1998777,
+dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_dreamer_s13,tipped,0.5,170711,0,2000000,1999679,
+dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_dreamer_s14,tipped,0.5,180418,0,2000000,1999320,
+dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_dreamer_s15,tipped,0.5,147543,0,2000000,1999712,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,picked,0.5,245955,154160,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,picked,0.5,221715,81296,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,picked,0.5,269990,115452,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,picked,0.5,203301,122357,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,picked,0.5,183388,136496,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,picked,0.5,164483,88176,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,picked,0.5,138488,94648,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,picked,0.5,125910,91396,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,picked,0.5,159370,128272,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,picked,0.5,237919,98295,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,picked,0.5,320952,88773,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,picked,0.5,224918,132096,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,placed_v2,0.5,334812,224587,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,placed_v2,0.5,225015,114934,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,placed_v2,0.5,272271,257099,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,placed_v2,0.5,347460,177908,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,placed_v2,0.5,264875,231461,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,placed_v2,0.5,295206,122901,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,placed_v2,0.5,404997,112238,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,placed_v2,0.5,284237,120290,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,placed_v2,0.5,274211,152497,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,placed_v2,0.5,257331,167384,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,placed_v2,0.5,343801,90648,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,placed_v2,0.5,234007,131236,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,farside,0.5,334812,224587,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,farside,0.5,277963,114934,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,farside,0.5,273557,257099,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,farside,0.5,352715,177908,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,farside,0.5,267578,231461,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,farside,0.5,295206,122901,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,farside,0.5,405064,112238,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,farside,0.5,284237,125910,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,farside,0.5,274211,152497,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,farside,0.5,257331,167384,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,farside,0.5,343801,297806,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,farside,0.5,306502,212399,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,slide_event,0.5,342555,224587,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,slide_event,0.5,291763,214341,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,slide_event,0.5,337457,277609,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,slide_event,0.5,433807,230232,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,slide_event,0.5,360702,231461,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,slide_event,0.5,310248,153190,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,slide_event,0.5,406148,135684,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,slide_event,0.5,300105,141001,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,slide_event,0.5,277315,162462,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,slide_event,0.5,336585,167384,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,slide_event,0.5,347524,307726,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,slide_event,0.5,309266,219658,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,home,0.5,342555,224587,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,home,0.5,292352,214341,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,home,0.5,337457,277609,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,home,0.5,439756,230232,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,home,0.5,362036,244912,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,home,0.5,310248,153190,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,home,0.5,407811,218396,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,home,0.5,300105,141001,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,home,0.5,326249,209772,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,home,0.5,336585,167384,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,home,0.5,347524,307726,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,home,0.5,310196,224918,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,home,0.1,256590,224587,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,home,0.1,220475,214341,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,home,0.1,288642,277609,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,home,0.1,245678,230232,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,home,0.1,259708,244912,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,home,0.1,162892,153190,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,home,0.1,319002,218396,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,home,0.1,238836,141001,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,home,0.1,214918,209772,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,home,0.1,170100,167384,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,home,0.1,333401,307726,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,home,0.1,246644,224918,2000000,1999603,
+dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s4,tipped,0.5,441279,0,1000000,999557,
+dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s5,tipped,0.5,226131,7780,1000000,992537,
+dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s6,tipped,0.5,125290,0,1000000,999552,
+dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s7,tipped,0.5,296500,21627,1000000,992801,
+dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s8,tipped,0.5,183388,341,2000000,1992570,
+dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s9,tipped,0.5,120822,0,2000000,1999020,
+dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s10,tipped,0.5,115996,0,2000000,1999910,
+dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s11,tipped,0.5,164524,0,2000000,1999870,
+dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s12,tipped,0.5,158752,0,2000000,1997828,
+dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s13,tipped,0.5,237919,0,2000000,1999651,
+dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s14,tipped,0.5,106609,0,2000000,1999709,
+dreamer_cluster,machine,15,full_r2d_state_dDPfull_first_rns10h_img_dreamer_s15,tipped,0.5,175348,0,2000000,1999603,
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,picked,0.5,90041,84213,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,picked,0.5,155745,88440,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,picked,0.5,134439,116524,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,picked,0.5,122540,103632,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,picked,0.5,102998,95651,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,picked,0.5,189198,132057,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,picked,0.5,118840,103433,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,picked,0.5,131408,104361,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,picked,0.5,124956,115325,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,picked,0.5,141878,117422,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,picked,0.5,130887,120720,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,picked,0.5,114358,109246,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,picked,0.5,180515,174291,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,picked,0.5,121227,111208,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,picked,0.5,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,placed_v2,0.5,276755,130108,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,placed_v2,0.5,201628,88440,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,placed_v2,0.5,248585,116524,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,placed_v2,0.5,199530,103632,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,placed_v2,0.5,222811,99659,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,placed_v2,0.5,189620,136201,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,placed_v2,0.5,206923,117878,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,placed_v2,0.5,202509,112260,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,placed_v2,0.5,229376,117376,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,placed_v2,0.5,218045,119460,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,placed_v2,0.5,215691,120720,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,placed_v2,0.5,245235,111666,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,placed_v2,0.5,186119,176000,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,placed_v2,0.5,never,116597,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,placed_v2,0.5,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,farside,0.5,276755,130108,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,farside,0.5,205069,88440,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,farside,0.5,253116,116524,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,farside,0.5,220663,111449,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,farside,0.5,226421,99659,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,farside,0.5,189620,136201,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,farside,0.5,206923,117878,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,farside,0.5,202509,112260,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,farside,0.5,229928,117661,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,farside,0.5,218045,119460,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,farside,0.5,215691,120720,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,farside,0.5,245235,111666,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,farside,0.5,190081,176000,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,farside,0.5,never,116597,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,farside,0.5,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,slide_event,0.5,281928,131308,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,slide_event,0.5,245645,153048,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,slide_event,0.5,256397,129842,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,slide_event,0.5,238220,140588,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,slide_event,0.5,265874,145196,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,slide_event,0.5,248536,160586,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,slide_event,0.5,223520,163816,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,slide_event,0.5,258041,128209,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,slide_event,0.5,286921,121649,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,slide_event,0.5,219969,190012,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,slide_event,0.5,310617,171894,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,slide_event,0.5,245657,111666,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,slide_event,0.5,264583,178147,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,slide_event,0.5,never,117184,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,slide_event,0.5,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,home,0.5,285723,147105,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,home,0.5,249481,161897,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,home,0.5,290041,237646,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,home,0.5,246021,187309,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,home,0.5,268952,165916,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,home,0.5,259484,160586,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,home,0.5,241198,163816,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,home,0.5,258041,129895,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,home,0.5,286921,121979,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,home,0.5,221832,195791,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,home,0.5,never,204559,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,home,0.5,246757,178933,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,home,0.5,277920,178599,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,home,0.5,never,never,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,home,0.5,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,home,0.1,223745,147105,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,home,0.1,172228,161897,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,home,0.1,243521,237646,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,home,0.1,196125,187309,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,home,0.1,178816,165916,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,home,0.1,185075,160586,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,home,0.1,174445,163816,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,home,0.1,194073,129895,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,home,0.1,178261,121979,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,home,0.1,211035,195791,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,home,0.1,217057,204559,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,home,0.1,238981,178933,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,home,0.1,180278,178599,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,home,0.1,never,never,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,home,0.1,never,never,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,tipped,0.5,88519,14425,1000000,992706,
+r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,tipped,0.5,95105,7564,1000000,992600,
+r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,tipped,0.5,129842,0,1000000,999630,
+r2dreamer_cluster,human,3,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s3,tipped,0.5,113639,15144,2000000,1992796,
+r2dreamer_cluster,human,4,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s4,tipped,0.5,99659,0,2000000,1999344,
+r2dreamer_cluster,human,5,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s5,tipped,0.5,189620,6580,2000000,1076732,incomplete (still running or interrupted)
+r2dreamer_cluster,human,6,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s6,tipped,0.5,113610,0,2000000,1020628,incomplete (still running or interrupted)
+r2dreamer_cluster,human,7,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s7,tipped,0.5,134763,7585,2000000,558202,incomplete (still running or interrupted)
+r2dreamer_cluster,human,8,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s8,tipped,0.5,120808,2762,2000000,509221,incomplete (still running or interrupted)
+r2dreamer_cluster,human,9,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s9,tipped,0.5,124271,0,2000000,303746,incomplete (still running or interrupted)
+r2dreamer_cluster,human,10,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s10,tipped,0.5,129682,0,2000000,315878,incomplete (still running or interrupted)
+r2dreamer_cluster,human,11,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s11,tipped,0.5,112472,0,2000000,443378,incomplete (still running or interrupted)
+r2dreamer_cluster,human,12,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s12,tipped,0.5,180963,0,2000000,444970,incomplete (still running or interrupted)
+r2dreamer_cluster,human,13,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s13,tipped,0.5,114644,0,2000000,121560,incomplete (still running or interrupted)
+r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,tipped,0.5,never,0,2000000,29394,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,picked,0.5,179292,75672,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,picked,0.5,137292,74660,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,picked,0.5,157713,113055,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,picked,0.5,134813,121973,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,picked,0.5,193852,72681,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,picked,0.5,148105,116301,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,picked,0.5,130945,107323,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,picked,0.5,153512,136224,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,picked,0.5,159377,128324,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,picked,0.5,246319,121164,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,picked,0.5,176621,109352,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,picked,0.5,174346,132409,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,picked,0.5,151030,137597,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,picked,0.5,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,picked,0.5,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,placed_v2,0.5,187667,75672,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,placed_v2,0.5,267728,74660,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,placed_v2,0.5,178939,122298,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,placed_v2,0.5,220755,131139,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,placed_v2,0.5,198153,77848,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,placed_v2,0.5,240084,119405,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,placed_v2,0.5,140020,109619,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,placed_v2,0.5,157245,136224,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,placed_v2,0.5,210695,131023,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,placed_v2,0.5,258692,127950,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,placed_v2,0.5,256355,130956,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,placed_v2,0.5,176015,138528,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,placed_v2,0.5,155902,139443,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,placed_v2,0.5,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,placed_v2,0.5,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,farside,0.5,243542,75672,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,farside,0.5,278212,74660,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,farside,0.5,179270,122298,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,farside,0.5,220755,131139,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,farside,0.5,198153,77848,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,farside,0.5,240151,128415,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,farside,0.5,140020,109619,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,farside,0.5,159130,142072,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,farside,0.5,278581,134909,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,farside,0.5,258692,127950,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,farside,0.5,259735,130956,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,farside,0.5,177806,138528,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,farside,0.5,155902,139443,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,farside,0.5,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,farside,0.5,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,slide_event,0.5,250313,75672,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,slide_event,0.5,303260,146403,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,slide_event,0.5,239386,153266,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,slide_event,0.5,280861,131139,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,slide_event,0.5,252088,131423,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,slide_event,0.5,257389,128415,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,slide_event,0.5,142420,113457,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,slide_event,0.5,233454,147661,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,slide_event,0.5,280387,137340,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,slide_event,0.5,258932,160531,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,slide_event,0.5,294877,131119,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,slide_event,0.5,207085,147479,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,slide_event,0.5,248282,139864,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,slide_event,0.5,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,slide_event,0.5,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,home,0.5,250313,170894,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,home,0.5,303475,146403,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,home,0.5,239387,153266,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,home,0.5,292227,145877,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,home,0.5,269959,131423,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,home,0.5,257389,138369,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,home,0.5,232652,129698,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,home,0.5,233740,147661,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,home,0.5,284621,137340,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,home,0.5,258932,160531,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,home,0.5,294877,131119,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,home,0.5,252988,169245,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,home,0.5,248496,143035,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,home,0.5,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,home,0.5,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,home,0.1,182705,170894,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,home,0.1,156269,146403,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,home,0.1,205103,153266,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,home,0.1,152927,145877,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,home,0.1,186199,131423,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,home,0.1,235210,138369,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,home,0.1,135486,129698,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,home,0.1,154176,147661,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,home,0.1,159375,137340,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,home,0.1,179409,160531,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,home,0.1,172836,131119,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,home,0.1,170626,169245,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,home,0.1,146757,143035,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,home,0.1,never,never,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,home,0.1,never,never,2000000,21793,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,tipped,0.5,174759,314,1000000,992669,
+r2dreamer_cluster,machine,1,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s1,tipped,0.5,136887,0,1000000,994829,
+r2dreamer_cluster,machine,2,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s2,tipped,0.5,157713,0,1000000,999197,
+r2dreamer_cluster,machine,3,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s3,tipped,0.5,130640,7516,2000000,1992610,
+r2dreamer_cluster,machine,4,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s4,tipped,0.5,223417,0,2000000,1999440,
+r2dreamer_cluster,machine,5,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s5,tipped,0.5,144654,0,2000000,834342,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,6,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s6,tipped,0.5,128984,0,2000000,1047556,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,7,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s7,tipped,0.5,163537,504,2000000,537281,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,8,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s8,tipped,0.5,139724,21626,2000000,550271,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,9,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s9,tipped,0.5,146160,0,2000000,301707,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,10,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s10,tipped,0.5,131942,0,2000000,438396,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,11,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s11,tipped,0.5,202591,0,2000000,435406,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,12,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s12,tipped,0.5,164343,0,2000000,430258,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,13,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s13,tipped,0.5,never,0,2000000,91989,incomplete (still running or interrupted)
+r2dreamer_cluster,machine,14,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s14,tipped,0.5,never,0,2000000,21793,incomplete (still running or interrupted)
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,picked,0.5,52568,39124,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,picked,0.5,46312,38676,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,placed_v2,0.5,86012,59876,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,placed_v2,0.5,88808,47512,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,farside,0.5,absent,absent,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,farside,0.5,absent,absent,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,slide_event,0.5,absent,absent,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,slide_event,0.5,absent,absent,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,home,0.5,absent,absent,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,home,0.5,absent,absent,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,home,0.1,absent,absent,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,home,0.1,absent,absent,1000000,999528,
+rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,tipped,0.5,45656,32,1000000,999680,
+rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,tipped,0.5,44584,4804,1000000,999528,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,picked,0.5,59348,42352,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,picked,0.5,61720,42752,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,placed_v2,0.5,94444,57832,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,placed_v2,0.5,85404,61544,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,farside,0.5,absent,absent,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,farside,0.5,absent,absent,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,slide_event,0.5,absent,absent,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,slide_event,0.5,absent,absent,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,home,0.5,absent,absent,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,home,0.5,absent,absent,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,home,0.1,absent,absent,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,home,0.1,absent,absent,1000000,999924,
+rlpd_cluster,machine,0,e2e_rlpd_px_dDPfirst_s0,tipped,0.5,54532,32,1000000,999360,
+rlpd_cluster,machine,1,e2e_rlpd_px_dDPfirst_s1,tipped,0.5,49108,4804,1000000,999924,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,picked,0.5,107002,29063,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,placed_v2,0.5,323821,210090,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,farside,0.5,330600,215020,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,slide_event,0.5,441208,300193,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,home,0.5,441208,300193,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,home,0.1,322417,300193,1000000,992652,
+dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,tipped,0.5,102133,0,1000000,992652,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,picked,0.5,97541,74643,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,placed_v2,0.5,306934,75260,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,farside,0.5,331724,82456,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,slide_event,0.5,331724,92760,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,home,0.5,333538,157959,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,home,0.1,278063,157959,1000000,992234,
+dreamer_ramp_control,machine,0,full_r2d_state_dDPfull_first_rnrh_img_dreamer_s0,tipped,0.5,90462,3288,1000000,992234,
