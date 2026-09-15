@@ -170,11 +170,25 @@ wrong or means something else; use the shared cell and the per-episode counts.)
 | s14 | 11 → 3 → 16 → · | 9 → 6 → 6 → **0 (picked 19)** |
 | s15 | 8 → 13 → 17 → 5 | 18 → 4 → 16 → 16 |
 
-(read 20:40 09-14; the `final` cell = the 2M checkpoint, counted once; all 16 dreamer-loss runs COMPLETED 0:0 by
-20:40, 8.6–9.5 h each.) At the 2M cell alone, 7 v 7 so far: human 7, 6, 3, 12, 0, 17, 5 (mean 7.1/30 = 0.24) ·
-machine 16, 13, 18, 14, 17, 0, 16 (mean 13.4/30 = 0.45) — the single-cell read leans machine, the 1M cells leaned
-human on the same seeds; the four-milestone mean and the pooled statistic are the reads of record, computed when s9/s14
-land.
+(read 21:50 09-14; s9 human 2M 6, s14 human 2M 13, s9 machine 2M 10 landed 21:47; the `final` cell = the 2M
+checkpoint, counted once; all 16 dreamer-loss runs COMPLETED 0:0 by 20:40, 8.6–9.5 h each; machine s9's 1.5M cell
+is the one cell still unscored.)
+
+### {dreamer losses} — READOUT of the (ag) 8 v 8 at 2M and the DREAMER 16 v 16 (2026-09-14 21:50)
+
+| statistic (per seed, rnd30 MODE `home`) | human mean | machine mean | Δ (H−M) | exact two-sided permutation p |
+|---|---|---|---|---|
+| (ag) 8 v 8, single 2M cell | 0.263 | 0.433 | −0.171 | 0.106 |
+| (ag) 8 v 8, pooled 0.5M + 1M cells (the registered pooled statistic) | 0.238 | 0.304 | −0.067 | 0.266 |
+| (ag) 8 v 8, four-milestone mean (machine s9 over 3 cells) | 0.271 | 0.338 | −0.067 | 0.207 |
+| **DREAMER 16 v 16, pooled 0.5M + 1M** (local s0–3 + (af) s4–7 + (ag) s8–15) | **0.306** | **0.304** | **+0.002** | **0.98** (Monte-Carlo, 200k) |
+
+P-ag-1 (pooled dreamer-loss 16 v 16 inside ±0.15): **MET** — Δ +0.002 on the statistic every seed has; the three
+batches lean human (local), machine ((af), (ag)) and cancel. The 2M single-cell read leans machine at p 0.11 and the
+(ae) local series leaned human at p 0.40 — same learner, same recipe, opposite signs; neither is a finding, and the
+hardware difference of the local seeds (user: to be noted in the paper) does not change the pooled null. P-ag-3
+(2M ≥ 1M on average): 2M mean 0.348 v 1M mean 0.283 over the 16 (ag) seeds — holds, weakly, and with cells swinging
+0 ↔ 17 on the same seed. Nothing below n = 16 v 16 separates the demonstration sources for the pixel world model.
 
 {r2dreamer loss}, `nested_sparse10`, the 13 new seeds per arm (same columns):
 
