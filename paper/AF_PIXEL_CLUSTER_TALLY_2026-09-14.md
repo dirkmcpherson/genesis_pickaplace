@@ -200,7 +200,7 @@ hardware difference of the local seeds (user: to be noted in the paper) does not
 | s6 | 19 → 18 → 21 → 19 | 16 → 19 → 17 → 17 |
 | s7 | 17 → 18 → 20 → 15 | 18 → 18 → 9 → 11 |
 | s8 | 18 → 15 → 20 → 19 | 14 → 18 → 18 → 17 |
-| s9 | · → 10 → · → · | · (cells queued) |
+| s9 | 20 → 10 → 19 → 19 | 17 → 18 → 21 → 19 |
 | s10 | 5 → 18 → 20 → 17 | 11 → 19 → 18 → 16 |
 | s11 | 20 → 21 → 19 → 16 | 21 → 19 → 19 → 9 |
 | s12 | 21 → 19 → 16 → 16 | 9 → 10 → 19 → 18 |
@@ -210,7 +210,13 @@ hardware difference of the local seeds (user: to be noted in the paper) does not
 
 (`·` = cell not yet scored; read 12:25 09-15; all 26 r2dreamer (ag) runs COMPLETED 0:0, 0 preemptions.)
 
-### {r2dreamer loss} — READOUT MOMENT at 15 v 15 (2026-09-15 12:25; s9 both arms pending → 16 v 16 next check)
+### {r2dreamer loss} — READOUT at 16 v 16 (2026-09-15 15:25; s9 landed: human pooled 0.500, machine 0.583)
+
+**16 v 16, pooled 0.5M + 1M rnd30 MODE `home`: human 0.588 v machine 0.530, Δ +0.057, MC permutation p 0.10** (300k);
+(ag) single 2M cell, 12 v 13: 0.558 v 0.552, p 0.93. Inside ±0.15 (P-ag-2 MET); ignition 32/32. The 15 v 15
+numbers below are superseded by this line.
+
+#### (superseded) 15 v 15 at 12:25
 
 | statistic (per seed, rnd30 MODE `home`) | human mean | machine mean | Δ (H−M) | permutation p (MC 300k) |
 |---|---|---|---|---|
