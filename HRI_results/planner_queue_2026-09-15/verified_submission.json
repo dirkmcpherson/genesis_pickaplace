@@ -1,0 +1,4847 @@
+{
+  "time_utc": "2026-09-15T20:31:13.000931+00:00",
+  "records": [
+    {
+      "job_id": "3729323",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 0,
+        "name": "planner_rlpd_px_s0",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "0",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s0",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:23.876472+00:00",
+      "after_start": [
+        "3706858"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": null,
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s0",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s0_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s0_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729324",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 0,
+        "name": "planner_px_dreamer_s0",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "0",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "0",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s0",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:24.036389+00:00",
+      "after_start": [
+        "3706858"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": null,
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s0",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s0_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s0_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "0",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729325",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 0,
+        "name": "planner_px_r2dreamer_s0",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "0",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "0",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s0",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:24.189193+00:00",
+      "after_start": [
+        "3706858"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": null,
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s0",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s0_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s0_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "0",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729326",
+      "configuration": {
+        "learner": "dp",
+        "seed": 0,
+        "name": "planner_dp_px_s0",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "0",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s0",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:24.332684+00:00",
+      "after_start": [
+        "3706858"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": null,
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s0",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s0_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s0_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729327",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 1,
+        "name": "planner_rlpd_px_s1",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "1",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s1",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:24.479642+00:00",
+      "after_start": [
+        "3706858",
+        "3729323"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729323",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s1",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s1_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s1_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729323",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729328",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 1,
+        "name": "planner_px_dreamer_s1",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "1",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "1",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s1",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:24.624683+00:00",
+      "after_start": [
+        "3706858",
+        "3729324"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729324",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s1",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s1_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s1_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729324",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "1",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729329",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 1,
+        "name": "planner_px_r2dreamer_s1",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "1",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "1",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s1",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:24.774636+00:00",
+      "after_start": [
+        "3706858",
+        "3729325"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729325",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s1",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s1_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s1_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729325",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "1",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729330",
+      "configuration": {
+        "learner": "dp",
+        "seed": 1,
+        "name": "planner_dp_px_s1",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "1",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s1",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:24.920187+00:00",
+      "after_start": [
+        "3706858",
+        "3729326"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729326",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s1",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s1_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s1_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729326",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729331",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 2,
+        "name": "planner_rlpd_px_s2",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "2",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s2",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:25.062036+00:00",
+      "after_start": [
+        "3706858",
+        "3729327"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729327",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s2",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s2_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s2_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729327",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729332",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 2,
+        "name": "planner_px_dreamer_s2",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "2",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "2",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s2",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:25.205921+00:00",
+      "after_start": [
+        "3706858",
+        "3729328"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729328",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s2",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s2_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s2_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729328",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "2",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729333",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 2,
+        "name": "planner_px_r2dreamer_s2",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "2",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "2",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s2",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:25.350480+00:00",
+      "after_start": [
+        "3706858",
+        "3729329"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729329",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s2",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s2_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s2_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729329",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "2",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729334",
+      "configuration": {
+        "learner": "dp",
+        "seed": 2,
+        "name": "planner_dp_px_s2",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "2",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s2",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:25.491800+00:00",
+      "after_start": [
+        "3706858",
+        "3729330"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729330",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s2",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s2_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s2_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729330",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729335",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 3,
+        "name": "planner_rlpd_px_s3",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "3",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s3",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:25.634733+00:00",
+      "after_start": [
+        "3706858",
+        "3729331"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729331",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s3",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s3_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s3_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729331",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729336",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 3,
+        "name": "planner_px_dreamer_s3",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "3",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "3",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s3",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:25.777212+00:00",
+      "after_start": [
+        "3706858",
+        "3729332"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729332",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s3",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s3_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s3_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729332",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "3",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729337",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 3,
+        "name": "planner_px_r2dreamer_s3",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "3",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "3",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s3",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:25.918156+00:00",
+      "after_start": [
+        "3706858",
+        "3729333"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729333",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s3",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s3_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s3_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729333",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "3",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729338",
+      "configuration": {
+        "learner": "dp",
+        "seed": 3,
+        "name": "planner_dp_px_s3",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "3",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s3",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:26.060605+00:00",
+      "after_start": [
+        "3706858",
+        "3729334"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729334",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s3",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s3_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s3_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729334",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729339",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 4,
+        "name": "planner_rlpd_px_s4",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "4",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s4",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:26.204745+00:00",
+      "after_start": [
+        "3706858",
+        "3729335"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729335",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s4",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s4_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s4_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729335",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729340",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 4,
+        "name": "planner_px_dreamer_s4",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "4",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "4",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s4",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:26.358752+00:00",
+      "after_start": [
+        "3706858",
+        "3729336"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729336",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s4",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s4_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s4_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729336",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "4",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729341",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 4,
+        "name": "planner_px_r2dreamer_s4",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "4",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "4",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s4",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:26.505155+00:00",
+      "after_start": [
+        "3706858",
+        "3729337"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729337",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s4",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s4_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s4_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729337",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "4",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729342",
+      "configuration": {
+        "learner": "dp",
+        "seed": 4,
+        "name": "planner_dp_px_s4",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "4",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s4",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:26.653883+00:00",
+      "after_start": [
+        "3706858",
+        "3729338"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729338",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s4",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s4_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s4_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729338",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729343",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 5,
+        "name": "planner_rlpd_px_s5",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "5",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s5",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:26.796106+00:00",
+      "after_start": [
+        "3706858",
+        "3729339"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729339",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s5",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s5_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s5_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729339",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729344",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 5,
+        "name": "planner_px_dreamer_s5",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "5",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "5",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s5",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:26.944857+00:00",
+      "after_start": [
+        "3706858",
+        "3729340"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729340",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s5",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s5_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s5_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729340",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "5",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729345",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 5,
+        "name": "planner_px_r2dreamer_s5",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "5",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "5",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s5",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:27.088560+00:00",
+      "after_start": [
+        "3706858",
+        "3729341"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729341",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s5",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s5_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s5_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729341",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "5",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729346",
+      "configuration": {
+        "learner": "dp",
+        "seed": 5,
+        "name": "planner_dp_px_s5",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "5",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s5",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:27.231889+00:00",
+      "after_start": [
+        "3706858",
+        "3729342"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729342",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s5",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s5_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s5_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729342",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729347",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 6,
+        "name": "planner_rlpd_px_s6",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "6",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s6",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:27.377473+00:00",
+      "after_start": [
+        "3706858",
+        "3729343"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729343",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s6",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s6_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s6_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729343",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729348",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 6,
+        "name": "planner_px_dreamer_s6",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "6",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "6",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s6",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:27.519225+00:00",
+      "after_start": [
+        "3706858",
+        "3729344"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729344",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s6",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s6_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s6_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729344",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "6",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729349",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 6,
+        "name": "planner_px_r2dreamer_s6",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "6",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "6",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s6",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:27.661151+00:00",
+      "after_start": [
+        "3706858",
+        "3729345"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729345",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s6",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s6_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s6_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729345",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "6",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729350",
+      "configuration": {
+        "learner": "dp",
+        "seed": 6,
+        "name": "planner_dp_px_s6",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "6",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s6",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:27.805153+00:00",
+      "after_start": [
+        "3706858",
+        "3729346"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729346",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s6",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s6_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s6_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729346",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729351",
+      "configuration": {
+        "learner": "rlpd",
+        "seed": 7,
+        "name": "planner_rlpd_px_s7",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "7",
+          "ARM": "dPlanner",
+          "OBS": "pixels",
+          "STEPS": "250000",
+          "CKPT_EVERY": "25000",
+          "IMAGE_AUG": "shift4",
+          "BUFFER_SIZE": "300000",
+          "GAMMA": "0.99"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s7",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "1-06:00:00",
+        "budget": 250000,
+        "budget_unit": "environment decisions"
+      },
+      "time_utc": "2026-09-15T20:27:27.953580+00:00",
+      "after_start": [
+        "3706858",
+        "3729347"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729347",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_rlpd_px_s7",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s7_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s7_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729347",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729352",
+      "configuration": {
+        "learner": "dreamer",
+        "seed": 7,
+        "name": "planner_px_dreamer_s7",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "7",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "7",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s7",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:28.104616+00:00",
+      "after_start": [
+        "3706858",
+        "3729348"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729348",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_dreamer_s7",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s7_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s7_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729348",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "7",
+        "2000000",
+        "model.rep_loss=dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729353",
+      "configuration": {
+        "learner": "r2dreamer",
+        "seed": 7,
+        "name": "planner_px_r2dreamer_s7",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "7",
+          "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+          "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+          "ENVCFG": "genesis_full_pixel",
+          "TAG": "r2dreamer",
+          "R2_LONG_RUN": "1",
+          "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+          "EVAL_SETS": "hold rnd"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "arguments": [
+          "native_rns10h_img",
+          "7",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s7",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "2-00:00:00",
+        "budget": 2000000,
+        "budget_unit": "online world-model counter"
+      },
+      "time_utc": "2026-09-15T20:27:28.252164+00:00",
+      "after_start": [
+        "3706858",
+        "3729349"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729349",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_px_r2dreamer_s7",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s7_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s7_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729349",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+        "native_rns10h_img",
+        "7",
+        "2000000",
+        "model.rep_loss=r2dreamer",
+        "model.image_aug=shift4",
+        "env.state_slice=8"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    },
+    {
+      "job_id": "3729354",
+      "configuration": {
+        "learner": "dp",
+        "seed": 7,
+        "name": "planner_dp_px_s7",
+        "environment": {
+          "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+          "LADDER": "nested_sparse10",
+          "TIP_GUARD": "not_in_hand",
+          "FAR_RELEASE": "0",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "WANDB_DISABLE_ARTIFACT": "true",
+          "SEED": "7",
+          "ARM": "dPlanner",
+          "STEPS": "100000",
+          "SAVE_FREQ": "50000",
+          "CROP": "56",
+          "MODES": "sample",
+          "SETS": "hold15 rnd30",
+          "PAR": "3",
+          "REQUIRE_CORES": "64"
+        },
+        "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+        "arguments": [],
+        "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s7",
+        "qos": "preempt",
+        "partition": "gpu,preempt",
+        "time_limit": "0-16:00:00",
+        "budget": 100000,
+        "budget_unit": "gradient updates"
+      },
+      "time_utc": "2026-09-15T20:27:28.400611+00:00",
+      "after_start": [
+        "3706858",
+        "3729350"
+      ],
+      "after_reference_dp_start": [
+        "3706858"
+      ],
+      "after_previous_learner_start": "3729350",
+      "submitted_held": true,
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--job-name=planner_dp_px_s7",
+        "--partition=gpu,preempt",
+        "--qos=preempt",
+        "--nice=0",
+        "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+        "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s7_%j.out",
+        "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s7_%j.out",
+        "--hold",
+        "--comment=planner_n8_oneshot_20260915",
+        "--dependency=after:3706858:3729350",
+        "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+      ],
+      "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+    }
+  ],
+  "queue": [
+    {
+      "id": "3706852",
+      "name": "ah_dp_px_dH_s1",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706853",
+      "name": "ah_dp_px_dH_s2",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706854",
+      "name": "ah_dp_px_dH_s3",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706855",
+      "name": "ah_dp_px_dM_s0",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706856",
+      "name": "ah_dp_px_dM_s1",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706857",
+      "name": "ah_dp_px_dM_s2",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3706851",
+      "name": "ah_dp_px_dH_s0",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692556",
+      "name": "e2e_rlpd_px_dH_s8",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692555",
+      "name": "e2e_rlpd_px_dDPfirst_s7",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692554",
+      "name": "e2e_rlpd_px_dH_s7",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692553",
+      "name": "e2e_rlpd_px_dDPfirst_s6",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692552",
+      "name": "e2e_rlpd_px_dH_s6",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692551",
+      "name": "e2e_rlpd_px_dDPfirst_s5",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692550",
+      "name": "e2e_rlpd_px_dH_s5",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692549",
+      "name": "e2e_rlpd_px_dDPfirst_s4",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692548",
+      "name": "e2e_rlpd_px_dH_s4",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692547",
+      "name": "e2e_rlpd_px_dDPfirst_s3",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692546",
+      "name": "e2e_rlpd_px_dH_s3",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692545",
+      "name": "e2e_rlpd_px_dDPfirst_s2",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3692544",
+      "name": "e2e_rlpd_px_dH_s2",
+      "state": "RUNNING",
+      "qos": "preempt",
+      "reason": "None",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3729354",
+      "name": "planner_dp_px_s7",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729350(unfulfilled)"
+    },
+    {
+      "id": "3729353",
+      "name": "planner_px_r2dreamer_s7",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729349(unfulfilled)"
+    },
+    {
+      "id": "3729352",
+      "name": "planner_px_dreamer_s7",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729348(unfulfilled)"
+    },
+    {
+      "id": "3729351",
+      "name": "planner_rlpd_px_s7",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729347(unfulfilled)"
+    },
+    {
+      "id": "3729350",
+      "name": "planner_dp_px_s6",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729346(unfulfilled)"
+    },
+    {
+      "id": "3729349",
+      "name": "planner_px_r2dreamer_s6",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729345(unfulfilled)"
+    },
+    {
+      "id": "3729348",
+      "name": "planner_px_dreamer_s6",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729344(unfulfilled)"
+    },
+    {
+      "id": "3729347",
+      "name": "planner_rlpd_px_s6",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729343(unfulfilled)"
+    },
+    {
+      "id": "3729346",
+      "name": "planner_dp_px_s5",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729342(unfulfilled)"
+    },
+    {
+      "id": "3729345",
+      "name": "planner_px_r2dreamer_s5",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729341(unfulfilled)"
+    },
+    {
+      "id": "3729344",
+      "name": "planner_px_dreamer_s5",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729340(unfulfilled)"
+    },
+    {
+      "id": "3729343",
+      "name": "planner_rlpd_px_s5",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729339(unfulfilled)"
+    },
+    {
+      "id": "3729342",
+      "name": "planner_dp_px_s4",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729338(unfulfilled)"
+    },
+    {
+      "id": "3729341",
+      "name": "planner_px_r2dreamer_s4",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729337(unfulfilled)"
+    },
+    {
+      "id": "3729340",
+      "name": "planner_px_dreamer_s4",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729336(unfulfilled)"
+    },
+    {
+      "id": "3729339",
+      "name": "planner_rlpd_px_s4",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729335(unfulfilled)"
+    },
+    {
+      "id": "3729338",
+      "name": "planner_dp_px_s3",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729334(unfulfilled)"
+    },
+    {
+      "id": "3729337",
+      "name": "planner_px_r2dreamer_s3",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729333(unfulfilled)"
+    },
+    {
+      "id": "3729336",
+      "name": "planner_px_dreamer_s3",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729332(unfulfilled)"
+    },
+    {
+      "id": "3729335",
+      "name": "planner_rlpd_px_s3",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729331(unfulfilled)"
+    },
+    {
+      "id": "3729334",
+      "name": "planner_dp_px_s2",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729330(unfulfilled)"
+    },
+    {
+      "id": "3729333",
+      "name": "planner_px_r2dreamer_s2",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729329(unfulfilled)"
+    },
+    {
+      "id": "3729332",
+      "name": "planner_px_dreamer_s2",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729328(unfulfilled)"
+    },
+    {
+      "id": "3729331",
+      "name": "planner_rlpd_px_s2",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729327(unfulfilled)"
+    },
+    {
+      "id": "3729330",
+      "name": "planner_dp_px_s1",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729326(unfulfilled)"
+    },
+    {
+      "id": "3729329",
+      "name": "planner_px_r2dreamer_s1",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729325(unfulfilled)"
+    },
+    {
+      "id": "3729328",
+      "name": "planner_px_dreamer_s1",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729324(unfulfilled)"
+    },
+    {
+      "id": "3729327",
+      "name": "planner_rlpd_px_s1",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled),after:3729323(unfulfilled)"
+    },
+    {
+      "id": "3729326",
+      "name": "planner_dp_px_s0",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled)"
+    },
+    {
+      "id": "3729325",
+      "name": "planner_px_r2dreamer_s0",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled)"
+    },
+    {
+      "id": "3729324",
+      "name": "planner_px_dreamer_s0",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled)"
+    },
+    {
+      "id": "3729323",
+      "name": "planner_rlpd_px_s0",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "Dependency",
+      "dependency": "after:3706858(unfulfilled)"
+    },
+    {
+      "id": "3706858",
+      "name": "ah_dp_px_dM_s3",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "QOSMaxGRESPerUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725286",
+      "name": "e2e_rlpd_px_dH_s10",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725285",
+      "name": "e2e_rlpd_px_dDPfirst_s9",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725284",
+      "name": "e2e_rlpd_px_dDPfirst_s10",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725283",
+      "name": "e2e_rlpd_px_dH_s11",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725282",
+      "name": "e2e_rlpd_px_dH_s9",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3725281",
+      "name": "e2e_rlpd_px_dDPfirst_s8",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718818",
+      "name": "e2e_rlpd_px_dDPfirst_s15",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718817",
+      "name": "e2e_rlpd_px_dH_s15",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718816",
+      "name": "e2e_rlpd_px_dDPfirst_s14",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718815",
+      "name": "e2e_rlpd_px_dH_s14",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718814",
+      "name": "e2e_rlpd_px_dDPfirst_s13",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718813",
+      "name": "e2e_rlpd_px_dH_s13",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718812",
+      "name": "e2e_rlpd_px_dDPfirst_s12",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718811",
+      "name": "e2e_rlpd_px_dH_s12",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    },
+    {
+      "id": "3718810",
+      "name": "e2e_rlpd_px_dDPfirst_s11",
+      "state": "PENDING",
+      "qos": "preempt",
+      "reason": "JobHeldUser",
+      "dependency": "(null)"
+    }
+  ],
+  "dispatcher_pids": [],
+  "status": {
+    "state": "QUEUED_SLURM_DEPENDENCIES_NO_DAEMON",
+    "submitted_jobs": 32,
+    "time_utc": "2026-09-15T20:27:22.915687+00:00",
+    "jobs": 32,
+    "n": 8,
+    "pending_reference_dp": [
+      "3706858"
+    ],
+    "overlay_sha256": "82e55cd0c92154f0937e0044968947f86f5856f602d5eb70a75ea55a85db46b9",
+    "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f",
+    "free_GiB": 318.8,
+    "resident_dispatcher": false,
+    "admission": "four learner chains; after-start dependencies; all submitted held before release"
+  },
+  "submission": {
+    "status": "RELEASED_TO_SLURM",
+    "records": [
+      {
+        "job_id": "3729323",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 0,
+          "name": "planner_rlpd_px_s0",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "0",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s0",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:23.876472+00:00",
+        "after_start": [
+          "3706858"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": null,
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s0",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s0_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s0_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729324",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 0,
+          "name": "planner_px_dreamer_s0",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "0",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "0",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s0",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:24.036389+00:00",
+        "after_start": [
+          "3706858"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": null,
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s0",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s0_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s0_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "0",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729325",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 0,
+          "name": "planner_px_r2dreamer_s0",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "0",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "0",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s0",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:24.189193+00:00",
+        "after_start": [
+          "3706858"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": null,
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s0",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s0_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s0_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "0",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729326",
+        "configuration": {
+          "learner": "dp",
+          "seed": 0,
+          "name": "planner_dp_px_s0",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "0",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s0",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:24.332684+00:00",
+        "after_start": [
+          "3706858"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": null,
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s0",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s0_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s0_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729327",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 1,
+          "name": "planner_rlpd_px_s1",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "1",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s1",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:24.479642+00:00",
+        "after_start": [
+          "3706858",
+          "3729323"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729323",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s1",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s1_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s1_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729323",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729328",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 1,
+          "name": "planner_px_dreamer_s1",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "1",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "1",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s1",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:24.624683+00:00",
+        "after_start": [
+          "3706858",
+          "3729324"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729324",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s1",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s1_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s1_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729324",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "1",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729329",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 1,
+          "name": "planner_px_r2dreamer_s1",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "1",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "1",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s1",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:24.774636+00:00",
+        "after_start": [
+          "3706858",
+          "3729325"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729325",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s1",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s1_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s1_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729325",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "1",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729330",
+        "configuration": {
+          "learner": "dp",
+          "seed": 1,
+          "name": "planner_dp_px_s1",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "1",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s1",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:24.920187+00:00",
+        "after_start": [
+          "3706858",
+          "3729326"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729326",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s1",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s1_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s1_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729326",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729331",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 2,
+          "name": "planner_rlpd_px_s2",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "2",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s2",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:25.062036+00:00",
+        "after_start": [
+          "3706858",
+          "3729327"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729327",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s2",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s2_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s2_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729327",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729332",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 2,
+          "name": "planner_px_dreamer_s2",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "2",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "2",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s2",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:25.205921+00:00",
+        "after_start": [
+          "3706858",
+          "3729328"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729328",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s2",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s2_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s2_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729328",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "2",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729333",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 2,
+          "name": "planner_px_r2dreamer_s2",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "2",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "2",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s2",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:25.350480+00:00",
+        "after_start": [
+          "3706858",
+          "3729329"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729329",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s2",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s2_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s2_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729329",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "2",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729334",
+        "configuration": {
+          "learner": "dp",
+          "seed": 2,
+          "name": "planner_dp_px_s2",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "2",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s2",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:25.491800+00:00",
+        "after_start": [
+          "3706858",
+          "3729330"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729330",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s2",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s2_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s2_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729330",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729335",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 3,
+          "name": "planner_rlpd_px_s3",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "3",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s3",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:25.634733+00:00",
+        "after_start": [
+          "3706858",
+          "3729331"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729331",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s3",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s3_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s3_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729331",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729336",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 3,
+          "name": "planner_px_dreamer_s3",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "3",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "3",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s3",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:25.777212+00:00",
+        "after_start": [
+          "3706858",
+          "3729332"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729332",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s3",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s3_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s3_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729332",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "3",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729337",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 3,
+          "name": "planner_px_r2dreamer_s3",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "3",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "3",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s3",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:25.918156+00:00",
+        "after_start": [
+          "3706858",
+          "3729333"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729333",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s3",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s3_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s3_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729333",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "3",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729338",
+        "configuration": {
+          "learner": "dp",
+          "seed": 3,
+          "name": "planner_dp_px_s3",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "3",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s3",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:26.060605+00:00",
+        "after_start": [
+          "3706858",
+          "3729334"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729334",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s3",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s3_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s3_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729334",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729339",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 4,
+          "name": "planner_rlpd_px_s4",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "4",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s4",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:26.204745+00:00",
+        "after_start": [
+          "3706858",
+          "3729335"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729335",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s4",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s4_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s4_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729335",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729340",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 4,
+          "name": "planner_px_dreamer_s4",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "4",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "4",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s4",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:26.358752+00:00",
+        "after_start": [
+          "3706858",
+          "3729336"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729336",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s4",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s4_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s4_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729336",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "4",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729341",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 4,
+          "name": "planner_px_r2dreamer_s4",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "4",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "4",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s4",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:26.505155+00:00",
+        "after_start": [
+          "3706858",
+          "3729337"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729337",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s4",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s4_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s4_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729337",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "4",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729342",
+        "configuration": {
+          "learner": "dp",
+          "seed": 4,
+          "name": "planner_dp_px_s4",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "4",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s4",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:26.653883+00:00",
+        "after_start": [
+          "3706858",
+          "3729338"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729338",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s4",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s4_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s4_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729338",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729343",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 5,
+          "name": "planner_rlpd_px_s5",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "5",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s5",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:26.796106+00:00",
+        "after_start": [
+          "3706858",
+          "3729339"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729339",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s5",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s5_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s5_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729339",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729344",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 5,
+          "name": "planner_px_dreamer_s5",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "5",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "5",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s5",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:26.944857+00:00",
+        "after_start": [
+          "3706858",
+          "3729340"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729340",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s5",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s5_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s5_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729340",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "5",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729345",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 5,
+          "name": "planner_px_r2dreamer_s5",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "5",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "5",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s5",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:27.088560+00:00",
+        "after_start": [
+          "3706858",
+          "3729341"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729341",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s5",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s5_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s5_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729341",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "5",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729346",
+        "configuration": {
+          "learner": "dp",
+          "seed": 5,
+          "name": "planner_dp_px_s5",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "5",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s5",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:27.231889+00:00",
+        "after_start": [
+          "3706858",
+          "3729342"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729342",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s5",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s5_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s5_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729342",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729347",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 6,
+          "name": "planner_rlpd_px_s6",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "6",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s6",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:27.377473+00:00",
+        "after_start": [
+          "3706858",
+          "3729343"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729343",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s6",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s6_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s6_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729343",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729348",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 6,
+          "name": "planner_px_dreamer_s6",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "6",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "6",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s6",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:27.519225+00:00",
+        "after_start": [
+          "3706858",
+          "3729344"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729344",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s6",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s6_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s6_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729344",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "6",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729349",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 6,
+          "name": "planner_px_r2dreamer_s6",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "6",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "6",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s6",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:27.661151+00:00",
+        "after_start": [
+          "3706858",
+          "3729345"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729345",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s6",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s6_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s6_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729345",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "6",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729350",
+        "configuration": {
+          "learner": "dp",
+          "seed": 6,
+          "name": "planner_dp_px_s6",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "6",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s6",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:27.805153+00:00",
+        "after_start": [
+          "3706858",
+          "3729346"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729346",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s6",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s6_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s6_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729346",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729351",
+        "configuration": {
+          "learner": "rlpd",
+          "seed": 7,
+          "name": "planner_rlpd_px_s7",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "7",
+            "ARM": "dPlanner",
+            "OBS": "pixels",
+            "STEPS": "250000",
+            "CKPT_EVERY": "25000",
+            "IMAGE_AUG": "shift4",
+            "BUFFER_SIZE": "300000",
+            "GAMMA": "0.99"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/rlpd/e2e_rlpd_px_dPlanner_s7",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "1-06:00:00",
+          "budget": 250000,
+          "budget_unit": "environment decisions"
+        },
+        "time_utc": "2026-09-15T20:27:27.953580+00:00",
+        "after_start": [
+          "3706858",
+          "3729347"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729347",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_rlpd_px_s7",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s7_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_rlpd_px_s7_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729347",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/rlpd.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729352",
+        "configuration": {
+          "learner": "dreamer",
+          "seed": 7,
+          "name": "planner_px_dreamer_s7",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "7",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "7",
+            "2000000",
+            "model.rep_loss=dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_dreamer_s7",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:28.104616+00:00",
+        "after_start": [
+          "3706858",
+          "3729348"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729348",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_dreamer_s7",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s7_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_dreamer_s7_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729348",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "7",
+          "2000000",
+          "model.rep_loss=dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729353",
+        "configuration": {
+          "learner": "r2dreamer",
+          "seed": 7,
+          "name": "planner_px_r2dreamer_s7",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "7",
+            "R2_TREE": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/r2dreamer",
+            "DEMO_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/data/training_v2_reference_terminals",
+            "ENVCFG": "genesis_full_pixel",
+            "TAG": "r2dreamer",
+            "R2_LONG_RUN": "1",
+            "R2_MILESTONES": "[500000,1000000,1500000,2000000]",
+            "EVAL_SETS": "hold rnd"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "arguments": [
+            "native_rns10h_img",
+            "7",
+            "2000000",
+            "model.rep_loss=r2dreamer",
+            "model.image_aug=shift4",
+            "env.state_slice=8"
+          ],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/full_r2d_state_native_rns10h_img_r2dreamer_s7",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "2-00:00:00",
+          "budget": 2000000,
+          "budget_unit": "online world-model counter"
+        },
+        "time_utc": "2026-09-15T20:27:28.252164+00:00",
+        "after_start": [
+          "3706858",
+          "3729349"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729349",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_px_r2dreamer_s7",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s7_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_px_r2dreamer_s7_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729349",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/world_model.sbatch",
+          "native_rns10h_img",
+          "7",
+          "2000000",
+          "model.rep_loss=r2dreamer",
+          "model.image_aug=shift4",
+          "env.state_slice=8"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      },
+      {
+        "job_id": "3729354",
+        "configuration": {
+          "learner": "dp",
+          "seed": 7,
+          "name": "planner_dp_px_s7",
+          "environment": {
+            "GENESIS_PICKAPLACE_ROOT": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+            "GENESIS_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "R2D_SIM_VARIANT": "gc_kp4_riser3_shelf6",
+            "LADDER": "nested_sparse10",
+            "TIP_GUARD": "not_in_hand",
+            "FAR_RELEASE": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "WANDB_DISABLE_ARTIFACT": "true",
+            "SEED": "7",
+            "ARM": "dPlanner",
+            "STEPS": "100000",
+            "SAVE_FREQ": "50000",
+            "CROP": "56",
+            "MODES": "sample",
+            "SETS": "hold15 rnd30",
+            "PAR": "3",
+            "REQUIRE_CORES": "64"
+          },
+          "script": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch",
+          "arguments": [],
+          "output": "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/runs/dp/planner_dp_px_dPlanner_s7",
+          "qos": "preempt",
+          "partition": "gpu,preempt",
+          "time_limit": "0-16:00:00",
+          "budget": 100000,
+          "budget_unit": "gradient updates"
+        },
+        "time_utc": "2026-09-15T20:27:28.400611+00:00",
+        "after_start": [
+          "3706858",
+          "3729350"
+        ],
+        "after_reference_dp_start": [
+          "3706858"
+        ],
+        "after_previous_learner_start": "3729350",
+        "submitted_held": true,
+        "command": [
+          "sbatch",
+          "--parsable",
+          "--job-name=planner_dp_px_s7",
+          "--partition=gpu,preempt",
+          "--qos=preempt",
+          "--nice=0",
+          "--chdir=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/gp",
+          "--output=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s7_%j.out",
+          "--error=/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/slurm/planner_dp_px_s7_%j.out",
+          "--hold",
+          "--comment=planner_n8_oneshot_20260915",
+          "--dependency=after:3706858:3729350",
+          "/cluster/tufts/shortlab/jstale02/planner_px_2026-09-15/preparation/launch/dp.sbatch"
+        ],
+        "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f"
+      }
+    ],
+    "time_utc": "2026-09-15T20:27:22.915687+00:00",
+    "jobs": 32,
+    "n": 8,
+    "pending_reference_dp": [
+      "3706858"
+    ],
+    "overlay_sha256": "82e55cd0c92154f0937e0044968947f86f5856f602d5eb70a75ea55a85db46b9",
+    "queue_script_sha256": "071ccb5a0cdd9764d24ff0e5398878544b9fd2761984318216df4ae1b28b7b2f",
+    "free_GiB": 318.8,
+    "resident_dispatcher": false,
+    "admission": "four learner chains; after-start dependencies; all submitted held before release"
+  }
+}
