@@ -196,19 +196,34 @@ hardware difference of the local seeds (user: to be noted in the paper) does not
 |---|---|---|
 | s3 | 20 → 20 → 18 → 18 | 17 → 21 → 16 → 16 |
 | s4 | 16 → 17 → 20 → 10 | 10 → 20 → 22 → 16 |
-| s5 | 17 → · | 14 → · |
-| s6 | 19 → · | 16 → · |
-| s7–s9 | · (cells submitted 10:36) | · |
+| s5 | 17 → 17 → 14 → 17 | 14 → 10 → 20 → 18 |
+| s6 | 19 → 18 → 21 → 19 | 16 → 19 → 17 → 17 |
+| s7 | 17 → 18 → 20 → 15 | 18 → 18 → 9 → 11 |
+| s8 | 18 → 15 → 20 → 19 | 14 → 18 → 18 → 17 |
+| s9 | · → 10 → · → · | · (cells queued) |
 | s10 | 5 → 18 → 20 → 17 | 11 → 19 → 18 → 16 |
 | s11 | 20 → 21 → 19 → 16 | 21 → 19 → 19 → 9 |
 | s12 | 21 → 19 → 16 → 16 | 9 → 10 → 19 → 18 |
 | s13 | 20 → 19 → 20 → 18 | 14 → 15 → 16 → 21 |
-| s14 | 8 → 17 → 13 → 19 | · → 17 → 15 → 17 |
-| s15 | (run finishing) | (run COMPLETED 10:xx; cells submitted) |
+| s14 | 8 → 17 → 13 → 19 | 16 → 17 → 15 → 17 |
+| s15 | 20 → 22 → 16 → · | 15 → 17 → 17 → 22 |
 
-(`·` = cell not yet scored; read 10:40 09-15; 25 of 26 r2dreamer (ag) runs COMPLETED, human s15 finishing.) With
-both arms at 15–21/30 on almost every cell, the contrastive-loss learner is the only condition whose cells sit on a
-plateau from 1M on; its 0.5M cells are the only ones still rising (human s10 5, s14 8; machine s12 9, s4 10). The two machine seeds that read 0 with no picks at 0.5M read 15/30
+(`·` = cell not yet scored; read 12:25 09-15; all 26 r2dreamer (ag) runs COMPLETED 0:0, 0 preemptions.)
+
+### {r2dreamer loss} — READOUT MOMENT at 15 v 15 (2026-09-15 12:25; s9 both arms pending → 16 v 16 next check)
+
+| statistic (per seed, rnd30 MODE `home`) | human mean | machine mean | Δ (H−M) | permutation p (MC 300k) |
+|---|---|---|---|---|
+| **pooled 0.5M + 1M cells, (af) s0–2 + (ag) s3–8, s10–15** | **0.593** (0.383–0.700) | **0.527** (0.317–0.667) | **+0.067** | **0.059** |
+| (ag) single 2M cell, 11 v 12 | 0.558 | 0.550 | +0.008 | 0.90 |
+
+Reading: on the pooled statistic the human arm reads 0.07 higher at p 0.06 — inside the registered ±0.15 margin
+(P-ag-2), so "no effect detectable" is the sentence, with the honest note that this is the one condition where the
+sign is stable and the p small. On the 2M cells the arms are identical (0.558 v 0.550). The two arms' seed ranges
+overlap almost entirely; the machine arm's lowest seeds (s12 0.317, s5 0.40) are seeds whose 0.5M or 1M cell caught a
+dip (s12: 9, 10 at 0.5M/1M then 19, 18 at 1.5M/2M) — the checkpoint lottery, not a non-igniting seed (rise time 240–308k
+on all). Every one of the 30 seeds ignites (P-ag-2's ignition clause met). Both arms sit on a 15–21/30 plateau from
+1M on; the contrastive loss is the learner to lead the pixel table with. The two machine seeds that read 0 with no picks at 0.5M read 15/30
 and 9/30 at 1M — late rise, not dead seeds; and s12 human / s15 machine drop 12 → 2 and 18 → 4 between milestones —
 the oscillation again. {r2dreamer loss} s3–s15: first 0.5M milestones scored from ~17:00.
 
