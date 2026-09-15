@@ -161,16 +161,20 @@ wrong or means something else; use the shared cell and the per-episode counts.)
 | seed | human 0.5M → 1M | machine 0.5M → 1M |
 |---|---|---|
 | seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
-| s8 | 1 → 4 → 8 | 18 → 9 |
-| s9 | 8 → 10 | 12 → 7 |
-| s10 | 10 → 10 → 0 (picked 20) | **0 (picked 0)** → 15 → 5 |
-| s11 | 0 (picked 10) → 12 → 12 | 6 → 3 → 4 |
-| s12 | 12 → 2 → 8 | **0 (picked 0)** → 9 → 10 |
-| s13 | 1 (picked 2) → 9 → 13 | 13 → 17 → 16 → · |
-| s14 | 11 → 3 → 16 | 9 → 6 → 6 → **0 (picked 19)** |
+| s8 | 1 → 4 → 8 → 7 | 18 → 9 → 8 → 16 |
+| s9 | 8 → 10 → 9 → 6 | 12 → 7 → · → · |
+| s10 | 10 → 10 → 0 (picked 20) → 3 | **0 (picked 0)** → 15 → 5 → 13 |
+| s11 | 0 (picked 10) → 12 → 12 → 12 | 6 → 3 → 4 → 18 |
+| s12 | 12 → 2 → 8 → **0 (picked 17)** | **0 (picked 0)** → 9 → 10 → 14 |
+| s13 | 1 (picked 2) → 9 → 13 → 17 | 13 → 17 → 16 → 17 |
+| s14 | 11 → 3 → 16 → · | 9 → 6 → 6 → **0 (picked 19)** |
 | s15 | 8 → 13 → 17 → 5 | 18 → 4 → 16 → 16 |
 
-(read 18:35 09-14; the `final` cell = the 2M checkpoint, counted once.)
+(read 20:40 09-14; the `final` cell = the 2M checkpoint, counted once; all 16 dreamer-loss runs COMPLETED 0:0 by
+20:40, 8.6–9.5 h each.) At the 2M cell alone, 7 v 7 so far: human 7, 6, 3, 12, 0, 17, 5 (mean 7.1/30 = 0.24) ·
+machine 16, 13, 18, 14, 17, 0, 16 (mean 13.4/30 = 0.45) — the single-cell read leans machine, the 1M cells leaned
+human on the same seeds; the four-milestone mean and the pooled statistic are the reads of record, computed when s9/s14
+land.
 
 {r2dreamer loss}, `nested_sparse10`, the 13 new seeds per arm (same columns):
 
