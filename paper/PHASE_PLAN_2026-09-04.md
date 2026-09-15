@@ -1929,6 +1929,26 @@ while fewer than 8 DP jobs run (my 9 pending RLPD held 11:08; all my pending job
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
+## Amendment (ai) — attribution control: DreamerV3 losses on STATE observation, `nested_sparse10`, from scratch, local (registered 2026-09-15 ~11:25 BEFORE launch; user: "see if you can get dreamerv3 to ignite locally on just state")
+
+**Why.** The pixel world models ignite 57/57; the state-based `nested_sparse10` runs of (ac) never picked — but those
+used the contrastive loss (r2dreamer) at 4M, packed, on the cluster-built sets. The one cell never run: the SAME
+dreamer-loss recipe as (ae), with the state observation instead of pixels, on the same local box and the same
+demonstration tapes. It separates "pixels + augmentation" from "reconstruction loss" as the active ingredient
+(`CLUSTER_READOUT_2026-09-13_2000.md` §4 named exactly this control).
+
+**Design.** One run at a time on pop-os, human arm first: `env=genesis_full_state` (17-dim state incl. can/goal pose,
+`cnn_keys '$^'`, no augmentation), `model.rep_loss=dreamer`, `nested_sparse10`, `tip_guard not_in_hand`,
+`return_clamp 10`, `buffer.max_size 5e5`, fresh world model, actor `bounded_normal`, `act_entropy 3e-5` — the (ae)
+command with the config swapped and `image_aug`/`state_slice` removed. Set `dHfull_all_rns10h` (the local state set,
+74 tapes, Σ 130, 13 `home`, action-identical to the `_img` set). **Budget 2M** (state runs at ~80 fps ≈ 7 h),
+milestones 0.5M/1M/2M, series snapshot every ~100k with rnd30 + hold15 MODE cells (fresh process, training world).
+Second seed / machine arm only if the first ignites or the user asks.
+
+**Predictions.** P-ai-1: if the state run reaches rolling-30 `home` ≥ 0.5 by 2M, pixels are NOT the active ingredient
+and the (ac) failure belongs to the contrastive loss or its cluster conditions; if it never picks by 2M (the (ac)
+pattern), the observation is the ingredient. Either way reportable; n = 1, descriptive.
+
 ## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
 
 **Question.** The project's question (PAPER_PLAN H4) on the configuration that actually learns the task: does the
