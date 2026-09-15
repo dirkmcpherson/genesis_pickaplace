@@ -1918,6 +1918,14 @@ for ~10 h). User: floor lowered 100 → **20 GB** in the launchers and the sweep
 cells. World models: 40/42 (ag) runs COMPLETED 0:0 by 08:47, r2dreamer s15 both arms finishing; still no
 preemption. Monitoring cadence reduced to every 3 h (user).
 
+**Status 2026-09-15 11:10 — GPU split with the {DP} pixel arm (ah) (user: "split between RLPD and DP until we have
+some seeds of both").** The eight `ah_dp_px_*` jobs (other workstation, amendment (ah)) were pending on the normal
+QOS GPU cap; moved to `--qos=preempt -p gpu,preempt` (jobs 3706851–3706858; Requeue=1 and the DP launcher handles
+restarts) so they draw on the 20-GPU preempt allocation, and `$W/px_release.sh` now HOLDS my pending RLPD seeds
+while fewer than 8 DP jobs run (my 9 pending RLPD held 11:08; all my pending jobs also moved to `-p preempt` only at
+10:36 so new starts stay off the gpu-partition nodes). Effect: the next 8 slots my finishing runs free go to DP
+(~3 h each at 100k steps), then RLPD resumes — RLPD 8 v 8 slips ~4 h. Scheduling only; no recipe changed.
+
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
