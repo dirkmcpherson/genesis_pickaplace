@@ -7,9 +7,11 @@ Produces, for every learner x arm condition of amendments (ad)/(ae)/(af)/(ag):
                           against online sim steps, mean + 95 % bootstrap CI over seeds;
   2. rise time         -- first online step at which the rolling-30 rate crosses a
                           threshold, per run, tabulated as median [min, max] over seeds;
-  3. steady state      -- (a) training record over the last 20 % of each run,
+  3. rise-time LAG     -- per run, rise_time(phase) - rise_time(picked), so the phases
+                          are read as an ORDER rather than as absolute clock times;
+  4. steady state      -- (a) training record over the last 20 % of each run,
                           (b) eval cells (rnd30 MODE) at >= 0.5 M online steps;
-  4. ignition rate     -- fraction of seeds whose rolling-30 `home` reaches >= 0.5
+  5. ignition rate     -- fraction of seeds whose rolling-30 `home` reaches >= 0.5
                           inside budget, and fraction with >= 1 `home` in any rnd30 cell.
 
 Two kinds of number live here and are never mixed:
@@ -63,6 +65,15 @@ PHASE_LABEL = {
     "home": "home",
     "tipped": "tipped",
 }
+
+#: the rise-time LAG figure: reference phase, the phases plotted against it, and the
+#: learner conditions that carry all of them.  {RLPD} is excluded because its episode
+#: record has no `farside`/`slide_event`/`home` (absent, not zero, PROVENANCE 7.4) and
+#: the ramp control is excluded because it pays a different ladder.
+LAG_REF = "picked"
+LAG_PHASES = ["placed_v2", "farside", "slide_event", "home", "tipped"]
+LAG_CONDITIONS = ["dreamer_local", "dreamer_cluster", "r2dreamer_cluster"]
+LAG_THRESHOLDS = (0.5, 0.1)
 
 ROLL = 30           # episodes in the rolling window
 GRID = 50_000       # online-step grid for the CI bands
@@ -795,6 +806,169 @@ def fig_ignition(groups, outdir):
     return rows
 
 
+def lag_rows(groups, thresh, conditions=LAG_CONDITIONS):
+    """Per run and phase: rise_time(phase) - rise_time(`picked`) at one threshold.
+
+    Status of a row:
+      ``crossed``      -- both the reference and the phase crossed; ``lag_steps`` is set;
+      ``never``        -- the reference crossed, the phase never did inside the record;
+      ``absent``       -- the learner's episode record has no such flag at all;
+      ``no_reference`` -- `picked` itself never crossed, so no lag is defined for the run.
+    """
+    rows = []
+    for cond in conditions:
+        if cond not in groups:
+            continue
+        for arm, rs in groups[cond].items():
+            for r in rs:
+                ref = (r.rise(LAG_REF, thresh)
+                       if r.flags.get(LAG_REF) is not None else None)
+                for phase in LAG_PHASES:
+                    base = dict(condition=cond, arm=arm, seed=r.seed, run=r.name,
+                                threshold=thresh, phase=phase, reference=LAG_REF,
+                                rise_step_reference=("never" if ref is None else ref),
+                                budget=r.budget, achieved=r.achieved,
+                                complete=r.complete, note=r.note)
+                    if r.flags.get(phase) is None:
+                        rows.append(dict(base, rise_step_phase="absent",
+                                         lag_steps="", status="absent"))
+                        continue
+                    v = r.rise(phase, thresh)
+                    if ref is None:
+                        rows.append(dict(base,
+                                         rise_step_phase=("never" if v is None else v),
+                                         lag_steps="", status="no_reference"))
+                    elif v is None:
+                        rows.append(dict(base, rise_step_phase="never",
+                                         lag_steps="", status="never"))
+                    else:
+                        rows.append(dict(base, rise_step_phase=v, lag_steps=v - ref,
+                                         status="crossed"))
+    return rows
+
+
+def fig_rise_lag(groups, outdir, thresh, conditions=LAG_CONDITIONS):
+    """Per-phase rise-time lag relative to `picked`, one panel per learner condition."""
+    rows = lag_rows(groups, thresh, conditions)
+    conds = [c for c in conditions if c in groups]
+    if not conds:
+        return rows
+
+    # shared y limits over every panel, from the lags that exist
+    finite = [r["lag_steps"] / 1e3 for r in rows if r["status"] == "crossed"]
+    if finite:
+        lo, hi = min(finite), max(finite)
+    else:
+        lo, hi = -1.0, 1.0
+    span = max(hi - lo, 1.0)
+    # the "never crossed" band at the top edge is reserved only if some seed needs it;
+    # an empty band would read as head-room that the data does not use.
+    n_never = sum(1 for r in rows if r["status"] == "never")
+    never_y = (hi + 0.13 * span) if n_never else None
+    ytop = (hi + 0.26 * span) if n_never else (hi + 0.10 * span)
+    ybot = lo - 0.13 * span
+
+    nrow = len(conds)
+    fig, axes = plt.subplots(nrow, 1, figsize=(7.1, 2.35 * nrow + 1.5), sharey=True)
+    if nrow == 1:
+        axes = [axes]
+    dx = 0.19                                   # human / machine offset within a phase
+    for ax, cond in zip(axes, conds):
+        arms = groups[cond]
+        n_no_ref = {}
+        for arm, rs in arms.items():
+            n_no_ref[arm] = len({r["seed"] for r in rows
+                                 if r["condition"] == cond and r["arm"] == arm
+                                 and r["status"] == "no_reference"})
+        ax.axhline(0.0, color="0.35", lw=0.9, zorder=1)
+        if never_y is not None:
+            ax.axhline(never_y, color="0.75", lw=0.6, ls=":", zorder=1)
+        for k, phase in enumerate(LAG_PHASES):
+            for arm in arms:
+                x = k + (dx if arm == "machine" else -dx)
+                sel = [r for r in rows if r["condition"] == cond and r["arm"] == arm
+                       and r["phase"] == phase]
+                got = [r["lag_steps"] / 1e3 for r in sel if r["status"] == "crossed"]
+                nev = [r for r in sel if r["status"] == "never"]
+                for r in sel:
+                    if r["status"] != "crossed":
+                        continue
+                    j = (np.random.RandomState(r["seed"]).rand() - 0.5) * 0.17
+                    ax.plot(x + j, r["lag_steps"] / 1e3, "o", ms=3.2,
+                            color=ARM_COLOR[arm], alpha=0.85, mew=0, zorder=3)
+                for r in nev:
+                    j = (np.random.RandomState(r["seed"]).rand() - 0.5) * 0.17
+                    ax.plot(x + j, never_y, "o", ms=4.0, mfc="none",
+                            mec=ARM_COLOR[arm], mew=0.9, alpha=0.95, zorder=3)
+                if nev and never_y is not None:
+                    ax.text(x, never_y + 0.045 * span, f"{len(nev)}x never",
+                            ha="center", fontsize=5.2, color=ARM_COLOR[arm])
+                if got:
+                    m = float(np.median(got))
+                    ax.plot([x - 0.155, x + 0.155], [m, m], "-",
+                            color=ARM_COLOR[arm], lw=2.2, zorder=4)
+                    ax.text(x, ybot + 0.035 * span, f"{len(got)}",
+                            ha="center", fontsize=5.4, color="0.35")
+        ax.set_xticks(range(len(LAG_PHASES)))
+        ax.set_xticklabels([PHASE_LABEL[p] for p in LAG_PHASES], fontsize=7)
+        ax.set_xlim(-0.55, len(LAG_PHASES) - 0.45)
+        ax.set_ylim(ybot, ytop)
+        ax.set_ylabel("lag after `picked'\n(k online sim steps)", fontsize=7.4)
+        ax.grid(axis="y", alpha=0.22, lw=0.4)
+        ax.tick_params(labelsize=7)
+        nr = "; ".join(f"{a} {n} without a `picked' crossing"
+                       for a, n in n_no_ref.items() if n)
+        ns = ", ".join(f"{a} n={len(rs)}" for a, rs in arms.items())
+        wrap_title(ax, f"{CONDITIONS[cond]['short']} -- {ns}"
+                       + (f"  [{nr}: no lag defined, not plotted]" if nr else ""),
+                   width=104, fontsize=7.2)
+        if ax is axes[0]:
+            handles = [Line2D([], [], ls="", marker="o", ms=4, color=ARM_COLOR[a],
+                              label=f"{a} demonstrations") for a in arms]
+            handles.append(Line2D([], [], color="0.35", lw=2.2,
+                                  label="median over crossers"))
+            handles.append(Line2D([], [], ls="", marker="o", ms=4.5, mfc="none",
+                                  mec="0.35",
+                                  label="never crosses (top edge)"
+                                        + ("" if n_never else " -- none here")))
+            ax.legend(handles=handles, fontsize=6.0, loc="upper left", frameon=False,
+                      ncol=2, handletextpad=0.4, columnspacing=1.2)
+    axes[-1].set_xlabel("phase (task order; `tipped' is a failure mode, not a rung)",
+                        fontsize=8)
+    fig.tight_layout()
+    cap = (f"Rise-time LAG relative to `{LAG_REF}'.  For each run, "
+           f"lag(phase) = rise({phase_thresh_str(thresh)}, phase) "
+           f"- rise({phase_thresh_str(thresh)}, `{LAG_REF}'), where rise is the first "
+           f"online sim step at which the run's rolling-{ROLL}-episode rate for that flag "
+           f"reaches the threshold.  TRAINING RECORD: sampled actions on the policy's own "
+           f"training starts; observation {OBS}, ladder {LADDER}.  {{dv3}} = DreamerV3 "
+           f"losses in the r2dreamer chassis, {{r2dreamer}} = the port's contrastive "
+           f"representation loss.  Demonstrations: human = dHfull_all (74 tapes), "
+           f"machine = dDPfull_first (72 tapes).  One point per seed (jittered), thick "
+           f"bar = median over the seeds that crossed, the small number under each group "
+           f"is how many crossed.  A seed whose phase never reaches the threshold inside "
+           f"its record is an OPEN marker on the dotted top edge and is counted there; it "
+           f"is never plotted as lag 0 and never enters the median.  A seed whose "
+           f"`{LAG_REF}' itself never crosses has no lag at all and is reported in the "
+           f"panel title.  {{RLPD}} is absent from this figure: its episode record carries "
+           f"no `farside'/`slide_event'/`home' flag (absent, not zero).  The nested_ramp "
+           f"control is absent: it pays a different ladder.  Budgets 1 M (ae/af) or 2 M "
+           f"(ag) online sim steps; the {{dv3}} local seeds ran on the pop-os AVX2 GPU "
+           f"workstation, the cluster conditions on pax GPU nodes.")
+    h = fig_caption(fig, cap)
+    fig.subplots_adjust(bottom=h + 0.06, hspace=0.42)
+    save(fig, outdir / f"fig_rise_lag_thresh{thresh_tag(thresh)}")
+    return rows
+
+
+def thresh_tag(t):
+    return f"{t:g}".replace(".", "p")
+
+
+def phase_thresh_str(t):
+    return f"rate>={t:g}"
+
+
 def save(fig, stem: Path):
     fig.savefig(str(stem) + ".png", dpi=200)
     fig.savefig(str(stem) + ".pdf")
@@ -949,6 +1123,10 @@ def main(argv=None):
     ap.add_argument("--grid", type=int, default=GRID)
     ap.add_argument("--boot", type=int, default=BOOT)
     ap.add_argument("--seed", type=int, default=BOOT_SEED)
+    ap.add_argument("--lag-thresholds",
+                    default=",".join(f"{t:g}" for t in LAG_THRESHOLDS),
+                    help="comma-separated rolling-rate thresholds for the rise-time "
+                         "LAG figure (fig_rise_lag_thresh<t>); one figure per value")
     a = ap.parse_args(argv)
 
     ROLL, GRID, BOOT = a.roll, a.grid, a.boot
@@ -982,6 +1160,11 @@ def main(argv=None):
     write_csv(per_seed, outdir / "px_rise_time_per_seed.csv")
     write_csv(cells, outdir / "px_rise_time_cells.csv")
     write_tex(cells, groups, Path(os.path.expanduser(a.tex)))
+
+    lag_all = []
+    for t in [float(s) for s in a.lag_thresholds.split(",") if s.strip()]:
+        lag_all += fig_rise_lag(groups, outdir, t)
+    write_csv(lag_all, outdir / "px_rise_lag_per_seed.csv")
 
     write_csv(fig_steady_state(groups, outdir), outdir / "px_steady_state.csv")
     write_csv(fig_ignition(groups, outdir), outdir / "px_ignition.csv")

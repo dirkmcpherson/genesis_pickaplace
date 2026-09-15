@@ -241,7 +241,7 @@ Job ids: (af) 3685153–3685156 (evals 3697480–3698039); (ag) 3692544–369257
 - The other workstation's state-based `nested_sparse10` runs (amendment (ac)) used the cluster-built `_rns10h`
   sets (12/12 `home`) and `$W/r2dreamer_ladderN` @ 0cf3d9e — the pixel tree is that tree plus the pixel commits.
 
-## 7. Rise time, learning curves, steady state, ignition — how they are computed
+## 7. Rise time, rise-time lag, learning curves, steady state, ignition — how they are computed
 
 One script produces every figure, table and CSV of the by-phase analysis:
 `baselines/diagnostics/px_phase_analysis.py`. It reads a **local rsync mirror** of the cluster and of
@@ -327,6 +327,50 @@ cell. `n/a` means no determined seed crossed. LaTeX: `paper/figures/px_rise_time
 (booktabs `table*` inside `\resizebox`); per-seed values:
 `paper/figures/px_phase_2026-09-14/px_rise_time_per_seed.csv`.
 
+### 7.6a Rise-time LAG relative to `picked`
+
+A rise time is an absolute clock reading, so it mixes two things: how fast a seed got going at
+all, and the ORDER in which its phases arrived. The lag figures remove the first. For one run and
+one threshold `t`,
+
+```
+lag(phase) = rise(t, phase) - rise(t, `picked`)
+```
+
+in online sim steps, plotted in thousands, for `placed_v2`, `farside`, `slide_event`, `home` and
+`tipped`. `rise` is the same quantity as §7.6: the first online step at which the run's
+rolling-`ROLL`-episode (30) rate for that flag reaches `t`. The reference is always the run's own
+`picked` crossing, so no number is carried between seeds and nothing is interpolated. Code:
+`lag_rows()` and `fig_rise_lag()` in `baselines/diagnostics/px_phase_analysis.py`; the thresholds
+are the CLI flag `--lag-thresholds` (default `0.5,0.1`), one figure per value, written as
+`paper/figures/px_phase_2026-09-14/fig_rise_lag_thresh{0p5,0p1}.{png,pdf}`. Every plotted point
+and every non-crossing is in `px_rise_lag_per_seed.csv`.
+
+Two thresholds are produced because the sparse ladder makes the ≥ 0.5 crossings of the late rungs
+nearly simultaneous — under `nested_sparse10` a seed that reliably reaches `home` reaches
+`farside` and `slide_event` on the way, in the same episodes — so the ≥ 0.1 variant, the first
+crossing of a one-in-ten rate, is the one that separates the rungs. Neither is more correct; they
+answer different questions and both are reported.
+
+Layout: one panel per learner condition ({dv3} local, {dv3} cluster, {r2dreamer} cluster), human
+and machine offset side by side at each phase position, x in task order, y = lag in k online sim
+steps, with `y = 0` drawn as the `picked` reference line. One point per seed (deterministically
+jittered by seed), the thick bar is the **median over the seeds that crossed**, and the count of
+crossers is printed under each group. Status handling, which the figure never collapses into a
+number:
+
+- **never** — the reference crossed but the phase did not, inside the run's record. The seed is an
+  OPEN marker on a dotted band at the top edge, labelled `Nx never` beside it, and it is excluded
+  from the median. It is never drawn at lag 0. The band is drawn only when some seed needs it.
+- **no_reference** — the run's own `picked` never crossed, so no lag is defined for it at all. The
+  seed is not plotted and the count is stated in that panel's title.
+- **absent** — the learner's episode record has no such flag. {RLPD} is for this reason excluded
+  from the figure entirely (§7.4), and so is the `nested_ramp` control, which pays a different
+  ladder.
+
+Negative lags are meaningful and are plotted as such: `tipped` normally rises BEFORE `picked`,
+because early policies knock the can over before they ever lift it.
+
 ### 7.7 Steady state
 
 Two versions, in two panels of `fig_steady_state`, never combined:
@@ -351,9 +395,14 @@ Per condition × arm, two criteria with Wilson 95 % CIs:
 
 1. **Training record ≠ eval cells.** Sampled actions on self-generated starts run well above
    deterministic actions on fixed random starts for every condition here. Quote the kind.
-2. **The {r2dreamer} (ag) seeds are incomplete.** 8 of 15 seeds per arm had not reached 2 M when
-   the mirror was taken, and 8 per arm have no eval cell yet. Their curves end early, their band is
-   truncated below 3 seeds, and their non-crossings are undetermined rather than failures.
+2. **Mirror refreshed 2026-09-15; two seed counts moved.** The {r2dreamer} (ag) seeds s3–s15
+   finished overnight, so that condition is now **16 seeds per arm** (only human s15 is short, at
+   1.75 M of 2 M), and the {RLPD} (ag) seeds s2–s11 have started, so {RLPD} is now 12 human / 11
+   machine seeds of which only s0/s1 per arm have finished — the rest are 0.10–0.68 M in and their
+   curves, steady state and ignition are early-training numbers, not final ones. A seed that has
+   not crossed a threshold and has not finished is undetermined rather than a failure (§7.6).
+   In the {r2dreamer} panels of the lag figures every seed crosses every phase at both
+   thresholds, so there are no open top-edge markers there.
 3. **{RLPD} budget unit.** 250 k decisions, converted to 1 M sim frames by `× action_repeat 4`
    for a shared x-axis. Its training record also lacks the three late-phase flags (§7.4), so
    {RLPD} contributes only `picked`, `placed_v2` and `tipped` rise times, and only an eval
@@ -370,4 +419,5 @@ Per condition × arm, two criteria with Wilson 95 % CIs:
    s2–s15 were still queued.
 
 Commit: `8be9038` ("px phase analysis: rise time, learning curves, steady state, ignition for the
-nested_sparse10 pixel conditions") on branch `ladder-unify-2026-09-11`.
+nested_sparse10 pixel conditions") on branch `ladder-unify-2026-09-11`. The rise-time LAG figures
+(§7.6a) and the 2026-09-15 mirror refresh were added in the following commit on the same branch.
