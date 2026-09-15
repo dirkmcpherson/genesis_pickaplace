@@ -194,10 +194,21 @@ hardware difference of the local seeds (user: to be noted in the paper) does not
 
 | seed | human 0.5M → 1M → 1.5M → 2M | machine 0.5M → 1M → 1.5M → 2M |
 |---|---|---|
-| s3 | 20 → 20 | 17 → 21 |
-| s4 | · → 17 | · |
+| s3 | 20 → 20 → 18 → 18 | 17 → 21 → 16 → 16 |
+| s4 | 16 → 17 → 20 → 10 | 10 → 20 → 22 → 16 |
+| s5 | 17 → · | 14 → · |
+| s6 | 19 → · | 16 → · |
+| s7–s9 | · (cells submitted 10:36) | · |
+| s10 | 5 → 18 → 20 → 17 | 11 → 19 → 18 → 16 |
+| s11 | 20 → 21 → 19 → 16 | 21 → 19 → 19 → 9 |
+| s12 | 21 → 19 → 16 → 16 | 9 → 10 → 19 → 18 |
+| s13 | 20 → 19 → 20 → 18 | 14 → 15 → 16 → 21 |
+| s14 | 8 → 17 → 13 → 19 | · → 17 → 15 → 17 |
+| s15 | (run finishing) | (run COMPLETED 10:xx; cells submitted) |
 
-(`·` = cell not yet scored; read 17:35 09-14.) The two machine seeds that read 0 with no picks at 0.5M read 15/30
+(`·` = cell not yet scored; read 10:40 09-15; 25 of 26 r2dreamer (ag) runs COMPLETED, human s15 finishing.) With
+both arms at 15–21/30 on almost every cell, the contrastive-loss learner is the only condition whose cells sit on a
+plateau from 1M on; its 0.5M cells are the only ones still rising (human s10 5, s14 8; machine s12 9, s4 10). The two machine seeds that read 0 with no picks at 0.5M read 15/30
 and 9/30 at 1M — late rise, not dead seeds; and s12 human / s15 machine drop 12 → 2 and 18 → 4 between milestones —
 the oscillation again. {r2dreamer loss} s3–s15: first 0.5M milestones scored from ~17:00.
 
