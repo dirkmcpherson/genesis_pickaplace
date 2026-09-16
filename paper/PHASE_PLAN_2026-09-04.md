@@ -1957,6 +1957,48 @@ Second seed / machine arm only if the first ignites or the user asks.
 and the (ac) failure belongs to the contrastive loss or its cluster conditions; if it never picks by 2M (the (ac)
 pattern), the observation is the ingredient. Either way reportable; n = 1, descriptive.
 
+**STATUS 2026-09-16 00:20 — RUN COMPLETE at 2M. P-ai-1 NOT MET: the state-observation run NEVER REACHES `home`.**
+`~/runs_dv3_local/dv3state_sparse10_dHfull_all_rns10h_rlDreamer_s0`, launched 2026-09-15 11:21, ended at counter
+2 117 632 (= 2.00M online steps), 0 tracebacks, all three milestones written (`online_500000/1000000/2000000`),
+series watcher exited SERIES-DONE at 18:51:52.
+
+*Training record, whole run:* 2054 episodes, **0 `home`**, 28 `picked` (1.4 %), 533 `tipped` (25.9 %). The rolling-30
+`home` rate never leaves 0, so the P-ai-1 ignition clause (`home` ≥ 0.5 by 2M) cannot be met and the run never even
+reaches the 0.1 early crossing on `picked`.
+
+*Series cells of record* (17 snapshots, fresh process, training world, MODE actions; counter | hold15 `home`/`picked`
+of 15 | rnd30 `home`/`picked` of 30). Every `home` cell is 0; `picked` peaks at 3/30 = 0.10:
+
+| counter | online | hold15 home/picked | rnd30 home/picked |
+|---|---|---|---|
+| 222 628 | 0.105M | 0/15 3/15 | 0/30 3/30 |
+| 324 418 | 0.207M | 0/15 0/15 | 0/30 3/30 |
+| 468 215 | 0.351M | 0/15 0/15 | 0/30 2/30 |
+| 595 017 | 0.477M | 0/15 0/15 | 0/30 0/30 |
+| 718 970 | 0.601M | 0/15 0/15 | 0/30 0/30 |
+| 852 731 | 0.735M | 0/15 0/15 | 0/30 0/30 |
+| 981 177 | 0.864M | 0/15 0/15 | 0/30 3/30 |
+| 1 122 628 | 1.005M | 0/15 0/15 | 0/30 0/30 |
+| 1 255 877 | 1.138M | 0/15 0/15 | 0/30 3/30 |
+| 1 372 290 | 1.255M | 0/15 0/15 | 0/30 0/30 |
+| 1 491 737 | 1.374M | 0/15 0/15 | 0/30 2/30 |
+| 1 601 180 | 1.484M | 0/15 0/15 | 0/30 0/30 |
+| 1 738 860 | 1.621M | 0/15 0/15 | 0/30 2/30 |
+| 1 857 219 | 1.740M | 0/15 0/15 | 0/30 2/30 |
+| 1 972 624 | 1.855M | 0/15 0/15 | 0/30 3/30 |
+| 2 089 126 | 1.972M | 0/15 0/15 | 0/30 2/30 |
+| 2 117 632 | 2.000M | 0/15 0/15 | 0/30 0/30 |
+
+**Verdict (P-ai-1, disconfirm branch).** The observation is the ingredient. The identical dreamer-loss recipe, the
+same box, the same demonstration tapes and the same `nested_sparse10` ladder ignite on 57/57 seeds from PIXELS and on
+0/1 from 17-dimensional STATE — and the state arm carries MORE information (privileged can and goal pose) than the
+pixel arm, whose proprioception slice is 8-dimensional with no object pose at all. So the (ac) state failure is not
+attributable to the contrastive loss or to cluster conditions; it reproduces under DreamerV3 losses, locally, at 2M.
+What (ai) does NOT separate: pixels-as-observation from `shift4` image augmentation (they enter together in every
+igniting run). That is the next control if the attribution is to be sharpened; n = 1 here, descriptive, human arm only
+(the machine arm was contingent on ignition and is not run). Related: `paper/CLUSTER_READOUT_2026-09-13_2000.md` §4,
+`paper/AF_PIXEL_CLUSTER_TALLY_2026-09-14.md`.
+
 ## Amendment (ae) — human vs machine demonstrations for the PIXEL world model: 4 v 4 seeds, `nested_sparse10`, 1M online steps (registered 2026-09-12 ~17:00, BEFORE the first machine run; coordinator, pop-os)
 
 **Question.** The project's question (PAPER_PLAN H4) on the configuration that actually learns the task: does the
