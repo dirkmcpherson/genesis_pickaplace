@@ -38,11 +38,11 @@ learner,dataset,seed,in_design,run,training_record,home,picked,cells,excluded_re
 {DreamerV3 losses},planner72,4,True,full_r2d_state_native_rns10h_img_dreamer_s4,True,0.0,0.26666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s4/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s4/online_1000000/rnd30_mode/metrics.json,
 {DreamerV3 losses},planner72,5,True,full_r2d_state_native_rns10h_img_dreamer_s5,True,0.0,0.23333333333333334,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s5/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s5/online_1000000/rnd30_mode/metrics.json,
 {DreamerV3 losses},planner72,6,True,full_r2d_state_native_rns10h_img_dreamer_s6,True,0.0,0.16666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s6/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_dreamer_s6/online_1000000/rnd30_mode/metrics.json,
-{DreamerV3 losses},planner72,7,True,full_r2d_state_native_rns10h_img_dreamer_s7,True,,,,no rnd30_mode cell at 500k
-{DreamerV3 losses},r2teacher,0,True,full_r2d_state_native_rns10h_img_dreamer_s0,True,,,,no rnd30_mode cell at 500k
-{DreamerV3 losses},r2teacher,1,True,full_r2d_state_native_rns10h_img_dreamer_s1,True,,,,no rnd30_mode cell at 500k
-{DreamerV3 losses},r2teacher,2,True,,False,,,,no run in mirror (queued / not started / dead)
-{DreamerV3 losses},r2teacher,3,True,,False,,,,no run in mirror (queued / not started / dead)
+{DreamerV3 losses},planner72,7,True,full_r2d_state_native_rns10h_img_dreamer_s7,True,,,,no rnd30_mode cell at 1000k
+{DreamerV3 losses},r2teacher,0,True,full_r2d_state_native_rns10h_img_dreamer_s0,True,,,,no rnd30_mode cell at 1000k
+{DreamerV3 losses},r2teacher,1,True,full_r2d_state_native_rns10h_img_dreamer_s1,True,,,,no rnd30_mode cell at 1000k
+{DreamerV3 losses},r2teacher,2,True,full_r2d_state_native_rns10h_img_dreamer_s2,True,,,,no rnd30_mode cell at 500k
+{DreamerV3 losses},r2teacher,3,True,full_r2d_state_native_rns10h_img_dreamer_s3,True,,,,no rnd30_mode cell at 500k
 {DreamerV3 losses},r2teacher,4,True,,False,,,,no run in mirror (queued / not started / dead)
 {DreamerV3 losses},r2teacher,5,True,,False,,,,no run in mirror (queued / not started / dead)
 {DreamerV3 losses},r2teacher,6,True,full_r2d_state_native_rns10h_img_dreamer_s6,True,0.6499999999999999,0.7,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_dreamer_s6/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_dreamer_s6/online_1000000/rnd30_mode/metrics.json,
@@ -86,9 +86,9 @@ learner,dataset,seed,in_design,run,training_record,home,picked,cells,excluded_re
 {r2dreamer},planner72,4,True,full_r2d_state_native_rns10h_img_r2dreamer_s4,True,0.36666666666666664,0.4166666666666667,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s4/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s4/online_1000000/rnd30_mode/metrics.json,
 {r2dreamer},planner72,5,True,full_r2d_state_native_rns10h_img_r2dreamer_s5,True,0.2833333333333333,0.44999999999999996,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s5/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s5/online_1000000/rnd30_mode/metrics.json,
 {r2dreamer},planner72,6,True,full_r2d_state_native_rns10h_img_r2dreamer_s6,True,0.23333333333333334,0.4333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s6/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s6/online_1000000/rnd30_mode/metrics.json,
-{r2dreamer},planner72,7,True,full_r2d_state_native_rns10h_img_r2dreamer_s7,True,,,,no rnd30_mode cell at 500k
-{r2dreamer},r2teacher,0,True,full_r2d_state_native_rns10h_img_r2dreamer_s0,True,,,,no rnd30_mode cell at 500k
-{r2dreamer},r2teacher,1,True,full_r2d_state_native_rns10h_img_r2dreamer_s1,True,,,,no rnd30_mode cell at 500k
+{r2dreamer},planner72,7,True,full_r2d_state_native_rns10h_img_r2dreamer_s7,True,0.1,0.5333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s7/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s7/online_1000000/rnd30_mode/metrics.json,
+{r2dreamer},r2teacher,0,True,full_r2d_state_native_rns10h_img_r2dreamer_s0,True,0.6166666666666667,0.7333333333333334,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s0/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s0/online_1000000/rnd30_mode/metrics.json,
+{r2dreamer},r2teacher,1,True,full_r2d_state_native_rns10h_img_r2dreamer_s1,True,,,,no rnd30_mode cell at 1000k
 {r2dreamer},r2teacher,2,True,full_r2d_state_native_rns10h_img_r2dreamer_s2,True,0.5833333333333333,0.7333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s2/online_500000/rnd30_mode/metrics.json;/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/evaluation/full_r2d_state_native_rns10h_img_r2dreamer_s2/online_1000000/rnd30_mode/metrics.json,
 {r2dreamer},r2teacher,3,True,,False,,,,no run in mirror (queued / not started / dead)
 {r2dreamer},r2teacher,4,True,,False,,,,no run in mirror (queued / not started / dead)
@@ -123,9 +123,9 @@ learner,dataset,seed,in_design,run,training_record,home,picked,cells,excluded_re
 {RLPD},r2teacher,0,True,e2e_rlpd_px_dR2fromH_px_s0,True,,,,no rnd30_mode cell
 {RLPD},r2teacher,1,True,e2e_rlpd_px_dR2fromH_px_s1,True,,,,no rnd30_mode cell
 {RLPD},r2teacher,2,True,e2e_rlpd_px_dR2fromH_px_s2,True,,,,no rnd30_mode cell
-{RLPD},r2teacher,3,True,,False,,,,no run in mirror (queued / not started / dead)
+{RLPD},r2teacher,3,True,e2e_rlpd_px_dR2fromH_px_s3,True,,,,no rnd30_mode cell
 {RLPD},r2teacher,4,True,,False,,,,no run in mirror (queued / not started / dead)
-{RLPD},r2teacher,5,True,e2e_rlpd_px_dR2fromH_px_s5,True,,,,no rnd30_mode cell
+{RLPD},r2teacher,5,True,e2e_rlpd_px_dR2fromH_px_s5,True,0.03333333333333333,0.1,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/rlpd/e2e_rlpd_px_dR2fromH_px_s5/fresh_eval_rnd30_mode/metrics.json,
 {RLPD},r2teacher,6,True,,False,,,,no run in mirror (queued / not started / dead)
 {RLPD},r2teacher,7,True,,False,,,,no run in mirror (queued / not started / dead)
 {Diffusion Policy},human,0,True,ah_dp_px_dH_s0,True,0.0,0.36666666666666664,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/LAB/gp_ah/dp_px/ah_dp_px_dH_s0/fresh_eval_rnd30_sample/metrics.json,
@@ -150,11 +150,11 @@ learner,dataset,seed,in_design,run,training_record,home,picked,cells,excluded_re
 {Diffusion Policy},planner72,3,True,,False,,,,no run in mirror (queued / not started / dead)
 {Diffusion Policy},planner72,4,True,,False,,,,no run in mirror (queued / not started / dead)
 {Diffusion Policy},planner72,5,True,planner72_dp_px_dPlanner72_s5,True,0.5666666666666667,0.6333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/dp/planner72_dp_px_dPlanner72_s5/fresh_eval_rnd30_sample/metrics.json,
-{Diffusion Policy},planner72,6,True,planner72_dp_px_dPlanner72_s6,True,,,,no rnd30_sample cell
+{Diffusion Policy},planner72,6,True,planner72_dp_px_dPlanner72_s6,True,0.5666666666666667,0.6333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/dp/planner72_dp_px_dPlanner72_s6/fresh_eval_rnd30_sample/metrics.json,
 {Diffusion Policy},planner72,7,True,planner72_dp_px_dPlanner72_s7,True,,,,no rnd30_sample cell
 {Diffusion Policy},r2teacher,0,True,r2teacher_dp_px_dR2fromH_px_s0,True,,,,no rnd30_sample cell
 {Diffusion Policy},r2teacher,1,True,r2teacher_dp_px_dR2fromH_px_s1,True,,,,no rnd30_sample cell
-{Diffusion Policy},r2teacher,2,True,,False,,,,no run in mirror (queued / not started / dead)
+{Diffusion Policy},r2teacher,2,True,r2teacher_dp_px_dR2fromH_px_s2,True,,,,no rnd30_sample cell
 {Diffusion Policy},r2teacher,3,True,,False,,,,no run in mirror (queued / not started / dead)
 {Diffusion Policy},r2teacher,4,True,,False,,,,no run in mirror (queued / not started / dead)
 {Diffusion Policy},r2teacher,5,True,,False,,,,no run in mirror (queued / not started / dead)

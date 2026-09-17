@@ -75,6 +75,14 @@ rise-time LAG figures (phase rise minus `picked` rise, at the 0.5 and 0.1 crossi
 per-seed value. `paper/figures/px_phase_2026-09-14/README.md` lists each output and its source column. Runs that are
 still training are included as far as they go and flagged incomplete; bands are cut where fewer than 3 seeds have data.
 
+Then the 4 × 4 performance chart (bars = per-seed mean of the statistic of record, dots = seeds, hatched = cell below
+its design n):
+
+```bash
+for m in home picked; do ~/workspace/genesis_sim2real/venv/bin/python baselines/diagnostics/px_results_4x4_plot.py \
+  --csv paper/figures/px_phase_2026-09-14/px_results_4x4_per_seed.csv --out paper/figures/px_phase_2026-09-14/fig_results_4x4_$m --metric $m; done
+```
+
 ## 4. The statistics of record (compute from the cells, not from the figures)
 
 - **Per seed, world models:** `home` rate in the rnd30 MODE cell. The pooled statistic every seed has = mean of the 0.5M

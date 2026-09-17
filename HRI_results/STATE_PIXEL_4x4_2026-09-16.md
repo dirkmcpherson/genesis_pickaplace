@@ -80,6 +80,15 @@ design n and the mean rnd30 `home`. {RLPD} and the world models use MODE actions
   waiting for GPUs, including all 8 {Diffusion Policy} human/machine s4–7.
 - No failures. 12 more milestone cells were submitted. Disk 273 GB.
 
+### Update 2026-09-17 07:40 (batch 3, user request)
+
+Chart: `paper/figures/px_phase_2026-09-14/fig_results_4x4_home.png` (and `_picked`). New cells since batch 2:
+- {r2dreamer} planner72 is complete at 8/8: 0.283.
+- {r2dreamer} r2teacher is at 3/8: 0.533.
+- {RLPD} r2teacher s5 is the first cell: 0.033.
+- {Diffusion Policy} planner72 is at 2/8: 0.567 for both s5 and s6. These are distinct models (training seeds 5 and 6,
+  different weights) whose episode outcomes on the same 30 starts differ but total the same.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
