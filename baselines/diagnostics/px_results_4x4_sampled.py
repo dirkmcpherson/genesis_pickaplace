@@ -38,6 +38,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-root", default="~/data/genesis_pickaplace/px_analysis_2026-09-14")
     ap.add_argument("--out", default="paper/figures/px_phase_2026-09-14/px_results_4x4_sampled_per_seed.csv")
+    ap.add_argument("--set", default="rnd30", choices=["rnd30", "hold15"],
+                    help="hold15 = the 15 demonstration starts (14 are training starts)")
+    ap.add_argument("--wm-mode", default="sample", choices=["sample", "mode"],
+                    help="world-model cell mode (the milestone sweep scores hold15 in MODE only)")
     a = ap.parse_args()
     M = Path(os.path.expanduser(a.data_root))
     rows = []
@@ -52,7 +56,7 @@ def main():
                     else:
                         base = M / ROOT[ds] / "evaluation" / f"full_r2d_state_native_rns10h_img_{REP[lab]}_s{s}"
                     for ms in (1_500_000, 2_000_000):
-                        p = base / f"online_{ms}" / "rnd30_sample" / "metrics.json"
+                        p = base / f"online_{ms}" / f"{a.set}_{a.wm_mode}" / "metrics.json"
                         c = cell(p)
                         if c is None:
                             vals = None
@@ -60,16 +64,16 @@ def main():
                         vals.append(c); paths.append(str(p))
                 elif lab == "{RLPD}":
                     if ds in ("human", "machine"):
-                        p = M / "LAB/gp_pxr/e2e_px" / f"e2e_rlpd_px_{RLPD_TAG[ds]}_s{s}" / "fresh_eval_rnd30_sample/metrics.json"
+                        p = M / "LAB/gp_pxr/e2e_px" / f"e2e_rlpd_px_{RLPD_TAG[ds]}_s{s}" / f"fresh_eval_{a.set}_sample/metrics.json"
                     else:
-                        p = M / ROOT[ds] / "runs/rlpd" / f"e2e_rlpd_px_{RLPD_TAG[ds]}_s{s}" / "fresh_eval_rnd30_sample/metrics.json"
+                        p = M / ROOT[ds] / "runs/rlpd" / f"e2e_rlpd_px_{RLPD_TAG[ds]}_s{s}" / f"fresh_eval_{a.set}_sample/metrics.json"
                     c = cell(p)
                     vals = [c] if c else None; paths = [str(p)]
                 else:
                     if ds in DP_TAG:
-                        p = M / "LAB/gp_ah/dp_px" / f"ah_dp_px_{DP_TAG[ds]}_s{s}" / "fresh_eval_rnd30_sample/metrics.json"
+                        p = M / "LAB/gp_ah/dp_px" / f"ah_dp_px_{DP_TAG[ds]}_s{s}" / f"fresh_eval_{a.set}_sample/metrics.json"
                     else:
-                        hits = sorted((M / ROOT[ds] / "runs/dp").glob(f"*_s{s}/fresh_eval_rnd30_sample/metrics.json"))
+                        hits = sorted((M / ROOT[ds] / "runs/dp").glob(f"*_s{s}/fresh_eval_{a.set}_sample/metrics.json"))
                         p = hits[0] if hits else Path("/nonexistent")
                     c = cell(p)
                     vals = [c] if c else None; paths = [str(p)]

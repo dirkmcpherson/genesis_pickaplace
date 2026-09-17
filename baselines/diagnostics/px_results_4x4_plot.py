@@ -36,10 +36,16 @@ def main():
     ap.add_argument("--csv", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--metric", default="home", choices=["home", "picked"])
+    ap.add_argument("--hold15", action="store_true", help="label panels for the hold15 (training-start) table")
     ap.add_argument("--sampled", action="store_true",
                     help="label panels for the all-SAMPLED-actions table (px_results_4x4_sampled.py)")
     a = ap.parse_args()
     rows = list(csv.DictReader(open(a.csv)))
+    if a.hold15:
+        STAT.update({"{DreamerV3 losses}": "hold15 MODE*, mean of 1.5M + 2M",
+                     "{r2dreamer}": "hold15 MODE*, mean of 1.5M + 2M",
+                     "{RLPD}": "hold15 SAMPLE, 250k-decision checkpoint",
+                     "{Diffusion Policy}": "hold15 SAMPLE, 100k updates"})
     if a.sampled:
         STAT.update({"{DreamerV3 losses}": "rnd30 SAMPLE, mean of 1.5M + 2M cells",
                      "{r2dreamer}": "rnd30 SAMPLE, mean of 1.5M + 2M cells",
@@ -71,7 +77,7 @@ def main():
                     ax.errorbar(i, v.mean(), yerr=[[v.mean() - ci[0]], [ci[1] - v.mean()]], color="k",
                                 capsize=3, lw=1, zorder=4)
                 top = max(v.max(), v.mean() if ci is None else ci[1])
-                ax.text(i, min(top + 0.03, 0.95), f"{v.mean():.2f}", ha="center", va="bottom", fontsize=8,
+                ax.text(i, min(top + 0.03, 1.04), f"{v.mean():.2f}", ha="center", va="bottom", fontsize=8,
                         fontweight="bold")
             else:
                 ax.text(i, 0.02, "no\ncells", ha="center", va="bottom", fontsize=7, color="0.45")
@@ -79,13 +85,14 @@ def main():
         ax.set_xticks(range(len(DATASETS)))
         ax.set_xticklabels(ticklabels, fontsize=8)
         ax.set_title(f"{lr}\n{STAT[lr]}", fontsize=9)
-        ax.set_ylim(0, 1.0)
+        ax.set_ylim(0, 1.12)
         ax.grid(axis="y", alpha=0.25)
     axes[0].set_ylabel(f"`{a.metric}` rate (per-seed mean)")
-    fig.suptitle(("SAMPLED actions. " if a.sampled else "") + f"Pixel observation, nested_sparse10: `{a.metric}` by learner and demonstration dataset "
+    fig.suptitle(("TRAINING STARTS (hold15: 15 demonstration starts, 14 used in training; *world models have MODE cells only)\n" if a.hold15 else
+                  "SAMPLED actions\n" if a.sampled else "") + f"Pixel observation, nested_sparse10: `{a.metric}` by learner and demonstration dataset "
                  "(dots = seeds; bar = mean; whisker = 95 % bootstrap CI; hatched = cell below its design n)",
                  fontsize=9.5)
-    fig.tight_layout(rect=(0, 0, 1, 0.93))
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     for ext in ("png", "pdf"):
         fig.savefig(f"{a.out}.{ext}", dpi=170)
     print(f"[fig] {a.out}.png / .pdf")
