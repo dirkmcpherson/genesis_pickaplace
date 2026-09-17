@@ -53,6 +53,19 @@ each RLPD record at 250k decisions (1M frames). The pilot seeds s0/s1 stopped co
 (ag) launcher path (`CKPT_EVERY=25000`) and must be found before any further RLPD pixel job is submitted. 15 further
 RLPD seeds (s8 machine, s9–15) were cancelled while held and have no data.
 
+**REGISTERED READOUT, 2026-09-17 02:30 — {RLPD} pixels, rnd30 MODE `home` at the 250k-decision checkpoint.**
+All human and machine cells are in (7 human + 6 machine scored overnight, jobs 3773759–71).
+
+| seeds | human `home` per seed (of 30) | machine `home` per seed (of 30) | mean human | mean machine | exact p |
+|---|---|---|---|---|---|
+| design s0–7, 8 v 8 | 0,0,0,0,0,0,0,0 | 0,16,0,0,0,0,11,3 | 0.000 | 0.125 | 0.200 |
+| incl. human s8, 9 v 8 | + 0 | same | 0.000 | 0.125 | 0.082 |
+
+`picked` in the same cells: human 0.117, machine 0.371 (8 v 8). Seeds reaching `home`: human 0/9, machine 3/8.
+No human-demonstration RLPD seed finishes the task from pixels. Three machine seeds do. The registered test does not
+reach significance at this n, but the direction matches the training-record result above. The limitation stated by the
+user applies: RLPD ran without a frame stack.
+
 ## 3. Controls and ignition
 
 - **Ignition (`fig_ignition.png`).** Training-record criterion (rolling-30 `home` ≥ 0.5) and evaluation criterion

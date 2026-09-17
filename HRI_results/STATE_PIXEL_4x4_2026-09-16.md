@@ -45,6 +45,26 @@ Counts are seeds **with a statistic** / trained or running / queued. Target 8.
 The two new datasets have no statistic yet. That is because their world-model milestone cells were only submitted
 tonight, not because the runs failed.
 
+### Update 2026-09-17 02:30 (overnight batch 1)
+
+Regenerated from `paper/figures/px_phase_2026-09-14/px_results_4x4.md`. Cells show seeds with the statistic /
+design n and the mean rnd30 `home`. {RLPD} and the world models use MODE actions; {Diffusion Policy} uses SAMPLE.
+
+| learner | human | machine | planner72 | r2teacher |
+|---|---|---|---|---|
+| {DreamerV3 losses} | 16/16, 0.306 | 16/16, 0.303 | **6/8, 0.000** | 1/8, 0.650 |
+| {r2dreamer} | 16/16, 0.588 | 16/16, 0.530 | 6/8, 0.322 | 2/8, 0.492 |
+| {RLPD} | **8/8, 0.000** | **8/8, 0.125** | 2/8, 0.000 | 0/8 |
+| {Diffusion Policy} | 4/8, 0.025 | 4/8, 0.017 | 1/8, 0.567 | 0/8 |
+
+- **{RLPD} registered readout:** human 0.000 v machine 0.125, exact p 0.20 (8 v 8). With human s8 it is p 0.08
+  (9 v 8). Human 0/9 seeds reach `home`; machine 3/8.
+- **Planner demonstrations do not work for the world models (interim, 6 seeds).** {DreamerV3 losses} reach `home` on
+  0 of 6 planner seeds (picked 0.27). {r2dreamer} reaches 0.322 v human 0.588 (p 0.0001). By contrast, the first
+  planner {Diffusion Policy} seed scores 0.567, far above DP on human/machine data (≤ 0.03).
+- **No failures overnight.** Scoring submitted: 26 more planner72 milestone cells. The hold/release fix was needed
+  again (26 evaluations pending beside 35 idle nodes). Disk 284 GB.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
