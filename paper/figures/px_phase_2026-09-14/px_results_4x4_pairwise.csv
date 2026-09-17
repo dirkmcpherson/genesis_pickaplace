@@ -1,16 +1,16 @@
 learner,a,b,n_a,n_b,mean_a,mean_b,diff,p,method,n_relabelings,interim
-{DreamerV3 losses},human,machine,16,16,0.30624999999999997,0.303125,0.003124999999999989,0.9671901093663021,monte_carlo,300000,False
-{DreamerV3 losses},human,planner72,16,6,0.30624999999999997,0.0,0.30624999999999997,4.0207470548027825e-05,exact,74613,True
+{DreamerV3 losses},human,machine,16,16,0.30624999999999997,0.303125,0.003124999999999989,0.9674701084329719,monte_carlo,300000,False
+{DreamerV3 losses},human,planner72,16,7,0.30624999999999997,0.0,0.30624999999999997,2.4474112507495196e-05,exact,245157,True
 {DreamerV3 losses},human,r2teacher,16,1,0.30624999999999997,0.6499999999999999,,,not tested (n < 3),0,True
-{DreamerV3 losses},machine,planner72,16,6,0.303125,0.0,0.303125,8.041494109605565e-05,exact,74613,True
+{DreamerV3 losses},machine,planner72,16,7,0.303125,0.0,0.303125,3.26321500099936e-05,exact,245157,True
 {DreamerV3 losses},machine,r2teacher,16,1,0.303125,0.6499999999999999,,,not tested (n < 3),0,True
-{DreamerV3 losses},planner72,r2teacher,6,1,0.0,0.6499999999999999,,,not tested (n < 3),0,True
-{r2dreamer},human,machine,16,16,0.5875,0.5302083333333333,0.05729166666666674,0.08822303925653581,monte_carlo,300000,False
-{r2dreamer},human,planner72,16,6,0.5875,0.32222222222222224,0.2652777777777778,8.041494109605565e-05,exact,74613,True
+{DreamerV3 losses},planner72,r2teacher,7,1,0.0,0.6499999999999999,,,not tested (n < 3),0,True
+{r2dreamer},human,machine,16,16,0.5875,0.5302083333333333,0.05729166666666674,0.08830970563431455,monte_carlo,300000,False
+{r2dreamer},human,planner72,16,7,0.5875,0.3095238095238096,0.27797619047619043,2.4474112507495196e-05,exact,245157,True
 {r2dreamer},human,r2teacher,16,2,0.5875,0.49166666666666664,,,not tested (n < 3),0,True
-{r2dreamer},machine,planner72,16,6,0.5302083333333333,0.32222222222222224,0.20798611111111104,0.00046908715639365793,exact,74613,True
+{r2dreamer},machine,planner72,16,7,0.5302083333333333,0.3095238095238096,0.2206845238095237,0.00014684467504497118,exact,245157,True
 {r2dreamer},machine,r2teacher,16,2,0.5302083333333333,0.49166666666666664,,,not tested (n < 3),0,True
-{r2dreamer},planner72,r2teacher,6,2,0.32222222222222224,0.49166666666666664,,,not tested (n < 3),0,True
+{r2dreamer},planner72,r2teacher,7,2,0.3095238095238096,0.49166666666666664,,,not tested (n < 3),0,True
 {RLPD},human,machine,8,8,0.0,0.125,-0.125,0.2,exact,12870,False
 {RLPD},human,planner72,8,2,0.0,0.0,,,not tested (n < 3),0,True
 {RLPD},human,r2teacher,8,0,0.0,,,,not tested (n < 3),0,True

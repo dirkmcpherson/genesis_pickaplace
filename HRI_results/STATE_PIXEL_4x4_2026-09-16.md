@@ -71,6 +71,15 @@ design n and the mean rnd30 `home`. {RLPD} and the world models use MODE actions
 - **No failures overnight.** Scoring submitted: 26 more planner72 milestone cells. The hold/release fix was needed
   again (26 evaluations pending beside 35 idle nodes). Disk 284 GB.
 
+### Update 2026-09-17 05:20 (overnight batch 2)
+
+- Planner72 world models are now 7/8 seeds. {DreamerV3 losses}: statistic 0.000 on all 7. {r2dreamer}: 0.310 v human
+  0.588 and machine 0.530, exact p ≤ 0.0001 both (interim).
+- No other cell changed. The planner {Diffusion Policy} seed 5 training finished and its evaluation is pending.
+- Queue: 27 GPU jobs running (planner72 RLPD 6, r2teacher 8, planner72 DP/world-model 4, plus evaluations). 32 are
+  waiting for GPUs, including all 8 {Diffusion Policy} human/machine s4–7.
+- No failures. 12 more milestone cells were submitted. Disk 273 GB.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the

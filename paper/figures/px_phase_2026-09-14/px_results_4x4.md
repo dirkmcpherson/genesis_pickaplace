@@ -12,8 +12,8 @@ Datasets: H = human demonstrations (dHfull_all, 74 tapes), M = machine (dDPfull_
 
 | learner | human | machine (DP teacher) | planner | r2dreamer teacher |
 |---|---|---|---|---|
-| {DreamerV3 losses} | n 16/16: 0.306 [0.24, 0.37] | n 16/16: 0.303 [0.24, 0.37] | n 6/8: 0.000 [0.00, 0.00] | n 1/8: 0.650 |
-| {r2dreamer} | n 16/16: 0.588 [0.54, 0.63] | n 16/16: 0.530 [0.49, 0.57] | n 6/8: 0.322 [0.25, 0.40] | n 2/8: 0.492 [0.40, 0.58] |
+| {DreamerV3 losses} | n 16/16: 0.306 [0.24, 0.37] | n 16/16: 0.303 [0.24, 0.37] | n 7/8: 0.000 [0.00, 0.00] | n 1/8: 0.650 |
+| {r2dreamer} | n 16/16: 0.588 [0.54, 0.62] | n 16/16: 0.530 [0.48, 0.57] | n 7/8: 0.310 [0.25, 0.39] | n 2/8: 0.492 [0.40, 0.58] |
 | {RLPD} | n 8/8: 0.000 [0.00, 0.00] | n 8/8: 0.125 [0.01, 0.27] | n 2/8: 0.000 [0.00, 0.00] | n 0/8 -- |
 | {Diffusion Policy} | n 4/8: 0.025 [0.00, 0.05] | n 4/8: 0.017 [0.00, 0.05] | n 1/8: 0.567 | n 0/8 -- |
 
@@ -21,9 +21,9 @@ Datasets: H = human demonstrations (dHfull_all, 74 tapes), M = machine (dDPfull_
 
 | learner | human | machine (DP teacher) | planner | r2dreamer teacher |
 |---|---|---|---|---|
-| {DreamerV3 losses} | n 16/16: 0.652 [0.61, 0.69] | n 16/16: 0.598 [0.53, 0.66] | n 6/8: 0.269 [0.17, 0.36] | n 1/8: 0.700 |
-| {r2dreamer} | n 16/16: 0.682 [0.65, 0.71] | n 16/16: 0.667 [0.64, 0.69] | n 6/8: 0.536 [0.47, 0.60] | n 2/8: 0.742 [0.73, 0.75] |
-| {RLPD} | n 8/8: 0.117 [0.05, 0.17] | n 8/8: 0.371 [0.18, 0.55] | n 2/8: 0.000 [0.00, 0.00] | n 0/8 -- |
+| {DreamerV3 losses} | n 16/16: 0.652 [0.61, 0.69] | n 16/16: 0.598 [0.53, 0.66] | n 7/8: 0.255 [0.18, 0.34] | n 1/8: 0.700 |
+| {r2dreamer} | n 16/16: 0.682 [0.65, 0.71] | n 16/16: 0.667 [0.64, 0.69] | n 7/8: 0.521 [0.46, 0.58] | n 2/8: 0.742 [0.73, 0.75] |
+| {RLPD} | n 8/8: 0.117 [0.06, 0.17] | n 8/8: 0.371 [0.17, 0.55] | n 2/8: 0.000 [0.00, 0.00] | n 0/8 -- |
 | {Diffusion Policy} | n 4/8: 0.342 [0.29, 0.37] | n 4/8: 0.308 [0.23, 0.36] | n 1/8: 0.633 | n 0/8 -- |
 
 ## Pairwise permutation tests on the per-seed `home` statistic
@@ -32,18 +32,18 @@ Two-sided, difference of means; exact when C(n_a+n_b, n_a) <= 1,500,000, else 30
 
 | learner | a | b | n_a | n_b | mean_a | mean_b | diff | p | method | |
 |---|---|---|---|---|---|---|---|---|---|---|
-| {DreamerV3 losses} | human | machine | 16 | 16 | 0.306 | 0.303 | 0.003 | 0.9672 | monte_carlo |  |
-| {DreamerV3 losses} | human | planner72 | 16 | 6 | 0.306 | 0.000 | 0.306 | 0.0000 | exact | interim |
+| {DreamerV3 losses} | human | machine | 16 | 16 | 0.306 | 0.303 | 0.003 | 0.9675 | monte_carlo |  |
+| {DreamerV3 losses} | human | planner72 | 16 | 7 | 0.306 | 0.000 | 0.306 | 0.0000 | exact | interim |
 | {DreamerV3 losses} | human | r2teacher | 16 | 1 | 0.306 | 0.650 |  |  | not tested (n < 3) |  |
-| {DreamerV3 losses} | machine | planner72 | 16 | 6 | 0.303 | 0.000 | 0.303 | 0.0001 | exact | interim |
+| {DreamerV3 losses} | machine | planner72 | 16 | 7 | 0.303 | 0.000 | 0.303 | 0.0000 | exact | interim |
 | {DreamerV3 losses} | machine | r2teacher | 16 | 1 | 0.303 | 0.650 |  |  | not tested (n < 3) |  |
-| {DreamerV3 losses} | planner72 | r2teacher | 6 | 1 | 0.000 | 0.650 |  |  | not tested (n < 3) |  |
-| {r2dreamer} | human | machine | 16 | 16 | 0.588 | 0.530 | 0.057 | 0.0882 | monte_carlo |  |
-| {r2dreamer} | human | planner72 | 16 | 6 | 0.588 | 0.322 | 0.265 | 0.0001 | exact | interim |
+| {DreamerV3 losses} | planner72 | r2teacher | 7 | 1 | 0.000 | 0.650 |  |  | not tested (n < 3) |  |
+| {r2dreamer} | human | machine | 16 | 16 | 0.588 | 0.530 | 0.057 | 0.0883 | monte_carlo |  |
+| {r2dreamer} | human | planner72 | 16 | 7 | 0.588 | 0.310 | 0.278 | 0.0000 | exact | interim |
 | {r2dreamer} | human | r2teacher | 16 | 2 | 0.588 | 0.492 |  |  | not tested (n < 3) |  |
-| {r2dreamer} | machine | planner72 | 16 | 6 | 0.530 | 0.322 | 0.208 | 0.0005 | exact | interim |
+| {r2dreamer} | machine | planner72 | 16 | 7 | 0.530 | 0.310 | 0.221 | 0.0001 | exact | interim |
 | {r2dreamer} | machine | r2teacher | 16 | 2 | 0.530 | 0.492 |  |  | not tested (n < 3) |  |
-| {r2dreamer} | planner72 | r2teacher | 6 | 2 | 0.322 | 0.492 |  |  | not tested (n < 3) |  |
+| {r2dreamer} | planner72 | r2teacher | 7 | 2 | 0.310 | 0.492 |  |  | not tested (n < 3) |  |
 | {RLPD} | human | machine | 8 | 8 | 0.000 | 0.125 | -0.125 | 0.2000 | exact |  |
 | {RLPD} | human | planner72 | 8 | 2 | 0.000 | 0.000 |  |  | not tested (n < 3) |  |
 | {RLPD} | human | r2teacher | 8 | 0 | 0.000 |  |  |  | not tested (n < 3) |  |
@@ -59,9 +59,9 @@ Two-sided, difference of means; exact when C(n_a+n_b, n_a) <= 1,500,000, else 30
 
 ## Missing seeds (in the design, no statistic yet)
 
-- {DreamerV3 losses} / planner72: seeds 6 7
+- {DreamerV3 losses} / planner72: seeds 7
 - {DreamerV3 losses} / r2teacher: seeds 0 1 2 3 4 5 7
-- {r2dreamer} / planner72: seeds 6 7
+- {r2dreamer} / planner72: seeds 7
 - {r2dreamer} / r2teacher: seeds 0 1 3 4 5 6
 - {RLPD} / planner72: seeds 2 3 4 5 6 7
 - {RLPD} / r2teacher: seeds 0 1 2 3 4 5 6 7
