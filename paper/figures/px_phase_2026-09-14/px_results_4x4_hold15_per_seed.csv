@@ -81,11 +81,11 @@ learner,dataset,seed,in_design,home,picked,cells,excluded_reason
 {RLPD},machine,7,True,0.13333333333333333,1.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/LAB/gp_pxr/e2e_px/e2e_rlpd_px_dDPfirst_s7/fresh_eval_hold15_sample/metrics.json,
 {RLPD},planner72,0,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s0/fresh_eval_hold15_sample/metrics.json,
 {RLPD},planner72,1,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s1/fresh_eval_hold15_sample/metrics.json,
-{RLPD},planner72,2,True,,,,no sampled cell yet
-{RLPD},planner72,3,True,,,,no sampled cell yet
-{RLPD},planner72,4,True,,,,no sampled cell yet
-{RLPD},planner72,5,True,,,,no sampled cell yet
-{RLPD},planner72,6,True,,,,no sampled cell yet
+{RLPD},planner72,2,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s2/fresh_eval_hold15_sample/metrics.json,
+{RLPD},planner72,3,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s3/fresh_eval_hold15_sample/metrics.json,
+{RLPD},planner72,4,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s4/fresh_eval_hold15_sample/metrics.json,
+{RLPD},planner72,5,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s5/fresh_eval_hold15_sample/metrics.json,
+{RLPD},planner72,6,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s6/fresh_eval_hold15_sample/metrics.json,
 {RLPD},planner72,7,True,,,,no sampled cell yet
 {RLPD},r2teacher,0,True,,,,no sampled cell yet
 {RLPD},r2teacher,1,True,,,,no sampled cell yet
@@ -120,7 +120,7 @@ learner,dataset,seed,in_design,home,picked,cells,excluded_reason
 {Diffusion Policy},planner72,6,True,0.9333333333333333,1.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/dp/planner72_dp_px_dPlanner72_s6/fresh_eval_hold15_sample/metrics.json,
 {Diffusion Policy},planner72,7,True,0.9333333333333333,1.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/dp/planner72_dp_px_dPlanner72_s7/fresh_eval_hold15_sample/metrics.json,
 {Diffusion Policy},r2teacher,0,True,1.0,1.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s0/fresh_eval_hold15_sample/metrics.json,
-{Diffusion Policy},r2teacher,1,True,,,,no sampled cell yet
+{Diffusion Policy},r2teacher,1,True,1.0,1.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s1/fresh_eval_hold15_sample/metrics.json,
 {Diffusion Policy},r2teacher,2,True,,,,no sampled cell yet
 {Diffusion Policy},r2teacher,3,True,,,,no sampled cell yet
 {Diffusion Policy},r2teacher,4,True,,,,no sampled cell yet
