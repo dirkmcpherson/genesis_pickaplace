@@ -83,6 +83,14 @@ for m in home picked; do ~/workspace/genesis_sim2real/venv/bin/python baselines/
   --csv paper/figures/px_phase_2026-09-14/px_results_4x4_per_seed.csv --out paper/figures/px_phase_2026-09-14/fig_results_4x4_$m --metric $m; done
 ```
 
+All-SAMPLED-actions variant (user 2026-09-17; RLPD SAMPLE chosen post hoc because it scored higher than MODE):
+
+```bash
+~/workspace/genesis_sim2real/venv/bin/python baselines/diagnostics/px_results_4x4_sampled.py
+for m in home picked; do ~/workspace/genesis_sim2real/venv/bin/python baselines/diagnostics/px_results_4x4_plot.py --sampled \
+  --csv paper/figures/px_phase_2026-09-14/px_results_4x4_sampled_per_seed.csv --out paper/figures/px_phase_2026-09-14/fig_results_4x4_sampled_$m --metric $m; done
+```
+
 ## 4. The statistics of record (compute from the cells, not from the figures)
 
 - **Per seed, world models:** `home` rate in the rnd30 MODE cell. The pooled statistic every seed has = mean of the 0.5M

@@ -36,8 +36,14 @@ def main():
     ap.add_argument("--csv", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--metric", default="home", choices=["home", "picked"])
+    ap.add_argument("--sampled", action="store_true",
+                    help="label panels for the all-SAMPLED-actions table (px_results_4x4_sampled.py)")
     a = ap.parse_args()
     rows = list(csv.DictReader(open(a.csv)))
+    if a.sampled:
+        STAT.update({"{DreamerV3 losses}": "rnd30 SAMPLE, mean of 1.5M + 2M cells",
+                     "{r2dreamer}": "rnd30 SAMPLE, mean of 1.5M + 2M cells",
+                     "{RLPD}": "rnd30 SAMPLE, 250k-decision checkpoint"})
     vals = collections.defaultdict(list)
     design = collections.Counter()
     for r in rows:
@@ -76,7 +82,7 @@ def main():
         ax.set_ylim(0, 1.0)
         ax.grid(axis="y", alpha=0.25)
     axes[0].set_ylabel(f"`{a.metric}` rate (per-seed mean)")
-    fig.suptitle(f"Pixel observation, nested_sparse10: `{a.metric}` by learner and demonstration dataset "
+    fig.suptitle(("SAMPLED actions. " if a.sampled else "") + f"Pixel observation, nested_sparse10: `{a.metric}` by learner and demonstration dataset "
                  "(dots = seeds; bar = mean; whisker = 95 % bootstrap CI; hatched = cell below its design n)",
                  fontsize=9.5)
     fig.tight_layout(rect=(0, 0, 1, 0.93))
