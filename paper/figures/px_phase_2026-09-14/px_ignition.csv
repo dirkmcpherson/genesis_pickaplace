@@ -10,11 +10,11 @@ dreamer_cluster,machine,eval_rnd30_any_home,12,12,1.0,0.7575059932585454,0.99999
 r2dreamer_cluster,human,train_roll30_home_ge0.5,16,16,1.0,0.8063923193922882,1.0,0,16
 r2dreamer_cluster,human,eval_rnd30_any_home,16,16,1.0,0.8063923193922882,1.0,0,16
 r2dreamer_cluster,machine,train_roll30_home_ge0.5,16,16,1.0,0.8063923193922882,1.0,0,16
-r2dreamer_cluster,machine,eval_rnd30_any_home,15,15,1.0,0.7961166988879704,1.0,1,16
-rlpd_cluster,human,train_roll30_home_ge0.5,0,0,,nan,nan,0,12
-rlpd_cluster,human,eval_rnd30_any_home,0,2,0.0,0.0,0.6576197725990219,10,12
-rlpd_cluster,machine,train_roll30_home_ge0.5,0,0,,nan,nan,0,11
-rlpd_cluster,machine,eval_rnd30_any_home,1,2,0.5,0.09453120570165269,0.9054687942983473,9,11
+r2dreamer_cluster,machine,eval_rnd30_any_home,16,16,1.0,0.8063923193922882,1.0,0,16
+rlpd_cluster,human,train_roll30_home_ge0.5,0,0,,nan,nan,0,9
+rlpd_cluster,human,eval_rnd30_any_home,0,2,0.0,0.0,0.6576197725990219,7,9
+rlpd_cluster,machine,train_roll30_home_ge0.5,0,0,,nan,nan,0,8
+rlpd_cluster,machine,eval_rnd30_any_home,1,2,0.5,0.09453120570165269,0.9054687942983473,6,8
 dreamer_ramp_control,human,train_roll30_home_ge0.5,1,1,1.0,0.20654931430031864,1.0,0,1
 dreamer_ramp_control,human,eval_rnd30_any_home,1,1,1.0,0.20654931430031864,1.0,0,1
 dreamer_ramp_control,machine,train_roll30_home_ge0.5,1,1,1.0,0.20654931430031864,1.0,0,1

@@ -46,7 +46,7 @@ training_record_last20pct,r2dreamer_cluster,human,11,home,0.8642369020501139,Tru
 training_record_last20pct,r2dreamer_cluster,human,12,home,0.8850206138341732,True,
 training_record_last20pct,r2dreamer_cluster,human,13,home,0.8980917580186764,True,
 training_record_last20pct,r2dreamer_cluster,human,14,home,0.8862300587741394,True,
-training_record_last20pct,r2dreamer_cluster,human,15,home,0.8288804071246819,False,
+training_record_last20pct,r2dreamer_cluster,human,15,home,0.8637083993660856,True,
 training_record_last20pct,r2dreamer_cluster,machine,0,home,0.8765915768854065,True,
 training_record_last20pct,r2dreamer_cluster,machine,1,home,0.8265424912689173,True,
 training_record_last20pct,r2dreamer_cluster,machine,2,home,0.864986498649865,True,
@@ -147,8 +147,8 @@ eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,7,home,0.5833333333333333,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,7,picked,0.6583333333333333,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,8,home,0.6,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,8,picked,0.7083333333333334,,4
-eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,9,home,0.3333333333333333,,1
-eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,9,picked,0.6666666666666666,,1
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,9,home,0.5666666666666667,,4
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,9,picked,0.725,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,10,home,0.5,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,10,picked,0.7333333333333333,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,11,home,0.6333333333333333,,4
@@ -159,8 +159,8 @@ eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,13,home,0.6416666666666666,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,13,picked,0.6916666666666667,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,14,home,0.475,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,14,picked,0.575,,4
-eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,15,home,0.6444444444444444,,3
-eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,15,picked,0.6555555555555554,,3
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,15,home,0.6499999999999999,,4
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,human,15,picked,0.6583333333333332,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,0,home,0.5166666666666666,,2
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,0,picked,0.6166666666666667,,2
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,1,home,0.4666666666666667,,2
@@ -179,6 +179,8 @@ eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,7,home,0.4666666666666667,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,7,picked,0.6166666666666666,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,8,home,0.5583333333333333,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,8,picked,0.6916666666666667,,4
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,9,home,0.625,,4
+eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,9,picked,0.7,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,10,home,0.5333333333333333,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,10,picked,0.7,,4
 eval_rnd30_mode_ge0.5M,r2dreamer_cluster,machine,11,home,0.5666666666666667,,4

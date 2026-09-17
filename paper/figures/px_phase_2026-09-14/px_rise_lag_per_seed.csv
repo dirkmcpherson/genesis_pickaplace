@@ -234,11 +234,11 @@ r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.5,slide_event,picked,168914,2000000,1999713,True,,243834,74920,crossed
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.5,home,picked,168914,2000000,1999713,True,,284161,115247,crossed
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.5,tipped,picked,168914,2000000,1999713,True,,116620,-52294,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,placed_v2,picked,137429,2000000,1752321,False,incomplete (still running or interrupted),263484,126055,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,farside,picked,137429,2000000,1752321,False,incomplete (still running or interrupted),263599,126170,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,slide_event,picked,137429,2000000,1752321,False,incomplete (still running or interrupted),314780,177351,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,home,picked,137429,2000000,1752321,False,incomplete (still running or interrupted),371632,234203,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,tipped,picked,137429,2000000,1752321,False,incomplete (still running or interrupted),134148,-3281,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,placed_v2,picked,137429,2000000,1992719,True,,263484,126055,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,farside,picked,137429,2000000,1992719,True,,263599,126170,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,slide_event,picked,137429,2000000,1992719,True,,314780,177351,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,home,picked,137429,2000000,1992719,True,,371632,234203,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.5,tipped,picked,137429,2000000,1992719,True,,134148,-3281,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.5,placed_v2,picked,179292,1000000,992669,True,,187667,8375,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.5,farside,picked,179292,1000000,992669,True,,243542,64250,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.5,slide_event,picked,179292,1000000,992669,True,,250313,71021,crossed
@@ -554,11 +554,11 @@ r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.1,slide_event,picked,102978,2000000,1999713,True,,168914,65936,crossed
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.1,home,picked,102978,2000000,1999713,True,,199178,96200,crossed
 r2dreamer_cluster,human,14,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s14,0.1,tipped,picked,102978,2000000,1999713,True,,35969,-67009,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,placed_v2,picked,128772,2000000,1752321,False,incomplete (still running or interrupted),130533,1761,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,farside,picked,128772,2000000,1752321,False,incomplete (still running or interrupted),130533,1761,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,slide_event,picked,128772,2000000,1752321,False,incomplete (still running or interrupted),227606,98834,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,home,picked,128772,2000000,1752321,False,incomplete (still running or interrupted),230708,101936,crossed
-r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,tipped,picked,128772,2000000,1752321,False,incomplete (still running or interrupted),23452,-105320,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,placed_v2,picked,128772,2000000,1992719,True,,130533,1761,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,farside,picked,128772,2000000,1992719,True,,130533,1761,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,slide_event,picked,128772,2000000,1992719,True,,227606,98834,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,home,picked,128772,2000000,1992719,True,,230708,101936,crossed
+r2dreamer_cluster,human,15,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s15,0.1,tipped,picked,128772,2000000,1992719,True,,23452,-105320,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.1,placed_v2,picked,167529,1000000,992669,True,,173717,6188,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.1,farside,picked,167529,1000000,992669,True,,174171,6642,crossed
 r2dreamer_cluster,machine,0,full_r2d_state_dDPfull_first_rns10h_img_r2dreamer_s0,0.1,slide_event,picked,167529,1000000,992669,True,,181530,14001,crossed

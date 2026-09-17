@@ -429,6 +429,13 @@ def discover(root: Path, verbose=True):
         r = Run("rlpd_cluster", ARM_OF_SET[armtag], seed, d.name, str(d), "cluster")
         r.origin = 0
         r.nominal_budget = 250_000 * 4                     # 250 k decisions x repeat 4
+        # 2026-09-16: the (ag) RLPD pixel jobs did not stop at --steps 250000 and trained on to the
+        # 30 h wall clock (up to 592 k decisions). Everything past the registered budget is outside
+        # the design, so the record is CUT at the budget; the 250 k checkpoint is the one scored.
+        keep = online <= r.nominal_budget
+        if not keep.all():
+            online = online[keep]
+            flags = {k: (None if v is None else v[keep]) for k, v in flags.items()}
         r.online, r.flags = online, flags
         r.x_unit = "online sim frames (decisions x 4)"
         for cell in ("rnd30_mode", "hold15_mode"):

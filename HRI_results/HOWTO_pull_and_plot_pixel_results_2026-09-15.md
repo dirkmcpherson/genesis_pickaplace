@@ -33,9 +33,10 @@ rsync -avz --include='*/' --include='console.log' --include='metrics.jsonl' --in
 # eval cells WITHOUT videos (metrics + provenance only)
 rsync -avz --include='*/' --include='metrics.json' --include='provenance.json' --include='trees.json' --exclude='*' \
       $H:$W/ln_milestone_cells/ $M/W/ln_milestone_cells/
-# RLPD records + final cells (no videos)
+# RLPD records + final cells (no videos). Add --delete so seeds removed on the cluster leave the mirror too.
+mkdir -p $M/LAB/gp_pxr/e2e_px
 rsync -avz --include='*/' --include='episode_rollouts.jsonl' --include='metrics.json' --include='*.action_mode.json' \
-      --exclude='*' $H:$LAB/gp_pxr/baselines/rl/checkpoints/e2e_px/ $M/LAB/gp_pxr/baselines/rl/checkpoints/e2e_px/
+      --exclude='*' $H:$LAB/gp_pxr/baselines/rl/checkpoints/e2e_px/ $M/LAB/gp_pxr/e2e_px/   # the script reads LAB/gp_pxr/e2e_px (fixed 09-16)
 rsync -avz $H:'$LAB/gp_pxr/e2e_rlpd_px_*.out' $M/LAB/gp_pxr/
 # local seeds (already on pop-os)
 rsync -a --include='*/' --include='console.log' --include='metrics.jsonl' --include='metrics.json' --exclude='*' \
