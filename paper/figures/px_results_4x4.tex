@@ -8,15 +8,15 @@
 \toprule
  & learner & human & machine (DP teacher) & planner & r2dreamer teacher \\
 \midrule
-\texttt{home} & \{DreamerV3 losses\} & 0.304 \tiny[0.20,\,0.40]\,\tiny(8/8) & 0.356 \tiny[0.26,\,0.45]\,\tiny(8/8) & 0.045 \tiny[0.00,\,0.12]\,\tiny(7/8) & 0.433\,\tiny(1/8) \\
- & \{r2dreamer\} & 0.596 \tiny[0.55,\,0.63]\,\tiny(8/8) & 0.565 \tiny[0.49,\,0.62]\,\tiny(8/8) & 0.571 \tiny[0.52,\,0.61]\,\tiny(7/8) & 0.650 \tiny[0.62,\,0.68]\,\tiny(2/8) \\
- & \{RLPD\} & 0.000 \tiny[0.00,\,0.00]\,\tiny(8/8) & 0.125 \tiny[0.01,\,0.27]\,\tiny(8/8) & 0.000 \tiny[0.00,\,0.00]\,\tiny(2/8) & 0.033\,\tiny(1/8) \\
- & \{Diffusion Policy\} & 0.025 \tiny[0.00,\,0.05]\,\tiny(4/8) & 0.017 \tiny[0.00,\,0.05]\,\tiny(4/8) & 0.567 \tiny[0.57,\,0.57]\,\tiny(2/8) & 0.600\,\tiny(1/8) \\
+\texttt{home} & \{DreamerV3 losses\} & 0.304 \tiny[0.19,\,0.41]\,\tiny(8/8) & 0.356 \tiny[0.25,\,0.45]\,\tiny(8/8) & 0.040 \tiny[0.00,\,0.11]\,\tiny(8/8) & 0.475 \tiny[0.43,\,0.52]\,\tiny(2/8) \\
+ & \{r2dreamer\} & 0.596 \tiny[0.56,\,0.63]\,\tiny(8/8) & 0.565 \tiny[0.48,\,0.62]\,\tiny(8/8) & 0.571 \tiny[0.52,\,0.61]\,\tiny(7/8) & 0.642 \tiny[0.62,\,0.67]\,\tiny(4/8) \\
+ & \{RLPD\} & 0.000 \tiny[0.00,\,0.00]\,\tiny(8/8) & 0.125 \tiny[0.00,\,0.27]\,\tiny(8/8) & 0.000 \tiny[0.00,\,0.00]\,\tiny(8/8) & 0.033\,\tiny(1/8) \\
+ & \{Diffusion Policy\} & 0.025 \tiny[0.00,\,0.05]\,\tiny(4/8) & 0.017 \tiny[0.00,\,0.05]\,\tiny(4/8) & 0.567 \tiny[0.57,\,0.57]\,\tiny(3/8) & 0.600 \tiny[0.60,\,0.60]\,\tiny(2/8) \\
 \midrule
-\texttt{picked} & \{DreamerV3 losses\} & 0.654 \tiny[0.63,\,0.68]\,\tiny(8/8) & 0.654 \tiny[0.63,\,0.68]\,\tiny(8/8) & 0.376 \tiny[0.22,\,0.52]\,\tiny(7/8) & 0.567\,\tiny(1/8) \\
- & \{r2dreamer\} & 0.696 \tiny[0.67,\,0.72]\,\tiny(8/8) & 0.681 \tiny[0.65,\,0.70]\,\tiny(8/8) & 0.693 \tiny[0.67,\,0.71]\,\tiny(7/8) & 0.767 \tiny[0.77,\,0.77]\,\tiny(2/8) \\
- & \{RLPD\} & 0.117 \tiny[0.06,\,0.17]\,\tiny(8/8) & 0.371 \tiny[0.17,\,0.55]\,\tiny(8/8) & 0.000 \tiny[0.00,\,0.00]\,\tiny(2/8) & 0.100\,\tiny(1/8) \\
- & \{Diffusion Policy\} & 0.342 \tiny[0.29,\,0.37]\,\tiny(4/8) & 0.308 \tiny[0.23,\,0.36]\,\tiny(4/8) & 0.633 \tiny[0.63,\,0.63]\,\tiny(2/8) & 0.667\,\tiny(1/8) \\
+\texttt{picked} & \{DreamerV3 losses\} & 0.654 \tiny[0.63,\,0.68]\,\tiny(8/8) & 0.654 \tiny[0.63,\,0.68]\,\tiny(8/8) & 0.365 \tiny[0.23,\,0.51]\,\tiny(8/8) & 0.592 \tiny[0.57,\,0.62]\,\tiny(2/8) \\
+ & \{r2dreamer\} & 0.696 \tiny[0.67,\,0.72]\,\tiny(8/8) & 0.681 \tiny[0.65,\,0.70]\,\tiny(8/8) & 0.693 \tiny[0.67,\,0.71]\,\tiny(7/8) & 0.733 \tiny[0.70,\,0.77]\,\tiny(4/8) \\
+ & \{RLPD\} & 0.117 \tiny[0.06,\,0.17]\,\tiny(8/8) & 0.371 \tiny[0.17,\,0.56]\,\tiny(8/8) & 0.008 \tiny[0.00,\,0.02]\,\tiny(8/8) & 0.100\,\tiny(1/8) \\
+ & \{Diffusion Policy\} & 0.342 \tiny[0.29,\,0.37]\,\tiny(4/8) & 0.308 \tiny[0.23,\,0.36]\,\tiny(4/8) & 0.633 \tiny[0.63,\,0.63]\,\tiny(3/8) & 0.650 \tiny[0.63,\,0.67]\,\tiny(2/8) \\
 \bottomrule
 \end{tabular}}
 \caption{Pixel \texttt{nested\_sparse10} results: four learners $\times$ four demonstration datasets. Entry: mean over seeds of the per-seed statistic, 95\,\% bootstrap CI over seeds in brackets, (seeds with the statistic / seeds in the design). A seed without a cell is absent, not zero. Statistic: \{DreamerV3 losses\} and \{r2dreamer\} = mean rnd30 MODE \texttt{home} rate of the 1.5\,M and 2\,M online-step cells, 8 seeds that trained to 2\,M; \{RLPD\} = rnd30 MODE at 250k decisions; \{Diffusion Policy\} = rnd30 SAMPLE after 100k updates. \texttt{picked} is read from the same cells. Datasets: human = dHfull\_all (74 tapes); machine = dDPfull\_first (72 tapes, Diffusion Policy teacher); planner = planner72 (72 motion-planner tapes); r2dreamer teacher = 72 tapes from one human-trained pixel r2dreamer. Cells with fewer than 8 seeds are interim.}

@@ -134,6 +134,13 @@ that window understates them. rnd30 MODE `home` mean at each checkpoint (seeds s
 - **Outputs:** `px_results_4x4.md` (incl. the per-checkpoint table) and `fig_results_4x4_home.png` regenerate with
   this rule.
 
+### Update 2026-09-17 13:25 (batch)
+
+- {RLPD} planner72 is now 8/8: eval 0.00, training 0.00.
+- r2teacher world models: {DreamerV3 losses} 2 seeds (eval 0.42, training 0.88); {r2dreamer} 4 seeds (eval 0.57,
+  training 0.93). {Diffusion Policy} r2teacher training starts: 3 seeds, 1.00.
+- Planner {Diffusion Policy} s0 and s1 started training. No failures. Disk 249 GB.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the

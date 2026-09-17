@@ -230,7 +230,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,picked,0
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,picked,0.5,909948,323384,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,picked,0.5,907269,133947,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,picked,0.5,392487,189503,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,picked,0.5,663157,147359,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,picked,0.5,663157,147359,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,placed_v2,0.5,1065844,187920,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,placed_v2,0.5,894039,162202,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,placed_v2,0.5,935245,377509,2000000,1993753,
@@ -238,7 +238,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,placed_v
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,placed_v2,0.5,1355404,380284,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,placed_v2,0.5,1399458,434274,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,placed_v2,0.5,1024132,258959,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,placed_v2,0.5,966994,486088,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,placed_v2,0.5,966994,486088,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,farside,0.5,1494331,187920,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,farside,0.5,946304,704201,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,farside,0.5,1037707,377509,2000000,1993753,
@@ -246,7 +246,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,farside,
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,farside,0.5,1409274,905896,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,farside,0.5,1506948,434274,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,farside,0.5,1132739,258959,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,farside,0.5,1052993,486088,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,farside,0.5,1052993,486088,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,slide_event,0.5,1866487,434882,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,slide_event,0.5,never,769628,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,slide_event,0.5,1365471,378418,2000000,1993753,
@@ -254,7 +254,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,slide_ev
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,slide_event,0.5,1946085,940449,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,slide_event,0.5,1798344,1152801,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,slide_event,0.5,1622976,520966,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,slide_event,0.5,never,837424,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,slide_event,0.5,1839696,837424,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.5,1866487,1182550,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.5,never,1631289,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.5,1550669,1045226,2000000,1993753,
@@ -262,7 +262,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.5
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,home,0.5,never,1876597,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,home,0.5,never,1152801,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,home,0.5,1877860,602912,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.5,never,1325660,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.5,1927855,1325660,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.1,1672012,1182550,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.1,never,1631289,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.1,1353575,1045226,2000000,1993753,
@@ -270,7 +270,7 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.1
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,home,0.1,never,1876597,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,home,0.1,1790517,1152801,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,home,0.1,1625701,602912,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.1,1330110,1325660,2000000,1556459,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.1,1330110,1325660,2000000,1991093,
 dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_dreamer_s0,tipped,0.5,371511,0,2000000,1992615,
 dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_dreamer_s1,tipped,0.5,483556,1993,2000000,1992158,
 dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_dreamer_s2,tipped,0.5,450705,0,2000000,1993753,
@@ -278,42 +278,63 @@ dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_dreamer_s3,tipped,0
 dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_dreamer_s4,tipped,0.5,918628,0,2000000,1999832,
 dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_dreamer_s5,tipped,0.5,334427,1586,2000000,1992632,
 dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_dreamer_s6,tipped,0.5,1087599,0,2000000,1997336,
-dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,tipped,0.5,254301,11642,2000000,1556459,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,picked,0.5,197178,23583,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,picked,0.5,262260,31476,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,picked,0.5,221016,81217,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,picked,0.5,276414,29944,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_dreamer_s7,tipped,0.5,254301,11642,2000000,1991093,
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,picked,0.5,197178,23583,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,picked,0.5,262260,31476,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,picked,0.5,221016,81217,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,picked,0.5,276414,29944,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,picked,0.5,189128,37566,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,picked,0.5,194578,22187,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,picked,0.5,257868,35875,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,placed_v2,0.5,203297,83854,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,placed_v2,0.5,265472,60373,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,placed_v2,0.5,226604,81217,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,placed_v2,0.5,279807,38410,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,picked,0.5,177437,23516,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,placed_v2,0.5,203297,83854,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,placed_v2,0.5,265472,60373,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,placed_v2,0.5,226604,81217,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,placed_v2,0.5,279807,38410,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,placed_v2,0.5,197820,37566,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,placed_v2,0.5,200504,44128,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,placed_v2,0.5,270316,83356,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,farside,0.5,203297,88288,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,farside,0.5,268921,60373,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,farside,0.5,229576,81217,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,farside,0.5,279807,59147,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,placed_v2,0.5,181340,43400,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,farside,0.5,203297,88288,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,farside,0.5,268921,60373,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,farside,0.5,229576,81217,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,farside,0.5,279807,59147,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,farside,0.5,199181,37566,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,farside,0.5,200504,44128,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,farside,0.5,270316,83356,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,slide_event,0.5,259697,96325,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,slide_event,0.5,277713,216156,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,slide_event,0.5,383829,87916,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,slide_event,0.5,325436,214836,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,farside,0.5,181554,82878,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,slide_event,0.5,259697,96325,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,slide_event,0.5,277713,216156,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,slide_event,0.5,383829,87916,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,slide_event,0.5,325436,214836,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,slide_event,0.5,244786,71738,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,slide_event,0.5,244162,108348,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,slide_event,0.5,303683,205876,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.5,307608,119133,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.5,279991,259333,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.5,384009,87916,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.5,378558,214836,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,slide_event,0.5,264255,82878,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.5,307608,119133,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.5,279991,259333,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.5,384009,87916,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.5,378558,214836,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,home,0.5,244786,71738,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,home,0.5,254017,108348,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,home,0.5,308378,215312,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.1,188812,119133,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.1,264664,259333,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.1,229126,87916,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.1,216825,214836,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.5,272080,82878,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,home,0.1,188812,119133,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,home,0.1,264664,259333,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,home,0.1,229126,87916,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,home,0.1,216825,214836,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,home,0.1,193759,71738,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,home,0.1,175414,108348,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,home,0.1,225358,215312,2000000,1999411,
-dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,tipped,0.5,172599,14425,2000000,1702989,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,tipped,0.5,36921,14424,2000000,1417110,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,tipped,0.5,38041,14066,2000000,650473,incomplete (still running or interrupted)
-dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,tipped,0.5,156959,0,2000000,391783,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,home,0.1,188461,82878,2000000,308396,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_dreamer_s0,tipped,0.5,172599,14425,2000000,1992689,
+dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_dreamer_s1,tipped,0.5,36921,14424,2000000,1992685,
+dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_dreamer_s2,tipped,0.5,38041,14066,2000000,1392499,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_dreamer_s3,tipped,0.5,156959,0,2000000,1307844,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_dreamer_s4,tipped,0.5,49691,0,2000000,826921,incomplete (still running or interrupted)
+dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_dreamer_s5,tipped,0.5,30689,4802,2000000,783913,incomplete (still running or interrupted)
 dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_dreamer_s6,tipped,0.5,49576,0,2000000,1999411,
+dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_dreamer_s7,tipped,0.5,38205,21532,2000000,308396,incomplete (still running or interrupted)
 r2dreamer_cluster,human,0,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s0,picked,0.5,90041,84213,1000000,992706,
 r2dreamer_cluster,human,1,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s1,picked,0.5,155745,88440,1000000,992600,
 r2dreamer_cluster,human,2,full_r2d_state_dHfull_all_rns10h_img_r2dreamer_s2,picked,0.5,134439,116524,1000000,999630,
@@ -545,7 +566,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,pick
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,picked,0.5,210075,100430,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,picked,0.5,389467,113064,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,picked,0.5,279107,56910,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,picked,0.5,352228,158093,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,picked,0.5,352228,158093,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,placed_v2,0.5,362944,151124,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,placed_v2,0.5,416879,205461,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,placed_v2,0.5,405578,147934,2000000,1999590,
@@ -553,7 +574,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,plac
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,placed_v2,0.5,417359,183235,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,placed_v2,0.5,536889,188941,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,placed_v2,0.5,371072,139926,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,placed_v2,0.5,396840,169866,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,placed_v2,0.5,396840,169866,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,farside,0.5,413547,165317,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,farside,0.5,429879,205461,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,farside,0.5,679672,147934,2000000,1999590,
@@ -561,7 +582,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,fars
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,farside,0.5,439155,229665,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,farside,0.5,536889,188941,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,farside,0.5,393219,183106,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,farside,0.5,400284,218513,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,farside,0.5,400284,218513,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,slide_event,0.5,455061,247550,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,slide_event,0.5,500256,208297,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,slide_event,0.5,915647,412617,2000000,1999590,
@@ -569,7 +590,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,slid
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,slide_event,0.5,566196,229665,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,slide_event,0.5,659620,472449,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,slide_event,0.5,574448,283040,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,slide_event,0.5,488868,218513,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,slide_event,0.5,488868,218513,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,home,0.5,458155,343400,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.5,532451,208297,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,home,0.5,916356,570064,2000000,1999590,
@@ -577,7 +598,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,home
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,home,0.5,577178,229665,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,home,0.5,689401,472449,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,home,0.5,574493,382821,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.5,488868,218513,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.5,488868,218513,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,home,0.1,403384,343400,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.1,422573,208297,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,home,0.1,769517,570064,2000000,1999590,
@@ -585,7 +606,7 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,home
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,home,0.1,541957,229665,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,home,0.1,618136,472449,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,home,0.1,475808,382821,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.1,400284,218513,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.1,400284,218513,2000000,1992425,
 r2dreamer_cluster,planner72,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,tipped,0.5,236988,0,2000000,1997628,
 r2dreamer_cluster,planner72,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,tipped,0.5,408503,0,2000000,1995484,
 r2dreamer_cluster,planner72,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,tipped,0.5,298887,0,2000000,1999590,
@@ -593,34 +614,62 @@ r2dreamer_cluster,planner72,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,tipp
 r2dreamer_cluster,planner72,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,tipped,0.5,208191,0,2000000,1999476,
 r2dreamer_cluster,planner72,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,tipped,0.5,397483,7564,2000000,1992032,
 r2dreamer_cluster,planner72,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,tipped,0.5,269121,0,2000000,1997995,
-r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,tipped,0.5,324813,1733,2000000,1873258,incomplete (still running or interrupted)
+r2dreamer_cluster,planner72,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,tipped,0.5,324813,1733,2000000,1992425,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,picked,0.5,240929,62301,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,picked,0.5,312464,72959,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,picked,0.5,312464,72959,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,picked,0.5,148774,67860,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,picked,0.5,204533,39907,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,picked,0.5,177940,43202,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,picked,0.5,267008,22031,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,picked,0.5,244399,43621,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,picked,0.5,243588,59863,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,placed_v2,0.5,276072,84888,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,placed_v2,0.5,326467,138844,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,placed_v2,0.5,326467,138844,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,placed_v2,0.5,189618,86458,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,placed_v2,0.5,212083,75892,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,placed_v2,0.5,248830,81972,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,placed_v2,0.5,278429,91278,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,placed_v2,0.5,245920,92349,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,placed_v2,0.5,264441,97553,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,farside,0.5,277244,144875,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,farside,0.5,326467,138844,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,farside,0.5,326467,138844,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,farside,0.5,197702,86458,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,farside,0.5,212486,120844,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,farside,0.5,249923,102634,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,farside,0.5,305983,98388,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,farside,0.5,249222,92349,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,farside,0.5,286548,97553,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,slide_event,0.5,312178,218205,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,slide_event,0.5,362487,218524,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,slide_event,0.5,362487,218524,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,slide_event,0.5,210219,112053,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,slide_event,0.5,270160,127743,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,slide_event,0.5,277987,135511,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,slide_event,0.5,337043,107533,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,slide_event,0.5,255608,129614,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,slide_event,0.5,318992,97553,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,home,0.5,346406,272671,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.5,363910,218524,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.5,363910,218524,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,home,0.5,250973,155016,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,home,0.5,301683,204891,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,home,0.5,278413,182492,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,home,0.5,364051,107533,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,home,0.5,299624,166154,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.5,337749,97553,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,home,0.1,280199,272671,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.1,267975,218524,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,home,0.1,267975,218524,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,home,0.1,199136,155016,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,home,0.1,230936,204891,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,home,0.1,257885,182492,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,home,0.1,298599,107533,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,home,0.1,220416,166154,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,home,0.1,288332,97553,2000000,1992681,
 r2dreamer_cluster,r2teacher,0,full_r2d_state_native_rns10h_img_r2dreamer_s0,tipped,0.5,152919,0,2000000,1996928,
-r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,tipped,0.5,31369,14424,2000000,1518470,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,1,full_r2d_state_native_rns10h_img_r2dreamer_s1,tipped,0.5,31369,14424,2000000,1992749,
 r2dreamer_cluster,r2teacher,2,full_r2d_state_native_rns10h_img_r2dreamer_s2,tipped,0.5,43847,0,2000000,1999410,
+r2dreamer_cluster,r2teacher,3,full_r2d_state_native_rns10h_img_r2dreamer_s3,tipped,0.5,87934,0,2000000,904971,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,4,full_r2d_state_native_rns10h_img_r2dreamer_s4,tipped,0.5,64035,0,2000000,907395,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,5,full_r2d_state_native_rns10h_img_r2dreamer_s5,tipped,0.5,43025,21629,2000000,842624,incomplete (still running or interrupted)
+r2dreamer_cluster,r2teacher,6,full_r2d_state_native_rns10h_img_r2dreamer_s6,tipped,0.5,35521,0,2000000,539205,incomplete (still running or interrupted)
 r2dreamer_cluster,r2teacher,7,full_r2d_state_native_rns10h_img_r2dreamer_s7,tipped,0.5,75117,15289,2000000,1992681,
 rlpd_cluster,human,0,e2e_rlpd_px_dH_s0,picked,0.5,52568,39124,1000000,999680,
 rlpd_cluster,human,1,e2e_rlpd_px_dH_s1,picked,0.5,46312,38676,1000000,999528,
@@ -743,94 +792,94 @@ rlpd_cluster,machine,6,e2e_rlpd_px_dDPfirst_s6,tipped,0.5,42228,9368,1000000,999
 rlpd_cluster,machine,7,e2e_rlpd_px_dDPfirst_s7,tipped,0.5,53520,7204,1000000,999568,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,picked,0.5,56036,31156,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,picked,0.5,216836,56688,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,picked,0.5,never,32380,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,picked,0.5,176224,27256,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,picked,0.5,never,32380,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,picked,0.5,176224,27256,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,picked,0.5,279760,33308,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,picked,0.5,never,33968,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,picked,0.5,never,49876,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,picked,0.5,never,27340,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,picked,0.5,never,33968,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,picked,0.5,never,49876,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,picked,0.5,never,27340,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,placed_v2,0.5,134076,52932,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,placed_v2,0.5,never,213888,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,placed_v2,0.5,never,46248,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,placed_v2,0.5,never,174616,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,placed_v2,0.5,never,46248,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,placed_v2,0.5,never,174616,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,placed_v2,0.5,319788,278948,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,placed_v2,0.5,never,never,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,placed_v2,0.5,never,36584,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,placed_v2,0.5,never,never,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,placed_v2,0.5,never,never,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,placed_v2,0.5,never,36584,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,placed_v2,0.5,never,never,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,farside,0.5,absent,absent,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,farside,0.5,absent,absent,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,farside,0.5,absent,absent,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,farside,0.5,absent,absent,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,farside,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,farside,0.5,absent,absent,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,farside,0.5,absent,absent,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,farside,0.5,absent,absent,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,farside,0.5,absent,absent,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,farside,0.5,absent,absent,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,farside,0.5,absent,absent,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,farside,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,farside,0.5,absent,absent,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,slide_event,0.5,absent,absent,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,slide_event,0.5,absent,absent,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,slide_event,0.5,absent,absent,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,slide_event,0.5,absent,absent,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,slide_event,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,slide_event,0.5,absent,absent,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,slide_event,0.5,absent,absent,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,slide_event,0.5,absent,absent,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,slide_event,0.5,absent,absent,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,slide_event,0.5,absent,absent,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,slide_event,0.5,absent,absent,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,slide_event,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,slide_event,0.5,absent,absent,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,home,0.5,absent,absent,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,home,0.5,absent,absent,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,home,0.5,absent,absent,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,home,0.5,absent,absent,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,home,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,home,0.5,absent,absent,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,home,0.5,absent,absent,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,home,0.5,absent,absent,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,home,0.5,absent,absent,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,home,0.5,absent,absent,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,home,0.5,absent,absent,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,home,0.5,absent,absent,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,home,0.5,absent,absent,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,home,0.1,absent,absent,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,home,0.1,absent,absent,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,home,0.1,absent,absent,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,home,0.1,absent,absent,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,home,0.1,absent,absent,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,home,0.1,absent,absent,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,home,0.1,absent,absent,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,home,0.1,absent,absent,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,home,0.1,absent,absent,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,home,0.1,absent,absent,1000000,888064,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,home,0.1,absent,absent,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,home,0.1,absent,absent,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,home,0.1,absent,absent,1000000,999192,
 rlpd_cluster,planner72,0,e2e_rlpd_px_dPlanner72_s0,tipped,0.5,34224,32,1000000,999692,
 rlpd_cluster,planner72,1,e2e_rlpd_px_dPlanner72_s1,tipped,0.5,145228,4804,1000000,999108,
-rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,tipped,0.5,46756,4,1000000,995540,
-rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,tipped,0.5,46940,1324,1000000,958628,incomplete (still running or interrupted)
+rlpd_cluster,planner72,2,e2e_rlpd_px_dPlanner72_s2,tipped,0.5,46756,4,1000000,999708,
+rlpd_cluster,planner72,3,e2e_rlpd_px_dPlanner72_s3,tipped,0.5,46940,1324,1000000,998956,
 rlpd_cluster,planner72,4,e2e_rlpd_px_dPlanner72_s4,tipped,0.5,91724,22296,1000000,999384,
-rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,tipped,0.5,30980,2568,1000000,998128,
-rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,tipped,0.5,35384,9840,1000000,996084,
-rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,tipped,0.5,42244,7204,1000000,888064,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,picked,0.5,17804,7368,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,picked,0.5,17696,11620,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,picked,0.5,19928,11196,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,picked,0.5,14800,7328,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,planner72,5,e2e_rlpd_px_dPlanner72_s5,tipped,0.5,30980,2568,1000000,999372,
+rlpd_cluster,planner72,6,e2e_rlpd_px_dPlanner72_s6,tipped,0.5,35384,9840,1000000,999708,
+rlpd_cluster,planner72,7,e2e_rlpd_px_dPlanner72_s7,tipped,0.5,42244,7204,1000000,999192,
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,picked,0.5,17804,7368,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,picked,0.5,17696,11620,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,picked,0.5,19928,11196,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,picked,0.5,14800,7328,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,picked,0.5,17812,9624,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,placed_v2,0.5,27368,15548,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,placed_v2,0.5,25556,14680,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,placed_v2,0.5,28160,15892,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,placed_v2,0.5,23752,12912,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,placed_v2,0.5,27368,15548,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,placed_v2,0.5,25556,14680,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,placed_v2,0.5,28160,15892,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,placed_v2,0.5,23752,12912,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,placed_v2,0.5,27744,13344,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,farside,0.5,absent,absent,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,farside,0.5,absent,absent,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,farside,0.5,absent,absent,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,farside,0.5,absent,absent,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,farside,0.5,absent,absent,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,farside,0.5,absent,absent,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,farside,0.5,absent,absent,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,farside,0.5,absent,absent,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,farside,0.5,absent,absent,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,slide_event,0.5,absent,absent,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,slide_event,0.5,absent,absent,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,slide_event,0.5,absent,absent,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,slide_event,0.5,absent,absent,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,slide_event,0.5,absent,absent,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,slide_event,0.5,absent,absent,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,slide_event,0.5,absent,absent,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,slide_event,0.5,absent,absent,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,slide_event,0.5,absent,absent,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,home,0.5,absent,absent,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,home,0.5,absent,absent,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,home,0.5,absent,absent,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,home,0.5,absent,absent,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,home,0.5,absent,absent,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,home,0.5,absent,absent,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,home,0.5,absent,absent,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,home,0.5,absent,absent,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,home,0.5,absent,absent,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,home,0.1,absent,absent,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,home,0.1,absent,absent,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,home,0.1,absent,absent,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,home,0.1,absent,absent,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,home,0.1,absent,absent,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,home,0.1,absent,absent,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,home,0.1,absent,absent,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,home,0.1,absent,absent,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,home,0.1,absent,absent,1000000,999496,
-rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,tipped,0.5,15836,32,1000000,470408,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,tipped,0.5,14996,4804,1000000,418508,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,tipped,0.5,15892,4,1000000,255564,incomplete (still running or interrupted)
-rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,tipped,0.5,11712,1324,1000000,179580,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,0,e2e_rlpd_px_dR2fromH_px_s0,tipped,0.5,15836,32,1000000,705108,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,1,e2e_rlpd_px_dR2fromH_px_s1,tipped,0.5,14996,4804,1000000,648116,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,2,e2e_rlpd_px_dR2fromH_px_s2,tipped,0.5,15892,4,1000000,491960,incomplete (still running or interrupted)
+rlpd_cluster,r2teacher,3,e2e_rlpd_px_dR2fromH_px_s3,tipped,0.5,11712,1324,1000000,488420,incomplete (still running or interrupted)
 rlpd_cluster,r2teacher,5,e2e_rlpd_px_dR2fromH_px_s5,tipped,0.5,16180,2568,1000000,999496,
 dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,picked,0.5,107002,29063,1000000,992652,
 dreamer_ramp_control,human,0,full_r2d_state_dHfull_all_rnrh_img_dreamer_s0,placed_v2,0.5,323821,210090,1000000,992652,
