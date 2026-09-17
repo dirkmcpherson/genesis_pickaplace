@@ -141,6 +141,16 @@ that window understates them. rnd30 MODE `home` mean at each checkpoint (seeds s
   training 0.93). {Diffusion Policy} r2teacher training starts: 3 seeds, 1.00.
 - Planner {Diffusion Policy} s0 and s1 started training. No failures. Disk 249 GB.
 
+### Update 2026-09-17 16:25 (batch)
+
+- **Planner72 is now complete for all three reward-using learners at 8/8:** {DreamerV3 losses} eval 0.04 /
+  training 0.07; {r2dreamer} eval 0.55 / training 0.90; {RLPD} 0.00 on both. Only planner {Diffusion Policy}
+  (3/8) is short.
+- r2teacher grows: {DreamerV3 losses} 3 seeds (eval 0.48), {r2dreamer} 4 (0.57), {Diffusion Policy} 3 eval /
+  5 training (1.00 on training starts).
+- All 5 planner {Diffusion Policy} seeds are training; the 8 human/machine {Diffusion Policy} seeds are still
+  waiting for GPUs. No failures. Disk 239 GB.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
