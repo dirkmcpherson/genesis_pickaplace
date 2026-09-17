@@ -89,6 +89,13 @@ Chart: `paper/figures/px_phase_2026-09-14/fig_results_4x4_home.png` (and `_picke
 - {Diffusion Policy} planner72 is at 2/8: 0.567 for both s5 and s6. These are distinct models (training seeds 5 and 6,
   different weights) whose episode outcomes on the same 30 starts differ but total the same.
 
+### 2026-09-17 ~08:30 — queued {RLPD} moved to the back (user)
+
+The three unstarted {RLPD} r2teacher seeds (s4 3765132, s6 3765141, s7 3765144) now have `Nice=10000` (priority
+717 → 1). Every other queued job starts first. The reason is the user's plan to fix RLPD before spending more GPU
+time on the current recipe. Running {RLPD} seeds (planner72 s2–s7, r2teacher s0–s3) were not touched. To undo:
+`scontrol update JobId=<id> Nice=0`.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
