@@ -13,18 +13,18 @@ Datasets: H = human demonstrations (dHfull_all, 74 tapes), M = machine (dDPfull_
 | learner | human | machine (DP teacher) | planner | r2dreamer teacher |
 |---|---|---|---|---|
 | {DreamerV3 losses} | n 8/8: 0.304 [0.20, 0.40] | n 8/8: 0.356 [0.25, 0.45] | n 8/8: 0.040 [0.00, 0.11] | n 3/8: 0.489 [0.43, 0.52] |
-| {r2dreamer} | n 8/8: 0.596 [0.56, 0.63] | n 8/8: 0.565 [0.49, 0.62] | n 8/8: 0.569 [0.52, 0.61] | n 4/8: 0.642 [0.62, 0.67] |
-| {RLPD} | n 8/8: 0.000 [0.00, 0.00] | n 8/8: 0.125 [0.01, 0.27] | n 8/8: 0.000 [0.00, 0.00] | n 1/8: 0.033 |
-| {Diffusion Policy} | n 4/8: 0.025 [0.00, 0.05] | n 4/8: 0.017 [0.00, 0.05] | n 3/8: 0.567 [0.57, 0.57] | n 3/8: 0.600 [0.60, 0.60] |
+| {r2dreamer} | n 8/8: 0.596 [0.55, 0.63] | n 8/8: 0.565 [0.49, 0.62] | n 8/8: 0.569 [0.52, 0.61] | n 4/8: 0.642 [0.62, 0.67] |
+| {RLPD} | n 8/8: 0.000 [0.00, 0.00] | n 8/8: 0.125 [0.01, 0.29] | n 8/8: 0.000 [0.00, 0.00] | n 2/8: 0.367 [0.03, 0.70] |
+| {Diffusion Policy} | n 4/8: 0.025 [0.00, 0.05] | n 4/8: 0.017 [0.00, 0.05] | n 3/8: 0.567 [0.57, 0.57] | n 8/8: 0.600 [0.60, 0.60] |
 
 ## `picked` (same cells)
 
 | learner | human | machine (DP teacher) | planner | r2dreamer teacher |
 |---|---|---|---|---|
 | {DreamerV3 losses} | n 8/8: 0.654 [0.63, 0.68] | n 8/8: 0.654 [0.63, 0.68] | n 8/8: 0.365 [0.23, 0.50] | n 3/8: 0.611 [0.57, 0.65] |
-| {r2dreamer} | n 8/8: 0.696 [0.67, 0.72] | n 8/8: 0.681 [0.65, 0.70] | n 8/8: 0.698 [0.68, 0.72] | n 4/8: 0.733 [0.70, 0.77] |
-| {RLPD} | n 8/8: 0.117 [0.06, 0.17] | n 8/8: 0.371 [0.17, 0.57] | n 8/8: 0.008 [0.00, 0.02] | n 1/8: 0.100 |
-| {Diffusion Policy} | n 4/8: 0.342 [0.29, 0.37] | n 4/8: 0.308 [0.23, 0.36] | n 3/8: 0.633 [0.63, 0.63] | n 3/8: 0.656 [0.63, 0.67] |
+| {r2dreamer} | n 8/8: 0.696 [0.67, 0.72] | n 8/8: 0.681 [0.65, 0.70] | n 8/8: 0.698 [0.68, 0.72] | n 4/8: 0.733 [0.69, 0.77] |
+| {RLPD} | n 8/8: 0.117 [0.06, 0.17] | n 8/8: 0.371 [0.17, 0.56] | n 8/8: 0.008 [0.00, 0.02] | n 2/8: 0.400 [0.10, 0.70] |
+| {Diffusion Policy} | n 4/8: 0.342 [0.29, 0.37] | n 4/8: 0.308 [0.23, 0.36] | n 3/8: 0.633 [0.63, 0.63] | n 8/8: 0.658 [0.65, 0.67] |
 
 ## World models: `home` at every checkpoint (same 8 design seeds; mean (seeds scored))
 
@@ -33,11 +33,11 @@ Datasets: H = human demonstrations (dHfull_all, 74 tapes), M = machine (dDPfull_
 | {DreamerV3 losses} | human | 0.212 (8) | 0.263 (8) | 0.346 (8) | 0.262 (8) |
 | {DreamerV3 losses} | machine (DP teacher) | 0.317 (8) | 0.292 (8) | 0.279 (8) | 0.433 (8) |
 | {DreamerV3 losses} | planner | 0.000 (8) | 0.000 (8) | 0.000 (8) | 0.079 (8) |
-| {DreamerV3 losses} | r2dreamer teacher | 0.348 (7) | 0.447 (5) | 0.400 (3) | 0.578 (3) |
+| {DreamerV3 losses} | r2dreamer teacher | 0.333 (8) | 0.486 (7) | 0.473 (5) | 0.578 (3) |
 | {r2dreamer} | human | 0.550 (8) | 0.554 (8) | 0.633 (8) | 0.558 (8) |
 | {r2dreamer} | machine (DP teacher) | 0.487 (8) | 0.596 (8) | 0.587 (8) | 0.542 (8) |
 | {r2dreamer} | planner | 0.083 (8) | 0.483 (8) | 0.550 (8) | 0.587 (8) |
-| {r2dreamer} | r2dreamer teacher | 0.417 (8) | 0.650 (4) | 0.675 (4) | 0.608 (4) |
+| {r2dreamer} | r2dreamer teacher | 0.417 (8) | 0.633 (8) | 0.638 (7) | 0.608 (4) |
 
 ## Pairwise permutation tests on the per-seed `home` statistic
 
@@ -59,23 +59,22 @@ Two-sided, difference of means; exact when C(n_a+n_b, n_a) <= 1,500,000, else 30
 | {r2dreamer} | planner72 | r2teacher | 8 | 4 | 0.569 | 0.642 | -0.073 | 0.0566 | exact | interim |
 | {RLPD} | human | machine | 8 | 8 | 0.000 | 0.125 | -0.125 | 0.2000 | exact |  |
 | {RLPD} | human | planner72 | 8 | 8 | 0.000 | 0.000 | 0.000 | 1.0000 | exact |  |
-| {RLPD} | human | r2teacher | 8 | 1 | 0.000 | 0.033 |  |  | not tested (n < 3) |  |
+| {RLPD} | human | r2teacher | 8 | 2 | 0.000 | 0.367 |  |  | not tested (n < 3) |  |
 | {RLPD} | machine | planner72 | 8 | 8 | 0.125 | 0.000 | 0.125 | 0.2000 | exact |  |
-| {RLPD} | machine | r2teacher | 8 | 1 | 0.125 | 0.033 |  |  | not tested (n < 3) |  |
-| {RLPD} | planner72 | r2teacher | 8 | 1 | 0.000 | 0.033 |  |  | not tested (n < 3) |  |
+| {RLPD} | machine | r2teacher | 8 | 2 | 0.125 | 0.367 |  |  | not tested (n < 3) |  |
+| {RLPD} | planner72 | r2teacher | 8 | 2 | 0.000 | 0.367 |  |  | not tested (n < 3) |  |
 | {Diffusion Policy} | human | machine | 4 | 4 | 0.025 | 0.017 | 0.008 | 1.0000 | exact | interim |
 | {Diffusion Policy} | human | planner72 | 4 | 3 | 0.025 | 0.567 | -0.542 | 0.0286 | exact | interim |
-| {Diffusion Policy} | human | r2teacher | 4 | 3 | 0.025 | 0.600 | -0.575 | 0.0286 | exact | interim |
+| {Diffusion Policy} | human | r2teacher | 4 | 8 | 0.025 | 0.600 | -0.575 | 0.0020 | exact | interim |
 | {Diffusion Policy} | machine | planner72 | 4 | 3 | 0.017 | 0.567 | -0.550 | 0.0286 | exact | interim |
-| {Diffusion Policy} | machine | r2teacher | 4 | 3 | 0.017 | 0.600 | -0.583 | 0.0286 | exact | interim |
-| {Diffusion Policy} | planner72 | r2teacher | 3 | 3 | 0.567 | 0.600 | -0.033 | 0.1000 | exact | interim |
+| {Diffusion Policy} | machine | r2teacher | 4 | 8 | 0.017 | 0.600 | -0.583 | 0.0020 | exact | interim |
+| {Diffusion Policy} | planner72 | r2teacher | 3 | 8 | 0.567 | 0.600 | -0.033 | 0.0061 | exact | interim |
 
 ## Missing seeds (in the design, no statistic yet)
 
 - {DreamerV3 losses} / r2teacher: seeds 2 3 4 5 7
 - {r2dreamer} / r2teacher: seeds 3 4 5 6
-- {RLPD} / r2teacher: seeds 0 1 2 3 4 6 7
+- {RLPD} / r2teacher: seeds 1 2 3 4 6 7
 - {Diffusion Policy} / human: seeds 4 5 6 7
 - {Diffusion Policy} / machine: seeds 4 5 6 7
 - {Diffusion Policy} / planner72: seeds 0 1 2 3 4
-- {Diffusion Policy} / r2teacher: seeds 3 4 5 6 7

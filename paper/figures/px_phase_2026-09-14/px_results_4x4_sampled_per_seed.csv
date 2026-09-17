@@ -87,7 +87,7 @@ learner,dataset,seed,in_design,home,picked,cells,excluded_reason
 {RLPD},planner72,5,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s5/fresh_eval_rnd30_sample/metrics.json,
 {RLPD},planner72,6,True,0.0,0.03333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s6/fresh_eval_rnd30_sample/metrics.json,
 {RLPD},planner72,7,True,0.0,0.0,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/P72/runs/rlpd/e2e_rlpd_px_dPlanner72_s7/fresh_eval_rnd30_sample/metrics.json,
-{RLPD},r2teacher,0,True,,,,no sampled cell yet
+{RLPD},r2teacher,0,True,0.5333333333333333,0.5666666666666667,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/rlpd/e2e_rlpd_px_dR2fromH_px_s0/fresh_eval_rnd30_sample/metrics.json,
 {RLPD},r2teacher,1,True,,,,no sampled cell yet
 {RLPD},r2teacher,2,True,,,,no sampled cell yet
 {RLPD},r2teacher,3,True,,,,no sampled cell yet
@@ -122,8 +122,8 @@ learner,dataset,seed,in_design,home,picked,cells,excluded_reason
 {Diffusion Policy},r2teacher,0,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s0/fresh_eval_rnd30_sample/metrics.json,
 {Diffusion Policy},r2teacher,1,True,0.6,0.6333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s1/fresh_eval_rnd30_sample/metrics.json,
 {Diffusion Policy},r2teacher,2,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s2/fresh_eval_rnd30_sample/metrics.json,
-{Diffusion Policy},r2teacher,3,True,,,,no sampled cell yet
-{Diffusion Policy},r2teacher,4,True,,,,no sampled cell yet
-{Diffusion Policy},r2teacher,5,True,,,,no sampled cell yet
-{Diffusion Policy},r2teacher,6,True,,,,no sampled cell yet
-{Diffusion Policy},r2teacher,7,True,,,,no sampled cell yet
+{Diffusion Policy},r2teacher,3,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s3/fresh_eval_rnd30_sample/metrics.json,
+{Diffusion Policy},r2teacher,4,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s4/fresh_eval_rnd30_sample/metrics.json,
+{Diffusion Policy},r2teacher,5,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s5/fresh_eval_rnd30_sample/metrics.json,
+{Diffusion Policy},r2teacher,6,True,0.6,0.6666666666666666,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s6/fresh_eval_rnd30_sample/metrics.json,
+{Diffusion Policy},r2teacher,7,True,0.6,0.6333333333333333,/home/j/data/genesis_pickaplace/px_analysis_2026-09-14/R2T/runs/dp/r2teacher_dp_px_dR2fromH_px_s7/fresh_eval_rnd30_sample/metrics.json,

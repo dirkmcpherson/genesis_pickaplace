@@ -151,6 +151,16 @@ that window understates them. rnd30 MODE `home` mean at each checkpoint (seeds s
 - All 5 planner {Diffusion Policy} seeds are training; the 8 human/machine {Diffusion Policy} seeds are still
   waiting for GPUs. No failures. Disk 239 GB.
 
+### Update 2026-09-17 19:25 (batch)
+
+- **{Diffusion Policy} r2teacher is the first new-dataset cell at 8/8:** eval 0.60, training 1.00 — the highest
+  {Diffusion Policy} cell in the study (human/machine are 0.02–0.03).
+- **All 8 human/machine {Diffusion Policy} seeds s4–s7 finally started** after ~21 h waiting; those two cells stay at
+  4/8 until they finish (~6 h each).
+- {RLPD} r2teacher now 2 seeds: eval 0.27, training 0.43 — the only non-machine dataset where {RLPD} scores.
+- Two deprioritised r2teacher {RLPD} seeds started as GPUs freed (5 running, 1 waiting).
+- No failures. 16 more world-model cells submitted for scoring. Disk 233 GB.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
