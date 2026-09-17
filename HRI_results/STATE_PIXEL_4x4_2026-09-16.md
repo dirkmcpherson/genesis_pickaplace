@@ -96,6 +96,30 @@ The three unstarted {RLPD} r2teacher seeds (s4 3765132, s6 3765141, s7 3765144) 
 time on the current recipe. Running {RLPD} seeds (planner72 s2–s7, r2teacher s0–s3) were not touched. To undo:
 `scontrol update JobId=<id> Nice=0`.
 
+### 2026-09-17 ~09:00 — CORRECTION: planner72 result depends on the checkpoint window (user caught it)
+
+Every 2M world-model run saves and scores checkpoints at 0.5M, 1M, 1.5M and 2M. The statistic of record averages
+only 0.5M and 1M, because the (af) pilot seeds trained to 1M. On planner72 data the world models ignite later, so
+that window understates them. rnd30 MODE `home` mean at each checkpoint (seeds scored):
+
+| learner | dataset | 0.5M | 1M | 1.5M | 2M |
+|---|---|---|---|---|---|
+| {r2dreamer} | human | 0.573 (16) | 0.602 (16) | 0.605 (13) | 0.572 (13) |
+| {r2dreamer} | machine | 0.494 (16) | 0.567 (16) | 0.582 (13) | 0.556 (13) |
+| {r2dreamer} | planner72 | **0.083 (8)** | 0.483 (8) | 0.548 (7) | **0.595 (7)** |
+| {DreamerV3 losses} | human (cluster) | 0.250 (12) | 0.286 (12) | 0.346 (8) | 0.263 (8) |
+| {DreamerV3 losses} | machine (cluster) | 0.344 (12) | 0.314 (12) | 0.279 (8) | 0.433 (8) |
+| {DreamerV3 losses} | planner72 | 0.000 (8) | 0.000 (7) | 0.000 (7) | **0.090 (7)**, one seed 16/30 |
+
+- **{r2dreamer} on planner72 catches up by 1.5–2M.** At 2M it matches human and machine (0.595 v 0.572 / 0.556).
+  The earlier line "planner demonstrations slow the world models down … 0.28 v 0.59, p 0.0001" is a statement about
+  *when* it learns, not *whether*. Do not quote it as a performance gap.
+- **{DreamerV3 losses} on planner72 stays poor through 2M:** 0/7 seeds above 0 until 2M, then 3 of 7 seeds score
+  (16, 2, 1 of 30).
+- **Proposal for the 4-dataset comparison.** Report every checkpoint. Use the 2M cell (or the 1.5M + 2M mean) as the
+  cross-dataset statistic over the seeds that trained to 2M. The 0.5M + 1M statistic stays the registered
+  human-v-machine number, because it is the only one every human/machine seed has.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the
