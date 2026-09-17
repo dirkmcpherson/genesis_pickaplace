@@ -38,6 +38,18 @@ mkdir -p $M/LAB/gp_pxr/e2e_px
 rsync -avz --include='*/' --include='episode_rollouts.jsonl' --include='metrics.json' --include='*.action_mode.json' \
       --exclude='*' $H:$LAB/gp_pxr/baselines/rl/checkpoints/e2e_px/ $M/LAB/gp_pxr/e2e_px/   # the script reads LAB/gp_pxr/e2e_px (fixed 09-16)
 rsync -avz $H:'$LAB/gp_pxr/e2e_rlpd_px_*.out' $M/LAB/gp_pxr/
+# {Diffusion Policy} human/machine (ah) cells (no videos, no checkpoints)
+rsync -avz --prune-empty-dirs --include='*/' --include='metrics.json' --include='E2E_HEADLINE.txt' --exclude='wandb/' \
+      --exclude='checkpoints/' --exclude='*' $H:$LAB/gp_ah/baselines/outputs/dp_px/ $M/LAB/gp_ah/dp_px/
+# planner72 + r2teacher campaigns (all four learners): metrics/logs/ledgers only, dead runs excluded, --delete
+FILT=(--prune-empty-dirs --exclude='runs_dead_*/' --exclude='*.preempted*/' --exclude='wandb/' --exclude='wandb_eval/' \
+      --exclude='*_iso/' --exclude='data/' --exclude='artifacts/' --exclude='preparation/' --exclude='resubmit_*/' \
+      --exclude='checkpoints/' --exclude='.hydra/' --include='*/' --include='console.log' --include='metrics.jsonl' \
+      --include='metrics.json' --include='step_contract.json' --include='ladder_provenance.json' --include='provenance.json' \
+      --include='episode_rollouts.jsonl' --include='E2E_HEADLINE.txt' --include='milestones/*.json' --include='slurm/*.out' \
+      --include='/*.jsonl' --include='/QUEUE_HANDOFF.md' --exclude='*')
+rsync -az --delete --delete-excluded "${FILT[@]}" $H:$LAB/planner72_px_2026-09-15/ $M/P72/   # NOT planner_px_2026-09-15 (old 70-tape cohort)
+rsync -az --delete --delete-excluded "${FILT[@]}" $H:$LAB/r2teacher_px_2026-09-15/ $M/R2T/
 # local seeds (already on pop-os)
 rsync -a --include='*/' --include='console.log' --include='metrics.jsonl' --include='metrics.json' --exclude='*' \
       ~/runs_dv3_local/ $M/local/runs_dv3_local/

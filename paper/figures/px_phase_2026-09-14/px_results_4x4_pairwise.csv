@@ -1,0 +1,25 @@
+learner,a,b,n_a,n_b,mean_a,mean_b,diff,p,method,n_relabelings,interim
+{DreamerV3 losses},human,machine,16,16,0.30624999999999997,0.303125,0.003124999999999989,0.9674801083996387,monte_carlo,300000,False
+{DreamerV3 losses},human,planner72,16,0,0.30624999999999997,,,,not tested (n < 3),0,True
+{DreamerV3 losses},human,r2teacher,16,0,0.30624999999999997,,,,not tested (n < 3),0,True
+{DreamerV3 losses},machine,planner72,16,0,0.303125,,,,not tested (n < 3),0,True
+{DreamerV3 losses},machine,r2teacher,16,0,0.303125,,,,not tested (n < 3),0,True
+{DreamerV3 losses},planner72,r2teacher,0,0,,,,,not tested (n < 3),0,True
+{r2dreamer},human,machine,16,16,0.5875,0.5302083333333333,0.05729166666666674,0.08883637054543152,monte_carlo,300000,False
+{r2dreamer},human,planner72,16,0,0.5875,,,,not tested (n < 3),0,True
+{r2dreamer},human,r2teacher,16,0,0.5875,,,,not tested (n < 3),0,True
+{r2dreamer},machine,planner72,16,0,0.5302083333333333,,,,not tested (n < 3),0,True
+{r2dreamer},machine,r2teacher,16,0,0.5302083333333333,,,,not tested (n < 3),0,True
+{r2dreamer},planner72,r2teacher,0,0,,,,,not tested (n < 3),0,True
+{RLPD},human,machine,2,2,0.0,0.26666666666666666,,,not tested (n < 3),0,True
+{RLPD},human,planner72,2,2,0.0,0.0,,,not tested (n < 3),0,True
+{RLPD},human,r2teacher,2,0,0.0,,,,not tested (n < 3),0,True
+{RLPD},machine,planner72,2,2,0.26666666666666666,0.0,,,not tested (n < 3),0,True
+{RLPD},machine,r2teacher,2,0,0.26666666666666666,,,,not tested (n < 3),0,True
+{RLPD},planner72,r2teacher,2,0,0.0,,,,not tested (n < 3),0,True
+{Diffusion Policy},human,machine,4,4,0.025,0.016666666666666666,0.008333333333333335,1.0,exact,70,True
+{Diffusion Policy},human,planner72,4,0,0.025,,,,not tested (n < 3),0,True
+{Diffusion Policy},human,r2teacher,4,0,0.025,,,,not tested (n < 3),0,True
+{Diffusion Policy},machine,planner72,4,0,0.016666666666666666,,,,not tested (n < 3),0,True
+{Diffusion Policy},machine,r2teacher,4,0,0.016666666666666666,,,,not tested (n < 3),0,True
+{Diffusion Policy},planner72,r2teacher,0,0,,,,,not tested (n < 3),0,True

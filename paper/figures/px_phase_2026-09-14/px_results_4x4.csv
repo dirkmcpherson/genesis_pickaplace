@@ -1,0 +1,17 @@
+learner,dataset,n_stat,n_design,n_training_record,mean_home,home_ci_lo,home_ci_hi,mean_picked,picked_ci_lo,picked_ci_hi,n_picked,seeds_with_stat,seeds_missing,statistic,interim
+{DreamerV3 losses},human,16,16,16,0.30624999999999997,0.23747395833333332,0.3791927083333332,0.6520833333333333,0.6041406249999999,0.6875,16,0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15,,mean rnd30_mode home at 0.5M & 1M,False
+{DreamerV3 losses},machine,16,16,16,0.303125,0.23747395833333332,0.36875,0.5979166666666667,0.5354166666666667,0.6583333333333332,16,0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15,,mean rnd30_mode home at 0.5M & 1M,False
+{DreamerV3 losses},planner72,0,8,7,,,,,,,0,,0 1 2 3 4 5 6 7,mean rnd30_mode home at 0.5M & 1M,True
+{DreamerV3 losses},r2teacher,0,8,1,,,,,,,0,,0 1 2 3 4 5 6 7,mean rnd30_mode home at 0.5M & 1M,True
+{r2dreamer},human,16,16,16,0.5875,0.5416666666666666,0.628125,0.6822916666666666,0.6489583333333333,0.7062499999999999,16,0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15,,mean rnd30_mode home at 0.5M & 1M,False
+{r2dreamer},machine,16,16,16,0.5302083333333333,0.4854166666666666,0.5708333333333333,0.6666666666666666,0.6385416666666666,0.69375,16,0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15,,mean rnd30_mode home at 0.5M & 1M,False
+{r2dreamer},planner72,0,8,7,,,,,,,0,,0 1 2 3 4 5 6 7,mean rnd30_mode home at 0.5M & 1M,True
+{r2dreamer},r2teacher,0,8,2,,,,,,,0,,0 1 2 3 4 5 6 7,mean rnd30_mode home at 0.5M & 1M,True
+{RLPD},human,2,8,8,0.0,0.0,0.0,0.11666666666666667,0.1,0.13333333333333333,2,0 1,2 3 4 5 6 7,250k rnd30_mode home,True
+{RLPD},machine,2,8,8,0.26666666666666666,0.0,0.5333333333333333,0.3333333333333333,0.0,0.6666666666666666,2,0 1,2 3 4 5 6 7,250k rnd30_mode home,True
+{RLPD},planner72,2,8,8,0.0,0.0,0.0,0.0,0.0,0.0,2,0 1,2 3 4 5 6 7,250k rnd30_mode home,True
+{RLPD},r2teacher,0,8,1,,,,,,,0,,0 1 2 3 4 5 6 7,250k rnd30_mode home,True
+{Diffusion Policy},human,4,8,4,0.025,0.0,0.05,0.3416666666666667,0.29166666666666663,0.36666666666666664,4,0 1 2 3,4 5 6 7,rnd30_sample home,True
+{Diffusion Policy},machine,4,8,4,0.016666666666666666,0.0,0.05,0.30833333333333335,0.23333333333333334,0.35833333333333334,4,0 1 2 3,4 5 6 7,rnd30_sample home,True
+{Diffusion Policy},planner72,0,8,2,,,,,,,0,,0 1 2 3 4 5 6 7,rnd30_sample home,True
+{Diffusion Policy},r2teacher,0,8,0,,,,,,,0,,0 1 2 3 4 5 6 7,rnd30_sample home,True
