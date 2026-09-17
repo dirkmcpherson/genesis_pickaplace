@@ -1937,6 +1937,18 @@ Tuesday night/Wednesday morning; the DP 4 v 4 (100k steps, ~3 h + eval) tonight.
 **Pilot seeds are NOT rerun at 2M under this amendment** (option 1 as put to the user); the 2M statistic therefore
 covers the new seeds only (12 v 12 dreamer, 13 v 13 r2dreamer) until a later amendment extends or reruns them.
 
+**(ag) {RLPD} pixels status 2026-09-16 22:15 — budget defect found; 250k checkpoints submitted for scoring.**
+The 13 (ag) RLPD jobs (dH s2–s8, dDPfirst s2–s7) timed out at the 30 h wall clock on 09-16 08:46 with no final
+cells. Their sidecars record `steps 2000000`: the world-model `STEPS=2000000` of the (ag) batch reached the RLPD
+submissions, so the trainer had no 250k stop (the pilot s0/s1 sidecars read 250000). Every run saved
+`rlpd_250000_steps.zip`, the registered budget point. Learning rate is constant (`lr_schedule(1)`), so the total-step
+setting changes nothing before 250k except checkpoint-fraction names. Records past 250k decisions are cut from all
+analysis. Evaluation of the 250k checkpoints, identical cell set to the pilots (hold15 + rnd30 × sample + mode, rnd30
+`_iso`, 64-core class, `gp_pxr` whose RLPD eval path is unchanged since the pilots' 9841633 apart from the DP-only
+`--camera-rig` flag and the preempt QOS header): jobs **3773759–3773771**, all running by 22:12. To start them, 36
+pending GPU jobs of the planner cohort (blocked on the GPU cap, taking the scheduler's 20-job backfill window) were held
+for ~20 s and released; no job lost a start. The 15 held RLPD seeds cancelled earlier (s8 machine, s9–15) have no data.
+
 ## Amendment (ai) — attribution control: DreamerV3 losses on STATE observation, `nested_sparse10`, from scratch, local (registered 2026-09-15 ~11:25 BEFORE launch; user: "see if you can get dreamerv3 to ignite locally on just state")
 
 **Why.** The pixel world models ignite 57/57; the state-based `nested_sparse10` runs of (ac) never picked — but those
