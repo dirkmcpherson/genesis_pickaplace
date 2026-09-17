@@ -59,9 +59,15 @@ design n and the mean rnd30 `home`. {RLPD} and the world models use MODE actions
 
 - **{RLPD} registered readout:** human 0.000 v machine 0.125, exact p 0.20 (8 v 8). With human s8 it is p 0.08
   (9 v 8). Human 0/9 seeds reach `home`; machine 3/8.
-- **Planner demonstrations do not work for the world models (interim, 6 seeds).** {DreamerV3 losses} reach `home` on
-  0 of 6 planner seeds (picked 0.27). {r2dreamer} reaches 0.322 v human 0.588 (p 0.0001). By contrast, the first
-  planner {Diffusion Policy} seed scores 0.567, far above DP on human/machine data (≤ 0.03).
+- **Planner demonstrations slow the world models down (interim, 6 seeds).**
+  - {DreamerV3 losses}: the statistic of record (0.5M + 1M cells) is 0.000 on all 6 planner seeds, with picked 0.27.
+    It is late ignition, not only failure. In training, s0 and s2 reach `home` from ~1.1–1.3M counter steps and end
+    with 62 % and 47 % `home` over their last 200 episodes; s0's 2M cell reads 2/30. The other planner seeds stay at
+    ≤ 3.5 %. Human and machine seeds ignite at 0.2–0.5M, so the fixed 0.5M/1M window is too early here. Report the 2M
+    cell and the training record beside the statistic of record for this dataset.
+  - {r2dreamer}: 0.322 v human 0.588 (p 0.0001). Training-record `home` over the last 200 episodes is 70–90 % on every
+    finished planner seed, so the gap is in MODE evaluation on random starts, not in training.
+  - {Diffusion Policy}: the first planner seed scores 0.567, far above DP on human/machine data (≤ 0.03).
 - **No failures overnight.** Scoring submitted: 26 more planner72 milestone cells. The hold/release fix was needed
   again (26 evaluations pending beside 35 idle nodes). Disk 284 GB.
 
