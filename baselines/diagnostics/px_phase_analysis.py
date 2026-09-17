@@ -127,10 +127,14 @@ TRAINED_RECORD_CONDITIONS = ["dreamer_local", "dreamer_cluster", "r2dreamer_clus
 #: design seeds per (learner, dataset) where no job ledger is mirrored.  The new
 #: datasets (planner72, r2teacher) take their seeds from SUBMISSIONS.jsonl instead.
 DESIGN_SEEDS = {
-    ("{DreamerV3 losses}", "human"): list(range(16)),     # local s0-3 + cluster s4-15
-    ("{DreamerV3 losses}", "machine"): list(range(16)),
-    ("{r2dreamer}", "human"): list(range(16)),
-    ("{r2dreamer}", "machine"): list(range(16)),
+    # 2026-09-17 (user): first-round report = 8 seeds per condition, world models restricted to runs that trained
+    # to 2M (so the late checkpoints exist). Seed choice is result-blind: the 8 LOWEST seed numbers that reached 2M.
+    # {DreamerV3 losses}: the (ag) s8-15 are the only 2M seeds; {r2dreamer}: (ag) s3-15 reached 2M -> s3-10.
+    # The 1M pilots ((af) s4-7 / s0-2, local s0-3) keep the registered 0.5M+1M human-v-machine readout elsewhere.
+    ("{DreamerV3 losses}", "human"): list(range(8, 16)),
+    ("{DreamerV3 losses}", "machine"): list(range(8, 16)),
+    ("{r2dreamer}", "human"): list(range(3, 11)),
+    ("{r2dreamer}", "machine"): list(range(3, 11)),
     ("{RLPD}", "human"): list(range(8)),      # s8 is an extra seed outside the n=8 design
     ("{RLPD}", "machine"): list(range(8)),
     ("{Diffusion Policy}", "human"): list(range(8)),
@@ -141,7 +145,8 @@ LEDGER_LEARNER = {"dreamer": "{DreamerV3 losses}", "r2dreamer": "{r2dreamer}",
 #: {RLPD} budget in decisions; cells from a checkpoint past it are not used
 RLPD_BUDGET_DECISIONS = 250_000
 RLPD_EPISODE_SLACK = 1_200            # a final checkpoint may land < 1 episode past budget
-STAT_MILESTONES = (500_000, 1_000_000)
+STAT_MILESTONES = (1_500_000, 2_000_000)   # 2026-09-17: late checkpoints (was 0.5M, 1M)
+SERIES_MILESTONES = (500_000, 1_000_000, 1_500_000, 2_000_000)
 STAT_TOL = 60_000                     # local series: nearest checkpoint within this
 PERM_EXACT_MAX = 1_500_000
 PERM_MC = 300_000
@@ -291,7 +296,7 @@ class Run:
     def record_statistic(self):
         """Per-seed STATISTIC OF RECORD -> dict(home, picked, cells) or (None, reason).
 
-        world models: mean of the rnd30 MODE cells at 0.5 M and 1 M online steps (nearest
+        world models: mean of the rnd30 MODE cells at STAT_MILESTONES (1.5 M and 2 M) online steps (nearest
         cell within STAT_TOL; both required).  {RLPD}: the final / 250 k rnd30 MODE cell.
         {Diffusion Policy}: the rnd30 SAMPLE cell.
         """
@@ -1605,6 +1610,19 @@ def results_4x4(runs, root: Path, rng):
                 elif in_design:
                     missing.append(seed)
             n_rec = sum(1 for s in design if s in by_seed and by_seed[s].has_training_record)
+            series = {}
+            if lab in ("{DreamerV3 losses}", "{r2dreamer}"):
+                for ms in SERIES_MILESTONES:
+                    vs = []
+                    for sd in design:
+                        rr = by_seed.get(sd)
+                        if rr is None:
+                            continue
+                        near = [c for c in rr.cells if c["cell"] == "rnd30_mode" and abs(c["online"] - ms) <= STAT_TOL
+                                and c["stages"].get("home") is not None]
+                        if near:
+                            vs.append(min(near, key=lambda c: abs(c["online"] - ms))["stages"]["home"])
+                    series[ms] = (float(np.mean(vs)) if vs else None, len(vs))
             homes = [h for _, h, _ in stat]
             picks = [p for _, _, p in stat if p is not None]
             hlo, hhi = boot_ci(homes, rng)
@@ -1620,8 +1638,9 @@ def results_4x4(runs, root: Path, rng):
                 seeds_missing=" ".join(str(s) for s in missing),
                 statistic=("rnd30_sample home" if lab == "{Diffusion Policy}" else
                            "250k rnd30_mode home" if lab == "{RLPD}" else
-                           "mean rnd30_mode home at 0.5M & 1M"),
+                           "mean rnd30_mode home at 1.5M & 2M"),
                 interim=len(stat) < 8,
+                _series=series,
                 _homes=homes))
             status.append((lab, arm, len(stat), n_rec, len(design)))
     pairs = []
@@ -1661,7 +1680,7 @@ def _f(v, nd=3):
 
 def write_4x4(cells, pairs, outdir: Path, tex_path: Path):
     idx = {(c["learner"], c["dataset"]): c for c in cells}
-    write_csv(cells, outdir / "px_results_4x4.csv")
+    write_csv([{k: v for k, v in c.items() if not k.startswith("_")} for c in cells], outdir / "px_results_4x4.csv")
     write_csv(pairs, outdir / "px_results_4x4_pairwise.csv")
 
     def cell_md(c, key):
@@ -1680,8 +1699,9 @@ def write_4x4(cells, pairs, outdir: Path, tex_path: Path):
          f"{BOOT} resamples]. A seed without a cell is absent, not zero "
          "(missing seeds listed below).", "",
          "Statistic of record: {DreamerV3 losses} and {r2dreamer} = per-seed mean of the "
-         "rnd30 MODE `home` rate at 0.5 M and 1 M online steps (both cells required; local "
-         "seeds: nearest series checkpoint within 60k); {RLPD} = rnd30 MODE `home` at the "
+         "rnd30 MODE `home` rate at 1.5 M and 2 M online steps (both cells required), over the 8 "
+         "lowest-numbered seeds that trained to 2 M (human/machine: {DreamerV3 losses} s8-15, "
+         "{r2dreamer} s3-10; planner72/r2teacher s0-7); {RLPD} = rnd30 MODE `home` at the "
          "250k-decision checkpoint; {Diffusion Policy} = rnd30 SAMPLE `home` (100k updates).",
          "", "Datasets: " + DATASET_DESC + ".", ""]
     for key, title in (("home", "`home` (statistic of record)"),
@@ -1693,6 +1713,16 @@ def write_4x4(cells, pairs, outdir: Path, tex_path: Path):
             L.append(f"| {lab} | " + " | ".join(cell_md(idx[(lab, a)], key)
                                                for a in ARMS) + " |")
         L.append("")
+    L += ["## World models: `home` at every checkpoint (same 8 design seeds; mean (seeds scored))", "",
+          "| learner | dataset | 0.5M | 1M | 1.5M | 2M |", "|---|---|---|---|---|---|"]
+    for c in cells:
+        ser = c.get("_series") or {}
+        if not ser:
+            continue
+        L.append(f"| {c['learner']} | {ARM_LABEL[c['dataset']]} | " + " | ".join(
+            ("--" if ser.get(ms, (None, 0))[0] is None else f"{ser[ms][0]:.3f} ({ser[ms][1]})")
+            for ms in SERIES_MILESTONES) + " |")
+    L += [""]
     L += ["## Pairwise permutation tests on the per-seed `home` statistic", "",
           f"Two-sided, difference of means; exact when C(n_a+n_b, n_a) <= {PERM_EXACT_MAX:,},"
           f" else {PERM_MC:,} Monte-Carlo relabelings. Tested only where both cells have "
@@ -1743,7 +1773,7 @@ def write_4x4(cells, pairs, outdir: Path, tex_path: Path):
           r"95\,\% bootstrap CI over seeds in brackets, (seeds with the statistic / seeds "
           r"in the design). A seed without a cell is absent, not zero. Statistic: "
           r"\{DreamerV3 losses\} and \{r2dreamer\} = mean rnd30 MODE \texttt{home} rate of "
-          r"the 0.5\,M and 1\,M online-step cells; \{RLPD\} = rnd30 MODE at 250k decisions; "
+          r"the 1.5\,M and 2\,M online-step cells, 8 seeds that trained to 2\,M; \{RLPD\} = rnd30 MODE at 250k decisions; "
           r"\{Diffusion Policy\} = rnd30 SAMPLE after 100k updates. \texttt{picked} is read "
           r"from the same cells. Datasets: human = dHfull\_all (74 tapes); machine = "
           r"dDPfull\_first (72 tapes, Diffusion Policy teacher); planner = planner72 (72 "

@@ -120,6 +120,20 @@ that window understates them. rnd30 MODE `home` mean at each checkpoint (seeds s
   cross-dataset statistic over the seeds that trained to 2M. The 0.5M + 1M statistic stays the registered
   human-v-machine number, because it is the only one every human/machine seed has.
 
+### 2026-09-17 ~09:30 — FIRST-ROUND REPORTING RULE (user): 8 seeds per condition, world models from 2M runs
+
+- **World models:** statistic = per-seed mean rnd30 MODE `home` of the **1.5M and 2M** cells, over the 8
+  lowest-numbered seeds that trained to 2M (result-blind). Human and machine: {DreamerV3 losses} s8–15, {r2dreamer}
+  s3–10. Planner72 and r2teacher: s0–7. Every checkpoint (0.5/1/1.5/2M) is tabulated beside it.
+- **Other learners:** {RLPD} is the 250k rnd30 MODE cell, s0–7. {Diffusion Policy} is the rnd30 SAMPLE cell, s0–7.
+- **What stays registered:** the human-v-machine 16 v 16 on the 0.5M + 1M cells, reported separately.
+- **Current values:** {DreamerV3 losses} human 0.304, machine 0.356, planner 0.045 (7), r2teacher 0.433 (1).
+  {r2dreamer} human 0.596, machine 0.565, planner 0.571 (7), r2teacher 0.650 (2).
+- **Tests:** human v machine p 0.53 ({DreamerV3 losses}) and 0.56 ({r2dreamer}). Planner v human: {DreamerV3 losses}
+  p 0.006; {r2dreamer} p 0.53. Both planner comparisons are interim.
+- **Outputs:** `px_results_4x4.md` (incl. the per-checkpoint table) and `fig_results_4x4_home.png` regenerate with
+  this rule.
+
 ## 3. What happened today (09-16)
 
 1. **Cluster incident.** A home-directory cache hit its quota and a GPU node drained. The other agent restarted the

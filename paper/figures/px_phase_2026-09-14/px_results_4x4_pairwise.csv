@@ -1,16 +1,16 @@
 learner,a,b,n_a,n_b,mean_a,mean_b,diff,p,method,n_relabelings,interim
-{DreamerV3 losses},human,machine,16,16,0.30624999999999997,0.303125,0.003124999999999989,0.9668501104996317,monte_carlo,300000,False
-{DreamerV3 losses},human,planner72,16,7,0.30624999999999997,0.0,0.30624999999999997,2.4474112507495196e-05,exact,245157,True
-{DreamerV3 losses},human,r2teacher,16,1,0.30624999999999997,0.6499999999999999,,,not tested (n < 3),0,True
-{DreamerV3 losses},machine,planner72,16,7,0.303125,0.0,0.303125,3.26321500099936e-05,exact,245157,True
-{DreamerV3 losses},machine,r2teacher,16,1,0.303125,0.6499999999999999,,,not tested (n < 3),0,True
-{DreamerV3 losses},planner72,r2teacher,7,1,0.0,0.6499999999999999,,,not tested (n < 3),0,True
-{r2dreamer},human,machine,16,16,0.5875,0.5302083333333333,0.05729166666666674,0.08870970430098567,monte_carlo,300000,False
-{r2dreamer},human,planner72,16,8,0.5875,0.2833333333333333,0.3041666666666667,8.1580375024984e-06,exact,735471,False
-{r2dreamer},human,r2teacher,16,3,0.5875,0.5333333333333333,0.054166666666666696,0.3993808049535604,exact,969,True
-{r2dreamer},machine,planner72,16,8,0.5302083333333333,0.2833333333333333,0.24687499999999996,4.894822501499039e-05,exact,735471,False
-{r2dreamer},machine,r2teacher,16,3,0.5302083333333333,0.5333333333333333,-0.0031250000000000444,1.0,exact,969,True
-{r2dreamer},planner72,r2teacher,8,3,0.2833333333333333,0.5333333333333333,-0.25,0.012121212121212121,exact,165,True
+{DreamerV3 losses},human,machine,8,8,0.3041666666666667,0.35625,-0.052083333333333315,0.5308469308469308,exact,12870,False
+{DreamerV3 losses},human,planner72,8,7,0.3041666666666667,0.04523809523809524,0.25892857142857145,0.006216006216006216,exact,6435,True
+{DreamerV3 losses},human,r2teacher,8,1,0.3041666666666667,0.43333333333333335,,,not tested (n < 3),0,True
+{DreamerV3 losses},machine,planner72,8,7,0.35625,0.04523809523809524,0.31101190476190477,0.0013986013986013986,exact,6435,True
+{DreamerV3 losses},machine,r2teacher,8,1,0.35625,0.43333333333333335,,,not tested (n < 3),0,True
+{DreamerV3 losses},planner72,r2teacher,7,1,0.04523809523809524,0.43333333333333335,,,not tested (n < 3),0,True
+{r2dreamer},human,machine,8,8,0.5958333333333333,0.5645833333333332,0.03125000000000011,0.56006216006216,exact,12870,False
+{r2dreamer},human,planner72,8,7,0.5958333333333333,0.5714285714285713,0.02440476190476204,0.528049728049728,exact,6435,True
+{r2dreamer},human,r2teacher,8,2,0.5958333333333333,0.65,,,not tested (n < 3),0,True
+{r2dreamer},machine,planner72,8,7,0.5645833333333332,0.5714285714285713,-0.006845238095238071,0.887956487956488,exact,6435,True
+{r2dreamer},machine,r2teacher,8,2,0.5645833333333332,0.65,,,not tested (n < 3),0,True
+{r2dreamer},planner72,r2teacher,7,2,0.5714285714285713,0.65,,,not tested (n < 3),0,True
 {RLPD},human,machine,8,8,0.0,0.125,-0.125,0.2,exact,12870,False
 {RLPD},human,planner72,8,2,0.0,0.0,,,not tested (n < 3),0,True
 {RLPD},human,r2teacher,8,1,0.0,0.03333333333333333,,,not tested (n < 3),0,True
@@ -19,7 +19,7 @@ learner,a,b,n_a,n_b,mean_a,mean_b,diff,p,method,n_relabelings,interim
 {RLPD},planner72,r2teacher,2,1,0.0,0.03333333333333333,,,not tested (n < 3),0,True
 {Diffusion Policy},human,machine,4,4,0.025,0.016666666666666666,0.008333333333333335,1.0,exact,70,True
 {Diffusion Policy},human,planner72,4,2,0.025,0.5666666666666667,,,not tested (n < 3),0,True
-{Diffusion Policy},human,r2teacher,4,0,0.025,,,,not tested (n < 3),0,True
+{Diffusion Policy},human,r2teacher,4,1,0.025,0.6,,,not tested (n < 3),0,True
 {Diffusion Policy},machine,planner72,4,2,0.016666666666666666,0.5666666666666667,,,not tested (n < 3),0,True
-{Diffusion Policy},machine,r2teacher,4,0,0.016666666666666666,,,,not tested (n < 3),0,True
-{Diffusion Policy},planner72,r2teacher,2,0,0.5666666666666667,,,,not tested (n < 3),0,True
+{Diffusion Policy},machine,r2teacher,4,1,0.016666666666666666,0.6,,,not tested (n < 3),0,True
+{Diffusion Policy},planner72,r2teacher,2,1,0.5666666666666667,0.6,,,not tested (n < 3),0,True

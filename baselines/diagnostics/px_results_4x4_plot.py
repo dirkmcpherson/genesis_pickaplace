@@ -15,8 +15,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 LEARNERS = ["{DreamerV3 losses}", "{r2dreamer}", "{RLPD}", "{Diffusion Policy}"]
-STAT = {"{DreamerV3 losses}": "rnd30 MODE, mean of 0.5M + 1M cells",
-        "{r2dreamer}": "rnd30 MODE, mean of 0.5M + 1M cells",
+STAT = {"{DreamerV3 losses}": "rnd30 MODE, mean of 1.5M + 2M cells",
+        "{r2dreamer}": "rnd30 MODE, mean of 1.5M + 2M cells",
         "{RLPD}": "rnd30 MODE, 250k-decision checkpoint",
         "{Diffusion Policy}": "rnd30 SAMPLE, 100k updates"}
 DATASETS = [("human", "human"), ("machine", "machine\n(DP teacher)"), ("planner72", "planner"),
