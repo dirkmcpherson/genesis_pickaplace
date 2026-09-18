@@ -33,9 +33,10 @@ table, bib or prose was changed. Nothing was pushed to Overleaf; see "How to app
    state-based teacher that produced the DP dataset used the pruned, success-only data. (03, 12, 08)
 2. **"Forty participants" has no source.** No participant identifier exists; all 74 trials are one afternoon
    (2024-12-18). IRB and the Xbox controller are in no project note. (06)
-3. **The phase table (tab:phases) matches no set of record.** Human row 88.9/54.2/33.3/15.3 of "72" is neither the
-   state set (65/40/25/12 of 74) nor the pixel set (65/42/26/13 of 74); planner 94.4 = curated 68/72, not the first-
-   attempt 67/72. (01, 03, 06, 15)
+3. **The phase table's human row is not the training set.** 88.9/54.2/33.3/15.3 = 64/39/24/11 of a start-matched
+   72-tape subset scored on the state re-execution; the learners trained on all 74 pixel tapes (65/42/26/13). The
+   planner row (94.4 = 68/72) IS the training corpus and is correct; it counts attempts (two second attempts at failed
+   starts, one succeeded), not first attempts (67/72), which the caption should say. (01, 03, 06, 15)
 4. **World-model prose has drifted from the 4×4 results.** "WMs agnostic to every combination" holds for R2Dreamer
    only; DfD scores 0.04 on Planner v 0.31 on Human; RLPD is 0.00 on Planner and R2 (the `fig:pickaplace_perf`
    caption says the opposite); the DfD/R2-teacher cell has n=2. (05, 08)
