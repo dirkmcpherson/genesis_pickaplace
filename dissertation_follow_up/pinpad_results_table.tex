@@ -1,0 +1,31 @@
+% PinPad-four: final-checkpoint evaluation performance by algorithm and demonstration source.
+% Values computed 2026-09-18 from ~/workspace/fastrl/RSS_logs/pinpad_four/*/final_eps/*.npz
+% Unit: one number per seed = that run's mean episode return over its final-checkpoint evaluation episodes.
+% p-values: exact permutation test on the difference of means over the 8 per-seed values (12 870 splits;
+% smallest attainable p = 2/12870 = 0.00016, reported as < 0.001).
+\begin{table}[t]
+\centering
+\caption{Pinpad Four: average episode reward at the final checkpoint, by algorithm and demonstration
+source. Each cell is the mean over $n=8$ seeds of the per-seed evaluation average, with the standard
+deviation over seeds and the seed range. The right-hand column gives the exact permutation test
+comparing the two demonstration sources within an algorithm. The demonstration sets themselves are shown
+for reference: a learner at the level of its own demonstrations has copied them, not improved on them.}
+\label{tab:results_pinpad}
+\begin{tabular}{llrrrl}
+\toprule
+Algorithm & Demonstrations & Mean & SD & Range & Human vs.\ DfD source \\
+\midrule
+DfD   & human & \textbf{51.24} & 4.09 & 46.6--60.0 & \multirow{2}{*}{$p = 0.020$} \\
+DfD   & DfD   & 44.73 & 5.84 & 40.0--54.8 & \\
+\addlinespace[2pt]
+IBC   & human & 26.31 & 4.04 & 19.7--31.0 & \multirow{2}{*}{$p < 0.001$} \\
+IBC   & DfD   & 47.50 & 5.92 & 41.5--60.0 & \\
+\addlinespace[2pt]
+VMAIL & human & 26.69 & 7.34 & 12.2--35.8 & \multirow{2}{*}{$p < 0.001$} \\
+VMAIL & DfD   & 47.81 & 4.17 & 41.5--54.0 & \\
+\midrule
+\multicolumn{2}{l}{Human demonstrations (178 episodes)} & 27.19 & 7.59 & & \\
+\multicolumn{2}{l}{DfD demonstrations (225 episodes)}   & 48.58 & 7.60 & & \\
+\bottomrule
+\end{tabular}
+\end{table}
