@@ -1,31 +1,58 @@
-% PinPad-four: final-checkpoint evaluation performance by algorithm and demonstration source.
-% Values computed 2026-09-18 from ~/workspace/fastrl/RSS_logs/pinpad_four/*/final_eps/*.npz
+% PinPad-four: raw final-checkpoint evaluation performance by algorithm and demonstration source.
+% Computed 2026-09-18 from ~/workspace/fastrl/RSS_logs/pinpad_four/*/final_eps/*.npz
 % Unit: one number per seed = that run's mean episode return over its final-checkpoint evaluation episodes.
-% p-values: exact permutation test on the difference of means over the 8 per-seed values (12 870 splits;
-% smallest attainable p = 2/12870 = 0.00016, reported as < 0.001).
+% Bayes factors: JZS two-sample t test, Cauchy prior scale 0.707 (Rouder et al. 2009), on the 8 per-seed
+% values; reported by evidence category, not as point values.
 \begin{table}[t]
 \centering
 \caption{Pinpad Four: average episode reward at the final checkpoint, by algorithm and demonstration
 source. Each cell is the mean over $n=8$ seeds of the per-seed evaluation average, with the standard
-deviation over seeds and the seed range. The right-hand column gives the exact permutation test
-comparing the two demonstration sources within an algorithm. The demonstration sets themselves are shown
-for reference: a learner at the level of its own demonstrations has copied them, not improved on them.}
+deviation and range over seeds. The right-hand column compares the two demonstration sources within an
+algorithm. The demonstration sets are listed for reference: a learner at the level of its own
+demonstrations has reproduced them rather than improved on them.}
 \label{tab:results_pinpad}
 \begin{tabular}{llrrrl}
 \toprule
 Algorithm & Demonstrations & Mean & SD & Range & Human vs.\ DfD source \\
 \midrule
-DfD   & human & \textbf{51.24} & 4.09 & 46.6--60.0 & \multirow{2}{*}{$p = 0.020$} \\
+DfD   & human & \textbf{51.24} & 4.09 & 46.6--60.0 & \multirow{2}{*}{$3 < BF_{10} < 10$ (human higher)} \\
 DfD   & DfD   & 44.73 & 5.84 & 40.0--54.8 & \\
 \addlinespace[2pt]
-IBC   & human & 26.31 & 4.04 & 19.7--31.0 & \multirow{2}{*}{$p < 0.001$} \\
+IBC   & human & 26.31 & 4.04 & 19.7--31.0 & \multirow{2}{*}{$BF_{10} > 100$ (DfD higher)} \\
 IBC   & DfD   & 47.50 & 5.92 & 41.5--60.0 & \\
 \addlinespace[2pt]
-VMAIL & human & 26.69 & 7.34 & 12.2--35.8 & \multirow{2}{*}{$p < 0.001$} \\
+VMAIL & human & 26.69 & 7.34 & 12.2--35.8 & \multirow{2}{*}{$BF_{10} > 100$ (DfD higher)} \\
 VMAIL & DfD   & 47.81 & 4.17 & 41.5--54.0 & \\
 \midrule
-\multicolumn{2}{l}{Human demonstrations (178 episodes)} & 27.19 & 7.59 & & \\
-\multicolumn{2}{l}{DfD demonstrations (225 episodes)}   & 48.58 & 7.60 & & \\
+\multicolumn{2}{l}{Human demonstrations (178 episodes)} & 27.19 & 7.59 & 0--50 & \\
+\multicolumn{2}{l}{DfD demonstrations (225 episodes)}   & 48.58 & 7.60 & 0--60 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Companion table: all pairwise comparisons, evidence categories only.
+\begin{table}[t]
+\centering
+\caption{Pinpad Four: evidence for a difference in final-checkpoint average episode reward, by pairwise
+comparison. JZS Bayes factors on the per-seed values, $n=8$ per condition, reported by category.
+$BF_{10} < 1$ favours no difference; at this sample size those factors are anecdotal, so they indicate a
+failure to detect a difference rather than evidence of equivalence.}
+\label{tab:results_pinpad_bf}
+\begin{tabular}{llll}
+\toprule
+Comparison & Demonstrations & Evidence & Direction \\
+\midrule
+DfD vs.\ IBC   & human & $BF_{10} > 100$ & DfD higher \\
+DfD vs.\ VMAIL & human & $BF_{10} > 100$ & DfD higher \\
+IBC vs.\ VMAIL & human & $BF_{10} < 1$ (anecdotal) & none detected \\
+\addlinespace[2pt]
+DfD vs.\ IBC   & DfD & $BF_{10} < 1$ (anecdotal) & none detected \\
+DfD vs.\ VMAIL & DfD & $BF_{10} < 1$ (anecdotal) & none detected \\
+IBC vs.\ VMAIL & DfD & $BF_{10} < 1$ (anecdotal) & none detected \\
+\addlinespace[2pt]
+human vs.\ DfD source & IBC   & $BF_{10} > 100$ & DfD demonstrations higher \\
+human vs.\ DfD source & VMAIL & $BF_{10} > 100$ & DfD demonstrations higher \\
+human vs.\ DfD source & DfD   & $3 < BF_{10} < 10$ & human demonstrations higher \\
 \bottomrule
 \end{tabular}
 \end{table}
