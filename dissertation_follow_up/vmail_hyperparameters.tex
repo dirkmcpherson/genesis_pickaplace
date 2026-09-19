@@ -1,0 +1,48 @@
+% VMAIL hyperparameters, read 2026-09-18 from the saved config of a real run:
+%   ~/workspace/fastrl/RSS_logs/pinpad_four/07-24_15-37-19_2024_pinpad_four_VMAIL__rpt1__256_imi5/config.yaml
+% Implementation: AnotherDirector.py (this project); the discriminator block credits
+% github.com/yixiaoshenghua/VMAIL-torch, an unofficial PyTorch port of Rafailov et al. (2021).
+\begin{table}[t]
+\centering
+\caption{VMAIL hyperparameters. The world model, actor and critic are shared with the DfD agent; only
+the rows above the second rule are specific to VMAIL. During VMAIL training the imagined reward is the
+discriminator's output in place of the world model's reward head. Values are those recorded in the saved
+configuration of the Pinpad Four runs.}
+\label{tab:vmail_hyperparameters}
+\begin{tabular}{lll}
+\toprule
+Component & Parameter & Value \\
+\midrule
+\multicolumn{3}{l}{\textit{Discriminator (VMAIL-specific)}} \\
+Architecture & layers $\times$ units & $4 \times 512$ \\
+             & activation / normalisation & SiLU / LayerNorm \\
+             & output distribution & binary \\
+             & input & $[\,\text{latent feature},\ \text{action}\,]$, $1568 + 5$ \\
+Optimiser    & Adam learning rate & $3\times10^{-4}$ \\
+             & $\epsilon$ / weight decay & $10^{-5}$ / $0$ \\
+             & gradient clip & $100$ \\
+Objective    & gradient-penalty weight $\alpha$ & $1.0$ \\
+             & expert batch & one demonstration batch per update \\
+             & agent batch & imagined rollout, horizon $16$ \\
+\midrule
+\multicolumn{3}{l}{\textit{Shared with DfD}} \\
+Latent state & stochastic ($\text{categoricals} \times \text{classes}$) & $32 \times 32$ \\
+             & deterministic & $512$ \\
+World model  & learning rate & $10^{-4}$ \\
+             & KL free nats; dynamic / representation scale & $1.0$; $0.5$ / $0.1$ \\
+Actor        & learning rate & $3\times10^{-5}$ \\
+             & entropy bonus & $3\times10^{-4}$ \\
+             & imagination gradient & REINFORCE \\
+Critic       & distribution & symlog discrete \\
+             & return EMA normalisation & on \\
+Rollout      & imagination horizon & $16$ \\
+             & discount $\gamma$; $\lambda$ & $0.997$; $0.95$ \\
+Replay       & batch size $\times$ sequence length & $16 \times 64$ \\
+             & train ratio & $256$ \\
+Environment  & episode limit; action repeat & $250$ steps; $1$ \\
+             & budget & $2\times10^{5}$ environment steps \\
+Demonstrations & set & one \texttt{HD}/\texttt{AD} folder per seed \\
+             & samples drawn & $256$ \\
+\bottomrule
+\end{tabular}
+\end{table}
